@@ -12,40 +12,41 @@ from pathlib import Path
 
 # (表示名, RSSのURL, 言語)  lang="ja" なら翻訳スキップ
 RSS_FEEDS = [
+    # 国内・官公庁
     ("金融庁",             "https://www.fsa.go.jp/fsaNewsListAll_rss2.xml",              "ja"),
     ("JPCERT/CC",          "https://www.jpcert.or.jp/rss/jpcert.rdf",                   "ja"),
     ("IPA",                "https://www.ipa.go.jp/security/rss/alert.rdf",              "ja"),
-    ("経済産業省",         "https://www.meti.go.jp/rss/topics.rdf",                     "ja"),
-    ("CISA",               "https://www.cisa.gov/cybersecurity-advisories/all.xml",     "en"),
-    ("ENISA",              "https://www.enisa.europa.eu/news/enisa-news/RSS",           "en"),
-    ("Microsoft Security", "https://www.microsoft.com/en-us/security/blog/feed/",      "en"),
-    ("Mandiant",           "https://www.mandiant.com/resources/blog/rss.xml",          "en"),
-    ("CrowdStrike",        "https://www.crowdstrike.com/blog/feed/",                   "en"),
-    ("Google TAG",         "https://security.googleblog.com/feeds/posts/default",      "en"),
-    ("NCSC",               "https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml","en"),
-    ("Krebs on Security",  "https://krebsonsecurity.com/feed/",                        "en"),
-    ("Dark Reading",       "https://www.darkreading.com/rss.xml",                      "en"),
-    ("The Hacker News",    "https://feeds.feedburner.com/TheHackersNews",              "en"),
-]
 
+    # 海外・政府/標準
+    ("CISA",               "https://www.cisa.gov/cybersecurity-advisories/all.xml",     "en"),
+    ("NIST",               "https://www.nist.gov/news-events/news/rss.xml",             "en"),
+
+    # ベンダ・脅威情報
+    ("Microsoft Security", "https://www.microsoft.com/en-us/security/blog/feed/",       "en"),
+    ("Mandiant",           "https://www.mandiant.com/resources/blog/rss.xml",           "en"),
+    ("CrowdStrike",        "https://www.crowdstrike.com/blog/feed/",                    "en"),
+    ("Google TAG",         "https://security.googleblog.com/feeds/posts/default",       "en"),
+    ("NCSC",               "https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml","en"),
+
+    # 実務系
+    ("Krebs on Security",  "https://krebsonsecurity.com/feed/",                         "en"),
+    ("Dark Reading",       "https://www.darkreading.com/rss.xml",                       "en"),
+    ("The Hacker News",    "https://feeds.feedburner.com/TheHackersNews",               "en"),
+]
 MAX_PER_FEED = 5
 DAYS_BACK    = 1
 
 SOURCE_COLORS = {
     "金融庁":             "#c0392b",
     "JPCERT/CC":          "#2471a3",
-    "IPA":                "#e74c3c",
-    "経済産業省":         "#d35400",
     "CISA":               "#1e8449",
-    "ENISA":              "#0066cc",
+    "CISA KEV":           "#e74c3c",
     "Microsoft Security": "#0078d4",
+    "NIST NVD":           "#7d3c98",
     "Mandiant":           "#e67e22",
     "CrowdStrike":        "#cc0000",
     "Google TAG":         "#4285f4",
     "NCSC":               "#005eb8",
-    "Krebs on Security":  "#7d3c98",
-    "Dark Reading":       "#117a65",
-    "The Hacker News":    "#b7950b",
 }
 
 NAMESPACES = {
@@ -161,16 +162,90 @@ def fetch_feed(name, url, lang):
             })
     return items
 
+# ── CISA KEV (JSON) ───────────────────────────────────────────────────────────
+
+def fetch_cisa_kev(cutoff):
+    url = "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
+    req = urllib.request.Request(url, headers={"User-Agent": "SecurityDigest/1.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=15) as res:
+            data = json.loads(res.read())
+    except Exception as e:
+        print(f"[WARN] CISA KEV: {e}", file=sys.stderr)
+        return []
+
+    items = []
+    for v in sorted(data.get("vulnerabilities", []),
+                    key=lambda x: x.get("dateAdded", ""), reverse=True):
+        date = parse_date(v.get("dateAdded"))
+        if date and date < cutoff:
+            break
+        items.append({
+            "title":   f"{v.get('cveID','')} — {v.get('vulnerabilityName','')}",
+            "link":    "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+            "summary": v.get("shortDescription", ""),
+            "date":    date,
+            "source":  "CISA KEV",
+            "lang":    "en",
+        })
+        if len(items) >= MAX_PER_FEED:
+            break
+    return items
+
+# ── NIST NVD (JSON API) ───────────────────────────────────────────────────────
+
+def fetch_nist_nvd(cutoff):
+    now   = datetime.datetime.utcnow()
+    start = cutoff.strftime("%Y-%m-%dT00:00:00.000")
+    end   = now.strftime("%Y-%m-%dT23:59:59.000")
+    url   = (
+        "https://services.nvd.nist.gov/rest/json/cves/2.0"
+        f"?pubStartDate={start}&pubEndDate={end}"
+        f"&resultsPerPage={MAX_PER_FEED}&cvssV3Severity=CRITICAL"
+    )
+    req = urllib.request.Request(url, headers={"User-Agent": "SecurityDigest/1.0"})
+    try:
+        with urllib.request.urlopen(req, timeout=15) as res:
+            data = json.loads(res.read())
+    except Exception as e:
+        print(f"[WARN] NIST NVD: {e}", file=sys.stderr)
+        return []
+
+    items = []
+    for vuln in data.get("vulnerabilities", []):
+        cve  = vuln.get("cve", {})
+        cveid = cve.get("id", "")
+        desc  = next((d["value"] for d in cve.get("descriptions", []) if d["lang"] == "en"), "")
+        metrics = cve.get("metrics", {})
+        score = ""
+        for key in ("cvssMetricV31", "cvssMetricV30", "cvssMetricV2"):
+            if key in metrics:
+                score = metrics[key][0]["cvssData"].get("baseScore", "")
+                break
+        title = f"{cveid} (CVSS {score}) — {desc[:80]}" if score else f"{cveid} — {desc[:80]}"
+        items.append({
+            "title":   title,
+            "link":    f"https://nvd.nist.gov/vuln/detail/{cveid}",
+            "summary": desc,
+            "date":    parse_date(cve.get("published")),
+            "source":  "NIST NVD",
+            "lang":    "en",
+        })
+    return items
+
 # ── 全収集 ────────────────────────────────────────────────────────────────────
 
 def collect_recent():
     cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=DAYS_BACK)
     all_items = []
 
-    for name, url, lang in RSS_FEEDS:
+    for name, url, lang in (f for f in RSS_FEEDS if not f[1].startswith("#")):
         for item in fetch_feed(name, url, lang):
             if item["date"] is None or item["date"] >= cutoff:
                 all_items.append(item)
+
+    all_items += fetch_cisa_kev(cutoff)
+    # all_items += fetch_nist_nvd(cutoff)
 
     all_items.sort(key=lambda x: x["date"] or datetime.datetime.min, reverse=True)
     return all_items
@@ -205,9 +280,10 @@ def build_html(items):
     </a>""")
 
     cards_html = "\n".join(cards) if cards else '<p class="empty">本日の新着はありません。</p>'
+    all_sources = [f for f in RSS_FEEDS if not f[1].startswith("#")] + [("CISA KEV","","")]
     sources_li = "".join(
         '<li style="background:{}">{}</li>'.format(SOURCE_COLORS.get(n, "#555"), esc(n))
-        for n, *_ in RSS_FEEDS
+        for n, *_ in all_sources
     )
 
     return f"""<!DOCTYPE html>
@@ -250,7 +326,7 @@ def build_html(items):
   <div class="cards">{cards_html}</div>
   <div class="sources">
     <details>
-      <summary>収集元 ({len(RSS_FEEDS)}ソース)</summary>
+      <summary>収集元 ({len(RSS_FEEDS)+2}ソース)</summary>
       <ul>{sources_li}</ul>
     </details>
   </div>
