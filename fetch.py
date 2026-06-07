@@ -32,6 +32,8 @@ RSS_FEEDS = [
     ("Krebs on Security",  "https://krebsonsecurity.com/feed/",                         "en"),
     ("Dark Reading",       "https://www.darkreading.com/rss.xml",                       "en"),
     ("The Hacker News",    "https://feeds.feedburner.com/TheHackersNews",               "en"),
+    ("Cisco Talos",        "https://blog.talosintelligence.com/rss/",                    "en"),
+    ("Cloudflare",         "https://blog.cloudflare.com/rss/",                            "en"),
 ]
 MAX_PER_FEED = 5
 DAYS_BACK    = 1
@@ -47,6 +49,8 @@ SOURCE_COLORS = {
     "CrowdStrike":        "#cc0000",
     "Google TAG":         "#4285f4",
     "NCSC":               "#005eb8",
+    "Cisco Talos":        "#6f42c1",
+    "Cloudflare":         "#f38020",
 }
 
 NAMESPACES = {
