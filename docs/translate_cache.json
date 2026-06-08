@@ -67,5 +67,10 @@
   "New ChatGPT Lockdown Mode Limits Tools That Could Enable Data Exfiltration": "新しい ChatGPT ロックダウン モードはデータ漏洩を可能にするツールを制限します",
   "OpenAI has begun rolling out a new Lockdown Mode to ChatGPT for eligible personal accounts to reduce the risk of data exfiltration arising from prompt injection attacks.\n\nThe feature is primarily desi": "OpenAI は、プロンプト インジェクション攻撃によるデータ漏洩のリスクを軽減するために、適格な個人アカウントを対象とした ChatGPT への新しいロックダウン モードの展開を開始しました。\n\n特徴は主にデジです",
   "VS Code Adds 2-Hour Extension Auto-Update Delay to Limit Supply Chain Attacks": "VS Code がサプライ チェーン攻撃を制限するために 2 時間の拡張自動更新遅延を追加",
-  "Microsoft has announced that Visual Studio Code (VS Code) will apply a two-hour delay before extensions for the integrated development environment (IDE) are updated automatically to a newer version in": "Microsoft は、Visual Studio Code (VS Code) が統合開発環境 (IDE) の拡張機能が新しいバージョンに自動的に更新されるまでに 2 時間の遅延を適用すると発表しました。"
+  "Microsoft has announced that Visual Studio Code (VS Code) will apply a two-hour delay before extensions for the integrated development environment (IDE) are updated automatically to a newer version in": "Microsoft は、Visual Studio Code (VS Code) が統合開発環境 (IDE) の拡張機能が新しいバージョンに自動的に更新されるまでに 2 時間の遅延を適用すると発表しました。",
+  "VerdantBamboo Deploys BSD Variant of BRICKSTORM on Linux Appliances": "VerdantBamboo が BRICKSTORM の BSD バリアントを Linux アプライアンスに導入",
+  "重要度: 高\n要約: 中国": "重要度: 高\n要約: 中国",
+  "UNC3753 Used Vishing and Physical Intrusions in U.S. Data Theft Extortion Campaign": "UNC3753 米国のデータ窃盗恐喝キャンペーンでビッシングと物理的侵入が使用された",
+  "重要度: 高\n要約: UNC375": "重要度: 高\n概要: UNC375",
+  "重要度: 中\n要約: VS Code": "重要度: 中\n要約: VS コード"
 }
