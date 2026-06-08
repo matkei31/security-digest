@@ -3,7 +3,7 @@
 Security Digest — サイバーセキュリティニュースを収集してindex.htmlを生成する
 """
 
-import sys, json, datetime, time, re
+import sys, json, datetime, time, re, os
 import urllib.request, urllib.parse
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -37,6 +37,10 @@ RSS_FEEDS = [
 ]
 MAX_PER_FEED = 5
 DAYS_BACK    = 1
+
+MAX_AI_SUMMARIES = 10
+GEMINI_MODEL = "gemini-1.5-flash"
+
 
 SOURCE_COLORS = {
     "金融庁":             "#c0392b",
@@ -252,6 +256,7 @@ def collect_recent():
     # all_items += fetch_nist_nvd(cutoff)
 
     all_items.sort(key=lambda x: x["date"] or datetime.datetime.min, reverse=True)
+    all_items = enrich_with_ai(all_items)
     return all_items
 
 # ── HTML生成 ─────────────────────────────────────────────────────────────────
@@ -262,6 +267,85 @@ def esc(s):
 
 def strip_html(s):
     return re.sub(r"<[^>]+>", "", s).strip()
+
+
+# ── Gemini AI要約 ─────────────────────────────────────────────────────────────
+
+def gemini_analyze(text):
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        return ""
+
+    prompt = f"""
+あなたは金融機関・監査・サイバーセキュリティの実務者向けアナリストです。
+以下のニュースを日本語で簡潔に分析してください。
+
+出力形式は必ず以下にしてください。
+
+重要度: 高/中/低
+要約: 100文字以内
+金融機関への影響: 120文字以内
+推奨アクション:
+- 1つ目
+- 2つ目
+- 3つ目
+
+ニュース:
+{text}
+"""
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={api_key}"
+    body = json.dumps({
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "temperature": 0.2,
+            "maxOutputTokens": 300
+        }
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        url,
+        data=body,
+        headers={"Content-Type": "application/json"}
+    )
+
+    try:
+        with urllib.request.urlopen(req, timeout=30) as res:
+            data = json.loads(res.read())
+        return data["candidates"][0]["content"]["parts"][0]["text"].strip()
+    except Exception as e:
+        print(f"[WARN] Gemini要約: {e}", file=sys.stderr)
+        return ""
+
+
+def enrich_with_ai(items):
+    if not os.environ.get("GEMINI_API_KEY"):
+        return items
+
+    print("Geminiで重要度・要約を生成中...")
+    count = 0
+
+    for item in items:
+        if count >= MAX_AI_SUMMARIES:
+            break
+
+        text = f"""
+source: {item.get('source', '')}
+title: {item.get('title', '')}
+summary: {strip_html(item.get('summary', ''))}
+link: {item.get('link', '')}
+"""
+        analysis = gemini_analyze(text)
+
+        if analysis:
+            item["summary"] = analysis
+            count += 1
+            time.sleep(1)
+
+    print(f"  AI要約: {count} 件")
+    return items
+
+
 
 def build_html(items):
     now      = datetime.datetime.now()

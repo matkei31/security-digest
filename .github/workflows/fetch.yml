@@ -21,6 +21,8 @@ jobs:
           python-version: '3.12'
 
       - name: Fetch RSS and generate HTML
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: python3 fetch.py
 
       - name: Commit and push
