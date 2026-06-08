@@ -359,8 +359,12 @@ def build_html(items):
     for item in items:
         color      = SOURCE_COLORS.get(item["source"], "#555")
         date_label = item["date"].strftime("%m/%d %H:%M") if item["date"] else ""
-        summary    = strip_html(item["summary"])[:120]
-        summary_html = f'<p class="summary">{esc(summary)}{"…" if len(summary)==120 else ""}</p>' if summary else ""
+        raw_summary = strip_html(item["summary"])
+        is_ai_summary = "重要度:" in raw_summary and "金融機関への影響:" in raw_summary
+        max_len = 700 if is_ai_summary else 120
+        summary = raw_summary[:max_len]
+        summary_class = "summary ai-summary" if is_ai_summary else "summary"
+        summary_html = f'<p class="{summary_class}">{esc(summary)}{"…" if len(raw_summary) > max_len else ""}</p>' if summary else ""
         cards.append(f"""
     <a class="card" href="{esc(item['link'])}" target="_blank" rel="noopener">
       <div class="card-meta">
