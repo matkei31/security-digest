@@ -38,7 +38,7 @@ RSS_FEEDS = [
 MAX_PER_FEED = 5
 DAYS_BACK    = 1
 
-MAX_AI_SUMMARIES = 10
+MAX_AI_SUMMARIES = 3
 GEMINI_MODEL = "gemini-2.0-flash"
 
 
@@ -340,7 +340,7 @@ link: {item.get('link', '')}
         if analysis:
             item["summary"] = analysis
             count += 1
-            time.sleep(1)
+            time.sleep(8)
 
     print(f"  AI要約: {count} 件")
     return items
