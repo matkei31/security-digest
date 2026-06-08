@@ -324,10 +324,13 @@ def enrich_with_ai(items):
 
     print("Geminiで重要度・要約を生成中...")
     count = 0
+    attempts = 0
 
     for item in items:
-        if count >= MAX_AI_SUMMARIES:
+        if attempts >= MAX_AI_SUMMARIES:
             break
+
+        attempts += 1
 
         text = f"""
 source: {item.get('source', '')}
@@ -340,9 +343,10 @@ link: {item.get('link', '')}
         if analysis:
             item["summary"] = analysis
             count += 1
-            time.sleep(8)
 
-    print(f"  AI要約: {count} 件")
+        time.sleep(8)
+
+    print(f"  AI要約: {count} 件 / 試行: {attempts} 件")
     return items
 
 
