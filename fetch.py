@@ -271,24 +271,53 @@ def strip_html(s):
 
 # ── Gemini AI要約 ─────────────────────────────────────────────────────────────
 
+def normalize_ai_analysis(value):
+    if not isinstance(value, dict):
+        return None
+
+    importance = str(value.get("importance", "")).strip()
+    summary = str(value.get("summary", "")).strip()
+    impact = str(value.get("financial_impact", "")).strip()
+    actions = value.get("recommended_actions", [])
+
+    if importance not in ("高", "中", "低") or not summary or not impact:
+        return None
+    if not isinstance(actions, list):
+        return None
+
+    actions = [str(action).strip() for action in actions if str(action).strip()]
+    if not actions:
+        return None
+
+    return {
+        "importance": importance,
+        "summary": summary,
+        "financial_impact": impact,
+        "recommended_actions": actions[:3],
+    }
+
+
 def gemini_analyze(text):
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        return ""
+        return None
 
     prompt = f"""
-あなたは金融機関・監査・サイバーセキュリティの実務者向けアナリストです。
-以下のニュースを日本語で簡潔に分析してください。
+あなたは日本の金融機関で働く、サイバーセキュリティとIT監査のシニアアナリストです。
+以下のニュースだけを根拠に、金融機関の実務担当者が短時間で判断できる分析を日本語で作成してください。
 
-出力形式は必ず以下にしてください。
+評価基準:
+- 重要度「高」: 悪用確認済み、緊急対応が必要、金融サービス停止・情報漏えい・不正取引に直結し得る
+- 重要度「中」: 関連製品や業務への影響確認、計画的な対応や監視強化が必要
+- 重要度「低」: 一般情報、限定的な影響、直ちに対応する必要が低い
 
-重要度: 高/中/低
-要約: 100文字以内
-金融機関への影響: 120文字以内
-推奨アクション:
-- 1つ目
-- 2つ目
-- 3つ目
+記述ルール:
+- 要約は「誰が何を公表し、何が起きたか」を具体的に、120文字以内で書く
+- 金融機関への影響は、該当するシステム・委託先・業務・リスクを具体的に、140文字以内で書く
+- 推奨アクションは、担当者が実行できる確認・対応を優先順に1〜3件、各80文字以内で書く
+- 入力にない事実、製品利用状況、被害、期限は推測しない
+- 金融機関との直接的な関係が薄い場合も、その旨と確認すべき接点を明記する
+- 見出し、Markdown、コードブロックは出力しない
 
 ニュース:
 {text}
@@ -299,7 +328,31 @@ def gemini_analyze(text):
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
             "temperature": 0.2,
-            "maxOutputTokens": 300
+            "maxOutputTokens": 500,
+            "responseMimeType": "application/json",
+            "responseSchema": {
+                "type": "OBJECT",
+                "properties": {
+                    "importance": {
+                        "type": "STRING",
+                        "enum": ["高", "中", "低"]
+                    },
+                    "summary": {"type": "STRING"},
+                    "financial_impact": {"type": "STRING"},
+                    "recommended_actions": {
+                        "type": "ARRAY",
+                        "items": {"type": "STRING"},
+                        "minItems": 1,
+                        "maxItems": 3
+                    }
+                },
+                "required": [
+                    "importance",
+                    "summary",
+                    "financial_impact",
+                    "recommended_actions"
+                ]
+            }
         }
     }).encode("utf-8")
 
@@ -312,10 +365,14 @@ def gemini_analyze(text):
     try:
         with urllib.request.urlopen(req, timeout=30) as res:
             data = json.loads(res.read())
-        return data["candidates"][0]["content"]["parts"][0]["text"].strip()
+        response_text = data["candidates"][0]["content"]["parts"][0]["text"]
+        analysis = normalize_ai_analysis(json.loads(response_text))
+        if not analysis:
+            raise ValueError("GeminiのJSONに必要な項目がありません")
+        return analysis
     except Exception as e:
         print(f"[WARN] Gemini要約: {e}", file=sys.stderr)
-        return ""
+        return None
 
 
 def enrich_with_ai(items):
@@ -341,7 +398,7 @@ link: {item.get('link', '')}
         analysis = gemini_analyze(text)
 
         if analysis:
-            item["summary"] = analysis
+            item["ai_analysis"] = analysis
             count += 1
 
         time.sleep(8)
@@ -360,19 +417,52 @@ def build_html(items):
         color      = SOURCE_COLORS.get(item["source"], "#555")
         date_label = item["date"].strftime("%m/%d %H:%M") if item["date"] else ""
         raw_summary = strip_html(item["summary"])
-        is_ai_summary = "重要度:" in raw_summary and "金融機関への影響:" in raw_summary
-        max_len = 700 if is_ai_summary else 120
-        summary = raw_summary[:max_len]
-        summary_class = "summary ai-summary" if is_ai_summary else "summary"
-        summary_html = f'<p class="{summary_class}">{esc(summary)}{"…" if len(raw_summary) > max_len else ""}</p>' if summary else ""
+        analysis = normalize_ai_analysis(item.get("ai_analysis"))
+
+        if analysis:
+            importance_class = {
+                "高": "importance-high",
+                "中": "importance-medium",
+                "低": "importance-low",
+            }[analysis["importance"]]
+            actions_html = "".join(
+                f"<li>{esc(action)}</li>"
+                for action in analysis["recommended_actions"]
+            )
+            summary_html = f"""<div class="ai-analysis">
+        <div class="importance-row">
+          <span class="field-label">重要度</span>
+          <span class="importance {importance_class}">{esc(analysis["importance"])}</span>
+        </div>
+        <section class="analysis-field">
+          <h3>要約</h3>
+          <p>{esc(analysis["summary"])}</p>
+        </section>
+        <section class="analysis-field">
+          <h3>金融機関への影響</h3>
+          <p>{esc(analysis["financial_impact"])}</p>
+        </section>
+        <section class="analysis-field">
+          <h3>推奨アクション</h3>
+          <ul>{actions_html}</ul>
+        </section>
+      </div>"""
+        else:
+            max_len = 120
+            summary = raw_summary[:max_len]
+            summary_html = (
+                f'<p class="summary">{esc(summary)}'
+                f'{"…" if len(raw_summary) > max_len else ""}</p>'
+                if summary else ""
+            )
+        summary_block = f"\n      {summary_html}" if summary_html else ""
         cards.append(f"""
     <a class="card" href="{esc(item['link'])}" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:{color}">{esc(item['source'])}</span>
         <span class="date">{date_label}</span>
       </div>
-      <h2>{esc(item['title'])}</h2>
-      {summary_html}
+      <h2>{esc(item['title'])}</h2>{summary_block}
     </a>""")
 
     cards_html = "\n".join(cards) if cards else '<p class="empty">本日の新着はありません。</p>'
@@ -403,6 +493,17 @@ def build_html(items):
     .date{{font-size:11px;color:#8b949e;margin-left:auto}}
     h2{{font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3}}
     .summary{{font-size:12px;color:#8b949e;line-height:1.5;margin-top:6px}}
+    .ai-analysis{{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:grid;gap:10px}}
+    .importance-row{{display:flex;align-items:center;gap:8px}}
+    .field-label,.analysis-field h3{{font-size:11px;font-weight:600;color:#8b949e}}
+    .importance{{font-size:11px;font-weight:700;line-height:1;padding:4px 9px;border-radius:100px;color:#fff}}
+    .importance-high{{background:#da3633}}
+    .importance-medium{{background:#9e6a03}}
+    .importance-low{{background:#238636}}
+    .analysis-field p,.analysis-field li{{font-size:12px;color:#c9d1d9;line-height:1.6}}
+    .analysis-field p,.analysis-field ul{{margin-top:3px}}
+    .analysis-field ul{{padding-left:18px}}
+    .analysis-field li+li{{margin-top:3px}}
     .empty{{text-align:center;color:#8b949e;padding:60px 0;font-size:14px}}
     .sources{{max-width:680px;margin:20px auto 0;padding:0 12px}}
     .sources details{{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 16px}}
