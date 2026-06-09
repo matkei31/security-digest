@@ -107,5 +107,17 @@
   "LiteLLM Flaw CVE-2026-42271 Exploited in the Wild, Chains to Unauthenticated RCE": "LiteLLM 欠陥 CVE-2026-42271 が実環境で悪用され、認証されていない RCE にチェーンされる",
   "重要度: 高\n要約: CISA": "重要度: 高\n要約: CISA",
   "重要度: 高\n要約: Linux": "重要度: 高\n要約: Linux",
-  "The financially motivated group is combining vishing, IT impersonation, and in-person office intrusions to steal data and extort victims.": "金銭目的のこのグループは、ビッシング、IT になりすまし、オフィスへの個人侵入を組み合わせて、データを盗み、被害者を脅迫しています。"
+  "The financially motivated group is combining vishing, IT impersonation, and in-person office intrusions to steal data and extort victims.": "金銭目的のこのグループは、ビッシング、IT になりすまし、オフィスへの個人侵入を組み合わせて、データを盗み、被害者を脅迫しています。",
+  "WinRAR Flaw Exploited by Russia-Aligned Groups to Deploy Stealers in Ukraine": "WinRAR の欠陥、ロシアと連携したグループが悪用、ウクライナに窃盗犯を配備",
+  "Two Russia-aligned cyber attack campaigns have continued to exploit a security flaw in WinRAR to target Ukrainian organisations, almost a year after patches for the vulnerability were released.\n\nThe a": "ロシアと連携した 2 つのサイバー攻撃キャンペーンは、WinRAR のセキュリティ上の欠陥を悪用し、この脆弱性に対するパッチがリリースされてからほぼ 1 年後もウクライナの組織を標的にしていました。\n\nは",
+  "Researchers Build Self-Replicating AI Worm That Operates Entirely on Local, Open-Weight Models": "研究者らは完全にローカルの無重力モデルで動作する自己複製 AI ワームを構築",
+  "University of Toronto researchers have built and tested a proof-of-concept AI-driven computer worm that uses a locally hosted open-weight large language model to reason its way through a network, gene": "トロント大学の研究者は、ローカルでホストされているオープンウェイト大規模言語モデルを使用して、ネットワーク、遺伝子を介して侵入する推論を行う、概念実証の AI 駆動型コンピューター ワームを構築し、テストしました。",
+  "Chrome V8 Zero-Day CVE-2026-11645 Exploited in the Wild - Patch Now": "Chrome V8 ゼロデイ CVE-2026-11645 が悪用される - 今すぐパッチを適用する",
+  "Google has released security updates to address 74 vulnerabilities, including one that has come under active exploitation in the wild.\n\nThe high-severity vulnerability, tracked as CVE-2026-11645 (CVSS": "Google は、実際に悪用されている脆弱性を含む 74 件の脆弱性に対処するセキュリティ アップデートをリリースしました。\n\nCVE-2026-11645 (CVSS) として追跡される重大度の高い脆弱性",
+  "The Hidden Security Risk in Modern Networks: The Work Between Tools": "最新のネットワークに隠れたセキュリティ リスク: ツール間の作業",
+  "Organizations have more visibility than ever. Growing tech stacks provide greater coverage, and network security teams are increasingly adopting AI and automation to help with routine tasks and reduce": "組織の可視性はこれまで以上に高まりました。技術スタックの成長によりカバー範囲が拡大し、ネットワーク セキュリティ チームは日常的なタスクを支援し、コスト削減を目的として AI と自動化をますます導入しています。",
+  "New FROST Attack Lets Websites Track What Sites and Apps You Open via SSD Timing": "新しい FROST 攻撃により、Web サイトは SSD タイミングを介して開いたサイトやアプリを追跡できるようになる",
+  "A malicious website can work out which sites you visit and which apps you open, using nothing but JavaScript and the timing of your SSD. The attack, called FROST, needs no native code, no extension, a": "悪意のある Web サイトは、JavaScript と SSD のタイミングのみを使用して、ユーザーがどのサイトにアクセスし、どのアプリを開いたかを把握できます。 FROST と呼ばれるこの攻撃には、ネイティブ コードも拡張機能も必要ありません。",
+  "Defend against frontier cyber models: Cloudflare's architecture as customer zero": "最先端のサイバーモデルからの防御: 顧客ゼロとしての Cloudflare のアーキテクチャ",
+  "In our post about Project Glasswing, we made the argument that the architecture around a vulnerability matters more than the speed of the patch. Here we walk through what that architecture looks like,": "Project Glasswing に関する投稿の中で、パッチの速度よりも脆弱性に関するアーキテクチャの方が重要であると主張しました。ここではそのアーキテクチャがどのようなものかを見ていきます。"
 }

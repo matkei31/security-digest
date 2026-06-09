@@ -19,6 +19,17 @@
     .date{font-size:11px;color:#8b949e;margin-left:auto}
     h2{font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3}
     .summary{font-size:12px;color:#8b949e;line-height:1.5;margin-top:6px}
+    .ai-analysis{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:grid;gap:10px}
+    .importance-row{display:flex;align-items:center;gap:8px}
+    .field-label,.analysis-field h3{font-size:11px;font-weight:600;color:#8b949e}
+    .importance{font-size:11px;font-weight:700;line-height:1;padding:4px 9px;border-radius:100px;color:#fff}
+    .importance-high{background:#da3633}
+    .importance-medium{background:#9e6a03}
+    .importance-low{background:#238636}
+    .analysis-field p,.analysis-field li{font-size:12px;color:#c9d1d9;line-height:1.6}
+    .analysis-field p,.analysis-field ul{margin-top:3px}
+    .analysis-field ul{padding-left:18px}
+    .analysis-field li+li{margin-top:3px}
     .empty{text-align:center;color:#8b949e;padding:60px 0;font-size:14px}
     .sources{max-width:680px;margin:20px auto 0;padding:0 12px}
     .sources details{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 16px}
@@ -32,39 +43,66 @@
 <body>
   <header>
     <h1>🔐 Security Digest</h1>
-    <div class="sub">最終更新: 2026年06月09日 06:59</div>
+    <div class="sub">最終更新: 2026年06月09日 13:10</div>
     <div class="count">31 件</div>
   </header>
   <div class="cards">
-    <a class="card" href="https://thehackernews.com/2026/06/litellm-flaw-cve-2026-42271-exploited.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/06/winrar-flaw-exploited-by-russia-aligned.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/09 11:56</span>
+        <span class="date">06/09 17:56</span>
       </div>
-      <h2>LiteLLM 欠陥 CVE-2026-42271 が実環境で悪用され、認証されていない RCE にチェーンされる</h2>
-      <p class="summary">重要度: 高
-要約: CISA</p>
+      <h2>WinRAR の欠陥、ロシアと連携したグループが悪用、ウクライナに窃盗犯を配備</h2>
+      <p class="summary">ロシアと連携した 2 つのサイバー攻撃キャンペーンは、WinRAR のセキュリティ上の欠陥を悪用し、この脆弱性に対するパッチがリリースされてからほぼ 1 年後もウクライナの組織を標的にしていました。
+
+は</p>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/06/one-character-linux-kernel-flaw-enables.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/06/researchers-build-self-replicating-ai.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/09 01:47</span>
+        <span class="date">06/09 17:29</span>
       </div>
-      <h2>Linux カーネルの 1 文字の欠陥によりローカル ルート アクセスが可能になり、そのエクスプロイトが公開に</h2>
-      <p class="summary">重要度: 高
-要約: Linux</p>
+      <h2>研究者らは完全にローカルの無重力モデルで動作する自己複製 AI ワームを構築</h2>
+      <p class="summary">トロント大学の研究者は、ローカルでホストされているオープンウェイト大規模言語モデルを使用して、ネットワーク、遺伝子を介して侵入する推論を行う、概念実証の AI 駆動型コンピューター ワームを構築し、テストしました。</p>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/06/meta-blocks-nso-groups-new-whatsapp.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/06/chrome-v8-zero-day-cve-2026-11645.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/08 22:38</span>
+        <span class="date">06/09 17:28</span>
       </div>
-      <h2>NSOグループの新たなWhatsAppフィッシング攻撃をメタブロック、侮辱命令を提出</h2>
-      <p class="summary">Metaは月曜日、イスラエルのスパイウェアベンダーNSO Groupに関連したスピアフィッシングの試みを検知し阻止したと発表した。
+      <h2>Chrome V8 ゼロデイ CVE-2026-11645 が悪用される - 今すぐパッチを適用する</h2>
+      <p class="summary">Google は、実際に悪用されている脆弱性を含む 74 件の脆弱性に対処するセキュリティ アップデートをリリースしました。
 
-さらに、テクノロジー大手は、連邦裁判所に侮辱命令を提出すると述べた。</p>
+CVE-2026-11645 (CVSS) として追跡される重大度の高い脆弱性</p>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/06/the-hidden-security-risk-in-modern.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">06/09 17:00</span>
+      </div>
+      <h2>最新のネットワークに隠れたセキュリティ リスク: ツール間の作業</h2>
+      <p class="summary">組織の可視性はこれまで以上に高まりました。技術スタックの成長によりカバー範囲が拡大し、ネットワーク セキュリティ チームは日常的なタスクを支援し、コスト削減を目的として AI と自動化をますます導入しています。</p>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/06/new-frost-attack-lets-websites-track.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">06/09 15:20</span>
+      </div>
+      <h2>新しい FROST 攻撃により、Web サイトは SSD タイミングを介して開いたサイトやアプリを追跡できるようになる</h2>
+      <p class="summary">悪意のある Web サイトは、JavaScript と SSD のタイミングのみを使用して、ユーザーがどのサイトにアクセスし、どのアプリを開いたかを把握できます。 FROST と呼ばれるこの攻撃には、ネイティブ コードも拡張機能も必要ありま…</p>
+    </a>
+
+    <a class="card" href="https://blog.cloudflare.com/frontier-model-defense/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#f38020">Cloudflare</span>
+        <span class="date">06/09 06:00</span>
+      </div>
+      <h2>最先端のサイバーモデルからの防御: 顧客ゼロとしての Cloudflare のアーキテクチャ</h2>
+      <p class="summary">Project Glasswing に関する投稿の中で、パッチの速度よりも脆弱性に関するアーキテクチャの方が重要であると主張しました。ここではそのアーキテクチャがどのようなものかを見ていきます。</p>
     </a>
 
     <a class="card" href="https://www.darkreading.com/cyberattacks-data-breaches/silent-ransom-us-law-firms-extortion-attacks" target="_blank" rel="noopener">
@@ -85,15 +123,6 @@
       <p class="summary">新たに発見された重大なゼロデイ脆弱性が攻撃を受けています。 Qilin ランサムウェアの関連会社が少なくとも 1 件の事件で非難されています。</p>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/06/critical-check-point-vpn-flaw-exploited.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/08 19:47</span>
-      </div>
-      <h2>Check Point VPN の重大な欠陥が悪用され、IKEv1 セットアップでパスワードをバイパス</h2>
-      <p class="summary">チェック・ポイントは、非推奨の IKEv1 キー交換プロトコルを使用するように構成されているリモート アクセス VPN およびモバイル アクセスの展開に影響を与える重大な脆弱性の積極的な悪用について警告しました。</p>
-    </a>
-
     <a class="card" href="https://www.darkreading.com/cyberattacks-data-breaches/iran-signed-ceasefire-hackers" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">Dark Reading</span>
@@ -101,17 +130,6 @@
       </div>
       <h2>イランは停戦協定に署名したが、イランのハッカーは停戦に署名しなかった</h2>
       <p class="summary">ジュネーブ条約の延長は、停戦条件下でのサイバー戦争に制限を課し、国際紛争の大きな抜け穴を塞ぐ可能性がある。</p>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/06/ai-phishing-is-crushing-socs-with-alert.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/08 18:49</span>
-      </div>
-      <h2>AI フィッシングがアラート量で SOC を破壊: Tier 1 の過負荷を軽減する方法</h2>
-      <p class="summary">フィッシングは常に数字を競うゲームでした。 AI がそれを大量生産マシンに変えました。
-
-攻撃者は、説得力のある電子メール、偽のログイン ページ、カスタマイズされたルアーを数分で作成できるようになりました。洗練されたすべてのメッセージ広告</p>
     </a>
 
     <a class="card" href="https://www.darkreading.com/application-security/hades-campaign-pypi-shai-hulud" target="_blank" rel="noopener">
@@ -133,13 +151,12 @@
 ポスト AI ブランドを餌として: 脅威アクターの仕組み</p>
     </a>
 
-    <a class="card" href="https://blog.cloudflare.com/realtime-threat-intel-waf-rules/" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/inter/bis/20260609/20260609.html" target="_blank" rel="noopener">
       <div class="card-meta">
-        <span class="tag" style="background:#f38020">Cloudflare</span>
-        <span class="date">06/08 13:00</span>
+        <span class="tag" style="background:#c0392b">金融庁</span>
+        <span class="date"></span>
       </div>
-      <h2>Cloudflareの脅威インジケーターをリアルタイムのWAFルールに変える</h2>
-      <p class="summary">Cloudflare のお客様は、Cloudforce One 脅威インテリジェンスを WAF 内で直接使用して、高リスクのトラフィックをブロックできるようになりました。新しい cf.intel フィールドを使用することで、セキュリティ チ…</p>
+      <h2>国際関係,バーゼル銀行監督委員会による「ICTリスク管理に関する実務集」について公表しました。</h2>
     </a>
 
     <a class="card" href="https://www.fsa.go.jp/common/conference/danwa/index_kouen.html#commissioner" target="_blank" rel="noopener">
@@ -148,7 +165,6 @@
         <span class="date"></span>
       </div>
       <h2>講演等：金融庁</h2>
-      
     </a>
 
     <a class="card" href="https://www.fsa.go.jp/common/conference/minister/2026a/20260605-1.html" target="_blank" rel="noopener">
@@ -157,7 +173,6 @@
         <span class="date"></span>
       </div>
       <h2>記者会見,片山財務大臣兼内閣府特命担当大臣閣議後記者会見の概要（令和８年６月５日）について掲載しました。</h2>
-      
     </a>
 
     <a class="card" href="https://www.fsa.go.jp/choutatu/choutatu_j/nyusatu_menu.html" target="_blank" rel="noopener">
@@ -166,7 +181,6 @@
         <span class="date"></span>
       </div>
       <h2>調達,入札公告等を更新しました。</h2>
-      
     </a>
 
     <a class="card" href="https://www.fsa.go.jp/news/r7/20260612/20260612.html" target="_blank" rel="noopener">
@@ -175,16 +189,6 @@
         <span class="date"></span>
       </div>
       <h2>令和８年度行政事業レビュー（公開プロセス）の実施について公表しました。</h2>
-      
-    </a>
-
-    <a class="card" href="https://www.fsa.go.jp/policy/kachoukin/06.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#c0392b">金融庁</span>
-        <span class="date"></span>
-      </div>
-      <h2>その他,審判手続状況一覧を更新しました。</h2>
-      
     </a>
 
     <a class="card" href="https://www.cisa.gov/news-events/alerts/2026/06/08/cisa-adds-two-known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener">
@@ -250,7 +254,6 @@ CVE-2026-28318 SolarWinds Serv-U の制御されていないリソース消費</
         <span class="date"></span>
       </div>
       <h2>CrowdStrike と Zscaler が継続的 ID をゼロトラスト アクセスにもたらす</h2>
-      
     </a>
 
     <a class="card" href="https://www.crowdstrike.com/en-us/blog/three-principles-to-safely-scale-agentic-ai/" target="_blank" rel="noopener">
@@ -259,7 +262,6 @@ CVE-2026-28318 SolarWinds Serv-U の制御されていないリソース消費</
         <span class="date"></span>
       </div>
       <h2>Agentic AI を安全に拡張するための 3 つの原則</h2>
-      
     </a>
 
     <a class="card" href="https://www.crowdstrike.com/en-us/blog/iso-42001-2023-and-new-reality-of-cloud-ai-data-risk/" target="_blank" rel="noopener">
@@ -268,7 +270,6 @@ CVE-2026-28318 SolarWinds Serv-U の制御されていないリソース消費</
         <span class="date"></span>
       </div>
       <h2>ISO 42001:2023 とクラウド AI データ リスクの新たな現実</h2>
-      
     </a>
 
     <a class="card" href="https://www.crowdstrike.com/en-us/blog/how-to-stop-ai-driven-data-loss/" target="_blank" rel="noopener">
@@ -277,7 +278,6 @@ CVE-2026-28318 SolarWinds Serv-U の制御されていないリソース消費</
         <span class="date"></span>
       </div>
       <h2>AI によるデータ損失を防ぐ方法</h2>
-      
     </a>
 
     <a class="card" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-nvidia-bring-enterprise-grade-security-to-the-ai-factory/" target="_blank" rel="noopener">
@@ -286,7 +286,6 @@ CVE-2026-28318 SolarWinds Serv-U の制御されていないリソース消費</
         <span class="date"></span>
       </div>
       <h2>CrowdStrike が NVIDIA Vera BlueField-4 STX を使用して AI 工場にエンタープライズ グレードのセキュリティを導入</h2>
-      
     </a>
 
     <a class="card" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener">
@@ -295,7 +294,6 @@ CVE-2026-28318 SolarWinds Serv-U の制御されていないリソース消費</
         <span class="date"></span>
       </div>
       <h2>現実の AI の脅威: Web 上でのプロンプト インジェクションの現状</h2>
-      
     </a>
 
     <a class="card" href="http://security.googleblog.com/feeds/1469360228826887140/comments/default" target="_blank" rel="noopener">
@@ -304,7 +302,6 @@ CVE-2026-28318 SolarWinds Serv-U の制御されていないリソース消費</
         <span class="date"></span>
       </div>
       <h2>Pixel ベースバンドに Rust を導入する</h2>
-      
     </a>
 
     <a class="card" href="http://security.googleblog.com/feeds/3718049046001981559/comments/default" target="_blank" rel="noopener">
@@ -313,7 +310,6 @@ CVE-2026-28318 SolarWinds Serv-U の制御されていないリソース消費</
         <span class="date"></span>
       </div>
       <h2>デバイスにバインドされたセッション認証情報による Cookie の保護</h2>
-      
     </a>
 
     <a class="card" href="http://security.googleblog.com/feeds/7611943504123181983/comments/default" target="_blank" rel="noopener">
@@ -322,7 +318,6 @@ CVE-2026-28318 SolarWinds Serv-U の制御されていないリソース消費</
         <span class="date"></span>
       </div>
       <h2>間接的なプロンプト インジェクションを軽減するための Google Workspace の継続的なアプローチ</h2>
-      
     </a>
 
     <a class="card" href="http://security.googleblog.com/feeds/8477748289206662812/comments/default" target="_blank" rel="noopener">
@@ -331,7 +326,6 @@ CVE-2026-28318 SolarWinds Serv-U の制御されていないリソース消費</
         <span class="date"></span>
       </div>
       <h2>VRP 2025 年を振り返る</h2>
-      
     </a></div>
   <div class="sources">
     <details>
