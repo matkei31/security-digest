@@ -103,5 +103,9 @@
   "Check Point Security Gateway contains an improper authentication vulnerability in IKEv1 key exchange that could allow an unauthenticated remote attacker to bypass user authentication and establish a r": "Check Point Security Gateway には、IKEv1 キー交換に不適切な認証の脆弱性があり、認証されていないリモート攻撃者がユーザー認証をバイパスし、セキュリティ ゲートウェイを確立できる可能性があります。",
   "CISA Adds Two Known Exploited Vulnerabilities to Catalog": "CISA、悪用された既知の脆弱性 2 件をカタログに追加",
   "CISA has added two new vulnerabilities to its Known Exploited Vulnerabilities (KEV) Catalog, based on evidence of active exploitation.\n\nCVE-2026-42271 BerriAI LiteLLM Command Injection Vulnerability\nC": "CISA は、積極的な悪用の証拠に基づいて、既知の悪用された脆弱性 (KEV) カタログに 2 つの新しい脆弱性を追加しました。\n\nCVE-2026-42271 BerriAI LiteLLM コマンド インジェクションの脆弱性\nC",
-  "CrowdStrike and Zscaler Bring Continuous Identity to Zero Trust Access": "CrowdStrike と Zscaler が継続的 ID をゼロトラスト アクセスにもたらす"
+  "CrowdStrike and Zscaler Bring Continuous Identity to Zero Trust Access": "CrowdStrike と Zscaler が継続的 ID をゼロトラスト アクセスにもたらす",
+  "LiteLLM Flaw CVE-2026-42271 Exploited in the Wild, Chains to Unauthenticated RCE": "LiteLLM 欠陥 CVE-2026-42271 が実環境で悪用され、認証されていない RCE にチェーンされる",
+  "重要度: 高\n要約: CISA": "重要度: 高\n要約: CISA",
+  "重要度: 高\n要約: Linux": "重要度: 高\n要約: Linux",
+  "The financially motivated group is combining vishing, IT impersonation, and in-person office intrusions to steal data and extort victims.": "金銭目的のこのグループは、ビッシング、IT になりすまし、オフィスへの個人侵入を組み合わせて、データを盗み、被害者を脅迫しています。"
 }
