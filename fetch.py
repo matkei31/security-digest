@@ -39,7 +39,7 @@ RSS_FEEDS = [
 MAX_PER_FEED = 5
 DAYS_BACK    = 1
 
-MAX_AI_SUMMARIES = 3
+MAX_AI_SUMMARIES = 1
 GEMINI_MODEL = "gemini-2.5-flash"
 
 
@@ -316,6 +316,87 @@ def parse_ai_analysis(response_text):
     return None
 
 
+def extract_partial_field(response_text, field):
+    if not isinstance(response_text, str):
+        return ""
+
+    match = re.search(
+        rf'"{re.escape(field)}"\s*:\s*"((?:\\.|[^"])*)',
+        response_text,
+        re.DOTALL,
+    )
+    if not match:
+        return ""
+
+    value = match.group(1).strip()
+    try:
+        return json.loads(f'"{value}"').strip()
+    except json.JSONDecodeError:
+        return value.replace(r"\n", " ").replace(r"\"", '"').strip()
+
+
+def fallback_ai_analysis(response_text, source_text):
+    importance = extract_partial_field(response_text, "importance")
+    if importance not in ("高", "中", "低"):
+        importance_match = re.search(r"重要度\s*[:：]\s*([高中低])", response_text or "")
+        importance = importance_match.group(1) if importance_match else "中"
+
+    summary = extract_partial_field(response_text, "summary")
+    impact = extract_partial_field(response_text, "financial_impact")
+
+    source_fields = {}
+    for line in source_text.splitlines():
+        key, separator, value = line.partition(":")
+        if separator:
+            source_fields[key.strip()] = value.strip()
+
+    if not summary:
+        plain_response = re.sub(
+            r"^```(?:json)?|```$",
+            "",
+            (response_text or "").strip(),
+            flags=re.IGNORECASE,
+        ).strip()
+        if plain_response and not plain_response.startswith(("{", "[")):
+            summary = plain_response
+        else:
+            summary = source_fields.get("summary") or source_fields.get("title", "")
+    summary = re.sub(r"\s+", " ", strip_html(summary)).strip()[:120]
+    if not summary:
+        return None
+
+    if not impact:
+        impact = (
+            "金融機関への直接的な影響は情報不足のため判断できません。"
+            "関連製品、業務、委託先との接点確認が必要です。"
+        )
+
+    actions = []
+    actions_match = re.search(
+        r'"recommended_actions"\s*:\s*\[(.*)',
+        response_text or "",
+        re.DOTALL,
+    )
+    if actions_match:
+        actions = [
+            value.strip()
+            for value in re.findall(r'"((?:\\.|[^"])*)"', actions_match.group(1))
+            if value.strip()
+        ]
+    if not actions:
+        actions = [
+            "原文と公表元の最新情報を確認する",
+            "関連製品や委託先の利用有無を確認する",
+        ]
+
+    return normalize_ai_analysis({
+        "importance": importance,
+        "summary": summary,
+        "financial_impact": impact[:140],
+        "recommended_actions": actions[:3],
+    })
+
+
 def gemini_analyze(text):
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
@@ -348,21 +429,38 @@ def gemini_analyze(text):
         "generationConfig": {
             "temperature": 0.2,
             "maxOutputTokens": 800,
-            "responseMimeType": "application/json",
-            "responseSchema": {
+            "thinking_config": {
+                "thinking_budget": 0
+            },
+            "response_mime_type": "application/json",
+            "response_schema": {
                 "type": "OBJECT",
+                "propertyOrdering": [
+                    "importance",
+                    "summary",
+                    "financial_impact",
+                    "recommended_actions"
+                ],
                 "properties": {
                     "importance": {
                         "type": "STRING",
-                        "enum": ["高", "中", "低"]
+                        "enum": ["高", "中", "低"],
+                        "description": "金融機関にとっての対応優先度"
                     },
-                    "summary": {"type": "STRING"},
-                    "financial_impact": {"type": "STRING"},
+                    "summary": {
+                        "type": "STRING",
+                        "description": "ニュースの具体的な日本語要約"
+                    },
+                    "financial_impact": {
+                        "type": "STRING",
+                        "description": "金融機関のシステム、業務、委託先への影響"
+                    },
                     "recommended_actions": {
                         "type": "ARRAY",
                         "items": {"type": "STRING"},
                         "minItems": 1,
-                        "maxItems": 3
+                        "maxItems": 3,
+                        "description": "優先順の実務対応"
                     }
                 },
                 "required": [
@@ -375,7 +473,8 @@ def gemini_analyze(text):
         }
     }).encode("utf-8")
 
-    for attempt in range(2):
+    max_retries = 2
+    for attempt in range(max_retries + 1):
         req = urllib.request.Request(
             url,
             data=body,
@@ -396,18 +495,29 @@ def gemini_analyze(text):
                 return analysis
 
             text_length = len(response_text) if isinstance(response_text, str) else 0
+            fallback = fallback_ai_analysis(response_text, text)
+            if fallback:
+                print(
+                    f"[WARN] Gemini要約: JSON解析失敗 "
+                    f"(応答長: {text_length}文字)、部分応答から補完",
+                    file=sys.stderr,
+                )
+                return fallback
+
             print(
                 f"[WARN] Gemini要約: JSON解析失敗 (応答長: {text_length}文字)",
                 file=sys.stderr,
             )
             return None
         except urllib.error.HTTPError as e:
-            if e.code in (429, 503) and attempt == 0:
+            if e.code in (429, 503) and attempt < max_retries:
+                wait_seconds = 3 * (attempt + 1)
                 print(
-                    f"[WARN] Gemini要約: HTTP {e.code}、3秒後に1回再試行",
+                    f"[WARN] Gemini要約: HTTP {e.code}、"
+                    f"{wait_seconds}秒後に再試行 ({attempt + 1}/{max_retries})",
                     file=sys.stderr,
                 )
-                time.sleep(3)
+                time.sleep(wait_seconds)
                 continue
             print(f"[WARN] Gemini要約: HTTP {e.code}", file=sys.stderr)
             return None
