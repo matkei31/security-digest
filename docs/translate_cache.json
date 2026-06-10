@@ -153,5 +153,13 @@
   "Schneider Electric EcoStruxure Panel Server": "シュナイダーエレクトリック EcoStruxure パネル サーバー",
   "View CSAF\nSummary\nSchneider Electric is aware of its vulnerability in its EcoStruxure Panel Server offer. The EcoStruxure Panel Server is a high performance, modular gateway with enhanced cybersecurit": "CSAFを見る\n概要\nシュナイダー エレクトリックは、EcoStruxure パネル サーバー オファーに脆弱性があることを認識しています。 EcoStruxure パネル サーバーは、強化されたサイバーセキュリティを備えた高性能のモジュラー ゲートウェイです。",
   "Schneider Electric Modicon Network Managed Switches": "シュナイダーエレクトリック Modicon ネットワーク管理スイッチ",
-  "View CSAF\nSummary\nSchneider Electric is aware of a RADIUS protocol vulnerability affecting its Modicon Network Managed Switch product. The Modicon Network Managed Switch product provides connectivity ": "CSAFを見る\n概要\nシュナイダーエレクトリックは、同社の Modicon ネットワーク管理スイッチ製品に影響を与える RADIUS プロトコルの脆弱性を認識しています。 Modicon ネットワーク マネージド スイッチ製品は接続を提供します"
+  "View CSAF\nSummary\nSchneider Electric is aware of a RADIUS protocol vulnerability affecting its Modicon Network Managed Switch product. The Modicon Network Managed Switch product provides connectivity ": "CSAFを見る\n概要\nシュナイダーエレクトリックは、同社の Modicon ネットワーク管理スイッチ製品に影響を与える RADIUS プロトコルの脆弱性を認識しています。 Modicon ネットワーク マネージド スイッチ製品は接続を提供します",
+  "Microsoft Defender RoguePlanet Zero-Day Grants SYSTEM Access on Updated Windows": "Microsoft Defender RoguePlanet Zero-Day は、更新された Windows での SYSTEM アクセスを許可します",
+  "The anonymous security researcher going by the name Chaotic Eclipse (aka Nightmare-Eclipse) has released a proof-of-concept (PoC) exploit for yet another Microsoft Defender zero-day named RoguePlanet.": "Chaotic Eclipse (別名 Nightmare-Eclipse) という名前で活動する匿名のセキュリティ研究者が、RoguePlanet という別の Microsoft Defender ゼロデイの概念実証 (PoC) エクスプロイトをリリースしました。",
+  "Six Proto6 Vulnerabilities in protobuf.js Expose Node.js Apps to RCE and DoS": "protobuf.js の 6 つの Proto6 脆弱性により、Node.js アプリが RCE および DoS にさらされる",
+  "Cybersecurity researchers have flagged half a dozen vulnerabilities in protobuf.js, a JavaScript and TypeScript implementation of Protocol Buffers (Protobuf), that, if successfully exploited, could re": "サイバーセキュリティ研究者は、プロトコル バッファー (Protobuf) の JavaScript および TypeScript 実装である protobuf.js に 6 件の脆弱性があると報告しました。",
+  "Meta on Tuesday announced that it will use information shared by other businesses to personalize users' feed and responses from its artificial intelligence (AI) chatbot, expanding its scope beyond tar": "Metaは火曜日、他の企業が共有する情報を利用してユーザーのフィードと人工知能（AI）チャットボットからの応答をパーソナライズし、対象範囲をtarを超えて拡大すると発表した。",
+  "Blame AI: Patch Tuesday Hits Record 206 CVEs": "AI のせい: 火曜日のパッチで 206 件の CVE が記録に到達",
+  "Voluminous patch updates could soon be the norm, as artificial intelligence accelerates the speed and scale of vulnerability discovery.": "人工知能によって脆弱性発見の速度と規模が加速するため、大量のパッチ更新がすぐに標準になる可能性があります。",
+  "Microsoft Patch Tuesday for June 2026 — Snort rules and prominent vulnerabilities": "2026 年 6 月の Microsoft パッチ火曜日 — Snort ルールと顕著な脆弱性"
 }
