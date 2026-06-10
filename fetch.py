@@ -5,6 +5,7 @@ Security Digest — サイバーセキュリティニュースを収集してind
 
 import sys, json, datetime, time, re, os
 import urllib.request, urllib.parse
+import urllib.error
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
@@ -297,6 +298,24 @@ def normalize_ai_analysis(value):
     }
 
 
+def parse_ai_analysis(response_text):
+    if not isinstance(response_text, str):
+        return None
+
+    decoder = json.JSONDecoder()
+    for match in re.finditer(r"\{", response_text):
+        try:
+            value, _ = decoder.raw_decode(response_text[match.start():])
+        except json.JSONDecodeError:
+            continue
+
+        analysis = normalize_ai_analysis(value)
+        if analysis:
+            return analysis
+
+    return None
+
+
 def gemini_analyze(text):
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
@@ -328,7 +347,7 @@ def gemini_analyze(text):
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
             "temperature": 0.2,
-            "maxOutputTokens": 500,
+            "maxOutputTokens": 800,
             "responseMimeType": "application/json",
             "responseSchema": {
                 "type": "OBJECT",
@@ -356,23 +375,50 @@ def gemini_analyze(text):
         }
     }).encode("utf-8")
 
-    req = urllib.request.Request(
-        url,
-        data=body,
-        headers={"Content-Type": "application/json"}
-    )
+    for attempt in range(2):
+        req = urllib.request.Request(
+            url,
+            data=body,
+            headers={"Content-Type": "application/json"}
+        )
 
-    try:
-        with urllib.request.urlopen(req, timeout=30) as res:
-            data = json.loads(res.read())
-        response_text = data["candidates"][0]["content"]["parts"][0]["text"]
-        analysis = normalize_ai_analysis(json.loads(response_text))
-        if not analysis:
-            raise ValueError("GeminiのJSONに必要な項目がありません")
-        return analysis
-    except Exception as e:
-        print(f"[WARN] Gemini要約: {e}", file=sys.stderr)
-        return None
+        try:
+            with urllib.request.urlopen(req, timeout=30) as res:
+                data = json.loads(res.read())
+            parts = data["candidates"][0]["content"]["parts"]
+            response_text = "".join(
+                part.get("text", "")
+                for part in parts
+                if isinstance(part, dict)
+            )
+            analysis = parse_ai_analysis(response_text)
+            if analysis:
+                return analysis
+
+            text_length = len(response_text) if isinstance(response_text, str) else 0
+            print(
+                f"[WARN] Gemini要約: JSON解析失敗 (応答長: {text_length}文字)",
+                file=sys.stderr,
+            )
+            return None
+        except urllib.error.HTTPError as e:
+            if e.code in (429, 503) and attempt == 0:
+                print(
+                    f"[WARN] Gemini要約: HTTP {e.code}、3秒後に1回再試行",
+                    file=sys.stderr,
+                )
+                time.sleep(3)
+                continue
+            print(f"[WARN] Gemini要約: HTTP {e.code}", file=sys.stderr)
+            return None
+        except Exception as e:
+            print(
+                f"[WARN] Gemini要約: {type(e).__name__}: {e}",
+                file=sys.stderr,
+            )
+            return None
+
+    return None
 
 
 def enrich_with_ai(items):
