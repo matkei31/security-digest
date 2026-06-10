@@ -163,5 +163,7 @@
   "Voluminous patch updates could soon be the norm, as artificial intelligence accelerates the speed and scale of vulnerability discovery.": "人工知能によって脆弱性発見の速度と規模が加速するため、大量のパッチ更新がすぐに標準になる可能性があります。",
   "Microsoft Patch Tuesday for June 2026 — Snort rules and prominent vulnerabilities": "2026 年 6 月の Microsoft パッチ火曜日 — Snort ルールと顕著な脆弱性",
   "CrowdStrike 2026 Technology Threat Landscape Report: China&rsquo;s Ambitions Fuel Attacks": "CrowdStrike 2026 テクノロジー脅威状況レポート: 中国の野心により攻撃が加速",
-  "June 2026 Patch Tuesday: Microsoft Patches 206 Vulnerabilities Including Three Publicly Disclosed Zero-Days": "2026 年 6 月のパッチ火曜日: Microsoft は、公開された 3 つのゼロデイを含む 206 件の脆弱性をパッチします"
+  "June 2026 Patch Tuesday: Microsoft Patches 206 Vulnerabilities Including Three Publicly Disclosed Zero-Days": "2026 年 6 月のパッチ火曜日: Microsoft は、公開された 3 つのゼロデイを含む 206 件の脆弱性をパッチします",
+  "ServiceNow Flaw Exploited to Gain Unauthorized Access to Customer Instances": "ServiceNow の欠陥が悪用され、顧客インスタンスへの不正アクセスが取得される",
+  "ServiceNow has warned about a security incident in which unknown threat actors exploited a flaw to obtain deeper unauthorized access to susceptible instances.\n\n\"On June 5, 2026, ServiceNow applied a s": "ServiceNow は、未知の攻撃者が脆弱性を悪用して影響を受けやすいインスタンスへのより深い不正アクセスを取得したセキュリティ インシデントについて警告しました。\n\n「2026 年 6 月 5 日に、ServiceNow は"
 }
