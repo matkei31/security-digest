@@ -43,16 +43,16 @@
 <body>
   <header>
     <h1>🔐 Security Digest</h1>
-    <div class="sub">最終更新: 2026年06月11日 23:20</div>
-    <div class="count">32 件</div>
+    <div class="sub">最終更新: 2026年06月12日 23:16</div>
+    <div class="count">30 件</div>
   </header>
   <div class="cards">
-    <a class="card" href="https://thehackernews.com/2026/06/shinyhunters-exploits-oracle-peoplesoft.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/06/over-400-arch-linux-aur-packages.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/12 01:59</span>
+        <span class="date">06/13 01:03</span>
       </div>
-      <h2>ShinyHunters が Oracle PeopleSoft Zero-Day (CVE-2026-35273) を悪用して大学に侵入</h2>
+      <h2>Infostealer と eBPF ルートキットを展開するために 400 以上の Arch Linux AUR パッケージがハイジャックされる</h2>
       <div class="ai-analysis">
         <div class="importance-row">
           <span class="field-label">重要度</span>
@@ -60,17 +60,116 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>ShinyHuntersがOracle PeopleSoftの未修正の脆弱性(CVE-2026-35273)を悪用し、大学のシステムに侵入してデータを窃取し、身代金を要求しました。活動期間は5月27日から6月9日です。</p>
+          <p>The Hacker Newsが、Arch LinuxのコミュニティパッケージリポジトリAURで400以上のパッケージが乗っ取られ、認証情報窃取マルウェアとeBPFルートキットをインストールするよう改ざんされたと報じました。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>Oracle PeopleSoftを利用している場合、システムへの不正アクセス、機密情報漏えい、業務停止のリスクがあります。特に人事・財務関連システムへの影響が懸念されます。委託先での利用状況も確認が必要です。</p>
+          <p>Arch Linuxを開発環境や一部のサーバーで利用している場合、開発者の認証情報漏えいやシステムへの不正アクセスリスクがあります。直接的な金融サービスへの影響は低いですが、開発環境のセキュリティ侵害は潜在的な脅威です。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>自組織および委託先におけるOracle PeopleSoftの利用有無とバージョンを確認する。</li><li>Oracle PeopleSoftを利用している場合、Oracleからの公式パッチ適用状況を確認し、速やかに適用を検討する。</li><li>PeopleSoft関連システムへの不審なアクセスやデータ流出の痕跡がないか、ログを調査する。</li></ul>
+          <ul><li>Arch Linux環境の利用有無を確認し、AURパッケージを利用している場合は、影響を受けたパッケージリストと導入状況を照合する。</li><li>AURパッケージを利用しているArch Linux環境について、マルウェア感染の有無を調査し、必要に応じてシステムの再構築や認証情報の変更を実施する。</li><li>開発環境やサーバーにおけるOSの利用状況を棚卸し、コミュニティリポジトリからのパッケージ導入に関するセキュリティポリシーを再確認する。</li></ul>
         </section>
       </div>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/06/google-sues-chinese-smishing-network.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">06/13 00:29</span>
+      </div>
+      <h2>Google、Gemini AIをフィッシングに使用した疑いで中国のスミッシングネットワークを提訴</h2>
+      <div class="ai-analysis">
+        <div class="importance-row">
+          <span class="field-label">重要度</span>
+          <span class="importance importance-medium">中</span>
+        </div>
+        <section class="analysis-field">
+          <h3>要約</h3>
+          <p>Googleは、中国のサイバー犯罪ネットワークがGemini AIを利用して米国居住者を標的としたフィッシングSMSを送信したとして、法的措置を講じたと公表しました。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>金融機関への影響</h3>
+          <p>金融機関の顧客がGemini AIを悪用したフィッシングSMSの標的となる可能性があります。これにより、顧客情報の詐取や不正取引のリスクが高まり、金融機関の信頼性低下や問い合わせ増加に繋がる可能性があります。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>推奨アクション</h3>
+          <ul><li>顧客に対し、AIを悪用したフィッシング詐欺の手口に関する注意喚起を強化し、不審なSMSへの警戒を促す。</li><li>顧客からの不審なSMSに関する問い合わせ増加に備え、対応体制を確認し、FAQや対応マニュアルを整備する。</li><li>自社システムや委託先におけるAI利用状況を確認し、フィッシング詐欺への悪用リスクがないか評価する。</li></ul>
+        </section>
+      </div>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/06/china-linked-hackers-backdoored-linux.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">06/12 23:47</span>
+      </div>
+      <h2>中国関連のハッカー、バックドアの Linux ログイン ソフトウェアを 10 年近く隠し続ける</h2>
+      <div class="ai-analysis">
+        <div class="importance-row">
+          <span class="field-label">重要度</span>
+          <span class="importance importance-high">高</span>
+        </div>
+        <section class="analysis-field">
+          <h3>要約</h3>
+          <p>中国関連ハッカー集団がLinuxのログインシステム（PAM、OpenSSH）に約10年間バックドアを仕込み、通常の監視では発見困難な状態であったとSygniaが公表しました。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>金融機関への影響</h3>
+          <p>Linuxサーバーを利用するシステム（認証基盤、勘定系、情報系、ネットワーク機器等）は不正ログインや情報窃取のリスクがあります。特に委託先のLinux環境も影響を受ける可能性があります。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>推奨アクション</h3>
+          <ul><li>LinuxサーバーのPAMおよびOpenSSH設定を監査し、不審な変更やバックドアの痕跡がないか緊急で確認してください。</li><li>Linuxサーバーのログインログおよびシステムログを詳細に分析し、不審なアクセスや活動がないか調査してください。</li><li>委託先が管理するLinux環境についても、本脆弱性の影響と対応状況を確認するよう要請してください。</li></ul>
+        </section>
+      </div>
+    </a>
+
+    <a class="card" href="https://www.darkreading.com/vulnerabilities-threats/shinyhunters-oracle-zero-day-higher-ed" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">06/12 20:26</span>
+      </div>
+      <h2>ShinyHunters が Oracle Zero-Day を使用して高等教育を猛威を振るう</h2>
+      <p class="summary">Oracle の ERP ソフトウェアの重大なバグは米国の大学に大きな影響を及ぼし、ハッカーは大量のデータを盗むことでそれを利用しました。</p>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/06/agentjacking-attack-tricks-ai-coding.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">06/12 17:34</span>
+      </div>
+      <h2>エージェントジャッキング攻撃により AI コーディング エージェントが騙されて悪意のあるコードを実行</h2>
+      <p class="summary">サイバーセキュリティ研究者らは、人工知能（AI）コーディングエージェントを騙して開発者のマシン上で任意のコードを実行させることができる新しい種類の攻撃であると説明した。
+
+年齢というもの</p>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/06/rethinking-mdr-as-attackers-and.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">06/12 16:30</span>
+      </div>
+      <h2>攻撃者と防御者が AI を活用する中で MDR を再考する</h2>
+      <p class="summary">過去 10 年間のほとんどにおいて、管理された検出と対応が実際の問題に対する答えでした。セキュリティ チームは 24 時間体制でスタッフを配置できず、十分なアナリストを雇うことができず、他の人が必要でした。</p>
+    </a>
+
+    <a class="card" href="https://www.darkreading.com/vulnerabilities-threats/claude-fable-5-doesnt-change-mythos-security-story" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">06/12 13:01</span>
+      </div>
+      <h2>クロード寓話5は神話のセキュリティストーリーを変えない</h2>
+      <p class="summary">落ち着いてください: Mythos 5 は Mythos Preview のアップグレードですが、Fable 5 は「一般的な使用に安全に作られた」Mythos であると Anthropic 氏は説明しました。</p>
+    </a>
+
+    <a class="card" href="https://blog.cloudflare.com/scaling-security-scans/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#f38020">Cloudflare</span>
+        <span class="date">06/12 13:00</span>
+      </div>
+      <h2>セキュリティ インサイトのスケーリング: グローバル スキャン容量の 10 倍の増加をどのように達成したか</h2>
+      <p class="summary">Cloudflare Security Insights システムは現在、1 秒あたり 120 を超えるスキャンを処理し、すべての顧客に頻繁に洞察を提供します。 Kafka コンシューマー、Postgres クエリ、API を最適化すること…</p>
     </a>
 
     <a class="card" href="https://www.darkreading.com/cybersecurity-analytics/phishing-volume-down-20-risk-rising" target="_blank" rel="noopener">
@@ -79,176 +178,67 @@
         <span class="date">06/12 00:58</span>
       </div>
       <h2>フィッシング攻撃の量は 20% 減少したが、リスクは依然として上昇</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-medium">中</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>Dark Readingが、フィッシング攻撃の総量は20%減少したが、AI活用により攻撃の質が向上し、リスクは上昇していると報じました。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>金融機関の顧客や従業員を狙ったフィッシング詐欺の巧妙化により、不正送金や情報漏えいのリスクが高まります。特にAIによる偽装は、既存の検知システムをすり抜ける可能性があります。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>従業員向けにAIを活用した最新のフィッシング手口に関する注意喚起と教育を強化する。</li><li>メールセキュリティシステムの設定を見直し、AI生成コンテンツの検知機能の有無を確認・強化する。</li><li>顧客に対し、フィッシング詐欺の手口が巧妙化している旨を注意喚起し、不審な連絡への警戒を促す。</li></ul>
-        </section>
-      </div>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/06/new-attacks-trick-openclaw-ai-agent.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/11 23:16</span>
-      </div>
-      <h2>新たな攻撃により OpenClaw AI エージェントがだましてコードを実行し秘密が漏洩</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-medium">中</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>The Hacker Newsが、人気AIエージェントOpenClawが通常の入力で攻撃者制御コード実行や機密情報漏えいを引き起こす新たな攻撃手法が確認されたと報じました。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>OpenClawを自行システムや委託先が利用している場合、機密情報漏えいや不正なシステム操作のリスクがあります。AIを活用した業務プロセスや顧客対応への影響を確認する必要があります。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>OpenClawの利用状況（自行システム、委託先）を調査し、利用がある場合は速やかに脆弱性の有無と対策状況を確認する。</li><li>OpenClawを利用している場合、不審な入力がないかログ監視を強化し、異常を検知した際の対応手順を確認する。</li><li>AIエージェントの利用に関するセキュリティガイドラインを見直し、安全な利用方法について周知徹底する。</li></ul>
-        </section>
-      </div>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/06/new-greatxml-exploit-bypasses-windows.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/11 23:13</span>
-      </div>
-      <h2>新しい GreatXML エクスプロイトは、回復パーティション XML ファイルを介して Windows BitLocker をバイパスします</h2>
-      <p class="summary">セキュリティ研究者の Chaotic Eclipse (別名 Nightmare-Eclipse および MSNightmare) は、Microsoft Defender のエクスプロイトを公開した翌日に、GreatXML と呼ばれる新し…</p>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/06/the-gentlemen-ransomware-claims-478.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/11 22:20</span>
-      </div>
-      <h2>ジェントルメン ランサムウェアは 478 人の被害者を発表、ワームのように拡散する可能性がある</h2>
-      <p class="summary">The Gentlemen の活動に関する新たな分析により、金銭目的の脅威グループが当初、二重恐喝攻撃を実行する関連会社として活動していたことが明らかになりました。</p>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/06/cybersecurity-stars-awards-2026-winners.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/11 18:56</span>
-      </div>
-      <h2>Cyber​​security Stars Awards 2026: 95 部門の受賞者を発表</h2>
-      <p class="summary">優れたセキュリティ作業のほとんどは、設計上目に見えません。今日は例外です。
-
-2026 年の Cyber​​security Stars Awards の受賞者は、4 つの主要な賞カテゴリの 95 のサブカテゴリにわたって発表されます。
-
-…</p>
-    </a>
-
-    <a class="card" href="https://www.darkreading.com/vulnerabilities-threats/max-severity-ivanti-sentry-flaw-exploited-24-hours" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/11 18:43</span>
-      </div>
-      <h2>最大重大度の Ivanti 欠陥が公開から 24 時間後に悪用される</h2>
-      <p class="summary">初期の手口では、攻撃者が Ivanti の資産状況を事前に計画し、エクスプロイトが公開されると迅速に行動した可能性が高いことを示唆しています。</p>
-    </a>
-
-    <a class="card" href="https://blog.talosintelligence.com/a-tale-of-two-eras/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
-        <span class="date">06/11 18:00</span>
-      </div>
-      <h2>2つの時代の物語</h2>
-      <p class="summary">今週のニュースレターで、エイミーは、デジタル プライバシーをオープン チャンネルに残しておくべきではない理由についての楽しい授業に触発されて、子どもの頃のハイテクおもちゃを思い出します。</p>
-    </a>
-
-    <a class="card" href="https://www.darkreading.com/cybersecurity-operations/segmentation-works-for-ot-if-operators-are-paying-attention" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/11 14:51</span>
-      </div>
-      <h2>オペレータが注意を払っていれば、OT にとってセグメンテーションは機能します</h2>
-      <p class="summary">運用テクノロジーのセキュリティは依然として困難であり、ベスト プラクティスの推奨事項さえも不十分です。</p>
-    </a>
-
-    <a class="card" href="https://cloud.google.com/blog/topics/threat-intelligence/shinyhunters-targets-education-sector-oracle-exploit/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#e67e22">Mandiant</span>
-        <span class="date">06/11 14:00</span>
-      </div>
-      <h2>ShinyHunters が Oracle PeopleSoft エクスプロイトで教育セクターを標的に</h2>
-      <p class="summary">はじめに
-Mandiant と Google Threat Intelligence Group (GTIG) は、Oracle PeopleSoft アプリケーションをターゲットとした UNC6240 (ShinyHunters) に起因…</p>
-    </a>
-
-    <a class="card" href="https://www.darkreading.com/cyberattacks-data-breaches/chinese-korean-threat-groups-asia-pacific-success" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/11 00:01</span>
-      </div>
-      <h2>中国と北朝鮮の脅威グループはアジア太平洋での成功を基盤に構築</h2>
-      <p class="summary">北朝鮮の国内総生産（GDP）は、金融会社やその他の企業を標的とする国家支援のサイバー犯罪組織の存在もあり、成長している。</p>
+      <p class="summary">ハッカーは量より質を重視しており、AI を使用してフィッシング攻撃を増やすのではなく、フィッシング攻撃を強化しています。</p>
     </a>
 
     <a class="card" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#e74c3c">CISA KEV</span>
-        <span class="date">06/11 00:00</span>
+        <span class="date">06/12 00:00</span>
       </div>
-      <h2>CVE-2026-10520 — Ivanti Sentry OS コマンド インジェクションの脆弱性</h2>
-      <p class="summary">Ivanti Sentry (旧称 MobileIron Sentry) には OS コマンド インジェクションの脆弱性があり、認証されていないリモート ユーザーがルート レベルのリモート コードを実行できる可能性があります。このヴァル</p>
+      <h2>CVE-2026-35273 — Oracle PeopleSoft Enterprise PeopleTools に重要な機能の脆弱性に対する認証が欠落している</h2>
+      <p class="summary">Oracle PeopleSoft Enterprise PeopleToolsには、重要な機能の脆弱性に対する認証が欠落しており、認証されていない攻撃者がPeopleSoft Enterpriseを乗っ取る可能性があります。</p>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/news/r7/singi/20260611.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/news/r7/ginkou/20260612.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
-      <h2>「ベンチャーキャピタルに関する有識者会議」（第４回）の開催について公表しました。</h2>
+      <h2>ウリ信用組合に対する行政処分について公表しました。</h2>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/common/conference/minister/2026a/20260609-1.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/status/torihikikibo/index.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
-      <h2>記者会見,片山財務大臣兼内閣府特命担当大臣閣議後記者会見の概要（令和８年６月９日）について掲載しました。</h2>
+      <h2>取引規模の届出（店頭デリバティブ取引等の規制に関する内閣府令第２条の２）について公表しました。</h2>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/inter/etc/20260610/20260610.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/news/r7/ginkou/20260612/20260612.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
-      <h2>国際関係,ウクライナ国家証券・株式市場委員会との協力覚書への署名について公表しました。</h2>
+      <h2>「銀行法施行規則等の一部を改正する内閣府令」等の公布及びパブリックコメントの結果等について公表しました。</h2>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/common/ronten/index.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/news/r7/shouken/20260612.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
-      <h2>その他,令和８年４月に開催された業界団体との意見交換会において、金融庁が提起した主な論点を公表しました。</h2>
+      <h2>キャピタル・パートナーズ証券株式会社ほか１社に対する行政処分について公表しました。</h2>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/news/r7/ginkou/20260610-2/20260610.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/choutatu/choutatu_j/nyusatu_menu.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
-      <h2>主要行等の令和８年３月期決算の概要について公表しました。</h2>
+      <h2>調達,入札公告等を更新しました。</h2>
+    </a>
+
+    <a class="card" href="https://www.cisa.gov/news-events/alerts/2026/06/12/cisa-adds-one-known-exploited-vulnerability-catalog" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#1e8449">CISA</span>
+        <span class="date"></span>
+      </div>
+      <h2>CISA、悪用された既知の脆弱性 1 つをカタログに追加</h2>
+      <p class="summary">CISA は、積極的な悪用の証拠に基づいて、悪用された既知の脆弱性 (KEV) カタログに新しい脆弱性を 1 つ追加しました。
+
+CVE-2026-35273 Oracle PeopleSoft Enterprise PeopleTools…</p>
     </a>
 
     <a class="card" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-162-01" target="_blank" rel="noopener">
@@ -297,15 +287,12 @@ CVE-2026-10520 Ivanti Sentry OS コマンド インジェクションの脆弱�
 T</p>
     </a>
 
-    <a class="card" href="https://www.cisa.gov/news-events/alerts/2026/06/09/cisa-adds-three-known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener">
+    <a class="card" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-leads-2026-frost-radar-cloud-runtime-security/" target="_blank" rel="noopener">
       <div class="card-meta">
-        <span class="tag" style="background:#1e8449">CISA</span>
+        <span class="tag" style="background:#cc0000">CrowdStrike</span>
         <span class="date"></span>
       </div>
-      <h2>CISA、悪用された既知の脆弱性 3 件をカタログに追加</h2>
-      <p class="summary">CISA は、積極的な悪用の証拠に基づいて、既知の悪用された脆弱性 (KEV) カタログに 3 つの新しい脆弱性を追加しました。
-
-CVE-2026-7473 Arista 拡張可能オペレーティング システムが不完全な Co</p>
+      <h2>CrowdStrike が 2026 Frost Radar™: クラウドおよびアプリケーション ランタイム セキュリティでイノベーションと成長のリーダーに選ばれました</h2>
     </a>
 
     <a class="card" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-expands-identity-leadership-with-openid-and-idpro/" target="_blank" rel="noopener">
@@ -338,14 +325,6 @@ CVE-2026-7473 Arista 拡張可能オペレーティング システムが不完�
         <span class="date"></span>
       </div>
       <h2>CrowdStrike と Zscaler が継続的 ID をゼロトラスト アクセスにもたらす</h2>
-    </a>
-
-    <a class="card" href="https://www.crowdstrike.com/en-us/blog/three-principles-to-safely-scale-agentic-ai/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#cc0000">CrowdStrike</span>
-        <span class="date"></span>
-      </div>
-      <h2>Agentic AI を安全に拡張するための 3 つの原則</h2>
     </a>
 
     <a class="card" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener">
