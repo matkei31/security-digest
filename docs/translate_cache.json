@@ -242,5 +242,10 @@
   "CVE-2026-35273 — Oracle PeopleSoft Enterprise PeopleTools Missing Authentication for Critical Function Vulnerability": "CVE-2026-35273 — Oracle PeopleSoft Enterprise PeopleTools に重要な機能の脆弱性に対する認証が欠落している",
   "Oracle PeopleSoft Enterprise PeopleTools contains a missing authentication for critical function vulnerability which could allow an unauthenticated attacker to obtain takeover of PeopleSoft Enterprise": "Oracle PeopleSoft Enterprise PeopleToolsには、重要な機能の脆弱性に対する認証が欠落しており、認証されていない攻撃者がPeopleSoft Enterpriseを乗っ取る可能性があります。",
   "CISA has added one new vulnerability to its Known Exploited Vulnerabilities (KEV) Catalog, based on evidence of active exploitation.\n\nCVE-2026-35273 Oracle PeopleSoft Enterprise PeopleTools Missing Au": "CISA は、積極的な悪用の証拠に基づいて、悪用された既知の脆弱性 (KEV) カタログに新しい脆弱性を 1 つ追加しました。\n\nCVE-2026-35273 Oracle PeopleSoft Enterprise PeopleTools に Au がありません",
-  "CrowdStrike Named an Innovation and Growth Leader in the 2026 Frost Radar&trade;: Cloud and Application Runtime Security": "CrowdStrike が 2026 Frost Radar™: クラウドおよびアプリケーション ランタイム セキュリティでイノベーションと成長のリーダーに選ばれました"
+  "CrowdStrike Named an Innovation and Growth Leader in the 2026 Frost Radar&trade;: Cloud and Application Runtime Security": "CrowdStrike が 2026 Frost Radar™: クラウドおよびアプリケーション ランタイム セキュリティでイノベーションと成長のリーダーに選ばれました",
+  "Critical Splunk Enterprise Flaw Lets Attackers Run Code Without Authentication": "Splunk Enterprise の重大な欠陥により、攻撃者は認証なしでコードを実行できる",
+  "Splunk has released security updates to address a critical security flaw in Splunk Enterprise that could be exploited to conduct unauthenticated file operations and even remote code execution.\n\nThe vu": "Splunk は、認証されていないファイル操作やリモート コード実行に悪用される可能性がある Splunk Enterprise の重大なセキュリティ欠陥に対処するセキュリティ アップデートをリリースしました。\n\nヴー",
+  "U.S. Orders Anthropic to Suspend Fable 5 and Mythos 5 Access for Foreign Nationals": "米国、Anthropicに外国人のFable 5とMythos 5へのアクセスを一時停止するよう命令",
+  "Anthropic said on Friday it will \"abruptly disable\" its most advanced artificial intelligence (AI) models, Claude Fable 5 and Mythos 5, for all users after the U.S. government ordered it to suspend ac": "Anthropicは金曜日、米国政府がAC停止を命じたことを受けて、同社の最新人工知能（AI）モデルであるClaude Fable 5とMythos 5を全ユーザーに対して「突然無効化」すると発表した。",
+  "Why AI Projects Stall and How CIOs Can Respond": "AI プロジェクトが停滞する理由と CIO の対応方法"
 }
