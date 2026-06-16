@@ -43,16 +43,16 @@
 <body>
   <header>
     <h1>🔐 Security Digest</h1>
-    <div class="sub">最終更新: 2026年06月15日 23:44</div>
-    <div class="count">35 件</div>
+    <div class="sub">最終更新: 2026年06月16日 23:23</div>
+    <div class="count">27 件</div>
   </header>
   <div class="cards">
-    <a class="card" href="https://thehackernews.com/2026/06/chinese-hackers-abused-google-workspace.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/06/google-vertex-ai-sdk-flaw-let-attackers.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/16 01:14</span>
+        <span class="date">06/17 00:35</span>
       </div>
-      <h2>中国のハッカーが Google Workspace のルールを悪用して研究メールや防衛メールを盗む</h2>
+      <h2>Google Vertex AI SDK の欠陥により、攻撃者がバケット スクワッティングを介してモデルのアップロードをハイジャックできる</h2>
       <div class="ai-analysis">
         <div class="importance-row">
           <span class="field-label">重要度</span>
@@ -60,51 +60,25 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>中国関連のハッカー集団が、北米の医療・学術・軍事研究機関のREDCapサーバーのバックドアを悪用し、Google Workspaceのルールを不正に変更して機密メールを窃取しました。</p>
+          <p>Palo Alto Networks Unit 42がGoogle Cloud Vertex AI SDK for Pythonの脆弱性を発見し、攻撃者が被害者のMLモデルアップロードを乗っ取り、Googleのインフラ内でコードを実行できることを公表しました。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>Google Workspaceを利用している場合、メールの転送ルールが不正に変更され、機密情報が外部に流出するリスクがあります。REDCapを利用している場合は、システムへの不正侵入の可能性も考慮し、委託先を含めたセキュリティ状況の確認が必要です。</p>
+          <p>Google Cloud Vertex AIを利用している金融機関は、MLモデルのアップロードプロセスにおいて、第三者によるコード実行リスクに晒される可能性があります。システム、データ、およびサービス提供への影響を確認する必要があります。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>Google Workspaceのメール転送ルール設定を監査し、不審なルールがないか確認する。</li><li>REDCapサーバーの脆弱性診断とログ分析を実施し、不正アクセスの痕跡がないか調査する。</li><li>委託先がGoogle WorkspaceやREDCapを利用している場合、同様のセキュリティ対策状況を確認する。</li></ul>
+          <ul><li>Google Cloud Vertex AI SDK for Pythonの利用状況を確認し、関連するシステムやサービスを特定する。</li><li>Googleからの公式パッチや推奨される対策が公開されていないか、最新情報を継続的に監視する。</li><li>Vertex AIを利用したMLモデルのアップロードプロセスにおけるセキュリティ設定とアクセス制御を再確認する。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/06/north-korean-hackers-are-turning.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/06/clickfix-campaigns-expand-malware.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/16 01:02</span>
+        <span class="date">06/16 23:11</span>
       </div>
-      <h2>北朝鮮のハッカーが開発ツールをマルウェア配信チャネルに変えている</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-medium">中</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>Proofpointが、北朝鮮のハッカー集団「Contagious Interview」が開発者向けツールを悪用し、採用やコードレビューを装ったフィッシングキャンペーンを展開していると公表しました。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>金融機関の開発部門やIT部門が標的となる可能性があり、不正な開発ツールやコードレビューを装った攻撃により、システムへの不正アクセスや情報漏えいのリスクが高まります。委託先の開発会社も同様のリスクに晒されます。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>開発者やIT部門に対し、採用やコードレビューを装った不審なメールやツールの利用に関する注意喚起と教育を実施する。</li><li>開発環境や利用ツールについて、セキュリティ部門と連携し、不正な改ざんや導入がないか定期的な棚卸しと監視を強化する。</li><li>委託先の開発会社に対し、本攻撃手法に関する情報共有と、セキュリティ対策状況の確認を依頼する。</li></ul>
-        </section>
-      </div>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/06/litellm-vulnerability-chain-lets-low.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/15 22:09</span>
-      </div>
-      <h2>LiteLLM の脆弱性チェーンにより、権限の低いユーザーが AI ゲートウェイ サーバーを乗っ取ることができる</h2>
+      <h2>ClickFix キャンペーン、新しいローダーと偽のアップデートルアーでマルウェア配信を拡大</h2>
       <div class="ai-analysis">
         <div class="importance-row">
           <span class="field-label">重要度</span>
@@ -112,130 +86,98 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>Obsidian Securityが、オープンソースのAIゲートウェイ「LiteLLM」の脆弱性チェーンを公表しました。これにより、低権限ユーザーが管理者権限を取得し、サーバー上でコードを実行できる可能性があります。</p>
+          <p>サイバーセキュリティ研究者が、ClickFixキャンペーンがBabaDeda Loader、Lorem Ipsum Loader、Potemkinという3つの新しいマルウェアローダーを配布していると報告しました。特にBabaDeda Loaderは金融機関を標的としています。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>LiteLLMを利用している場合、AIゲートウェイサーバーが乗っ取られ、保持しているプロバイダーキーや機密情報が漏洩するリスクがあります。これにより、不正取引やシステム停止、顧客情報漏洩に繋がる可能性があります。また、委託先がLiteLLMを利用している場合も同様のリスクがあります。</p>
+          <p>BabaDeda Loaderは金融機関を標的としているため、顧客情報漏えい、システム停止、不正取引のリスクがあります。特にインターネットに接続されたシステムや、従業員の利用する端末が影響を受ける可能性があります。委託先のセキュリティ対策も確認が必要です。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>LiteLLMの利用有無を確認し、利用している場合は直ちに最新バージョンへのアップデートを検討してください。</li><li>LiteLLMを利用しているシステムについて、アクセスログや認証ログを監視し、不審なアクティビティがないか確認してください。</li><li>委託先がLiteLLMを利用しているか確認し、脆弱性への対応状況について情報収集と状況確認を行ってください。</li></ul>
+          <ul><li>BabaDeda Loaderに関連するIOC（Indicator of Compromise）情報を確認し、自社システム内での感染有無を緊急で調査してください。</li><li>従業員に対し、不審なメールや偽のアップデート通知に対する注意喚起とセキュリティ教育を強化してください。</li><li>セキュリティ監視体制を強化し、不審な通信や挙動を早期に検知できるようログ分析を徹底してください。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/06/one-click-microsoft-365-copilot-flaw.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/06/new-rokarolla-android-malware-steals.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/15 20:39</span>
+        <span class="date">06/16 18:40</span>
       </div>
-      <h2>ワンクリック Microsoft 365 Copilot の脆弱性により、攻撃者は電子メール、ファイル、MFA コードを盗むことができた可能性がある</h2>
-      <p class="summary">信頼された Microsoft リンクを 1 回クリックするだけで、攻撃者が Microsoft 365 Copilot Enterprise Search からメール、カレンダーの詳細、インデックス付きファイルを取得できる可能性があります…</p>
+      <h2>新しい Rokarolla Android マルウェアが PIN、SMS コード、暗号ウォレット資金を盗む</h2>
+      <div class="ai-analysis">
+        <div class="importance-row">
+          <span class="field-label">重要度</span>
+          <span class="importance importance-high">高</span>
+        </div>
+        <section class="analysis-field">
+          <h3>要約</h3>
+          <p>Zimperiumの研究者が、Androidバンキングトロジャン「Rokarolla」を発見。217の銀行・仮想通貨アプリを標的とし、PIN、SMSコード、仮想通貨ウォレットの資金を窃取する。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>金融機関への影響</h3>
+          <p>顧客が利用するモバイルバンキングアプリや仮想通貨アプリが標的となるため、顧客資産の不正送金や情報漏えいのリスクがある。顧客からの問い合わせ増加や信頼失墜にも繋がり得る。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>推奨アクション</h3>
+          <ul><li>顧客に対し、不審なアプリのインストールやリンクのクリックを避けるよう注意喚起を行う。</li><li>モバイルバンキングアプリのセキュリティを再確認し、多要素認証の利用を推奨する。</li><li>不正送金や情報漏えいに関する監視体制を強化し、早期検知・対応に努める。</li></ul>
+        </section>
+      </div>
     </a>
 
-    <a class="card" href="https://www.darkreading.com/application-security/copilot-searchleak-attack-1-click-data-theft" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/15 19:27</span>
-      </div>
-      <h2>Copilot の「SearchLeak」攻撃により 1 クリックでデータ窃盗が可能に</h2>
-      <p class="summary">この重要な 3 段階の攻撃には現在パッチが適用されていますが、これは隠し URL やその他の変数を使用する AI プロンプトインジェクションの問題の新しいグループの一部です。</p>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/06/weekly-recap-chrome-0-day-unifi.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/06/survey-94-of-incidents-involve.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/15 19:19</span>
+        <span class="date">06/16 17:00</span>
       </div>
-      <h2>⚡ 毎週の要約: Chrome ゼロデイ、UniFi エクスプロイト、macOS スティーラー、VPN の欠陥など</h2>
-      <p class="summary">また物が壊れた。映画的なやり方ではありません。古いツールが露出したままになっていました。放棄されたパッケージが悪用されました。非推奨の機能がまだ本番環境で実行されていました。
-
-今週は、同じレッスンが新しい形で行われます: フィッシング</p>
+      <h2>調査: インシデントの 94% には匿名化されたインフラストラクチャが関係しています。チームは依然として反応的</h2>
+      <p class="summary">セキュリティ チームは、かつてないほど多くの IP データを自由に使えるようになりました。アナリストは毎日、拡大するエコシステムからエンリッチメント フィード、地理位置情報データ、評判スコア、テレメトリ、脅威インテリジェンスを取り込んでいま…</p>
     </a>
 
-    <a class="card" href="https://www.darkreading.com/threat-intelligence/china-nexus-actor-us-researchers-undetected" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/06/attackers-exploit-three-fortinet.html" target="_blank" rel="noopener">
       <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/15 17:00</span>
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">06/16 16:00</span>
       </div>
-      <h2>中国とのつながりを持つ俳優が米国研究者をスパイ、1年間発見されず</h2>
-      <p class="summary">Google は、RedCAP の認証情報を盗み、多数の機関を標的にして機密データを流出させる大規模なキャンペーンを発見し、阻止しました。</p>
+      <h2>攻撃者はフォーティネット FortiSandbox の 3 つの欠陥を悪用し、うち 1 つは先週パッチが適用されました</h2>
+      <p class="summary">脅威インテリジェンス会社 Defused Cyber​​ によると、悪意のある攻撃者がフォーティネット FortiSandbox の複数のセキュリティ脆弱性を悪用しています。
+
+Xで共有された投稿の中で、同社はexplを観察したと述べた</p>
     </a>
 
-    <a class="card" href="https://www.darkreading.com/cyber-risk/most-cisos-report-pressure-to-bury-bad-security-news" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/15 16:45</span>
-      </div>
-      <h2>ほとんどのCISOは、悪いセキュリティニュースを葬り去るよう圧力をかけられていると報告している</h2>
-      <p class="summary">経営幹部は大声では言わないかもしれませんが、ビジネスの目的や優先事項が常にタイムリーな情報開示を促進するとは限りません。</p>
-    </a>
-
-    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/06/15/microsoft-defender-email-security-benchmarking-key-insights-from-one-year-of-data/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">06/15 16:00</span>
-      </div>
-      <h2>Microsoft Defender 電子メール セキュリティ ベンチマーク: 1 年間のデータからの重要な洞察</h2>
-      <p class="summary">SEG ベンダーおよび ICES ベンダーに対する 1 年間の実世界の電子メール セキュリティ ベンチマークで Microsoft Defender がどのようにパフォーマンスを示したかをご覧ください。
-Microsoft Defender…</p>
-    </a>
-
-    <a class="card" href="https://www.darkreading.com/cyberattacks-data-breaches/beginning-end-social-engineering" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/15 15:08</span>
-      </div>
-      <h2>ソーシャルエンジニアリングの終わりの始まり</h2>
-      <p class="summary">AI ネイティブのオペレーティング システムでは、ソーシャル エンジニアリング サイバー攻撃に対して警戒を続ける責任がユーザーからシステム自体に移りつつあります。</p>
-    </a>
-
-    <a class="card" href="https://cloud.google.com/blog/topics/threat-intelligence/prc-targets-us-medical-research/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#e67e22">Mandiant</span>
-        <span class="date">06/15 14:00</span>
-      </div>
-      <h2>官民の医療界が人工知能、サイバー、医療、国防研究を追求する中国と連携した脅威アクターの標的に</h2>
-      <p class="summary">脚本：パトリック・ウィッセル、ジョン・マクギネス
-
-Google Threat Intelligence Group (GTIG) は、中華人民共和国 (PRC) と連携した脅威法である UNC6508 に起因する洗練されたキャンペーンを特…</p>
-    </a>
-
-    <a class="card" href="https://blog.cloudflare.com/ensemble-ai-talent-joins-cloudflare/" target="_blank" rel="noopener">
+    <a class="card" href="https://blog.cloudflare.com/dmarc-management-ga/" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#f38020">Cloudflare</span>
-        <span class="date">06/15 13:00</span>
+        <span class="date">06/16 13:00</span>
       </div>
-      <h2>Ensemble AI の人材を活用して Cloudflare AI チームを成長させる</h2>
-      <p class="summary">Cloudflareは、Ensemble AIのチームメンバーを加えて、機械学習インフラストラクチャと効率に焦点を当ててAIへの投資を強化しています。</p>
-    </a>
-
-    <a class="card" href="https://www.darkreading.com/cyber-risk/us-cracks-down-anthropic-ai-models-abuse-concerns" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/15 12:17</span>
-      </div>
-      <h2>米国、悪用の懸念の中、人為的 AI モデルを取り締まる</h2>
-      <p class="summary">Anthropic は、外国人によるテクノロジーの使用を禁止する輸出管理指令を受けた後、Fable 5 と Mythos 5 へのすべてのアクセスを突然停止しました。</p>
+      <h2>Cloudflare DMARC管理が一般利用可能になりました</h2>
+      <p class="summary">電子メール認証体制を統合的に可視化し、すべての Cloudflare 顧客に無料で詳細なレポート作成、記録分析、SPF 監査を提供して完全な DMARC の適用を実現します。</p>
     </a>
 
     <a class="card" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#e74c3c">CISA KEV</span>
-        <span class="date">06/15 00:00</span>
+        <span class="date">06/16 00:00</span>
       </div>
-      <h2>CVE-2026-54420 — LiteSpeed cPanel プラグイン UNIX シンボリック リンク (Symlink) に次の脆弱性</h2>
-      <p class="summary">LiteSpeed cPanel プラグインには、CloudLinux/CageFS を実行している共有ホスティング サーバー上で FTP または Web シェルを使用するユーザーがアクセスできる可能性がある、UNIX シンボリック リンク…</p>
+      <h2>CVE-2026-48907 — ウィジェット ファクトリ Joomla コンテンツ エディターの不適切なアクセス制御の脆弱性</h2>
+      <p class="summary">Widget Factory Joomla Content Editor には不適切なアクセス制御の脆弱性があり、認証されていない新しいエディター プロファイルの作成を介して PHP コードのアップロードと実行が可能になる可能性があります。</p>
     </a>
 
-    <a class="card" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/news/r7/sonota/20260616/20260616.html" target="_blank" rel="noopener">
       <div class="card-meta">
-        <span class="tag" style="background:#e74c3c">CISA KEV</span>
-        <span class="date">06/15 00:00</span>
+        <span class="tag" style="background:#c0392b">金融庁</span>
+        <span class="date"></span>
       </div>
-      <h2>CVE-2026-20262 — Cisco Catalyst SD-WAN Manager のディレクトリまたはパス トラバーサルの脆弱性</h2>
-      <p class="summary">Cisco Catalyst SD-WAN Manager にはディレクトリまたはパス トラバーサルの脆弱性があり、認証されたリモート攻撃者が aff のファイル システム上でファイルを作成したり、ファイルを上書きしたりできる可能性がありま…</p>
+      <h2>金融経済教育イベント「ワニーサと学ぶ 未来のためのお金の教室 in千葉」の開催について公表しました。</h2>
+      <p class="summary">金融経済教育イベント「ワニーサと学ぶ 未来のためのお金の教室 in千葉」の開催について公表しました。詳しくは特設サイトをご覧ください。</p>
+    </a>
+
+    <a class="card" href="https://www.fsa.go.jp/news/r7/ginkou/20260615.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#c0392b">金融庁</span>
+        <span class="date"></span>
+      </div>
+      <h2>預金口座の不正利用に係る情報提供件数等について公表しました。</h2>
     </a>
 
     <a class="card" href="https://www.fsa.go.jp/singi/vc/siryou/20260618.html" target="_blank" rel="noopener">
@@ -262,34 +204,55 @@ Google Threat Intelligence Group (GTIG) は、中華人民共和国 (PRC) と連
       <h2>調達,入札公告等を更新しました。</h2>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/news/r7/ginkou/20260612.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#c0392b">金融庁</span>
-        <span class="date"></span>
-      </div>
-      <h2>ウリ信用組合に対する行政処分について公表しました。</h2>
-    </a>
-
-    <a class="card" href="https://www.fsa.go.jp/status/torihikikibo/index.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#c0392b">金融庁</span>
-        <span class="date"></span>
-      </div>
-      <h2>取引規模の届出（店頭デリバティブ取引等の規制に関する内閣府令第２条の２）について公表しました。</h2>
-    </a>
-
-    <a class="card" href="https://www.cisa.gov/news-events/alerts/2026/06/15/cisa-adds-two-known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener">
+    <a class="card" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-167-03" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#1e8449">CISA</span>
         <span class="date"></span>
       </div>
-      <h2>CISA、悪用された既知の脆弱性 2 件をカタログに追加</h2>
-      <p class="summary">CISA は、積極的な悪用の証拠に基づいて、既知の悪用された脆弱性 (KEV) カタログに 2 つの新しい脆弱性を追加しました。
-
-CVE-2026-20262 Cisco Catalyst SD-WAN Manager のディレクトリまた…</p>
+      <h2>ロックウェル・オートメーションの Logix 5370 および 5570 コントローラに CIP 経由のサービス拒否に対する脆弱性</h2>
+      <p class="summary">CSAFを見る
+概要
+この脆弱性の悪用に成功すると、サービス妨害状態が引き起こされ、回復不能な重大な障害 (MNRF) が発生する可能性があります。
+Rockwell Aut の次のバージョン</p>
     </a>
 
-    <a class="card" href="https://www.cisa.gov/news-events/alerts/2026/06/12/cisa-adds-one-known-exploited-vulnerability-catalog" target="_blank" rel="noopener">
+    <a class="card" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-167-02" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#1e8449">CISA</span>
+        <span class="date"></span>
+      </div>
+      <h2>ロックウェル・オートメーション RSLinx</h2>
+      <p class="summary">CSAFを見る
+概要
+この脆弱性の悪用に成功すると、アプリケーションが応答しなくなり、自然に回復できなくなるサービス拒否が発生する可能性があります。
+以下のバージョン</p>
+    </a>
+
+    <a class="card" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-167-05" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#1e8449">CISA</span>
+        <span class="date"></span>
+      </div>
+      <h2>ロックウェル・オートメーション FLEX I/O EtherNet/IP アダプタ</h2>
+      <p class="summary">CSAFを見る
+概要
+これらの脆弱性の悪用に成功すると、攻撃者が不正アクセスを取得し、アカウントを乗っ取り、可用性の損失を引き起こす可能性があります。
+Rock の次のバージョン</p>
+    </a>
+
+    <a class="card" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-167-01" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#1e8449">CISA</span>
+        <span class="date"></span>
+      </div>
+      <h2>ロックウェル・オートメーション FactoryTalk Analytics PavilionX</h2>
+      <p class="summary">CSAFを見る
+概要
+この脆弱性の悪用に成功すると、攻撃者が特権操作を実行する可能性があります。
+Rockwell Automation FactoryTalk Analytics Pavilio の次のバージョン</p>
+    </a>
+
+    <a class="card" href="https://www.cisa.gov/news-events/alerts/2026/06/16/cisa-adds-one-known-exploited-vulnerability-catalog" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#1e8449">CISA</span>
         <span class="date"></span>
@@ -297,40 +260,15 @@ CVE-2026-20262 Cisco Catalyst SD-WAN Manager のディレクトリまた…</p>
       <h2>CISA、悪用された既知の脆弱性 1 つをカタログに追加</h2>
       <p class="summary">CISA は、積極的な悪用の証拠に基づいて、悪用された既知の脆弱性 (KEV) カタログに新しい脆弱性を 1 つ追加しました。
 
-CVE-2026-35273 Oracle PeopleSoft Enterprise PeopleTools…</p>
+CVE-2026-48907 ウィジェット ファクトリ Joomla コンテンツ エディターの不適切なアクセス</p>
     </a>
 
-    <a class="card" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-162-01" target="_blank" rel="noopener">
+    <a class="card" href="https://www.crowdstrike.com/en-us/blog/falcon-exposure-management-now-available-for-third-party-environments/" target="_blank" rel="noopener">
       <div class="card-meta">
-        <span class="tag" style="background:#1e8449">CISA</span>
+        <span class="tag" style="background:#cc0000">CrowdStrike</span>
         <span class="date"></span>
       </div>
-      <h2>Yarbo Android/iOS モバイル アプリケーションとクラウド インフラストラクチャ</h2>
-      <p class="summary">CSAFを見る
-概要
-これらの脆弱性の悪用に成功すると、攻撃者がハードコードされた認証情報を取得し、テレメトリ データにアクセスし、操作コマンドを送信する可能性があります。</p>
-    </a>
-
-    <a class="card" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-162-02" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#1e8449">CISA</span>
-        <span class="date"></span>
-      </div>
-      <h2>ナクスクロウIoTプラットフォーム</h2>
-      <p class="summary">CSAFを見る
-概要
-これらの脆弱性の悪用に成功すると、攻撃者がデバイスになりすまし、通信を傍受または操作したり、機密の認証情報を大規模に取得したり、不正なアクセスを実行したりする可能性があります。</p>
-    </a>
-
-    <a class="card" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-162-03" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#1e8449">CISA</span>
-        <span class="date"></span>
-      </div>
-      <h2>ブリックコムカメラ</h2>
-      <p class="summary">CSAFを見る
-概要
-これらの脆弱性の悪用に成功すると、リモートの認証されていない攻撃者がライブビデオフィードに不正にアクセスし、機密の視覚情報を取得できる可能性があります。</p>
+      <h2>Falcon Exposure Management がサードパーティ環境で利用可能に</h2>
     </a>
 
     <a class="card" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-announces-continuous-identity-for-ai-agents/" target="_blank" rel="noopener">
@@ -363,14 +301,6 @@ CVE-2026-35273 Oracle PeopleSoft Enterprise PeopleTools…</p>
         <span class="date"></span>
       </div>
       <h2>CrowdStrike、OpenID と IDPro でアイデンティティのリーダーシップを拡大</h2>
-    </a>
-
-    <a class="card" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-2026-technology-threat-landscape-report/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#cc0000">CrowdStrike</span>
-        <span class="date"></span>
-      </div>
-      <h2>CrowdStrike 2026 テクノロジー脅威状況レポート: 中国の野心により攻撃が加速</h2>
     </a>
 
     <a class="card" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener">
