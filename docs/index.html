@@ -43,42 +43,16 @@
 <body>
   <header>
     <h1>🔐 Security Digest</h1>
-    <div class="sub">最終更新: 2026年06月17日 23:22</div>
-    <div class="count">34 件</div>
+    <div class="sub">最終更新: 2026年06月18日 23:44</div>
+    <div class="count">40 件</div>
   </header>
   <div class="cards">
-    <a class="card" href="https://thehackernews.com/2026/06/crypto-clipper-campaign-abuses-fake.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/06/f5-patches-two-critical-nginx-open.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/17 23:44</span>
+        <span class="date">06/18 23:02</span>
       </div>
-      <h2>Crypto Clipper キャンペーンが偽レビュー、AI ナレーター、VirusTotal Comments を悪用</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-medium">中</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>Check Point Researchが、未知の攻撃者が正規ニュースサイトの有料記事、偽レビュー、AIナレーター、VirusTotalコメントを悪用し、不正なクリプトクリッパーキャンペーンを展開していることを公表しました。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>金融機関の顧客が、偽のソフトウェアダウンロードを通じてクリプトクリッパーに感染する可能性があります。これにより、仮想通貨取引時のアドレスが窃取され、不正送金や資産損失のリスクが高まります。金融機関のシステムへの直接的な影響は低いですが、顧客資産保護の観点から注意が必要です。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>顧客に対し、信頼できないソースからのソフトウェアダウンロードや仮想通貨関連ツールの利用を避けるよう注意喚起を実施する。</li><li>仮想通貨関連サービスを提供する部門は、顧客の不審な取引や資産移動に関する問い合わせ増加に備え、監視体制を強化する。</li><li>従業員向けに、フィッシングサイトや不正なソフトウェアの識別に関するセキュリティ教育を再徹底し、情報資産の保護を促す。</li></ul>
-        </section>
-      </div>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/06/microsoft-confirms-rogueplanet-defender_02022423645.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/17 23:06</span>
-      </div>
-      <h2>Microsoft、RoguePlanet Defenderのゼロデイを確認、パッチは開発中と発表</h2>
+      <h2>F5 がリモート コード実行を可能にする 2 つの重大な NGINX オープンソース欠陥にパッチを適用</h2>
       <div class="ai-analysis">
         <div class="importance-row">
           <span class="field-label">重要度</span>
@@ -86,25 +60,25 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>Microsoftは、Defenderのゼロデイ脆弱性「RoguePlanet」（CVE-2026-50656、CVSS:7.8）を正式に公表し、現在パッチを開発中であることを明らかにしました。</p>
+          <p>F5がNGINX Open Sourceの2つの重大な脆弱性（CVE-2026-42530など）に対するセキュリティアップデートを公開しました。これにより、リモートからのコード実行が可能になる可能性があります。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>Microsoft Defenderを利用している金融機関のシステムにおいて、特権昇格の脆弱性が存在する可能性があります。これにより、攻撃者がシステム権限を不正に取得し、情報漏えいやシステム停止、不正取引に繋がるリスクがあります。</p>
+          <p>NGINX Open Sourceをウェブサーバーやリバースプロキシとして利用しているシステムは、リモートからのコード実行により、情報漏えいやサービス停止のリスクがあります。特に顧客向けサービスや基幹システム連携部分での利用は影響が大きいです。委託先での利用状況も確認が必要です。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>Microsoftからの公式パッチ提供情報を継続的に監視し、公開され次第、速やかに適用計画を策定する。</li><li>Microsoft Defenderの稼働状況と設定を再確認し、可能な範囲でセキュリティ強化策を検討・実施する。</li><li>委託先を含め、Microsoft Defenderを利用している全てのシステムについて、本脆弱性の影響範囲を緊急で調査する。</li></ul>
+          <ul><li>NGINX Open Sourceの利用有無とバージョンを全システムで緊急確認し、脆弱性の影響を受ける場合は速やかにアップデートを計画する。</li><li>NGINX Open Sourceを利用している委託先に対し、本脆弱性への対応状況と計画について確認を依頼する。</li><li>アップデートが困難な場合は、WAFなどによる緩和策の適用や、アクセス制御の強化を検討する。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/06/junior-hacker-used-tailscale-and.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/06/orphaned-ai-agents-how-to-find-hidden.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/17 21:30</span>
+        <span class="date">06/18 21:03</span>
       </div>
-      <h2>ジュニアハッカーは、C2 がオフラインになった後も Tailscale と OpenSSH を使用してアクセスを維持しました</h2>
+      <h2>孤立した AI エージェント: ネットワーク内の隠れたアクセス リスクを見つける方法</h2>
       <div class="ai-analysis">
         <div class="importance-row">
           <span class="field-label">重要度</span>
@@ -112,121 +86,207 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>ハッカーがフランスの自動車企業に侵入し、キーロガーで認証情報を窃取後、C2サーバー停止に備えOpenSSHとTailscaleを導入し永続的なアクセス経路を確保しました。</p>
+          <p>The Hacker Newsが、企業内で自律型AIエージェントの利用が急増する中、管理者が不明な「孤立AIエージェント」がセキュリティリスクとなり得ると指摘しました。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>金融機関のシステムや業務への直接的な影響は低いですが、委託先や取引先が同様の手口で侵害された場合、サプライチェーンリスクとして情報漏えいや不正取引に繋がる可能性があります。</p>
+          <p>AIツールを導入済みの金融機関は、退職者によって作成されたAIエージェントがシステムやデータにアクセスし続けることで、情報漏えいや不正アクセスのリスクが高まります。特に、顧客情報や機密性の高い業務データを取り扱うシステムへの影響が懸念されます。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>委託先や取引先に対し、OpenSSHやTailscaleなどのリモートアクセスツールの利用状況と管理体制について確認を推奨します。</li><li>自組織のシステムにおいて、許可されていないリモートアクセスツールの導入がないか、定期的な棚卸しと監視を強化してください。</li><li>従業員に対し、不審なソフトウェアのインストールや認証情報の取り扱いに関するセキュリティ教育を再徹底してください。</li></ul>
+          <ul><li>AIエージェントの利用状況とアクセス権限を棚卸しし、作成者不明または不要なエージェントを特定する。</li><li>退職者や異動者のAIエージェント関連アカウントとアクセス権限が適切に削除・変更されているか確認する。</li><li>AIエージェントの利用に関する内部統制プロセスを強化し、承認フローとライフサイクル管理を確立する。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/06/adversarial-exposure-validation-turns.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/06/threatsday-bulletin-claude-chat-abuse.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/17 20:28</span>
+        <span class="date">06/18 20:57</span>
       </div>
-      <h2>敵対的露出の検証により、セキュリティの可視化が自信を持った優先順位付けに変わります</h2>
-      <p class="summary">セキュリティ チームにとって、発見が止まることはありませんが、どれが重要なのかを知る自信を維持するのはますます困難になっています。
-
-問題はもはや視認性ではありません。それは検証です。セキュリティチームは決定する必要があります</p>
+      <h2>ThreatsDay 速報: Claude チャットの不正使用、NastyC2 npm パッケージ、デバイス コード フィッシング + 25 件のその他のストーリー</h2>
+      <div class="ai-analysis">
+        <div class="importance-row">
+          <span class="field-label">重要度</span>
+          <span class="importance importance-medium">中</span>
+        </div>
+        <section class="analysis-field">
+          <h3>要約</h3>
+          <p>The Hacker Newsが週刊脅威情報「ThreatsDay Bulletin」を公表し、AIチャットの悪用、悪意のあるブラウザアドオン、macOSマルウェア、クラウドエージェントの悪用など、複数のサイバー脅威を報告しました。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>金融機関への影響</h3>
+          <p>AIチャットの悪用は顧客対応や社内業務での情報漏えいリスクを高めます。悪意のあるブラウザアドオンは従業員のPCを介した情報窃取やマルウェア感染に繋がり、システムや業務に影響を及ぼす可能性があります。クラウドエージェントの悪用はクラウド環境のセキュリティリスクを増大させます。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>推奨アクション</h3>
+          <ul><li>AIチャット利用ガイドラインを再確認し、機密情報の入力制限や利用状況の監視を強化する。</li><li>従業員向けにブラウザアドオンの危険性に関する注意喚起を行い、不審なアドオンの利用を禁止する。</li><li>クラウド環境のセキュリティ設定とアクセスログを定期的に確認し、不審な活動がないか監視を強化する。</li></ul>
+        </section>
+      </div>
     </a>
 
-    <a class="card" href="https://www.darkreading.com/cyberattacks-data-breaches/inc-ransomware-thrives-by-mastering-the-basics" target="_blank" rel="noopener">
+    <a class="card" href="https://www.darkreading.com/cyber-risk/novo-nordisk-breach-exposes-dev-pipeline-risk" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/17 19:46</span>
+        <span class="date">06/18 20:05</span>
       </div>
-      <h2>INC ランサムウェアは基本をマスターすることで成功する</h2>
-      <p class="summary">そして、それらの基本の 1 つは、ランサムウェアの混乱によって医療などの即時支払い圧力が生じるセクターに焦点を当てることです。</p>
+      <h2>ノボ ノルディスクの侵害によりソフトウェア開発パイプラインのリスクが暴露</h2>
+      <p class="summary">GitHub トークンの漏洩は、ほとんどの組織が間違っていること、つまりシークレット管理をアイデンティティの問題ではなくツールの問題として扱っていることを浮き彫りにしました。</p>
     </a>
 
-    <a class="card" href="https://blog.cloudflare.com/agents-platform-flue-sdk/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#f38020">Cloudflare</span>
-        <span class="date">06/17 19:35</span>
-      </div>
-      <h2>Flueを皮切りに、より多くのエージェントハーネスとフレームワークをCloudflareに導入</h2>
-      <p class="summary">Agent SDK は、あらゆるエージェント フレームワークを構築できるランタイムになりました。本日、私たちは Agents SDK をターゲットとする最初のフレームワークとして Flue を使用して Agents SDK プリミティブを公…</p>
-    </a>
-
-    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/06/17/beyond-the-benchmark-advancing-security-at-ai-speed/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">06/17 19:30</span>
-      </div>
-      <h2>ベンチマークを超えて: AI のスピードでセキュリティを進化させる</h2>
-      <p class="summary">Microsoft Security がエージェント型脆弱性検出システム (コードネーム MDASH) をどのように進化させ、Windows、Azure、および ID システムにわたる現実世界のワークフローに統合したかをお読みください。
-ポ…</p>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/06/malicious-jetbrains-plugins-steal-ai.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/06/microsoft-details-windows-clipper.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/17 19:21</span>
+        <span class="date">06/18 20:00</span>
       </div>
-      <h2>Chrome 拡張機能がチャットボットのチャットをキャプチャすると、悪意のある JetBrains プラグインが AI API キーを盗む</h2>
-      <p class="summary">サイバーセキュリティ研究者は、人工知能を盗み出すことができる 15 個以上の悪意のあるプラグインを公開した JetBrains マーケットプレイス上の「組織的なマルウェア キャンペーン」にフラグを立てました。</p>
+      <h2>Microsoft は、USB LNK ワームと Tor ベースの C2 を使用した Windows Clipper マルウェア キャンペーンを詳細に説明します</h2>
+      <p class="summary">Microsoftは、2026年2月からユーザーをターゲットにしたWindowsベースの仮想通貨クリッパーキャンペーンの詳細を明らかにした。
+
+「このキャンペーンのクリッパーは Windows Script Host と ActiveX に…</p>
     </a>
 
-    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/06/17/forrester-names-microsoft-a-leader-in-the-2026-extended-detection-and-response-platforms-wave-report/" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/06/inc-ransomware-claims-830-victims-since.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">06/18 19:42</span>
+      </div>
+      <h2>INC ランサムウェアは 2026 年に主要な RaaS 脅威として出現、2023 年以降 830 人以上の被害者に</h2>
+      <p class="summary">サイバーセキュリティ研究者らは、INC が初期段階のサービスとしてのランサムウェア (RaaS) 活動から 2026 年に最も多大なサイバー犯罪グループの 1 つへと進化する過程をグラフ化し、830 vi を下回らないと主張しています。</p>
+    </a>
+
+    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/06/18/new-forrester-study-shows-customers-who-unified-with-microsoft-security-benefited-from-124-roi/" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">06/17 18:30</span>
+        <span class="date">06/18 19:36</span>
       </div>
-      <h2>Forrester は、2026 年の Extended Detection and Response Platforms Wave™ レポートで Microsoft をリーダーに指名</h2>
-      <p class="summary">Microsoft は、2026 年第 2 四半期の The Forrester Wave™: Extended Detection and Response Platforms のリーダーに選ばれました。
-Forrester の投稿では、…</p>
+      <h2>Forrester の新しい調査では、Microsoft Security と統合した顧客が 124% の ROI の恩恵を受けたことが示されています</h2>
+      <p class="summary">Forrester Total Economy Impact™ の新しい調査では、Microsoft セキュリティの統合が ROI を実現し、リスクを軽減し、組織が AI を保護する準備を整えていることを示しています。
+New Forres…</p>
     </a>
 
-    <a class="card" href="https://techcommunity.microsoft.com/blog/microsoft-entra-blog/ai-is-accelerating-cyberattacks%E2%80%94here%E2%80%99s-how-to-stay-ahead/4528592" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">06/17 17:00</span>
-      </div>
-      <h2>AI によるサイバー攻撃の加速 – 先を行く方法は次のとおりです</h2>
-      <p class="summary">Microsoft が ID とセキュリティのシグナルを統合して、チームが AI を活用した攻撃をより迅速に防止、検出、対応できるように支援する方法をご覧ください。
-ポスト AI によりサイバー攻撃が加速中 - サイバー攻撃の先を行く方法は…</p>
-    </a>
-
-    <a class="card" href="https://www.darkreading.com/cyberattacks-data-breaches/sweeping-credential-harvesting-heist-compromises-30k-fortinet-devices" target="_blank" rel="noopener">
+    <a class="card" href="https://www.darkreading.com/cybersecurity-operations/operation-escaneo-signals-shift-latam-threat-landscape" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/17 14:06</span>
+        <span class="date">06/18 19:09</span>
       </div>
-      <h2>広範囲にわたる認証情報収集強盗により 30,000 台以上のフォーティネット デバイスが侵害される</h2>
-      <p class="summary">攻撃者は、約 200 か国のさまざまな分野を積極的に標的にしており、侵害された数万台のデバイスについて有効な認証情報のリストをすでに作成しています。</p>
+      <h2>エスカネオ作戦は中南米の脅威情勢の変化を示唆</h2>
+      <p class="summary">この脅威グループの興味深いビジネス モデルは、情報収集と日和見的な収益化を、両者の間の調整をあまり行わずに組み合わせている可能性があります。</p>
     </a>
 
-    <a class="card" href="https://blog.cloudflare.com/cloudflare-one-stack/" target="_blank" rel="noopener">
+    <a class="card" href="https://www.darkreading.com/application-security/fifa-bug-world-cup-streams-remote-takeover" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">06/18 18:20</span>
+      </div>
+      <h2>FIFA のバグによりワールドカップ ストリームがリモート乗っ取りにさらされる</h2>
+      <p class="summary">FIFA の強制されていない Entra アクセス制御のおかげで、ハッカーがワールドカップを「リックロール」した可能性があります。</p>
+    </a>
+
+    <a class="card" href="https://blog.talosintelligence.com/close-encounters-of-the-human-kind/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
+        <span class="date">06/18 18:00</span>
+      </div>
+      <h2>人類の接近遭遇</h2>
+      <p class="summary">最新の Threat Source では、ヘイゼルは自分の内なるスピルバーグを導いて、人間がなぜ愉快なほど非合理的であるのかを探求し、セキュリティのベスト プラクティスは理論的には単純であるものの、非常に難しいものであることを思い出させます…</p>
+    </a>
+
+    <a class="card" href="https://blog.cloudflare.com/build-your-own-vulnerability-harness/" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#f38020">Cloudflare</span>
-        <span class="date">06/17 13:00</span>
+        <span class="date">06/18 17:59</span>
       </div>
-      <h2>Cloudflare Oneスタックの紹介: エージェントによる導入</h2>
-      <p class="summary">Cloudflare Oneスタックは、AIエージェントにゼロトラスト環境の計画、展開、管理に必要な知識を提供するエージェントスキルのライブラリであり、移行コールは必要ありません。</p>
+      <h2>独自の脆弱性ハーネスを構築する</h2>
+      <p class="summary">多段階の脆弱性発見ハーネスと自動トリアージ ループの背後にある技術アーキテクチャを詳しく分析します。状態管理を管理し、敵対行為を通じて誤検知を排除する方法を学びましょう</p>
     </a>
 
-    <a class="card" href="https://www.ncsc.gov.uk/news/ncsc-ceo-hostile-states-linked-to-three-quarters-of-cyber-attacks" target="_blank" rel="noopener">
+    <a class="card" href="https://krebsonsecurity.com/2026/06/popa-botnet-linked-to-publicly-traded-israeli-firm/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Krebs on Security</span>
+        <span class="date">06/18 17:37</span>
+      </div>
+      <h2>「Popa」ボットネットはイスラエルの上場企業にリンク</h2>
+      <p class="summary">過去 4 年間、Popa と呼ばれる Android ベースの無秩序に広がるボットネットにより、何百万もの消費者 TV ボックスが広告詐欺、アカウント乗っ取り、大量データに関連したインターネット トラフィックを中継することを余儀なくされてき…</p>
+    </a>
+
+    <a class="card" href="https://www.darkreading.com/cyberattacks-data-breaches/salesforce-data-thefts-klue-app-compromise" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">06/18 16:49</span>
+      </div>
+      <h2>Klue アプリ侵害による Salesforce データ盗難が続く</h2>
+      <p class="summary">Klue's Battlecards は現在、顧客の Salesforce データを盗むために侵害された 3 番目の統合アプリケーションであり、被害者にはサイバーセキュリティ ベンダーの Huntress も含まれています。</p>
+    </a>
+
+    <a class="card" href="https://www.darkreading.com/cyber-risk/security-debt-tackle-exposure-problem" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">06/18 13:00</span>
+      </div>
+      <h2>暴露問題に取り組んで担保債務から抜け出す</h2>
+      <p class="summary">セキュリティ上の負債を解消しようとしているチームは、2 つの単純な質問に答えるだけで済みます。それは、システムのどの脆弱性が露出しているのか、また、どのくらいの期間そのままにしておく必要があるのか​​ということです。</p>
+    </a>
+
+    <a class="card" href="https://blog.cloudflare.com/celebrating-12-years-of-project-galileo/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#f38020">Cloudflare</span>
+        <span class="date">06/18 13:00</span>
+      </div>
+      <h2>プロジェクト ガリレオ 12 周年を祝う</h2>
+      <p class="summary">Project Galileo の 12 周年を記念して、Cloudflare は、市民社会に対するサイバー攻撃を分析した初の包括的なレポートをリリースしました。</p>
+    </a>
+
+    <a class="card" href="https://www.ncsc.gov.uk/news/advice-following-global-targeting-of-fortinet-firewalls-and-vpn-gateways" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#005eb8">NCSC</span>
-        <span class="date">06/17 12:00</span>
+        <span class="date">06/18 12:00</span>
       </div>
-      <h2>NCSC CEO：英国の重要システムに影響を与えたサイバー攻撃の4分の3に敵対国家が関与している</h2>
-      <p class="summary">リチャード・ホーン博士は、RUSIの年次セキュリティ講演会で、英国の重要インフラに対するサイバー脅威の規模を強調しました。</p>
+      <h2>アラート: NCSC は、フォーティネットのファイアウォールと VPN ゲートウェイの世界的なターゲット設定を受けてアドバイスを発行します</h2>
+      <p class="summary">フォーティネットのサービスを利用している組織は、ファイアウォールと VPN ゲートウェイに影響を与えるキャンペーンを受けて行動を起こすことが求められています。</p>
     </a>
 
-    <a class="card" href="https://www.darkreading.com/cyber-risk/uk-social-media-ban-privacy-experts-worried" target="_blank" rel="noopener">
+    <a class="card" href="https://www.ncsc.gov.uk/blogs/the-vibe-coding-spectrum-approach-to-ai-assisted-software-development" target="_blank" rel="noopener">
       <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/17 08:00</span>
+        <span class="tag" style="background:#005eb8">NCSC</span>
+        <span class="date">06/18 12:00</span>
       </div>
-      <h2>英国の未成年者に対するソーシャルメディア禁止にプライバシー専門家が懸念</h2>
-      <p class="summary">英国は、年齢確認の問題やプライバシーへの懸念にもかかわらず、16歳未満の青少年のユーザー間のソーシャルメディアプラットフォームの利用を禁止する予定だ。</p>
+      <h2>AI 支援ソフトウェア開発への「バイブ コーディング スペクトラム」アプローチ</h2>
+      <p class="summary">コードが異なれば、監視のレベルも異なるため、それに応じて「雰囲気のあるコーディング」へのアプローチを調整してください。</p>
+    </a>
+
+    <a class="card" href="https://blog.talosintelligence.com/scripting-the-disassembler/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
+        <span class="date">06/18 10:00</span>
+      </div>
+      <h2>逆アセンブラのスクリプト作成: vbdec のライブ COM オブジェクト モデルによるローカル エージェント リバース エンジニアリング</h2>
+      <p class="summary">Cisco Talos は、ローカル AI エージェントと VB6 逆アセンブラ vbdec などの従来の分析ツールを組み合わせる、リバース エンジニアリングの新しいアプローチについて詳しく説明しました。 AI をソフトウェアにぎこちなくボ…</p>
+    </a>
+
+    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/06/17/postinstall-payload-inside-mastra-npm-supply-chain-compromise/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#0078d4">Microsoft Security</span>
+        <span class="date">06/18 03:43</span>
+      </div>
+      <h2>パッケージからインストール後のペイロードまで: Mastra npm サプライ チェーンの侵害の内部</h2>
+      <p class="summary">ポイズニングされた npm パッケージにより、隠しペイロードを持つ 140 以上のプロジェクトが感染しました。このレポートでは、Microsoft Defender と実用的な脅威を使用してサプライ チェーン攻撃を検出、追跡し、防御する方法…</p>
+    </a>
+
+    <a class="card" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#e74c3c">CISA KEV</span>
+        <span class="date">06/18 00:00</span>
+      </div>
+      <h2>CVE-2026-20253 — Splunk Enterprise に重要な機能の脆弱性に対する認証が欠落している</h2>
+      <p class="summary">Splunk Enterprise には、重要な機能の認証が欠落している脆弱性があり、認証されていないユーザーが PostgreSQL サイドカー サーバーを通じて任意のファイルを作成または切り捨てられる可能性があります。</p>
+    </a>
+
+    <a class="card" href="https://www.fsa.go.jp/choutatu/choutatu_j/nyusatu_menu.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#c0392b">金融庁</span>
+        <span class="date"></span>
+      </div>
+      <h2>調達,入札公告等を更新しました。</h2>
     </a>
 
     <a class="card" href="https://www.fsa.go.jp/policy/nisa2/products/index.html" target="_blank" rel="noopener">
@@ -262,71 +322,66 @@ Forrester の投稿では、…</p>
       <h2>採用,職員を募集しています。（国内金融及び金融機関等の行う国際業務に関する制度の企画及び立案等に従事する職員）</h2>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/news/r7/ginkou/202606kenei.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#c0392b">金融庁</span>
-        <span class="date"></span>
-      </div>
-      <h2>北洋銀行に対する信託兼営認可について公表しました。</h2>
-    </a>
-
-    <a class="card" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-167-03" target="_blank" rel="noopener">
+    <a class="card" href="https://www.cisa.gov/news-events/alerts/2026/06/18/cisa-urges-hardening-fortinet-devices-after-reports-credential-exposure" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#1e8449">CISA</span>
         <span class="date"></span>
       </div>
-      <h2>ロックウェル・オートメーションの Logix 5370 および 5570 コントローラに CIP 経由のサービス拒否に対する脆弱性</h2>
+      <h2>CISA、資格情報漏洩の報告を受けてフォーティネットデバイスの強化を促す</h2>
+      <p class="summary">CISA は、悪意のあるサイバー攻撃者が、侵害された認証情報を使用して、政府および民間部門の組織全体でインターネットにアクセス可能なフォーティネット デバイスを標的にしているという世界的な報告を認識しています。このAC</p>
+    </a>
+
+    <a class="card" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-169-02" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#1e8449">CISA</span>
+        <span class="date"></span>
+      </div>
+      <h2>アゼオテック DAQファクトリー</h2>
       <p class="summary">CSAFを見る
 概要
-この脆弱性の悪用に成功すると、サービス妨害状態が引き起こされ、回復不能な重大な障害 (MNRF) が発生する可能性があります。
-Rockwell Aut の次のバージョン</p>
+この脆弱性の悪用に成功すると、攻撃者が悪意のある .ctl ファイルをアップロードし、任意のコードが実行される可能性があります。
+AzeoTech DAQ の次のバージョン</p>
     </a>
 
-    <a class="card" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-167-02" target="_blank" rel="noopener">
+    <a class="card" href="https://www.cisa.gov/news-events/ics-medical-advisories/icsma-26-169-01" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#1e8449">CISA</span>
         <span class="date"></span>
       </div>
-      <h2>ロックウェル・オートメーション RSLinx</h2>
+      <h2>アポロ薬局 血糖測定システム APG-01 BT</h2>
       <p class="summary">CSAFを見る
 概要
-この脆弱性の悪用に成功すると、アプリケーションが応答しなくなり、自然に回復できなくなるサービス拒否が発生する可能性があります。
-以下のバージョン</p>
+これらの脆弱性の悪用に成功すると、攻撃者が健康関連の機密情報を取得し、正規のユーザーがインターネットへの接続を確立できなくなる可能性があります。</p>
     </a>
 
-    <a class="card" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-167-05" target="_blank" rel="noopener">
+    <a class="card" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-169-06" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#1e8449">CISA</span>
         <span class="date"></span>
       </div>
-      <h2>ロックウェル・オートメーション FLEX I/O EtherNet/IP アダプタ</h2>
+      <h2>三菱電機株式会社 MELSEC iQ-Fシリーズ FX5-ENET/IP Ethernetモジュール</h2>
       <p class="summary">CSAFを見る
 概要
-これらの脆弱性の悪用に成功すると、攻撃者が不正アクセスを取得し、アカウントを乗っ取り、可用性の損失を引き起こす可能性があります。
-Rock の次のバージョン</p>
+この脆弱性の悪用に成功すると、リモートの攻撃者が大量のメッセージを継続的に送信することにより、影響を受ける製品にサービス拒否 (DoS) 状態を引き起こす可能性があります。</p>
     </a>
 
-    <a class="card" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-167-01" target="_blank" rel="noopener">
+    <a class="card" href="https://www.cisa.gov/news-events/ics-advisories/icsa-26-169-05" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#1e8449">CISA</span>
         <span class="date"></span>
       </div>
-      <h2>ロックウェル・オートメーション FactoryTalk Analytics PavilionX</h2>
+      <h2>三菱電機 MELSEC iQ-Fシリーズ</h2>
       <p class="summary">CSAFを見る
 概要
-この脆弱性の悪用に成功すると、攻撃者が特権操作を実行する可能性があります。
-Rockwell Automation FactoryTalk Analytics Pavilio の次のバージョン</p>
+この脆弱性の悪用に成功すると、リモート攻撃者が大量のネットワークを急速に確立し、影響を受ける製品にサービス拒否 (DoS) 状態を引き起こす可能性があります。</p>
     </a>
 
-    <a class="card" href="https://www.cisa.gov/news-events/alerts/2026/06/16/cisa-adds-one-known-exploited-vulnerability-catalog" target="_blank" rel="noopener">
+    <a class="card" href="https://www.crowdstrike.com/en-us/blog/after-executive-order-14409-next-steps-for-securing-ai/" target="_blank" rel="noopener">
       <div class="card-meta">
-        <span class="tag" style="background:#1e8449">CISA</span>
+        <span class="tag" style="background:#cc0000">CrowdStrike</span>
         <span class="date"></span>
       </div>
-      <h2>CISA、悪用された既知の脆弱性 1 つをカタログに追加</h2>
-      <p class="summary">CISA は、積極的な悪用の証拠に基づいて、悪用された既知の脆弱性 (KEV) カタログに新しい脆弱性を 1 つ追加しました。
-
-CVE-2026-48907 ウィジェット ファクトリ Joomla コンテンツ エディターの不適切なアクセス</p>
+      <h2>大統領令 14409 後: AI を保護するための次のステップ</h2>
     </a>
 
     <a class="card" href="https://www.crowdstrike.com/en-us/blog/falcon-exposure-management-now-available-for-third-party-environments/" target="_blank" rel="noopener">
@@ -359,14 +414,6 @@ CVE-2026-48907 ウィジェット ファクトリ Joomla コンテンツ エデ�
         <span class="date"></span>
       </div>
       <h2>CrowdStrike が 2026 Frost Radar™: クラウドおよびアプリケーション ランタイム セキュリティでイノベーションと成長のリーダーに選ばれました</h2>
-    </a>
-
-    <a class="card" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-expands-identity-leadership-with-openid-and-idpro/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#cc0000">CrowdStrike</span>
-        <span class="date"></span>
-      </div>
-      <h2>CrowdStrike、OpenID と IDPro でアイデンティティのリーダーシップを拡大</h2>
     </a>
 
     <a class="card" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener">
