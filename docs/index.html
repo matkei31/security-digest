@@ -43,10 +43,36 @@
 <body>
   <header>
     <h1>🔐 Security Digest</h1>
-    <div class="sub">最終更新: 2026年06月19日 22:55</div>
-    <div class="count">23 件</div>
+    <div class="sub">最終更新: 2026年06月20日 23:06</div>
+    <div class="count">18 件</div>
   </header>
   <div class="cards">
+    <a class="card" href="https://thehackernews.com/2026/06/hackers-exploit-gravity-smtp-wordpress.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">06/20 15:26</span>
+      </div>
+      <h2>ハッカーが Gravity SMTP WordPress プラグインのバグを悪用して API キーを公開</h2>
+      <div class="ai-analysis">
+        <div class="importance-row">
+          <span class="field-label">重要度</span>
+          <span class="importance importance-medium">中</span>
+        </div>
+        <section class="analysis-field">
+          <h3>要約</h3>
+          <p>The Hacker Newsが、WordPressプラグイン「Gravity SMTP」の脆弱性(CVE-2026-4020)が悪用され、APIキーなどの機密情報が漏えいしていると報じました。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>金融機関への影響</h3>
+          <p>金融機関がWordPressをウェブサイトやマーケティング目的で利用し、Gravity SMTPプラグインを使用している場合、設定情報やAPIキーが漏えいし、関連システムや委託先への不正アクセス、情報漏えいリスクがあります。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>推奨アクション</h3>
+          <ul><li>自組織および委託先でGravity SMTPプラグインの利用状況を確認し、利用している場合は速やかに最新バージョンへアップデートする。</li><li>Gravity SMTPプラグインを使用している場合、設定情報やAPIキーの漏えいの有無をログ等で確認し、必要に応じてAPIキーを再発行する。</li><li>WordPressサイトのセキュリティ設定全般を見直し、不要なプラグインの削除やアクセス制御の強化を検討する。</li></ul>
+        </section>
+      </div>
+    </a>
+
     <a class="card" href="https://thehackernews.com/2026/06/unpatchable-usbliter8-exploit-breaks.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
@@ -60,15 +86,15 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>セキュリティ研究者がApple A12/A13チップのSecureROMに任意のコード実行を可能にする「usbliter8」エクスプロイトを公開しました。この脆弱性はハードウェアに起因するため、ソフトウェアアップデートでは修正できません。</p>
+          <p>セキュリティ研究者がApple A12/A13チップのSecureROMに任意のコード実行を可能にする「usbliter8」エクスプロイトを公表しました。この脆弱性はハードウェアに起因するため、ソフトウェアアップデートでは修正できません。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>金融機関が従業員に貸与しているiPhone/iPad（A12/A13チップ搭載モデル）や、顧客が利用するモバイルバンキングアプリの動作環境に影響を与える可能性があります。物理的なアクセスが必要なため、情報漏えいや不正取引のリスクは限定的ですが、端末のセキュリティが低下する恐れがあります。</p>
+          <p>金融機関が従業員に貸与しているiPhoneやiPad（A12/A13チップ搭載モデル）が物理的に不正アクセスされた場合、情報漏えいや不正利用のリスクがあります。顧客向けアプリやシステムへの直接的な影響は低いですが、端末管理ポリシーの見直しが必要です。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>A12/A13チップ搭載のAppleデバイス（iPhone XS/XR/11/SE2など）の利用状況と、それらのデバイスで機密情報を取り扱っているかを確認する。</li><li>該当デバイスの物理的なセキュリティ対策を強化し、紛失・盗難時のリスクを低減する。</li><li>モバイルバンキングアプリの動作環境として、本脆弱性の影響を受けるデバイスの利用に関する注意喚起を検討する。</li></ul>
+          <ul><li>A12/A13チップ搭載のAppleデバイス（iPhone XS/XR/11/SE2など）の利用状況と配布状況を確認する。</li><li>該当デバイスの物理的なセキュリティ対策（紛失・盗難対策、MDMによる管理強化）を再評価し、必要に応じて強化する。</li><li>機密情報を取り扱う業務での該当デバイスの利用について、代替手段の検討や利用制限を検討する。</li></ul>
         </section>
       </div>
     </a>
@@ -86,88 +112,17 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>The Hacker Newsが、Gentlemen RaaSがEDRキラーフレームワーク「GentleKiller」を開発し、400のセキュリティプロセスを標的にしていると報じました。</p>
+          <p>The Hacker Newsが、Gentlemen RaaSがGentleKiller EDRフレームワークを開発し、400のセキュリティプロセスを標的にしてEDRを無効化していると報じました。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>金融機関のシステム、特にエンドポイントセキュリティ製品（EDR）が標的となる可能性があります。これにより、ランサムウェア攻撃によるシステム停止、情報漏えい、不正取引のリスクが高まります。委託先のセキュリティ対策も確認が必要です。</p>
+          <p>金融機関のシステム、特にエンドポイントセキュリティ製品（EDR）が標的となるリスクがあります。これにより、ランサムウェア攻撃に対する防御が低下し、情報漏えいや業務停止に繋がる可能性があります。委託先のセキュリティ対策も確認が必要です。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>導入しているEDR製品がGentleKillerの標的リストに含まれていないか、ベンダー情報を確認する。</li><li>EDR製品の検知・防御ログを監視し、不審なプロセス終了やEDR機能停止の兆候がないか緊急で確認する。</li><li>EDR製品の最新の定義ファイルやパッチが適用されているか確認し、未適用であれば速やかに適用する。</li></ul>
+          <ul><li>導入しているEDR製品がGentleKillerの標的となるプロセスに含まれていないか、ベンダー情報を確認する。</li><li>EDR製品の検知・防御ログを定期的に確認し、不審なプロセス終了やEDR機能停止の兆候がないか監視を強化する。</li><li>委託先に対し、GentleKillerによるEDR無効化攻撃への対策状況と、導入EDR製品の対応状況を確認する。</li></ul>
         </section>
       </div>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/06/autojack-attack-lets-one-web-page.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/19 21:00</span>
-      </div>
-      <h2>AutoJack 攻撃により、1 つの Web ページが AI エージェントをハイジャックしてホスト コードを実行</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-medium">中</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>Microsoftの研究者が「AutoJack」と名付けた攻撃手法を公表しました。これは、AIブラウジングエージェントを悪用し、特定のウェブページを読み込ませることでホスト上でコード実行を可能にするものです。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>AIブラウジングエージェントを利用しているシステムや業務において、悪意のあるウェブページを閲覧した場合、ホスト上での不正なコード実行リスクがあります。特に、顧客情報や機密情報を扱うシステムでの利用は注意が必要です。委託先がAIエージェントを利用している場合も影響が考えられます。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>AIブラウジングエージェントの利用状況と、そのエージェントがアクセスするウェブサイトの信頼性を確認する。</li><li>AIブラウジングエージェントが特権的なローカルサービスにアクセスする設定になっていないか、設定を見直す。</li><li>AIブラウジングエージェントの利用を制限するか、サンドボックス環境での運用を検討する。</li></ul>
-        </section>
-      </div>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/06/operation-endgame-disrupts-socgholish.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/19 20:37</span>
-      </div>
-      <h2>エンドゲーム作戦により SocGholish サーバーが中断され、14,971 の WordPress サイトがクリーンアップ</h2>
-      <p class="summary">オランダの法執行当局は、カナダ、ドイツ、米国の法執行機関とともに、SocGholish に関連する悪意のあるインフラストラクチャを破壊し、約 15,000 件の感染者を駆除しました。</p>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/06/cisa-warns-fortinet-customers-as.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/19 19:30</span>
-      </div>
-      <h2>FortiBleed が 86,644 台の FortiGate デバイスに影響を及ぼしたため、CISA がフォーティネット顧客に警告</h2>
-      <p class="summary">米国サイバーセキュリティ・インフラセキュリティ庁（CISA）は木曜日、FortiGate アプライアンスを使用しているフォーティネットの顧客に対し、あなたを狙った進行中の悪意のある活動から保護するための措置を講じるよう要請しました。</p>
-    </a>
-
-    <a class="card" href="https://www.darkreading.com/cybersecurity-operations/stressors-ai-changes-cybersecurity-teams" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/19 13:00</span>
-      </div>
-      <h2>サイバーセキュリティ チームに変化を強いるストレス要因、AI</h2>
-      <p class="summary">脅威が急増し、AI がサイバーセキュリティを複雑にするにつれ、CISO は仕事がますます難しくなっていると述べていますが、パートタイムであってもサイバーセキュリティの専門知識を求める企業は依然として増えています。</p>
-    </a>
-
-    <a class="card" href="https://blog.cloudflare.com/temporary-accounts/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#f38020">Cloudflare</span>
-        <span class="date">06/19 13:00</span>
-      </div>
-      <h2>AIエージェント用の一時的なCloudflareアカウント</h2>
-      <p class="summary">エージェントが何かを展開する必要がある瞬間、エージェントは人間のために作られた壁に顔からぶつかります。本日、Cloudflare Workers で一時アカウントを展開します。すべてのエージェントが Wrangler デプロイを実行できるよ…</p>
-    </a>
-
-    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/06/18/autojack-single-page-rce-host-running-ai-agent/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">06/19 00:17</span>
-      </div>
-      <h2>AutoJack: 単一ページで AI エージェントを実行しているホストを RCE する方法</h2>
-      <p class="summary">AutoJack は、単一の悪意のある Web ページがどのようにして AI ブラウジング エージェントをホスト マシン上のリモート コード実行ベクトルに変えることができるかを示す新しいエクスプロイト チェーンです。 localhost の…</p>
     </a>
 
     <a class="card" href="https://www.fsa.go.jp/seisaku/index.html#keikaku" target="_blank" rel="noopener">

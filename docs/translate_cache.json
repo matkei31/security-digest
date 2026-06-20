@@ -400,5 +400,7 @@
   "AutoJack: How a single page can RCE the host running your AI agent": "AutoJack: 単一ページで AI エージェントを実行しているホストを RCE する方法",
   "AutoJack is a novel exploit chain showing how a single malicious webpage can turn an AI browsing agent into a remote code execution vector on the host machine. By abusing trust in localhost, missing a": "AutoJack は、単一の悪意のある Web ページがどのようにして AI ブラウジング エージェントをホスト マシン上のリモート コード実行ベクトルに変えることができるかを示す新しいエクスプロイト チェーンです。 localhost の信頼を悪用することで、",
   "New Abuse of the ClickOnce Technology, Part 2: Stop Threat Actors from Clicking Once and Staying Forever": "ClickOnce テクノロジーの新たな悪用、パート 2: 脅威アクターが一度クリックすると永久に留まるのを阻止する",
-  "New Abuse of the ClickOnce Technology, Part 1: The Inner Workings of ClickOnce Application Deployment": "ClickOnce テクノロジーの新たな悪用、パート 1: ClickOnce アプリケーション展開の内部動作"
+  "New Abuse of the ClickOnce Technology, Part 1: The Inner Workings of ClickOnce Application Deployment": "ClickOnce テクノロジーの新たな悪用、パート 1: ClickOnce アプリケーション展開の内部動作",
+  "Hackers Exploit Gravity SMTP WordPress Plugin Bug to Expose API Keys": "ハッカーが Gravity SMTP WordPress プラグインのバグを悪用して API キーを公開",
+  "Threat actors are exploiting a recently patched security flaw impacting Gravity SMTP, a WordPress plugin that's installed on about 100,000 sites.\n\nThe vulnerability, tracked as CVE-2026-4020 (CVSS sco": "脅威アクターは、約 100,000 のサイトにインストールされている WordPress プラグインである Gravity SMTP に影響を与える、最近パッチが適用されたセキュリティ上の欠陥を悪用しています。\n\nこの脆弱性は CVE-2026-4020 (CVSS sco として追跡されています)"
 }
