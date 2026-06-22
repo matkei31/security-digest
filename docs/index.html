@@ -43,34 +43,195 @@
 <body>
   <header>
     <h1>🔐 Security Digest</h1>
-    <div class="sub">最終更新: 2026年06月21日 23:11</div>
-    <div class="count">15 件</div>
+    <div class="sub">最終更新: 2026年06月22日 23:17</div>
+    <div class="count">26 件</div>
   </header>
   <div class="cards">
+    <a class="card" href="https://thehackernews.com/2026/06/shapedplugin-wordpress-pro-plugins.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">06/22 23:30</span>
+      </div>
+      <h2>ShapedPlugin WordPress Pro プラグインがサプライチェーン攻撃でバックドア化</h2>
+      <div class="ai-analysis">
+        <div class="importance-row">
+          <span class="field-label">重要度</span>
+          <span class="importance importance-medium">中</span>
+        </div>
+        <section class="analysis-field">
+          <h3>要約</h3>
+          <p>ShapedPluginが提供する複数のWordPress Proプラグインがサプライチェーン攻撃を受け、公式リリースチャネルを通じてバックドアが仕込まれたバージョンが配布されました。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>金融機関への影響</h3>
+          <p>WordPressを利用しているウェブサイトを持つ金融機関は、ShapedPluginのProプラグインを導入している場合、システムへの不正アクセスや情報漏えいのリスクがあります。特に顧客向けサービスや情報公開サイトで利用している場合は影響が大きいです。委託先がWordPressサイトを運用している場合も確認が必要です。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>推奨アクション</h3>
+          <ul><li>自社および委託先がShapedPluginのWordPress Proプラグインを利用しているか、全サイトを棚卸しして確認する。</li><li>対象プラグインが導入されている場合、速やかに公式情報を確認し、安全なバージョンへのアップデートまたは利用停止を検討する。</li><li>ウェブサイトのアクセスログやセキュリティログを監視し、不審な活動がないか確認を強化する。</li></ul>
+        </section>
+      </div>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/06/researchers-detail-difytap-flaws-in.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">06/22 21:43</span>
+      </div>
+      <h2>研究者は、テナント間で AI チャットを公開する可能性がある Dify の DifyTap の欠陥を詳しく説明しています</h2>
+      <div class="ai-analysis">
+        <div class="importance-row">
+          <span class="field-label">重要度</span>
+          <span class="importance importance-medium">中</span>
+        </div>
+        <section class="analysis-field">
+          <h3>要約</h3>
+          <p>サイバーセキュリティ研究者が、オープンソースのAIプラットフォームDifyにDifyTapと総称される4つの脆弱性を公表しました。これにより、認証なしで他テナントのAIチャット内容が閲覧される可能性があります。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>金融機関への影響</h3>
+          <p>Difyを直接利用している場合、AIチャットの機密情報漏えいのリスクがあります。また、AI関連サービスを提供する委託先がDifyを利用している場合、間接的な情報漏えいリスクや業務影響が生じる可能性があります。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>推奨アクション</h3>
+          <ul><li>Difyの利用状況（直接利用、委託先の利用）を確認し、利用している場合は速やかに脆弱性対応状況をベンダーに確認してください。</li><li>Difyを利用している場合、または委託先が利用している場合は、機密情報を取り扱うAIチャットの利用を一時的に制限することを検討してください。</li><li>Difyの脆弱性に関する追加情報を継続的に収集し、必要な対策を講じるための計画を策定してください。</li></ul>
+        </section>
+      </div>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/06/29-year-old-squid-proxy-bug-squidbleed.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">06/22 19:59</span>
+      </div>
+      <h2>29 年前から存在する Squid プロキシのバグ「Squidbleed」により平文の HTTP リクエストが漏洩する可能性がある</h2>
+      <div class="ai-analysis">
+        <div class="importance-row">
+          <span class="field-label">重要度</span>
+          <span class="importance importance-medium">中</span>
+        </div>
+        <section class="analysis-field">
+          <h3>要約</h3>
+          <p>Calif.ioの研究者が、Squid Webプロキシに29年前から存在する脆弱性「Squidbleed」を公表しました。これにより、HTTPリクエストの平文情報が漏洩する可能性があります。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>金融機関への影響</h3>
+          <p>Squidプロキシを利用している場合、認証情報やセッショントークンを含むHTTPリクエストが他のプロキシ利用者へ漏洩するリスクがあります。特に、インターネット接続や内部システム連携に利用している場合は、情報漏洩や不正アクセスの懸念が生じます。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>推奨アクション</h3>
+          <ul><li>自組織および委託先でSquidプロキシの利用状況を確認し、バージョン情報を特定する。</li><li>Squidプロキシを利用している場合、速やかにベンダーからのパッチ適用または設定変更による緩和策を検討・実施する。</li><li>プロキシ経由の通信における機密情報の取り扱いについて、改めてセキュリティポリシーを再確認し、必要に応じて強化する。</li></ul>
+        </section>
+      </div>
+    </a>
+
+    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/06/22/guarding-ai-memory/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#0078d4">Microsoft Security</span>
+        <span class="date">06/22 19:07</span>
+      </div>
+      <h2>AI メモリの保護</h2>
+      <p class="summary">AI が記憶しているものを脅威アクターが標的にするとどうなるでしょうか? Microsoft はリスクと防御策を細分化します。
+AI メモリの保護に関する投稿は、Microsoft セキュリティ ブログに最初に掲載されました。</p>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/06/new-oxloader-loader-uses-malicious.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">06/22 18:50</span>
+      </div>
+      <h2>新しい OXLOADER ローダーは悪意のある Google 広告を使用して CastleStealer を配信します</h2>
+      <p class="summary">サイバーセキュリティ研究者は、これまで報告されていなかった OXLOADER と呼ばれるマルウェア ローダーを使用して CastleStealer を配信する新しいキャンペーンの詳細を明らかにしました。
+
+Elastic Security …</p>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/06/google-sets-sept-30-deadline-for.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">06/22 18:15</span>
+      </div>
+      <h2>Google、4カ国でAndroid開発者認証の期限を9月30日に設定</h2>
+      <p class="summary">Google は、最初の 4 か国で Android 開発者認証の施行を開始する日を 2026 年 9 月 30 日に設定しており、主要なデバイス メーカーのアプリ ストアは最初から適用されています。
+
+の上</p>
+    </a>
+
+    <a class="card" href="https://blog.cloudflare.com/hyper-bug/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#f38020">Cloudflare</span>
+        <span class="date">06/22 18:00</span>
+      </div>
+      <h2>ハイパー HTTP ライブラリのバグをどのように発見したか</h2>
+      <p class="summary">画像バインディングを再設計することにより、複数のメジャー バージョンにわたるオープンソースのハイパー ライブラリに存在するバグを偶然発見しました。</p>
+    </a>
+
+    <a class="card" href="https://www.darkreading.com/cyberattacks-data-breaches/crypto-heist-fake-reputation-boosting-campaign" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">06/22 16:10</span>
+      </div>
+      <h2>巧妙な偽の評判を高めるキャンペーンによって加速された暗号通貨強盗</h2>
+      <p class="summary">攻撃者は、GitHub、YouTube、VirusTotal などの複数のオンライン チャネルを使用して、信頼の錯覚を構築し、クロスプラットフォームのクリップボード ハイジャッカーを拡散させています。</p>
+    </a>
+
+    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/06/22/one-intrusion-two-cyberattackers-uncovering-parallel-threat-activity/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#0078d4">Microsoft Security</span>
+        <span class="date">06/22 16:00</span>
+      </div>
+      <h2>1 人の侵入、2 人のサイバー攻撃者: 並行した脅威アクティビティを明らかにする</h2>
+      <p class="summary">ランサムウェア事件では、戦術と回避を組み合わせた 2 つの並行する脅威アクターが明らかになり、孤立した信号が現代の重複するサイバー攻撃を見逃すことが多い理由がわかりました。
+The post 1 人の侵入、2 人のサイバー攻撃者</p>
+    </a>
+
+    <a class="card" href="https://www.nist.gov/news-events/news/2026/06/nist-releases-technical-findings-what-caused-2021-partial-collapse" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">NIST</span>
+        <span class="date">06/22 12:00</span>
+      </div>
+      <h2>NIST、2021年のシャンプレーン・タワーズ・サウスの部分崩壊の原因に関する技術的調査結果を発表</h2>
+      <p class="summary">悲劇の数日後に始まった調査で、チームは崩壊がどこでなぜ始まったかについて、20の考えられるシナリオを検討した。</p>
+    </a>
+
+    <a class="card" href="https://www.ncsc.gov.uk/news/the-ai-shift-in-cyber-risk-why-leaders-must-act-now" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#005eb8">NCSC</span>
+        <span class="date">06/22 12:00</span>
+      </div>
+      <h2>サイバーリスクにおける AI の変化: リーダーが今すぐ行動しなければならない理由</h2>
+    </a>
+
+    <a class="card" href="https://www.fsa.go.jp/singi/sustainable_finance/siryou/20260623.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#c0392b">金融庁</span>
+        <span class="date"></span>
+      </div>
+      <h2>「サステナブルファイナンス有識者会議」（第30回）議事次第について公表しました。</h2>
+    </a>
+
+    <a class="card" href="https://www.fsa.go.jp/inter/fatf/20260622/20260622.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#c0392b">金融庁</span>
+        <span class="date"></span>
+      </div>
+      <h2>国際関係,FATF声明の公表について（2026年６月プレナリー）掲載しました。</h2>
+    </a>
+
+    <a class="card" href="https://www.fsa.go.jp/news/r7/ginkou/20260623/20260623.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#c0392b">金融庁</span>
+        <span class="date"></span>
+      </div>
+      <h2>破綻金融機関の処理のために講じた措置の内容等に関する報告について公表しました。</h2>
+    </a>
+
     <a class="card" href="https://www.fsa.go.jp/seisaku/index.html#keikaku" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
       <h2>「金融庁における政策評価に関する基本計画」について公表しました。</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-low">低</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>金融庁が「金融庁における政策評価に関する基本計画」を公表しました。これは政策の有効性や効率性を評価するための基本方針です。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>金融機関のシステムや業務に直接的な影響はありません。金融庁の内部的な政策評価に関する情報であり、委託先への影響もありません。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>金融機関の業務やシステムへの直接的な影響はないため、特段の対応は不要です。</li><li>金融庁の政策評価の動向として、必要に応じて情報収集の対象とすることができます。</li></ul>
-        </section>
-      </div>
     </a>
 
     <a class="card" href="https://www.fsa.go.jp/news/r7/sonota/20260619-2/20260619-2.html" target="_blank" rel="noopener">
@@ -79,66 +240,14 @@
         <span class="date"></span>
       </div>
       <h2>「金融商品取引法の審判手続等における参考人及び鑑定人の旅費及び手当に関する政令の一部を改正する政令」及び「公認会計士法の審判手続における参考人及び鑑定人の旅費及び手当に関する政令の一部を改正する政令」の公布及びパブリックコメントの結果について公表しました。</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-low">低</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>金融庁は、金融商品取引法および公認会計士法の審判手続における参考人・鑑定人の旅費・手当に関する政令改正を公布し、パブリックコメントの結果を公表しました。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>本件は、金融機関のシステム、業務、委託先への直接的な影響は限定的です。審判手続に関与する可能性のある法務部門やコンプライアンス部門は、関連規定の変更を確認する必要があります。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>法務・コンプライアンス部門は、改正政令の内容を確認し、審判手続における旅費・手当の変更点を把握する。</li><li>関連する内部規程やマニュアルがある場合、必要に応じて改正内容を反映させるか、周知を検討する。</li></ul>
-        </section>
-      </div>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/singi/singi_trouble/siryou/20260619.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-state-of-cdr-survey-key-takeaways/" target="_blank" rel="noopener">
       <div class="card-meta">
-        <span class="tag" style="background:#c0392b">金融庁</span>
+        <span class="tag" style="background:#cc0000">CrowdStrike</span>
         <span class="date"></span>
       </div>
-      <h2>「第70回金融トラブル連絡調整協議会」議事次第について公表しました。</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-low">低</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>金融庁が「第70回金融トラブル連絡調整協議会」の議事次第を公表しました。これは定期的な情報共有と意見交換の場です。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>本ニュースは金融機関のシステムや業務に直接的な影響を与えるものではありません。金融トラブルに関する一般的な情報共有であり、委託先への影響も限定的です。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>公表された議事次第を確認し、自社の業務に関連する議題や論点がないか確認する。</li><li>特段の緊急対応は不要だが、今後の金融トラブルに関する動向として情報収集を継続する。</li></ul>
-        </section>
-      </div>
-    </a>
-
-    <a class="card" href="https://www.fsa.go.jp/common/about/research/20260619/20260619.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#c0392b">金融庁</span>
-        <span class="date"></span>
-      </div>
-      <h2>その他,「海外におけるカーボン・クレジット等の実態把握等に関する調査」報告書について公表しました。</h2>
-    </a>
-
-    <a class="card" href="https://www.fsa.go.jp/common/about/research/20260619-2/20260619-2.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#c0392b">金融庁</span>
-        <span class="date"></span>
-      </div>
-      <h2>その他,「ソーシャル・サステナビリティボンド（ローン）に係る実態把握調査」報告書について公表しました。</h2>
+      <h2>組織の 94% がクラウド侵害を報告: CrowdStrike による CDR の現状調査</h2>
     </a>
 
     <a class="card" href="https://www.crowdstrike.com/en-us/blog/new-abuse-of-the-clickonce-technology-part-two/" target="_blank" rel="noopener">
@@ -171,14 +280,6 @@
         <span class="date"></span>
       </div>
       <h2>Falcon Exposure Management がサードパーティ環境で利用可能に</h2>
-    </a>
-
-    <a class="card" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-announces-continuous-identity-for-ai-agents/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#cc0000">CrowdStrike</span>
-        <span class="date"></span>
-      </div>
-      <h2>CrowdStrike が AI エージェントの継続的 ID を発表</h2>
     </a>
 
     <a class="card" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener">
