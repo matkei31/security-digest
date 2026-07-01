@@ -43,16 +43,42 @@
 <body>
   <header>
     <h1>🔐 Security Digest</h1>
-    <div class="sub">最終更新: 2026年06月30日 23:10</div>
-    <div class="count">28 件</div>
+    <div class="sub">最終更新: 2026年07月01日 23:13</div>
+    <div class="count">30 件</div>
   </header>
   <div class="cards">
-    <a class="card" href="https://thehackernews.com/2026/06/microsoft-warns-poisoned-mcp-tool.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/07/unpatched-argo-cd-repo-server-flaw.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/30 23:16</span>
+        <span class="date">07/02 01:10</span>
       </div>
-      <h2>Microsoft、有害な MCP ツールの記述により AI エージェントがデータを漏洩する可能性があると警告</h2>
+      <h2>パッチが適用されていない Argo CD リポサーバーの欠陥により、攻撃者が Kubernetes クラスターを乗っ取る可能性がある</h2>
+      <div class="ai-analysis">
+        <div class="importance-row">
+          <span class="field-label">重要度</span>
+          <span class="importance importance-high">高</span>
+        </div>
+        <section class="analysis-field">
+          <h3>要約</h3>
+          <p>The Hacker Newsが報じたところによると、KubernetesデプロイツールArgo CDのrepo-serverコンポーネントに未パッチの脆弱性が発見され、認証なしの攻撃者が内部ネットワークポートに到達できればコード実行が可能となり、クラスター乗っ取りにつながる可能性があります。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>金融機関への影響</h3>
+          <p>Argo CDを利用している金融機関のKubernetes環境は、システム停止、情報漏えい、不正取引のリスクに直面します。特に、インターネットから直接アクセス可能な環境や、内部ネットワークのセグメンテーションが不十分な環境では、重大な影響が生じる可能性があります。委託先がArgo CDを利用している場合も同様のリスクがあります。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>推奨アクション</h3>
+          <ul><li>Argo CDの利用有無とバージョンを確認し、repo-serverコンポーネントのネットワークアクセス制御状況を緊急で調査してください。</li><li>Argo CDのrepo-serverコンポーネントへの外部からのアクセスを遮断し、内部ネットワークからのアクセスも最小限に制限する対策を検討・実施してください。</li><li>Argo CDの公式アナウンスを継続的に監視し、パッチがリリースされ次第、速やかに適用計画を立案・実行してください。</li></ul>
+        </section>
+      </div>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/07/19-year-old-scattered-spider-suspect.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">07/02 00:58</span>
+      </div>
+      <h2>19歳の散在スパイダー容疑者が米国のハッキング容疑で引き渡される</h2>
       <div class="ai-analysis">
         <div class="importance-row">
           <span class="field-label">重要度</span>
@@ -60,25 +86,25 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>Microsoftが、AIエージェントがユーザーに代わって動作する際に、不正なツール説明（MCPツール記述）を利用して企業データを外部に漏洩させる攻撃手法について警告しました。</p>
+          <p>米国司法省は7月1日、ハッキンググループScattered Spiderのメンバーとされる19歳の容疑者がフィンランドから米国に引き渡され、共謀、コンピュータ侵入、詐欺の罪で起訴されたと発表しました。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>金融機関が利用するAIエージェントが、不正なツール記述により機密情報を意図せず外部に送信するリスクがあります。特に顧客情報や取引データを取り扱うAIシステム、およびそれらを開発・運用する委託先において情報漏洩のリスクが高まります。</p>
+          <p>Scattered Spiderは金融機関を標的とすることで知られており、関連するシステムや業務への潜在的な脅威が存在します。委託先が標的となる可能性も考慮し、情報漏えいや不正取引のリスクを確認する必要があります。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>AIエージェントが利用するツール記述の検証プロセスを強化し、信頼できるソースからのもののみを使用するよう徹底してください。</li><li>AIエージェントのデータアクセス権限を見直し、必要最小限のデータのみにアクセスを許可するよう設定を再確認してください。</li><li>AIエージェントの挙動を監視し、異常なデータ送信や外部連携がないかログを定期的に確認する体制を構築してください。</li></ul>
+          <ul><li>Scattered Spiderの手口に関する最新情報を収集し、自組織のセキュリティ対策が有効か確認する。</li><li>委託先を含め、関連するシステムやネットワークにおける不審な活動がないか監視を強化する。</li><li>従業員に対し、ソーシャルエンジニアリング攻撃への注意喚起と対応策を再教育する。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/06/rustduck-botnet-rebuilds-in-rust-to.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/07/seo-poisoned-software-sites-abuse.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/30 23:15</span>
+        <span class="date">07/01 23:23</span>
       </div>
-      <h2>RustDuck ボットネットは Rust で再構築され、DDoS のためにルーターとサーバーをハイジャックします</h2>
+      <h2>SEO に汚染されたソフトウェア サイトが ScreenConnect を悪用して AsyncRAT を導入</h2>
       <div class="ai-analysis">
         <div class="importance-row">
           <span class="field-label">重要度</span>
@@ -86,139 +112,160 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>QiAnXinの研究者が2026年2月から追跡しているRustDuckボットネットが、ルーター、IPカメラ、Androidボックス、サーバーを乗っ取り、DDoS攻撃に利用しているとThe Hacker Newsが報じました。</p>
+          <p>Kasperskyが、SEOポイズニングされた偽ソフトウェアサイトを悪用し、ScreenConnectを介してAsyncRATを展開する大規模キャンペーンを公表しました。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>金融機関の直接的なシステムへの影響は低いものの、委託先のネットワーク機器やIoTデバイスが乗っ取られ、金融サービスへのDDoS攻撃に悪用される可能性があります。また、取引先や顧客のインターネット接続に影響が出るリスクも考えられます。</p>
+          <p>ScreenConnectを利用している場合、不正なリモートアクセスや情報漏えいのリスクがあります。従業員が偽サイトからソフトウェアをダウンロードした場合、業務システムへのマルウェア感染の可能性があります。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>委託先を含め、自社が管理するネットワーク機器、IoTデバイス、サーバーの脆弱性管理と設定状況を再確認する。</li><li>DDoS攻撃に対する現在の防御策と監視体制が適切か、最新の脅威動向を踏まえて評価し、必要に応じて強化を検討する。</li><li>取引先や顧客が利用する可能性のある一般的なデバイスが攻撃に利用されるリスクについて、情報収集と注意喚起を行う。</li></ul>
+          <ul><li>ScreenConnectの利用状況を確認し、不審な接続履歴や設定変更がないかログを監査する。</li><li>従業員に対し、正規サイト以外からのソフトウェアダウンロード禁止と、不審なサイトへの注意喚起を改めて行う。</li><li>セキュリティ製品の定義ファイルを最新化し、AsyncRATや関連する不正な通信を検知・ブロックできるか確認する。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://www.darkreading.com/cyber-risk/fake-bug-report-hijacks-ai-coding-agents" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/30 21:37</span>
-      </div>
-      <h2>偽のバグレポートが AI コーディング エージェントを大規模にハイジャック</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-medium">中</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>Dark Readingが、AIコーディングエージェントがコンテンツと指示を区別できない脆弱性を悪用し、偽のバグレポートによってAIエージェントが乗っ取られる「Agentjacking」の手法を公表しました。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>AIコーディングエージェントを利用しているシステム開発部門や、AIを活用した業務プロセスを持つ部門は、意図しないコード生成や情報漏洩のリスクがあります。委託先のAI利用状況も確認が必要です。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>AIコーディングエージェントの利用状況と、入力される情報の機密性を棚卸し、リスクを評価する。</li><li>AIエージェントへの入力データに対するサニタイズ処理や、出力コードのレビュー体制を強化する。</li><li>委託先がAIコーディングエージェントを利用している場合、セキュリティ対策状況を確認し、必要に応じて契約を見直す。</li></ul>
-        </section>
-      </div>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/06/langflow-rce-exploited-to-deploy-monero.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/07/veildrop-malware-chain-uses-blogger.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/30 21:17</span>
+        <span class="date">07/01 22:48</span>
       </div>
-      <h2>Langflow RCE を悪用して、公開された AI アプリのエンドポイントに Monero Miner を導入</h2>
-      <p class="summary">脅威アクターは、Monero 暗号通貨マイナーを提供することを目的とした新たな攻撃の一環として、Langflow の重大な脆弱性を悪用し続けています。
+      <h2>VEIL#DROP マルウェア チェーンは Blogger プラットフォームを使用して PureLogs Stealer を配信</h2>
+      <p class="summary">サイバーセキュリティ研究者らは、ソーシャル エンジニアリングと Blogger ページを使用して PureLogs と呼ばれる情報窃盗ツールを配信する、新たな多段階マルウェア配信攻撃チェーンにフラグを立てました。
 
-この活動は CVE-2026 を兵器化することが判明しました</p>
+アクティビティ h</p>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/06/silent-swap-crypto-clipper-uses-fake.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/07/ousaban-banking-trojan-targets-iberian.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/30 21:10</span>
+        <span class="date">07/01 20:56</span>
       </div>
-      <h2>サイレント スワップ Crypto Clipper が偽の Google Notes 拡張機能を使用してウォレット アドレスを置き換える</h2>
-      <p class="summary">サイバーセキュリティ研究者は、疑いを持たないユーザーが取引を開始したときにウォレットアドレスをこっそり置き換えることによって暗号通貨を盗むように設計されたアクティブなブラウザ拡張キャンペーンにフラグを立てました。</p>
+      <h2>Ousaban バンキング トロイの木馬、偽 PDF ルアーでイベリア銀行ユーザーを狙う</h2>
+      <p class="summary">Ousaban と呼ばれるブラジルのバンキング トロイの木馬が、スペインとポルトガルで銀行を利用する Windows ユーザーを狙っています。 フォーティネットの FortiGuard Labs は、2026 年 5 月にこのキャンペーンを…</p>
     </a>
 
-    <a class="card" href="https://www.darkreading.com/cloud-security/attackers-hijack-exposed-ai-endpoints-power-offensive-ops" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/30 21:01</span>
-      </div>
-      <h2>攻撃者が公開された AI エンドポイントをハイジャックして攻撃作戦を強化</h2>
-      <p class="summary">攻撃者はターゲットのエンドポイントに到達するために特別な認証を必要としません。ターゲットのエンドポイントがどこにあるかを知る必要があるだけです。</p>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/06/guardfall-exposes-open-source-ai-coding.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">06/30 19:56</span>
-      </div>
-      <h2>GuardFall により、オープンソース AI コーディング エージェントが数十年前のシェル インジェクション リスクにさらされる</h2>
-      <p class="summary">AI コーディング エージェントによる危険なコマンドの実行を阻止するはずの安全性チェックは、何十年も前から公開されているシェル トリックを使用すると、そのまま通り抜けることができます。
-
-からの新しい研究</p>
-    </a>
-
-    <a class="card" href="https://www.darkreading.com/cybersecurity-operations/identity-security-cyber-career-entry-point" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/30 19:11</span>
-      </div>
-      <h2>ID セキュリティがサイバーキャリアのエントリーポイントとなる理由</h2>
-      <p class="summary">AI によってサイバーセキュリティのワークフローが再構築される中、シルバーフォートの CISO であるジョン・ポール・カニンガム氏は、このテクノロジーは雇用をなくすのではなく機会を生み出しており、雇用を奪う方法はこれまで以上にたくさんあると…</p>
-    </a>
-
-    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/06/30/microsoft-advances-quantum-safe-security-as-the-risk-timeline-shifts/" target="_blank" rel="noopener">
+    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/07/01/microsoft-named-a-leader-in-the-frost-radar-for-cloud-and-application-runtime-security/" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">06/30 19:00</span>
+        <span class="date">07/01 16:00</span>
       </div>
-      <h2>量子安全なタイムラインを加速する</h2>
-      <p class="summary">私たちは量子安全への対応を加速し、より早期に自信を持って移行するために組織が今できることを共有しています。
-投稿「量子安全タイムラインの加速」 first appeared on Microso</p>
+      <h2>Microsoft、クラウドおよびアプリケーション ランタイム セキュリティの Frost Radar のリーダーに指名</h2>
+      <p class="summary">Frost &amp; Sullivan は、クラウドとアプリケーションのセキュリティが統合された実行時のリスク軽減に向けて Microsoft をリーダーに挙げています。
+Microsoft がクラウドとアプリの Frost Radar のリーダ…</p>
     </a>
 
-    <a class="card" href="https://www.darkreading.com/cyberattacks-data-breaches/phishers-persistence-eu-asia-hospitality-orgs" target="_blank" rel="noopener">
+    <a class="card" href="https://blog.cloudflare.com/monetization-gateway/" target="_blank" rel="noopener">
       <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/30 18:59</span>
+        <span class="tag" style="background:#f38020">Cloudflare</span>
+        <span class="date">07/01 13:00</span>
       </div>
-      <h2>EU、アジアのホスピタリティ組織でフィッシング詐欺師が執拗に増加</h2>
-      <p class="summary">Microsoft とトレンドマイクロが説明した別個の同様のキャンペーンでは、悪意のある zip ファイルが使用され、ソーシャル エンジニアリングやブロックチェーンの悪用などの難読化を介してマルウェアが拡散されます。</p>
+      <h2>Monetization Gateway の発表: x402 経由で Cloudflare の背後にあるリソースに課金</h2>
+      <p class="summary">Monetization Gateway の待機リストをオープンしています。これにより、Cloudflare の背後にある Web ページ、データセット、API、または MCP ツールの料金を請求できるようになります。料金は x にわたって…</p>
     </a>
 
-    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/06/30/whats-new-in-microsoft-security-june-2026/" target="_blank" rel="noopener">
+    <a class="card" href="https://blog.cloudflare.com/agentic-internet-bot-report/" target="_blank" rel="noopener">
       <div class="card-meta">
-        <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">06/30 16:00</span>
+        <span class="tag" style="background:#f38020">Cloudflare</span>
+        <span class="date">07/01 13:00</span>
       </div>
-      <h2>Microsoft セキュリティの新機能: 2026 年 6 月</h2>
-      <p class="summary">今月のアップデートは、セキュリティ チームと IT チームが ID とマルチクラウドの基盤を強化し、どこに存在するデータでも保護し、AI イノベーションを推進する開発者のワークフローを保護するのに役立ちます。
-ポストWh</p>
+      <h2>コンテンツ インディペンデンス デイ、1 年後: エージェント インターネットのビジネス モデルの構築</h2>
+      <p class="summary">コンテンツ独立デーを宣言してから 1 年後、収益化されたコンテンツのダイナミックな市場が正式に出現しました。このレポートでは、自律型 AI エージェントの台頭がどのように伝統を覆すのかを調査します。</p>
     </a>
 
-    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/06/30/securing-ai-agents-ai-tools-move-from-reading-acting/" target="_blank" rel="noopener">
+    <a class="card" href="https://blog.cloudflare.com/making-ai-search-smarter/" target="_blank" rel="noopener">
       <div class="card-meta">
-        <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">06/30 15:57</span>
+        <span class="tag" style="background:#f38020">Cloudflare</span>
+        <span class="date">07/01 13:00</span>
       </div>
-      <h2>AI エージェントの保護: AI ツールが読み取りから行動に移行するとき</h2>
-      <p class="summary">MCP ツール ポイズニングにより、信頼できる AI エージェントがデータ損失のコントロール プレーンに変わります。脅威アクターがツールの説明を操作して不正なアクションをトリガーする方法と、検出、封じ込め、事前の実行方法を学びます。</p>
+      <h2>AI検索をよりスマートに</h2>
+      <p class="summary">検索は、作成者、販売者、回答など、ウェブ上のほぼすべてのものを見つける方法です。 AI によってルールが書き換えられ、クリエイターはエージェント時代に発見され続けることと報酬を受け取ることの間で板挟みになっています。</p>
     </a>
 
-    <a class="card" href="https://www.darkreading.com/cyber-risk/ai-generated-workflows-silent-security-disaster" target="_blank" rel="noopener">
+    <a class="card" href="https://blog.cloudflare.com/content-independence-day-ai-options/" target="_blank" rel="noopener">
       <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">06/30 13:00</span>
+        <span class="tag" style="background:#f38020">Cloudflare</span>
+        <span class="date">07/01 13:00</span>
       </div>
-      <h2>AI によって生成されたワークフローは、静かなセキュリティ災害となる</h2>
-      <p class="summary">チームは、機能するが誰も理解できない自動化という、本当に危険な問題に取り組んでいます。</p>
+      <h2>あなたのサイト、あなたのルール: すべての顧客向けの新しい AI トラフィック オプション</h2>
+      <p class="summary">2 回目の Content Independent Day では、Web サイト所有者に AI トラフィックを管理するためのより詳細なオプションを提供します。画一的なブロックの代わりに、すべての顧客が Searc を簡単に区別して管理できる…</p>
+    </a>
+
+    <a class="card" href="https://www.ncsc.gov.uk/blogs/building-more-resilient-cni-what-industry-pen-testers-told-us" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#005eb8">NCSC</span>
+        <span class="date">07/01 12:00</span>
+      </div>
+      <h2>より回復力のある CNI の構築: 業界のペネトレーション テスターが教えてくれたこと</h2>
+      <p class="summary">ペネトレーションテスターは、組織が仕事をより困難にするために何ができるかを提案します。</p>
+    </a>
+
+    <a class="card" href="https://blog.talosintelligence.com/martin-lee-running-through-the-arctic-and-the-threat-landscape/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
+        <span class="date">07/01 10:00</span>
+      </div>
+      <h2>マーティン・リー: 北極 (そして脅威の風景) を駆け抜ける</h2>
+      <p class="summary">人がどのようにして人間のウイルスの研究からサイバーセキュリティチームを率いるようになるのか不思議に思ったことはありませんか?この「Talos の人間」では、EMEA リードの Martin Lee 氏に参加して、業界への彼の歩みについて話し…</p>
+    </a>
+
+    <a class="card" href="https://blog.talosintelligence.com/artoken-inside-an-eviltokens-affiliate-panel-targeting-microsoft-365/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
+        <span class="date">07/01 10:00</span>
+      </div>
+      <h2>ARToken: Microsoft 365 を対象とした EvilTokens アフィリエイト パネル内</h2>
+      <p class="summary">Talos は、Microsoft 365 をターゲットとするサービスとしてのフィッシング プラットフォームである「ARToken」を特定しました。ARToken パネルは、デバイス コード フィッシング、プライマリ リフレッシュ トークン…</p>
+    </a>
+
+    <a class="card" href="https://blog.cloudflare.com/attribution-business-insights/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#f38020">Cloudflare</span>
+        <span class="date">07/01 06:00</span>
+      </div>
+      <h2>Attribution Business Insights でクロールを明らかにする</h2>
+      <p class="summary">Cloudflareの新しいAttribution Business Insightsダッシュボードは、ウェブサイト所有者がクローラーの行動、食欲、潜在的な価値を理解するのに役立ち、クロール報酬に関するビジネスレベルの会話を促進します。</p>
+    </a>
+
+    <a class="card" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#e74c3c">CISA KEV</span>
+        <span class="date">07/01 00:00</span>
+      </div>
+      <h2>CVE-2026-45659 — Microsoft SharePoint Server の信頼できないデータの逆シリアル化の脆弱性</h2>
+      <p class="summary">Microsoft SharePoint Server には、信頼できないデータのシリアル化解除の脆弱性が存在し、許可された攻撃者がネットワーク上でコードを実行できるようになります。</p>
+    </a>
+
+    <a class="card" href="https://www.fsa.go.jp/news/r8/hoken/20260701/20260701.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#c0392b">金融庁</span>
+        <span class="date"></span>
+      </div>
+      <h2>「保険会社向けの総合的な監督指針」の一部改正（案）に対するパブリックコメントの結果等について公表しました。</h2>
+    </a>
+
+    <a class="card" href="https://www.fsa.go.jp/common/conference/minister/2026a/20260630-1.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#c0392b">金融庁</span>
+        <span class="date"></span>
+      </div>
+      <h2>記者会見,片山財務大臣兼内閣府特命担当大臣閣議後記者会見の概要（令和８年６月30日）について掲載しました。</h2>
+    </a>
+
+    <a class="card" href="https://www.fsa.go.jp/common/about/jinji/index.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#c0392b">金融庁</span>
+        <span class="date"></span>
+      </div>
+      <h2>人事異動（令和８年６月30日付及び令和８年７月１日付）について公表しました。</h2>
+    </a>
+
+    <a class="card" href="https://www.fsa.go.jp/ifiar/20260701.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#c0392b">金融庁</span>
+        <span class="date"></span>
+      </div>
+      <h2>日本IFIARネットワーク第10回総会議事次第・議事要旨について公表しました。</h2>
     </a>
 
     <a class="card" href="https://www.fsa.go.jp/news/r7/shouken/20260630/20260630.html" target="_blank" rel="noopener">
@@ -229,36 +276,12 @@
       <h2>「証券取引等監視委員会の職員が検査及び犯則事件の調査をするときに携帯すべき証票等の様式を定める内閣府令の一部を改正する内閣府令」の公布について公表しました。</h2>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/news/r7/sonota/20260630/20260630.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.crowdstrike.com/en-us/blog/browser-security-zero-days-are-only-part-of-the-problem/" target="_blank" rel="noopener">
       <div class="card-meta">
-        <span class="tag" style="background:#c0392b">金融庁</span>
+        <span class="tag" style="background:#cc0000">CrowdStrike</span>
         <span class="date"></span>
       </div>
-      <h2>その他,「ESG評価・データ提供機関に係る行動規範」への市場関係者における対応状況等に関する実態把握結果について公表しました。</h2>
-    </a>
-
-    <a class="card" href="https://www.fsa.go.jp/singi/singi_kinyu/disclosure_wg/gijiroku/20260518.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#c0392b">金融庁</span>
-        <span class="date"></span>
-      </div>
-      <h2>金融審議会「ディスクロージャーワーキング・グループ」（第５回）議事録について公表しました。</h2>
-    </a>
-
-    <a class="card" href="https://www.fsa.go.jp/common/about/research/20260630-2/20260630-2.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#c0392b">金融庁</span>
-        <span class="date"></span>
-      </div>
-      <h2>その他,「金融機関の取組みの評価等に関する企業アンケート調査」について公表しました。</h2>
-    </a>
-
-    <a class="card" href="https://www.fsa.go.jp/news/r7/ginkou/20260630.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#c0392b">金融庁</span>
-        <span class="date"></span>
-      </div>
-      <h2>預貯金の不正送金被害等の発生状況（令和８年３月末）について公表しました。</h2>
+      <h2>ブラウザのセキュリティ: ゼロデイは問題の一部にすぎません</h2>
     </a>
 
     <a class="card" href="https://www.crowdstrike.com/en-us/blog/new-in-falcon-cloud-security-expanding-multi-cloud-coverage/" target="_blank" rel="noopener">
@@ -291,14 +314,6 @@
         <span class="date"></span>
       </div>
       <h2>ClickOnce テクノロジーの新たな悪用、パート 2: 脅威アクターが一度クリックすると永久に留まるのを阻止する</h2>
-    </a>
-
-    <a class="card" href="https://www.crowdstrike.com/en-us/blog/new-abuse-of-the-clickonce-technology-part-one/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#cc0000">CrowdStrike</span>
-        <span class="date"></span>
-      </div>
-      <h2>ClickOnce テクノロジーの新たな悪用、パート 1: ClickOnce アプリケーション展開の内部動作</h2>
     </a>
 
     <a class="card" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener">
