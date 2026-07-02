@@ -43,16 +43,42 @@
 <body>
   <header>
     <h1>🔐 Security Digest</h1>
-    <div class="sub">最終更新: 2026年07月01日 23:13</div>
-    <div class="count">30 件</div>
+    <div class="sub">最終更新: 2026年07月02日 23:03</div>
+    <div class="count">28 件</div>
   </header>
   <div class="cards">
-    <a class="card" href="https://thehackernews.com/2026/07/unpatched-argo-cd-repo-server-flaw.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/07/google-disrupts-netnut-residential.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/02 01:10</span>
+        <span class="date">07/03 00:24</span>
       </div>
-      <h2>パッチが適用されていない Argo CD リポサーバーの欠陥により、攻撃者が Kubernetes クラスターを乗っ取る可能性がある</h2>
+      <h2>Google、200万台のホームデバイスにわたるNetNut住宅用プロキシネットワークを妨害</h2>
+      <div class="ai-analysis">
+        <div class="importance-row">
+          <span class="field-label">重要度</span>
+          <span class="importance importance-medium">中</span>
+        </div>
+        <section class="analysis-field">
+          <h3>要約</h3>
+          <p>GoogleはFBIなどと連携し、家庭用デバイスを悪用して他者の通信を中継する大規模な住宅プロキシネットワーク「NetNut」を大幅に縮小させたと公表しました。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>金融機関への影響</h3>
+          <p>金融機関のシステムや業務への直接的な影響は低いものの、NetNutのようなプロキシサービスが悪用された場合、不正アクセスや詐欺取引の隠蔽に利用される可能性があります。委託先が意図せず利用している可能性も考慮し、監視を強化する必要があります。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>推奨アクション</h3>
+          <ul><li>自社システムへの不正アクセス試行元IPアドレスに、住宅プロキシ経由のものが含まれていないかログを確認する。</li><li>委託先が業務で住宅プロキシサービスを利用していないか、契約内容や利用実態を確認する。</li><li>不正検知システムにおいて、住宅プロキシ経由のアクセスに対する検知ルールや閾値を再評価し、必要に応じて強化する。</li></ul>
+        </section>
+      </div>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/07/ransomware-groups-turn-to-citrix-bleed.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">07/03 00:00</span>
+      </div>
+      <h2>ランサムウェア グループが Citrix Bleed 2、BYOVD、サプライ チェーンの認証情報に注目</h2>
       <div class="ai-analysis">
         <div class="importance-row">
           <span class="field-label">重要度</span>
@@ -60,220 +86,178 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>The Hacker Newsが報じたところによると、KubernetesデプロイツールArgo CDのrepo-serverコンポーネントに未パッチの脆弱性が発見され、認証なしの攻撃者が内部ネットワークポートに到達できればコード実行が可能となり、クラスター乗っ取りにつながる可能性があります。</p>
+          <p>AnubisランサムウェアグループがCitrix Bleed 2（CVE-2025-5777）の脆弱性を悪用し、初期アクセスを取得していることが確認されました。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>Argo CDを利用している金融機関のKubernetes環境は、システム停止、情報漏えい、不正取引のリスクに直面します。特に、インターネットから直接アクセス可能な環境や、内部ネットワークのセグメンテーションが不十分な環境では、重大な影響が生じる可能性があります。委託先がArgo CDを利用している場合も同様のリスクがあります。</p>
+          <p>Citrix製品を利用しているシステム（特にリモートアクセス、VDI環境）は、ランサムウェアによるシステム停止、情報漏えい、不正取引のリスクに直面します。委託先での利用状況も確認が必要です。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>Argo CDの利用有無とバージョンを確認し、repo-serverコンポーネントのネットワークアクセス制御状況を緊急で調査してください。</li><li>Argo CDのrepo-serverコンポーネントへの外部からのアクセスを遮断し、内部ネットワークからのアクセスも最小限に制限する対策を検討・実施してください。</li><li>Argo CDの公式アナウンスを継続的に監視し、パッチがリリースされ次第、速やかに適用計画を立案・実行してください。</li></ul>
+          <ul><li>自社および委託先におけるCitrix Bleed 2（CVE-2025-5777）の影響を受ける製品の利用有無を確認する。</li><li>脆弱性が確認された場合、速やかにセキュリティパッチの適用または緩和策を実施する。</li><li>Citrix製品のログ監視を強化し、不審なアクセスや活動がないか緊急で確認する。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/07/19-year-old-scattered-spider-suspect.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.darkreading.com/cybersecurity-analytics/aussies-face-reduced-cybercrime-risk-pressure-shifts-smbs" target="_blank" rel="noopener">
       <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/02 00:58</span>
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">07/02 23:01</span>
       </div>
-      <h2>19歳の散在スパイダー容疑者が米国のハッキング容疑で引き渡される</h2>
+      <h2>中小企業への圧力が高まる中、オーストラリア人はサイバー犯罪リスクの軽減に直面</h2>
       <div class="ai-analysis">
         <div class="importance-row">
           <span class="field-label">重要度</span>
-          <span class="importance importance-medium">中</span>
+          <span class="importance importance-low">低</span>
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>米国司法省は7月1日、ハッキンググループScattered Spiderのメンバーとされる19歳の容疑者がフィンランドから米国に引き渡され、共謀、コンピュータ侵入、詐欺の罪で起訴されたと発表しました。</p>
+          <p>Dark Readingが、オーストラリアでは機関の保護強化と規制厳格化により、サイバー犯罪のリスクが中小企業に転嫁されていると報じました。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>Scattered Spiderは金融機関を標的とすることで知られており、関連するシステムや業務への潜在的な脅威が存在します。委託先が標的となる可能性も考慮し、情報漏えいや不正取引のリスクを確認する必要があります。</p>
+          <p>本ニュースはオーストラリアの状況に関するものであり、日本の金融機関への直接的なシステム、業務、委託先への影響は限定的です。ただし、海外拠点や関連会社がオーストラリアに存在する場合、その拠点の中小企業との取引やサプライチェーンにおけるサイバーリスクが増加する可能性があります。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>Scattered Spiderの手口に関する最新情報を収集し、自組織のセキュリティ対策が有効か確認する。</li><li>委託先を含め、関連するシステムやネットワークにおける不審な活動がないか監視を強化する。</li><li>従業員に対し、ソーシャルエンジニアリング攻撃への注意喚起と対応策を再教育する。</li></ul>
+          <ul><li>オーストラリアに拠点を持つ、またはオーストラリアの中小企業と取引のある部門に対し、本ニュースの共有と関連リスクの有無を確認する。</li><li>サプライチェーンリスク管理プロセスにおいて、海外の中小企業委託先に対するサイバーセキュリティ評価基準が適切かを確認する。</li><li>自社のサイバーセキュリティ対策が、規制強化や脅威の変化に対応できているか、継続的に評価・改善する。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/07/seo-poisoned-software-sites-abuse.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/07/threatsday-ai-compute-hijacking-apple.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/01 23:23</span>
+        <span class="date">07/02 20:54</span>
       </div>
-      <h2>SEO に汚染されたソフトウェア サイトが ScreenConnect を悪用して AsyncRAT を導入</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-medium">中</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>Kasperskyが、SEOポイズニングされた偽ソフトウェアサイトを悪用し、ScreenConnectを介してAsyncRATを展開する大規模キャンペーンを公表しました。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>ScreenConnectを利用している場合、不正なリモートアクセスや情報漏えいのリスクがあります。従業員が偽サイトからソフトウェアをダウンロードした場合、業務システムへのマルウェア感染の可能性があります。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>ScreenConnectの利用状況を確認し、不審な接続履歴や設定変更がないかログを監査する。</li><li>従業員に対し、正規サイト以外からのソフトウェアダウンロード禁止と、不審なサイトへの注意喚起を改めて行う。</li><li>セキュリティ製品の定義ファイルを最新化し、AsyncRATや関連する不正な通信を検知・ブロックできるか確認する。</li></ul>
-        </section>
-      </div>
+      <h2>ThreatsDay: AI コンピューティング ハイジャック、Apple 電子メールの欠陥、BlueHammer ランサムウェア + 14 のストーリー</h2>
+      <p class="summary">今週のセキュリティ ニュースは主に弱点に関するものです。
+
+ブラウザ、ボット、サンドボックス、AI システム、電子メール フローはすべて、同じ問題をさまざまな方法で示します。誰かがテストするまではすべてが正常に見えます</p>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/07/veildrop-malware-chain-uses-blogger.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.darkreading.com/cybersecurity-operations/apple-patch-policy-ai" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">07/02 19:31</span>
+      </div>
+      <h2>Apple、AI に対応するために長年のパッチ ポリシーを撤回</h2>
+      <p class="summary">攻撃者が人工知能を活用して悪用時間を短縮するため、Apple のパッチ適用サイクルは今後さらに短縮されることが予想されます。</p>
+    </a>
+
+    <a class="card" href="https://krebsonsecurity.com/2026/07/fbi-seizes-netnut-proxy-platform-popa-botnet/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Krebs on Security</span>
+        <span class="date">07/02 19:27</span>
+      </div>
+      <h2>FBI、NetNut プロキシ プラットフォーム、Popa ボットネットを押収</h2>
+      <p class="summary">連邦捜査局（FBI）は本日、業界パートナーと協力して、公共機関が運営する大規模な住宅用プロキシサービスであるNetNutに関連する数百のドメインを押収したと発表した。</p>
+    </a>
+
+    <a class="card" href="https://www.darkreading.com/threat-intelligence/fortibleed-actors-inc-lynx-ransomware-gangs" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">07/02 19:11</span>
+      </div>
+      <h2>FortiBleed の俳優が Inc、Lynx ランサムウェアギャングと協力</h2>
+      <p class="summary">攻撃者は数千のフォーティネット ファイアウォールに足場を築いた後、そのアクセスを収益化し始めており、Nextcloud のゼロデイ バグも積み上げています。</p>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/07/toddycat-linked-umbrij-malware-abuses.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/01 22:48</span>
+        <span class="date">07/02 18:34</span>
       </div>
-      <h2>VEIL#DROP マルウェア チェーンは Blogger プラットフォームを使用して PureLogs Stealer を配信</h2>
-      <p class="summary">サイバーセキュリティ研究者らは、ソーシャル エンジニアリングと Blogger ページを使用して PureLogs と呼ばれる情報窃盗ツールを配信する、新たな多段階マルウェア配信攻撃チェーンにフラグを立てました。
+      <h2>ToddyCat にリンクされた Umbrij マルウェアが OAuth を悪用し、Google API 経由で Gmail にアクセス</h2>
+      <p class="summary">ToddyCat として知られる攻撃者は、Google API を介して被害者の電子メール通信にこっそりアクセスするように設計された Umbrij と呼ばれる新しいマルウェアに起因すると考えられています。
 
-アクティビティ h</p>
+「このキャンプでは</p>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/07/ousaban-banking-trojan-targets-iberian.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.darkreading.com/cyberattacks-data-breaches/attackers-use-interpol-lure-target-small-businesses" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">07/02 18:07</span>
+      </div>
+      <h2>ランサムウェア凶悪犯がインターポールを装って中小企業を誘惑</h2>
+      <p class="summary">ランサムウェア キャンペーンは基本的なソーシャル エンジニアリングに依存しており、米国、ヨーロッパ、中東などを含む複数の地域に広がっています。</p>
+    </a>
+
+    <a class="card" href="https://blog.talosintelligence.com/catan-and-mouse/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
+        <span class="date">07/02 18:00</span>
+      </div>
+      <h2>カタンとネズミ</h2>
+      <p class="summary">ボードゲームとサイバーセキュリティの共通点は何ですか?パターン認識。戦略。適応。今週の「脅威の源」では、法案はなぜ好奇心がディフェンダーの最も貴重なスキルであるのかを探ります。</p>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/07/identity-lifecycle-management.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/01 20:56</span>
+        <span class="date">07/02 17:00</span>
       </div>
-      <h2>Ousaban バンキング トロイの木馬、偽 PDF ルアーでイベリア銀行ユーザーを狙う</h2>
-      <p class="summary">Ousaban と呼ばれるブラジルのバンキング トロイの木馬が、スペインとポルトガルで銀行を利用する Windows ユーザーを狙っています。 フォーティネットの FortiGuard Labs は、2026 年 5 月にこのキャンペーンを…</p>
+      <h2>ID ライフサイクル管理は AI エージェント向けに構築されたものではない</h2>
+      <p class="summary">ID ライフサイクル管理は、雇用記録を持つ個人、マネージャー、および退職日を中心に設計されました。 AI エージェントにはそれらがありません。自律的なプリンシパルがエンテ全体に急増するにつれて</p>
     </a>
 
-    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/07/01/microsoft-named-a-leader-in-the-frost-radar-for-cloud-and-application-runtime-security/" target="_blank" rel="noopener">
+    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/07/02/improving-security-posture-across-the-microsoft-partner-ecosystem/" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">07/01 16:00</span>
+        <span class="date">07/02 16:00</span>
       </div>
-      <h2>Microsoft、クラウドおよびアプリケーション ランタイム セキュリティの Frost Radar のリーダーに指名</h2>
-      <p class="summary">Frost &amp; Sullivan は、クラウドとアプリケーションのセキュリティが統合された実行時のリスク軽減に向けて Microsoft をリーダーに挙げています。
-Microsoft がクラウドとアプリの Frost Radar のリーダ…</p>
+      <h2>Microsoft パートナー エコシステム全体のセキュリティ体制を改善する</h2>
+      <p class="summary">Microsoft が CSP 審査、最小権限アクセス、監視、リスク管理のベスト プラクティスによってパートナー エコシステムのセキュリティをどのように強化しているかをご覧ください。
+投稿 マイクロ全体のセキュリティ体制の改善</p>
     </a>
 
-    <a class="card" href="https://blog.cloudflare.com/monetization-gateway/" target="_blank" rel="noopener">
+    <a class="card" href="https://www.darkreading.com/vulnerabilities-threats/anthropic-s-ai-finds-bugs-ibm-bets-5b-it-can-fix-them-" target="_blank" rel="noopener">
       <div class="card-meta">
-        <span class="tag" style="background:#f38020">Cloudflare</span>
-        <span class="date">07/01 13:00</span>
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">07/02 12:33</span>
       </div>
-      <h2>Monetization Gateway の発表: x402 経由で Cloudflare の背後にあるリソースに課金</h2>
-      <p class="summary">Monetization Gateway の待機リストをオープンしています。これにより、Cloudflare の背後にある Web ページ、データセット、API、または MCP ツールの料金を請求できるようになります。料金は x にわたって…</p>
+      <h2>Anthropic の AI がバグを発見。 IBMはそれらを修正できると50億ドルを賭ける。</h2>
+      <p class="summary">Anthropic の Mythos の調査結果により、オープンソース ソフトウェアのサプライ チェーンを保護する方法についての議論が高まる中、IBM と Red Hat は新しい Project Lightwell サービスに 20,00…</p>
     </a>
 
-    <a class="card" href="https://blog.cloudflare.com/agentic-internet-bot-report/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#f38020">Cloudflare</span>
-        <span class="date">07/01 13:00</span>
-      </div>
-      <h2>コンテンツ インディペンデンス デイ、1 年後: エージェント インターネットのビジネス モデルの構築</h2>
-      <p class="summary">コンテンツ独立デーを宣言してから 1 年後、収益化されたコンテンツのダイナミックな市場が正式に出現しました。このレポートでは、自律型 AI エージェントの台頭がどのように伝統を覆すのかを調査します。</p>
-    </a>
-
-    <a class="card" href="https://blog.cloudflare.com/making-ai-search-smarter/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#f38020">Cloudflare</span>
-        <span class="date">07/01 13:00</span>
-      </div>
-      <h2>AI検索をよりスマートに</h2>
-      <p class="summary">検索は、作成者、販売者、回答など、ウェブ上のほぼすべてのものを見つける方法です。 AI によってルールが書き換えられ、クリエイターはエージェント時代に発見され続けることと報酬を受け取ることの間で板挟みになっています。</p>
-    </a>
-
-    <a class="card" href="https://blog.cloudflare.com/content-independence-day-ai-options/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#f38020">Cloudflare</span>
-        <span class="date">07/01 13:00</span>
-      </div>
-      <h2>あなたのサイト、あなたのルール: すべての顧客向けの新しい AI トラフィック オプション</h2>
-      <p class="summary">2 回目の Content Independent Day では、Web サイト所有者に AI トラフィックを管理するためのより詳細なオプションを提供します。画一的なブロックの代わりに、すべての顧客が Searc を簡単に区別して管理できる…</p>
-    </a>
-
-    <a class="card" href="https://www.ncsc.gov.uk/blogs/building-more-resilient-cni-what-industry-pen-testers-told-us" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#005eb8">NCSC</span>
-        <span class="date">07/01 12:00</span>
-      </div>
-      <h2>より回復力のある CNI の構築: 業界のペネトレーション テスターが教えてくれたこと</h2>
-      <p class="summary">ペネトレーションテスターは、組織が仕事をより困難にするために何ができるかを提案します。</p>
-    </a>
-
-    <a class="card" href="https://blog.talosintelligence.com/martin-lee-running-through-the-arctic-and-the-threat-landscape/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
-        <span class="date">07/01 10:00</span>
-      </div>
-      <h2>マーティン・リー: 北極 (そして脅威の風景) を駆け抜ける</h2>
-      <p class="summary">人がどのようにして人間のウイルスの研究からサイバーセキュリティチームを率いるようになるのか不思議に思ったことはありませんか?この「Talos の人間」では、EMEA リードの Martin Lee 氏に参加して、業界への彼の歩みについて話し…</p>
-    </a>
-
-    <a class="card" href="https://blog.talosintelligence.com/artoken-inside-an-eviltokens-affiliate-panel-targeting-microsoft-365/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
-        <span class="date">07/01 10:00</span>
-      </div>
-      <h2>ARToken: Microsoft 365 を対象とした EvilTokens アフィリエイト パネル内</h2>
-      <p class="summary">Talos は、Microsoft 365 をターゲットとするサービスとしてのフィッシング プラットフォームである「ARToken」を特定しました。ARToken パネルは、デバイス コード フィッシング、プライマリ リフレッシュ トークン…</p>
-    </a>
-
-    <a class="card" href="https://blog.cloudflare.com/attribution-business-insights/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#f38020">Cloudflare</span>
-        <span class="date">07/01 06:00</span>
-      </div>
-      <h2>Attribution Business Insights でクロールを明らかにする</h2>
-      <p class="summary">Cloudflareの新しいAttribution Business Insightsダッシュボードは、ウェブサイト所有者がクローラーの行動、食欲、潜在的な価値を理解するのに役立ち、クロール報酬に関するビジネスレベルの会話を促進します。</p>
-    </a>
-
-    <a class="card" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#e74c3c">CISA KEV</span>
-        <span class="date">07/01 00:00</span>
-      </div>
-      <h2>CVE-2026-45659 — Microsoft SharePoint Server の信頼できないデータの逆シリアル化の脆弱性</h2>
-      <p class="summary">Microsoft SharePoint Server には、信頼できないデータのシリアル化解除の脆弱性が存在し、許可された攻撃者がネットワーク上でコードを実行できるようになります。</p>
-    </a>
-
-    <a class="card" href="https://www.fsa.go.jp/news/r8/hoken/20260701/20260701.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/singi/startup/index.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
-      <h2>「保険会社向けの総合的な監督指針」の一部改正（案）に対するパブリックコメントの結果等について公表しました。</h2>
+      <h2>「スタートアップ企業等への成長資金供給等に関する懇談会」（第８回）の開催について公表しました。</h2>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/common/conference/minister/2026a/20260630-1.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/singi/singi_kigyou/siryou/hoshou/20260703.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
-      <h2>記者会見,片山財務大臣兼内閣府特命担当大臣閣議後記者会見の概要（令和８年６月30日）について掲載しました。</h2>
+      <h2>企業会計審議会第２回サステナビリティ情報保証部会の議事次第について公表しました。</h2>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/common/about/jinji/index.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/inter/etc/20260626/20260626.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
-      <h2>人事異動（令和８年６月30日付及び令和８年７月１日付）について公表しました。</h2>
+      <h2>国際関係,インド国際金融サービスセンター庁との協力枠組みに係る書簡交換（EOL）について公表しました。</h2>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/ifiar/20260701.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/kouhou/showa100nen/index.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
-      <h2>日本IFIARネットワーク第10回総会議事次第・議事要旨について公表しました。</h2>
+      <h2>その他,「昭和100年」関連施策　特設ページを更新しました。</h2>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/news/r7/shouken/20260630/20260630.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/choutatu/choutatu_j/nyusatu_menu.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
-      <h2>「証券取引等監視委員会の職員が検査及び犯則事件の調査をするときに携帯すべき証票等の様式を定める内閣府令の一部を改正する内閣府令」の公布について公表しました。</h2>
+      <h2>調達,入札公告等を更新しました。</h2>
     </a>
 
     <a class="card" href="https://www.crowdstrike.com/en-us/blog/browser-security-zero-days-are-only-part-of-the-problem/" target="_blank" rel="noopener">
