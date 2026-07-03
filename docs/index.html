@@ -43,42 +43,25 @@
 <body>
   <header>
     <h1>🔐 Security Digest</h1>
-    <div class="sub">最終更新: 2026年07月02日 23:03</div>
-    <div class="count">28 件</div>
+    <div class="sub">最終更新: 2026年07月03日 23:00</div>
+    <div class="count">22 件</div>
   </header>
   <div class="cards">
-    <a class="card" href="https://thehackernews.com/2026/07/google-disrupts-netnut-residential.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/07/unpatched-flaws-disclosed-in-filesystem.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/03 00:24</span>
+        <span class="date">07/04 01:49</span>
       </div>
-      <h2>Google、200万台のホームデバイスにわたるNetNut住宅用プロキシネットワークを妨害</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-medium">中</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>GoogleはFBIなどと連携し、家庭用デバイスを悪用して他者の通信を中継する大規模な住宅プロキシネットワーク「NetNut」を大幅に縮小させたと公表しました。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>金融機関のシステムや業務への直接的な影響は低いものの、NetNutのようなプロキシサービスが悪用された場合、不正アクセスや詐欺取引の隠蔽に利用される可能性があります。委託先が意図せず利用している可能性も考慮し、監視を強化する必要があります。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>自社システムへの不正アクセス試行元IPアドレスに、住宅プロキシ経由のものが含まれていないかログを確認する。</li><li>委託先が業務で住宅プロキシサービスを利用していないか、契約内容や利用実態を確認する。</li><li>不正検知システムにおいて、住宅プロキシ経由のアクセスに対する検知ルールや閾値を再評価し、必要に応じて強化する。</li></ul>
-        </section>
-      </div>
+      <h2>数百万台の組み込みデバイスにバンドルされているファイルシステムでパッチが適用されていない欠陥が判明</h2>
+      <p class="summary">セキュリティ会社 runZero は、デバイスが USB ドライブや SD カードで使用される FAT および exFAT フォーマットを読み書きできるようにする小さなファイルシステム ライブラリである FatFs に 7 件の脆弱性を公開…</p>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/07/ransomware-groups-turn-to-citrix-bleed.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/07/new-bad-epoll-linux-kernel-flaw-lets.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/03 00:00</span>
+        <span class="date">07/04 01:10</span>
       </div>
-      <h2>ランサムウェア グループが Citrix Bleed 2、BYOVD、サプライ チェーンの認証情報に注目</h2>
+      <h2>Linux カーネルの新たな「Bad Epoll」欠陥により、特権のないユーザーが root 権限を取得し、Android に被害を与える</h2>
       <div class="ai-analysis">
         <div class="importance-row">
           <span class="field-label">重要度</span>
@@ -86,17 +69,74 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>AnubisランサムウェアグループがCitrix Bleed 2（CVE-2025-5777）の脆弱性を悪用し、初期アクセスを取得していることが確認されました。</p>
+          <p>Linuxカーネルの新たな脆弱性「Bad Epoll」（CVE-2026-46242）が公開され、一般ユーザーがroot権限を取得できることが判明しました。Linuxデスクトップ、サーバー、Androidに影響し、修正パッチがリリースされています。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>Citrix製品を利用しているシステム（特にリモートアクセス、VDI環境）は、ランサムウェアによるシステム停止、情報漏えい、不正取引のリスクに直面します。委託先での利用状況も確認が必要です。</p>
+          <p>LinuxサーバーやAndroidデバイスを利用するシステム、特に顧客情報や取引データを扱う基幹システム、情報系システム、開発環境、VDI環境、ATM、POSシステム、モバイルバンキングアプリ等に影響し、情報漏えいやシステム停止、不正取引のリスクがあります。委託先のシステムも確認が必要です。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>自社および委託先におけるCitrix Bleed 2（CVE-2025-5777）の影響を受ける製品の利用有無を確認する。</li><li>脆弱性が確認された場合、速やかにセキュリティパッチの適用または緩和策を実施する。</li><li>Citrix製品のログ監視を強化し、不審なアクセスや活動がないか緊急で確認する。</li></ul>
+          <ul><li>Linuxカーネルのバージョンを確認し、影響を受けるシステムを特定する。</li><li>速やかに修正パッチを適用し、システムをアップデートする。</li><li>パッチ適用が困難な場合は、緩和策の検討と監視強化を行う。</li></ul>
         </section>
       </div>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/07/new-avalon-malware-framework-packs.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">07/04 00:25</span>
+      </div>
+      <h2>新しい Avalon マルウェア フレームワーク パック CrownX ランサムウェア機能</h2>
+      <div class="ai-analysis">
+        <div class="importance-row">
+          <span class="field-label">重要度</span>
+          <span class="importance importance-medium">中</span>
+        </div>
+        <section class="analysis-field">
+          <h3>要約</h3>
+          <p>サイバーセキュリティ研究者が、従来のセキュリティ対策を回避する多段階のフィッシング攻撃で拡散される、新たなモジュール型マルウェアフレームワーク「Avalon」を発見しました。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>金融機関への影響</h3>
+          <p>Avalonは認証情報窃取、ラテラルムーブメント、ランサムウェア実行などの機能を持ち、金融機関のシステムへの不正アクセス、情報漏えい、業務停止のリスクを高めます。特に、委託先経由での感染経路にも注意が必要です。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>推奨アクション</h3>
+          <ul><li>従業員に対し、多段階フィッシング攻撃の手口とAvalonマルウェアに関する注意喚起と教育を実施する。</li><li>メールセキュリティシステムの設定を見直し、フィッシングメールの検知・ブロック能力を強化する。</li><li>システムログを監視し、Avalアンマルウェア感染の兆候（不審な認証情報アクセス、横展開の試みなど）がないか確認する。</li></ul>
+        </section>
+      </div>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/07/north-korea-linked-npm-packages-mimic.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">07/03 21:37</span>
+      </div>
+      <h2>北朝鮮関連の npm パッケージがロールアップ ポリフィルを模倣して開発者の秘密を盗む</h2>
+      <p class="summary">北朝鮮と関係のある脅威アクターが、リモート アクセスやデータ盗難を容易にするロールアップ ポリフィル ツールを装った一連の悪意のある npm パッケージに関与していることが判明しました。
+
+JFさんによると</p>
+    </a>
+
+    <a class="card" href="https://thehackernews.com/2026/07/armored-likho-targets-government.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">07/03 19:06</span>
+      </div>
+      <h2>Armored Likho、BusySnake Stealer で政府機関と電力セクターを標的</h2>
+      <p class="summary">Armored Likho として知られるこれまで文書化されていない攻撃者が、ロシア、ブラジル、カザフスタンの政府機関と電力部門を標的としたサイバー攻撃を行ったと考えられています。
+
+」</p>
+    </a>
+
+    <a class="card" href="https://www.darkreading.com/cyber-risk/chinese-llms-broaden-gap-between-attackers-and-defenders" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">07/03 13:01</span>
+      </div>
+      <h2>中国のLLMが攻撃者と防御者の溝を広げる</h2>
+      <p class="summary">中国企業の2つの新モデルが、米国のトップ主流モデルやフロンティアモデルと競合する。サイバー防御者は心配すべきでしょうか?</p>
     </a>
 
     <a class="card" href="https://www.darkreading.com/cybersecurity-analytics/aussies-face-reduced-cybercrime-risk-pressure-shifts-smbs" target="_blank" rel="noopener">
@@ -105,159 +145,49 @@
         <span class="date">07/02 23:01</span>
       </div>
       <h2>中小企業への圧力が高まる中、オーストラリア人はサイバー犯罪リスクの軽減に直面</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-low">低</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>Dark Readingが、オーストラリアでは機関の保護強化と規制厳格化により、サイバー犯罪のリスクが中小企業に転嫁されていると報じました。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>本ニュースはオーストラリアの状況に関するものであり、日本の金融機関への直接的なシステム、業務、委託先への影響は限定的です。ただし、海外拠点や関連会社がオーストラリアに存在する場合、その拠点の中小企業との取引やサプライチェーンにおけるサイバーリスクが増加する可能性があります。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>オーストラリアに拠点を持つ、またはオーストラリアの中小企業と取引のある部門に対し、本ニュースの共有と関連リスクの有無を確認する。</li><li>サプライチェーンリスク管理プロセスにおいて、海外の中小企業委託先に対するサイバーセキュリティ評価基準が適切かを確認する。</li><li>自社のサイバーセキュリティ対策が、規制強化や脅威の変化に対応できているか、継続的に評価・改善する。</li></ul>
-        </section>
-      </div>
+      <p class="summary">制度上の保護措置の改善と規制の厳格化により、保護とリスク軽減の負担がオーストラリアの企業に押し付けられています。</p>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/07/threatsday-ai-compute-hijacking-apple.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/02 20:54</span>
-      </div>
-      <h2>ThreatsDay: AI コンピューティング ハイジャック、Apple 電子メールの欠陥、BlueHammer ランサムウェア + 14 のストーリー</h2>
-      <p class="summary">今週のセキュリティ ニュースは主に弱点に関するものです。
-
-ブラウザ、ボット、サンドボックス、AI システム、電子メール フローはすべて、同じ問題をさまざまな方法で示します。誰かがテストするまではすべてが正常に見えます</p>
-    </a>
-
-    <a class="card" href="https://www.darkreading.com/cybersecurity-operations/apple-patch-policy-ai" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/02 19:31</span>
-      </div>
-      <h2>Apple、AI に対応するために長年のパッチ ポリシーを撤回</h2>
-      <p class="summary">攻撃者が人工知能を活用して悪用時間を短縮するため、Apple のパッチ適用サイクルは今後さらに短縮されることが予想されます。</p>
-    </a>
-
-    <a class="card" href="https://krebsonsecurity.com/2026/07/fbi-seizes-netnut-proxy-platform-popa-botnet/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Krebs on Security</span>
-        <span class="date">07/02 19:27</span>
-      </div>
-      <h2>FBI、NetNut プロキシ プラットフォーム、Popa ボットネットを押収</h2>
-      <p class="summary">連邦捜査局（FBI）は本日、業界パートナーと協力して、公共機関が運営する大規模な住宅用プロキシサービスであるNetNutに関連する数百のドメインを押収したと発表した。</p>
-    </a>
-
-    <a class="card" href="https://www.darkreading.com/threat-intelligence/fortibleed-actors-inc-lynx-ransomware-gangs" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/02 19:11</span>
-      </div>
-      <h2>FortiBleed の俳優が Inc、Lynx ランサムウェアギャングと協力</h2>
-      <p class="summary">攻撃者は数千のフォーティネット ファイアウォールに足場を築いた後、そのアクセスを収益化し始めており、Nextcloud のゼロデイ バグも積み上げています。</p>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/07/toddycat-linked-umbrij-malware-abuses.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/02 18:34</span>
-      </div>
-      <h2>ToddyCat にリンクされた Umbrij マルウェアが OAuth を悪用し、Google API 経由で Gmail にアクセス</h2>
-      <p class="summary">ToddyCat として知られる攻撃者は、Google API を介して被害者の電子メール通信にこっそりアクセスするように設計された Umbrij と呼ばれる新しいマルウェアに起因すると考えられています。
-
-「このキャンプでは</p>
-    </a>
-
-    <a class="card" href="https://www.darkreading.com/cyberattacks-data-breaches/attackers-use-interpol-lure-target-small-businesses" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/02 18:07</span>
-      </div>
-      <h2>ランサムウェア凶悪犯がインターポールを装って中小企業を誘惑</h2>
-      <p class="summary">ランサムウェア キャンペーンは基本的なソーシャル エンジニアリングに依存しており、米国、ヨーロッパ、中東などを含む複数の地域に広がっています。</p>
-    </a>
-
-    <a class="card" href="https://blog.talosintelligence.com/catan-and-mouse/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
-        <span class="date">07/02 18:00</span>
-      </div>
-      <h2>カタンとネズミ</h2>
-      <p class="summary">ボードゲームとサイバーセキュリティの共通点は何ですか?パターン認識。戦略。適応。今週の「脅威の源」では、法案はなぜ好奇心がディフェンダーの最も貴重なスキルであるのかを探ります。</p>
-    </a>
-
-    <a class="card" href="https://thehackernews.com/2026/07/identity-lifecycle-management.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/02 17:00</span>
-      </div>
-      <h2>ID ライフサイクル管理は AI エージェント向けに構築されたものではない</h2>
-      <p class="summary">ID ライフサイクル管理は、雇用記録を持つ個人、マネージャー、および退職日を中心に設計されました。 AI エージェントにはそれらがありません。自律的なプリンシパルがエンテ全体に急増するにつれて</p>
-    </a>
-
-    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/07/02/improving-security-posture-across-the-microsoft-partner-ecosystem/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">07/02 16:00</span>
-      </div>
-      <h2>Microsoft パートナー エコシステム全体のセキュリティ体制を改善する</h2>
-      <p class="summary">Microsoft が CSP 審査、最小権限アクセス、監視、リスク管理のベスト プラクティスによってパートナー エコシステムのセキュリティをどのように強化しているかをご覧ください。
-投稿 マイクロ全体のセキュリティ体制の改善</p>
-    </a>
-
-    <a class="card" href="https://www.darkreading.com/vulnerabilities-threats/anthropic-s-ai-finds-bugs-ibm-bets-5b-it-can-fix-them-" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/02 12:33</span>
-      </div>
-      <h2>Anthropic の AI がバグを発見。 IBMはそれらを修正できると50億ドルを賭ける。</h2>
-      <p class="summary">Anthropic の Mythos の調査結果により、オープンソース ソフトウェアのサプライ チェーンを保護する方法についての議論が高まる中、IBM と Red Hat は新しい Project Lightwell サービスに 20,00…</p>
-    </a>
-
-    <a class="card" href="https://www.fsa.go.jp/singi/startup/index.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/policy/nisa2/products/index.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
-      <h2>「スタートアップ企業等への成長資金供給等に関する懇談会」（第８回）の開催について公表しました。</h2>
+      <h2>その他,つみたて投資枠対象商品届出一覧及びつみたて投資枠対象商品の概要を更新しました。</h2>
+      <p class="summary">つみたて投資枠対象商品に関する、様々な資料を掲載しています。</p>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/singi/singi_kigyou/siryou/hoshou/20260703.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/policy/nisa/20260703.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
-      <h2>企業会計審議会第２回サステナビリティ情報保証部会の議事次第について公表しました。</h2>
+      <h2>NISA口座の利用状況に関する調査結果（令和７年12月末時点）について公表しました。</h2>
+      <p class="summary">ＮＩＳＡ・ＮＩＳＡ（旧制度）・ジュニアＮＩＳＡ口座の利用状況に関する調査結果を公表しました。</p>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/inter/etc/20260626/20260626.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/common/about/research/20260703/20260703.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
-      <h2>国際関係,インド国際金融サービスセンター庁との協力枠組みに係る書簡交換（EOL）について公表しました。</h2>
+      <h2>その他,「貸金業利用者に関する調査・研究」調査結果について公表しました。</h2>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/kouhou/showa100nen/index.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/news/r8/shouken/20260703/20260703.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
-      <h2>その他,「昭和100年」関連施策　特設ページを更新しました。</h2>
+      <h2>「金融商品取引業者等向けの総合的な監督指針」の一部改正（案）に対するパブリックコメントの結果等について公表しました。</h2>
     </a>
 
-    <a class="card" href="https://www.fsa.go.jp/choutatu/choutatu_j/nyusatu_menu.html" target="_blank" rel="noopener">
+    <a class="card" href="https://www.fsa.go.jp/news/r8/260703/20260703.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#c0392b">金融庁</span>
         <span class="date"></span>
       </div>
-      <h2>調達,入札公告等を更新しました。</h2>
+      <h2>「マネー・ローンダリング等及び金融犯罪対策の取組と課題（2026年７月）」について公表しました。</h2>
     </a>
 
     <a class="card" href="https://www.crowdstrike.com/en-us/blog/browser-security-zero-days-are-only-part-of-the-problem/" target="_blank" rel="noopener">
