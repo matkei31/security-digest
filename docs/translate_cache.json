@@ -659,5 +659,9 @@
   "Armored Likho Targets Government Agencies, Power Sector with BusySnake Stealer": "Armored Likho、BusySnake Stealer で政府機関と電力セクターを標的",
   "A previously undocumented threat actor known as Armored Likho has been attributed to cyber attacks targeting government agencies and the electric power sector across Russia, Brazil, and Kazakhstan.\n\n\"": "Armored Likho として知られるこれまで文書化されていない攻撃者が、ロシア、ブラジル、カザフスタンの政府機関と電力部門を標的としたサイバー攻撃を行ったと考えられています。\n\n」",
   "Chinese LLMs Broaden the Gap Between Attackers &amp; Defenders": "中国のLLMが攻撃者と防御者の溝を広げる",
-  "Two new models from Chinese firms compete with top US mainstream and frontier models. Should cyber-defenders be worried?": "中国企業の2つの新モデルが、米国のトップ主流モデルやフロンティアモデルと競合する。サイバー防御者は心配すべきでしょうか?"
+  "Two new models from Chinese firms compete with top US mainstream and frontier models. Should cyber-defenders be worried?": "中国企業の2つの新モデルが、米国のトップ主流モデルやフロンティアモデルと競合する。サイバー防御者は心配すべきでしょうか?",
+  "U.S. Government Entity Paid Kairos $1 Million in Data-Theft Extortion Case": "データ窃盗恐喝事件で米国政府機関がカイロスに100万ドルを支払った",
+  "A U.S. government entity paid about $1 million to keep stolen files from being leaked, according to a new&nbsp;case study by Rakesh Krishnan for Ransom-ISAC, built on a leaked negotiation chat and the": "ラケシュ・クリシュナン氏によるランサム ISAC の新しいケーススタディによると、米国政府機関は盗まれたファイルの漏洩を防ぐために約 100 万ドルを支払ったという。このケーススタディは、漏洩した交渉チャットと",
+  "North Korean Hackers Publish 108 Malicious Packages and Extensions in PolinRider Campaign": "北朝鮮のハッカー、PolinRider キャンペーンで 108 個の悪意のあるパッケージと拡張機能を公開",
+  "The North Korean threat actors linked to the Contagious Interview campaign have been observed publishing 108 unique packages and web browser extensions spanning npm, Packagist, Go, and Google Chrome a": "Contagious Interview キャンペーンに関連する北朝鮮の攻撃者は、npm、Packagist、Go、Google Chrome にわたる 108 個の独自のパッケージと Web ブラウザ拡張機能を公開していることが観察されています。"
 }
