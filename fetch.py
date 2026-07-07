@@ -256,6 +256,13 @@ def fetch_nist_nvd(cutoff):
 
 # ── 全収集 ────────────────────────────────────────────────────────────────────
 
+TRUSTED_CYBER_SOURCES = {
+    "JPCERT/CC", "CISA", "Microsoft Security", "Mandiant",
+    "CrowdStrike", "Google TAG", "NCSC", "Cisco Talos",
+    "The Hacker News", "Krebs on Security", "Dark Reading",
+}
+
+
 def is_cyber_relevant(item):
     text = (item.get("title", "") + " " + item.get("summary", "")).lower()
     keywords = [
@@ -287,7 +294,10 @@ def collect_recent():
     all_items += kev_items
     # all_items += fetch_nist_nvd(cutoff)
 
-    all_items = [item for item in all_items if is_cyber_relevant(item)]
+    all_items = [
+        item for item in all_items
+        if item["source"] in TRUSTED_CYBER_SOURCES or is_cyber_relevant(item)
+    ]
 
     all_items.sort(key=lambda x: x["date"] or datetime.datetime.min, reverse=True)
     all_items = enrich_with_ai(all_items)
