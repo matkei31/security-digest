@@ -24,7 +24,7 @@ RSS_FEEDS = [
 
     # ベンダ・脅威情報
     ("Microsoft Security", "https://www.microsoft.com/en-us/security/blog/feed/",       "en"),
-    ("Mandiant",           "https://www.mandiant.com/resources/blog/rss.xml",           "en"),
+    ("Mandiant",           "https://cloudblog.withgoogle.com/topics/threat-intelligence/rss/", "en"),
     ("CrowdStrike",        "https://www.crowdstrike.com/blog/feed/",                    "en"),
     ("Google TAG",         "https://security.googleblog.com/feeds/posts/default",       "en"),
     ("NCSC",               "https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml","en"),
@@ -36,7 +36,7 @@ RSS_FEEDS = [
     ("Cisco Talos",        "https://blog.talosintelligence.com/rss/",                    "en"),
     ("Cloudflare",         "https://blog.cloudflare.com/rss/",                            "en"),
 ]
-MAX_PER_FEED = 5
+MAX_PER_FEED = 3
 DAYS_BACK    = 1
 
 GEMINI_MODEL = "gemini-2.5-flash"
@@ -60,6 +60,7 @@ SOURCE_COLORS = {
 NAMESPACES = {
     "atom": "http://www.w3.org/2005/Atom",
     "dc":   "http://purl.org/dc/elements/1.1/",
+    "rss1": "http://purl.org/rss/1.0/",
 }
 
 CACHE_PATH = Path(__file__).parent / "docs" / "translate_cache.json"
@@ -112,6 +113,7 @@ def parse_date(s):
         "%a, %d %b %Y %H:%M:%S %Z",
         "%Y-%m-%dT%H:%M:%S%z",
         "%Y-%m-%dT%H:%M:%SZ",
+        "%Y-%m-%dT%H:%M%z",
         "%Y-%m-%d",
     ):
         try:
@@ -165,6 +167,17 @@ def fetch_feed(name, url, lang):
                     entry.findtext("atom:updated",   namespaces=NAMESPACES) or
                     entry.findtext("atom:published", namespaces=NAMESPACES)
                 ),
+                "source": name,
+                "lang":   lang,
+            })
+    elif "rdf" in tag:
+        # RSS 1.0 (RDF) 形式: 要素がデフォルト名前空間 (rss1) に属する
+        for item in root.findall("rss1:item", NAMESPACES)[:MAX_PER_FEED]:
+            items.append({
+                "title":   (item.findtext("rss1:title",       namespaces=NAMESPACES) or "").strip(),
+                "link":    (item.findtext("rss1:link",         namespaces=NAMESPACES) or "").strip(),
+                "summary": (item.findtext("rss1:description",  namespaces=NAMESPACES) or "").strip(),
+                "date":    parse_date(item.findtext("dc:date", namespaces=NAMESPACES)),
                 "source": name,
                 "lang":   lang,
             })
@@ -260,12 +273,18 @@ def collect_recent():
     cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=DAYS_BACK)
     all_items = []
 
+    print("フィード別の取得状況:")
     for name, url, lang in (f for f in RSS_FEEDS if not f[1].startswith("#")):
-        for item in fetch_feed(name, url, lang):
-            if item["date"] is None or item["date"] >= cutoff:
-                all_items.append(item)
+        items = fetch_feed(name, url, lang)
+        recent = [item for item in items if item["date"] is None or item["date"] >= cutoff]
+        status = "OK" if items else "NG"
+        print(f"  [{status}] {name}: 取得 {len(items)} 件 / 直近 {len(recent)} 件")
+        all_items.extend(recent)
 
-    all_items += fetch_cisa_kev(cutoff)
+    kev_items = fetch_cisa_kev(cutoff)
+    kev_status = "OK" if kev_items else "NG"
+    print(f"  [{kev_status}] CISA KEV: 取得 {len(kev_items)} 件")
+    all_items += kev_items
     # all_items += fetch_nist_nvd(cutoff)
 
     all_items = [item for item in all_items if is_cyber_relevant(item)]
@@ -574,8 +593,162 @@ link: {item.get('link', '')}
     return items
 
 
+# ── エグゼクティブサマリー ─────────────────────────────────────────────────────
 
-def build_html(items):
+def normalize_executive_summary(value):
+    if not isinstance(value, dict):
+        return None
+
+    lines = value.get("summary_lines")
+    if not isinstance(lines, list):
+        return None
+
+    lines = [str(line).strip() for line in lines if str(line).strip()][:3]
+    if len(lines) < 2:
+        return None
+
+    return lines
+
+
+def parse_executive_summary(response_text):
+    if not isinstance(response_text, str):
+        return None
+
+    decoder = json.JSONDecoder()
+    for match in re.finditer(r"\{", response_text):
+        try:
+            value, _ = decoder.raw_decode(response_text[match.start():])
+        except json.JSONDecodeError:
+            continue
+
+        lines = normalize_executive_summary(value)
+        if lines:
+            return lines
+
+    return None
+
+
+def gemini_executive_summary(high_items):
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        return None
+
+    bullets = []
+    for item in high_items:
+        analysis = item.get("ai_analysis") or {}
+        bullets.append(
+            f"- source: {item.get('source', '')} / title: {item.get('title', '')} / "
+            f"summary: {analysis.get('summary', '')} / "
+            f"financial_impact: {analysis.get('financial_impact', '')}"
+        )
+    text = "\n".join(bullets)
+
+    prompt = f"""
+あなたは日本の金融機関のサイバーセキュリティ責任者です。
+以下は本日、重要度「高」と判定されたセキュリティニュースの分析結果一覧です。
+金融機関のサイバー担当者が出社直後にまず読む「本日のポイント」を、日本語の箇条書き2〜3行で作成してください。
+
+記述ルール:
+- 各行は1文、80文字以内で、何が起きていて、なぜ緊急なのかが分かるように具体的に書く
+- 関連する複数のニュースがあれば要点をまとめてもよい
+- 入力にない事実、製品利用状況、被害、期限は推測しない
+- 箇条書き記号（・や-など）や見出しは付けない(呼び出し側で付与する)
+
+重要度「高」のニュース一覧:
+{text}
+"""
+
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent?key={api_key}"
+    body = json.dumps({
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "temperature": 0.2,
+            "maxOutputTokens": 500,
+            "thinking_config": {
+                "thinking_budget": 0
+            },
+            "response_mime_type": "application/json",
+            "response_schema": {
+                "type": "OBJECT",
+                "propertyOrdering": ["summary_lines"],
+                "properties": {
+                    "summary_lines": {
+                        "type": "ARRAY",
+                        "items": {"type": "STRING"},
+                        "minItems": 2,
+                        "maxItems": 3,
+                        "description": "本日のポイント（2〜3行の箇条書き）"
+                    }
+                },
+                "required": ["summary_lines"]
+            }
+        }
+    }).encode("utf-8")
+
+    max_retries = 2
+    for attempt in range(max_retries + 1):
+        req = urllib.request.Request(
+            url,
+            data=body,
+            headers={"Content-Type": "application/json"}
+        )
+
+        try:
+            with urllib.request.urlopen(req, timeout=30) as res:
+                data = json.loads(res.read())
+            parts = data["candidates"][0]["content"]["parts"]
+            response_text = "".join(
+                part.get("text", "")
+                for part in parts
+                if isinstance(part, dict)
+            )
+            lines = parse_executive_summary(response_text)
+            if lines:
+                return lines
+
+            print("[WARN] エグゼクティブサマリー: JSON解析失敗", file=sys.stderr)
+            return None
+        except urllib.error.HTTPError as e:
+            if e.code in (429, 503) and attempt < max_retries:
+                wait_seconds = 3 * (attempt + 1)
+                print(
+                    f"[WARN] エグゼクティブサマリー: HTTP {e.code}、"
+                    f"{wait_seconds}秒後に再試行 ({attempt + 1}/{max_retries})",
+                    file=sys.stderr,
+                )
+                time.sleep(wait_seconds)
+                continue
+            print(f"[WARN] エグゼクティブサマリー: HTTP {e.code}", file=sys.stderr)
+            return None
+        except Exception as e:
+            print(
+                f"[WARN] エグゼクティブサマリー: {type(e).__name__}: {e}",
+                file=sys.stderr,
+            )
+            return None
+
+    return None
+
+
+def build_executive_summary(items):
+    high_items = [
+        item for item in items
+        if normalize_ai_analysis(item.get("ai_analysis")) is not None
+        and normalize_ai_analysis(item.get("ai_analysis"))["importance"] == "高"
+    ]
+    if not high_items:
+        return None
+
+    print("エグゼクティブサマリーを生成中...")
+    lines = gemini_executive_summary(high_items)
+    if lines:
+        print(f"  エグゼクティブサマリー: {len(lines)} 行")
+    else:
+        print("  エグゼクティブサマリー: 生成失敗")
+    return lines
+
+
+def build_html(items, exec_summary=None):
     now      = datetime.datetime.now()
     date_str = now.strftime("%Y年%m月%d日 %H:%M")
 
@@ -639,6 +812,17 @@ def build_html(items):
         for n, *_ in all_sources
     )
 
+    if exec_summary:
+        exec_lines_html = "".join(f"<li>{esc(line)}</li>" for line in exec_summary)
+        exec_summary_html = f"""<div class="exec-summary">
+    <div class="exec-summary-box">
+      <h2>本日のポイント（金融機関サイバー担当者向け）</h2>
+      <ul>{exec_lines_html}</ul>
+    </div>
+  </div>"""
+    else:
+        exec_summary_html = ""
+
     return f"""<!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -672,6 +856,12 @@ def build_html(items):
     .analysis-field ul{{padding-left:18px}}
     .analysis-field li+li{{margin-top:3px}}
     .empty{{text-align:center;color:#8b949e;padding:60px 0;font-size:14px}}
+    .exec-summary{{max-width:680px;margin:12px auto 0;padding:0 12px}}
+    .exec-summary-box{{background:#161b22;border:1px solid #9e6a03;border-radius:10px;padding:14px 16px}}
+    .exec-summary-box h2{{font-size:13px;font-weight:700;color:#f0b429;margin-bottom:8px}}
+    .exec-summary-box ul{{list-style:none;display:grid;gap:6px}}
+    .exec-summary-box li{{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}}
+    .exec-summary-box li::before{{content:"・";position:absolute;left:0}}
     .sources{{max-width:680px;margin:20px auto 0;padding:0 12px}}
     .sources details{{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 16px}}
     .sources summary{{font-size:12px;color:#8b949e;cursor:pointer;list-style:none}}
@@ -687,6 +877,7 @@ def build_html(items):
     <div class="sub">最終更新: {date_str}</div>
     <div class="count">{len(items)} 件</div>
   </header>
+  {exec_summary_html}
   <div class="cards">{cards_html}</div>
   <div class="sources">
     <details>
@@ -707,6 +898,8 @@ def main():
     items = collect_recent()
     print(f"  {len(items)} 件取得")
 
+    exec_summary = build_executive_summary(items)
+
     cache = load_cache()
     print("タイトルを日本語に翻訳中...")
     for item in items:
@@ -716,7 +909,7 @@ def main():
     save_cache(cache)
     print(f"  翻訳キャッシュ: {len(cache)} 件")
 
-    html = build_html(items)
+    html = build_html(items, exec_summary)
     out_path.write_text(html, encoding="utf-8")
     print(f"  生成完了: {out_path}")
 
