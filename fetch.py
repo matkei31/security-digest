@@ -759,7 +759,7 @@ def build_executive_summary(items):
 
 
 def build_html(items, exec_summary=None):
-    now      = datetime.datetime.now()
+    now      = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     date_str = now.strftime("%Y年%m月%d日 %H:%M")
 
     cards = []
