@@ -687,5 +687,15 @@
   "An &quot;agentic threat actor&quot; successfully exploited a Langflow flaw to steal data from a production database server and encrypt other systems.": "「エージェントの脅威アクター」は、Langflow の欠陥を悪用して運用データベース サーバーからデータを盗み、他のシステムを暗号化することに成功しました。",
   "BeyondTrust Patches Critical Auth Bypass Flaws in Remote Support and PRA": "BeyondTrust、リモート サポートと PRA の重大な認証バイパスの欠陥にパッチを適用",
   "BeyondTrust has released updates to address two critical security flaws affecting Remote Support (RS) and Privileged Remote Access (PRA) products that, if successfully exploited, could allow unauthent": "BeyondTrust は、リモート サポート (RS) および特権リモート アクセス (PRA) 製品に影響を与える 2 つの重大なセキュリティ上の欠陥に対処するアップデートをリリースしました。これらの脆弱性が悪用されると、不正なアクセスが可能になる可能性があります。",
-  "How AI-leading Security Teams Are Building the Agentic SOC": "AI をリードするセキュリティ チームはどのようにエージェント SOC を構築しているか"
+  "How AI-leading Security Teams Are Building the Agentic SOC": "AI をリードするセキュリティ チームはどのようにエージェント SOC を構築しているか",
+  "What Changes When Your Software Supply Chain Includes AI Writing Your Code?": "コードを書く AI がソフトウェア サプライ チェーンに組み込まれると何が変わりますか?",
+  "Software supply chain security was hard enough. Then AI joined the build pipeline.\n\nFor five years, \"software supply chain security\" meant one question: what's in your code? Which open-source packages": "ソフトウェア サプライ チェーンのセキュリティは十分に困難でした。その後、AI がビルド パイプラインに加わりました。\n\n5 年間、「ソフトウェア サプライ チェーンのセキュリティ」とは、コードには何が含まれているのかという 1 つの質問を意味していました。どのオープンソース パッケージか",
+  "Suspected China-Aligned Hackers Exploit Roundcube Flaws Against Universities": "中国と提携した疑いのあるハッカーが大学に対してラウンドキューブの欠陥を悪用",
+  "A suspected China-aligned threat activity cluster has been observed exploiting Roundcube webmail software belonging to physics and engineering departments of U.S. and Canadian universities as part of ": "中国と連携した疑いのある脅威活動クラスターが、米国とカナダの大学の物理学および工学部に属する Roundcube Web メール ソフトウェアを悪用していることが観察されています。",
+  "CERT/CC Warns of Hidden Admin Backdoor in Tenda Router Firmware": "CERT/CC が Tenda ルーターのファームウェアに隠された管理者バックドアを警告",
+  "Several versions of firmware released by Chinese network device manufacturer Tenda have been found to embed an undocumented authentication backdoor that enables administrative access to the devices' w": "中国のネットワーク デバイス メーカーである Tenda がリリースしたファームウェアのいくつかのバージョンには、デバイスのネットワークへの管理アクセスを可能にする文書化されていない認証バックドアが埋め込まれていることが判明しました。",
+  "Cyber Shield: The path to an agentic AI future for cyber defence": "Cyber​​ Shield: サイバー防御のためのエージェント AI の未来への道",
+  "Why the UK is pioneering an initiative to develop a national scale, sovereign defence capability": "なぜ英国は国家規模の主権防衛能力を開発する取り組みに先駆けているのか",
+  "UAT-7810 continues building ORB networks using new malware": "UAT-7810 は新たなマルウェアを使用して ORB ネットワークの構築を継続",
+  "Talos’ latest findings on UAT-7810 indicate that the threat actor continues to develop their custom-made malware.": "UAT-7810 に関する Talos の最新の調査結果は、攻撃者がカスタムメイドのマルウェアを開発し続けていることを示しています。"
 }
