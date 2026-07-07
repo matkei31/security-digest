@@ -678,5 +678,11 @@
   "Read five key learnings from the Frost &#038; Sullivan 2025 Frost Radar™ for CSPM to learn how CSPM is evolving from point-in-time compliance to continuous risk management.\nThe post 5 insights from Fr": "Frost & Sullivan 2025 Frost Radar™ for CSPM から得た 5 つの重要な教訓を読んで、CSPM がポイントインタイムのコンプライアンスから継続的なリスク管理にどのように進化しているかを学びましょう。\n神父からの投稿 5 の洞察",
   "We are launching Workers Cache, a regionally tiered cache that sits directly in front of your Worker entrypoints. Infinitely composable, configured via standard HTTP headers": "私たちは、Worker エントリポイントの直前に位置する地域階層型キャッシュである Workers Cache を開始します。無限に構成可能、標準の HTTP ヘッダーを介して構成可能",
   "Arvind Raman Confirmed as the 18th NIST Director": "アービンド・ラマン氏が第18代NIST所長に決定",
-  "Raman comes to NIST from Purdue University, where he was the dean of engineering.": "ラマン氏はパデュー大学から工学部長を務めた大学から NIST にやって来ました。"
+  "Raman comes to NIST from Purdue University, where he was the dean of engineering.": "ラマン氏はパデュー大学から工学部長を務めた大学から NIST にやって来ました。",
+  "'BusySnake' Infostealer Slithers into Critical Infrastructure Networks": "「BusySnake」情報窃盗犯が重要インフラネットワークに侵入",
+  "A threat group researchers call &quot;Armored Likho&quot; has gained access to government agencies and electrical power entities in Russia, Brazil, and Kazakhstan.": "研究者らが「Armored Likho」と呼ぶ脅威グループが、ロシア、ブラジル、カザフスタンの政府機関や電力会社へのアクセスを獲得した。",
+  "CitrixBleed-ing Again? NetScaler Vulnerability Under Attack": "Citrix が再び出血? NetScaler の脆弱性が攻撃を受ける",
+  "Attackers wasted little time targeting the latest memory disclosure flaw in Citrix's NetScaler products, after researchers published a proof-of-concept exploit (PoC).": "研究者が概念実証エクスプロイト (PoC) を公開した後、攻撃者は、Citrix の NetScaler 製品の最新のメモリ開示欠陥をターゲットにして、ほとんど時間を無駄にしませんでした。",
+  "JadePuffer: The First Complete LLM-Driven Ransomware Attack": "JadePuffer: 初の完全な LLM 主導型ランサムウェア攻撃",
+  "An &quot;agentic threat actor&quot; successfully exploited a Langflow flaw to steal data from a production database server and encrypt other systems.": "「エージェントの脅威アクター」は、Langflow の欠陥を悪用して運用データベース サーバーからデータを盗み、他のシステムを暗号化することに成功しました。"
 }
