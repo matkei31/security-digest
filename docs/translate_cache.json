@@ -697,5 +697,9 @@
   "Cyber Shield: The path to an agentic AI future for cyber defence": "Cyber​​ Shield: サイバー防御のためのエージェント AI の未来への道",
   "Why the UK is pioneering an initiative to develop a national scale, sovereign defence capability": "なぜ英国は国家規模の主権防衛能力を開発する取り組みに先駆けているのか",
   "UAT-7810 continues building ORB networks using new malware": "UAT-7810 は新たなマルウェアを使用して ORB ネットワークの構築を継続",
-  "Talos’ latest findings on UAT-7810 indicate that the threat actor continues to develop their custom-made malware.": "UAT-7810 に関する Talos の最新の調査結果は、攻撃者がカスタムメイドのマルウェアを開発し続けていることを示しています。"
+  "Talos’ latest findings on UAT-7810 indicate that the threat actor continues to develop their custom-made malware.": "UAT-7810 に関する Talos の最新の調査結果は、攻撃者がカスタムメイドのマルウェアを開発し続けていることを示しています。",
+  "Court Filing Reveals Windows Device ID Helped FBI Trace Alleged Scattered Spider Hacker": "裁判所への提出で Windows デバイス ID が明らかになり、FBI が散在スパイダーハッカー容疑者の追跡に貢献",
+  "U.S. prosecutors linked an alleged Scattered Spider hacker to a break-in at a luxury jewelry retailer using a persistent Windows device ID, according to a newly unsealed federal complaint.\n\nMicrosoft ": "新たに公開された連邦訴状によると、米国検察当局は、Scattered Spiderハッカー容疑者を永続的なWindowsデバイスIDを使用した高級宝飾品小売店への侵入に関連づけたという。\n\nマイクロソフト",
+  "Writer AI Flaw Could Let Agent Previews Leak Session Tokens Across Tenants": "Writer AI の欠陥により、エージェントのプレビューでテナント全体にセッション トークンが漏洩する可能性がある",
+  "Cybersecurity researchers have disclosed details of a now-patched critical session isolation vulnerability in Writer, an enterprise generative artificial intelligence (AI) platform, that could result ": "サイバーセキュリティ研究者は、エンタープライズ生成型人工知能 (AI) プラットフォームである Writer に現在パッチが適用されている重大なセッション分離の脆弱性の詳細を明らかにしました。"
 }
