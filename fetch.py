@@ -39,7 +39,6 @@ RSS_FEEDS = [
 MAX_PER_FEED = 5
 DAYS_BACK    = 1
 
-MAX_AI_SUMMARIES = 3
 GEMINI_MODEL = "gemini-2.5-flash"
 
 
@@ -244,6 +243,19 @@ def fetch_nist_nvd(cutoff):
 
 # ── 全収集 ────────────────────────────────────────────────────────────────────
 
+def is_cyber_relevant(item):
+    text = (item.get("title", "") + " " + item.get("summary", "")).lower()
+    keywords = [
+        "cyber", "セキュリティ", "脆弱性", "malware", "ransomware",
+        "phishing", "incident", "breach", "attack", "cve", "ゼロデイ",
+        "不正アクセス", "サイバー", "情報漏洩", "標的型", "ddos", "apt",
+        "threat", "exploit", "マルウェア", "フィッシング", "インシデント",
+        "情報セキュリティ", "ガイドライン", "規制", "制度", "policy",
+        "regulation", "compliance", "governance", "リスク"
+    ]
+    return any(k in text for k in keywords)
+
+
 def collect_recent():
     cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=DAYS_BACK)
     all_items = []
@@ -255,6 +267,8 @@ def collect_recent():
 
     all_items += fetch_cisa_kev(cutoff)
     # all_items += fetch_nist_nvd(cutoff)
+
+    all_items = [item for item in all_items if is_cyber_relevant(item)]
 
     all_items.sort(key=lambda x: x["date"] or datetime.datetime.min, reverse=True)
     all_items = enrich_with_ai(all_items)
@@ -540,9 +554,6 @@ def enrich_with_ai(items):
     attempts = 0
 
     for item in items:
-        if attempts >= MAX_AI_SUMMARIES:
-            break
-
         attempts += 1
 
         text = f"""
@@ -557,7 +568,7 @@ link: {item.get('link', '')}
             item["ai_analysis"] = analysis
             count += 1
 
-        time.sleep(8)
+        time.sleep(3)
 
     print(f"  AI要約: {count} 件 / 試行: {attempts} 件")
     return items
