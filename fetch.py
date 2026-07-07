@@ -597,7 +597,7 @@ link: {item.get('link', '')}
             item["ai_analysis"] = analysis
             count += 1
 
-        time.sleep(3)
+        time.sleep(5)
 
     print(f"  AI要約: {count} 件 / 試行: {attempts} 件")
     return items
@@ -908,6 +908,7 @@ def main():
     items = collect_recent()
     print(f"  {len(items)} 件取得")
 
+    time.sleep(15)
     exec_summary = build_executive_summary(items)
 
     cache = load_cache()
