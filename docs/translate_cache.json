@@ -684,5 +684,7 @@
   "CitrixBleed-ing Again? NetScaler Vulnerability Under Attack": "Citrix が再び出血? NetScaler の脆弱性が攻撃を受ける",
   "Attackers wasted little time targeting the latest memory disclosure flaw in Citrix's NetScaler products, after researchers published a proof-of-concept exploit (PoC).": "研究者が概念実証エクスプロイト (PoC) を公開した後、攻撃者は、Citrix の NetScaler 製品の最新のメモリ開示欠陥をターゲットにして、ほとんど時間を無駄にしませんでした。",
   "JadePuffer: The First Complete LLM-Driven Ransomware Attack": "JadePuffer: 初の完全な LLM 主導型ランサムウェア攻撃",
-  "An &quot;agentic threat actor&quot; successfully exploited a Langflow flaw to steal data from a production database server and encrypt other systems.": "「エージェントの脅威アクター」は、Langflow の欠陥を悪用して運用データベース サーバーからデータを盗み、他のシステムを暗号化することに成功しました。"
+  "An &quot;agentic threat actor&quot; successfully exploited a Langflow flaw to steal data from a production database server and encrypt other systems.": "「エージェントの脅威アクター」は、Langflow の欠陥を悪用して運用データベース サーバーからデータを盗み、他のシステムを暗号化することに成功しました。",
+  "BeyondTrust Patches Critical Auth Bypass Flaws in Remote Support and PRA": "BeyondTrust、リモート サポートと PRA の重大な認証バイパスの欠陥にパッチを適用",
+  "BeyondTrust has released updates to address two critical security flaws affecting Remote Support (RS) and Privileged Remote Access (PRA) products that, if successfully exploited, could allow unauthent": "BeyondTrust は、リモート サポート (RS) および特権リモート アクセス (PRA) 製品に影響を与える 2 つの重大なセキュリティ上の欠陥に対処するアップデートをリリースしました。これらの脆弱性が悪用されると、不正なアクセスが可能になる可能性があります。"
 }

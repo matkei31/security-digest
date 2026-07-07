@@ -49,16 +49,37 @@
 <body>
   <header>
     <h1>🔐 Security Digest</h1>
-    <div class="sub">最終更新: 2026年07月07日 04:38</div>
-    <div class="count">8 件</div>
+    <div class="sub">最終更新: 2026年07月07日 06:34</div>
+    <div class="count">13 件</div>
   </header>
-  <div class="exec-summary">
-    <div class="exec-summary-box">
-      <h2>本日のポイント（金融機関サイバー担当者向け）</h2>
-      <ul><li>Linux KVMの脆弱性「Januscape」により、ゲストVMからホストOSへのエスケープで情報漏えいやシステム停止のリスクがあります。</li><li>Gitea Dockerイメージの脆弱性CVE-2026-20896が悪用され、認証なしで特権昇格される恐れがあり、コード改ざんのリスクがあります。</li><li>Citrix NetScaler製品の新たな脆弱性が攻撃されており、機密情報漏えいや不正アクセスによる業務停止のリスクがあります。</li></ul>
-    </div>
-  </div>
+  
   <div class="cards">
+    <a class="card" href="https://thehackernews.com/2026/07/beyondtrust-patches-critical-auth.html" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">07/07 10:46</span>
+      </div>
+      <h2>BeyondTrust、リモート サポートと PRA の重大な認証バイパスの欠陥にパッチを適用</h2>
+      <div class="ai-analysis">
+        <div class="importance-row">
+          <span class="field-label">重要度</span>
+          <span class="importance importance-high">高</span>
+        </div>
+        <section class="analysis-field">
+          <h3>要約</h3>
+          <p>BeyondTrustがRemote Support (RS) およびPrivileged Remote Access (PRA) 製品の認証バイパスの脆弱性(CVE-2026-40138)を修正するアップデートを公開しました。認証されていない攻撃者が影響を受けるデバイスを制御する可能性があります。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>金融機関への影響</h3>
+          <p>BeyondTrust RS/PRAを利用している場合、システムへの不正アクセス、機密情報漏えい、業務停止のリスクがあります。特に特権アクセス管理に関わるシステムは影響が大きいです。委託先での利用状況も確認が必要です。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>推奨アクション</h3>
+          <ul><li>BeyondTrust RS/PRA製品の利用有無を確認し、利用している場合は速やかにベンダーの指示に従いアップデートを適用してください。</li><li>BeyondTrust製品を利用している委託先に対し、本脆弱性への対応状況を確認し、必要に応じて改善を求めてください。</li><li>アップデート適用が困難な場合は、一時的な緩和策の有無を確認し、アクセス制御の強化や監視体制の強化を検討してください。</li></ul>
+        </section>
+      </div>
+    </a>
+
     <a class="card" href="https://thehackernews.com/2026/07/iran-linked-hackers-use-new-cavern-c2.html" target="_blank" rel="noopener">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
@@ -76,11 +97,11 @@
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>直接的な金融機関への影響は低いですが、ITプロバイダーが標的とされているため、委託先のセキュリティ状況を確認する必要があります。サプライチェーンリスクとして、間接的なシステム障害や情報漏えいのリスクがあります。</p>
+          <p>直接的な金融機関への影響は低いですが、ITプロバイダーが標的とされているため、委託先のセキュリティ状況を確認する必要があります。サプライチェーンリスクとして、間接的な影響が生じる可能性があります。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>主要なIT委託先に対し、本攻撃フレームワークに関する情報共有と対策状況を確認する。</li><li>自組織のセキュリティ監視システムで、Cavern C2フレームワークに関連する不審な通信や活動がないかログを調査する。</li><li>脅威インテリジェンスチームは、Cavern C2フレームワークの技術的詳細について情報収集を継続する。</li></ul>
+          <ul><li>委託先のITプロバイダーに対し、本攻撃に関する情報収集と対策状況を確認する。</li><li>自組織のシステムログを監視し、Cavern C2フレームワークに関連する不審な通信がないか確認する。</li><li>脅威インテリジェンス情報を継続的に収集し、新たな攻撃手法やC2フレームワークへの対応を検討する。</li></ul>
         </section>
       </div>
     </a>
@@ -91,50 +112,9 @@
         <span class="date">07/06 23:07</span>
       </div>
       <h2>16 年前の Linux KVM の欠陥により、ゲスト VM が Intel および AMD x86 システム上のホストに逃げてしまう</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-high">高</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>The Hacker Newsが、Linux KVMハイパーバイザーの16年前の脆弱性「Januscape」（CVE-2026-53359）を公表しました。ゲストVMからホストカーネルのシャドウページ状態を破壊できるUse-after-freeの欠陥です。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>KVMを利用する仮想化基盤上で、ゲストVMからホストOSへのエスケープにより、情報漏えいやシステム停止、不正アクセスが発生する可能性があります。特に、顧客情報や取引データを扱うシステムへの影響が懸念されます。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>KVMを利用しているシステムを特定し、脆弱性の影響範囲と利用状況を緊急で確認してください。</li><li>KVMのパッチ適用計画を策定し、速やかに適用を実施してください。適用が困難な場合は緩和策を検討してください。</li><li>KVM環境におけるセキュリティ監視を強化し、異常な挙動やアクセスがないかログを詳細に確認してください。</li></ul>
-        </section>
-      </div>
-    </a>
+      <p class="summary">Linux の KVM ハイパーバイザーの use-after-free バグは、ゲスト仮想マシンから引き起こされ、それを実行するホスト カーネルのシャドウ ページの状態を破壊する可能性があります。
 
-    <a class="card" href="https://thehackernews.com/2026/07/threat-actors-probe-gitea-docker-flaw.html" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/06 21:58</span>
-      </div>
-      <h2>脅威アクターが Gitea Docker の欠陥 CVE-2026-20896 を公開から 13 日後に調査</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-high">高</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>Sysdigによると、Gitea Dockerイメージの深刻な脆弱性CVE-2026-20896が悪用されようとしていることが確認されました。攻撃者は認証なしで特権昇格が可能です。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>Gitea DockerをCI/CDパイプラインや開発環境で利用している場合、システムへの不正アクセス、情報漏えい、コード改ざんのリスクがあります。委託先での利用状況も確認が必要です。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>Gitea Dockerイメージの利用有無を確認し、利用している場合は速やかに最新版へアップデートを適用してください。</li><li>Gitea Docker環境のアクセスログを監視し、不審なアクセスや特権昇格の試行がないか確認してください。</li><li>委託先がGitea Dockerを利用している場合、脆弱性対応状況とセキュリティ対策について緊急で確認してください。</li></ul>
-        </section>
-      </div>
+「Januscape」と名付けられ、C…</p>
     </a>
 
     <a class="card" href="https://www.darkreading.com/cyberattacks-data-breaches/busysnake-infostealer-critical-infrastructure-networks" target="_blank" rel="noopener">
@@ -154,11 +134,11 @@
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>直接的な金融機関への影響は不明ですが、サプライチェーンや決済インフラを介した間接的な影響の可能性があります。委託先や取引先が標的となった場合、業務停止や情報漏えいのリスクがあります。</p>
+          <p>直接的な金融機関への影響は不明ですが、サプライチェーンや決済インフラを介した間接的な影響の可能性があります。委託先のセキュリティ状況を確認し、関連リスクを評価する必要があります。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>自組織および主要な委託先におけるBusySnakeマルウェアの感染有無をシステムログやセキュリティ製品で確認する。</li><li>サプライチェーンリスク管理の一環として、重要インフラ関連の取引先におけるセキュリティ状況を再確認する。</li><li>従業員に対し、不審なメールやリンクに対する注意喚起と情報窃取型マルウェアへの警戒を促す。</li></ul>
+          <ul><li>委託先や取引先が攻撃対象となったインフラ事業者と関連がないか、情報収集と確認を行う。</li><li>自組織のシステムでBusySnakeのIoC（存在する場合）に合致する活動がないか、ログを監視・分析する。</li><li>インフラ事業者への攻撃が金融サービスに波及する可能性を評価し、事業継続計画への影響を検討する。</li></ul>
         </section>
       </div>
     </a>
@@ -176,15 +156,15 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>研究者がCitrix NetScaler製品の新たなメモリ情報漏えい脆弱性のPoCを公開後、攻撃者がこの脆弱性を標的とした攻撃を迅速に開始しました。</p>
+          <p>Dark Readingが、Citrix NetScaler製品の新たなメモリ情報漏えい脆弱性(CitrixBleed)について、PoC公開後すぐに攻撃者が悪用を開始したと報じました。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>Citrix NetScaler製品を利用している金融機関は、システムからの機密情報漏えいや不正アクセスによる業務停止のリスクがあります。特に外部公開システムでの利用は影響が大きいです。</p>
+          <p>Citrix NetScaler製品を利用している金融機関は、システムからの機密情報漏えいや不正アクセスにつながる可能性があります。特に外部公開システムは緊急の対応が必要です。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>自組織および委託先におけるCitrix NetScaler製品の利用状況と脆弱性の影響範囲を緊急で確認してください。</li><li>ベンダーからのパッチや緩和策が公開されている場合は、速やかに適用を検討し、システムを保護してください。</li><li>不審な通信やアクセスがないか、ログ監視を強化し、異常を検知した場合は即座に調査・対応してください。</li></ul>
+          <ul><li>自組織および委託先におけるCitrix NetScaler製品の利用状況を確認し、脆弱性の有無を特定する。</li><li>Citrixが提供するセキュリティパッチや緩和策を速やかに適用し、システムを保護する。</li><li>不審な通信やアクセスがないか、ログ監視を強化し、異常を検知した場合は即座に対応する。</li></ul>
         </section>
       </div>
     </a>
@@ -195,24 +175,7 @@
         <span class="date">07/06 16:36</span>
       </div>
       <h2>JadePuffer: 初の完全な LLM 主導型ランサムウェア攻撃</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-medium">中</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>Dark Readingが、LLM駆動型ランサムウェア「JadePuffer」による攻撃を報告しました。攻撃者はLangflowの脆弱性を悪用し、本番データベースサーバーからデータを窃取し、他のシステムを暗号化しました。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>Langflowを利用している金融機関は、システム停止、データ漏えい、不正取引のリスクがあります。委託先がLangflowを利用している場合も同様のリスクが生じ、業務継続に影響を及ぼす可能性があります。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>自社および主要な委託先におけるLangflowの利用状況を確認し、利用がある場合は脆弱性情報を収集する。</li><li>Langflowを利用しているシステムについて、セキュリティ設定とアクセス制御の強化を検討する。</li><li>LLM関連システムからのデータ窃取や暗号化に備え、バックアップと復旧計画を再確認する。</li></ul>
-        </section>
-      </div>
+      <p class="summary">「エージェントの脅威アクター」は、Langflow の欠陥を悪用して運用データベース サーバーからデータを盗み、他のシステムを暗号化することに成功しました。</p>
     </a>
 
     <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/07/06/5-insights-from-frost-sullivans-2025-frost-radar-for-cloud-security-posture-management/" target="_blank" rel="noopener">
@@ -221,24 +184,32 @@
         <span class="date">07/06 16:00</span>
       </div>
       <h2>クラウドセキュリティ体制管理のためのフロスト＆サリバンの 2025 Frost Radar™ からの 5 つの洞察</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-low">低</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>Microsoft SecurityがFrost &amp; Sullivanの2025年版Cloud Security Posture Management (CSPM)に関するレポートから5つの洞察を公表しました。CSPMが継続的なリスク管理へ進化していることを示唆しています。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>このニュースは一般的な市場動向の分析であり、金融機関のシステム、業務、委託先に直接的な影響を与えるものではありません。ただし、クラウド利用におけるセキュリティ態勢管理の重要性を示唆しています。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>クラウド環境のセキュリティ設定とコンプライアンス状況を定期的に確認する。</li><li>CSPMソリューションの導入状況や活用状況について、IT部門やセキュリティ部門に確認する。</li><li>委託先のクラウド利用におけるセキュリティ管理体制について、契約内容と実態を照合する。</li></ul>
-        </section>
+      <p class="summary">Frost &amp; Sullivan 2025 Frost Radar™ for CSPM から得た 5 つの重要な教訓を読んで、CSPM がポイントインタイムのコンプライアンスから継続的なリスク管理にどのように進化しているかを学びましょう。
+…</p>
+    </a>
+
+    <a class="card" href="https://www.crowdstrike.com/en-us/blog/browser-security-zero-days-are-only-part-of-the-problem/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#cc0000">CrowdStrike</span>
+        <span class="date"></span>
       </div>
+      <h2>ブラウザのセキュリティ: ゼロデイは問題の一部にすぎません</h2>
+    </a>
+
+    <a class="card" href="https://www.crowdstrike.com/en-us/blog/new-in-falcon-cloud-security-expanding-multi-cloud-coverage/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#cc0000">CrowdStrike</span>
+        <span class="date"></span>
+      </div>
+      <h2>Falcon Cloud Security 2026 年 6 月リリース: Azure および Google Cloud の更新</h2>
+    </a>
+
+    <a class="card" href="https://www.crowdstrike.com/en-us/blog/the-identity-problem-hiding-in-ai-agent-deployments/" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#cc0000">CrowdStrike</span>
+        <span class="date"></span>
+      </div>
+      <h2>AI エージェントの導入に潜むアイデンティティの問題</h2>
     </a>
 
     <a class="card" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener">
@@ -247,6 +218,22 @@
         <span class="date"></span>
       </div>
       <h2>現実の AI の脅威: Web 上でのプロンプト インジェクションの現状</h2>
+    </a>
+
+    <a class="card" href="http://security.googleblog.com/feeds/1469360228826887140/comments/default" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#4285f4">Google TAG</span>
+        <span class="date"></span>
+      </div>
+      <h2>Pixel ベースバンドに Rust を導入する</h2>
+    </a>
+
+    <a class="card" href="http://security.googleblog.com/feeds/3718049046001981559/comments/default" target="_blank" rel="noopener">
+      <div class="card-meta">
+        <span class="tag" style="background:#4285f4">Google TAG</span>
+        <span class="date"></span>
+      </div>
+      <h2>デバイスにバインドされたセッション認証情報による Cookie の保護</h2>
     </a></div>
   <div class="sources">
     <details>
