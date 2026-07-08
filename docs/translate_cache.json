@@ -724,5 +724,21 @@
   "Langflow contains an authorization bypass through user-controlled key vulnerability which allows an authenticated attacker to execute any flow belonging to another user by specifying the victim's flow": "Langflow には、ユーザー制御のキーの脆弱性による認証バイパスが含まれており、認証された攻撃者が被害者のフローを指定することで、別のユーザーに属するフローを実行できるようになります。",
   "CVE-2026-56290 — Joomlack Page Builder Improper Access Control Vulnerability": "CVE-2026-56290 — Joomlack ページ ビルダーの不適切なアクセス制御の脆弱性",
   "Joomlack Page Builder contains an improper access control vulnerability that could allow for remote code execution via unauthenticated arbitrary file upload.": "Joomlack Page Builder には不適切なアクセス制御の脆弱性があり、認証されていない任意のファイルのアップロードを通じてリモートでコードが実行される可能性があります。",
-  "CrowdStrike Uncovers New Prompt Injection Techniques": "CrowdStrike が新しいプロンプト インジェクション技術を発見"
+  "CrowdStrike Uncovers New Prompt Injection Techniques": "CrowdStrike が新しいプロンプト インジェクション技術を発見",
+  "AI Coding Agents Found Triggering Endpoint Security Rules Built to Catch Attackers": "攻撃者を捕まえるために構築されたエンドポイント セキュリティ ルールをトリガーする AI コーディング エージェントが見つかる",
+  "Sophos looked at a week of its own endpoint data and found that AI coding agents such as Claude Code, Cursor, and OpenAI Codex are setting off detection rules written to catch human intruders.\n\nThe ag": "ソフォスは 1 週間分の自社エンドポイント データを調査し、Claude Code、Cursor、OpenAI Codex などの AI コーディング エージェントが人間の侵入者を捕捉するために作成された検出ルールを発動していることを発見しました。\n\nアグ",
+  "Mexico's New Cyber Plan Faces Its First Real Test": "メキシコの新たなサイバー計画は最初の本当の試練に直面する",
+  "The Latin American nation's cybersecurity plan — still in the expansion phase — has to survive its own knockout round during the FIFA World Cup.": "ラテンアメリカの国のサイバーセキュリティ計画はまだ拡張段階にあるが、FIFAワールドカップ期間中の決勝トーナメントを乗り切る必要がある。",
+  "New HalluSquatting Attack Could Trick AI Coding Assistants Into Installing Botnet Malware": "新たな HalluSquatting 攻撃により、AI コーディング アシスタントが騙されてボットネット マルウェアをインストールされる可能性がある",
+  "AI coding assistants have a habit of making things up. Ask one to fetch a popular tool, and it will sometimes hand back a real-sounding name for a project that does not exist.\n\nNew research, which its": "AI コーディングアシスタントには、でっち上げの癖があります。人気のあるツールを取得するように依頼すると、存在しないプロジェクトの実際の名前が返されることがあります。\n\n新しい研究、それは",
+  "Lone Attacker Uses AI to Breach AWS Cloud Environment in 72 Hours": "単独の攻撃者が AI を使用して 72 時間以内に AWS クラウド環境に侵入",
+  "The attacker exploited AI workflows, chained cloud weaknesses, and stolen credentials to extort a large Amazon customer.": "攻撃者は AI ワークフローを悪用し、クラウドの弱点を連鎖させ、認証情報を盗み、Amazon の大規模顧客から脅迫しました。",
+  "Ubiquiti Patches Critical UniFi Flaws Across Connect, Talk, Access, Protect, and OS": "Ubiquiti、Connect、Talk、Access、Protect、OS にわたる重大な UniFi の欠陥にパッチを適用",
+  "Ubiquiti has shipped updates to address multiple critical security flaws impacting UniFi Connect, UniFi Talk, UniFi Access, UniFi Protect, and UniFi OS that could result in privilege escalation and ar": "Ubiquiti は、UniFi Connect、UniFi Talk、UniFi Access、UniFi Protect、UniFi OS に影響を及ぼし、権限昇格やセキュリティ保護を引き起こす可能性がある複数の重大なセキュリティ上の欠陥に対処するアップデートをリリースしました。",
+  "Protecting Microsoft at AI speed: How SFI proactively hardens our cloud": "AI のスピードで Microsoft を保護: SFI がクラウドを積極的に強化する方法",
+  "At Microsoft we encompass these security requirements, along with threat knowledge, and operational frameworks in our Secure Future Initiative (SFI), to guide what a well-defended cloud service looks ": "Microsoft では、これらのセキュリティ要件と脅威に関する知識、SFI (Secure Future Initiative) の運用フレームワークを網羅し、十分に防御されたクラウド サービスとは何かをガイドします。",
+  "Vidar Infostealer Hammers SMBs via Malvertising Campaign": "Vidar Infostealer がマルバタイジング キャンペーンで中小企業を攻撃",
+  "A financially motivated operation uses lures of cracked or pirated software to deliver a malware two-for-one combo for data theft and cryptomining.": "金銭を目的とした活動では、クラックされたソフトウェアや海賊版ソフトウェアの誘惑が使用され、データ盗難とクリプトマイニングのためのマルウェア 2 対 1 のコンボが提供されます。",
+  "Felons, Fraudsters Flog Offensive Cybersecurity Startup": "重犯罪者と詐欺師が攻撃的なサイバーセキュリティのスタートアップを鞭打ち",
+  "A cybersecurity startup dangling millions of dollars to acquire zero-day security vulnerabilities in popular software is run by a pair of far-right conspiracy theorists and convicted felons whose most": "人気のあるソフトウェアのゼロデイセキュリティ脆弱性を取得するために数百万ドルをぶら下げたサイバーセキュリティスタートアップは、極右の陰謀論者と有罪判決を受けた重犯罪者の2人によって運営されており、そのほとんどは"
 }
