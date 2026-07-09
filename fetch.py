@@ -523,7 +523,7 @@ def gemini_analyze(text):
             data=body,
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {api_key}"
+                "x-goog-api-key": api_key
             }
         )
 
@@ -705,7 +705,7 @@ def gemini_executive_summary(high_items):
             data=body,
             headers={
                 "Content-Type": "application/json",
-                "Authorization": f"Bearer {api_key}"
+                "x-goog-api-key": api_key
             }
         )
 
