@@ -740,5 +740,12 @@
   "Vidar Infostealer Hammers SMBs via Malvertising Campaign": "Vidar Infostealer がマルバタイジング キャンペーンで中小企業を攻撃",
   "A financially motivated operation uses lures of cracked or pirated software to deliver a malware two-for-one combo for data theft and cryptomining.": "金銭を目的とした活動では、クラックされたソフトウェアや海賊版ソフトウェアの誘惑が使用され、データ盗難とクリプトマイニングのためのマルウェア 2 対 1 のコンボが提供されます。",
   "Felons, Fraudsters Flog Offensive Cybersecurity Startup": "重犯罪者と詐欺師が攻撃的なサイバーセキュリティのスタートアップを鞭打ち",
-  "A cybersecurity startup dangling millions of dollars to acquire zero-day security vulnerabilities in popular software is run by a pair of far-right conspiracy theorists and convicted felons whose most": "人気のあるソフトウェアのゼロデイセキュリティ脆弱性を取得するために数百万ドルをぶら下げたサイバーセキュリティスタートアップは、極右の陰謀論者と有罪判決を受けた重犯罪者の2人によって運営されており、そのほとんどは"
+  "A cybersecurity startup dangling millions of dollars to acquire zero-day security vulnerabilities in popular software is run by a pair of far-right conspiracy theorists and convicted felons whose most": "人気のあるソフトウェアのゼロデイセキュリティ脆弱性を取得するために数百万ドルをぶら下げたサイバーセキュリティスタートアップは、極右の陰謀論者と有罪判決を受けた重犯罪者の2人によって運営されており、そのほとんどは",
+  "Top AI Agents Built to Catch Malicious Code Can Be Tricked Into Running It": "悪意のあるコードを検出するために構築された上位の AI エージェントがだまされて実行される可能性がある",
+  "Ask an AI coding agent to scan open-source code for security holes, and it might run the attacker's code on your own machine instead.\n\nThat is the finding in a&nbsp;proof-of-concept published Wednesda": "AI コーディング エージェントにオープンソース コードのセキュリティ ホールをスキャンするよう依頼すると、代わりに攻撃者のコードが自分のマシンで実行される可能性があります。\n\nこれは、水曜日に公開された概念実証での発見です。",
+  "GhostApproval Symlink Flaws Could Let Malicious Repos Run Code in AI Coding Agents": "GhostApproval シンボリックリンクの欠陥により、悪意のあるリポジトリが AI コーディング エージェントでコードを実行する可能性がある",
+  "Researchers at&nbsp;Wiz&nbsp;found that a flaw in six popular AI coding assistants lets a booby-trapped code project quietly take control of a developer's computer. The assistant asks permission to ed": "Wiz の研究者は、6 つの人気のある AI コーディング アシスタントの欠陥により、罠にかかったコード プロジェクトが開発者のコ​​ンピュータを静かに制御できることを発見しました。アシスタントが編集の許可を求めます",
+  "Fake 7-Zip Installers Turn Devices Into Residential Proxy Nodes": "偽の 7-Zip インストーラーはデバイスを住宅用プロキシ ノードに変える",
+  "Cybersecurity researchers have disclosed details of a new threat actor dubbed Lurking Lizard that has been operating an end-to-end malicious residential proxy business using an infrastructure comprisi": "サイバーセキュリティ研究者らは、Lurking Lizard と呼ばれる新たな攻撃者の詳細を明らかにしました。この攻撃者は、以下のインフラストラクチャを使用してエンドツーエンドの悪意のある住宅プロキシ ビジネスを運営していました。",
+  "Falcon Secure Access Sets the Standard for Zero Trust Browser Security": "Falcon Secure Access がゼロトラスト ブラウザ セキュリティの標準を設定"
 }
