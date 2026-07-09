@@ -600,7 +600,7 @@ link: {item.get('link', '')}
             item["ai_analysis"] = analysis
             count += 1
 
-        time.sleep(5)
+        time.sleep(15)
 
     print(f"  AI要約: {count} 件 / 試行: {attempts} 件")
     return items
