@@ -802,5 +802,6 @@
   "CVE-2026-48939 — iCagenda Unrestricted Upload of File with Dangerous Type Vulnerability": "CVE-2026-48939 — iCagenda による危険なタイプの脆弱性のあるファイルの無制限アップロード",
   "iCagenda contains an unrestricted upload of file with dangerous type vulnerability that allows the upload of arbitrary files in the file attachment feature, ultimately resulting in PHP code upload and": "iCagenda には、ファイル添付機能で任意のファイルをアップロードできる危険なタイプの脆弱性を持つファイルの無制限のアップロードが含まれており、最終的には PHP コードがアップロードされ、",
   "Jen Ellis: Connecting Cyber Community With Political Machinery": "ジェン・エリス: サイバーコミュニティと政治機構を結びつける",
-  "On the heels of her recent honors as a Member of the Order of the British Empire (MBE), we take a look back at the events that shaped Ellis' advocacy on behalf of security researchers.": "彼女が最近大英帝国勲章 (MBE) の勲章を受章したことに続き、セキュリティ研究者を代表してエリスの主張を形作った出来事を振り返ります。"
+  "On the heels of her recent honors as a Member of the Order of the British Empire (MBE), we take a look back at the events that shaped Ellis' advocacy on behalf of security researchers.": "彼女が最近大英帝国勲章 (MBE) の勲章を受章したことに続き、セキュリティ研究者を代表してエリスの主張を形作った出来事を振り返ります。",
+  "Security Pro File: On the heels of her recent honors as a Member of the Order of the British Empire (MBE), we take a look back at the events that shaped Jen Ellis' advocacy on behalf of security resea": "セキュリティ プロ ファイル: 大英帝国勲章 (MBE) の会員としての彼女の最近の栄誉を受けて、セキュリティ研究を代表するジェン エリスの擁護活動を形作った出来事を振り返ります。"
 }
