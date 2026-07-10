@@ -5,10 +5,39 @@ HTMLエスケープ・URL検証の回帰テスト (Ticket 1)
 """
 
 import datetime
+from html.parser import HTMLParser
 import unittest
 from pathlib import Path
 
 import fetch
+
+
+class AnchorParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.anchors = []
+        self._stack = []
+        self.nested_anchor = False
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "a":
+            if "a" in self._stack:
+                self.nested_anchor = True
+            self.anchors.append(attrs)
+        self._stack.append(tag)
+
+    def handle_endtag(self, tag):
+        for i in range(len(self._stack) - 1, -1, -1):
+            if self._stack[i] == tag:
+                del self._stack[i:]
+                break
+
+
+def parse_anchors(html):
+    parser = AnchorParser()
+    parser.feed(html)
+    return parser
 
 
 class EscTest(unittest.TestCase):
@@ -92,13 +121,23 @@ class BuildHtmlEscapeTest(unittest.TestCase):
         item = self._make_item(link="javascript:alert(1)")
         html = fetch.build_html([item])
         self.assertNotIn("javascript:alert(1)", html)
-        self.assertNotIn('<a class="card" href="javascript:alert(1)"', html)
+        self.assertNotIn('<a class="article-title-link"', html)
+        self.assertNotIn('<a class="article-source-link"', html)
+        self.assertNotIn("元記事を読む", html)
 
-    def test_normal_https_link_is_rendered_as_anchor(self):
+    def test_normal_https_link_is_rendered_on_title_and_cta(self):
         item = self._make_item(link="https://example.com/article")
         html = fetch.build_html([item])
-        self.assertIn('href="https://example.com/article"', html)
-        self.assertIn('rel="noopener noreferrer"', html)
+        parser = parse_anchors(html)
+        hrefs = [a.get("href") for a in parser.anchors]
+
+        self.assertIn('<a class="article-title-link" href="https://example.com/article"', html)
+        self.assertIn('<a class="article-source-link" href="https://example.com/article"', html)
+        self.assertIn("元記事を読む", html)
+        self.assertEqual(hrefs.count("https://example.com/article"), 2)
+        self.assertTrue(all(a.get("rel") == "noopener noreferrer" for a in parser.anchors))
+        self.assertTrue(all(a.get("target") == "_blank" for a in parser.anchors))
+        self.assertFalse(parser.nested_anchor)
 
 
 class ArticleCardDisplayTest(unittest.TestCase):
@@ -245,11 +284,41 @@ class ArticleCardDisplayTest(unittest.TestCase):
             self._make_item(title="記事3", ai_analysis={"status": "failed"}),
         ]
         html = fetch.build_html(items)
+        parser = parse_anchors(html)
 
         self.assertEqual(html.count('class="card"'), 3)
+        self.assertEqual(len(parser.anchors), 6)
+        self.assertFalse(parser.nested_anchor)
         self.assertIn("記事1", html)
         self.assertIn("記事2", html)
         self.assertIn("記事3", html)
+
+    def test_title_and_source_links_share_safe_url_and_rel(self):
+        html = fetch.build_html([self._make_item(ai_analysis=self._analysis())])
+        parser = parse_anchors(html)
+
+        self.assertEqual(len(parser.anchors), 2)
+        self.assertEqual(
+            [a.get("href") for a in parser.anchors],
+            ["https://example.com/article", "https://example.com/article"],
+        )
+        self.assertTrue(all(a.get("rel") == "noopener noreferrer" for a in parser.anchors))
+        self.assertIn("元記事を読む", html)
+        self.assertFalse(parser.nested_anchor)
+
+    def test_invalid_url_does_not_link_title_or_cta(self):
+        html = fetch.build_html([
+            self._make_item(link="javascript:alert(1)", ai_analysis=self._analysis())
+        ])
+        parser = parse_anchors(html)
+
+        self.assertEqual(parser.anchors, [])
+        self.assertNotIn('<a class="article-title-link"', html)
+        self.assertNotIn('<a class="article-source-link"', html)
+        self.assertNotIn("元記事を読む", html)
+        self.assertIn("<h2>テスト記事</h2>", html)
+        self.assertIn("重要度 高", html)
+        self.assertFalse(parser.nested_anchor)
 
 
 class AgentsFileTest(unittest.TestCase):

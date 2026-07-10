@@ -1480,21 +1480,22 @@ def build_html(items, exec_summary=None):
 
         safe_link = safe_url(item['link'])
         if safe_link:
-            tag_open  = f'<a class="card" href="{esc(safe_link)}" target="_blank" rel="noopener noreferrer">'
-            tag_close = "</a>"
+            link_attrs = f'href="{esc(safe_link)}" target="_blank" rel="noopener noreferrer"'
+            title_html = f'<a class="article-title-link" {link_attrs}>{esc(item["title"])}</a>'
+            source_link_html = f'\n      <a class="article-source-link" {link_attrs}>元記事を読む</a>'
         else:
             # http(s) 以外のスキーム（javascript: 等）はリンクタグ自体を出力しない
-            tag_open  = '<div class="card">'
-            tag_close = "</div>"
+            title_html = esc(item["title"])
+            source_link_html = ""
 
         cards.append(f"""
-    {tag_open}
+    <div class="card">
       <div class="card-meta">
         <span class="tag" style="background:{color}">{esc(item['source'])}</span>
         <span class="date">{esc(date_label)}</span>
       </div>
-      <h2>{esc(item['title'])}</h2>{summary_block}
-    {tag_close}""")
+      <h2>{title_html}</h2>{summary_block}{source_link_html}
+    </div>""")
 
     cards_html = "\n".join(cards) if cards else '<p class="empty">本日の新着はありません。</p>'
     all_sources = [f for f in RSS_FEEDS if not f[1].startswith("#")] + [("CISA KEV","","")]
@@ -1534,6 +1535,8 @@ def build_html(items, exec_summary=None):
     .tag{{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;color:#fff;white-space:nowrap}}
     .date{{font-size:11px;color:#8b949e;margin-left:auto}}
     h2{{font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3}}
+    .article-title-link{{color:inherit;text-decoration:none}}
+    .article-title-link:hover,.article-source-link:hover{{text-decoration:underline}}
     .summary{{font-size:12px;color:#8b949e;line-height:1.5;margin-top:6px}}
     .ai-analysis{{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:grid;gap:10px}}
     .analysis-badges,.article-tags{{display:flex;align-items:center;gap:6px;flex-wrap:wrap}}
@@ -1553,6 +1556,7 @@ def build_html(items, exec_summary=None):
     .article-section p,.article-section ul{{margin-top:3px}}
     .action-list{{padding-left:18px}}
     .action-list li+li{{margin-top:3px}}
+    .article-source-link{{display:inline-flex;align-items:center;width:max-content;max-width:100%;margin-top:10px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
     .empty{{text-align:center;color:#8b949e;padding:60px 0;font-size:14px}}
     .exec-summary{{max-width:680px;margin:12px auto 0;padding:0 12px}}
     .exec-summary-box{{background:#161b22;border:1px solid #9e6a03;border-radius:10px;padding:14px 16px}}
