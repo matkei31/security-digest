@@ -9,12 +9,16 @@ import urllib.error
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
+import daily_json
+
 # ── 設定 ────────────────────────────────────────────────────────────────────
 
 MAX_PER_FEED = 3
 DAYS_BACK    = 1
 
 GEMINI_MODEL = "gemini-2.5-flash"
+
+JST = datetime.timezone(datetime.timedelta(hours=9))
 
 NAMESPACES = {
     "atom": "http://www.w3.org/2005/Atom",
@@ -297,14 +301,14 @@ def fetch_feed(name, url, lang):
 
     if "rss" in tag or root.find("channel") is not None:
         for item in root.findall(".//item")[:MAX_PER_FEED]:
+            pub_date_raw = (item.findtext("pubDate") or
+                            item.findtext("dc:date", namespaces=NAMESPACES))
             items.append({
                 "title":   (item.findtext("title") or "").strip(),
                 "link":    (item.findtext("link")  or "").strip(),
                 "summary": (item.findtext("description") or "").strip(),
-                "date":    parse_date(
-                    item.findtext("pubDate") or
-                    item.findtext("dc:date", namespaces=NAMESPACES)
-                ),
+                "date":    parse_date(pub_date_raw),
+                "published_at_jst": daily_json.parse_date_to_jst(pub_date_raw),
                 "source": name,
                 "lang":   lang,
             })
@@ -312,25 +316,27 @@ def fetch_feed(name, url, lang):
         for entry in root.findall("atom:entry", NAMESPACES)[:MAX_PER_FEED]:
             link_el = (entry.find("atom:link[@rel='alternate']", NAMESPACES)
                     or entry.find("atom:link", NAMESPACES))
+            pub_date_raw = (entry.findtext("atom:updated",   namespaces=NAMESPACES) or
+                            entry.findtext("atom:published", namespaces=NAMESPACES))
             items.append({
                 "title":   (entry.findtext("atom:title",   namespaces=NAMESPACES) or "").strip(),
                 "link":    (link_el.get("href") if link_el is not None else "").strip(),
                 "summary": (entry.findtext("atom:summary", namespaces=NAMESPACES) or "").strip(),
-                "date":    parse_date(
-                    entry.findtext("atom:updated",   namespaces=NAMESPACES) or
-                    entry.findtext("atom:published", namespaces=NAMESPACES)
-                ),
+                "date":    parse_date(pub_date_raw),
+                "published_at_jst": daily_json.parse_date_to_jst(pub_date_raw),
                 "source": name,
                 "lang":   lang,
             })
     elif "rdf" in tag:
         # RSS 1.0 (RDF) 形式: 要素がデフォルト名前空間 (rss1) に属する
         for item in root.findall("rss1:item", NAMESPACES)[:MAX_PER_FEED]:
+            pub_date_raw = item.findtext("dc:date", namespaces=NAMESPACES)
             items.append({
                 "title":   (item.findtext("rss1:title",       namespaces=NAMESPACES) or "").strip(),
                 "link":    (item.findtext("rss1:link",         namespaces=NAMESPACES) or "").strip(),
                 "summary": (item.findtext("rss1:description",  namespaces=NAMESPACES) or "").strip(),
-                "date":    parse_date(item.findtext("dc:date", namespaces=NAMESPACES)),
+                "date":    parse_date(pub_date_raw),
+                "published_at_jst": daily_json.parse_date_to_jst(pub_date_raw),
                 "source": name,
                 "lang":   lang,
             })
@@ -354,7 +360,8 @@ def fetch_cisa_kev(cutoff, url, display_url, source_name):
     items = []
     for v in sorted(data.get("vulnerabilities", []),
                     key=lambda x: x.get("dateAdded", ""), reverse=True):
-        date = parse_date(v.get("dateAdded"))
+        date_added_raw = v.get("dateAdded")
+        date = parse_date(date_added_raw)
         if date and date < cutoff:
             break
         items.append({
@@ -362,6 +369,7 @@ def fetch_cisa_kev(cutoff, url, display_url, source_name):
             "link":    display_url,
             "summary": v.get("shortDescription", ""),
             "date":    date,
+            "published_at_jst": daily_json.parse_date_to_jst(date_added_raw),
             "source":  source_name,
             "lang":    "en",
         })
@@ -405,11 +413,13 @@ def fetch_nist_nvd(cutoff, base_url, source_name):
                 score = metrics[key][0]["cvssData"].get("baseScore", "")
                 break
         title = f"{cveid} (CVSS {score}) — {desc[:80]}" if score else f"{cveid} — {desc[:80]}"
+        published_raw = cve.get("published")
         items.append({
             "title":   title,
             "link":    f"https://nvd.nist.gov/vuln/detail/{cveid}",
             "summary": desc,
-            "date":    parse_date(cve.get("published")),
+            "date":    parse_date(published_raw),
+            "published_at_jst": daily_json.parse_date_to_jst(published_raw),
             "source":  source_name,
             "lang":    "en",
         })
@@ -653,9 +663,17 @@ def fallback_ai_analysis(response_text, source_text):
 
 
 def gemini_analyze(text):
+    """戻り値: {"analysis": dict|None, "status": "success"|"fallback"|"failed",
+    "error_type": str|None, "http_status": int|None}
+    既存の分析データ(analysis)の中身・生成条件は変更していない。
+    status/error_type/http_statusは日次JSON保存(Ticket 3)のために追加した
+    メタ情報で、item["ai_analysis"]として保存される中身には影響しない。
+    """
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        return None
+        # enrich_with_ai() が呼び出し前にAPIキー有無を判定しているため、
+        # 実際にはこの分岐には到達しない(防御的な分岐)。
+        return {"analysis": None, "status": "not_attempted", "error_type": None, "http_status": None}
 
     prompt = f"""
 あなたは日本の金融機関で働く、サイバーセキュリティとIT監査のシニアアナリストです。
@@ -750,7 +768,7 @@ def gemini_analyze(text):
             )
             analysis = parse_ai_analysis(response_text)
             if analysis:
-                return analysis
+                return {"analysis": analysis, "status": "success", "error_type": None, "http_status": None}
 
             text_length = len(response_text) if isinstance(response_text, str) else 0
             fallback = fallback_ai_analysis(response_text, text)
@@ -760,13 +778,19 @@ def gemini_analyze(text):
                     f"(応答長: {text_length}文字)、部分応答から補完",
                     file=sys.stderr,
                 )
-                return fallback
+                return {
+                    "analysis": fallback, "status": "fallback",
+                    "error_type": "schema_parse_error", "http_status": None,
+                }
 
             print(
                 f"[WARN] Gemini要約: JSON解析失敗 (応答長: {text_length}文字)",
                 file=sys.stderr,
             )
-            return None
+            return {
+                "analysis": None, "status": "failed",
+                "error_type": "schema_parse_error", "http_status": None,
+            }
         except urllib.error.HTTPError as e:
             if e.code in (429, 503) and attempt < max_retries:
                 wait_seconds = 3 * (attempt + 1)
@@ -778,15 +802,23 @@ def gemini_analyze(text):
                 time.sleep(wait_seconds)
                 continue
             print(f"[WARN] Gemini要約: HTTP {e.code}", file=sys.stderr)
-            return None
+            return {
+                "analysis": None, "status": "failed",
+                "error_type": daily_json.classify_gemini_error(http_status=e.code),
+                "http_status": e.code,
+            }
         except Exception as e:
             print(
                 f"[WARN] Gemini要約: {type(e).__name__}: {e}",
                 file=sys.stderr,
             )
-            return None
+            return {
+                "analysis": None, "status": "failed",
+                "error_type": daily_json.classify_gemini_error(exception=e),
+                "http_status": None,
+            }
 
-    return None
+    return {"analysis": None, "status": "failed", "error_type": "unknown", "http_status": None}
 
 
 def enrich_with_ai(items):
@@ -806,10 +838,17 @@ title: {item.get('title', '')}
 summary: {strip_html(item.get('summary', ''))}
 link: {item.get('link', '')}
 """
-        analysis = gemini_analyze(text)
+        result = gemini_analyze(text)
 
-        if analysis:
-            item["ai_analysis"] = analysis
+        item["ai_analysis"] = result["analysis"]
+        item["ai_analysis_meta"] = {
+            "status": result["status"],
+            "error_type": result["error_type"],
+            "http_status": result["http_status"],
+            "generated_at": datetime.datetime.now(JST).isoformat(),
+        }
+
+        if result["analysis"]:
             count += 1
 
         time.sleep(15)
@@ -854,9 +893,15 @@ def parse_executive_summary(response_text):
 
 
 def gemini_executive_summary(high_items):
+    """戻り値: {"lines": list[str]|None, "status": "success"|"failed"|"not_attempted",
+    "error_type": str|None, "http_status": int|None}
+    既存のエグゼクティブサマリー生成条件・プロンプトは変更していない。
+    """
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        return None
+        # build_executive_summary() がhigh_itemsの有無で先に判定するため、
+        # 実際にはこの分岐には到達しない(防御的な分岐)。
+        return {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None}
 
     bullets = []
     for item in high_items:
@@ -932,10 +977,13 @@ def gemini_executive_summary(high_items):
             )
             lines = parse_executive_summary(response_text)
             if lines:
-                return lines
+                return {"lines": lines, "status": "success", "error_type": None, "http_status": None}
 
             print("[WARN] エグゼクティブサマリー: JSON解析失敗", file=sys.stderr)
-            return None
+            return {
+                "lines": None, "status": "failed",
+                "error_type": "schema_parse_error", "http_status": None,
+            }
         except urllib.error.HTTPError as e:
             if e.code in (429, 503) and attempt < max_retries:
                 wait_seconds = 3 * (attempt + 1)
@@ -947,33 +995,45 @@ def gemini_executive_summary(high_items):
                 time.sleep(wait_seconds)
                 continue
             print(f"[WARN] エグゼクティブサマリー: HTTP {e.code}", file=sys.stderr)
-            return None
+            return {
+                "lines": None, "status": "failed",
+                "error_type": daily_json.classify_gemini_error(http_status=e.code),
+                "http_status": e.code,
+            }
         except Exception as e:
             print(
                 f"[WARN] エグゼクティブサマリー: {type(e).__name__}: {e}",
                 file=sys.stderr,
             )
-            return None
+            return {
+                "lines": None, "status": "failed",
+                "error_type": daily_json.classify_gemini_error(exception=e),
+                "http_status": None,
+            }
 
-    return None
+    return {"lines": None, "status": "failed", "error_type": "unknown", "http_status": None}
 
 
 def build_executive_summary(items):
+    """戻り値: {"lines": list[str]|None, "status": "success"|"failed"|"not_attempted",
+    "error_type": str|None, "http_status": int|None}
+    既存のHTML表示にはこれまで通り戻り値の"lines"を渡す(呼び出し側で変更不要)。
+    """
     high_items = [
         item for item in items
         if normalize_ai_analysis(item.get("ai_analysis")) is not None
         and normalize_ai_analysis(item.get("ai_analysis"))["importance"] == "高"
     ]
     if not high_items:
-        return None
+        return {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None}
 
     print("エグゼクティブサマリーを生成中...")
-    lines = gemini_executive_summary(high_items)
-    if lines:
-        print(f"  エグゼクティブサマリー: {len(lines)} 行")
+    result = gemini_executive_summary(high_items)
+    if result["lines"]:
+        print(f"  エグゼクティブサマリー: {len(result['lines'])} 行")
     else:
         print("  エグゼクティブサマリー: 生成失敗")
-    return lines
+    return result
 
 
 def build_html(items, exec_summary=None):
@@ -1136,8 +1196,16 @@ def main():
     items = collect_recent()
     print(f"  {len(items)} 件取得")
 
+    # 日次JSON(Ticket 3)向けに、翻訳で上書きされる前の原文タイトル・概要を
+    # 収集直後のこの時点でスナップショットしておく(翻訳処理自体は変更しない)。
+    fetched_at = datetime.datetime.now(JST)
+    for item in items:
+        item["raw_title"] = item["title"]
+        item["raw_summary"] = item["summary"]
+
     time.sleep(15)
-    exec_summary = build_executive_summary(items)
+    exec_result = build_executive_summary(items)
+    exec_summary = exec_result["lines"]
 
     cache = load_cache()
     print("タイトルを日本語に翻訳中...")
@@ -1151,6 +1219,22 @@ def main():
     html = build_html(items, exec_summary)
     out_path.write_text(html, encoding="utf-8")
     print(f"  生成完了: {out_path}")
+
+    print("日次JSONを保存中...")
+    generated_at = datetime.datetime.now(JST)
+    digest = daily_json.generate_and_save_daily_digest(
+        items=items,
+        exec_result=exec_result,
+        source_definitions=SOURCE_DEFINITIONS,
+        model=GEMINI_MODEL,
+        fetched_at=fetched_at,
+        generated_at=generated_at,
+        data_dir=daily_json.DATA_DIR,
+    )
+    print(
+        f"  日次JSON生成完了: data/{digest['digest_date']}.json "
+        f"(run.status={digest['run']['status']})"
+    )
 
 if __name__ == "__main__":
     main()
