@@ -22,7 +22,7 @@ DATA_DIR = REPOSITORY_ROOT / "data"
 
 # ── バージョン・スキーマ定数(一元管理) ───────────────────────────────────────
 SCHEMA_VERSION = 1
-ARTICLE_PROMPT_VERSION = "article-analysis-v1"
+ARTICLE_PROMPT_VERSION = "article-analysis-v2"
 BRIEF_PROMPT_VERSION = "executive-summary-v1"
 CATEGORY_VERSION = "v1"
 
@@ -35,12 +35,29 @@ VALID_ERROR_TYPES = {
     "resource_exhausted", "permission_denied",
 }
 
-IMPORTANCE_KEYS = ("高", "中", "低", "未判定")
-URGENCY_KEYS = ("本日確認", "今週確認", "参考", "未判定")
-CATEGORY_KEYS = (
+# Ticket 4: category/importance/urgency/tagsの許容値はここで一元管理し、
+# Gemini response_schema・コード側バリデーション・countsの3箇所すべてで
+# この定数を参照する(値の二重管理をしない)。
+
+IMPORTANCE_VALUES = ("高", "中", "低")
+IMPORTANCE_KEYS = IMPORTANCE_VALUES + ("未判定",)
+
+URGENCY_VALUES = ("本日確認", "今週確認", "参考")
+URGENCY_KEYS = URGENCY_VALUES + ("未判定",)
+
+CATEGORY_VALUES = (
     "脆弱性・パッチ", "攻撃・脅威動向", "インシデント", "規制・ガバナンス",
-    "クラウド・サプライチェーン", "AI・新技術リスク", "その他", "未判定",
+    "クラウド・サプライチェーン", "AI・新技術リスク", "その他",
 )
+CATEGORY_KEYS = CATEGORY_VALUES + ("未判定",)
+
+TAG_ALLOWLIST = (
+    "CVE", "KEV", "ゼロデイ", "悪用確認済み", "パッチ", "ランサムウェア", "APT",
+    "フィッシング", "認証", "IAM", "クラウド", "SaaS", "サプライチェーン",
+    "委託先管理", "AI", "LLM", "AIエージェント", "規制", "ガイドライン", "監督",
+    "インシデント", "情報漏えい", "業務停止", "決済", "SWIFT", "CSCF", "DORA", "NIST",
+)
+MAX_TAGS = 5
 
 JST = datetime.timezone(datetime.timedelta(hours=9))
 
@@ -241,16 +258,16 @@ def build_analysis_section(item, model):
         "model": model,
         "prompt_version": ARTICLE_PROMPT_VERSION,
         "generated_at": meta.get("generated_at"),
-        "category": None,
+        "category": analysis.get("category") if analysis else None,
         "category_version": CATEGORY_VERSION,
-        "category_reason": None,
-        "tags": [],
+        "category_reason": analysis.get("category_reason") if analysis else None,
+        "tags": analysis.get("tags", []) if analysis else [],
         "importance": analysis["importance"] if analysis else None,
-        "urgency": None,
+        "urgency": analysis.get("urgency") if analysis else None,
         "summary": analysis["summary"] if analysis else None,
         "financial_impact": analysis["financial_impact"] if analysis else None,
         "recommended_actions": analysis["recommended_actions"] if analysis else [],
-        "reason": None,
+        "reason": analysis.get("reason") if analysis else None,
         "error_type": meta.get("error_type"),
         "http_status": meta.get("http_status"),
     }
@@ -261,6 +278,15 @@ SOURCES_WITH_SHARED_URL = {"cisa_kev"}
 CISA KEVは各記事の"link"がCISAの一覧ページ固定URLであり、記事間で重複するため、
 IDの一意性をcanonical_urlに依存できない(compute_article_idはこの集合に含まれる
 source_idについてはcanonical_urlを使わず、フォールバック方式のみを使用する)。"""
+
+
+def compute_rule_flags(source_id):
+    """source_idから機械的に判定できるrule_flagsを算出する。
+    build_article_entry()とfetch.py側(Geminiへの入力構築)の両方から呼び出し、
+    判定ロジックを一箇所に集約する。"""
+    if source_id == "cisa_kev":
+        return ["kev_entry"]
+    return []
 
 
 def build_article_entry(item, source_definitions, model, fetched_at):
@@ -287,9 +313,7 @@ def build_article_entry(item, source_definitions, model, fetched_at):
     )
     content_hash = compute_content_hash(canonical_url, raw_title, raw_excerpt)
 
-    rule_flags = []
-    if source_meta["source_id"] == "cisa_kev":
-        rule_flags.append("kev_entry")
+    rule_flags = compute_rule_flags(source_meta["source_id"])
 
     return {
         "id": article_id,
@@ -358,21 +382,34 @@ def compute_run_meta(article_entries):
 
 
 def compute_counts(article_entries):
+    """failed/not_attempted、またはフィールド自体が不正・欠落の場合はすべて
+    「未判定」に集計する(Ticket 4以降、urgency/categoryも実際のGemini出力を集計する)。
+    """
     importance_counts = {k: 0 for k in IMPORTANCE_KEYS}
     urgency_counts = {k: 0 for k in URGENCY_KEYS}
     category_counts = {k: 0 for k in CATEGORY_KEYS}
 
     for entry in article_entries:
         analysis = entry["analysis"]
+        unattempted_or_failed = analysis["status"] in ("failed", "not_attempted")
+
         importance = analysis["importance"]
-        if analysis["status"] in ("failed", "not_attempted") or importance not in ("高", "中", "低"):
+        if unattempted_or_failed or importance not in IMPORTANCE_VALUES:
             importance_counts["未判定"] += 1
         else:
             importance_counts[importance] += 1
 
-        # Ticket 3ではurgency/categoryをGeminiから生成しないため、常に未判定に集計する
-        urgency_counts["未判定"] += 1
-        category_counts["未判定"] += 1
+        urgency = analysis.get("urgency")
+        if unattempted_or_failed or urgency not in URGENCY_VALUES:
+            urgency_counts["未判定"] += 1
+        else:
+            urgency_counts[urgency] += 1
+
+        category = analysis.get("category")
+        if unattempted_or_failed or category not in CATEGORY_VALUES:
+            category_counts["未判定"] += 1
+        else:
+            category_counts[category] += 1
 
     return {
         "importance": importance_counts,
@@ -497,6 +534,42 @@ def validate_daily_digest(digest):
             raise DailyJsonError(
                 f"items[{i}] (id={item_id!r}): analysis.statusが不正です: "
                 f"{analysis.get('status')!r} (許容値: {sorted(VALID_ANALYSIS_STATUSES)})"
+            )
+
+        # Ticket 4: category/importance/urgency/tagsは、値が設定されている場合のみ
+        # 許容値内であることを確認する(nullは常に許容。success/fallback/failed/
+        # not_attemptedいずれの状態でも起こり得るため、statusでは分岐しない)。
+        category = analysis.get("category")
+        if category is not None and category not in CATEGORY_VALUES:
+            raise DailyJsonError(
+                f"items[{i}] (id={item_id!r}): analysis.categoryが不正です: {category!r}"
+            )
+
+        importance = analysis.get("importance")
+        if importance is not None and importance not in IMPORTANCE_VALUES:
+            raise DailyJsonError(
+                f"items[{i}] (id={item_id!r}): analysis.importanceが不正です: {importance!r}"
+            )
+
+        urgency = analysis.get("urgency")
+        if urgency is not None and urgency not in URGENCY_VALUES:
+            raise DailyJsonError(
+                f"items[{i}] (id={item_id!r}): analysis.urgencyが不正です: {urgency!r}"
+            )
+
+        tags = analysis.get("tags", [])
+        if not isinstance(tags, list):
+            raise DailyJsonError(f"items[{i}] (id={item_id!r}): analysis.tagsが配列ではありません")
+        if len(tags) > MAX_TAGS:
+            raise DailyJsonError(
+                f"items[{i}] (id={item_id!r}): analysis.tagsが{MAX_TAGS}件を超えています: {tags!r}"
+            )
+        if len(set(tags)) != len(tags):
+            raise DailyJsonError(f"items[{i}] (id={item_id!r}): analysis.tagsに重複があります: {tags!r}")
+        invalid_tags = [t for t in tags if t not in TAG_ALLOWLIST]
+        if invalid_tags:
+            raise DailyJsonError(
+                f"items[{i}] (id={item_id!r}): analysis.tagsに許可外の値があります: {invalid_tags!r}"
             )
 
     return True

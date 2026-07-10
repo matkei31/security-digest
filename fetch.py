@@ -563,6 +563,91 @@ def normalize_ai_analysis(value):
     }
 
 
+def validate_tags_strict(raw_tags):
+    """tagsを厳密に検証する(success判定用)。許可リスト外のタグが1つでもあれば
+    Noneを返す(呼び出し側でfallback扱いにする)。重複は除去して許容し、
+    除去後にMAX_TAGSを超える場合はNoneを返す。空配列は正常値として許容する。
+    """
+    if not isinstance(raw_tags, list):
+        return None
+
+    cleaned = []
+    for t in raw_tags:
+        t = str(t).strip()
+        if not t:
+            continue
+        if t not in daily_json.TAG_ALLOWLIST:
+            return None
+        if t not in cleaned:
+            cleaned.append(t)
+
+    if len(cleaned) > daily_json.MAX_TAGS:
+        return None
+
+    return cleaned
+
+
+def sanitize_tags_lenient(raw_tags):
+    """tagsを緩く救済する(fallback用)。許可外タグ・list以外の入力は捨て、
+    重複を除去し、MAX_TAGSで切り詰める。例外を投げず必ず配列を返す。
+    """
+    if not isinstance(raw_tags, list):
+        return []
+
+    cleaned = []
+    for t in raw_tags:
+        t = str(t).strip()
+        if t and t in daily_json.TAG_ALLOWLIST and t not in cleaned:
+            cleaned.append(t)
+        if len(cleaned) >= daily_json.MAX_TAGS:
+            break
+
+    return cleaned
+
+
+def normalize_article_analysis(value):
+    """Ticket 4の新スキーマ(category/category_reason/urgency/reason/tagsを含む
+    全項目)を厳密に検証する。1項目でも不正なら全体としてNoneを返す(success判定用)。
+    既存4項目(importance/summary/financial_impact/recommended_actions)の検証は
+    normalize_ai_analysis()を再利用し、重複させない。
+    """
+    if not isinstance(value, dict):
+        return None
+
+    core = normalize_ai_analysis(value)
+    if core is None:
+        return None
+
+    category = str(value.get("category", "")).strip()
+    if category not in daily_json.CATEGORY_VALUES:
+        return None
+
+    category_reason = str(value.get("category_reason", "")).strip()
+    if not category_reason:
+        return None
+
+    urgency = str(value.get("urgency", "")).strip()
+    if urgency not in daily_json.URGENCY_VALUES:
+        return None
+
+    reason = str(value.get("reason", "")).strip()
+    if not reason:
+        return None
+
+    tags = validate_tags_strict(value.get("tags", []))
+    if tags is None:
+        return None
+
+    return {
+        **core,
+        "category": category,
+        "category_reason": category_reason,
+        "urgency": urgency,
+        "reason": reason,
+        "tags": tags,
+    }
+
+
 def parse_ai_analysis(response_text):
     if not isinstance(response_text, str):
         return None
@@ -575,6 +660,28 @@ def parse_ai_analysis(response_text):
             continue
 
         analysis = normalize_ai_analysis(value)
+        if analysis:
+            return analysis
+
+    return None
+
+
+def parse_article_analysis(response_text):
+    """Ticket 4の新スキーマ全項目を検証するparse_ai_analysis()相当。
+    success判定にのみ使用する(1項目でも不正ならNone、fallback_ai_analysis()側で
+    部分的に救済する)。
+    """
+    if not isinstance(response_text, str):
+        return None
+
+    decoder = json.JSONDecoder()
+    for match in re.finditer(r"\{", response_text):
+        try:
+            value, _ = decoder.raw_decode(response_text[match.start():])
+        except json.JSONDecodeError:
+            continue
+
+        analysis = normalize_article_analysis(value)
         if analysis:
             return analysis
 
@@ -600,11 +707,44 @@ def extract_partial_field(response_text, field):
         return value.replace(r"\n", " ").replace(r"\"", '"').strip()
 
 
+def extract_partial_array(response_text, field):
+    """フォールバック用: 壊れたJSON応答からfield(文字列配列)の要素を正規表現で
+    抽出する。recommended_actionsの既存抽出とは異なり閉じ括弧までを対象とする
+    (tags等、応答内で最後のフィールドとは限らないフィールド向け)。
+    見つからない、または配列として復元できない場合は空配列を返す。
+    """
+    if not isinstance(response_text, str):
+        return []
+
+    match = re.search(
+        rf'"{re.escape(field)}"\s*:\s*\[(.*?)\]',
+        response_text,
+        re.DOTALL,
+    )
+    if not match:
+        return []
+
+    return [
+        value.strip()
+        for value in re.findall(r'"((?:\\.|[^"])*)"', match.group(1))
+        if value.strip()
+    ]
+
+
 def fallback_ai_analysis(response_text, source_text):
+    """主要4項目(importance/summary/financial_impact/recommended_actions)が
+    応答から安全に取得できた場合のみ、部分的な分析結果として返す(=fallback扱い)。
+    いずれか1つでも取得できない場合はNoneを返し、呼び出し側でfailed扱いにする
+    (コード側で「重要度は中」「一般的な確認事項」等の一般論を補完しない。
+    記事に基づかない判断・定型文を作らないため)。
+
+    category/category_reason/urgency/reason/tagsは主要4項目とは独立に、
+    抽出できた分だけ緩く救済する(欠けていてもfallback自体は成立する)。
+    """
     importance = extract_partial_field(response_text, "importance")
     if importance not in ("高", "中", "低"):
         importance_match = re.search(r"重要度\s*[:：]\s*([高中低])", response_text or "")
-        importance = importance_match.group(1) if importance_match else "中"
+        importance = importance_match.group(1) if importance_match else ""
 
     summary = extract_partial_field(response_text, "summary")
     impact = extract_partial_field(response_text, "financial_impact")
@@ -627,39 +767,48 @@ def fallback_ai_analysis(response_text, source_text):
         else:
             summary = source_fields.get("summary") or source_fields.get("title", "")
     summary = re.sub(r"\s+", " ", strip_html(summary)).strip()[:120]
-    if not summary:
-        return None
 
-    if not impact:
-        impact = (
-            "金融機関への直接的な影響は情報不足のため判断できません。"
-            "関連製品、業務、委託先との接点確認が必要です。"
-        )
+    # recommended_actionsはTicket 4で"reason"/"tags"より前の項目になった
+    # (v1では最後の項目だったため、閉じ括弧を要求しない抽出でも安全だった)。
+    # 境界のないパターンのままだと後続フィールドの文字列まで誤って
+    # recommended_actionsに取り込んでしまうため、extract_partial_array()で
+    # 閉じ括弧までに限定して抽出する。
+    actions = extract_partial_array(response_text, "recommended_actions")
 
-    actions = []
-    actions_match = re.search(
-        r'"recommended_actions"\s*:\s*\[(.*)',
-        response_text or "",
-        re.DOTALL,
-    )
-    if actions_match:
-        actions = [
-            value.strip()
-            for value in re.findall(r'"((?:\\.|[^"])*)"', actions_match.group(1))
-            if value.strip()
-        ]
-    if not actions:
-        actions = [
-            "原文と公表元の最新情報を確認する",
-            "関連製品や委託先の利用有無を確認する",
-        ]
-
-    return normalize_ai_analysis({
+    # 主要4項目はすべて応答から実際に取得できた場合のみ有効とする。
+    # 1つでも欠ける場合はnormalize_ai_analysis()がNoneを返し、
+    # fallback_ai_analysis()全体もNoneを返す(=failed扱いになる)。
+    core = normalize_ai_analysis({
         "importance": importance,
         "summary": summary,
-        "financial_impact": impact[:140],
+        "financial_impact": impact[:140] if impact else "",
         "recommended_actions": actions[:3],
     })
+    if core is None:
+        return None
+
+    category = extract_partial_field(response_text, "category")
+    if category not in daily_json.CATEGORY_VALUES:
+        category = None
+
+    category_reason = extract_partial_field(response_text, "category_reason").strip()[:100] or None
+
+    urgency = extract_partial_field(response_text, "urgency")
+    if urgency not in daily_json.URGENCY_VALUES:
+        urgency = None
+
+    reason = extract_partial_field(response_text, "reason").strip()[:150] or None
+
+    tags = sanitize_tags_lenient(extract_partial_array(response_text, "tags"))
+
+    return {
+        **core,
+        "category": category,
+        "category_reason": category_reason,
+        "urgency": urgency,
+        "reason": reason,
+        "tags": tags,
+    }
 
 
 def gemini_analyze(text):
@@ -676,23 +825,106 @@ def gemini_analyze(text):
         return {"analysis": None, "status": "not_attempted", "error_type": None, "http_status": None}
 
     prompt = f"""
-あなたは日本の金融機関で働く、サイバーセキュリティとIT監査のシニアアナリストです。
-以下のニュースだけを根拠に、金融機関の実務担当者が短時間で判断できる分析を日本語で作成してください。
+あなたは日本の金融機関のサイバーセキュリティ・IT監査部門で働くシニアアナリストです。
+以下のニュース1件だけを根拠に、金融機関のサイバーセキュリティ担当者・管理者・
+担当役員向けニュースブリーフとして、構造化された分析を日本語で作成してください。
 
-評価基準:
-- 重要度「高」: 悪用確認済み、緊急対応が必要、金融サービス停止・情報漏えい・不正取引に直結し得る
-- 重要度「中」: 関連製品や業務への影響確認、計画的な対応や監視強化が必要
-- 重要度「低」: 一般情報、限定的な影響、直ちに対応する必要が低い
+# category（1記事1カテゴリ、以下7つのみ。上から優先順に判定し最初に該当したものを採用する）
+1. 脆弱性・パッチ: CVE、KEV、ゼロデイ、パッチが主題
+2. インシデント: 実際の侵害、漏えい、業務停止、被害事例が主題
+3. 攻撃・脅威動向: 攻撃者、攻撃手法、キャンペーン、ランサムウェア、APT、脅威レポートが主題
+4. 規制・ガバナンス: 法令、規制、ガイドライン、監督方針、フレームワークが主題
+5. クラウド・サプライチェーン: クラウド設定、SaaS、委託先、サードパーティ、ソフトウェア供給網が主題
+6. AI・新技術リスク: AI、LLM、AIエージェント、量子等が主題(記事にAIという単語が出るだけで
+   このカテゴリにしない。主題を基準にする)
+7. その他: 上記のいずれにも明確に当てはまらない場合のみ
 
-記述ルール:
-- 要約は「誰が何を公表し、何が起きたか」を具体的に、120文字以内で書く
-- 金融機関への影響は、該当するシステム・委託先・業務・リスクを具体的に、140文字以内で書く
-- 推奨アクションは、担当者が実行できる確認・対応を優先順に1〜3件、各80文字以内で書く
-- 入力にない事実、製品利用状況、被害、期限は推測しない
-- 金融機関との直接的な関係が薄い場合も、その旨と確認すべき接点を明記する
-- 見出し、Markdown、コードブロックは出力しない
+# importance（高/中/低）
+ニュースとしての話題性ではなく、「金融機関にとって見落としたくない度合い」で判定する。
+- 高: 実際に悪用が確認されている脆弱性／CISA KEVへの追加／金融機関で利用可能性が高い
+  製品・サービスの重大なセキュリティ情報／金融機関・決済・認証基盤・重要インフラ等の
+  重大インシデント／金融庁・JPCERT/CC・CISA等による重要な注意喚起／金融機関の規制対応・
+  監督対応・統制評価に影響し得る文書／SWIFT CSCF等、統制・評価・アテステーションに
+  影響し得る重要更新／管理態勢上、明確に見落とすべきでないもの
+- 中: 即時対応ではないが運用・管理態勢への示唆がある／脅威動向・攻撃手法・ベンダー
+  レポートとして有用／金融機関への直接影響は不明だが今後の議論材料になる／クラウド・
+  AI・IAM・サプライチェーン等の継続論点／高とするほど具体的・重大ではないが無視するには惜しい
+- 低: 一般的なセキュリティ解説／マーケティング色が強い／技術的には興味深いが実務判断に
+  直結しにくい／既知情報の再掲に近い／金融機関との関係を具体的に説明しにくい
 
-ニュース:
+以下だけを理由に高にしない: CVSSが高い／海外で話題になっている／AI関連で目新しい／
+ベンダーが重大と表現している／Tier 1ソースの記事である／大企業の記事である／
+技術的に高度である。source_type・source_tierは判断材料の一つに過ぎず、
+Tier 1だから自動的に高、「報道・メディア」だから自動的に低、とはしない。
+
+# urgency（本日確認/今週確認/参考）
+「いつ確認・共有すべきか」で判定する。
+- 本日確認: 悪用確認済み脆弱性／KEV追加／期限付き・緊急性のある注意喚起／外部公開
+  システムや重要システムに影響し得る情報／インシデント対応・監視強化・パッチ状況
+  確認につながる情報
+- 今週確認: 規制・ガイドライン・フレームワーク更新／年次レポート・脅威レポート／
+  AI・クラウド・サプライチェーン等の管理態勢上の論点／即時対応より関係者での
+  把握・整理が重要な情報
+- 参考: 直ちに確認・共有する必要性が低い／背景知識・一般動向として有用／実務対応や
+  管理態勢への影響が限定的
+自然な組み合わせ: 高×本日確認／高×今週確認／中×本日確認／中×今週確認／中×参考／低×参考。
+低×本日確認は原則として避ける。ただし機械的に固定せず記事内容を優先し、
+矛盾した組み合わせになる場合はreasonで明確に説明する。
+
+# tags（以下の許可リストから最大{daily_json.MAX_TAGS}個、該当なければ空配列）
+{"、".join(daily_json.TAG_ALLOWLIST)}
+許可リスト外の語を作らない。類似タグを意味なく重複させない。記事に根拠がないタグを
+付けない。表記(英語・日本語)を変更しない。
+
+# summary（何が起きたか。1〜2文、日本語、200文字以内目安）
+記事本文の長い引用をせず、言い換え・要約する。記事にない推測を追加しない。
+金融機関への影響はここに混ぜすぎない。marketing表現をそのまま受け入れない。
+
+# financial_impact（なぜ金融機関に関係するか。1〜2文、日本語、200文字以内目安）
+金融機関との関係が不明な場合はその旨を明記する。全金融機関に影響するかのように
+断定しない。利用環境やサービス採用状況によって影響が異なる場合は条件付きで書く。
+根拠のない経営影響・損失額を追加しない。記事にない規制要求を捏造しない。
+望ましい例: 「該当製品を利用している金融機関では、影響確認が必要になり得る。」
+避ける例: 「すべての金融機関が直ちに対応しなければならない。」
+
+# recommended_actions（金融機関として一般的に確認すべきこと。配列、1〜3件）
+各要素は短い確認事項。断定的な命令ではなく確認対象を示す。各社固有のシステム構成を
+決めつけない。記事に根拠がない高度な対策を追加しない。「該当する場合」「必要に応じて」
+等の条件を適切に使う。単なる「注意する」「検討する」ではなく確認対象を具体化する。
+
+# reason（importanceとurgencyの判定理由。1〜2文、150文字以内目安）
+記事の具体的事実と金融機関への関係を根拠にする。「重大だから高」のような循環説明を
+避ける。source_tierだけを理由にしない。importanceとurgencyの両方を説明できる内容にする。
+
+# category_reason（categoryの判定理由。1文、100文字以内目安）
+主題を根拠にする。単にカテゴリ名を言い換えるだけにしない。
+
+# 禁止事項（すべての項目に共通）
+- 記事にない事実を補わない、一般論で穴埋めしない
+- 記事にない金融機関固有の利用状況を推測しない
+- 全金融機関へ一律に影響すると断定しない
+- 記事にない規制要求を追加しない
+- 原文を長く転載しない
+- ベンダーの宣伝表現を客観的事実として繰り返さない
+- 被害額や影響範囲を捏造しない
+- 推測が必要な場合は「記事からは確認できない」とする
+- JSON以外の説明文やMarkdownを返さない
+- rule_flagsのkev_entryは強い判定材料だが、その存在だけを根拠に記事にない事実を追加しない
+
+# 例1: 高 × 本日確認（CISA KEVへの悪用確認済み脆弱性追加）
+{{"category": "脆弱性・パッチ", "importance": "高", "urgency": "本日確認", "tags": ["KEV", "悪用確認済み", "パッチ"]}}
+
+# 例2: 高 × 今週確認（SWIFT CSCFの新バージョンまたは重要改定。即時対応ではないが
+統制・評価・アテステーションへの影響があり得るため）
+{{"category": "規制・ガバナンス", "importance": "高", "urgency": "今週確認", "tags": ["SWIFT", "CSCF", "ガイドライン"]}}
+
+# 例3: 中 × 今週確認（AIエージェントの新しい攻撃手法に関する調査レポート）
+{{"category": "AI・新技術リスク", "importance": "中", "urgency": "今週確認", "tags": ["AI", "AIエージェント"]}}
+
+# 例4: 低 × 参考（ベンダー製品の一般的な紹介・マーケティング記事）
+{{"category": "その他", "importance": "低", "urgency": "参考", "tags": []}}
+
+# ニュース
 {text}
 """
 
@@ -701,7 +933,7 @@ def gemini_analyze(text):
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
             "temperature": 0.2,
-            "maxOutputTokens": 800,
+            "maxOutputTokens": 1200,
             "thinking_config": {
                 "thinking_budget": 0
             },
@@ -709,38 +941,75 @@ def gemini_analyze(text):
             "response_schema": {
                 "type": "OBJECT",
                 "propertyOrdering": [
+                    "category",
+                    "category_reason",
                     "importance",
+                    "urgency",
                     "summary",
                     "financial_impact",
-                    "recommended_actions"
+                    "recommended_actions",
+                    "reason",
+                    "tags"
                 ],
                 "properties": {
+                    "category": {
+                        "type": "STRING",
+                        "enum": list(daily_json.CATEGORY_VALUES),
+                        "description": "記事の主題に基づく分類(1つ)"
+                    },
+                    "category_reason": {
+                        "type": "STRING",
+                        "description": "categoryの判定理由(1文、100文字以内目安)"
+                    },
                     "importance": {
                         "type": "STRING",
-                        "enum": ["高", "中", "低"],
-                        "description": "金融機関にとっての対応優先度"
+                        "enum": list(daily_json.IMPORTANCE_VALUES),
+                        "description": "金融機関にとって見落としたくない度合い"
+                    },
+                    "urgency": {
+                        "type": "STRING",
+                        "enum": list(daily_json.URGENCY_VALUES),
+                        "description": "いつ確認・共有すべきか"
                     },
                     "summary": {
                         "type": "STRING",
-                        "description": "ニュースの具体的な日本語要約"
+                        "description": "何が起きたかの日本語要約"
                     },
                     "financial_impact": {
                         "type": "STRING",
-                        "description": "金融機関のシステム、業務、委託先への影響"
+                        "description": "なぜ金融機関に関係するか"
                     },
                     "recommended_actions": {
                         "type": "ARRAY",
                         "items": {"type": "STRING"},
                         "minItems": 1,
                         "maxItems": 3,
-                        "description": "優先順の実務対応"
+                        "description": "金融機関として一般的に確認すべきこと"
+                    },
+                    "reason": {
+                        "type": "STRING",
+                        "description": "importance/urgencyの判定理由(1〜2文、150文字以内目安)"
+                    },
+                    "tags": {
+                        "type": "ARRAY",
+                        "items": {
+                            "type": "STRING",
+                            "enum": list(daily_json.TAG_ALLOWLIST)
+                        },
+                        "maxItems": daily_json.MAX_TAGS,
+                        "description": "許可リストからの補助分類(0〜5個)"
                     }
                 },
                 "required": [
+                    "category",
+                    "category_reason",
                     "importance",
+                    "urgency",
                     "summary",
                     "financial_impact",
-                    "recommended_actions"
+                    "recommended_actions",
+                    "reason",
+                    "tags"
                 ]
             }
         }
@@ -766,7 +1035,7 @@ def gemini_analyze(text):
                 for part in parts
                 if isinstance(part, dict)
             )
-            analysis = parse_ai_analysis(response_text)
+            analysis = parse_article_analysis(response_text)
             if analysis:
                 return {"analysis": analysis, "status": "success", "error_type": None, "http_status": None}
 
@@ -832,11 +1101,39 @@ def enrich_with_ai(items):
     for item in items:
         attempts += 1
 
+        # enrich_with_ai()はcollect_recent()内で翻訳処理より前に呼ばれるため、
+        # この時点のitem["title"]/item["summary"]は取得直後の原文そのもの
+        # (raw_title/raw_excerpt相当)。翻訳後の表示用titleとは別に、既存の
+        # "title"キーとしてそのまま渡しつつ、仕様上の項目名にも合わせてraw_title
+        # としても渡す(この時点では両者は同一の値になる)。
+        try:
+            source_meta = daily_json.resolve_source_meta(item.get("source", ""), SOURCE_DEFINITIONS)
+        except daily_json.DailyJsonError:
+            # プロンプト入力構築のみに影響する防御的フォールバック。
+            # 最終的な日次JSON保存時はdaily_json.build_article_entry()が
+            # 同じ解決を行い、そちらは黙って落とさず明確なエラーを送出する。
+            source_meta = None
+
+        published_at = item.get("published_at_jst")
+        published_at_str = published_at.isoformat() if published_at else "不明"
+
+        rule_flags = (
+            daily_json.compute_rule_flags(source_meta["source_id"])
+            if source_meta else []
+        )
+
+        raw_title = item.get("title", "")
         text = f"""
-source: {item.get('source', '')}
-title: {item.get('title', '')}
+source_name: {item.get('source', '')}
+source_type: {source_meta['source_type'] if source_meta else '不明'}
+source_tier: {source_meta['source_tier'] if source_meta else '不明'}
+collection_method: {source_meta['collection_method'] if source_meta else '不明'}
+title: {raw_title}
+raw_title: {raw_title}
 summary: {strip_html(item.get('summary', ''))}
-link: {item.get('link', '')}
+published_at: {published_at_str}
+url: {item.get('link', '')}
+rule_flags: {json.dumps(rule_flags, ensure_ascii=False)}
 """
         result = gemini_analyze(text)
 
