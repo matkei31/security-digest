@@ -71,14 +71,14 @@
       "collection_method": "rss",
       "language": "en",
       "source_type": "政府・公的機関",
-      "source_tier": "Tier 3",
+      "source_tier": "Tier 1",
       "enabled": true,
       "planned_phase": "Phase 1",
       "activation_condition": "",
-      "collection_frequency": "weekly",
+      "collection_frequency": "daily",
       "color": "#555",
       "trusted_cyber_source": false,
-      "notes": "旧SOURCE_COLORSに個別エントリがなく#555(デフォルト色)が使われていたため、その値をそのまま明示している。collection_frequencyは今回まだ実際の取得間隔制御には使用していない(メタデータのみ)。"
+      "notes": "旧SOURCE_COLORSに個別エントリがなく#555(デフォルト色)が使われていたため、その値をそのまま明示している。"
     },
     {
       "id": "microsoft_security",
@@ -244,6 +244,7 @@
       "id": "cisa_kev",
       "name": "CISA KEV",
       "url": "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json",
+      "display_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
       "collection_method": "cisa_kev_json",
       "language": "en",
       "source_type": "CERT・注意喚起",
@@ -254,7 +255,7 @@
       "collection_frequency": "daily",
       "color": "#e74c3c",
       "trusted_cyber_source": false,
-      "notes": "収集元はJSON API。記事表示用リンクは全件共通で固定URL(https://www.cisa.gov/known-exploited-vulnerabilities-catalog)であり、fetch_cisa_kev()内にハードコードされたまま(本チケットでは変更していない)。"
+      "notes": "urlは取得元JSON API。display_urlは記事表示用の固定リンク(全件共通、fetch_cisa_kev()に引数として渡される)。"
     },
     {
       "id": "nist_nvd",
@@ -270,7 +271,7 @@
       "collection_frequency": "weekly",
       "color": "#7d3c98",
       "trusted_cyber_source": false,
-      "notes": "元実装で collect_recent() 内 `# all_items += fetch_nist_nvd(cutoff)` としてコメントアウトされ無効化中。無効化理由・再有効化条件はコード上に明記がないため、activation_conditionは空のままにしている。fetch_nist_nvd()の実装自体はfetch.py内に温存。"
+      "notes": "元実装で collect_recent() 内 `# all_items += fetch_nist_nvd(cutoff)` としてコメントアウトされ無効化中。無効化理由・再有効化条件はコード上に明記がないため、activation_conditionは空のままにしている。enabledをtrueにするとfetch_nist_nvd()が実行される(記事ごとのリンクはCVE IDから動的に組み立てられるためdisplay_urlは持たない)。"
     }
   ]
 }

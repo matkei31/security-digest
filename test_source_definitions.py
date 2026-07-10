@@ -8,6 +8,7 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import fetch
 
@@ -268,6 +269,122 @@ class CompatLayerTest(unittest.TestCase):
                     BASELINE_SOURCE_COLORS.get(name, "#555"),
                     fetch.SOURCE_COLORS.get(name, "#555"),
                 )
+
+
+class NonRssSourceDispatchTest(unittest.TestCase):
+    """CISA KEV・NIST NVD等、非RSSソースのURL/enabledがsource_definitions.json
+    由来であることを、外部APIを実際に呼ばずに検証する(fetch_cisa_kev/fetch_nist_nvd
+    をモックに差し替える)。"""
+
+    def _sources(self, cisa_kev_enabled, nist_nvd_enabled):
+        return [
+            {
+                "id": "cisa_kev",
+                "name": "CISA KEV",
+                "url": "https://example.com/kev.json",
+                "display_url": "https://example.com/kev-catalog",
+                "collection_method": "cisa_kev_json",
+                "enabled": cisa_kev_enabled,
+            },
+            {
+                "id": "nist_nvd",
+                "name": "NIST NVD",
+                "url": "https://example.com/nvd-base",
+                "collection_method": "nist_nvd_json",
+                "enabled": nist_nvd_enabled,
+            },
+        ]
+
+    @patch("fetch.fetch_nist_nvd")
+    @patch("fetch.fetch_cisa_kev")
+    def test_cisa_kev_enabled_is_fetched_with_json_url(self, mock_kev, mock_nvd):
+        mock_kev.return_value = [{"source": "CISA KEV"}]
+        sources = self._sources(cisa_kev_enabled=True, nist_nvd_enabled=False)
+
+        result = fetch.collect_non_rss_items(fetch.datetime.datetime.utcnow(), sources)
+
+        mock_kev.assert_called_once()
+        self.assertEqual(mock_kev.call_args.kwargs["url"], "https://example.com/kev.json")
+        self.assertEqual(mock_kev.call_args.kwargs["display_url"], "https://example.com/kev-catalog")
+        self.assertEqual(mock_kev.call_args.kwargs["source_name"], "CISA KEV")
+        mock_nvd.assert_not_called()
+        self.assertIn({"source": "CISA KEV"}, result)
+
+    @patch("fetch.fetch_nist_nvd")
+    @patch("fetch.fetch_cisa_kev")
+    def test_cisa_kev_disabled_is_not_fetched(self, mock_kev, mock_nvd):
+        sources = self._sources(cisa_kev_enabled=False, nist_nvd_enabled=False)
+
+        result = fetch.collect_non_rss_items(fetch.datetime.datetime.utcnow(), sources)
+
+        mock_kev.assert_not_called()
+        self.assertEqual(result, [])
+
+    @patch("fetch.fetch_nist_nvd")
+    @patch("fetch.fetch_cisa_kev")
+    def test_nist_nvd_disabled_is_not_fetched(self, mock_kev, mock_nvd):
+        sources = self._sources(cisa_kev_enabled=False, nist_nvd_enabled=False)
+
+        fetch.collect_non_rss_items(fetch.datetime.datetime.utcnow(), sources)
+
+        mock_nvd.assert_not_called()
+
+    @patch("fetch.fetch_nist_nvd")
+    @patch("fetch.fetch_cisa_kev")
+    def test_nist_nvd_enabled_is_fetched_with_json_url(self, mock_kev, mock_nvd):
+        mock_nvd.return_value = [{"source": "NIST NVD"}]
+        sources = self._sources(cisa_kev_enabled=False, nist_nvd_enabled=True)
+
+        result = fetch.collect_non_rss_items(fetch.datetime.datetime.utcnow(), sources)
+
+        mock_nvd.assert_called_once()
+        self.assertEqual(mock_nvd.call_args.kwargs["base_url"], "https://example.com/nvd-base")
+        self.assertEqual(mock_nvd.call_args.kwargs["source_name"], "NIST NVD")
+        self.assertIn({"source": "NIST NVD"}, result)
+
+    def test_real_definitions_cisa_kev_enabled_and_nist_nvd_disabled(self):
+        # 実際のsource_definitions.jsonにおける現状のenabled値を確認する
+        # (「今回の修正で実際の取得対象は変えない」の裏付け)
+        cisa_kev_def = fetch.get_source_definition(fetch.SOURCE_DEFINITIONS, "cisa_kev")
+        nist_nvd_def = fetch.get_source_definition(fetch.SOURCE_DEFINITIONS, "nist_nvd")
+        self.assertTrue(cisa_kev_def["enabled"])
+        self.assertFalse(nist_nvd_def["enabled"])
+
+
+class NoDuplicateUrlInSourceCodeTest(unittest.TestCase):
+    """CISA KEV・NIST NVDの取得元URLが、fetch.pyのソースコード中に
+    ハードコードされたまま残っていない(source_definitions.jsonのみに存在する)
+    ことを確認する。"""
+
+    def setUp(self):
+        self.fetch_source_text = Path(fetch.__file__).read_text(encoding="utf-8")
+
+    def test_cisa_kev_json_url_not_hardcoded_in_fetch_py(self):
+        cisa_kev_url = (
+            "https://www.cisa.gov/sites/default/files/feeds/"
+            "known_exploited_vulnerabilities.json"
+        )
+        self.assertNotIn(cisa_kev_url, self.fetch_source_text)
+
+    def test_cisa_kev_display_url_not_hardcoded_in_fetch_py(self):
+        display_url = "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
+        self.assertNotIn(display_url, self.fetch_source_text)
+
+    def test_nist_nvd_base_url_not_hardcoded_in_fetch_py(self):
+        nvd_base_url = "https://services.nvd.nist.gov/rest/json/cves/2.0"
+        self.assertNotIn(nvd_base_url, self.fetch_source_text)
+
+    def test_urls_are_defined_exactly_once_in_source_definitions_json(self):
+        definitions_text = (Path(fetch.__file__).parent / "source_definitions.json").read_text(
+            encoding="utf-8"
+        )
+        cisa_kev_url = (
+            "https://www.cisa.gov/sites/default/files/feeds/"
+            "known_exploited_vulnerabilities.json"
+        )
+        nvd_base_url = "https://services.nvd.nist.gov/rest/json/cves/2.0"
+        self.assertEqual(definitions_text.count(cisa_kev_url), 1)
+        self.assertEqual(definitions_text.count(nvd_base_url), 1)
 
 
 if __name__ == "__main__":

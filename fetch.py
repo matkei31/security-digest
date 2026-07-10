@@ -194,6 +194,14 @@ def build_trusted_cyber_sources(sources):
     return {s["name"] for s in sources if s["trusted_cyber_source"]}
 
 
+def get_source_definition(sources, source_id):
+    """idでsource定義を1件検索する。見つからなければNone。"""
+    for s in sources:
+        if s["id"] == source_id:
+            return s
+    return None
+
+
 SOURCE_DEFINITIONS = load_source_definitions()
 
 # 互換レイヤー: 既存コード(fetch_feed呼び出し・is_cyber_relevantフィルタ・
@@ -323,14 +331,17 @@ def fetch_feed(name, url, lang):
 
 # ── CISA KEV (JSON) ───────────────────────────────────────────────────────────
 
-def fetch_cisa_kev(cutoff):
-    url = "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
+def fetch_cisa_kev(cutoff, url, display_url, source_name):
+    """url: 取得元JSON API、display_url: 記事表示用の固定リンク(全件共通)、
+    source_name: item["source"]に設定する表示名。いずれもsource_definitions.json由来。
+    取得・パース・フィルタのロジック自体は変更していない。
+    """
     req = urllib.request.Request(url, headers={"User-Agent": "SecurityDigest/1.0"})
     try:
         with urllib.request.urlopen(req, timeout=15) as res:
             data = json.loads(res.read())
     except Exception as e:
-        print(f"[WARN] CISA KEV: {e}", file=sys.stderr)
+        print(f"[WARN] {source_name}: {e}", file=sys.stderr)
         return []
 
     items = []
@@ -341,10 +352,10 @@ def fetch_cisa_kev(cutoff):
             break
         items.append({
             "title":   f"{v.get('cveID','')} — {v.get('vulnerabilityName','')}",
-            "link":    "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+            "link":    display_url,
             "summary": v.get("shortDescription", ""),
             "date":    date,
-            "source":  "CISA KEV",
+            "source":  source_name,
             "lang":    "en",
         })
         if len(items) >= MAX_PER_FEED:
@@ -353,12 +364,17 @@ def fetch_cisa_kev(cutoff):
 
 # ── NIST NVD (JSON API) ───────────────────────────────────────────────────────
 
-def fetch_nist_nvd(cutoff):
+def fetch_nist_nvd(cutoff, base_url, source_name):
+    """base_url: 取得元JSON APIのベースURL、source_name: item["source"]に設定する表示名。
+    いずれもsource_definitions.json由来。取得・パース・フィルタのロジック自体は
+    変更していない。記事ごとのリンクはCVE IDからNVD詳細ページを組み立てる仕様であり
+    (単一の固定リンクではないため)、従来通り関数内でテンプレート生成する。
+    """
     now   = datetime.datetime.utcnow()
     start = cutoff.strftime("%Y-%m-%dT00:00:00.000")
     end   = now.strftime("%Y-%m-%dT23:59:59.000")
     url   = (
-        "https://services.nvd.nist.gov/rest/json/cves/2.0"
+        f"{base_url}"
         f"?pubStartDate={start}&pubEndDate={end}"
         f"&resultsPerPage={MAX_PER_FEED}&cvssV3Severity=CRITICAL"
     )
@@ -367,7 +383,7 @@ def fetch_nist_nvd(cutoff):
         with urllib.request.urlopen(req, timeout=15) as res:
             data = json.loads(res.read())
     except Exception as e:
-        print(f"[WARN] NIST NVD: {e}", file=sys.stderr)
+        print(f"[WARN] {source_name}: {e}", file=sys.stderr)
         return []
 
     items = []
@@ -387,7 +403,7 @@ def fetch_nist_nvd(cutoff):
             "link":    f"https://nvd.nist.gov/vuln/detail/{cveid}",
             "summary": desc,
             "date":    parse_date(cve.get("published")),
-            "source":  "NIST NVD",
+            "source":  source_name,
             "lang":    "en",
         })
     return items
@@ -410,6 +426,38 @@ def is_cyber_relevant(item):
     return any(k in text for k in keywords)
 
 
+def collect_non_rss_items(cutoff, sources):
+    """RSS以外の取得元(CISA KEV・NIST NVD)を、source定義のenabledに従って収集する。
+    URL・表示名・有効/無効はすべてsource_definitions.json(sources)由来。
+    """
+    all_items = []
+
+    cisa_kev_def = get_source_definition(sources, "cisa_kev")
+    if cisa_kev_def and cisa_kev_def["enabled"]:
+        kev_items = fetch_cisa_kev(
+            cutoff,
+            url=cisa_kev_def["url"],
+            display_url=cisa_kev_def.get("display_url") or cisa_kev_def["url"],
+            source_name=cisa_kev_def["name"],
+        )
+        kev_status = "OK" if kev_items else "NG"
+        print(f"  [{kev_status}] {cisa_kev_def['name']}: 取得 {len(kev_items)} 件")
+        all_items += kev_items
+
+    nist_nvd_def = get_source_definition(sources, "nist_nvd")
+    if nist_nvd_def and nist_nvd_def["enabled"]:
+        nvd_items = fetch_nist_nvd(
+            cutoff,
+            base_url=nist_nvd_def["url"],
+            source_name=nist_nvd_def["name"],
+        )
+        nvd_status = "OK" if nvd_items else "NG"
+        print(f"  [{nvd_status}] {nist_nvd_def['name']}: 取得 {len(nvd_items)} 件")
+        all_items += nvd_items
+
+    return all_items
+
+
 def collect_recent():
     cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=DAYS_BACK)
     all_items = []
@@ -422,11 +470,7 @@ def collect_recent():
         print(f"  [{status}] {name}: 取得 {len(items)} 件 / 直近 {len(recent)} 件")
         all_items.extend(recent)
 
-    kev_items = fetch_cisa_kev(cutoff)
-    kev_status = "OK" if kev_items else "NG"
-    print(f"  [{kev_status}] CISA KEV: 取得 {len(kev_items)} 件")
-    all_items += kev_items
-    # all_items += fetch_nist_nvd(cutoff)
+    all_items += collect_non_rss_items(cutoff, SOURCE_DEFINITIONS)
 
     all_items = [
         item for item in all_items
