@@ -32,6 +32,7 @@ VALID_BRIEF_STATUSES = {"success", "failed", "not_attempted"}
 VALID_ERROR_TYPES = {
     "rate_limit", "quota_exceeded", "billing_or_balance", "schema_parse_error",
     "network_error", "api_error", "unknown",
+    "resource_exhausted", "permission_denied",
 }
 
 IMPORTANCE_KEYS = ("高", "中", "低", "未判定")
@@ -56,14 +57,21 @@ class DailyJsonError(Exception):
 def classify_gemini_error(exception=None, http_status=None):
     """Gemini呼び出しの例外・HTTPステータスから保存用のerror_typeを判定する。
     複雑な文字列判定は避け、例外の型とHTTPステータスコードのみで分類する。
+
+    Gemini APIの公式エラーコードでは、403はPERMISSION_DENIED、
+    429はRESOURCE_EXHAUSTED(RPM/TPM/RPDに限らず、spend-based limitや
+    アカウントの利用階層・請求履歴に基づく制限も含みうる)である。
+    HTTPステータスだけではrate_limit/quota_exceeded/billing_or_balanceの
+    いずれが原因かを正確に断定できないため、429はresource_exhausted、
+    403はpermission_deniedとしてそのまま保存し、それ以上の細分化は行わない。
     """
     if http_status is not None:
+        if http_status == 403:
+            return "permission_denied"
         if http_status == 429:
-            return "rate_limit"
+            return "resource_exhausted"
         if http_status == 402:
             return "billing_or_balance"
-        if http_status == 403:
-            return "quota_exceeded"
         return "api_error"
 
     if exception is not None:

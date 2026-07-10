@@ -53,7 +53,7 @@ def success_meta(generated_at=NOW):
             "generated_at": generated_at.isoformat()}
 
 
-def failed_meta(error_type="rate_limit", http_status=429, generated_at=NOW):
+def failed_meta(error_type="resource_exhausted", http_status=429, generated_at=NOW):
     return {"status": "failed", "error_type": error_type, "http_status": http_status,
             "generated_at": generated_at.isoformat()}
 
@@ -67,6 +67,53 @@ SAMPLE_ANALYSIS = {
     "importance": "高", "summary": "要約", "financial_impact": "影響",
     "recommended_actions": ["対応1"],
 }
+
+
+# ── エラー分類 ────────────────────────────────────────────────────────────
+
+class ErrorClassificationTest(unittest.TestCase):
+    def test_403_is_permission_denied(self):
+        self.assertEqual(dj.classify_gemini_error(http_status=403), "permission_denied")
+
+    def test_429_is_resource_exhausted(self):
+        self.assertEqual(dj.classify_gemini_error(http_status=429), "resource_exhausted")
+
+    def test_402_is_billing_or_balance(self):
+        self.assertEqual(dj.classify_gemini_error(http_status=402), "billing_or_balance")
+
+    def test_other_http_status_is_api_error(self):
+        for status in (400, 404, 500, 503):
+            with self.subTest(status=status):
+                self.assertEqual(dj.classify_gemini_error(http_status=status), "api_error")
+
+    def test_url_error_is_network_error(self):
+        import urllib.error
+        self.assertEqual(
+            dj.classify_gemini_error(exception=urllib.error.URLError("boom")),
+            "network_error",
+        )
+
+    def test_other_exception_is_unknown(self):
+        self.assertEqual(dj.classify_gemini_error(exception=ValueError("x")), "unknown")
+
+    def test_valid_error_types_include_new_values(self):
+        self.assertIn("resource_exhausted", dj.VALID_ERROR_TYPES)
+        self.assertIn("permission_denied", dj.VALID_ERROR_TYPES)
+
+    def test_digest_with_new_error_types_passes_validation(self):
+        items = [
+            make_item(link="https://example.com/a", ai_analysis=None, ai_analysis_meta=failed_meta(
+                error_type="permission_denied", http_status=403)),
+            make_item(link="https://example.com/b", ai_analysis=None, ai_analysis_meta=failed_meta(
+                error_type="resource_exhausted", http_status=429)),
+        ]
+        digest = dj.build_daily_digest(
+            items, {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+            SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW,
+        )
+        dj.validate_daily_digest(digest)  # 例外が出なければOK
+        error_types = {item["analysis"]["error_type"] for item in digest["items"]}
+        self.assertEqual(error_types, {"permission_denied", "resource_exhausted"})
 
 
 # ── スキーマ・メタ情報 ────────────────────────────────────────────────────
