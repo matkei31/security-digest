@@ -11,51 +11,10 @@ from pathlib import Path
 
 # ── 設定 ────────────────────────────────────────────────────────────────────
 
-# (表示名, RSSのURL, 言語)  lang="ja" なら翻訳スキップ
-RSS_FEEDS = [
-    # 国内・官公庁
-    ("金融庁",             "https://www.fsa.go.jp/fsaNewsListAll_rss2.xml",              "ja"),
-    ("JPCERT/CC",          "https://www.jpcert.or.jp/rss/jpcert.rdf",                   "ja"),
-    ("IPA",                "https://www.ipa.go.jp/security/rss/alert.rdf",              "ja"),
-
-    # 海外・政府/標準
-    ("CISA",               "https://www.cisa.gov/cybersecurity-advisories/all.xml",     "en"),
-    ("NIST",               "https://www.nist.gov/news-events/news/rss.xml",             "en"),
-
-    # ベンダ・脅威情報
-    ("Microsoft Security", "https://www.microsoft.com/en-us/security/blog/feed/",       "en"),
-    ("Mandiant",           "https://cloudblog.withgoogle.com/topics/threat-intelligence/rss/", "en"),
-    ("CrowdStrike",        "https://www.crowdstrike.com/blog/feed/",                    "en"),
-    ("Google TAG",         "https://security.googleblog.com/feeds/posts/default",       "en"),
-    ("NCSC",               "https://www.ncsc.gov.uk/api/1/services/v1/all-rss-feed.xml","en"),
-
-    # 実務系
-    ("Krebs on Security",  "https://krebsonsecurity.com/feed/",                         "en"),
-    ("Dark Reading",       "https://www.darkreading.com/rss.xml",                       "en"),
-    ("The Hacker News",    "https://feeds.feedburner.com/TheHackersNews",               "en"),
-    ("Cisco Talos",        "https://blog.talosintelligence.com/rss/",                    "en"),
-    ("Cloudflare",         "https://blog.cloudflare.com/rss/",                            "en"),
-]
 MAX_PER_FEED = 3
 DAYS_BACK    = 1
 
 GEMINI_MODEL = "gemini-2.5-flash"
-
-
-SOURCE_COLORS = {
-    "金融庁":             "#c0392b",
-    "JPCERT/CC":          "#2471a3",
-    "CISA":               "#1e8449",
-    "CISA KEV":           "#e74c3c",
-    "Microsoft Security": "#0078d4",
-    "NIST NVD":           "#7d3c98",
-    "Mandiant":           "#e67e22",
-    "CrowdStrike":        "#cc0000",
-    "Google TAG":         "#4285f4",
-    "NCSC":               "#005eb8",
-    "Cisco Talos":        "#6f42c1",
-    "Cloudflare":         "#f38020",
-}
 
 NAMESPACES = {
     "atom": "http://www.w3.org/2005/Atom",
@@ -64,6 +23,200 @@ NAMESPACES = {
 }
 
 CACHE_PATH = Path(__file__).parent / "docs" / "translate_cache.json"
+
+# ── ソース定義 (source_definitions.json) ─────────────────────────────────────
+# ソース関連の設定(RSS_FEEDS・SOURCE_COLORS・TRUSTED_CYBER_SOURCES等)の正本は
+# source_definitions.json に一元化されている。以下はそれを読み込み・検証し、
+# 既存コードが期待する形（RSS_FEEDS/SOURCE_COLORS/TRUSTED_CYBER_SOURCES）に
+# 変換する互換レイヤー。
+
+SOURCE_DEFINITIONS_PATH = Path(__file__).resolve().parent / "source_definitions.json"
+
+VALID_SOURCE_TYPES = {
+    "規制・監督", "政府・公的機関", "CERT・注意喚起", "業界基準・フレームワーク",
+    "脅威インテリジェンス", "ベンダー情報", "報道・メディア", "その他",
+}
+VALID_SOURCE_TIERS = {"Tier 1", "Tier 2", "Tier 3"}
+VALID_PLANNED_PHASES = {"Phase 1", "Phase 2", "Phase 3", "保留"}
+VALID_COLLECTION_FREQUENCIES = {"daily", "weekly", "manual"}
+# 現状定義されている収集方法はいずれもURL必須(将来、URL不要な方式を
+# 追加する場合はここから除外する)
+VALID_COLLECTION_METHODS = {"rss", "cisa_kev_json", "nist_nvd_json"}
+URL_REQUIRED_COLLECTION_METHODS = set(VALID_COLLECTION_METHODS)
+
+REQUIRED_SOURCE_FIELDS = (
+    "id", "name", "url", "collection_method", "language",
+    "source_type", "source_tier", "enabled", "planned_phase",
+    "activation_condition", "collection_frequency", "color",
+    "trusted_cyber_source", "notes",
+)
+
+
+class SourceDefinitionError(Exception):
+    """source_definitions.json の読み込み・検証エラー"""
+
+
+def _validate_source_entry(entry, index):
+    where = f"sources[{index}]"
+    if not isinstance(entry, dict):
+        raise SourceDefinitionError(f"{where}: オブジェクト(dict)ではありません")
+
+    missing = [f for f in REQUIRED_SOURCE_FIELDS if f not in entry]
+    if missing:
+        raise SourceDefinitionError(
+            f"{where} (id={entry.get('id', '?')!r}): 必須項目が欠落しています: {', '.join(missing)}"
+        )
+
+    sid = entry["id"]
+
+    if not isinstance(entry["enabled"], bool):
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): enabled は bool である必要があります (実際: {entry['enabled']!r})"
+        )
+
+    if not isinstance(entry["trusted_cyber_source"], bool):
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): trusted_cyber_source は bool である必要があります "
+            f"(実際: {entry['trusted_cyber_source']!r})"
+        )
+
+    if entry["source_type"] not in VALID_SOURCE_TYPES:
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): source_type が不正です: {entry['source_type']!r} "
+            f"(許容値: {sorted(VALID_SOURCE_TYPES)})"
+        )
+
+    if entry["source_tier"] not in VALID_SOURCE_TIERS:
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): source_tier が不正です: {entry['source_tier']!r} "
+            f"(許容値: {sorted(VALID_SOURCE_TIERS)})"
+        )
+
+    if entry["planned_phase"] not in VALID_PLANNED_PHASES:
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): planned_phase が不正です: {entry['planned_phase']!r} "
+            f"(許容値: {sorted(VALID_PLANNED_PHASES)})"
+        )
+
+    if entry["collection_frequency"] not in VALID_COLLECTION_FREQUENCIES:
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): collection_frequency が不正です: {entry['collection_frequency']!r} "
+            f"(許容値: {sorted(VALID_COLLECTION_FREQUENCIES)})"
+        )
+
+    if entry["collection_method"] not in VALID_COLLECTION_METHODS:
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): collection_method が不正です: {entry['collection_method']!r} "
+            f"(許容値: {sorted(VALID_COLLECTION_METHODS)})"
+        )
+
+    if entry["collection_method"] in URL_REQUIRED_COLLECTION_METHODS and not entry.get("url"):
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): collection_method={entry['collection_method']!r} はURLが必須です"
+        )
+
+    # CISA KEV固有: fetch_cisa_kev()は記事表示用の固定リンクとしてdisplay_urlを
+    # 必要とする。enabled=trueで実際に取得される場合のみ必須とする。
+    if sid == "cisa_kev" and entry["enabled"] and not entry.get("display_url"):
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): enabled=true の場合、display_url が必須です"
+        )
+
+
+def load_source_definitions(path=None):
+    """source_definitions.json を読み込み・検証し、source定義のリストを返す。
+    読み込み・解析・検証のいずれかに失敗した場合は SourceDefinitionError を送出する
+    (黙って空リストにフォールバックしない)。
+    """
+    path = path or SOURCE_DEFINITIONS_PATH
+
+    try:
+        raw = path.read_text(encoding="utf-8")
+    except OSError as e:
+        raise SourceDefinitionError(
+            f"source_definitions.json を読み込めません ({path}): {e}"
+        ) from e
+
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as e:
+        raise SourceDefinitionError(
+            f"source_definitions.json のJSON解析に失敗しました ({path}): "
+            f"{e.msg} (line {e.lineno}, column {e.colno})"
+        ) from e
+
+    if not isinstance(data, dict) or not isinstance(data.get("sources"), list):
+        raise SourceDefinitionError(
+            f"source_definitions.json の形式が不正です: "
+            f"トップレベルに 'sources' 配列が必要です ({path})"
+        )
+
+    sources = data["sources"]
+    seen_ids = {}
+    seen_names = {}
+
+    for i, entry in enumerate(sources):
+        _validate_source_entry(entry, i)
+
+        sid = entry["id"]
+        name = entry["name"]
+
+        if sid in seen_ids:
+            raise SourceDefinitionError(
+                f"sources[{i}]: id が重複しています: {sid!r} "
+                f"(sources[{seen_ids[sid]}] と重複)"
+            )
+        seen_ids[sid] = i
+
+        if name in seen_names:
+            raise SourceDefinitionError(
+                f"sources[{i}]: name が重複しています: {name!r} "
+                f"(sources[{seen_names[name]}] と重複)"
+            )
+        seen_names[name] = i
+
+    return sources
+
+
+def build_rss_feeds(sources):
+    """source定義から、既存コードが期待する RSS_FEEDS 相当の
+    [(表示名, URL, 言語), ...] を生成する(collection_method=rss かつ enabled=trueのみ、
+    定義順を維持)。"""
+    return [
+        (s["name"], s["url"], s["language"])
+        for s in sources
+        if s["collection_method"] == "rss" and s["enabled"]
+    ]
+
+
+def build_source_colors(sources):
+    """source定義から、既存コードが期待する SOURCE_COLORS 相当の
+    {表示名: 色コード} を生成する(enabled有無に関わらず全ソース分)。"""
+    return {s["name"]: s["color"] for s in sources}
+
+
+def build_trusted_cyber_sources(sources):
+    """source定義から、既存コードが期待する TRUSTED_CYBER_SOURCES 相当の
+    表示名の集合を生成する。"""
+    return {s["name"] for s in sources if s["trusted_cyber_source"]}
+
+
+def get_source_definition(sources, source_id):
+    """idでsource定義を1件検索する。見つからなければNone。"""
+    for s in sources:
+        if s["id"] == source_id:
+            return s
+    return None
+
+
+SOURCE_DEFINITIONS = load_source_definitions()
+
+# 互換レイヤー: 既存コード(fetch_feed呼び出し・is_cyber_relevantフィルタ・
+# build_htmlの表示等)は従来通りこれらの名前をそのまま参照する。
+# 正本は source_definitions.json のみで、ここでの二重管理はしない。
+RSS_FEEDS = build_rss_feeds(SOURCE_DEFINITIONS)
+SOURCE_COLORS = build_source_colors(SOURCE_DEFINITIONS)
+TRUSTED_CYBER_SOURCES = build_trusted_cyber_sources(SOURCE_DEFINITIONS)
 
 # ── 翻訳 (Google Translate 非公式エンドポイント + キャッシュ) ────────────────
 
@@ -185,14 +338,17 @@ def fetch_feed(name, url, lang):
 
 # ── CISA KEV (JSON) ───────────────────────────────────────────────────────────
 
-def fetch_cisa_kev(cutoff):
-    url = "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json"
+def fetch_cisa_kev(cutoff, url, display_url, source_name):
+    """url: 取得元JSON API、display_url: 記事表示用の固定リンク(全件共通)、
+    source_name: item["source"]に設定する表示名。いずれもsource_definitions.json由来。
+    取得・パース・フィルタのロジック自体は変更していない。
+    """
     req = urllib.request.Request(url, headers={"User-Agent": "SecurityDigest/1.0"})
     try:
         with urllib.request.urlopen(req, timeout=15) as res:
             data = json.loads(res.read())
     except Exception as e:
-        print(f"[WARN] CISA KEV: {e}", file=sys.stderr)
+        print(f"[WARN] {source_name}: {e}", file=sys.stderr)
         return []
 
     items = []
@@ -203,10 +359,10 @@ def fetch_cisa_kev(cutoff):
             break
         items.append({
             "title":   f"{v.get('cveID','')} — {v.get('vulnerabilityName','')}",
-            "link":    "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+            "link":    display_url,
             "summary": v.get("shortDescription", ""),
             "date":    date,
-            "source":  "CISA KEV",
+            "source":  source_name,
             "lang":    "en",
         })
         if len(items) >= MAX_PER_FEED:
@@ -215,12 +371,17 @@ def fetch_cisa_kev(cutoff):
 
 # ── NIST NVD (JSON API) ───────────────────────────────────────────────────────
 
-def fetch_nist_nvd(cutoff):
+def fetch_nist_nvd(cutoff, base_url, source_name):
+    """base_url: 取得元JSON APIのベースURL、source_name: item["source"]に設定する表示名。
+    いずれもsource_definitions.json由来。取得・パース・フィルタのロジック自体は
+    変更していない。記事ごとのリンクはCVE IDからNVD詳細ページを組み立てる仕様であり
+    (単一の固定リンクではないため)、従来通り関数内でテンプレート生成する。
+    """
     now   = datetime.datetime.utcnow()
     start = cutoff.strftime("%Y-%m-%dT00:00:00.000")
     end   = now.strftime("%Y-%m-%dT23:59:59.000")
     url   = (
-        "https://services.nvd.nist.gov/rest/json/cves/2.0"
+        f"{base_url}"
         f"?pubStartDate={start}&pubEndDate={end}"
         f"&resultsPerPage={MAX_PER_FEED}&cvssV3Severity=CRITICAL"
     )
@@ -229,7 +390,7 @@ def fetch_nist_nvd(cutoff):
         with urllib.request.urlopen(req, timeout=15) as res:
             data = json.loads(res.read())
     except Exception as e:
-        print(f"[WARN] NIST NVD: {e}", file=sys.stderr)
+        print(f"[WARN] {source_name}: {e}", file=sys.stderr)
         return []
 
     items = []
@@ -249,18 +410,14 @@ def fetch_nist_nvd(cutoff):
             "link":    f"https://nvd.nist.gov/vuln/detail/{cveid}",
             "summary": desc,
             "date":    parse_date(cve.get("published")),
-            "source":  "NIST NVD",
+            "source":  source_name,
             "lang":    "en",
         })
     return items
 
 # ── 全収集 ────────────────────────────────────────────────────────────────────
-
-TRUSTED_CYBER_SOURCES = {
-    "JPCERT/CC", "CISA", "Microsoft Security", "Mandiant",
-    "CrowdStrike", "Google TAG", "NCSC", "Cisco Talos",
-    "The Hacker News", "Krebs on Security", "Dark Reading",
-}
+# TRUSTED_CYBER_SOURCES は source_definitions.json から生成される
+# (ファイル冒頭の「ソース定義」セクション参照)。ここでの再定義はしない。
 
 
 def is_cyber_relevant(item):
@@ -276,6 +433,48 @@ def is_cyber_relevant(item):
     return any(k in text for k in keywords)
 
 
+def collect_non_rss_items(cutoff, sources):
+    """RSS以外の取得元(CISA KEV・NIST NVD)を、source定義のenabledに従って収集する。
+    URL・表示名・有効/無効はすべてsource_definitions.json(sources)由来。
+    id="cisa_kev"/"nist_nvd" はこの関数が直接参照する前提の識別子であるため、
+    定義に存在しない場合は黙ってスキップせず、対象IDを含むエラーを送出する。
+    """
+    all_items = []
+
+    cisa_kev_def = get_source_definition(sources, "cisa_kev")
+    if cisa_kev_def is None:
+        raise SourceDefinitionError(
+            "collect_non_rss_items: source定義に id='cisa_kev' が見つかりません"
+        )
+    if cisa_kev_def["enabled"]:
+        kev_items = fetch_cisa_kev(
+            cutoff,
+            url=cisa_kev_def["url"],
+            display_url=cisa_kev_def.get("display_url") or cisa_kev_def["url"],
+            source_name=cisa_kev_def["name"],
+        )
+        kev_status = "OK" if kev_items else "NG"
+        print(f"  [{kev_status}] {cisa_kev_def['name']}: 取得 {len(kev_items)} 件")
+        all_items += kev_items
+
+    nist_nvd_def = get_source_definition(sources, "nist_nvd")
+    if nist_nvd_def is None:
+        raise SourceDefinitionError(
+            "collect_non_rss_items: source定義に id='nist_nvd' が見つかりません"
+        )
+    if nist_nvd_def["enabled"]:
+        nvd_items = fetch_nist_nvd(
+            cutoff,
+            base_url=nist_nvd_def["url"],
+            source_name=nist_nvd_def["name"],
+        )
+        nvd_status = "OK" if nvd_items else "NG"
+        print(f"  [{nvd_status}] {nist_nvd_def['name']}: 取得 {len(nvd_items)} 件")
+        all_items += nvd_items
+
+    return all_items
+
+
 def collect_recent():
     cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=DAYS_BACK)
     all_items = []
@@ -288,11 +487,7 @@ def collect_recent():
         print(f"  [{status}] {name}: 取得 {len(items)} 件 / 直近 {len(recent)} 件")
         all_items.extend(recent)
 
-    kev_items = fetch_cisa_kev(cutoff)
-    kev_status = "OK" if kev_items else "NG"
-    print(f"  [{kev_status}] CISA KEV: 取得 {len(kev_items)} 件")
-    all_items += kev_items
-    # all_items += fetch_nist_nvd(cutoff)
+    all_items += collect_non_rss_items(cutoff, SOURCE_DEFINITIONS)
 
     all_items = [
         item for item in all_items
