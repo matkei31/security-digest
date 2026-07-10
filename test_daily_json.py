@@ -68,6 +68,15 @@ SAMPLE_ANALYSIS = {
     "recommended_actions": ["対応1"],
 }
 
+# Ticket 4: category/category_reason/urgency/reason/tagsを含む新スキーマの分析結果
+SAMPLE_ANALYSIS_V2 = {
+    "importance": "高", "summary": "要約", "financial_impact": "影響",
+    "recommended_actions": ["対応1"],
+    "category": "脆弱性・パッチ", "category_reason": "CVEとKEV追加が主題のため。",
+    "urgency": "本日確認", "reason": "悪用確認済みのため。",
+    "tags": ["KEV", "悪用確認済み"],
+}
+
 
 # ── エラー分類 ────────────────────────────────────────────────────────────
 
@@ -221,7 +230,9 @@ class CountsTest(unittest.TestCase):
         self.assertEqual(importance["未判定"], 1)
         self.assertEqual(sum(importance.values()), 3)
 
-    def test_urgency_and_category_are_all_unclassified_in_ticket3(self):
+    def test_missing_urgency_category_fields_fall_back_to_unclassified(self):
+        # Ticket 3形式(urgency/categoryキーを持たない)のanalysisは、
+        # statusがsuccessでも未判定に集計される(後方互換の確認)。
         items = [make_item(ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta()) for _ in range(4)]
         digest = dj.build_daily_digest(items, {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
                                         SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
@@ -229,6 +240,28 @@ class CountsTest(unittest.TestCase):
         self.assertEqual(sum(digest["counts"]["urgency"].values()), 4)
         self.assertEqual(digest["counts"]["category"]["未判定"], 4)
         self.assertEqual(sum(digest["counts"]["category"].values()), 4)
+
+    def test_urgency_and_category_are_tabulated_from_ticket4_analysis(self):
+        # Ticket 4形式(category/urgency含む)のanalysisは、実際の値が集計される。
+        items = [
+            make_item(
+                ai_analysis={**SAMPLE_ANALYSIS_V2, "category": "脆弱性・パッチ", "urgency": "本日確認"},
+                ai_analysis_meta=success_meta(),
+            ),
+            make_item(
+                ai_analysis={**SAMPLE_ANALYSIS_V2, "category": "規制・ガバナンス", "urgency": "今週確認"},
+                ai_analysis_meta=success_meta(),
+            ),
+            make_item(ai_analysis=None, ai_analysis_meta=failed_meta()),
+        ]
+        digest = dj.build_daily_digest(items, {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+                                        SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        self.assertEqual(digest["counts"]["category"]["脆弱性・パッチ"], 1)
+        self.assertEqual(digest["counts"]["category"]["規制・ガバナンス"], 1)
+        self.assertEqual(digest["counts"]["category"]["未判定"], 1)
+        self.assertEqual(digest["counts"]["urgency"]["本日確認"], 1)
+        self.assertEqual(digest["counts"]["urgency"]["今週確認"], 1)
+        self.assertEqual(digest["counts"]["urgency"]["未判定"], 1)
 
 
 # ── 記事データ ────────────────────────────────────────────────────────────
