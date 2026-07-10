@@ -767,5 +767,14 @@
   "GigaWiper: Anatomy of a destructive backdoor assembled from multiple malware": "GigaWiper: 複数のマルウェアから組み立てられた破壊的なバックドアの構造",
   "GigaWiper is a destructive backdoor that combines multiple wiping and ransomware-like capabilities into a single operational platform. This blog analyzes how the malware incorporates code from several": "GigaWiper は、複数のワイプ機能とランサムウェアのような機能を単一の運用プラットフォームに組み合わせた破壊的なバックドアです。このブログでは、マルウェアが複数のコードをどのように組み込むかを分析します。",
   "Cyber Essentials Pathways: from proof of concept to cyber confidence": "サイバー エッセンシャルの道筋: 概念実証からサイバーの信頼まで",
-  "An alternate path to Cyber Essentials Plus certification, without compromising the integrity of the scheme.": "スキームの完全性を損なうことなく、Cyber​​ Essentials Plus 認定への代替パス。"
+  "An alternate path to Cyber Essentials Plus certification, without compromising the integrity of the scheme.": "スキームの完全性を損なうことなく、Cyber​​ Essentials Plus 認定への代替パス。",
+  "New MODBEACON RAT Uses gRPC Streaming for Encrypted C2 Traffic": "新しい MODBEACON RAT は、暗号化された C2 トラフィックに gRPC ストリーミングを使用します",
+  "The China-linked cybercrime group known as Silver Fox has been attributed to a new Rust-based remote access trojan (RAR) called MODBEACON.\n\nChinese cybersecurity company QiAnXin said that while the th": "Silver Fox として知られる中国関連のサイバー犯罪グループは、MODBEACON と呼ばれる新しい Rust ベースのリモート アクセス トロイの木馬 (RAR) の原因であると考えられています。\n\n中国のサイバーセキュリティ企業 QiAnXin は次のように述べています。",
+  "Unpatched XRING Flaw in XQUIC Lets Remote Clients Crash HTTP/3 Servers": "XQUIC のパッチが適用されていない XRING の欠陥により、リモート クライアントが HTTP/3 サーバーをクラッシュさせる",
+  "A single wrong variable on one line in XQUIC, Alibaba's QUIC and HTTP/3 library, lets any remote client crash the server with a short burst of completely legal traffic. There is no patch.\n\nFoxIO resea": "Alibaba の QUIC および HTTP/3 ライブラリである XQUIC の 1 行に 1 つの間違った変数があるため、リモート クライアントは完全に合法なトラフィックの短期間のバーストでサーバーをクラッシュさせることができます。パッチはありません。\n\nFoxIO研究",
+  "From 17,000 to 1.1 Million Assets: How Lumen Technologies Rebuilt Exposure Management at Scale": "17,000 から 110 万の資産へ: Lumen Technologies がどのようにして大規模な曝露管理を再構築したか",
+  "Most enterprises assume their asset inventory is close enough to accurate. The evidence suggests otherwise. According to a survey of over 600 security leaders in the 2026 Axonius Actionability Report,": "ほとんどの企業は、自社の資産在庫が十分に正確であると想定しています。証拠はそうではないことを示唆しています。 2026 Axonius Actionability Report の 600 名を超えるセキュリティ リーダーを対象とした調査によると、",
+  "AI Coding: Do Security Risks Outweigh Productivity Gains?": "AI コーディング: セキュリティ リスクは生産性の向上を上回りますか?",
+  "AI coding tools cost $19-$200/month/user, but security scanning, remediation, and false positives add hidden costs. Are the productivity gains worth it?": "AI コーディング ツールの費用はユーザーあたり月額 19 ～ 200 ドルですが、セキュリティ スキャン、修復、誤検知により隠れたコストが追加されます。生産性の向上にはそれだけの価値がありますか?",
+  "Why AI Governance Without Guardrails Is Theater": "ガードレールのない AI ガバナンスが劇場である理由"
 }

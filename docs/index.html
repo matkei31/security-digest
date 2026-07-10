@@ -49,22 +49,22 @@
 <body>
   <header>
     <h1>🔐 Security Digest</h1>
-    <div class="sub">最終更新: 2026年07月10日 08:14</div>
-    <div class="count">16 件</div>
+    <div class="sub">最終更新: 2026年07月10日 22:56</div>
+    <div class="count">15 件</div>
   </header>
   <div class="exec-summary">
     <div class="exec-summary-box">
       <h2>本日のポイント（金融機関サイバー担当者向け）</h2>
-      <ul><li>Windows Defenderのゼロデイ脆弱性「RoguePlanet」のPoCが公開され、情報漏えいやシステム停止のリスクがあります。</li><li>複数のマルウェアを組み合わせた破壊的なバックドア「GigaWiper」が確認され、データ消失や業務中断の恐れがあります。</li></ul>
+      <ul><li>Windows Defenderのゼロデイ脆弱性「RoguePlanet」のPoCが公開され、早急な対応が必要です。</li><li>複数のマルウェア機能を組み合わせた破壊的なバックドア「GigaWiper」の分析が公開されました。</li><li>GigaWiperはデータ消去やランサムウェア機能を持つため、システムへの深刻な影響が懸念されます。</li></ul>
     </div>
   </div>
   <div class="cards">
-    <a class="card" href="https://thehackernews.com/2026/07/dormant-github-accounts-help-attackers.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/07/new-modbeacon-rat-uses-grpc-streaming.html" target="_blank" rel="noopener noreferrer">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/10 00:08</span>
+        <span class="date">07/10 18:45</span>
       </div>
-      <h2>休眠中の GitHub アカウントは、企業組織のマッピング中に攻撃者が溶け込むのに役立ちます</h2>
+      <h2>新しい MODBEACON RAT は、暗号化された C2 トラフィックに gRPC ストリーミングを使用します</h2>
       <div class="ai-analysis">
         <div class="importance-row">
           <span class="field-label">重要度</span>
@@ -72,25 +72,25 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>Datadog Security Labsが、休眠中のGitHubアカウントや侵害されたOAuthトークンを利用し、企業GitHub組織、リポジトリ、ユーザーアカウントを体系的に列挙する複数の攻撃キャンペーンについて警告しました。</p>
+          <p>中国のサイバー犯罪グループSilver Foxが、gRPCストリーミングを利用するRust製RAT「MODBEACON」を使用しているとQiAnXinが公表しました。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>金融機関がGitHubを開発や情報共有に利用している場合、リポジトリやユーザー情報が攻撃者に列挙されるリスクがあります。委託先がGitHubを利用している場合も同様に情報漏えいの懸念があります。</p>
+          <p>金融機関のシステムがSEOポイズニングによる偽インストーラー経由で感染するリスクがあります。特に、従業員の業務端末や開発環境が標的となる可能性があり、情報漏えいや不正アクセスのリスクが高まります。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>自社および主要な委託先におけるGitHubの利用状況と公開範囲を確認し、機密情報が含まれていないか点検する。</li><li>GitHubアカウントの棚卸しを実施し、長期間利用されていない休眠アカウントや不審なOAuthトークンがないか調査する。</li><li>GitHubの監査ログを定期的に監視し、不審なAPIアクセスや情報列挙の兆候がないか確認する。</li></ul>
+          <ul><li>従業員に対し、ソフトウェアのダウンロード元を正規サイトに限定するよう注意喚起し、不審なインストーラーに警戒するよう周知する。</li><li>EDR/XDR等のセキュリティ製品のログを監視し、未知の通信や不審なプロセスがないか定期的に確認する。</li><li>セキュリティ製品の定義ファイルを最新に保ち、Rust製マルウェアやgRPC通信の異常を検知できるよう設定を見直す。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/07/new-gigawiper-windows-backdoor-bundles.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/07/unpatched-xring-flaw-in-xquic-lets.html" target="_blank" rel="noopener noreferrer">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/09 23:38</span>
+        <span class="date">07/10 17:17</span>
       </div>
-      <h2>新しい GigaWiper Windows バックドア バンドル ディスク ワイピング、偽のランサムウェア、スパイウェア</h2>
+      <h2>XQUIC のパッチが適用されていない XRING の欠陥により、リモート クライアントが HTTP/3 サーバーをクラッシュさせる</h2>
       <div class="ai-analysis">
         <div class="importance-row">
           <span class="field-label">重要度</span>
@@ -98,25 +98,25 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>Microsoftが「GigaWiper」と呼ぶ破壊的なWindowsバックドアを分析しました。これは、ディスクワイプ、Windowsドライブ上書き、偽のランサムウェア機能を組み合わせたものです。</p>
+          <p>FoxIOの研究者が、AlibabaのQUICおよびHTTP/3ライブラリXQUICに「XRING」と名付けられた未パッチの脆弱性を公表しました。これにより、リモートクライアントが正当なトラフィックでHTTP/3サーバーをクラッシュさせることが可能です。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>Windows環境を利用するシステムや端末が標的となる可能性があります。特に、顧客情報や取引データを扱うシステムへの侵入は、データ破壊や業務停止、信頼失墜のリスクを高めます。委託先のWindows環境も確認が必要です。</p>
+          <p>XQUICを直接または間接的に利用しているシステム（特にHTTP/3対応のWebサーバーやAPIゲートウェイ）は、サービス停止のリスクがあります。Alibaba Cloudなどのクラウドサービス利用時も、基盤技術としてXQUICが使われているか確認が必要です。顧客向けサービスや内部システムへの影響を評価する必要があります。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>Microsoft製品のセキュリティパッチ適用状況を確認し、最新の状態を維持してください。</li><li>EDR/MDR等の監視システムでGigaWiperに関連する不審な活動がないかログを調査してください。</li><li>従業員に対し、不審なメールやリンクを開かないよう注意喚起とセキュリティ教育を強化してください。</li></ul>
+          <ul><li>自組織のシステムおよび利用中のクラウドサービスや委託先システムにおいて、XQUICライブラリまたはHTTP/3プロトコルが利用されているかを確認する。</li><li>XQUICの利用が確認された場合、当該システムのサービス継続性への影響を評価し、Alibabaからのパッチ提供状況や回避策について情報収集を継続する。</li><li>XQUICの利用が不明な場合でも、HTTP/3対応のWebサーバーやAPIゲートウェイの構成を再確認し、関連する脆弱性情報に注意を払う。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://thehackernews.com/2026/07/npm-12-disables-install-scripts-by.html" target="_blank" rel="noopener">
+    <a class="card" href="https://thehackernews.com/2026/07/from-17000-to-11-million-assets-how.html" target="_blank" rel="noopener noreferrer">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/09 22:19</span>
+        <span class="date">07/10 17:09</span>
       </div>
-      <h2>npm 12 はサプライ チェーンのリスクを軽減するためにデフォルトでインストール スクリプトを無効にします</h2>
+      <h2>17,000 から 110 万の資産へ: Lumen Technologies がどのようにして大規模な曝露管理を再構築したか</h2>
       <div class="ai-analysis">
         <div class="importance-row">
           <span class="field-label">重要度</span>
@@ -124,20 +124,46 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>GitHubはnpm v12をリリースし、サプライチェーンリスク軽減のためインストールスクリプトをデフォルトで無効化しました。また、2FAを回避するGATsは非推奨となります。</p>
+          <p>The Hacker Newsが報じたAxoniusの調査によると、企業の45%しか資産と脆弱性データを統合しておらず、不正確な資産インベントリがセキュリティプログラムに影響を与えていると指摘されています。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>npmを利用した開発環境やCI/CDパイプラインに影響があります。依存関係のインストール時にスクリプト実行が必要な場合、ビルドエラーや機能不停止のリスクがあります。委託先の開発プロセスにも影響する可能性があります。</p>
+          <p>金融機関のシステム、特にIT資産管理システムや脆弱性管理システムにおいて、資産情報の不正確さがセキュリティ対策の漏れや非効率性を引き起こす可能性があります。委託先の資産管理状況も確認が必要です。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>npm v12へのアップデート計画を確認し、インストールスクリプトの実行有無と影響を評価する。</li><li>開発部門や委託先に対し、npm v12の変更点と対応状況について情報収集を行う。</li><li>GATsの利用状況を確認し、非推奨化に伴う代替認証方式への移行計画を策定する。</li></ul>
+          <ul><li>自組織のIT資産インベントリの正確性を確認し、未管理資産やシャドーITの有無を調査する。</li><li>資産情報と脆弱性情報の統合状況を確認し、セキュリティ対策への連携が適切に行われているかを評価する。</li><li>委託先を含むサプライチェーン全体の資産管理体制について、契約内容と実態の整合性を確認する。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://www.darkreading.com/cyber-risk/iran-cyber-crosshairs-beyond-critical-infrastructure" target="_blank" rel="noopener">
+    <a class="card" href="https://www.darkreading.com/application-security/ai-coding-security-risks-productivity-gains" target="_blank" rel="noopener noreferrer">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">07/10 13:00</span>
+      </div>
+      <h2>AI コーディング: セキュリティ リスクは生産性の向上を上回りますか?</h2>
+      <div class="ai-analysis">
+        <div class="importance-row">
+          <span class="field-label">重要度</span>
+          <span class="importance importance-medium">中</span>
+        </div>
+        <section class="analysis-field">
+          <h3>要約</h3>
+          <p>Dark ReadingがAIコーディングツールのセキュリティリスクと生産性向上に関する分析を公表し、隠れたコストと潜在的な脆弱性について指摘しました。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>金融機関への影響</h3>
+          <p>AIコーディングツールを開発業務で利用している、または利用を検討している金融機関は、システム開発の品質、セキュリティ、および委託先管理に影響があります。誤ったコード生成によるシステム障害や脆弱性混入のリスクが高まります。</p>
+        </section>
+        <section class="analysis-field">
+          <h3>推奨アクション</h3>
+          <ul><li>AIコーディングツールの利用状況と、それによって生成されたコードのセキュリティレビュープロセスを確認する。</li><li>AIコーディングツール利用に関するセキュリティガイドラインを策定し、開発者および委託先への周知を徹底する。</li><li>AI生成コードに対する追加のセキュリティスキャンと品質保証プロセスを導入し、誤検出への対応手順を確立する。</li></ul>
+        </section>
+      </div>
+    </a>
+
+    <a class="card" href="https://www.darkreading.com/cyber-risk/iran-cyber-crosshairs-beyond-critical-infrastructure" target="_blank" rel="noopener noreferrer">
       <div class="card-meta">
         <span class="tag" style="background:#555">Dark Reading</span>
         <span class="date">07/09 20:32</span>
@@ -150,20 +176,20 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>Dark Readingが、イランのサイバー攻撃が重要インフラ以外にも拡大しており、インターネットに公開された脆弱性を持つ企業は多岐にわたる脅威に晒されていると報じました。</p>
+          <p>Dark Readingが、イランのサイバー攻撃が重要インフラ以外にも拡大しており、インターネットに接続された脆弱性を持つ企業は多岐にわたる脅威に晒されていると報じました。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>金融機関のインターネットに公開されたシステム（Webサイト、APIゲートウェイ等）は、標的型攻撃のリスクが増大します。特に、委託先のシステムやクラウドサービスも攻撃対象となる可能性があります。</p>
+          <p>金融機関のインターネット公開システム全般が標的となる可能性があり、システム部門は脆弱性管理の強化、セキュリティ監視部門は脅威情報の継続的な収集と分析が求められます。委託先のセキュリティ状況も再確認が必要です。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>インターネット公開資産の脆弱性診断を定期的に実施し、未修正の脆弱性がないか確認する。</li><li>外部公開システムへの不審なアクセスや通信を監視し、異常を検知する体制を強化する。</li><li>委託先が提供するインターネット公開サービスのセキュリティ状況について情報収集と確認を行う。</li></ul>
+          <ul><li>インターネット公開資産の脆弱性診断を定期的に実施し、検出された脆弱性を速やかに修正してください。</li><li>セキュリティ監視体制を強化し、イラン関連の脅威インテリジェンスを継続的に収集・分析してください。</li><li>委託先が保有するインターネット公開システムについても、脆弱性管理状況を確認し、必要に応じて改善を促してください。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://www.darkreading.com/vulnerabilities-threats/microsoft-rogueplanet-zero-day-threat" target="_blank" rel="noopener">
+    <a class="card" href="https://www.darkreading.com/vulnerabilities-threats/microsoft-rogueplanet-zero-day-threat" target="_blank" rel="noopener noreferrer">
       <div class="card-meta">
         <span class="tag" style="background:#555">Dark Reading</span>
         <span class="date">07/09 20:21</span>
@@ -180,42 +206,16 @@
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>Windows Defenderを利用する金融機関のシステムは、本脆弱性の影響を受ける可能性があります。情報漏えいやシステム停止、不正アクセスにつながるリスクがあります。</p>
+          <p>Windows Defenderを利用する金融機関のシステムは、本脆弱性の影響を受ける可能性があります。情報漏えいやシステム停止に繋がるリスクがあり、顧客情報や取引データの保護に影響を及ぼす恐れがあります。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>Microsoftからの公式パッチ適用状況を確認し、速やかに適用計画を策定・実行してください。</li><li>Windows Defenderのログを監視し、不審な活動や異常な挙動がないか緊急で確認してください。</li><li>委託先を含め、Windows Defenderを利用している全てのシステムで脆弱性対応状況を把握してください。</li></ul>
+          <ul><li>Microsoftからの公式パッチ適用状況を確認し、速やかに適用計画を策定・実行してください。</li><li>Windows Defenderのログを監視し、不審な活動や攻撃の兆候がないか緊急で確認してください。</li><li>委託先がWindows Defenderを使用している場合、本脆弱性への対応状況を確認し報告を求めてください。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://www.darkreading.com/identity-access-management-security/ai-agents-new-kind-identity-most-organizations-not-ready" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/09 19:16</span>
-      </div>
-      <h2>AI エージェントは新しい種類のアイデンティティだが、ほとんどの組織はその準備ができていない</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-medium">中</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>Dark Readingが、AIエージェントが新たな種類のIDであり、多くの組織がその管理に未対応であると報じました。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>AIエージェントを導入している、または導入を検討しているシステムや業務において、従来のID管理では不十分なため、不正アクセスや情報漏えいのリスクが高まります。委託先がAIエージェントを利用している場合も同様です。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>AIエージェントの利用状況と、それらのID管理方法についてシステム部門および利用部門に確認する。</li><li>AIエージェントのID管理に関する新たなセキュリティ要件やガイドラインの策定を検討する。</li><li>委託先におけるAIエージェントの利用状況と、そのセキュリティ対策について情報収集を開始する。</li></ul>
-        </section>
-      </div>
-    </a>
-
-    <a class="card" href="https://blog.talosintelligence.com/wolfssl-vulnerabilities/" target="_blank" rel="noopener">
+    <a class="card" href="https://blog.talosintelligence.com/wolfssl-vulnerabilities/" target="_blank" rel="noopener noreferrer">
       <div class="card-meta">
         <span class="tag" style="background:#6f42c1">Cisco Talos</span>
         <span class="date">07/09 18:52</span>
@@ -228,20 +228,20 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>Cisco TalosがWolfSSL、GeoVision、VTK-DICOMの計18件の脆弱性を公表しました。これらの脆弱性は各ベンダーによって既に修正済みです。</p>
+          <p>Cisco TalosがWolfSSL、GeoVision、VTK-DICOMに合計18件の脆弱性を開示しました。これらの脆弱性は各ベンダーによって既に修正済みです。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>WolfSSLは組み込みシステムやIoTデバイスで利用される可能性があり、金融機関の利用システムや委託先での利用状況を確認し、影響を評価する必要があります。</p>
+          <p>WolfSSLは組み込みシステムやIoTデバイスで利用される可能性があり、金融機関の利用するシステムや委託先の製品に影響を与える可能性があります。GeoVisionは監視システム、VTK-DICOMは医療画像処理に関連するため、直接的な影響は限定的ですが、関連するシステムや委託先の利用状況を確認する必要があります。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>WolfSSL、GeoVision、VTK-DICOM製品の利用有無をシステム管理者や委託先に確認する。</li><li>利用している場合は、各ベンダーが提供する修正パッチが適用されていることを確認する。</li><li>修正が未適用の場合、速やかにパッチ適用を計画・実施し、脆弱性への対応を完了する。</li></ul>
+          <ul><li>WolfSSLを利用しているシステムや製品がないか、IT資産管理台帳等で確認する。</li><li>WolfSSLを利用している場合、最新バージョンへのアップデートが適用されているか、または適用計画を確認する。</li><li>GeoVision、VTK-DICOMを利用しているシステムや委託先がないか確認し、関連する場合はベンダーの修正適用状況を確認する。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://blog.talosintelligence.com/winning-54-of-the-time/" target="_blank" rel="noopener">
+    <a class="card" href="https://blog.talosintelligence.com/winning-54-of-the-time/" target="_blank" rel="noopener noreferrer">
       <div class="card-meta">
         <span class="tag" style="background:#6f42c1">Cisco Talos</span>
         <span class="date">07/09 18:00</span>
@@ -258,16 +258,16 @@
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>本ニュースは一般的なサイバーセキュリティの考え方に関するものであり、金融機関のシステム、業務、委託先に直接的な影響はありません。ただし、セキュリティ戦略立案の参考にはなり得ます。</p>
+          <p>本ニュースは一般的なサイバーセキュリティの考え方に関するものであり、金融機関のシステム、業務、委託先への直接的な影響は限定的です。セキュリティ意識向上や戦略策定の参考となる可能性があります。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>セキュリティ部門内で本記事の内容を共有し、防御戦略の議論の参考にできるか検討する。</li><li>現在のセキュリティ対策が、攻撃の多様性や防御の多層性を考慮しているか再確認する。</li></ul>
+          <ul><li>セキュリティ部門内で本記事の内容を共有し、防御戦略やリスク評価の議論の参考にできるか検討する。</li><li>現在のセキュリティ対策が「一度の失敗も許されない」という前提に過度に依存していないか、見直しの機会とする。</li><li>委託先を含むサプライチェーン全体のセキュリティ対策において、防御側の成功確率を向上させるための施策を検討する。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/07/09/gigawiper-anatomy-of-a-destructive-backdoor-assembled-from-multiple-malware/" target="_blank" rel="noopener">
+    <a class="card" href="https://www.microsoft.com/en-us/security/blog/2026/07/09/gigawiper-anatomy-of-a-destructive-backdoor-assembled-from-multiple-malware/" target="_blank" rel="noopener noreferrer">
       <div class="card-meta">
         <span class="tag" style="background:#0078d4">Microsoft Security</span>
         <span class="date">07/09 15:00</span>
@@ -280,25 +280,25 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>Microsoft Securityが、複数のマルウェアの機能を組み合わせた破壊的なバックドア「GigaWiper」について分析を公表しました。このマルウェアはデータ消去やランサムウェアのような機能を持つとされています。</p>
+          <p>Microsoft Securityが、複数のマルウェアの機能を組み合わせた破壊的なバックドア「GigaWiper」について分析を公表しました。このマルウェアはデータ消去やランサムウェアのような機能を持つと報告されています。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>GigaWiperはデータ破壊能力を持つため、金融機関の基幹システム、情報系システム、顧客情報管理システムに甚大な被害をもたらす可能性があります。システム停止、データ消失、業務中断、復旧コスト増大のリスクがあります。また、委託先のシステムが感染した場合、サプライチェーン全体に影響が及ぶ可能性も考慮する必要があります。</p>
+          <p>金融機関の基幹システム、情報系システム、顧客情報管理システム、またはそれらを運用する委託先のシステムがGigaWiperに感染した場合、データ破壊や業務停止、情報漏えい、顧客へのサービス提供停止のリスクがあります。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>組織内の全システムに対し、GigaWiperの検出ルールが適用されているか、セキュリティ製品の定義ファイルを最新化し確認する。</li><li>不審な通信やファイル活動がないか、ログ監視システムやEDR/XDRの検知状況を緊急で確認し、異常があれば即座に隔離・調査を行う。</li><li>重要なデータやシステムのバックアップが最新かつ復元可能であることを確認し、緊急時の復旧手順を再確認する。</li></ul>
+          <ul><li>自組織および主要な委託先において、GigaWiperの検出・防御策が導入されているか、セキュリティ製品のベンダー情報を確認する。</li><li>セキュリティ監視体制を強化し、GigaWiperに関連する不審な活動や通信がないか、ログの監視と分析を徹底する。</li><li>万一の感染に備え、重要なシステムやデータのバックアップが適切に取得され、復旧手順が確立されているかを確認する。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://www.ncsc.gov.uk/blogs/cyber-essentials-pathways-from-proof-of-concept-to-cyber-confidence" target="_blank" rel="noopener">
+    <a class="card" href="https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/" target="_blank" rel="noopener noreferrer">
       <div class="card-meta">
-        <span class="tag" style="background:#005eb8">NCSC</span>
-        <span class="date">07/09 12:00</span>
+        <span class="tag" style="background:#cc0000">CrowdStrike</span>
+        <span class="date"></span>
       </div>
-      <h2>サイバー エッセンシャルの道筋: 概念実証からサイバーの信頼まで</h2>
+      <h2>ガードレールのない AI ガバナンスが劇場である理由</h2>
       <div class="ai-analysis">
         <div class="importance-row">
           <span class="field-label">重要度</span>
@@ -306,20 +306,20 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>英国NCSCが、中小企業向けのサイバーセキュリティ認証「Cyber Essentials Plus」の代替取得経路を公表しました。</p>
+          <p>CrowdStrikeが、AIガバナンスにおける「ガードレール」の重要性についてブログを公開しました。AIの安全な利用には、単なるポリシーだけでなく具体的な対策が必要だと指摘しています。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>日本の金融機関に直接的なシステムや業務への影響はありません。英国の委託先が本認証を取得している場合、その取得プロセスに変更が生じる可能性があります。</p>
+          <p>このニュースは一般的なAIガバナンスに関する提言であり、特定のシステムや業務への直接的な影響は限定的です。金融機関がAIを導入・利用する際のガバナンス体制構築において、考慮すべき論点を提供します。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>英国にIT関連の委託先がある場合、Cyber Essentials Plus認証の取得状況と、本変更による影響の有無を確認する。</li><li>自社のサイバーセキュリティ認証取得プロセスや、サプライチェーンリスク管理への示唆がないか情報収集する。</li></ul>
+          <ul><li>AI利用に関する既存のガバナンスポリシーやガイドラインに「ガードレール」の概念が組み込まれているか確認する。</li><li>AI導入を検討している部門に対し、本ブログの内容を参考に、より実効性のある安全対策を検討するよう促す。</li><li>AI利用におけるリスク評価プロセスに、本ブログで示唆されるような具体的な安全対策の視点を取り入れる。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/" target="_blank" rel="noopener">
+    <a class="card" href="https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/" target="_blank" rel="noopener noreferrer">
       <div class="card-meta">
         <span class="tag" style="background:#cc0000">CrowdStrike</span>
         <span class="date"></span>
@@ -336,7 +336,7 @@
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>このニュースはCrowdStrike製品の機能強化に関するものであり、金融機関がCrowdStrike製品を利用していない場合、直接的なシステムや業務への影響は限定的です。利用している場合は、ゼロトラストセキュリティ強化の検討に繋がる可能性があります。</p>
+          <p>本ニュースはCrowdStrike製品の機能強化に関するものであり、金融機関が直接的な影響を受けるものではありません。CrowdStrike製品を利用している場合、セキュリティ強化の検討に繋がる可能性があります。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
@@ -345,7 +345,7 @@
       </div>
     </a>
 
-    <a class="card" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/" target="_blank" rel="noopener">
+    <a class="card" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/" target="_blank" rel="noopener noreferrer">
       <div class="card-meta">
         <span class="tag" style="background:#cc0000">CrowdStrike</span>
         <span class="date"></span>
@@ -358,46 +358,20 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>CrowdStrikeが、大規模言語モデル（LLM）に対する新たなプロンプトインジェクション技術を発見したと公表しました。</p>
+          <p>CrowdStrikeが、大規模言語モデル（LLM）に対する新たなプロンプトインジェクション技術を発見し、攻撃者がLLMのセキュリティ対策を回避する手法を公表しました。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>金融機関が利用するLLMベースのシステムやサービス、特に顧客対応やデータ分析に利用されるAIチャットボットなどが、不正なプロンプトにより誤動作したり、機密情報が漏洩したりするリスクがあります。委託先のAIサービスも影響を受ける可能性があります。</p>
+          <p>金融機関が利用するLLMベースのシステムやサービス、特に顧客対応やデータ分析に利用されるAIチャットボットなどが、意図しない情報漏えいや誤動作のリスクに晒される可能性があります。委託先のLLM利用状況も確認が必要です。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>LLMを利用しているシステムやサービスについて、プロンプトインジェクション対策の状況をベンダーに確認する。</li><li>LLM利用システムにおける入力データの検証・サニタイズ処理の実装状況を確認し、必要に応じて強化を検討する。</li><li>LLMの利用ガイドラインを見直し、プロンプトインジェクションのリスクと対策に関する注意喚起を徹底する。</li></ul>
+          <ul><li>自社および委託先におけるLLM利用状況を棚卸し、プロンプトインジェクション対策の現状を確認する。</li><li>LLM利用システムにおいて、入力検証、出力フィルタリング、アクセス制御などのセキュリティ対策を強化する。</li><li>最新の脅威情報に基づき、LLM関連のセキュリティガイドラインや運用手順を見直す。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="https://www.crowdstrike.com/en-us/blog/how-ai-leading-security-teams-are-building-the-agentic-soc/" target="_blank" rel="noopener">
-      <div class="card-meta">
-        <span class="tag" style="background:#cc0000">CrowdStrike</span>
-        <span class="date"></span>
-      </div>
-      <h2>AI をリードするセキュリティ チームはどのようにエージェント SOC を構築しているか</h2>
-      <div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance importance-low">低</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
-          <p>CrowdStrikeがAIを活用した自律型SOCの構築方法に関するブログを公開しました。AIによるセキュリティ運用の効率化と高度化について解説しています。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
-          <p>本ニュースは一般的な情報提供であり、金融機関のシステム、業務、委託先に直接的な影響はありません。ただし、将来的なセキュリティ運用高度化の参考となる可能性があります。</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul><li>AIを活用したセキュリティ運用の最新動向として、情報システム部門やセキュリティ部門で内容を確認する。</li><li>自社のセキュリティ戦略やロードマップにおいて、AI導入の可能性や影響について検討する。</li></ul>
-        </section>
-      </div>
-    </a>
-
-    <a class="card" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener">
+    <a class="card" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener noreferrer">
       <div class="card-meta">
         <span class="tag" style="background:#4285f4">Google TAG</span>
         <span class="date"></span>
@@ -418,12 +392,12 @@
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>自社および委託先が利用するAIサービスにおけるプロンプトインジェクション対策の状況を確認する。</li><li>AIサービス利用時の入力データ検証、出力フィルタリング、アクセス制御などのセキュリティ強化策を検討する。</li><li>AIサービス利用規約やセキュリティガイドラインを見直し、プロンプトインジェクション対策に関する項目を追記する。</li></ul>
+          <ul><li>自社および委託先が利用するAIサービスにおけるプロンプトインジェクション対策の状況を確認する。</li><li>AIサービス利用時の入力データ検証、出力フィルタリング、アクセス制御などのセキュリティ強化策を検討する。</li><li>AI利用ガイドラインを策定し、従業員への注意喚起とセキュリティ教育を実施する。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="http://security.googleblog.com/feeds/1469360228826887140/comments/default" target="_blank" rel="noopener">
+    <a class="card" href="http://security.googleblog.com/feeds/1469360228826887140/comments/default" target="_blank" rel="noopener noreferrer">
       <div class="card-meta">
         <span class="tag" style="background:#4285f4">Google TAG</span>
         <span class="date"></span>
@@ -436,20 +410,20 @@
         </div>
         <section class="analysis-field">
           <h3>要約</h3>
-          <p>Googleの脅威分析グループ(TAG)が、PixelスマートフォンのベースバンドにRustを導入したことを公表しました。これにより、メモリ安全性が向上し、脆弱性の悪用が困難になることが期待されます。</p>
+          <p>Googleの脅威分析グループ(TAG)が、PixelスマートフォンのベースバンドにRustを導入したことを公表しました。これにより、メモリ安全性が向上し、脆弱性の悪用が困難になると報告されています。</p>
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>金融機関が従業員に貸与するスマートフォンや、顧客が利用するモバイルバンキングアプリの基盤となるデバイスのセキュリティ向上に寄与する可能性があります。直接的なシステムや業務への影響は限定的です。</p>
+          <p>金融機関が従業員に貸与するスマートフォンや、顧客が利用するモバイルバンキングアプリのセキュリティ向上に間接的に寄与する可能性があります。直接的なシステムや業務への影響は限定的です。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>従業員貸与デバイスのセキュリティポリシーにおいて、OSやファームウェアの最新化を継続的に推奨する。</li><li>モバイルバンキングアプリの利用環境として、セキュリティが強化されたデバイスの利用を顧客に推奨する。</li><li>今後のGoogle製品におけるセキュリティ強化の動向を継続的に情報収集し、自社のセキュリティ対策に活かせるか検討する。</li></ul>
+          <ul><li>従業員が利用するスマートフォンが最新のセキュリティアップデートを適用しているか確認を促す。</li><li>モバイルバンキングアプリの利用環境に関する顧客への注意喚起内容を見直す。</li><li>モバイルデバイス管理(MDM)ポリシーにおいて、OSやファームウェアの更新状況の監視を継続する。</li></ul>
         </section>
       </div>
     </a>
 
-    <a class="card" href="http://security.googleblog.com/feeds/3718049046001981559/comments/default" target="_blank" rel="noopener">
+    <a class="card" href="http://security.googleblog.com/feeds/3718049046001981559/comments/default" target="_blank" rel="noopener noreferrer">
       <div class="card-meta">
         <span class="tag" style="background:#4285f4">Google TAG</span>
         <span class="date"></span>
@@ -466,11 +440,11 @@
         </section>
         <section class="analysis-field">
           <h3>金融機関への影響</h3>
-          <p>金融機関の顧客認証システムやオンラインバンキングサービスにおいて、セッションハイジャックによる不正アクセスリスク低減に寄与する可能性があります。将来的な導入や対応を検討する必要があります。</p>
+          <p>金融機関の顧客認証システムやWebサービスにおいて、セッションハイジャックによる不正アクセスリスクを低減する可能性があります。導入にはシステム改修や検証が必要となる場合があります。</p>
         </section>
         <section class="analysis-field">
           <h3>推奨アクション</h3>
-          <ul><li>DBSC技術の動向を継続的に監視し、金融サービスへの適用可能性を調査する。</li><li>既存の認証システムにおけるセッション保護対策の有効性を再評価し、必要に応じて強化策を検討する。</li><li>委託先のセキュリティベンダーに対し、DBSCに関する情報収集と対応状況を確認する。</li></ul>
+          <ul><li>GoogleのDBSC技術の詳細を調査し、自社の認証システムへの適用可能性を評価する。</li><li>既存のセッション管理におけるセキュリティ対策の有効性を再確認し、強化の必要性を検討する。</li><li>DBSCの導入動向を継続的に監視し、将来的なシステムロードマップへの影響を評価する。</li></ul>
         </section>
       </div>
     </a></div>
