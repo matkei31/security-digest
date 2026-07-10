@@ -776,5 +776,13 @@
   "Most enterprises assume their asset inventory is close enough to accurate. The evidence suggests otherwise. According to a survey of over 600 security leaders in the 2026 Axonius Actionability Report,": "ほとんどの企業は、自社の資産在庫が十分に正確であると想定しています。証拠はそうではないことを示唆しています。 2026 Axonius Actionability Report の 600 名を超えるセキュリティ リーダーを対象とした調査によると、",
   "AI Coding: Do Security Risks Outweigh Productivity Gains?": "AI コーディング: セキュリティ リスクは生産性の向上を上回りますか?",
   "AI coding tools cost $19-$200/month/user, but security scanning, remediation, and false positives add hidden costs. Are the productivity gains worth it?": "AI コーディング ツールの費用はユーザーあたり月額 19 ～ 200 ドルですが、セキュリティ スキャン、修復、誤検知により隠れたコストが追加されます。生産性の向上にはそれだけの価値がありますか?",
-  "Why AI Governance Without Guardrails Is Theater": "ガードレールのない AI ガバナンスが劇場である理由"
+  "Why AI Governance Without Guardrails Is Theater": "ガードレールのない AI ガバナンスが劇場である理由",
+  "Laser Attack Resets Tangem Wallet Passwords on Cards That Can't Be Patched": "レーザー攻撃により、パッチが適用できないカードの Tangem ウォレットのパスワードがリセットされる",
+  "Researchers at Ledger's&nbsp;Donjon security team&nbsp;have shown that a precisely timed laser pulse, aimed at the chip inside a Tangem crypto wallet card, can reset the card's password to anything th": "LedgerのDonjonセキュリティチームの研究者は、Tangem暗号ウォレットカード内のチップに向けられた正確なタイミングのレーザーパルスが、カードのパスワードを任意のパスワードにリセットできることを示しました。",
+  "Researcher Details WhatsApp-to-Host Attack Chain Using Three OpenClaw Flaws": "研究者が OpenClaw の 3 つの欠陥を使用した WhatsApp からホストへの攻撃チェーンを詳しく説明",
+  "Details have emerged about three now-patched security flaws in the OpenClaw personal artificial intelligence (AI) assistant that, if successfully exploited, could enable credential theft, privilege es": "OpenClaw パーソナル人工知能 (AI) アシスタントに現在パッチが適用されている 3 つのセキュリティ上の欠陥について、詳細が明らかになりました。悪用に成功すると、資格情報の盗難や権限の盗難が可能になる可能性があります。",
+  "Fresh ATM Crypto Software Bugs: Jackpot or Bust?": "新たな ATM 暗号化ソフトウェアのバグ: 大当たりか破綻か?",
+  "Organizations, and possibly ATMs, are at risk of compromise, thanks to holes in a Microsoft BitLocker security wrapper.": "Microsoft BitLocker セキュリティ ラッパーの穴により、組織、および場合によっては ATM が侵害される危険にさらされています。",
+  "More Countries Jump on the Social Media Ban Wagon": "より多くの国がソーシャルメディア禁止ワゴンに飛び乗る",
+  "Age restrictions on accounts may be more of a ban(d) aid, because industry compliance is already falling short. Tech giants are struggling to follow the laws without affecting users.": "業界のコンプライアンスはすでに不十分であるため、アカウントの年齢制限は禁止措置のようなものかもしれません。ハイテク大手は、ユーザーに影響を与えずに法律を遵守することに苦心している。"
 }
