@@ -307,7 +307,24 @@ def collect_recent():
 
 def esc(s):
     return (s.replace("&", "&amp;").replace("<", "&lt;")
-             .replace(">", "&gt;").replace('"', "&quot;"))
+             .replace(">", "&gt;").replace('"', "&quot;")
+             .replace("'", "&#39;"))
+
+def safe_url(url):
+    """http(s) スキームのURLのみ許可する。安全ならそのURL文字列を、そうでなければNoneを返す。
+    前後の空白のみ除去し、それ以外は一切加工しない（不正なURLを正規化して受理しない）。
+    URL内部にASCII制御文字・空白（\\x00-\\x20）が残っている場合は、
+    ブラウザがそれらを無視して解釈しスキーム偽装（例: 'java\\tscript:'）が
+    成立し得るため拒否する。
+    """
+    if not isinstance(url, str):
+        return None
+    stripped = url.strip()
+    if re.search(r"[\x00-\x20]", stripped):
+        return None
+    if stripped.lower().startswith(("http://", "https://")):
+        return stripped
+    return None
 
 def strip_html(s):
     return re.sub(r"<[^>]+>", "", s).strip()
@@ -812,14 +829,24 @@ def build_html(items, exec_summary=None):
                 if summary else ""
             )
         summary_block = f"\n      {summary_html}" if summary_html else ""
+
+        safe_link = safe_url(item['link'])
+        if safe_link:
+            tag_open  = f'<a class="card" href="{esc(safe_link)}" target="_blank" rel="noopener noreferrer">'
+            tag_close = "</a>"
+        else:
+            # http(s) 以外のスキーム（javascript: 等）はリンクタグ自体を出力しない
+            tag_open  = '<div class="card">'
+            tag_close = "</div>"
+
         cards.append(f"""
-    <a class="card" href="{esc(item['link'])}" target="_blank" rel="noopener">
+    {tag_open}
       <div class="card-meta">
         <span class="tag" style="background:{color}">{esc(item['source'])}</span>
-        <span class="date">{date_label}</span>
+        <span class="date">{esc(date_label)}</span>
       </div>
       <h2>{esc(item['title'])}</h2>{summary_block}
-    </a>""")
+    {tag_close}""")
 
     cards_html = "\n".join(cards) if cards else '<p class="empty">本日の新着はありません。</p>'
     all_sources = [f for f in RSS_FEEDS if not f[1].startswith("#")] + [("CISA KEV","","")]
@@ -890,14 +917,14 @@ def build_html(items, exec_summary=None):
 <body>
   <header>
     <h1>🔐 Security Digest</h1>
-    <div class="sub">最終更新: {date_str}</div>
-    <div class="count">{len(items)} 件</div>
+    <div class="sub">最終更新: {esc(date_str)}</div>
+    <div class="count">{esc(str(len(items)))} 件</div>
   </header>
   {exec_summary_html}
   <div class="cards">{cards_html}</div>
   <div class="sources">
     <details>
-      <summary>収集元 ({len(RSS_FEEDS)+2}ソース)</summary>
+      <summary>収集元 ({esc(str(len(RSS_FEEDS)+2))}ソース)</summary>
       <ul>{sources_li}</ul>
     </details>
   </div>
