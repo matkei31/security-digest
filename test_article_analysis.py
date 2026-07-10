@@ -42,6 +42,18 @@ def make_candidate_body(analysis_dict):
     }).encode("utf-8")
 
 
+def make_candidate_body_from_raw(raw_text):
+    """意図的に壊れた/不完全なJSON文字列をそのままparts[0].textに埋め込んで
+    envelopeを組み立てる(fallback/failed境界のテスト用)。"""
+    return json.dumps({
+        "candidates": [{
+            "content": {
+                "parts": [{"text": raw_text}]
+            }
+        }]
+    }).encode("utf-8")
+
+
 VALID_ANALYSIS_RESPONSE = {
     "category": "脆弱性・パッチ",
     "category_reason": "CVEとKEV追加が主題であり、製品脆弱性への対応を扱う記事のため。",
@@ -234,12 +246,95 @@ class FallbackTest(unittest.TestCase):
         fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
         self.assertIsNone(fb["category"])
 
-    def test_fallback_recommended_actions_invalid_becomes_empty_list(self):
-        # recommended_actionsが配列として復元できない場合、デフォルト値が使われる
-        # (完全に空にはならない=既存fallback仕様を維持。配列型であることを確認する)
-        truncated = '{"importance": "高", "summary": "テスト要約です。"'
+    def test_missing_importance_does_not_default_to_medium(self):
+        # importanceが抽出できない場合、コード側で「中」を自動設定しない。
+        # financial_impact/recommended_actionsが揃っていても、importance欠落
+        # 単独で主要4項目の条件を満たさずNone(=failed扱い)になることを確認する。
+        truncated = (
+            '{"summary": "テスト要約です。", "financial_impact": "影響があります。", '
+            '"recommended_actions": ["対応1"]'
+        )
         fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
-        self.assertIsInstance(fb["recommended_actions"], list)
+        self.assertIsNone(fb)
+
+    def test_missing_financial_impact_does_not_generate_fixed_text(self):
+        # financial_impactが抽出できない場合、固定の一般論文を生成しない。
+        # 主要4項目が揃わないため全体としてNone(=failed扱い)になることを確認する。
+        truncated = (
+            '{"importance": "高", "summary": "テスト要約です。", '
+            '"recommended_actions": ["対応1"]'
+        )
+        fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
+        self.assertIsNone(fb)
+
+    def test_missing_recommended_actions_does_not_generate_fixed_items(self):
+        # recommended_actionsが抽出できない場合、固定の一般的確認事項を生成しない。
+        # 主要4項目が揃わないため全体としてNone(=failed扱い)になることを確認する。
+        truncated = (
+            '{"importance": "高", "summary": "テスト要約です。", '
+            '"financial_impact": "影響があります。"'
+        )
+        fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
+        self.assertIsNone(fb)
+
+    def test_missing_any_core_field_results_in_failed_status(self):
+        # 主要4項目のいずれかが欠ける場合、gemini_analyze()全体としてfailedになる
+        # (fallbackにはならない)。
+        truncated = '{"importance": "高", "summary": "テスト要約です。"'
+        result = call_gemini_analyze(response_body=make_candidate_body_from_raw(truncated))
+        self.assertEqual(result["status"], "failed")
+        self.assertIsNone(result["analysis"])
+
+    def test_all_four_core_fields_present_results_in_fallback(self):
+        # 主要4項目(importance/summary/financial_impact/recommended_actions)が
+        # すべて応答から取得できれば、category等が欠けていてもfallbackになる。
+        v1_only = {
+            "importance": "高", "summary": "テスト要約です。",
+            "financial_impact": "影響があります。",
+            "recommended_actions": ["対応1"],
+        }
+        result = call_gemini_analyze(response_body=make_candidate_body(v1_only))
+        self.assertEqual(result["status"], "fallback")
+        self.assertIsNone(result["analysis"]["category"])
+        self.assertIsNone(result["analysis"]["urgency"])
+        self.assertEqual(result["analysis"]["tags"], [])
+
+    def test_failed_article_has_empty_recommended_actions_not_fixed_defaults(self):
+        # failed時、recommended_actionsは(固定の定型文ではなく)空配列として
+        # 日次JSONへ保存される。
+        truncated = '{"importance": "高", "summary": "テスト要約です。"'
+        result = call_gemini_analyze(response_body=make_candidate_body_from_raw(truncated))
+        item = {
+            "source": "CISA", "link": "https://example.com/a", "title": "t",
+            "ai_analysis": result["analysis"],
+            "ai_analysis_meta": {
+                "status": result["status"], "error_type": result["error_type"],
+                "http_status": result["http_status"], "generated_at": "2026-07-11T07:00:00+09:00",
+            },
+        }
+        source_defs = [{"id": "cisa", "name": "CISA", "source_type": "CERT・注意喚起",
+                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en"}]
+        entry = dj.build_article_entry(item, source_defs, "gemini-2.5-flash",
+                                        __import__("datetime").datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST))
+        self.assertEqual(entry["analysis"]["status"], "failed")
+        self.assertEqual(entry["analysis"]["recommended_actions"], [])
+        self.assertIsNone(entry["analysis"]["financial_impact"])
+        self.assertIsNone(entry["analysis"]["importance"])
+        # 固定の一般論文・定型アクションが紛れ込んでいないことを確認する
+        serialized = json.dumps(entry, ensure_ascii=False)
+        self.assertNotIn("関連製品、業務、委託先との接点確認が必要です", serialized)
+        self.assertNotIn("原文と公表元の最新情報を確認する", serialized)
+
+    def test_html_generation_does_not_raise_on_failed_item(self):
+        truncated = '{"importance": "高", "summary": "テスト要約です。"'
+        result = call_gemini_analyze(response_body=make_candidate_body_from_raw(truncated))
+        item = {
+            "title": "テスト記事失敗ケース", "link": "https://example.com/article",
+            "summary": "概要", "date": None, "source": "CISA", "lang": "ja",
+            "ai_analysis": result["analysis"],
+        }
+        html = fetch.build_html([item])  # 例外が出なければOK
+        self.assertIn("テスト記事失敗ケース", html)
 
     def test_fallback_error_type_is_schema_parse_error(self):
         v1_only = {

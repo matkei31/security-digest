@@ -732,15 +732,19 @@ def extract_partial_array(response_text, field):
 
 
 def fallback_ai_analysis(response_text, source_text):
-    """既存4項目(importance/summary/financial_impact/recommended_actions)の
-    救済ロジックは変更していない。Ticket 4で追加したcategory/category_reason/
-    urgency/reason/tagsは、抽出できた分だけ緩く救済し、抽出できない・不正な場合は
-    null/空配列にする(fallback全体を失敗にはしない)。
+    """主要4項目(importance/summary/financial_impact/recommended_actions)が
+    応答から安全に取得できた場合のみ、部分的な分析結果として返す(=fallback扱い)。
+    いずれか1つでも取得できない場合はNoneを返し、呼び出し側でfailed扱いにする
+    (コード側で「重要度は中」「一般的な確認事項」等の一般論を補完しない。
+    記事に基づかない判断・定型文を作らないため)。
+
+    category/category_reason/urgency/reason/tagsは主要4項目とは独立に、
+    抽出できた分だけ緩く救済する(欠けていてもfallback自体は成立する)。
     """
     importance = extract_partial_field(response_text, "importance")
     if importance not in ("高", "中", "低"):
         importance_match = re.search(r"重要度\s*[:：]\s*([高中低])", response_text or "")
-        importance = importance_match.group(1) if importance_match else "中"
+        importance = importance_match.group(1) if importance_match else ""
 
     summary = extract_partial_field(response_text, "summary")
     impact = extract_partial_field(response_text, "financial_impact")
@@ -763,14 +767,6 @@ def fallback_ai_analysis(response_text, source_text):
         else:
             summary = source_fields.get("summary") or source_fields.get("title", "")
     summary = re.sub(r"\s+", " ", strip_html(summary)).strip()[:120]
-    if not summary:
-        return None
-
-    if not impact:
-        impact = (
-            "金融機関への直接的な影響は情報不足のため判断できません。"
-            "関連製品、業務、委託先との接点確認が必要です。"
-        )
 
     # recommended_actionsはTicket 4で"reason"/"tags"より前の項目になった
     # (v1では最後の項目だったため、閉じ括弧を要求しない抽出でも安全だった)。
@@ -778,16 +774,14 @@ def fallback_ai_analysis(response_text, source_text):
     # recommended_actionsに取り込んでしまうため、extract_partial_array()で
     # 閉じ括弧までに限定して抽出する。
     actions = extract_partial_array(response_text, "recommended_actions")
-    if not actions:
-        actions = [
-            "原文と公表元の最新情報を確認する",
-            "関連製品や委託先の利用有無を確認する",
-        ]
 
+    # 主要4項目はすべて応答から実際に取得できた場合のみ有効とする。
+    # 1つでも欠ける場合はnormalize_ai_analysis()がNoneを返し、
+    # fallback_ai_analysis()全体もNoneを返す(=failed扱いになる)。
     core = normalize_ai_analysis({
         "importance": importance,
         "summary": summary,
-        "financial_impact": impact[:140],
+        "financial_impact": impact[:140] if impact else "",
         "recommended_actions": actions[:3],
     })
     if core is None:
