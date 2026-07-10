@@ -563,6 +563,63 @@ def normalize_ai_analysis(value):
     }
 
 
+def clean_display_text(value):
+    """HTML表示用に、欠落値を空文字として扱う。"""
+    if value is None:
+        return ""
+    text = str(value).strip()
+    if text.lower() in ("none", "null"):
+        return ""
+    return text
+
+
+def normalize_display_analysis(value):
+    """記事カード表示用に、利用可能なAI分析項目だけを緩く取り出す。
+    success/fallback/failedのいずれでも、欠落値やNone/null文字列は表示しない。
+    """
+    if not isinstance(value, dict):
+        return None
+
+    importance = clean_display_text(value.get("importance"))
+    urgency = clean_display_text(value.get("urgency"))
+    category = clean_display_text(value.get("category"))
+    summary = clean_display_text(value.get("summary"))
+    impact = clean_display_text(value.get("financial_impact"))
+
+    tags = []
+    raw_tags = value.get("tags", [])
+    if isinstance(raw_tags, list):
+        for tag in raw_tags:
+            tag = clean_display_text(tag)
+            if tag:
+                tags.append(tag)
+            if len(tags) >= 5:
+                break
+
+    actions = []
+    raw_actions = value.get("recommended_actions", [])
+    if isinstance(raw_actions, list):
+        for action in raw_actions:
+            action = clean_display_text(action)
+            if action:
+                actions.append(action)
+            if len(actions) >= 3:
+                break
+
+    analysis = {
+        "importance": importance,
+        "urgency": urgency,
+        "category": category,
+        "tags": tags,
+        "summary": summary,
+        "financial_impact": impact,
+        "recommended_actions": actions,
+    }
+    if not any(v for v in analysis.values()):
+        return None
+    return analysis
+
+
 def validate_tags_strict(raw_tags):
     """tagsを厳密に検証する(success判定用)。許可リスト外のタグが1つでもあれば
     Noneを返す(呼び出し側でfallback扱いにする)。重複は除去して許容し、
@@ -1342,35 +1399,74 @@ def build_html(items, exec_summary=None):
         color      = SOURCE_COLORS.get(item["source"], "#555")
         date_label = item["date"].strftime("%m/%d %H:%M") if item["date"] else ""
         raw_summary = strip_html(item["summary"])
-        analysis = normalize_ai_analysis(item.get("ai_analysis"))
+        analysis = normalize_display_analysis(item.get("ai_analysis"))
 
         if analysis:
             importance_class = {
                 "高": "importance-high",
                 "中": "importance-medium",
                 "低": "importance-low",
-            }[analysis["importance"]]
-            actions_html = "".join(
-                f"<li>{esc(action)}</li>"
-                for action in analysis["recommended_actions"]
-            )
-            summary_html = f"""<div class="ai-analysis">
-        <div class="importance-row">
-          <span class="field-label">重要度</span>
-          <span class="importance {importance_class}">{esc(analysis["importance"])}</span>
-        </div>
-        <section class="analysis-field">
-          <h3>要約</h3>
+            }.get(analysis["importance"], "importance-unknown")
+            urgency_class = {
+                "本日確認": "urgency-today",
+                "今週確認": "urgency-week",
+                "参考": "urgency-reference",
+            }.get(analysis["urgency"], "urgency-unknown")
+
+            badges = []
+            if analysis["importance"]:
+                badges.append(
+                    f'<span class="importance-badge {importance_class}">'
+                    f'重要度 {esc(analysis["importance"])}</span>'
+                )
+            if analysis["urgency"]:
+                badges.append(
+                    f'<span class="urgency-badge {urgency_class}">'
+                    f'{esc(analysis["urgency"])}</span>'
+                )
+            if analysis["category"]:
+                badges.append(
+                    f'<span class="category-badge">カテゴリ：{esc(analysis["category"])}</span>'
+                )
+
+            tags_html = ""
+            if analysis["tags"]:
+                tag_items = "".join(
+                    f'<span class="article-tag">{esc(tag)}</span>'
+                    for tag in analysis["tags"]
+                )
+                tags_html = f'<div class="article-tags">{tag_items}</div>'
+
+            sections = []
+            if analysis["summary"]:
+                sections.append(f"""<section class="article-section">
+          <h3>何が起きた</h3>
           <p>{esc(analysis["summary"])}</p>
-        </section>
-        <section class="analysis-field">
-          <h3>金融機関への影響</h3>
+        </section>""")
+            if analysis["financial_impact"]:
+                sections.append(f"""<section class="article-section">
+          <h3>なぜ金融機関に関係する</h3>
           <p>{esc(analysis["financial_impact"])}</p>
-        </section>
-        <section class="analysis-field">
-          <h3>推奨アクション</h3>
-          <ul>{actions_html}</ul>
-        </section>
+        </section>""")
+            if analysis["recommended_actions"]:
+                actions_html = "".join(
+                    f"<li>{esc(action)}</li>"
+                    for action in analysis["recommended_actions"]
+                )
+                sections.append(f"""<section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list">{actions_html}</ul>
+        </section>""")
+
+            badge_row = (
+                f'<div class="analysis-badges">{"".join(badges)}</div>'
+                if badges else ""
+            )
+            sections_html = "\n        ".join(sections)
+            summary_html = f"""<div class="ai-analysis">
+        {badge_row}
+        {tags_html}
+        {sections_html}
       </div>"""
         else:
             max_len = 120
@@ -1440,16 +1536,23 @@ def build_html(items, exec_summary=None):
     h2{{font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3}}
     .summary{{font-size:12px;color:#8b949e;line-height:1.5;margin-top:6px}}
     .ai-analysis{{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:grid;gap:10px}}
-    .importance-row{{display:flex;align-items:center;gap:8px}}
-    .field-label,.analysis-field h3{{font-size:11px;font-weight:600;color:#8b949e}}
-    .importance{{font-size:11px;font-weight:700;line-height:1;padding:4px 9px;border-radius:100px;color:#fff}}
-    .importance-high{{background:#da3633}}
-    .importance-medium{{background:#9e6a03}}
-    .importance-low{{background:#238636}}
-    .analysis-field p,.analysis-field li{{font-size:12px;color:#c9d1d9;line-height:1.6}}
-    .analysis-field p,.analysis-field ul{{margin-top:3px}}
-    .analysis-field ul{{padding-left:18px}}
-    .analysis-field li+li{{margin-top:3px}}
+    .analysis-badges,.article-tags{{display:flex;align-items:center;gap:6px;flex-wrap:wrap}}
+    .importance-badge,.urgency-badge,.category-badge,.article-tag{{font-size:11px;font-weight:700;line-height:1;padding:4px 9px;border-radius:100px}}
+    .importance-high{{background:#da3633;color:#fff}}
+    .importance-medium{{background:#9e6a03;color:#fff}}
+    .importance-low{{background:#238636;color:#fff}}
+    .importance-unknown{{background:#30363d;color:#c9d1d9}}
+    .urgency-today{{background:#f85149;color:#fff}}
+    .urgency-week{{background:#6e7681;color:#fff}}
+    .urgency-reference{{background:#30363d;color:#c9d1d9}}
+    .urgency-unknown{{background:#30363d;color:#c9d1d9}}
+    .category-badge{{border:1px solid #388bfd;color:#79c0ff;background:#0d1117}}
+    .article-tag{{font-size:10px;font-weight:600;border:1px solid #30363d;color:#8b949e;background:#0d1117}}
+    .article-section h3{{font-size:11px;font-weight:600;color:#8b949e}}
+    .article-section p,.article-section li{{font-size:12px;color:#c9d1d9;line-height:1.6}}
+    .article-section p,.article-section ul{{margin-top:3px}}
+    .action-list{{padding-left:18px}}
+    .action-list li+li{{margin-top:3px}}
     .empty{{text-align:center;color:#8b949e;padding:60px 0;font-size:14px}}
     .exec-summary{{max-width:680px;margin:12px auto 0;padding:0 12px}}
     .exec-summary-box{{background:#161b22;border:1px solid #9e6a03;border-radius:10px;padding:14px 16px}}
