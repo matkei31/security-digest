@@ -311,16 +311,19 @@ def esc(s):
              .replace("'", "&#39;"))
 
 def safe_url(url):
-    """http(s) スキームのURLのみ許可する。
-    安全なら(制御文字・空白を除去した)URL文字列を、そうでなければNoneを返す。
-    ブラウザはURL中の制御文字・空白を無視して解釈するため、
-    'java\\tscript:' のようなスキーム偽装を防ぐには判定前に除去する必要がある。
+    """http(s) スキームのURLのみ許可する。安全ならそのURL文字列を、そうでなければNoneを返す。
+    前後の空白のみ除去し、それ以外は一切加工しない（不正なURLを正規化して受理しない）。
+    URL内部にASCII制御文字・空白（\\x00-\\x20）が残っている場合は、
+    ブラウザがそれらを無視して解釈しスキーム偽装（例: 'java\\tscript:'）が
+    成立し得るため拒否する。
     """
     if not isinstance(url, str):
         return None
-    cleaned = re.sub(r"[\x00-\x20]+", "", url)
-    if cleaned.lower().startswith(("http://", "https://")):
-        return cleaned
+    stripped = url.strip()
+    if re.search(r"[\x00-\x20]", stripped):
+        return None
+    if stripped.lower().startswith(("http://", "https://")):
+        return stripped
     return None
 
 def strip_html(s):
