@@ -30,7 +30,7 @@ CACHE_PATH = Path(__file__).parent / "docs" / "translate_cache.json"
 # 既存コードが期待する形（RSS_FEEDS/SOURCE_COLORS/TRUSTED_CYBER_SOURCES）に
 # 変換する互換レイヤー。
 
-SOURCE_DEFINITIONS_PATH = Path(__file__).parent / "source_definitions.json"
+SOURCE_DEFINITIONS_PATH = Path(__file__).resolve().parent / "source_definitions.json"
 
 VALID_SOURCE_TYPES = {
     "規制・監督", "政府・公的機関", "CERT・注意喚起", "業界基準・フレームワーク",
@@ -113,6 +113,13 @@ def _validate_source_entry(entry, index):
     if entry["collection_method"] in URL_REQUIRED_COLLECTION_METHODS and not entry.get("url"):
         raise SourceDefinitionError(
             f"{where} (id={sid!r}): collection_method={entry['collection_method']!r} はURLが必須です"
+        )
+
+    # CISA KEV固有: fetch_cisa_kev()は記事表示用の固定リンクとしてdisplay_urlを
+    # 必要とする。enabled=trueで実際に取得される場合のみ必須とする。
+    if sid == "cisa_kev" and entry["enabled"] and not entry.get("display_url"):
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): enabled=true の場合、display_url が必須です"
         )
 
 
@@ -429,11 +436,17 @@ def is_cyber_relevant(item):
 def collect_non_rss_items(cutoff, sources):
     """RSS以外の取得元(CISA KEV・NIST NVD)を、source定義のenabledに従って収集する。
     URL・表示名・有効/無効はすべてsource_definitions.json(sources)由来。
+    id="cisa_kev"/"nist_nvd" はこの関数が直接参照する前提の識別子であるため、
+    定義に存在しない場合は黙ってスキップせず、対象IDを含むエラーを送出する。
     """
     all_items = []
 
     cisa_kev_def = get_source_definition(sources, "cisa_kev")
-    if cisa_kev_def and cisa_kev_def["enabled"]:
+    if cisa_kev_def is None:
+        raise SourceDefinitionError(
+            "collect_non_rss_items: source定義に id='cisa_kev' が見つかりません"
+        )
+    if cisa_kev_def["enabled"]:
         kev_items = fetch_cisa_kev(
             cutoff,
             url=cisa_kev_def["url"],
@@ -445,7 +458,11 @@ def collect_non_rss_items(cutoff, sources):
         all_items += kev_items
 
     nist_nvd_def = get_source_definition(sources, "nist_nvd")
-    if nist_nvd_def and nist_nvd_def["enabled"]:
+    if nist_nvd_def is None:
+        raise SourceDefinitionError(
+            "collect_non_rss_items: source定義に id='nist_nvd' が見つかりません"
+        )
+    if nist_nvd_def["enabled"]:
         nvd_items = fetch_nist_nvd(
             cutoff,
             base_url=nist_nvd_def["url"],

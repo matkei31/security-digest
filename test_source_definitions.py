@@ -5,6 +5,7 @@ source_definitions.json の読み込み・検証・互換レイヤーの回帰�
 """
 
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -385,6 +386,117 @@ class NoDuplicateUrlInSourceCodeTest(unittest.TestCase):
         nvd_base_url = "https://services.nvd.nist.gov/rest/json/cves/2.0"
         self.assertEqual(definitions_text.count(cisa_kev_url), 1)
         self.assertEqual(definitions_text.count(nvd_base_url), 1)
+
+
+class SourceDefinitionsPathTest(unittest.TestCase):
+    """source_definitions.json の読み込みパスが、実行時のカレントディレクトリに
+    依存せずfetch.py配置ディレクトリを基準にしていることを確認する。"""
+
+    def test_path_is_absolute(self):
+        self.assertTrue(fetch.SOURCE_DEFINITIONS_PATH.is_absolute())
+
+    def test_path_points_next_to_fetch_py(self):
+        expected_dir = Path(fetch.__file__).resolve().parent
+        self.assertEqual(fetch.SOURCE_DEFINITIONS_PATH.parent, expected_dir)
+
+    def test_default_load_succeeds_regardless_of_cwd(self):
+        original_cwd = os.getcwd()
+        try:
+            os.chdir(tempfile.gettempdir())
+            sources = fetch.load_source_definitions()
+            self.assertEqual(len(sources), 17)
+        finally:
+            os.chdir(original_cwd)
+
+
+class NonRssSourceSpecificValidationTest(unittest.TestCase):
+    """CISA KEV固有のdisplay_url必須チェック、およびcollect_non_rss_itemsが
+    参照するsource IDが定義に存在しない場合の明確なエラーを確認する。"""
+
+    def test_cisa_kev_enabled_without_display_url_is_rejected(self):
+        entry = _valid_entry(
+            id="cisa_kev", name="CISA KEV",
+            collection_method="cisa_kev_json", enabled=True,
+        )
+        entry.pop("display_url", None)  # display_url未設定
+        path = _write_temp_definitions([entry])
+        try:
+            with self.assertRaises(fetch.SourceDefinitionError) as ctx:
+                fetch.load_source_definitions(path=path)
+            self.assertIn("display_url", str(ctx.exception))
+            self.assertIn("cisa_kev", str(ctx.exception))
+        finally:
+            path.unlink()
+
+    def test_cisa_kev_enabled_with_empty_display_url_is_rejected(self):
+        entry = _valid_entry(
+            id="cisa_kev", name="CISA KEV",
+            collection_method="cisa_kev_json", enabled=True,
+            display_url="",
+        )
+        path = _write_temp_definitions([entry])
+        try:
+            with self.assertRaises(fetch.SourceDefinitionError) as ctx:
+                fetch.load_source_definitions(path=path)
+            self.assertIn("display_url", str(ctx.exception))
+        finally:
+            path.unlink()
+
+    def test_cisa_kev_disabled_without_display_url_is_accepted(self):
+        # enabled=falseならdisplay_url未設定でもロードエラーにならない
+        entry = _valid_entry(
+            id="cisa_kev", name="CISA KEV",
+            collection_method="cisa_kev_json", enabled=False,
+        )
+        entry.pop("display_url", None)
+        path = _write_temp_definitions([entry])
+        try:
+            sources = fetch.load_source_definitions(path=path)
+            self.assertEqual(len(sources), 1)
+        finally:
+            path.unlink()
+
+    def test_cisa_kev_enabled_with_display_url_is_accepted(self):
+        entry = _valid_entry(
+            id="cisa_kev", name="CISA KEV",
+            collection_method="cisa_kev_json", enabled=True,
+            display_url="https://example.com/catalog",
+        )
+        path = _write_temp_definitions([entry])
+        try:
+            sources = fetch.load_source_definitions(path=path)
+            self.assertEqual(len(sources), 1)
+        finally:
+            path.unlink()
+
+    def test_real_cisa_kev_definition_has_display_url(self):
+        cisa_kev_def = fetch.get_source_definition(fetch.SOURCE_DEFINITIONS, "cisa_kev")
+        self.assertTrue(cisa_kev_def.get("display_url"))
+
+    def test_missing_cisa_kev_id_raises_clear_error(self):
+        sources = [
+            {
+                "id": "nist_nvd", "name": "NIST NVD",
+                "url": "https://example.com/nvd-base",
+                "collection_method": "nist_nvd_json", "enabled": False,
+            },
+        ]
+        with self.assertRaises(fetch.SourceDefinitionError) as ctx:
+            fetch.collect_non_rss_items(fetch.datetime.datetime.utcnow(), sources)
+        self.assertIn("cisa_kev", str(ctx.exception))
+
+    def test_missing_nist_nvd_id_raises_clear_error(self):
+        sources = [
+            {
+                "id": "cisa_kev", "name": "CISA KEV",
+                "url": "https://example.com/kev.json",
+                "display_url": "https://example.com/kev-catalog",
+                "collection_method": "cisa_kev_json", "enabled": False,
+            },
+        ]
+        with self.assertRaises(fetch.SourceDefinitionError) as ctx:
+            fetch.collect_non_rss_items(fetch.datetime.datetime.utcnow(), sources)
+        self.assertIn("nist_nvd", str(ctx.exception))
 
 
 if __name__ == "__main__":
