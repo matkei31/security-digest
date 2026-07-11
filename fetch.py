@@ -3,7 +3,7 @@
 Security Digest — サイバーセキュリティニュースを収集してindex.htmlを生成する
 """
 
-import sys, json, datetime, time, re, os, tempfile
+import sys, json, datetime, time, re, os, tempfile, unicodedata
 import urllib.request, urllib.parse
 import urllib.error
 import xml.etree.ElementTree as ET
@@ -539,6 +539,44 @@ def strip_html(s):
 
 # ── Gemini AI要約 ─────────────────────────────────────────────────────────────
 
+# Ticket 11a: recommended_actionsのプレースホルダ的な「特になし」等の表現。
+# 部分一致では判定せず、正規化後の文字列全体がここに完全一致する場合のみ除外する
+# (「対応不要と判断する前に…」のような記事固有の文まで誤って削除しないため)。
+PLACEHOLDER_RECOMMENDED_ACTIONS = {
+    "特になし", "なし", "該当なし", "対応不要",
+    "現時点では特になし", "現時点で対応事項なし", "特段の対応なし",
+    "null", "none",
+}
+_ACTION_TRAILING_PUNCTUATION = "。.!！?？、,，"
+
+
+def _normalize_action_text_for_placeholder_check(text):
+    """全角・半角、大文字小文字、前後空白、文末の一般的な句読点差を吸収した
+    比較用文字列を作る(除外判定にのみ使う。表示用の値は元の文字列を使う)。
+    """
+    normalized = unicodedata.normalize("NFKC", text).strip().lower()
+    return normalized.rstrip(_ACTION_TRAILING_PUNCTUATION).strip()
+
+
+def normalize_recommended_actions(raw_actions):
+    """recommended_actionsから、「特になし」等のプレースホルダ的な要素だけを
+    除外する(Ticket 11a)。除外後に0件になることを正常な結果として許容する。
+    list以外・空文字・None/null文字列は除外し、有効な確認事項はそのまま残す。
+    """
+    if not isinstance(raw_actions, list):
+        return []
+
+    cleaned = []
+    for action in raw_actions:
+        text = str(action).strip()
+        if not text:
+            continue
+        if _normalize_action_text_for_placeholder_check(text) in PLACEHOLDER_RECOMMENDED_ACTIONS:
+            continue
+        cleaned.append(text)
+    return cleaned
+
+
 def normalize_ai_analysis(value):
     if not isinstance(value, dict):
         return None
@@ -546,16 +584,21 @@ def normalize_ai_analysis(value):
     importance = str(value.get("importance", "")).strip()
     summary = str(value.get("summary", "")).strip()
     impact = str(value.get("financial_impact", "")).strip()
-    actions = value.get("recommended_actions", [])
 
     if importance not in ("高", "中", "低") or not summary or not impact:
         return None
+
+    # Ticket 11a/11a-fix: recommended_actionsは必須フィールドのままであり、
+    # キー欠落・null・文字列等は失敗として扱う。「明示的な空配列」だけを
+    # 正常値として許容する(記事から直接導ける固有の確認事項がなければ[]が
+    # 正しい結果のため。抽出失敗やフィールド欠落まで[]へ正常化はしない)。
+    if "recommended_actions" not in value:
+        return None
+    actions = value["recommended_actions"]
     if not isinstance(actions, list):
         return None
 
-    actions = [str(action).strip() for action in actions if str(action).strip()]
-    if not actions:
-        return None
+    actions = normalize_recommended_actions(actions)
 
     return {
         "importance": importance,
@@ -1112,7 +1155,9 @@ def extract_partial_array(response_text, field):
     """フォールバック用: 壊れたJSON応答からfield(文字列配列)の要素を正規表現で
     抽出する。recommended_actionsの既存抽出とは異なり閉じ括弧までを対象とする
     (tags等、応答内で最後のフィールドとは限らないフィールド向け)。
-    見つからない、または配列として復元できない場合は空配列を返す。
+    見つからない、または配列として復元できない場合は空配列を返す(緩い救済用。
+    「キー欠落」と「有効な空配列」を区別する必要がある呼び出し元は
+    extract_partial_array_state()を使う)。
     """
     if not isinstance(response_text, str):
         return []
@@ -1132,14 +1177,55 @@ def extract_partial_array(response_text, field):
     ]
 
 
+def extract_partial_array_state(response_text, field):
+    """フォールバック用: fieldの状態を"missing"/"invalid"/"found"の3値で判定する
+    (Ticket 11a-fix)。extract_partial_array()と異なり、「キー自体が見つからない」
+    ことと「キーはあるが配列として解析できない(null・文字列・壊れた配列構文等)」
+    ことを区別し、どちらも[]へ黙って正常化しない。
+
+    戻り値: (state, values)
+    - "missing": フィールドキー自体が見つからない → values=[]
+    - "invalid": キーはあるが値を配列として解析できない → values=[]
+    - "found":   キーがあり、有効な配列として解析できた(要素0件を含む) → values=抽出した要素
+    """
+    if not isinstance(response_text, str):
+        return "missing", []
+
+    key_match = re.search(rf'"{re.escape(field)}"\s*:\s*', response_text)
+    if not key_match:
+        return "missing", []
+
+    rest = response_text[key_match.end():].lstrip()
+    if not rest.startswith("["):
+        # null・文字列・数値等、配列以外の値、または応答がここで途切れている
+        return "invalid", []
+
+    array_match = re.match(r"\[(.*?)\]", rest, re.DOTALL)
+    if not array_match:
+        # 開き括弧はあるが閉じ括弧まで復元できない(応答が途中で途切れている等)
+        return "invalid", []
+
+    values = [
+        value.strip()
+        for value in re.findall(r'"((?:\\.|[^"])*)"', array_match.group(1))
+        if value.strip()
+    ]
+    return "found", values
+
+
 def fallback_ai_analysis(response_text, source_text):
-    """主要4項目(importance/summary/financial_impact/recommended_actions)が
-    応答から安全に取得できた場合のみ、部分的な分析結果として返す(=fallback扱い)。
+    """importance/summary/financial_impact/recommended_actionsが応答から
+    安全に取得できた場合のみ、部分的な分析結果として返す(=fallback扱い)。
     いずれか1つでも取得できない場合はNoneを返し、呼び出し側でfailed扱いにする
     (コード側で「重要度は中」「一般的な確認事項」等の一般論を補完しない。
     記事に基づかない判断・定型文を作らないため)。
 
-    category/category_reason/urgency/reason/tagsは主要4項目とは独立に、
+    recommended_actionsは、応答中に明示的な配列として存在する場合のみ有効とし
+    (要素0件を含む)、キー自体が見つからない場合や配列として解析できない場合は
+    「取得できなかった」ものとしてfailed扱いにする(Ticket 11a-fix: 「記事固有の
+    確認事項がない」=明示的な空配列と、「抽出に失敗した」を区別する)。
+
+    category/category_reason/urgency/reason/tagsは上記4項目とは独立に、
     抽出できた分だけ緩く救済する(欠けていてもfallback自体は成立する)。
     """
     importance = extract_partial_field(response_text, "importance")
@@ -1172,19 +1258,24 @@ def fallback_ai_analysis(response_text, source_text):
     # recommended_actionsはTicket 4で"reason"/"tags"より前の項目になった
     # (v1では最後の項目だったため、閉じ括弧を要求しない抽出でも安全だった)。
     # 境界のないパターンのままだと後続フィールドの文字列まで誤って
-    # recommended_actionsに取り込んでしまうため、extract_partial_array()で
-    # 閉じ括弧までに限定して抽出する。
-    actions = extract_partial_array(response_text, "recommended_actions")
+    # recommended_actionsに取り込んでしまうため、閉じ括弧までに限定して抽出する。
+    # Ticket 11a-fix: 「キー欠落」「配列として解析不能」「有効な配列(0件を含む)」
+    # の3状態を区別し、found以外はnormalize_ai_analysis()へキー自体を渡さない
+    # (=そのままキー欠落として失敗させ、[]へ黙って正常化しない)。
+    actions_state, actions_values = extract_partial_array_state(response_text, "recommended_actions")
 
-    # 主要4項目はすべて応答から実際に取得できた場合のみ有効とする。
-    # 1つでも欠ける場合はnormalize_ai_analysis()がNoneを返し、
-    # fallback_ai_analysis()全体もNoneを返す(=failed扱いになる)。
-    core = normalize_ai_analysis({
+    # importance/summary/financial_impact/recommended_actionsは応答から実際に
+    # 取得できた場合のみ有効とする(1つでも欠ける場合はnormalize_ai_analysis()が
+    # Noneを返し、fallback_ai_analysis()全体もNoneを返す=failed扱いになる)。
+    core_input = {
         "importance": importance,
         "summary": summary,
         "financial_impact": impact[:140] if impact else "",
-        "recommended_actions": actions[:3],
-    })
+    }
+    if actions_state == "found":
+        core_input["recommended_actions"] = actions_values[:3]
+
+    core = normalize_ai_analysis(core_input)
     if core is None:
         return None
 
@@ -1239,38 +1330,55 @@ def gemini_analyze(text):
 6. AI・新技術リスク: AI、LLM、AIエージェント、量子等が主題(記事にAIという単語が出るだけで
    このカテゴリにしない。主題を基準にする)
 7. その他: 上記のいずれにも明確に当てはまらない場合のみ
+category_reasonはcategoryだけの判定理由であり、importance/urgencyの判定へ機械的に
+流用しない(例: 「インシデント」だから自動的にimportance=高、「脆弱性・パッチ」
+だから自動的にurgency=本日確認、とはしない)。
 
-# importance（高/中/低）
-ニュースとしての話題性ではなく、「金融機関にとって見落としたくない度合い」で判定する。
-- 高: 実際に悪用が確認されている脆弱性／CISA KEVへの追加／金融機関で利用可能性が高い
-  製品・サービスの重大なセキュリティ情報／金融機関・決済・認証基盤・重要インフラ等の
-  重大インシデント／金融庁・JPCERT/CC・CISA等による重要な注意喚起／金融機関の規制対応・
-  監督対応・統制評価に影響し得る文書／SWIFT CSCF等、統制・評価・アテステーションに
-  影響し得る重要更新／管理態勢上、明確に見落とすべきでないもの
-- 中: 即時対応ではないが運用・管理態勢への示唆がある／脅威動向・攻撃手法・ベンダー
-  レポートとして有用／金融機関への直接影響は不明だが今後の議論材料になる／クラウド・
-  AI・IAM・サプライチェーン等の継続論点／高とするほど具体的・重大ではないが無視するには惜しい
-- 低: 一般的なセキュリティ解説／マーケティング色が強い／技術的には興味深いが実務判断に
-  直結しにくい／既知情報の再掲に近い／金融機関との関係を具体的に説明しにくい
+# importance（高/中/低。意味＝「自社の評価・トリアージへ載せるべき確認優先度」）
+importanceは、金融機関の担当者が当該情報を自社の評価・トリアージプロセスへ
+載せるべき優先度を表す。次の意味では判定しない。
+- 金融機関への影響が確定している度合い
+- 自社が該当製品を利用しているという判定
+- 事象自体の社会的重大性だけ
+- 「本日」「今週」「参考」等の時間軸(時間軸はurgencyだけで判定し、importanceには
+  混ぜない)
 
-以下だけを理由に高にしない: CVSSが高い／海外で話題になっている／AI関連で目新しい／
-ベンダーが重大と表現している／Tier 1ソースの記事である／大企業の記事である／
-技術的に高度である。source_type・source_tierは判断材料の一つに過ぎず、
-Tier 1だから自動的に高、「報道・メディア」だから自動的に低、とはしない。
+- 高: 多くの金融機関において、適用性評価の対象へ優先的に載せる強い根拠がある。
+  例: 悪用が確認されている／広く利用される製品・基盤の重大な脆弱性／重大な
+  インシデント／広範なサプライチェーン侵害／金融分野に直接関係する重要な規制・
+  監督上の変更／見落とした場合の影響が大きい具体的な情報／複数の金融機関で
+  利用される可能性が高い共通基盤の問題
+- 中: 適用性を評価する価値はあるが、対象範囲・製品の普及範囲・金融機関との
+  関係等が限定的または不確実。例: 重大な事象だが対象製品・業務・組織が限定
+  される／自社または委託先の利用有無により影響が変わる／見落とし回避のため
+  知らせる価値がある／管理態勢・ガバナンス上の一定の示唆がある／CVSS等は高い
+  が製品の利用範囲が限定的／特定地域・業種・構成だけに関係する
+- 低: 固有のトリアージを開始する根拠に乏しく、状況把握・一般的な参考情報として
+  の価値が中心。例: 一般的な啓発・意見・思想記事／製品やサービスの宣伝を主目的
+  とする記事／金融機関との直接的な関係が限定的な他業界事例／具体的な脅威・
+  期限・対象・対応根拠が乏しい／既知情報の反復で新規性が低い
 
-# urgency（本日確認/今週確認/参考）
-「いつ確認・共有すべきか」で判定する。
-- 本日確認: 悪用確認済み脆弱性／KEV追加／期限付き・緊急性のある注意喚起／外部公開
-  システムや重要システムに影響し得る情報／インシデント対応・監視強化・パッチ状況
-  確認につながる情報
-- 今週確認: 規制・ガイドライン・フレームワーク更新／年次レポート・脅威レポート／
-  AI・クラウド・サプライチェーン等の管理態勢上の論点／即時対応より関係者での
-  把握・整理が重要な情報
-- 参考: 直ちに確認・共有する必要性が低い／背景知識・一般動向として有用／実務対応や
-  管理態勢への影響が限定的
-自然な組み合わせ: 高×本日確認／高×今週確認／中×本日確認／中×今週確認／中×参考／低×参考。
-低×本日確認は原則として避ける。ただし機械的に固定せず記事内容を優先し、
-矛盾した組み合わせになる場合はreasonで明確に説明する。
+禁止(importance): 自社での利用が確認済みと仮定する／自社への影響が確定して
+いると断定する／CVSSが高いという理由だけで高にする／CVSSが低いという理由
+だけで低にする／「本日確認だから高」とする／記事にないCVSS値を推測する。
+記事にCVSS等の深刻度が明示されている場合は判定材料の一つとして使ってよいが、
+それだけでimportanceを決めない。
+
+# urgency（本日確認/今週確認/参考。意味＝「評価・確認へ着手する時間的な目安」）
+- 本日確認: 当日中に適用性や初動要否を確認する合理的根拠がある。例: 悪用確認
+  済み／緊急パッチ・緩和策の公開／攻撃・侵害が継続している／規制・報告・対応
+  期限が目前／当日中の確認を要する明確な理由がある
+- 今週確認: 通常の評価プロセスへ載せ、今週中に確認する価値がある。例: 適用性
+  確認は必要だが即時対応を要する根拠はない／パッチ・構成・利用有無を通常手順
+  で確認する／管理態勢や委託先への影響を今週中に整理する
+- 参考: 具体的な短期対応より状況把握・中長期検討・知識更新が中心。例: 他業界
+  の参考事例／一般的な啓発・意見／長期的な技術・ガバナンス動向／具体的な短期
+  アクションがない情報
+
+importanceとurgencyは独立して判定する。特定の組み合わせを機械的に固定・除外
+しない。次のような組み合わせもすべて許容する: 高×参考／中×本日確認／
+低×本日確認／高×今週確認。「重大な話題だから本日確認」のように、importance
+の高さだけでurgencyを決めない。
 
 # tags（以下の許可リストから最大{daily_json.MAX_TAGS}個、該当なければ空配列）
 {"、".join(daily_json.TAG_ALLOWLIST)}
@@ -1281,21 +1389,52 @@ Tier 1だから自動的に高、「報道・メディア」だから自動的�
 記事本文の長い引用をせず、言い換え・要約する。記事にない推測を追加しない。
 金融機関への影響はここに混ぜすぎない。marketing表現をそのまま受け入れない。
 
-# financial_impact（なぜ金融機関に関係するか。1〜2文、日本語、200文字以内目安）
-金融機関との関係が不明な場合はその旨を明記する。全金融機関に影響するかのように
-断定しない。利用環境やサービス採用状況によって影響が異なる場合は条件付きで書く。
-根拠のない経営影響・損失額を追加しない。記事にない規制要求を捏造しない。
-望ましい例: 「該当製品を利用している金融機関では、影響確認が必要になり得る。」
-避ける例: 「すべての金融機関が直ちに対応しなければならない。」
+# financial_impact（金融機関との関係。1〜2文、日本語、200文字以内目安）
+記事にない委託関係・製品利用を仮定しない。業界が異なるだけの記事を無理に金融
+機関へ接続しない。医療・製造・小売等の事業者を金融機関の委託先だと勝手に仮定
+しない。全金融機関が影響を受けると断定しない。自社が利用していると仮定しない。
+記事にない規制義務・攻撃経路・影響範囲を作らない。関係が弱い、または確認できない
+場合は、その弱さを一般論で埋めずに明示する。
+望ましい例:
+- 「金融機関への直接的な影響は限定的です。」
+- 「現時点の記事情報だけでは、金融機関への具体的な影響は確認できません。」
+- 「金融機関で当該製品を利用している場合に限り、適用性確認の対象になります。」
+- 「他業界の事例ですが、委託先管理やサプライチェーンリスクの一般的傾向として
+  参考になります。」
+避ける例: 「すべての金融機関が直ちに対応しなければならない。」「金融機関にも
+影響する可能性がある。」(記事に根拠のない抽象論で埋めるだけの表現)
 
-# recommended_actions（金融機関として一般的に確認すべきこと。配列、1〜3件）
-各要素は短い確認事項。断定的な命令ではなく確認対象を示す。各社固有のシステム構成を
-決めつけない。記事に根拠がない高度な対策を追加しない。「該当する場合」「必要に応じて」
-等の条件を適切に使う。単なる「注意する」「検討する」ではなく確認対象を具体化する。
+# recommended_actions（記事固有の確認事項。配列、0〜3件）
+記事から直接導ける固有の確認事項だけを書く。0件を正常な結果として認め、無理に
+指定件数を埋めない。優先順位: (1) 該当製品・サービス・バージョン・構成の利用
+有無確認 (2) ベンダー一次情報・修正版・パッチ・緩和策の確認 (3) 悪用・侵害
+痕跡等、記事から直接必要と判断できる確認 (4) 記事固有の規制・委託先・
+ガバナンス・運用上の確認 (5) 明確な期限や対象がある場合の社内対応確認。
+判断主体は読者側に残す(例: 「該当製品を利用している場合、影響バージョンと
+修正版の適用状況を確認してください」「対象サービスを利用している場合、
+ベンダーの一次情報と緩和策を確認してください」)。
+記事固有の根拠なしに、次のような一般論・定型文を追加しない: リスク評価を実施
+する／継続的に監視する／教育を実施する／ガイドラインを見直す／セキュリティ
+対策を強化する／必要に応じて検討する／脆弱性診断を実施する／侵入テストを
+実施する／インシデント対応計画を見直す／多要素認証を導入する／ゼロトラストを
+検討する／従業員へ注意喚起する。
 
 # reason（importanceとurgencyの判定理由。1〜2文、150文字以内目安）
-記事の具体的事実と金融機関への関係を根拠にする。「重大だから高」のような循環説明を
-避ける。source_tierだけを理由にしない。importanceとurgencyの両方を説明できる内容にする。
+次の2種類の根拠を区別して読み取れるように書く。
+(1) 事象側の根拠: 悪用確認、CVSS等の深刻度、インシデントの規模、攻撃の継続
+状況、規制期限、対象製品・事象の具体性、パッチ・緩和策の公開状況
+(2) 金融機関への適用性: 広く利用される製品・基盤か、金融分野に直接関係するか、
+自社または委託先の利用有無に依存するか、特定業界の参考事例にとどまるか、
+現時点で直接関係を確認できないか
+記事から確認できない場合は推測で補わず、「金融機関への直接的な関係は確認でき
+ません」「当該製品を利用している場合に限り、適用性確認の対象となります」
+「他業界の事例であり、金融機関では参考情報としての位置付けです」のように書く。
+禁止例(循環説明・抽象論): 「金融機関に影響するため」「重要な脆弱性であるため」
+「対策が必要なため」「セキュリティ上重要であるため」「リスクが高いため」
+改善例: 「悪用が確認されている広く利用される製品の脆弱性であり、当該製品を
+利用する組織では適用性の優先確認対象となるため。」「事象自体は重大ですが対象
+は医療業界の事業者であり、金融機関への直接的な関係は確認できないため、他業界
+のサプライチェーン事例として参考扱いとします。」
 
 # category_reason（categoryの判定理由。1文、100文字以内目安）
 主題を根拠にする。単にカテゴリ名を言い換えるだけにしない。
@@ -1311,19 +1450,39 @@ Tier 1だから自動的に高、「報道・メディア」だから自動的�
 - 推測が必要な場合は「記事からは確認できない」とする
 - JSON以外の説明文やMarkdownを返さない
 - rule_flagsのkev_entryは強い判定材料だが、その存在だけを根拠に記事にない事実を追加しない
+- 他業界の記事を、記事にない委託関係や製品利用を仮定して金融機関へ無理に関連付けない
+- 記事固有の根拠がない定型的なrecommended_actionsを生成しない
 
-# 例1: 高 × 本日確認（CISA KEVへの悪用確認済み脆弱性追加）
-{{"category": "脆弱性・パッチ", "importance": "高", "urgency": "本日確認", "tags": ["KEV", "悪用確認済み", "パッチ"]}}
+# 例1: 高 × 本日確認（広く利用される製品の脆弱性で、悪用が確認されている）
+{{"category": "脆弱性・パッチ", "importance": "高", "urgency": "本日確認",
+  "recommended_actions": ["該当製品を利用している場合、影響バージョンと修正版の適用状況を確認してください"],
+  "tags": ["KEV", "悪用確認済み", "パッチ"]}}
 
-# 例2: 高 × 今週確認（SWIFT CSCFの新バージョンまたは重要改定。即時対応ではないが
-統制・評価・アテステーションへの影響があり得るため）
-{{"category": "規制・ガバナンス", "importance": "高", "urgency": "今週確認", "tags": ["SWIFT", "CSCF", "ガイドライン"]}}
+# 例2: 高 × 参考（金融分野に直接関係する重要な規制文書だが、直近の対応期限や
+当日中の確認事項はない。importanceとurgencyは独立に判定するため、重要度が
+高くても参考でよい）
+{{"category": "規制・ガバナンス", "importance": "高", "urgency": "参考", "tags": ["規制", "ガイドライン"]}}
 
-# 例3: 中 × 今週確認（AIエージェントの新しい攻撃手法に関する調査レポート）
-{{"category": "AI・新技術リスク", "importance": "中", "urgency": "今週確認", "tags": ["AI", "AIエージェント"]}}
+# 例3: 低 × 参考（他業界(医療)のサービス事業者への攻撃。金融機関との直接的な
+関係や共通利用製品は記事から確認できない。医療事業者を金融機関の委託先だと
+仮定しない）
+{{"category": "インシデント", "importance": "低", "urgency": "参考",
+  "financial_impact": "金融機関への直接的な関係は確認できず、他業界のサプライチェーン事例として参考情報にとどまります。",
+  "recommended_actions": [], "tags": []}}
 
-# 例4: 低 × 参考（ベンダー製品の一般的な紹介・マーケティング記事）
-{{"category": "その他", "importance": "低", "urgency": "参考", "tags": []}}
+# 例4: 中 × 本日確認（対象組織は限定的だが、該当する場合には当日中の確認が
+必要。importance=中でもurgency=本日確認になり得る）
+{{"category": "脆弱性・パッチ", "importance": "中", "urgency": "本日確認",
+  "recommended_actions": ["該当構成に該当する場合、当日中に緩和策の適用状況を確認してください"], "tags": []}}
+
+# 例5: 中 × 参考（CVSSは高いが利用範囲が限定的なニッチ製品。自社利用は記事
+から確認できないため断定しない）
+{{"category": "脆弱性・パッチ", "importance": "中", "urgency": "参考",
+  "recommended_actions": ["当該製品を利用している場合、貴社基準に基づく対応判断の対象になり得ます"], "tags": []}}
+
+# 例6: 低 × 参考（自社製品の販売促進を主目的とし、高いCVSSを一般論として
+引用するベンダー宣伝記事。宣伝表現をトリアージの根拠にしない）
+{{"category": "その他", "importance": "低", "urgency": "参考", "recommended_actions": [], "tags": []}}
 
 # ニュース
 {text}
@@ -1365,12 +1524,12 @@ Tier 1だから自動的に高、「報道・メディア」だから自動的�
                     "importance": {
                         "type": "STRING",
                         "enum": list(daily_json.IMPORTANCE_VALUES),
-                        "description": "金融機関にとって見落としたくない度合い"
+                        "description": "自社の評価・トリアージへ載せるべき確認優先度(時間軸は含まない)"
                     },
                     "urgency": {
                         "type": "STRING",
                         "enum": list(daily_json.URGENCY_VALUES),
-                        "description": "いつ確認・共有すべきか"
+                        "description": "評価・確認へ着手する時間的な目安"
                     },
                     "summary": {
                         "type": "STRING",
@@ -1378,14 +1537,13 @@ Tier 1だから自動的に高、「報道・メディア」だから自動的�
                     },
                     "financial_impact": {
                         "type": "STRING",
-                        "description": "なぜ金融機関に関係するか"
+                        "description": "なぜ金融機関に関係するか(関係が弱い・不明な場合はその旨)"
                     },
                     "recommended_actions": {
                         "type": "ARRAY",
                         "items": {"type": "STRING"},
-                        "minItems": 1,
                         "maxItems": 3,
-                        "description": "金融機関として一般的に確認すべきこと"
+                        "description": "記事から直接導ける固有の確認事項(0〜3件、なければ空配列)"
                     },
                     "reason": {
                         "type": "STRING",
