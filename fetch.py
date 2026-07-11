@@ -624,9 +624,46 @@ def normalize_display_analysis(value):
     return analysis
 
 
-URGENCY_DISPLAY_ORDER = {"本日確認": 0, "今週確認": 1, "参考": 2}
-IMPORTANCE_DISPLAY_ORDER = {"高": 0, "中": 1, "低": 2}
+URGENCY_DISPLAY_ORDER = {
+    value: index for index, value in enumerate(daily_json.URGENCY_VALUES)
+}
+IMPORTANCE_DISPLAY_ORDER = {
+    value: index for index, value in enumerate(daily_json.IMPORTANCE_VALUES)
+}
 UNKNOWN_LABEL = "未判定"
+
+
+def _display_order_analysis(item):
+    analysis = item.get("ai_analysis")
+    if not isinstance(analysis, dict) or analysis.get("status") in ("failed", "not_attempted"):
+        return {}
+    return normalize_display_analysis(analysis) or {}
+
+
+def _display_order_rank(value, allowed_values):
+    value = clean_display_text(value)
+    try:
+        return allowed_values.index(value)
+    except ValueError:
+        return len(allowed_values)
+
+
+def sort_items_for_display(items):
+    """通常記事一覧のHTML表示順を返す。入力items自体は変更しない。"""
+    def order_key(entry):
+        index, item = entry
+        analysis = _display_order_analysis(item)
+        return (
+            _display_order_rank(analysis.get("urgency"), daily_json.URGENCY_VALUES),
+            _display_order_rank(analysis.get("importance"), daily_json.IMPORTANCE_VALUES),
+            index,
+        )
+
+    ordered = sorted(
+        enumerate(items),
+        key=order_key,
+    )
+    return [item for _, item in ordered]
 
 
 def _count_display_value(counts, value, allowed_values):
@@ -1937,7 +1974,7 @@ def build_html(
   </section>"""
 
     cards = []
-    for item in items:
+    for display_index, item in enumerate(sort_items_for_display(items), start=1):
         color      = SOURCE_COLORS.get(item["source"], "#555")
         date_label = item["date"].strftime("%m/%d %H:%M") if item["date"] else ""
         raw_summary = strip_html(item["summary"])
@@ -2033,6 +2070,7 @@ def build_html(
         cards.append(f"""
     <div class="card">
       <div class="card-meta">
+        <span class="article-number">No. {esc(str(display_index))}</span>
         <span class="tag" style="background:{color}">{esc(item['source'])}</span>
         <span class="date">{esc(date_label)}</span>
       </div>
@@ -2114,10 +2152,14 @@ def build_html(
     .archive-nav{{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}}
     .archive-link{{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
     .archive-link:hover{{text-decoration:underline}}
+    .article-list-header{{max-width:680px;margin:12px auto 0;padding:0 12px}}
+    .article-list-header h2{{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}}
+    .article-list-note{{font-size:12px;color:#8b949e;line-height:1.5}}
     .cards{{padding:12px 12px 0;display:flex;flex-direction:column;gap:10px;max-width:680px;margin:0 auto}}
     .card{{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent}}
     .card:active{{background:#1c2128;border-color:#388bfd}}
     .card-meta{{display:flex;align-items:center;gap:8px;margin-bottom:8px}}
+    .article-number{{font-size:10px;font-weight:700;line-height:1;color:#8b949e;border:1px solid #30363d;border-radius:100px;padding:3px 7px;white-space:nowrap}}
     .tag{{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;color:#fff;white-space:nowrap}}
     .date{{font-size:11px;color:#8b949e;margin-left:auto}}
     h2{{font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3}}
@@ -2190,6 +2232,10 @@ def build_html(
   {brief_html}
   {dashboard_html}
   {important_items_html}
+  <section class="article-list-header">
+    <h2>全記事一覧</h2>
+    <p class="article-list-note">緊急度・重要度の順に表示しています。</p>
+  </section>
   <div class="cards">{cards_html}</div>
   <div class="sources">
     <details>
