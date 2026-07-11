@@ -815,6 +815,11 @@ def load_daily_digest(path):
     digest_date = data.get("digest_date")
     if not isinstance(digest_date, str) or not daily_json.DIGEST_DATE_RE.fullmatch(digest_date):
         raise daily_json.DailyJsonError(f"{path.name}: digest_dateが不正です: {digest_date!r}")
+    expected_name = f"{digest_date}.json"
+    if path.name != expected_name:
+        raise daily_json.DailyJsonError(
+            f"{path.name}: ファイル名とdigest_dateが一致しません: {digest_date!r}"
+        )
     return data
 
 
@@ -2307,7 +2312,12 @@ def update_index_archive_paths(data_dir, summaries, generated_at=None):
         except json.JSONDecodeError as e:
             raise daily_json.DailyJsonError(f"index.json のJSON解析に失敗しました: {e}") from e
     else:
-        index = daily_json.build_index(data_dir, generated_at or datetime.datetime.now(JST))
+        updated_at = generated_at or datetime.datetime.now(JST)
+        index = {
+            "schema_version": daily_json.SCHEMA_VERSION,
+            "updated_at": updated_at.isoformat(),
+            "digests": [],
+        }
 
     summary_by_date = {s["digest_date"]: s for s in summaries}
     seen = set()
@@ -2355,10 +2365,14 @@ def generate_archive_outputs(data_dir=None, docs_dir=None, generated_at=None):
     summaries = []
 
     for path in daily_digest_paths(data_dir):
-        digest = load_daily_digest(path)
-        archive_path = archive_dir / f"{digest['digest_date']}.html"
-        html = build_daily_archive_html(digest)
-        atomic_write_text(archive_path, html, validator=validate_html_document)
+        try:
+            digest = load_daily_digest(path)
+            archive_path = archive_dir / f"{digest['digest_date']}.html"
+            html = build_daily_archive_html(digest)
+            atomic_write_text(archive_path, html, validator=validate_html_document)
+        except daily_json.DailyJsonError as e:
+            print(f"[WARN] アーカイブ生成をスキップ: {e}", file=sys.stderr)
+            continue
         summaries.append(archive_summary_from_digest(digest))
 
     index_html = build_archive_index_html(summaries, generated_at=generated_at)

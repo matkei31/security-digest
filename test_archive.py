@@ -240,6 +240,21 @@ class ArchiveIndexAndPathTest(unittest.TestCase):
             self.assertEqual(index_json["digests"][0]["high_count"], 1)
             self.assertEqual(index_json["digests"][0]["archive_path"], "docs/archive/2026-07-11.html")
 
+    def test_data_index_json_is_not_treated_as_daily_digest(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            data_dir = Path(tmp) / "data"
+            data_dir.mkdir()
+            write_digest(data_dir, make_digest("2026-07-11"))
+            (data_dir / "index.json").write_text(
+                json.dumps({"digests": [{"digest_date": "2099-01-01"}]}),
+                encoding="utf-8",
+            )
+
+            paths = [p.name for p in fetch.daily_digest_paths(data_dir)]
+
+            self.assertEqual(paths, ["2026-07-11.json"])
+            self.assertNotIn("index.json", paths)
+
     def test_same_day_rerun_overwrites_today_without_mixing_past(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -260,16 +275,58 @@ class ArchiveIndexAndPathTest(unittest.TestCase):
             self.assertIn("past1", past_html)
             self.assertNotIn("second1", past_html)
 
-    def test_invalid_json_raises_with_filename(self):
+    def test_invalid_past_json_is_skipped_without_breaking_valid_archives(self):
         with tempfile.TemporaryDirectory() as tmp:
-            data_dir = Path(tmp) / "data"
-            docs_dir = Path(tmp) / "docs"
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
             data_dir.mkdir()
+            write_digest(data_dir, make_digest("2026-07-10", title="valid"))
+            dj.save_index(data_dir, datetime.datetime(2026, 7, 11, 8, 0, tzinfo=JST))
+            existing = docs_dir / "archive" / "2026-07-11.html"
+            existing.parent.mkdir(parents=True)
+            existing.write_text("existing archive", encoding="utf-8")
             (data_dir / "2026-07-11.json").write_text("{ not valid json", encoding="utf-8")
 
-            with self.assertRaises(dj.DailyJsonError) as ctx:
+            with mock.patch("builtins.print") as mocked_print:
                 fetch.generate_archive_outputs(data_dir, docs_dir)
-            self.assertIn("2026-07-11.json", str(ctx.exception))
+
+            warning_text = " ".join(str(call) for call in mocked_print.call_args_list)
+            self.assertIn("2026-07-11.json", warning_text)
+            self.assertTrue((docs_dir / "archive" / "2026-07-10.html").exists())
+            self.assertEqual(existing.read_text(encoding="utf-8"), "existing archive")
+            index_json = json.loads((data_dir / "index.json").read_text(encoding="utf-8"))
+            by_date = {d["digest_date"]: d for d in index_json["digests"]}
+            self.assertEqual(by_date["2026-07-10"]["archive_path"], "docs/archive/2026-07-10.html")
+            self.assertNotIn("2026-07-11", by_date)
+
+    def test_missing_digest_date_and_mismatched_filename_are_skipped(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+            write_digest(data_dir, make_digest("2026-07-09", title="valid"))
+            missing = make_digest("2026-07-10")
+            del missing["digest_date"]
+            (data_dir / "2026-07-10.json").write_text(
+                json.dumps(missing, ensure_ascii=False), encoding="utf-8"
+            )
+            mismatched = make_digest("2026-07-12")
+            (data_dir / "2026-07-11.json").write_text(
+                json.dumps(mismatched, ensure_ascii=False), encoding="utf-8"
+            )
+
+            with mock.patch("builtins.print") as mocked_print:
+                summaries = fetch.generate_archive_outputs(data_dir, docs_dir)
+
+            warning_text = " ".join(str(call) for call in mocked_print.call_args_list)
+            self.assertIn("2026-07-10.json", warning_text)
+            self.assertIn("2026-07-11.json", warning_text)
+            self.assertEqual([s["digest_date"] for s in summaries], ["2026-07-09"])
+            self.assertTrue((docs_dir / "archive" / "2026-07-09.html").exists())
+            self.assertFalse((docs_dir / "archive" / "2026-07-10.html").exists())
+            self.assertFalse((docs_dir / "archive" / "2026-07-12.html").exists())
 
     def test_failed_archive_is_not_marked_as_successful_archive_path(self):
         with tempfile.TemporaryDirectory() as tmp:
