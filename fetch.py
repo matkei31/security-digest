@@ -585,6 +585,7 @@ def normalize_display_analysis(value):
     category = clean_display_text(value.get("category"))
     summary = clean_display_text(value.get("summary"))
     impact = clean_display_text(value.get("financial_impact"))
+    reason = clean_display_text(value.get("reason"))
 
     tags = []
     raw_tags = value.get("tags", [])
@@ -614,10 +615,73 @@ def normalize_display_analysis(value):
         "summary": summary,
         "financial_impact": impact,
         "recommended_actions": actions,
+        "reason": reason,
     }
     if not any(v for v in analysis.values()):
         return None
     return analysis
+
+
+URGENCY_DISPLAY_ORDER = {"本日確認": 0, "今週確認": 1, "参考": 2}
+IMPORTANCE_DISPLAY_ORDER = {"高": 0, "中": 1, "低": 2}
+
+
+def important_item_identity(item):
+    """重要情報の重複除外キー。URL単独では異なるKEV記事を潰すため使わない。"""
+    stable_id = clean_display_text(item.get("id"))
+    if stable_id:
+        return ("id", stable_id)
+
+    published = item.get("published_at_jst") or item.get("date") or item.get("published_at")
+    if hasattr(published, "isoformat"):
+        published = published.isoformat()
+    else:
+        published = clean_display_text(published)
+
+    title = clean_display_text(item.get("raw_title")) or clean_display_text(item.get("title"))
+    return (
+        "content",
+        clean_display_text(item.get("source")),
+        title,
+        published,
+        clean_display_text(item.get("link")),
+    )
+
+
+def select_important_items(items):
+    """本日の重要情報へ表示する記事を抽出し、指定優先順で安定ソートする。"""
+    selected = []
+    seen = set()
+
+    for index, item in enumerate(items):
+        analysis = normalize_display_analysis(item.get("ai_analysis"))
+        if not analysis:
+            continue
+
+        importance = analysis["importance"]
+        urgency = analysis["urgency"]
+        if importance != "高" and urgency != "本日確認":
+            continue
+        if importance and importance not in IMPORTANCE_DISPLAY_ORDER:
+            continue
+        if urgency and urgency not in URGENCY_DISPLAY_ORDER:
+            continue
+
+        key = important_item_identity(item)
+        if key in seen:
+            continue
+        seen.add(key)
+
+        selected.append((index, item, analysis))
+
+    selected.sort(
+        key=lambda entry: (
+            URGENCY_DISPLAY_ORDER.get(entry[2]["urgency"], len(URGENCY_DISPLAY_ORDER)),
+            IMPORTANCE_DISPLAY_ORDER.get(entry[2]["importance"], len(IMPORTANCE_DISPLAY_ORDER)),
+            entry[0],
+        )
+    )
+    return [item for _, item, _ in selected]
 
 
 def validate_tags_strict(raw_tags):
@@ -1394,6 +1458,74 @@ def build_html(items, exec_summary=None):
     now      = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     date_str = now.strftime("%Y年%m月%d日 %H:%M")
 
+    important_cards = []
+    for item in select_important_items(items):
+        analysis = normalize_display_analysis(item.get("ai_analysis"))
+        if not analysis:
+            continue
+
+        importance_class = {
+            "高": "importance-high",
+            "中": "importance-medium",
+            "低": "importance-low",
+        }.get(analysis["importance"], "importance-unknown")
+        urgency_class = {
+            "本日確認": "urgency-today",
+            "今週確認": "urgency-week",
+            "参考": "urgency-reference",
+        }.get(analysis["urgency"], "urgency-unknown")
+
+        badges = []
+        if analysis["importance"]:
+            badges.append(
+                f'<span class="importance-badge {importance_class}">'
+                f'重要度 {esc(analysis["importance"])}</span>'
+            )
+        if analysis["urgency"]:
+            badges.append(
+                f'<span class="urgency-badge {urgency_class}">'
+                f'{esc(analysis["urgency"])}</span>'
+            )
+        if analysis["category"]:
+            badges.append(
+                f'<span class="category-badge">カテゴリ：{esc(analysis["category"])}</span>'
+            )
+        badge_row = f'<div class="analysis-badges">{"".join(badges)}</div>' if badges else ""
+
+        safe_link = safe_url(item["link"])
+        if safe_link:
+            link_attrs = f'href="{esc(safe_link)}" target="_blank" rel="noopener noreferrer"'
+            title_html = f'<a class="article-title-link" {link_attrs}>{esc(item["title"])}</a>'
+            source_link_html = f'\n        <a class="article-source-link" {link_attrs}>元記事を読む</a>'
+        else:
+            title_html = esc(item["title"])
+            source_link_html = ""
+
+        reason_html = (
+            f'\n        <p class="important-item-reason">{esc(analysis["reason"])}</p>'
+            if analysis["reason"] else ""
+        )
+        important_cards.append(f"""<article class="important-item-card">
+        {badge_row}
+        <h3>{title_html}</h3>{reason_html}{source_link_html}
+      </article>""")
+
+    if important_cards:
+        important_items_body = "\n      ".join(important_cards)
+    else:
+        important_items_body = (
+            '<p class="important-items-empty">'
+            '本日、優先表示の対象となる情報はありません。'
+            '</p>'
+        )
+    important_items_html = f"""<section class="important-items">
+    <h2>本日の重要情報</h2>
+    <p class="important-items-note">本日中の確認、または優先的な共有を検討したい情報です。</p>
+    <div class="important-items-list">
+      {important_items_body}
+    </div>
+  </section>"""
+
     cards = []
     for item in items:
         color      = SOURCE_COLORS.get(item["source"], "#555")
@@ -1564,6 +1696,13 @@ def build_html(items, exec_summary=None):
     .exec-summary-box ul{{list-style:none;display:grid;gap:6px}}
     .exec-summary-box li{{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}}
     .exec-summary-box li::before{{content:"・";position:absolute;left:0}}
+    .important-items{{max-width:680px;margin:12px auto 0;padding:0 12px}}
+    .important-items h2{{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}}
+    .important-items-note{{font-size:12px;color:#8b949e;line-height:1.5;margin-bottom:8px}}
+    .important-items-list{{display:grid;gap:8px}}
+    .important-item-card{{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 16px;display:grid;gap:8px}}
+    .important-item-card h3{{font-size:13px;font-weight:600;line-height:1.5;color:#e6edf3}}
+    .important-item-reason,.important-items-empty{{font-size:12px;color:#c9d1d9;line-height:1.6}}
     .sources{{max-width:680px;margin:20px auto 0;padding:0 12px}}
     .sources details{{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 16px}}
     .sources summary{{font-size:12px;color:#8b949e;cursor:pointer;list-style:none}}
@@ -1580,6 +1719,7 @@ def build_html(items, exec_summary=None):
     <div class="count">{esc(str(len(items)))} 件</div>
   </header>
   {exec_summary_html}
+  {important_items_html}
   <div class="cards">{cards_html}</div>
   <div class="sources">
     <details>
