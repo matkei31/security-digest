@@ -751,10 +751,10 @@ class IndexTest(unittest.TestCase):
                 dj.scan_daily_digest_files(data_dir)
 
 
-# ── 回帰: build_htmlの出力がTicket 3前後で変わらない ────────────────────────
+# ── 回帰: build_htmlは保存用メタデータを表示しない ────────────────────────
 
 class BuildHtmlRegressionTest(unittest.TestCase):
-    def test_new_item_keys_do_not_affect_build_html_output(self):
+    def test_storage_metadata_keys_do_not_affect_build_html_output(self):
         base_item = {
             "title": "テスト記事", "link": "https://example.com/article",
             "summary": "概要文", "date": None, "source": "CISA", "lang": "ja",
@@ -763,7 +763,7 @@ class BuildHtmlRegressionTest(unittest.TestCase):
 
         item_with_new_keys = dict(base_item)
         item_with_new_keys.update({
-            "raw_title": "Raw Title", "raw_summary": "<p>raw</p>",
+            "raw_summary": "<p>raw</p>",
             "published_at_jst": NOW,
             "ai_analysis_meta": {"status": "success", "error_type": None,
                                   "http_status": None, "generated_at": NOW.isoformat()},
@@ -771,6 +771,18 @@ class BuildHtmlRegressionTest(unittest.TestCase):
         html_with_new_keys = fetch.build_html([item_with_new_keys])
 
         self.assertEqual(html_without_new_keys, html_with_new_keys)
+
+    def test_raw_title_is_used_as_primary_title_for_english_article(self):
+        item = {
+            "title": "日本語タイトル", "raw_title": "Raw English Title",
+            "link": "https://example.com/article", "summary": "概要文",
+            "date": None, "source": "CISA", "lang": "en",
+        }
+        html = fetch.build_html([item])
+
+        self.assertIn("Raw English Title", html)
+        self.assertIn("日本語タイトル", html)
+        self.assertLess(html.index("Raw English Title"), html.index("日本語タイトル"))
 
 
 if __name__ == "__main__":

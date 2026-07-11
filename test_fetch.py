@@ -42,13 +42,13 @@ def parse_anchors(html):
 
 def important_segment(html):
     start = html.index('<section class="important-items">')
-    end = html.index('<div class="cards">')
+    end = html.index('<section class="dashboard">')
     return html[start:end]
 
 
 def dashboard_segment(html):
     start = html.index('<section class="dashboard">')
-    end = html.index('<section class="important-items">')
+    end = html.index('<section class="article-list-header">')
     return html[start:end]
 
 
@@ -71,7 +71,7 @@ def article_link_anchors(parser):
 
 def brief_segment(html):
     start = html.index('<div class="todays-brief">')
-    end = html.index('<section class="dashboard">')
+    end = html.index('<section class="important-items">')
     return html[start:end]
 
 
@@ -215,11 +215,12 @@ class ArticleCardDisplayTest(unittest.TestCase):
     def test_article_card_displays_ticket5_analysis_fields(self):
         html = fetch.build_html([self._make_item(ai_analysis=self._analysis())])
 
-        self.assertIn("重要度 高", html)
-        self.assertIn("本日確認", html)
+        self.assertIn("確認優先度 高", html)
+        self.assertIn("確認目安 本日確認", html)
         self.assertIn("カテゴリ：脆弱性・パッチ", html)
         self.assertIn(
-            '<div class="article-tags"><span class="article-tag">KEV</span>'
+            '<div class="article-tags"><span class="article-tags-label">関連タグ：</span>'
+            '<span class="article-tag">KEV</span>'
             '<span class="article-tag">悪用確認済み</span>'
             '<span class="article-tag">パッチ</span></div>',
             html,
@@ -249,7 +250,7 @@ class ArticleCardDisplayTest(unittest.TestCase):
         html = fetch.build_html([self._make_item(ai_analysis=self._analysis(tags=[]))])
 
         self.assertNotIn('<div class="article-tags">', html)
-        self.assertIn("重要度 高", html)
+        self.assertIn("確認優先度 高", html)
 
     def test_missing_optional_analysis_fields_do_not_stop_html_generation(self):
         html = fetch.build_html([
@@ -262,7 +263,7 @@ class ArticleCardDisplayTest(unittest.TestCase):
         ])
 
         self.assertIn("テスト記事", html)
-        self.assertIn("重要度 高", html)
+        self.assertIn("確認優先度 高", html)
         self.assertNotIn("None", html)
         self.assertNotIn(">null<", html)
         self.assertNotIn("確認すべきこと", html)
@@ -273,7 +274,7 @@ class ArticleCardDisplayTest(unittest.TestCase):
 
         self.assertIn("テスト記事", html)
         self.assertIn("取得時の概要文", html)
-        self.assertNotIn("重要度 中", html)
+        self.assertNotIn("確認優先度 中", html)
         self.assertNotIn("金融機関への影響は不明", html)
         self.assertNotIn("原文を確認してください", html)
 
@@ -293,7 +294,7 @@ class ArticleCardDisplayTest(unittest.TestCase):
         self.assertIn("テスト記事", html)
         self.assertNotIn("None", html)
         self.assertNotIn(">null<", html)
-        self.assertNotIn("重要度 中", html)
+        self.assertNotIn("確認優先度 中", html)
 
     def test_ai_generated_ticket5_fields_are_escaped(self):
         html = fetch.build_html([
@@ -331,7 +332,7 @@ class ArticleCardDisplayTest(unittest.TestCase):
         parser = parse_anchors(html)
 
         self.assertEqual(html.count('class="card"'), 3)
-        self.assertEqual(len(article_link_anchors(parser)), 8)
+        self.assertEqual(len(article_link_anchors(parser)), 6)
         self.assertFalse(parser.nested_anchor)
         self.assertIn("記事1", html)
         self.assertIn("記事2", html)
@@ -363,8 +364,8 @@ class ArticleCardDisplayTest(unittest.TestCase):
         self.assertNotIn('<a class="article-title-link"', html)
         self.assertNotIn('<a class="article-source-link"', html)
         self.assertNotIn("元記事を読む", html)
-        self.assertIn("<h2>テスト記事</h2>", html)
-        self.assertIn("重要度 高", html)
+        self.assertIn("テスト記事", html)
+        self.assertIn("確認優先度 高", html)
         self.assertFalse(parser.nested_anchor)
 
 
@@ -473,15 +474,17 @@ class AllItemsDisplayOrderTest(unittest.TestCase):
         html = fetch.build_html(items)
         cards = cards_segment(html)
 
-        self.assertIn("全記事一覧", html)
-        self.assertIn("緊急度・重要度の順に表示しています。", html)
+        self.assertIn("本日の情報", html)
+        self.assertNotIn("全記事一覧", html)
+        self.assertIn("確認目安、確認優先度、元の収集順で表示しています。", html)
         self.assertLess(cards.index("today-low"), cards.index("week-high"))
         self.assertLess(cards.index("week-high"), cards.index("reference-high"))
-        self.assertIn('<span class="article-number">No. 1</span>', cards)
-        self.assertIn('<span class="article-number">No. 2</span>', cards)
-        self.assertIn('<span class="article-number">No. 3</span>', cards)
+        self.assertIn('<span class="article-index">1.</span>', cards)
+        self.assertIn('<span class="article-index">2.</span>', cards)
+        self.assertIn('<span class="article-index">3.</span>', cards)
+        self.assertNotIn("No. 1", cards)
         self.assertEqual(cards.count('class="card"'), 3)
-        self.assertEqual(cards.count('class="article-number"'), 3)
+        self.assertEqual(cards.count('class="article-index"'), 3)
 
     def test_all_items_order_does_not_change_important_items_or_dashboard(self):
         important_today_low = self._make_item("important-today-low", "低", "本日確認")
@@ -528,12 +531,12 @@ class TodaysBriefHtmlTest(unittest.TestCase):
             f'<p class="brief-overview">{SAMPLE_BRIEF["overview"]}</p>', segment
         )
 
-    def test_important_highlights_render_as_list(self):
+    def test_important_highlights_are_not_rendered_in_html(self):
         html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
         segment = brief_segment(html)
-        self.assertIn("重要情報ハイライト", segment)
+        self.assertNotIn("重要情報ハイライト", segment)
         for text in SAMPLE_BRIEF["important_highlights"]:
-            self.assertIn(f"<li>{text}</li>", segment)
+            self.assertNotIn(text, segment)
 
     def test_discussion_points_render_as_list(self):
         html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
@@ -554,7 +557,8 @@ class TodaysBriefHtmlTest(unittest.TestCase):
         html = fetch.build_html([self._make_item()], brief)
         segment = brief_segment(html)
         self.assertNotIn("本日の注目論点", segment)
-        self.assertNotIn("<ul", segment.split("重要情報ハイライト")[0])  # overviewセクションにulがないこと
+        overview = segment[segment.index("本日の概況"):segment.index("本日の確認事項")]
+        self.assertNotIn("<ul", overview)  # overviewセクションにulがないこと
 
     def test_success_with_all_arrays_empty_still_shows_overview(self):
         brief = {
@@ -622,7 +626,7 @@ class TodaysBriefHtmlTest(unittest.TestCase):
         self.assertNotIn("<img src=x", segment)
         self.assertNotIn("<b>強調</b>", segment)
         self.assertNotIn('"quoted" & <tag>', segment)
-        self.assertIn("&lt;img", segment)
+        self.assertNotIn("&lt;img", segment)
         self.assertIn("&lt;b&gt;", segment)
 
     def test_no_html_comment_carries_brief_content(self):
@@ -750,11 +754,11 @@ class DashboardTest(unittest.TestCase):
         self.assertIn("本日のダッシュボード", dashboard)
         self.assertIn("本日の収集", dashboard)
         self.assertIn("<strong>2件</strong>", dashboard)
-        self.assertIn("<h3>重要度</h3>", dashboard)
-        self.assertIn("<h3>緊急度</h3>", dashboard)
+        self.assertIn("<h3>確認優先度</h3>", dashboard)
+        self.assertIn("<h3>確認目安</h3>", dashboard)
         self.assertIn("<h3>カテゴリ</h3>", dashboard)
-        self.assertLess(html.index('<div class="todays-brief">'), html.index('<section class="dashboard">'))
-        self.assertLess(html.index('<section class="dashboard">'), html.index('<section class="important-items">'))
+        self.assertLess(html.index('<div class="todays-brief">'), html.index('<section class="important-items">'))
+        self.assertLess(html.index('<section class="important-items">'), html.index('<section class="dashboard">'))
         self.assertLess(html.index('<section class="dashboard">'), html.index('<div class="cards">'))
         self.assertEqual(cards_segment(html).count('class="card"'), 2)
 
@@ -985,7 +989,7 @@ class ImportantItemsTest(unittest.TestCase):
         html = fetch.build_html([failed, no_analysis])
 
         self.assertEqual(fetch.select_important_items([failed, no_analysis]), [])
-        self.assertIn("本日、優先表示の対象となる情報はありません。", important_segment(html))
+        self.assertIn("本日の優先確認対象はありません。", important_segment(html))
         self.assertEqual(cards_segment(html).count('class="card"'), 2)
         self.assertIn("failed", cards_segment(html))
         self.assertIn("no-analysis", cards_segment(html))
@@ -1019,10 +1023,10 @@ class ImportantItemsTest(unittest.TestCase):
         important = important_segment(html)
         cards = cards_segment(html)
 
-        self.assertIn("本日の重要情報", important)
-        self.assertIn("重要度 高", important)
-        self.assertIn("本日確認", important)
-        self.assertIn("カテゴリ：脆弱性・パッチ", important)
+        self.assertIn("優先確認", important)
+        self.assertNotIn("確認優先度 高", important)
+        self.assertNotIn("確認目安 本日確認", important)
+        self.assertNotIn("カテゴリ：脆弱性・パッチ", important)
         self.assertIn("compact", important)
         self.assertIn("compactの判定理由", important)
         self.assertNotIn("compactの要約は重要情報には出さない", important)
@@ -1046,8 +1050,8 @@ class ImportantItemsTest(unittest.TestCase):
         item = self._make_item("ordinary", importance="中", urgency="今週確認")
         html = fetch.build_html([item])
 
-        self.assertIn("本日の重要情報", important_segment(html))
-        self.assertIn("本日、優先表示の対象となる情報はありません。", important_segment(html))
+        self.assertIn("優先確認", important_segment(html))
+        self.assertIn("本日の優先確認対象はありません。", important_segment(html))
         self.assertEqual(cards_segment(html).count('class="card"'), 1)
 
     def test_important_item_links_use_safe_url_without_nested_anchors(self):
@@ -1056,9 +1060,9 @@ class ImportantItemsTest(unittest.TestCase):
         important_parser = parse_anchors(important_segment(html))
         hrefs = [a.get("href") for a in important_parser.anchors]
 
-        self.assertEqual(hrefs, ["https://example.com/linked", "https://example.com/linked"])
-        self.assertTrue(all(a.get("target") == "_blank" for a in important_parser.anchors))
-        self.assertTrue(all(a.get("rel") == "noopener noreferrer" for a in important_parser.anchors))
+        self.assertEqual(hrefs, ["#article-1", "#article-1"])
+        self.assertTrue(all("target" not in a for a in important_parser.anchors))
+        self.assertTrue(all("rel" not in a for a in important_parser.anchors))
         self.assertFalse(parse_anchors(html).nested_anchor)
 
     def test_important_item_does_not_link_unsafe_url(self):
@@ -1067,7 +1071,10 @@ class ImportantItemsTest(unittest.TestCase):
         html = fetch.build_html([item])
         important = important_segment(html)
 
-        self.assertEqual(parse_anchors(important).anchors, [])
+        self.assertEqual(
+            [a.get("href") for a in parse_anchors(important).anchors],
+            ["#article-1", "#article-1"],
+        )
         self.assertNotIn("javascript:alert(1)", html)
         self.assertNotIn("元記事を読む", important)
 
@@ -1083,7 +1090,7 @@ class ImportantItemsTest(unittest.TestCase):
         important = important_segment(html)
 
         self.assertIn("&lt;b&gt;title&lt;/b&gt;", important)
-        self.assertIn("&lt;b&gt;category&lt;/b&gt;", important)
+        self.assertNotIn("&lt;b&gt;category&lt;/b&gt;", important)
         self.assertIn("&lt;b&gt;reason&lt;/b&gt;", important)
         self.assertNotIn("<b>reason</b>", html)
 
