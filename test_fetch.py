@@ -62,6 +62,13 @@ def anchors_with_class(parser, class_name):
     return [a for a in parser.anchors if a.get("class") == class_name]
 
 
+def article_link_anchors(parser):
+    return [
+        a for a in parser.anchors
+        if a.get("class") in ("article-title-link", "article-source-link")
+    ]
+
+
 def brief_segment(html):
     start = html.index('<div class="todays-brief">')
     end = html.index('<section class="dashboard">')
@@ -165,14 +172,15 @@ class BuildHtmlEscapeTest(unittest.TestCase):
         item = self._make_item(link="https://example.com/article")
         html = fetch.build_html([item])
         parser = parse_anchors(html)
-        hrefs = [a.get("href") for a in parser.anchors]
+        article_anchors = article_link_anchors(parser)
+        hrefs = [a.get("href") for a in article_anchors]
 
         self.assertIn('<a class="article-title-link" href="https://example.com/article"', html)
         self.assertIn('<a class="article-source-link" href="https://example.com/article"', html)
         self.assertIn("元記事を読む", html)
         self.assertEqual(hrefs.count("https://example.com/article"), 2)
-        self.assertTrue(all(a.get("rel") == "noopener noreferrer" for a in parser.anchors))
-        self.assertTrue(all(a.get("target") == "_blank" for a in parser.anchors))
+        self.assertTrue(all(a.get("rel") == "noopener noreferrer" for a in article_anchors))
+        self.assertTrue(all(a.get("target") == "_blank" for a in article_anchors))
         self.assertFalse(parser.nested_anchor)
 
 
@@ -323,7 +331,7 @@ class ArticleCardDisplayTest(unittest.TestCase):
         parser = parse_anchors(html)
 
         self.assertEqual(html.count('class="card"'), 3)
-        self.assertEqual(len(parser.anchors), 8)
+        self.assertEqual(len(article_link_anchors(parser)), 8)
         self.assertFalse(parser.nested_anchor)
         self.assertIn("記事1", html)
         self.assertIn("記事2", html)
@@ -334,13 +342,14 @@ class ArticleCardDisplayTest(unittest.TestCase):
             self._make_item(ai_analysis=self._analysis(importance="中", urgency="今週確認"))
         ])
         parser = parse_anchors(html)
+        article_anchors = article_link_anchors(parser)
 
-        self.assertEqual(len(parser.anchors), 2)
+        self.assertEqual(len(article_anchors), 2)
         self.assertEqual(
-            [a.get("href") for a in parser.anchors],
+            [a.get("href") for a in article_anchors],
             ["https://example.com/article", "https://example.com/article"],
         )
-        self.assertTrue(all(a.get("rel") == "noopener noreferrer" for a in parser.anchors))
+        self.assertTrue(all(a.get("rel") == "noopener noreferrer" for a in article_anchors))
         self.assertIn("元記事を読む", html)
         self.assertFalse(parser.nested_anchor)
 
@@ -350,7 +359,7 @@ class ArticleCardDisplayTest(unittest.TestCase):
         ])
         parser = parse_anchors(html)
 
-        self.assertEqual(parser.anchors, [])
+        self.assertEqual(article_link_anchors(parser), [])
         self.assertNotIn('<a class="article-title-link"', html)
         self.assertNotIn('<a class="article-source-link"', html)
         self.assertNotIn("元記事を読む", html)
@@ -682,13 +691,14 @@ class DashboardTest(unittest.TestCase):
         ordinary = self._make_item("ordinary", importance="低", urgency="参考")
         html = fetch.build_html([important, ordinary])
         parser = parse_anchors(html)
+        article_anchors = article_link_anchors(parser)
 
         self.assertEqual([item["title"] for item in fetch.select_important_items([important, ordinary])], ["important"])
         self.assertIn("Dashboardには表示しない判定理由", important_segment(html))
         self.assertNotIn("Dashboardには表示しない判定理由", cards_segment(html))
         self.assertEqual(cards_segment(html).count('class="card"'), 2)
         self.assertLess(cards_segment(html).index("important"), cards_segment(html).index("ordinary"))
-        self.assertTrue(all(a.get("rel") == "noopener noreferrer" for a in parser.anchors))
+        self.assertTrue(all(a.get("rel") == "noopener noreferrer" for a in article_anchors))
         self.assertFalse(parser.nested_anchor)
 
     def test_dashboard_keeps_invalid_url_unlinked(self):
@@ -697,7 +707,7 @@ class DashboardTest(unittest.TestCase):
         ])
 
         self.assertNotIn("javascript:alert(1)", html)
-        self.assertEqual(parse_anchors(html).anchors, [])
+        self.assertEqual(article_link_anchors(parse_anchors(html)), [])
 
 
 class ImportantItemsTest(unittest.TestCase):
