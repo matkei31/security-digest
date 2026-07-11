@@ -674,6 +674,7 @@ IMPORTANCE_DISPLAY_ORDER = {
     value: index for index, value in enumerate(daily_json.IMPORTANCE_VALUES)
 }
 UNKNOWN_LABEL = "未判定"
+JAPANESE_TEXT_RE = re.compile(r"[\u3040-\u30ff\u3400-\u9fff]")
 
 
 def _display_order_analysis(item):
@@ -707,6 +708,85 @@ def sort_items_for_display(items):
         key=order_key,
     )
     return [item for _, item in ordered]
+
+
+def article_anchor_id(display_index):
+    return f"article-{display_index}"
+
+
+def _has_japanese_text(value):
+    return bool(JAPANESE_TEXT_RE.search(clean_display_text(value)))
+
+
+def article_title_parts(item):
+    """HTML表示用タイトル。英語原題がある場合は主見出しにし、日本語訳は補助に回す。"""
+    raw_title = clean_display_text(item.get("raw_title"))
+    translated_title = clean_display_text(item.get("title"))
+    lang = clean_display_text(item.get("lang")).lower()
+
+    if not raw_title:
+        return {
+            "main": translated_title or "無題",
+            "subtitle": "",
+            "main_lang": "ja" if _has_japanese_text(translated_title) else "",
+        }
+    if not translated_title or raw_title == translated_title:
+        return {
+            "main": raw_title,
+            "subtitle": "",
+            "main_lang": "ja" if _has_japanese_text(raw_title) else ("en" if lang.startswith("en") else ""),
+        }
+    if _has_japanese_text(raw_title):
+        return {
+            "main": translated_title,
+            "subtitle": "",
+            "main_lang": "ja" if _has_japanese_text(translated_title) else "",
+        }
+    if lang.startswith("en") or not _has_japanese_text(raw_title):
+        return {
+            "main": raw_title,
+            "subtitle": translated_title,
+            "main_lang": "en",
+        }
+    return {
+        "main": translated_title,
+        "subtitle": "",
+        "main_lang": "ja" if _has_japanese_text(translated_title) else "",
+    }
+
+
+def _lang_attr(lang):
+    return f' lang="{esc(lang)}"' if lang else ""
+
+
+def render_title_stack(item, *, href=None, external=False, heading_level=2, display_index=None):
+    parts = article_title_parts(item)
+    main = esc(parts["main"] or "無題")
+    main_lang = _lang_attr(parts["main_lang"])
+    attrs = ""
+    if href:
+        attrs = f'href="{esc(href)}"'
+        if external:
+            attrs += ' target="_blank" rel="noopener noreferrer"'
+        link_class = "article-title-link" if external else "priority-title-link"
+        main_html = f'<a class="{link_class}" {attrs}{main_lang}>{main}</a>'
+    else:
+        main_html = f'<span class="article-title-text"{main_lang}>{main}</span>'
+
+    subtitle = parts["subtitle"]
+    subtitle_html = (
+        f'<span class="article-title-translation" lang="ja">{esc(subtitle)}</span>'
+        if subtitle else ""
+    )
+    index_html = (
+        f'<span class="article-index">{esc(str(display_index))}.</span>'
+        if display_index is not None else ""
+    )
+    return (
+        f'<h{heading_level} class="article-heading">{index_html}'
+        f'<span class="article-title-stack">{main_html}{subtitle_html}</span>'
+        f'</h{heading_level}>'
+    )
 
 
 def _count_display_value(counts, value, allowed_values):
@@ -803,11 +883,11 @@ def render_dashboard_html(items):
     </div>
     <div class="dashboard-groups">
       <section class="dashboard-group">
-        <h3>重要度</h3>
+        <h3>確認優先度</h3>
         <ul class="dashboard-count-list">{importance_items}</ul>
       </section>
       <section class="dashboard-group">
-        <h3>緊急度</h3>
+        <h3>確認目安</h3>
         <ul class="dashboard-count-list">{urgency_items}</ul>
       </section>
       <section class="dashboard-group dashboard-category-group">
@@ -2062,81 +2142,64 @@ def build_html(
     else:
         date_str = clean_archive_text(date_source)
     dashboard_html = render_dashboard_html(items)
+    display_items = sort_items_for_display(items)
+    article_refs = {}
+    for display_index, item in enumerate(display_items, start=1):
+        ref = {
+            "index": display_index,
+            "anchor_id": article_anchor_id(display_index),
+        }
+        article_refs[id(item)] = ref
+        article_refs.setdefault(important_item_identity(item), ref)
 
-    important_cards = []
+    priority_items = []
     for item in select_important_items(items):
         analysis = normalize_display_analysis(item.get("ai_analysis"))
         if not analysis:
             continue
+        ref = article_refs.get(id(item)) or article_refs.get(important_item_identity(item))
+        if not ref:
+            continue
 
-        importance_class = {
-            "高": "importance-high",
-            "中": "importance-medium",
-            "低": "importance-low",
-        }.get(analysis["importance"], "importance-unknown")
-        urgency_class = {
-            "本日確認": "urgency-today",
-            "今週確認": "urgency-week",
-            "参考": "urgency-reference",
-        }.get(analysis["urgency"], "urgency-unknown")
-
-        badges = []
-        if analysis["importance"]:
-            badges.append(
-                f'<span class="importance-badge {importance_class}">'
-                f'重要度 {esc(analysis["importance"])}</span>'
-            )
-        if analysis["urgency"]:
-            badges.append(
-                f'<span class="urgency-badge {urgency_class}">'
-                f'{esc(analysis["urgency"])}</span>'
-            )
-        if analysis["category"]:
-            badges.append(
-                f'<span class="category-badge">カテゴリ：{esc(analysis["category"])}</span>'
-            )
-        badge_row = f'<div class="analysis-badges">{"".join(badges)}</div>' if badges else ""
-
-        safe_link = safe_url(item["link"])
-        if safe_link:
-            link_attrs = f'href="{esc(safe_link)}" target="_blank" rel="noopener noreferrer"'
-            title_html = f'<a class="article-title-link" {link_attrs}>{esc(item["title"])}</a>'
-            source_link_html = f'\n        <a class="article-source-link" {link_attrs}>元記事を読む</a>'
-        else:
-            title_html = esc(item["title"])
-            source_link_html = ""
+        title_html = render_title_stack(
+            item,
+            href=f'#{ref["anchor_id"]}',
+            heading_level=3,
+            display_index=ref["index"],
+        )
 
         reason_html = (
             f'\n        <p class="important-item-reason">{esc(analysis["reason"])}</p>'
             if analysis["reason"] else ""
         )
-        important_cards.append(f"""<article class="important-item-card">
-        {badge_row}
-        <h3>{title_html}</h3>{reason_html}{source_link_html}
+        priority_items.append(f"""<article class="priority-item">
+        {title_html}{reason_html}
+        <a class="priority-item-link" href="#{esc(ref["anchor_id"])}">本文を見る</a>
       </article>""")
 
-    if important_cards:
-        important_items_body = "\n      ".join(important_cards)
+    if priority_items:
+        important_items_body = "\n      ".join(priority_items)
     else:
         important_items_body = (
             '<p class="important-items-empty">'
-            '本日、優先表示の対象となる情報はありません。'
+            '本日の優先確認対象はありません。'
             '</p>'
         )
     important_items_html = f"""<section class="important-items">
-    <h2>本日の重要情報</h2>
-    <p class="important-items-note">本日中の確認、または優先的な共有を検討したい情報です。</p>
+    <h2>優先確認</h2>
+    <p class="important-items-note">確認優先度が高い、または確認目安が本日確認の記事です。</p>
     <div class="important-items-list">
       {important_items_body}
     </div>
   </section>"""
 
     cards = []
-    for display_index, item in enumerate(sort_items_for_display(items), start=1):
+    for display_index, item in enumerate(display_items, start=1):
         color      = SOURCE_COLORS.get(item["source"], "#555")
         date_label = item["date"].strftime("%m/%d %H:%M") if item["date"] else ""
         raw_summary = strip_html(item["summary"])
         analysis = normalize_display_analysis(item.get("ai_analysis"))
+        anchor_id = article_anchor_id(display_index)
 
         if analysis:
             importance_class = {
@@ -2154,12 +2217,12 @@ def build_html(
             if analysis["importance"]:
                 badges.append(
                     f'<span class="importance-badge {importance_class}">'
-                    f'重要度 {esc(analysis["importance"])}</span>'
+                    f'確認優先度 {esc(analysis["importance"])}</span>'
                 )
             if analysis["urgency"]:
                 badges.append(
                     f'<span class="urgency-badge {urgency_class}">'
-                    f'{esc(analysis["urgency"])}</span>'
+                    f'確認目安 {esc(analysis["urgency"])}</span>'
                 )
             if analysis["category"]:
                 badges.append(
@@ -2172,7 +2235,11 @@ def build_html(
                     f'<span class="article-tag">{esc(tag)}</span>'
                     for tag in analysis["tags"]
                 )
-                tags_html = f'<div class="article-tags">{tag_items}</div>'
+                tags_html = (
+                    '<div class="article-tags">'
+                    '<span class="article-tags-label">関連タグ：</span>'
+                    f'{tag_items}</div>'
+                )
 
             sections = []
             if analysis["summary"]:
@@ -2218,22 +2285,31 @@ def build_html(
         safe_link = safe_url(item['link'])
         if safe_link:
             link_attrs = f'href="{esc(safe_link)}" target="_blank" rel="noopener noreferrer"'
-            title_html = f'<a class="article-title-link" {link_attrs}>{esc(item["title"])}</a>'
+            title_html = render_title_stack(
+                item,
+                href=safe_link,
+                external=True,
+                heading_level=2,
+                display_index=display_index,
+            )
             source_link_html = f'\n      <a class="article-source-link" {link_attrs}>元記事を読む</a>'
         else:
             # http(s) 以外のスキーム（javascript: 等）はリンクタグ自体を出力しない
-            title_html = esc(item["title"])
+            title_html = render_title_stack(
+                item,
+                heading_level=2,
+                display_index=display_index,
+            )
             source_link_html = ""
 
         cards.append(f"""
-    <div class="card">
+    <article class="card" id="{esc(anchor_id)}">
       <div class="card-meta">
-        <span class="article-number">No. {esc(str(display_index))}</span>
         <span class="tag" style="background:{color}">{esc(item['source'])}</span>
         <span class="date">{esc(date_label)}</span>
       </div>
-      <h2>{title_html}</h2>{summary_block}{source_link_html}
-    </div>""")
+      {title_html}{summary_block}{source_link_html}
+    </article>""")
 
     cards_html = "\n".join(cards) if cards else '<p class="empty">本日の新着はありません。</p>'
     all_sources = [f for f in RSS_FEEDS if not f[1].startswith("#")] + [("CISA KEV","","")]
@@ -2251,15 +2327,6 @@ def build_html(
       <p class="brief-overview">{esc(overview)}</p>
     </div>"""
             )
-
-        highlights_html = "".join(
-            f"<li>{esc(text)}</li>" for text in (brief.get("important_highlights") or [])
-        )
-        if highlights_html:
-            brief_sections.append(f"""<div class="brief-section">
-      <h3 class="brief-section-title">重要情報ハイライト</h3>
-      <ul class="brief-list">{highlights_html}</ul>
-    </div>""")
 
         discussion_html = "".join(
             f"<li>{esc(text)}</li>" for text in (brief.get("discussion_points") or [])
@@ -2314,15 +2381,18 @@ def build_html(
     .article-list-header h2{{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}}
     .article-list-note{{font-size:12px;color:#8b949e;line-height:1.5}}
     .cards{{padding:12px 12px 0;display:flex;flex-direction:column;gap:10px;max-width:680px;margin:0 auto}}
-    .card{{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent}}
+    .card{{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;scroll-margin-top:88px}}
     .card:active{{background:#1c2128;border-color:#388bfd}}
     .card-meta{{display:flex;align-items:center;gap:8px;margin-bottom:8px}}
-    .article-number{{font-size:10px;font-weight:700;line-height:1;color:#8b949e;border:1px solid #30363d;border-radius:100px;padding:3px 7px;white-space:nowrap}}
     .tag{{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;color:#fff;white-space:nowrap}}
     .date{{font-size:11px;color:#8b949e;margin-left:auto}}
     h2{{font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3}}
-    .article-title-link{{color:inherit;text-decoration:none}}
-    .article-title-link:hover,.article-source-link:hover{{text-decoration:underline}}
+    .article-heading{{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:6px;align-items:start;font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3;overflow-wrap:anywhere}}
+    .article-index{{color:#8b949e;font-weight:700;white-space:nowrap}}
+    .article-title-stack{{display:grid;gap:2px;min-width:0}}
+    .article-title-translation{{font-size:12px;color:#8b949e;line-height:1.5;font-weight:500}}
+    .article-title-link,.priority-title-link{{color:inherit;text-decoration:none}}
+    .article-title-link:hover,.article-source-link:hover,.priority-title-link:hover{{text-decoration:underline}}
     .summary{{font-size:12px;color:#8b949e;line-height:1.5;margin-top:6px}}
     .ai-analysis{{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:grid;gap:10px}}
     .analysis-badges,.article-tags{{display:flex;align-items:center;gap:6px;flex-wrap:wrap}}
@@ -2336,6 +2406,7 @@ def build_html(
     .urgency-reference{{background:#30363d;color:#c9d1d9}}
     .urgency-unknown{{background:#30363d;color:#c9d1d9}}
     .category-badge{{border:1px solid #388bfd;color:#79c0ff;background:#0d1117}}
+    .article-tags-label{{font-size:11px;color:#8b949e;font-weight:500}}
     .article-tag{{font-size:10px;font-weight:600;border:1px solid #30363d;color:#8b949e;background:#0d1117}}
     .article-section h3{{font-size:11px;font-weight:600;color:#8b949e}}
     .article-section p,.article-section li{{font-size:12px;color:#c9d1d9;line-height:1.6}}
@@ -2367,9 +2438,12 @@ def build_html(
     .important-items{{max-width:680px;margin:12px auto 0;padding:0 12px}}
     .important-items h2{{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}}
     .important-items-note{{font-size:12px;color:#8b949e;line-height:1.5;margin-bottom:8px}}
-    .important-items-list{{display:grid;gap:8px}}
-    .important-item-card{{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 16px;display:grid;gap:8px}}
-    .important-item-card h3{{font-size:13px;font-weight:600;line-height:1.5;color:#e6edf3}}
+    .important-items-list{{display:grid;gap:6px}}
+    .priority-item{{border-top:1px solid #21262d;padding:10px 0;display:grid;gap:6px}}
+    .priority-item:first-child{{border-top:0;padding-top:0}}
+    .priority-item .article-heading{{font-size:13px;font-weight:600}}
+    .priority-item-link{{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none;width:max-content;max-width:100%}}
+    .priority-item-link:hover{{text-decoration:underline}}
     .important-item-reason,.important-items-empty{{font-size:12px;color:#c9d1d9;line-height:1.6}}
     .sources{{max-width:680px;margin:20px auto 0;padding:0 12px}}
     .sources details{{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 16px}}
@@ -2388,11 +2462,11 @@ def build_html(
     {archive_nav_html}
   </header>
   {brief_html}
-  {dashboard_html}
   {important_items_html}
+  {dashboard_html}
   <section class="article-list-header">
-    <h2>全記事一覧</h2>
-    <p class="article-list-note">緊急度・重要度の順に表示しています。</p>
+    <h2>本日の情報</h2>
+    <p class="article-list-note">確認目安、確認優先度、元の収集順で表示しています。</p>
   </section>
   <div class="cards">{cards_html}</div>
   <div class="sources">
@@ -2458,7 +2532,7 @@ def build_archive_index_html(summaries, generated_at=None):
         items_html.append(f"""<li class="archive-list-item">
         <a class="archive-link archive-date-link" href="{esc(summary['href'])}">{esc(summary['label'])}</a>
         <div class="archive-meta">記事{esc(str(summary['total_items']))}件</div>
-        <div class="archive-meta">重要度 高{esc(str(summary['high_count']))}件</div>
+        <div class="archive-meta">確認優先度 高{esc(str(summary['high_count']))}件</div>
         <div class="archive-meta">{esc(summary['brief_status'])}</div>
       </li>""")
 
