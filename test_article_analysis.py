@@ -5,6 +5,7 @@ Gemini個別記事分析プロンプト拡張の回帰テスト (Ticket 4)
 (urllib.request.urlopenをモックに差し替える)。
 """
 
+import datetime
 import json
 import os
 import unittest
@@ -116,9 +117,11 @@ class ResponseSchemaTest(unittest.TestCase):
         self.assertEqual(set(self.properties["tags"]["items"]["enum"]), set(dj.TAG_ALLOWLIST))
         self.assertEqual(self.properties["tags"]["maxItems"], dj.MAX_TAGS)
 
-    def test_recommended_actions_is_array(self):
+    def test_recommended_actions_is_array_and_allows_empty(self):
+        # Ticket 11a: 記事固有の確認事項がなければ0件が正常値のため、
+        # minItemsは設定しない(空配列を拒否しない)。
         self.assertEqual(self.properties["recommended_actions"]["type"], "ARRAY")
-        self.assertEqual(self.properties["recommended_actions"]["minItems"], 1)
+        self.assertNotIn("minItems", self.properties["recommended_actions"])
         self.assertEqual(self.properties["recommended_actions"]["maxItems"], 3)
 
     def test_all_required_fields_are_declared(self):
@@ -128,6 +131,43 @@ class ResponseSchemaTest(unittest.TestCase):
         }
         self.assertEqual(set(self.schema["required"]), expected)
         self.assertEqual(set(self.properties.keys()), expected)
+
+
+# ── prompt_versionの反映 (Ticket 11a) ───────────────────────────────────────
+
+class PromptVersionPropagationTest(unittest.TestCase):
+    def test_article_prompt_version_is_v3(self):
+        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v3")
+
+    def test_brief_prompt_version_is_unchanged(self):
+        self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-v2")
+
+    def test_generator_reflects_new_article_prompt_version(self):
+        digest = dj.build_daily_digest(
+            [], {"overview": None, "important_highlights": [], "discussion_points": [],
+                 "check_items": [], "status": "not_attempted", "error_type": None, "http_status": None},
+            [], "gemini-2.5-flash",
+            datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
+            datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
+        )
+        self.assertEqual(digest["generator"]["article_prompt_version"], "article-analysis-v3")
+        self.assertEqual(digest["generator"]["brief_prompt_version"], "today-brief-v2")
+
+    def test_each_article_analysis_reflects_new_prompt_version(self):
+        result = call_gemini_analyze(response_body=make_candidate_body(VALID_ANALYSIS_RESPONSE))
+        item = {
+            "source": "CISA", "link": "https://example.com/a", "title": "t",
+            "ai_analysis": result["analysis"],
+            "ai_analysis_meta": {
+                "status": result["status"], "error_type": result["error_type"],
+                "http_status": result["http_status"], "generated_at": "2026-07-11T07:00:00+09:00",
+            },
+        }
+        source_defs = [{"id": "cisa", "name": "CISA", "source_type": "CERT・注意喚起",
+                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en"}]
+        entry = dj.build_article_entry(item, source_defs, "gemini-2.5-flash",
+                                        datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST))
+        self.assertEqual(entry["analysis"]["prompt_version"], "article-analysis-v3")
 
 
 # ── 正常分析 ──────────────────────────────────────────────────────────────
@@ -172,14 +212,14 @@ class NormalAnalysisTest(unittest.TestCase):
         self.assertEqual(counts["category"]["脆弱性・パッチ"], 1)
         self.assertEqual(counts["urgency"]["本日確認"], 1)
 
-    def test_prompt_version_is_v2(self):
-        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v2")
+    def test_prompt_version_is_v3(self):
+        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v3")
 
     def test_recommended_actions_is_html_compatible_array(self):
         result = call_gemini_analyze(response_body=make_candidate_body(VALID_ANALYSIS_RESPONSE))
         actions = result["analysis"]["recommended_actions"]
         self.assertIsInstance(actions, list)
-        self.assertTrue(1 <= len(actions) <= 3)
+        self.assertTrue(0 <= len(actions) <= 3)
         self.assertTrue(all(isinstance(a, str) for a in actions))
         # 既存のnormalize_ai_analysis()/build_html()がそのまま使える形式であること
         core = fetch.normalize_ai_analysis(result["analysis"])
@@ -222,6 +262,64 @@ class EnumTagValidationTest(unittest.TestCase):
         empty = {**VALID_ANALYSIS_RESPONSE, "tags": []}
         result = fetch.normalize_article_analysis(empty)
         self.assertEqual(result["tags"], [])
+
+
+# ── recommended_actionsの正規化 (Ticket 11a) ────────────────────────────────
+
+class RecommendedActionsNormalizationTest(unittest.TestCase):
+    def test_zero_recommended_actions_is_accepted_as_success(self):
+        empty_actions = {**VALID_ANALYSIS_RESPONSE, "recommended_actions": []}
+        result = fetch.normalize_article_analysis(empty_actions)
+        self.assertIsNotNone(result)
+        self.assertEqual(result["recommended_actions"], [])
+
+    def test_tokuni_nashi_is_normalized_to_empty(self):
+        self.assertEqual(fetch.normalize_recommended_actions(["特になし"]), [])
+
+    def test_nashi_is_normalized_to_empty(self):
+        self.assertEqual(fetch.normalize_recommended_actions(["なし"]), [])
+
+    def test_gaitou_nashi_is_normalized_to_empty(self):
+        self.assertEqual(fetch.normalize_recommended_actions(["該当なし"]), [])
+
+    def test_taiou_fuyou_is_normalized_to_empty(self):
+        self.assertEqual(fetch.normalize_recommended_actions(["対応不要"]), [])
+
+    def test_null_none_and_empty_string_are_removed(self):
+        self.assertEqual(
+            fetch.normalize_recommended_actions(["null", "None", "", "   "]), []
+        )
+
+    def test_whitespace_case_and_width_differences_are_absorbed(self):
+        # 前後空白、全角スペース、大文字小文字、文末の句読点差を安全に吸収する
+        self.assertEqual(fetch.normalize_recommended_actions(["  特になし  "]), [])
+        self.assertEqual(fetch.normalize_recommended_actions(["特になし。"]), [])
+        self.assertEqual(fetch.normalize_recommended_actions(["ＮＵＬＬ"]), [])
+        self.assertEqual(fetch.normalize_recommended_actions(["NONE"]), [])
+
+    def test_valid_conditional_action_is_not_removed(self):
+        actions = ["現時点ではパッチがないため、ベンダーの緩和策を確認してください"]
+        self.assertEqual(fetch.normalize_recommended_actions(actions), actions)
+
+    def test_sentence_mentioning_taiou_fuyou_is_not_removed_by_partial_match(self):
+        # 「対応不要」を部分文字列として含むだけの記事固有の文まで削除しない
+        actions = ["対応不要と判断する前に、該当バージョンの利用有無を確認してください"]
+        self.assertEqual(fetch.normalize_recommended_actions(actions), actions)
+
+    def test_mixed_placeholder_and_valid_actions_keeps_only_valid_ones(self):
+        actions = ["特になし", "該当製品を利用している場合、パッチ適用状況を確認してください", "なし"]
+        self.assertEqual(
+            fetch.normalize_recommended_actions(actions),
+            ["該当製品を利用している場合、パッチ適用状況を確認してください"],
+        )
+
+    def test_all_placeholder_actions_result_in_empty_list(self):
+        actions = ["特になし", "現時点では特になし", "現時点で対応事項なし", "特段の対応なし"]
+        self.assertEqual(fetch.normalize_recommended_actions(actions), [])
+
+    def test_non_list_input_returns_empty_list(self):
+        self.assertEqual(fetch.normalize_recommended_actions("特になし"), [])
+        self.assertEqual(fetch.normalize_recommended_actions(None), [])
 
 
 # ── fallback ──────────────────────────────────────────────────────────────
@@ -267,15 +365,17 @@ class FallbackTest(unittest.TestCase):
         fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
         self.assertIsNone(fb)
 
-    def test_missing_recommended_actions_does_not_generate_fixed_items(self):
-        # recommended_actionsが抽出できない場合、固定の一般的確認事項を生成しない。
-        # 主要4項目が揃わないため全体としてNone(=failed扱い)になることを確認する。
+    def test_missing_recommended_actions_normalizes_to_empty_list(self):
+        # Ticket 11a: recommended_actionsが抽出できない場合でも、他の3項目
+        # (importance/summary/financial_impact)が揃っていれば、固定の一般的
+        # 確認事項を生成する代わりに空配列として正常に扱う(failedにしない)。
         truncated = (
             '{"importance": "高", "summary": "テスト要約です。", '
             '"financial_impact": "影響があります。"'
         )
         fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
-        self.assertIsNone(fb)
+        self.assertIsNotNone(fb)
+        self.assertEqual(fb["recommended_actions"], [])
 
     def test_missing_any_core_field_results_in_failed_status(self):
         # 主要4項目のいずれかが欠ける場合、gemini_analyze()全体としてfailedになる
@@ -436,21 +536,71 @@ class FailedNotAttemptedTest(unittest.TestCase):
 # ── 判定例 (モック応答) ────────────────────────────────────────────────────
 
 class JudgmentExampleTest(unittest.TestCase):
-    def test_prompt_contains_all_four_few_shot_examples(self):
+    def test_prompt_contains_all_six_few_shot_examples(self):
+        # Ticket 11a: 新しいimportance/urgency定義に合わせた6例(うち3例は
+        # ネガティブ例)がプロンプトへ含まれることを確認する。
         body = get_request_body_json()
         prompt_text = body["contents"][0]["parts"][0]["text"]
-        # 例1: KEV
+        # 例1: 高×本日確認(広く利用される製品+悪用確認済み)
         self.assertIn("KEV", prompt_text)
-        self.assertIn("本日確認", prompt_text)
-        # 例2: SWIFT CSCF
-        self.assertIn("SWIFT", prompt_text)
-        self.assertIn("CSCF", prompt_text)
-        # 例3: AIエージェント
-        self.assertIn("AIエージェント", prompt_text)
-        self.assertIn("AI・新技術リスク", prompt_text)
-        # 例4: マーケティング
-        self.assertIn("マーケティング", prompt_text)
-        self.assertIn("参考", prompt_text)
+        self.assertIn("高 × 本日確認", prompt_text)
+        # 例2: 高×参考(重要だが短期対応のないガバナンス情報)
+        self.assertIn("高 × 参考", prompt_text)
+        # 例3: 低×参考(他業界のサービス事業者への攻撃)
+        self.assertIn("他業界(医療)のサービス事業者への攻撃", prompt_text)
+        self.assertIn("サプライチェーン事例として参考情報にとどまります", prompt_text)
+        # 例4: 中×本日確認(範囲限定だが当日確認が必要)
+        self.assertIn("中 × 本日確認", prompt_text)
+        # 例5: 中×参考(CVSS高・限定製品)
+        self.assertIn("CVSSは高いが利用範囲が限定的", prompt_text)
+        # 例6: 低×参考(ベンダー宣伝記事)
+        self.assertIn("ベンダー宣伝記事", prompt_text)
+
+    def test_prompt_defines_importance_without_time_axis(self):
+        body = get_request_body_json()
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        self.assertIn("確認優先度", prompt_text)
+        self.assertIn("時間軸", prompt_text)
+        self.assertIn("時間軸はurgencyだけで判定し、importanceには", prompt_text)
+
+    def test_prompt_instructs_importance_urgency_independence(self):
+        body = get_request_body_json()
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        self.assertIn("独立して判定する", prompt_text)
+        self.assertIn("高×参考", prompt_text)
+        self.assertIn("低×本日確認", prompt_text)
+
+    def test_prompt_prohibits_cvss_only_and_self_usage_assumption(self):
+        body = get_request_body_json()
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        self.assertIn("CVSSが高いという理由だけで高にする", prompt_text)
+        self.assertIn("自社での利用が確認済みと仮定する", prompt_text)
+        self.assertIn("自社への影響が確定して", prompt_text)
+
+    def test_prompt_allows_limited_or_unclear_financial_impact(self):
+        body = get_request_body_json()
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        self.assertIn("直接的な影響は限定的です", prompt_text)
+        self.assertIn("具体的な影響は確認できません", prompt_text)
+        self.assertIn("記事にない委託関係・製品利用を仮定しない", prompt_text)
+        self.assertIn("業界が異なるだけの記事を無理に金融", prompt_text)
+        self.assertIn("接続しない", prompt_text)
+        self.assertIn("記事にない規制義務・攻撃経路・影響範囲を作らない", prompt_text)
+
+    def test_prompt_allows_zero_recommended_actions_and_bans_generic_ones(self):
+        body = get_request_body_json()
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        self.assertIn("0〜3件", prompt_text)
+        self.assertIn("0件を正常な結果として認め", prompt_text)
+        self.assertIn("リスク評価を実施", prompt_text)
+        self.assertIn("多要素認証を導入する", prompt_text)
+
+    def test_prompt_reason_distinguishes_event_and_applicability(self):
+        body = get_request_body_json()
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        self.assertIn("事象側の根拠", prompt_text)
+        self.assertIn("金融機関への適用性", prompt_text)
+        self.assertIn("金融機関に影響するため", prompt_text)  # 禁止例として言及
 
     def test_kev_example_mock_response_processed_as_expected(self):
         mock = {**VALID_ANALYSIS_RESPONSE, "category": "脆弱性・パッチ",
@@ -487,6 +637,93 @@ class JudgmentExampleTest(unittest.TestCase):
         self.assertEqual(result["analysis"]["importance"], "低")
         self.assertEqual(result["analysis"]["urgency"], "参考")
         self.assertEqual(result["analysis"]["tags"], [])
+
+
+# ── ネガティブ例 (Ticket 11a) ────────────────────────────────────────────────
+# 実APIは呼ばないため、モデルの実際の判定は検証できない。ここでは、各シナリオが
+# 期待する出力の「形」(0件recommended_actions、限定的/不明なfinancial_impact、
+# importance/urgencyの独立した組み合わせ)をスキーマ・正規化処理が正しく受理・
+# 保存できることを確認する。
+
+class NegativeExampleTest(unittest.TestCase):
+    def test_other_industry_incident_example(self):
+        # 例1: 他業界(医療)のサービス事業者への攻撃。金融機関との直接的な関係や
+        # 共通利用製品は記事から確認できない。
+        mock = {
+            **VALID_ANALYSIS_RESPONSE, "category": "インシデント",
+            "importance": "低", "urgency": "参考",
+            "financial_impact": "金融機関への直接的な関係は確認できず、他業界のサプライチェーン事例として参考情報にとどまります。",
+            "recommended_actions": [], "tags": [],
+        }
+        result = call_gemini_analyze(response_body=make_candidate_body(mock))
+        self.assertEqual(result["status"], "success")
+        self.assertEqual(result["analysis"]["importance"], "低")
+        self.assertEqual(result["analysis"]["urgency"], "参考")
+        self.assertEqual(result["analysis"]["recommended_actions"], [])
+        self.assertIn("確認できず", result["analysis"]["financial_impact"])
+
+    def test_high_cvss_niche_product_example(self):
+        # 例2: CVSSは高いが、利用範囲が限定されたニッチな製品。
+        mock = {
+            **VALID_ANALYSIS_RESPONSE, "category": "脆弱性・パッチ",
+            "importance": "中", "urgency": "参考",
+            "recommended_actions": ["当該製品を利用している場合、貴社基準に基づく対応判断の対象になり得ます"],
+            "tags": [],
+        }
+        result = call_gemini_analyze(response_body=make_candidate_body(mock))
+        self.assertEqual(result["analysis"]["importance"], "中")
+        self.assertIn("利用している場合", result["analysis"]["recommended_actions"][0])
+
+    def test_vendor_marketing_with_high_cvss_citation_example(self):
+        # 例3: 自社製品の販売促進を主目的とし、高いCVSSを一般論として引用する
+        # ベンダー宣伝記事。
+        mock = {
+            **VALID_ANALYSIS_RESPONSE, "category": "その他",
+            "importance": "低", "urgency": "参考",
+            "recommended_actions": [], "tags": [],
+        }
+        result = call_gemini_analyze(response_body=make_candidate_body(mock))
+        self.assertEqual(result["analysis"]["importance"], "低")
+        self.assertEqual(result["analysis"]["urgency"], "参考")
+        self.assertEqual(result["analysis"]["recommended_actions"], [])
+
+    def test_widely_used_product_with_confirmed_exploitation_example(self):
+        # 例4: 広く利用される製品の脆弱性で、実際の悪用が確認されている。
+        mock = {
+            **VALID_ANALYSIS_RESPONSE, "category": "脆弱性・パッチ",
+            "importance": "高", "urgency": "本日確認",
+            "recommended_actions": ["該当製品を利用している場合、影響バージョンと修正版の適用状況を確認してください"],
+            "reason": "悪用が確認されている広く利用される製品の脆弱性であり、当該製品を利用する組織では適用性の優先確認対象となるため。",
+            "tags": ["KEV", "悪用確認済み", "パッチ"],
+        }
+        result = call_gemini_analyze(response_body=make_candidate_body(mock))
+        self.assertEqual(result["analysis"]["importance"], "高")
+        self.assertEqual(result["analysis"]["urgency"], "本日確認")
+        self.assertIn("利用している場合", result["analysis"]["recommended_actions"][0])
+
+    def test_important_governance_topic_without_short_term_action_example(self):
+        # 例5: 金融分野に直接関係する重要なガバナンス・規制上の論点だが、
+        # 直近の対応期限や当日中の確認事項はない(importance=高でもurgency=参考)。
+        mock = {
+            **VALID_ANALYSIS_RESPONSE, "category": "規制・ガバナンス",
+            "importance": "高", "urgency": "参考", "tags": ["規制", "ガイドライン"],
+        }
+        result = call_gemini_analyze(response_body=make_candidate_body(mock))
+        self.assertEqual(result["analysis"]["importance"], "高")
+        self.assertEqual(result["analysis"]["urgency"], "参考")
+
+    def test_limited_scope_but_same_day_check_needed_example(self):
+        # 例6: 対象組織は限定的だが、該当する場合には当日中の確認が必要
+        # (importance=中/低でもurgency=本日確認)。
+        mock = {
+            **VALID_ANALYSIS_RESPONSE, "category": "脆弱性・パッチ",
+            "importance": "中", "urgency": "本日確認",
+            "recommended_actions": ["該当構成に該当する場合、当日中に緩和策の適用状況を確認してください"],
+            "tags": [],
+        }
+        result = call_gemini_analyze(response_body=make_candidate_body(mock))
+        self.assertEqual(result["analysis"]["importance"], "中")
+        self.assertEqual(result["analysis"]["urgency"], "本日確認")
 
 
 # ── セキュリティ ──────────────────────────────────────────────────────────
