@@ -46,6 +46,12 @@ def important_segment(html):
     return html[start:end]
 
 
+def dashboard_segment(html):
+    start = html.index('<section class="dashboard">')
+    end = html.index('<section class="important-items">')
+    return html[start:end]
+
+
 def cards_segment(html):
     start = html.index('<div class="cards">')
     end = html.index('<div class="sources">')
@@ -337,6 +343,217 @@ class ArticleCardDisplayTest(unittest.TestCase):
         self.assertIn("<h2>テスト記事</h2>", html)
         self.assertIn("重要度 高", html)
         self.assertFalse(parser.nested_anchor)
+
+
+class DashboardTest(unittest.TestCase):
+    def _make_item(self, title="記事", **analysis_overrides):
+        item_overrides = {}
+        for key in ("ai_analysis", "link", "summary", "date", "source", "lang"):
+            if key in analysis_overrides:
+                item_overrides[key] = analysis_overrides.pop(key)
+        analysis = {
+            "status": "success",
+            "category": "脆弱性・パッチ",
+            "category_reason": "Dashboardには表示しないカテゴリ理由",
+            "importance": "高",
+            "urgency": "本日確認",
+            "summary": "Dashboardには使わない要約",
+            "financial_impact": "Dashboardには使わない影響",
+            "recommended_actions": ["Dashboardには使わない確認事項"],
+            "reason": "Dashboardには表示しない判定理由",
+            "tags": ["Dashboardには使わないタグ"],
+        }
+        analysis.update(analysis_overrides)
+        item = {
+            "title": title,
+            "link": f"https://example.com/{title}",
+            "summary": f"{title}の取得概要",
+            "date": datetime.datetime(2026, 7, 11, 6, 0),
+            "source": "CISA",
+            "lang": "ja",
+            "ai_analysis": analysis,
+        }
+        item.update(item_overrides)
+        return item
+
+    def test_compute_dashboard_counts_total_and_all_axes(self):
+        items = [
+            self._make_item("high-today-patch", importance="高", urgency="本日確認", category="脆弱性・パッチ"),
+            self._make_item("medium-week-threat", importance="中", urgency="今週確認", category="攻撃・脅威動向"),
+            self._make_item("low-reference-ai", importance="低", urgency="参考", category="AI・新技術リスク"),
+            self._make_item("missing", importance=None, urgency=None, category=None),
+            self._make_item("invalid", importance="極高", urgency="即時", category="未知カテゴリ"),
+            self._make_item("failed", status="failed", importance="高", urgency="本日確認", category="その他"),
+            self._make_item("not-attempted", status="not_attempted"),
+            {**self._make_item("no-analysis"), "ai_analysis": None},
+        ]
+
+        counts = fetch.compute_dashboard_counts(items)
+
+        self.assertEqual(counts["total"], len(items))
+        self.assertEqual(counts["importance"]["高"], 1)
+        self.assertEqual(counts["importance"]["中"], 1)
+        self.assertEqual(counts["importance"]["低"], 1)
+        self.assertEqual(counts["importance"]["未判定"], 5)
+        self.assertEqual(sum(counts["importance"].values()), len(items))
+        self.assertEqual(counts["urgency"]["本日確認"], 1)
+        self.assertEqual(counts["urgency"]["今週確認"], 1)
+        self.assertEqual(counts["urgency"]["参考"], 1)
+        self.assertEqual(counts["urgency"]["未判定"], 5)
+        self.assertEqual(sum(counts["urgency"].values()), len(items))
+        self.assertEqual(counts["category"]["脆弱性・パッチ"], 1)
+        self.assertEqual(counts["category"]["攻撃・脅威動向"], 1)
+        self.assertEqual(counts["category"]["インシデント"], 0)
+        self.assertEqual(counts["category"]["規制・ガバナンス"], 0)
+        self.assertEqual(counts["category"]["クラウド・サプライチェーン"], 0)
+        self.assertEqual(counts["category"]["AI・新技術リスク"], 1)
+        self.assertEqual(counts["category"]["その他"], 0)
+        self.assertEqual(counts["category"]["未判定"], 5)
+        self.assertEqual(sum(counts["category"].values()), len(items))
+
+    def test_fallback_counts_valid_values_and_missing_axis_independently(self):
+        item = self._make_item(
+            "fallback",
+            status="fallback",
+            importance="中",
+            urgency=None,
+            category="その他",
+        )
+        counts = fetch.compute_dashboard_counts([item])
+
+        self.assertEqual(counts["importance"]["中"], 1)
+        self.assertEqual(counts["importance"]["未判定"], 0)
+        self.assertEqual(counts["urgency"]["未判定"], 1)
+        self.assertEqual(counts["category"]["その他"], 1)
+        self.assertEqual(counts["category"]["未判定"], 0)
+
+    def test_none_and_null_strings_count_as_unknown(self):
+        items = [
+            self._make_item("none-string", importance="None", urgency="null", category=""),
+            self._make_item("empty-analysis", ai_analysis={}),
+        ]
+        counts = fetch.compute_dashboard_counts(items)
+
+        self.assertEqual(counts["importance"]["未判定"], 2)
+        self.assertEqual(counts["urgency"]["未判定"], 2)
+        self.assertEqual(counts["category"]["未判定"], 2)
+
+    def test_empty_items_dashboard_counts(self):
+        counts = fetch.compute_dashboard_counts([])
+
+        self.assertEqual(counts["total"], 0)
+        self.assertEqual(sum(counts["importance"].values()), 0)
+        self.assertEqual(sum(counts["urgency"].values()), 0)
+        self.assertEqual(sum(counts["category"].values()), 0)
+        self.assertIn("高", counts["importance"])
+        self.assertIn("本日確認", counts["urgency"])
+        self.assertIn("脆弱性・パッチ", counts["category"])
+
+    def test_dashboard_html_position_and_content(self):
+        items = [
+            self._make_item("first", importance="高", urgency="本日確認", category="脆弱性・パッチ"),
+            self._make_item("second", importance="中", urgency="今週確認", category="その他"),
+        ]
+        html = fetch.build_html(items, exec_summary=["要約1"])
+        dashboard = dashboard_segment(html)
+
+        self.assertIn("本日のダッシュボード", dashboard)
+        self.assertIn("本日の収集", dashboard)
+        self.assertIn("<strong>2件</strong>", dashboard)
+        self.assertIn("<h3>重要度</h3>", dashboard)
+        self.assertIn("<h3>緊急度</h3>", dashboard)
+        self.assertIn("<h3>カテゴリ</h3>", dashboard)
+        self.assertLess(html.index('<div class="exec-summary">'), html.index('<section class="dashboard">'))
+        self.assertLess(html.index('<section class="dashboard">'), html.index('<section class="important-items">'))
+        self.assertLess(html.index('<section class="dashboard">'), html.index('<div class="cards">'))
+        self.assertEqual(cards_segment(html).count('class="card"'), 2)
+
+    def test_dashboard_renders_zero_values_and_omits_zero_category_and_unknown_zero(self):
+        html = fetch.build_html([
+            self._make_item("only-patch", importance="高", urgency="本日確認", category="脆弱性・パッチ")
+        ])
+        dashboard = dashboard_segment(html)
+
+        self.assertIn("<span>高</span><strong>1</strong>", dashboard)
+        self.assertIn("<span>中</span><strong>0</strong>", dashboard)
+        self.assertIn("<span>低</span><strong>0</strong>", dashboard)
+        self.assertIn("<span>本日確認</span><strong>1</strong>", dashboard)
+        self.assertIn("<span>今週確認</span><strong>0</strong>", dashboard)
+        self.assertIn("<span>参考</span><strong>0</strong>", dashboard)
+        self.assertIn("<span>脆弱性・パッチ</span><strong>1</strong>", dashboard)
+        self.assertNotIn("<span>攻撃・脅威動向</span><strong>0</strong>", dashboard)
+        self.assertNotIn("未判定", dashboard)
+
+    def test_dashboard_shows_unknown_when_present_and_category_order(self):
+        items = [
+            self._make_item("patch", category="脆弱性・パッチ"),
+            self._make_item("incident", category="インシデント"),
+            self._make_item("unknown", category="不正カテゴリ", importance="不正", urgency="不正"),
+        ]
+        dashboard = dashboard_segment(fetch.build_html(items))
+        category_part = dashboard[dashboard.index("<h3>カテゴリ</h3>"):]
+
+        self.assertIn("<span>未判定</span><strong>1</strong>", dashboard)
+        self.assertLess(category_part.index("脆弱性・パッチ"), category_part.index("インシデント"))
+        self.assertLess(category_part.index("インシデント"), category_part.index("未判定"))
+        self.assertNotIn("不正カテゴリ", dashboard)
+
+    def test_empty_items_dashboard_html(self):
+        html = fetch.build_html([])
+        dashboard = dashboard_segment(html)
+
+        self.assertIn("本日のダッシュボード", dashboard)
+        self.assertIn("<strong>0件</strong>", dashboard)
+        self.assertIn("<span>高</span><strong>0</strong>", dashboard)
+        self.assertIn("<span>中</span><strong>0</strong>", dashboard)
+        self.assertIn("<span>低</span><strong>0</strong>", dashboard)
+        self.assertIn("<span>本日確認</span><strong>0</strong>", dashboard)
+        self.assertIn("<span>今週確認</span><strong>0</strong>", dashboard)
+        self.assertIn("<span>参考</span><strong>0</strong>", dashboard)
+        self.assertIn("該当する記事はありません。", dashboard)
+        self.assertNotIn("未判定", dashboard)
+
+    def test_dashboard_does_not_render_reason_category_reason_or_comments(self):
+        html = fetch.build_html([
+            self._make_item(
+                "unsafe-dashboard",
+                category="<script>alert(1)</script>",
+                reason="<b>reason</b>",
+                category_reason="<b>category_reason</b>",
+            )
+        ])
+        dashboard = dashboard_segment(html)
+
+        self.assertNotIn("<script>alert(1)</script>", html)
+        self.assertNotIn("&lt;script&gt;alert(1)&lt;/script&gt;", dashboard)
+        self.assertNotIn("<b>reason</b>", html)
+        self.assertNotIn("&lt;b&gt;reason&lt;/b&gt;", dashboard)
+        self.assertNotIn("category_reason", html)
+        self.assertNotIn("<!--", dashboard)
+        self.assertNotIn("None", html)
+        self.assertNotIn(">null<", html)
+
+    def test_dashboard_does_not_change_existing_sections_or_links(self):
+        important = self._make_item("important", importance="高", urgency="本日確認")
+        ordinary = self._make_item("ordinary", importance="低", urgency="参考")
+        html = fetch.build_html([important, ordinary])
+        parser = parse_anchors(html)
+
+        self.assertEqual([item["title"] for item in fetch.select_important_items([important, ordinary])], ["important"])
+        self.assertIn("Dashboardには表示しない判定理由", important_segment(html))
+        self.assertNotIn("Dashboardには表示しない判定理由", cards_segment(html))
+        self.assertEqual(cards_segment(html).count('class="card"'), 2)
+        self.assertLess(cards_segment(html).index("important"), cards_segment(html).index("ordinary"))
+        self.assertTrue(all(a.get("rel") == "noopener noreferrer" for a in parser.anchors))
+        self.assertFalse(parser.nested_anchor)
+
+    def test_dashboard_keeps_invalid_url_unlinked(self):
+        html = fetch.build_html([
+            self._make_item("bad-url", link="javascript:alert(1)")
+        ])
+
+        self.assertNotIn("javascript:alert(1)", html)
+        self.assertEqual(parse_anchors(html).anchors, [])
 
 
 class ImportantItemsTest(unittest.TestCase):
