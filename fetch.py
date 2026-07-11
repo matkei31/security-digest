@@ -624,6 +624,116 @@ def normalize_display_analysis(value):
 
 URGENCY_DISPLAY_ORDER = {"本日確認": 0, "今週確認": 1, "参考": 2}
 IMPORTANCE_DISPLAY_ORDER = {"高": 0, "中": 1, "低": 2}
+UNKNOWN_LABEL = "未判定"
+
+
+def _count_display_value(counts, value, allowed_values):
+    if value in allowed_values:
+        counts[value] += 1
+    else:
+        counts[UNKNOWN_LABEL] += 1
+
+
+def compute_dashboard_counts(items):
+    """Dashboard表示用に、現在HTMLへ渡されたitemsを軸ごとに集計する。"""
+    importance_counts = {value: 0 for value in daily_json.IMPORTANCE_VALUES}
+    importance_counts[UNKNOWN_LABEL] = 0
+    urgency_counts = {value: 0 for value in daily_json.URGENCY_VALUES}
+    urgency_counts[UNKNOWN_LABEL] = 0
+    category_counts = {value: 0 for value in daily_json.CATEGORY_VALUES}
+    category_counts[UNKNOWN_LABEL] = 0
+
+    for item in items:
+        analysis = item.get("ai_analysis")
+        if not isinstance(analysis, dict) or analysis.get("status") in ("failed", "not_attempted"):
+            importance_counts[UNKNOWN_LABEL] += 1
+            urgency_counts[UNKNOWN_LABEL] += 1
+            category_counts[UNKNOWN_LABEL] += 1
+            continue
+
+        display_analysis = normalize_display_analysis(analysis) or {}
+        _count_display_value(
+            importance_counts,
+            display_analysis.get("importance", ""),
+            daily_json.IMPORTANCE_VALUES,
+        )
+        _count_display_value(
+            urgency_counts,
+            display_analysis.get("urgency", ""),
+            daily_json.URGENCY_VALUES,
+        )
+        _count_display_value(
+            category_counts,
+            display_analysis.get("category", ""),
+            daily_json.CATEGORY_VALUES,
+        )
+
+    return {
+        "total": len(items),
+        "importance": importance_counts,
+        "urgency": urgency_counts,
+        "category": category_counts,
+    }
+
+
+def render_dashboard_html(items):
+    counts = compute_dashboard_counts(items)
+
+    def count_list(axis_counts, values, include_zero=True):
+        labels = list(values)
+        if axis_counts[UNKNOWN_LABEL] > 0:
+            labels.append(UNKNOWN_LABEL)
+        rows = []
+        for label in labels:
+            count = axis_counts[label]
+            if count == 0 and not include_zero:
+                continue
+            rows.append(
+                '<li class="dashboard-count-item">'
+                f'<span>{esc(label)}</span><strong>{esc(str(int(count)))}</strong>'
+                '</li>'
+            )
+        return "".join(rows)
+
+    importance_items = count_list(
+        counts["importance"],
+        daily_json.IMPORTANCE_VALUES,
+        include_zero=True,
+    )
+    urgency_items = count_list(
+        counts["urgency"],
+        daily_json.URGENCY_VALUES,
+        include_zero=True,
+    )
+    category_items = count_list(
+        counts["category"],
+        daily_json.CATEGORY_VALUES,
+        include_zero=False,
+    )
+    if not category_items:
+        category_items = '<li class="dashboard-empty">該当する記事はありません。</li>'
+
+    return f"""<section class="dashboard">
+    <h2>本日のダッシュボード</h2>
+    <div class="dashboard-total">
+      <span>本日の収集</span>
+      <strong>{esc(str(counts["total"]))}件</strong>
+    </div>
+    <div class="dashboard-groups">
+      <section class="dashboard-group">
+        <h3>重要度</h3>
+        <ul class="dashboard-count-list">{importance_items}</ul>
+      </section>
+      <section class="dashboard-group">
+        <h3>緊急度</h3>
+        <ul class="dashboard-count-list">{urgency_items}</ul>
+      </section>
+      <section class="dashboard-group dashboard-category-group">
+        <h3>カテゴリ</h3>
+        <ul class="dashboard-count-list">{category_items}</ul>
+      </section>
+    </div>
+  </section>"""
 
 
 def important_item_identity(item):
@@ -1457,6 +1567,7 @@ def build_executive_summary(items):
 def build_html(items, exec_summary=None):
     now      = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     date_str = now.strftime("%Y年%m月%d日 %H:%M")
+    dashboard_html = render_dashboard_html(items)
 
     important_cards = []
     for item in select_important_items(items):
@@ -1696,6 +1807,18 @@ def build_html(items, exec_summary=None):
     .exec-summary-box ul{{list-style:none;display:grid;gap:6px}}
     .exec-summary-box li{{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}}
     .exec-summary-box li::before{{content:"・";position:absolute;left:0}}
+    .dashboard{{max-width:680px;margin:12px auto 0;padding:0 12px}}
+    .dashboard h2{{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:8px}}
+    .dashboard-total{{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}}
+    .dashboard-total span{{font-size:12px;color:#8b949e}}
+    .dashboard-total strong{{font-size:20px;color:#e6edf3}}
+    .dashboard-groups{{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:8px}}
+    .dashboard-group{{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 14px}}
+    .dashboard-group h3{{font-size:12px;font-weight:700;color:#8b949e;margin-bottom:8px}}
+    .dashboard-count-list{{list-style:none;display:grid;gap:6px}}
+    .dashboard-count-item{{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#c9d1d9;line-height:1.4}}
+    .dashboard-count-item strong{{font-size:13px;color:#e6edf3}}
+    .dashboard-empty{{list-style:none;font-size:12px;color:#8b949e;line-height:1.5}}
     .important-items{{max-width:680px;margin:12px auto 0;padding:0 12px}}
     .important-items h2{{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}}
     .important-items-note{{font-size:12px;color:#8b949e;line-height:1.5;margin-bottom:8px}}
@@ -1719,6 +1842,7 @@ def build_html(items, exec_summary=None):
     <div class="count">{esc(str(len(items)))} 件</div>
   </header>
   {exec_summary_html}
+  {dashboard_html}
   {important_items_html}
   <div class="cards">{cards_html}</div>
   <div class="sources">
