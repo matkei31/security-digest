@@ -626,6 +626,28 @@ URGENCY_DISPLAY_ORDER = {"本日確認": 0, "今週確認": 1, "参考": 2}
 IMPORTANCE_DISPLAY_ORDER = {"高": 0, "中": 1, "低": 2}
 
 
+def important_item_identity(item):
+    """重要情報の重複除外キー。URL単独では異なるKEV記事を潰すため使わない。"""
+    stable_id = clean_display_text(item.get("id"))
+    if stable_id:
+        return ("id", stable_id)
+
+    published = item.get("published_at_jst") or item.get("date") or item.get("published_at")
+    if hasattr(published, "isoformat"):
+        published = published.isoformat()
+    else:
+        published = clean_display_text(published)
+
+    title = clean_display_text(item.get("raw_title")) or clean_display_text(item.get("title"))
+    return (
+        "content",
+        clean_display_text(item.get("source")),
+        title,
+        published,
+        clean_display_text(item.get("link")),
+    )
+
+
 def select_important_items(items):
     """本日の重要情報へ表示する記事を抽出し、指定優先順で安定ソートする。"""
     selected = []
@@ -645,7 +667,7 @@ def select_important_items(items):
         if urgency and urgency not in URGENCY_DISPLAY_ORDER:
             continue
 
-        key = item.get("id") or item.get("link") or id(item)
+        key = important_item_identity(item)
         if key in seen:
             continue
         seen.add(key)

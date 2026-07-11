@@ -380,6 +380,63 @@ class ImportantItemsTest(unittest.TestCase):
         )
         self.assertEqual(self._important_titles([both, both]), ["both"])
 
+    def test_same_id_is_deduplicated(self):
+        first = self._make_item("first", importance="高", urgency="本日確認")
+        second = self._make_item("second", importance="高", urgency="本日確認")
+        first["id"] = "same-id"
+        second["id"] = "same-id"
+
+        self.assertEqual(self._important_titles([first, second]), ["first"])
+
+    def test_same_composite_key_without_id_is_deduplicated(self):
+        first = self._make_item("same", importance="高", urgency="本日確認")
+        second = self._make_item("same", importance="高", urgency="本日確認")
+        for item in (first, second):
+            item.pop("id", None)
+            item["link"] = "https://example.com/shared"
+            item["source"] = "CISA KEV"
+            item["date"] = datetime.datetime(2026, 7, 11, 6, 0)
+
+        self.assertEqual(self._important_titles([first, second]), ["same"])
+
+    def test_same_link_different_title_without_id_keeps_both(self):
+        first = self._make_item("CVE-2026-0001", importance="高", urgency="本日確認")
+        second = self._make_item("CVE-2026-0002", importance="高", urgency="本日確認")
+        for item in (first, second):
+            item.pop("id", None)
+            item["link"] = "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
+            item["source"] = "CISA KEV"
+            item["date"] = datetime.datetime(2026, 7, 11, 6, 0)
+
+        self.assertEqual(
+            self._important_titles([first, second]),
+            ["CVE-2026-0001", "CVE-2026-0002"],
+        )
+
+    def test_cisa_kev_same_display_url_different_cve_titles_keep_both(self):
+        first = self._make_item(
+            "CVE-2026-56291 — Balbooa Forms unrestricted upload",
+            importance="高",
+            urgency="本日確認",
+        )
+        second = self._make_item(
+            "CVE-2026-48939 — iCagenda unrestricted upload",
+            importance="高",
+            urgency="本日確認",
+        )
+        for item in (first, second):
+            item.pop("id", None)
+            item["link"] = "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
+            item["source"] = "CISA KEV"
+            item["date"] = datetime.datetime(2026, 7, 11, 6, 0)
+
+        html = fetch.build_html([first, second])
+
+        self.assertEqual(len(fetch.select_important_items([first, second])), 2)
+        self.assertIn("CVE-2026-56291", important_segment(html))
+        self.assertIn("CVE-2026-48939", important_segment(html))
+        self.assertEqual(cards_segment(html).count('class="card"'), 2)
+
     def test_missing_and_invalid_importance_urgency_are_not_selected(self):
         missing = self._make_item("missing", importance=None, urgency=None)
         invalid_importance = self._make_item("invalid-importance", importance="極高", urgency="本日確認")
