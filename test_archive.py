@@ -1,0 +1,376 @@
+#!/usr/bin/env python3
+"""
+日次バックナンバーとアーカイブ導線の回帰テスト (Ticket 9)。
+標準ライブラリ unittest のみを使用する。
+"""
+
+import copy
+import datetime
+import json
+import tempfile
+import unittest
+from html.parser import HTMLParser
+from pathlib import Path
+from unittest import mock
+
+import daily_json as dj
+import fetch
+
+
+JST = datetime.timezone(datetime.timedelta(hours=9))
+
+
+class AnchorParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.anchors = []
+        self.comments = []
+        self._stack = []
+        self.nested_anchor = False
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "a":
+            if "a" in self._stack:
+                self.nested_anchor = True
+            self.anchors.append(attrs)
+        self._stack.append(tag)
+
+    def handle_endtag(self, tag):
+        for i in range(len(self._stack) - 1, -1, -1):
+            if self._stack[i] == tag:
+                del self._stack[i:]
+                break
+
+    def handle_comment(self, data):
+        self.comments.append(data)
+
+
+def parse_anchors(html):
+    parser = AnchorParser()
+    parser.feed(html)
+    return parser
+
+
+def make_digest(digest_date="2026-07-11", *, title="記事A", total_items=1, high_count=1):
+    items = []
+    for index in range(total_items):
+        importance = "高" if index < high_count else "中"
+        items.append({
+            "id": f"id-{digest_date}-{index}",
+            "source_id": "test_source",
+            "source_name": "Test Source",
+            "source_type": "報道・メディア",
+            "source_tier": "Tier 2",
+            "collection_method": "rss",
+            "language": "ja",
+            "url": f"https://example.com/{digest_date}/{index}",
+            "canonical_url": f"https://example.com/{digest_date}/{index}",
+            "published_at": f"{digest_date}T07:00:00+09:00",
+            "fetched_at": f"{digest_date}T07:10:00+09:00",
+            "title": f"{title}{index + 1}",
+            "raw_title": f"Raw {title}{index + 1}",
+            "raw_excerpt": "raw excerpt should not be rendered",
+            "content_hash": f"hash-{index}",
+            "rule_flags": [],
+            "analysis": {
+                "status": "success",
+                "model": "gemini-2.5-flash",
+                "prompt_version": "article-analysis-v2",
+                "generated_at": f"{digest_date}T07:20:00+09:00",
+                "category": "脆弱性・パッチ",
+                "category_reason": "表示しないカテゴリ理由",
+                "importance": importance,
+                "urgency": "本日確認" if importance == "高" else "今週確認",
+                "summary": f"{title}{index + 1}の要約",
+                "financial_impact": f"{title}{index + 1}の金融影響",
+                "recommended_actions": [f"{title}{index + 1}の確認事項"],
+                "reason": f"{title}{index + 1}の重要情報理由",
+                "tags": ["パッチ"],
+                "error_type": None,
+                "http_status": None,
+            },
+        })
+    return {
+        "schema_version": 1,
+        "digest_date": digest_date,
+        "generated_at": f"{digest_date}T07:30:00+09:00",
+        "generator": {
+            "application": "security-digest",
+            "model": "gemini-2.5-flash",
+            "article_prompt_version": "article-analysis-v2",
+            "brief_prompt_version": "today-brief-v2",
+        },
+        "run": {
+            "status": "success",
+            "overwrite_policy": "replace",
+            "total_items": total_items,
+            "ai_attempted_count": total_items,
+            "ai_success_count": total_items,
+            "ai_fallback_count": 0,
+            "ai_failed_count": 0,
+            "ai_not_attempted_count": 0,
+        },
+        "counts": {
+            "importance": {"高": high_count, "中": total_items - high_count, "低": 0, "未判定": 0},
+            "urgency": {"本日確認": high_count, "今週確認": total_items - high_count, "参考": 0, "未判定": 0},
+            "category": {k: 0 for k in dj.CATEGORY_VALUES} | {"脆弱性・パッチ": total_items, "未判定": 0},
+        },
+        "brief": {
+            "status": "success",
+            "model": "gemini-2.5-flash",
+            "prompt_version": "today-brief-v2",
+            "overview": f"{digest_date}の概況",
+            "important_highlights": [f"{digest_date}のハイライト"],
+            "discussion_points": [f"{digest_date}の論点"],
+            "check_items": [f"{digest_date}の確認"],
+            "error_type": None,
+        },
+        "items": items,
+    }
+
+
+def write_digest(data_dir, digest):
+    path = Path(data_dir) / f"{digest['digest_date']}.json"
+    path.write_text(json.dumps(digest, ensure_ascii=False, indent=2), encoding="utf-8")
+    return path
+
+
+class ArchiveGenerationTest(unittest.TestCase):
+    def test_daily_archive_from_json_contains_expected_sections_and_omits_internal_fields(self):
+        digest = make_digest(total_items=2, high_count=1)
+        html = fetch.build_daily_archive_html(digest)
+
+        self.assertIn("Security Digest", html)
+        self.assertIn("日次ダイジェスト：2026年07月11日", html)
+        self.assertIn("最終更新: 2026年07月11日 07:30", html)
+        self.assertIn("Today's Brief", html)
+        self.assertIn("本日のダッシュボード", html)
+        self.assertIn("本日の重要情報", html)
+        self.assertEqual(html.count('class="card"'), 2)
+        self.assertLess(html.index("記事A1"), html.index("記事A2"))
+        self.assertIn("記事A1の要約", html)
+        self.assertIn("記事A1の金融影響", html)
+        self.assertIn("記事A1の確認事項", html)
+        self.assertIn("元記事を読む", html)
+        cards = html[html.index('<div class="cards">'):]
+        self.assertNotIn("表示しないカテゴリ理由", html)
+        self.assertNotIn("raw excerpt should not be rendered", html)
+        self.assertNotIn("content_hash", html)
+        self.assertNotIn("error_type", html)
+        self.assertNotIn("None", html)
+        self.assertNotIn(">null<", html)
+        self.assertNotIn("記事A1の重要情報理由", cards)
+
+    def test_old_brief_and_missing_fields_are_compatible(self):
+        digest = make_digest(total_items=2, high_count=1)
+        digest["brief"] = {
+            "status": "success",
+            "model": "gemini-2.5-flash",
+            "prompt_version": "executive-summary-v1",
+            "overview": None,
+            "important_highlights": ["旧形式ハイライト"],
+            "discussion_points": [],
+            "check_items": [],
+            "error_type": None,
+        }
+        digest["items"][0]["analysis"]["category"] = "未判定"
+        digest["items"][0]["analysis"]["urgency"] = "未判定"
+        digest["items"][0]["analysis"]["tags"] = []
+        digest["items"][1]["analysis"] = {"status": "failed"}
+        del digest["items"][1]["raw_title"]
+
+        html = fetch.build_daily_archive_html(digest)
+
+        self.assertIn("旧形式ハイライト", html)
+        self.assertIn("記事A2", html)
+        self.assertEqual(html.count('class="card"'), 2)
+        self.assertNotIn("None", html)
+        self.assertNotIn(">null<", html)
+
+    def test_internal_and_external_links_are_safe(self):
+        digest = make_digest(total_items=1)
+        digest["items"][0]["url"] = "javascript:alert(1)"
+        digest["items"][0]["title"] = "<script>alert(1)</script>"
+        digest["brief"]["overview"] = "<b>概要</b>"
+        html = fetch.build_daily_archive_html(digest)
+        parser = parse_anchors(html)
+
+        self.assertIn("&lt;script&gt;alert(1)&lt;/script&gt;", html)
+        self.assertIn("&lt;b&gt;概要&lt;/b&gt;", html)
+        self.assertNotIn("javascript:alert(1)", html)
+        article_links = [a for a in parser.anchors if a.get("class") in ("article-title-link", "article-source-link")]
+        self.assertEqual(article_links, [])
+        internal = [a for a in parser.anchors if a.get("class") == "archive-link"]
+        self.assertEqual([a.get("href") for a in internal], ["../index.html", "index.html"])
+        self.assertTrue(all("target" not in a and "rel" not in a for a in internal))
+        self.assertFalse(parser.nested_anchor)
+        self.assertEqual(parser.comments, [])
+
+
+class ArchiveIndexAndPathTest(unittest.TestCase):
+    def test_generate_archive_outputs_writes_daily_list_and_archive_paths(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+            write_digest(data_dir, make_digest("2026-07-10", title="past", total_items=0, high_count=0))
+            write_digest(data_dir, make_digest("2026-07-11", title="today", total_items=2, high_count=1))
+            dj.save_index(data_dir, datetime.datetime(2026, 7, 11, 8, 0, tzinfo=JST))
+
+            summaries = fetch.generate_archive_outputs(data_dir, docs_dir, datetime.datetime(2026, 7, 11, 8, 0, tzinfo=JST))
+
+            self.assertEqual([s["digest_date"] for s in summaries], ["2026-07-11", "2026-07-10"])
+            self.assertTrue((docs_dir / "archive" / "2026-07-11.html").exists())
+            self.assertTrue((docs_dir / "archive" / "2026-07-10.html").exists())
+            index_html = (docs_dir / "archive" / "index.html").read_text(encoding="utf-8")
+            self.assertLess(index_html.index("2026年07月11日"), index_html.index("2026年07月10日"))
+            self.assertIn('href="2026-07-11.html"', index_html)
+            self.assertIn("記事2件", index_html)
+            self.assertIn("重要度 高1件", index_html)
+            self.assertIn("Today’s Briefあり", index_html)
+            self.assertNotIn("missing.html", index_html)
+
+            index_json = json.loads((data_dir / "index.json").read_text(encoding="utf-8"))
+            dates = [d["digest_date"] for d in index_json["digests"]]
+            self.assertEqual(dates, ["2026-07-11", "2026-07-10"])
+            self.assertEqual(dates.count("2026-07-11"), 1)
+            self.assertEqual(index_json["digests"][0]["total_items"], 2)
+            self.assertEqual(index_json["digests"][0]["high_count"], 1)
+            self.assertEqual(index_json["digests"][0]["archive_path"], "docs/archive/2026-07-11.html")
+
+    def test_data_index_json_is_not_treated_as_daily_digest(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            data_dir = Path(tmp) / "data"
+            data_dir.mkdir()
+            write_digest(data_dir, make_digest("2026-07-11"))
+            (data_dir / "index.json").write_text(
+                json.dumps({"digests": [{"digest_date": "2099-01-01"}]}),
+                encoding="utf-8",
+            )
+
+            paths = [p.name for p in fetch.daily_digest_paths(data_dir)]
+
+            self.assertEqual(paths, ["2026-07-11.json"])
+            self.assertNotIn("index.json", paths)
+
+    def test_same_day_rerun_overwrites_today_without_mixing_past(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+            write_digest(data_dir, make_digest("2026-07-10", title="past", total_items=1, high_count=0))
+            write_digest(data_dir, make_digest("2026-07-11", title="first", total_items=1, high_count=1))
+            fetch.generate_archive_outputs(data_dir, docs_dir, datetime.datetime(2026, 7, 11, 8, 0, tzinfo=JST))
+
+            write_digest(data_dir, make_digest("2026-07-11", title="second", total_items=1, high_count=1))
+            fetch.generate_archive_outputs(data_dir, docs_dir, datetime.datetime(2026, 7, 11, 9, 0, tzinfo=JST))
+
+            today_html = (docs_dir / "archive" / "2026-07-11.html").read_text(encoding="utf-8")
+            past_html = (docs_dir / "archive" / "2026-07-10.html").read_text(encoding="utf-8")
+            self.assertIn("second1", today_html)
+            self.assertNotIn("first1", today_html)
+            self.assertIn("past1", past_html)
+            self.assertNotIn("second1", past_html)
+
+    def test_invalid_past_json_is_skipped_without_breaking_valid_archives(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+            write_digest(data_dir, make_digest("2026-07-10", title="valid"))
+            dj.save_index(data_dir, datetime.datetime(2026, 7, 11, 8, 0, tzinfo=JST))
+            existing = docs_dir / "archive" / "2026-07-11.html"
+            existing.parent.mkdir(parents=True)
+            existing.write_text("existing archive", encoding="utf-8")
+            (data_dir / "2026-07-11.json").write_text("{ not valid json", encoding="utf-8")
+
+            with mock.patch("builtins.print") as mocked_print:
+                fetch.generate_archive_outputs(data_dir, docs_dir)
+
+            warning_text = " ".join(str(call) for call in mocked_print.call_args_list)
+            self.assertIn("2026-07-11.json", warning_text)
+            self.assertTrue((docs_dir / "archive" / "2026-07-10.html").exists())
+            self.assertEqual(existing.read_text(encoding="utf-8"), "existing archive")
+            index_json = json.loads((data_dir / "index.json").read_text(encoding="utf-8"))
+            by_date = {d["digest_date"]: d for d in index_json["digests"]}
+            self.assertEqual(by_date["2026-07-10"]["archive_path"], "docs/archive/2026-07-10.html")
+            self.assertNotIn("2026-07-11", by_date)
+
+    def test_missing_digest_date_and_mismatched_filename_are_skipped(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+            write_digest(data_dir, make_digest("2026-07-09", title="valid"))
+            missing = make_digest("2026-07-10")
+            del missing["digest_date"]
+            (data_dir / "2026-07-10.json").write_text(
+                json.dumps(missing, ensure_ascii=False), encoding="utf-8"
+            )
+            mismatched = make_digest("2026-07-12")
+            (data_dir / "2026-07-11.json").write_text(
+                json.dumps(mismatched, ensure_ascii=False), encoding="utf-8"
+            )
+
+            with mock.patch("builtins.print") as mocked_print:
+                summaries = fetch.generate_archive_outputs(data_dir, docs_dir)
+
+            warning_text = " ".join(str(call) for call in mocked_print.call_args_list)
+            self.assertIn("2026-07-10.json", warning_text)
+            self.assertIn("2026-07-11.json", warning_text)
+            self.assertEqual([s["digest_date"] for s in summaries], ["2026-07-09"])
+            self.assertTrue((docs_dir / "archive" / "2026-07-09.html").exists())
+            self.assertFalse((docs_dir / "archive" / "2026-07-10.html").exists())
+            self.assertFalse((docs_dir / "archive" / "2026-07-12.html").exists())
+
+    def test_failed_archive_is_not_marked_as_successful_archive_path(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+            write_digest(data_dir, make_digest("2026-07-11"))
+            dj.save_index(data_dir, datetime.datetime(2026, 7, 11, 8, 0, tzinfo=JST))
+
+            with mock.patch("fetch.atomic_write_text", side_effect=OSError("disk full")):
+                with self.assertRaises(OSError):
+                    fetch.generate_archive_outputs(data_dir, docs_dir)
+
+            index_json = json.loads((data_dir / "index.json").read_text(encoding="utf-8"))
+            self.assertIsNone(index_json["digests"][0]["archive_path"])
+
+
+class ArchiveAtomicWriteTest(unittest.TestCase):
+    def test_atomic_write_text_writes_readable_html_and_cleans_temp_on_failure(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "page.html"
+            fetch.atomic_write_text(path, "<!DOCTYPE html><html></html>", validator=fetch.validate_html_document)
+            self.assertEqual(path.read_text(encoding="utf-8"), "<!DOCTYPE html><html></html>")
+
+            original = path.read_text(encoding="utf-8")
+            with mock.patch("fetch.os.replace", side_effect=OSError("replace failed")):
+                with self.assertRaises(OSError):
+                    fetch.atomic_write_text(path, "<!DOCTYPE html><html><body>broken</body></html>")
+
+            self.assertEqual(path.read_text(encoding="utf-8"), original)
+            self.assertEqual(list(Path(tmp).glob("*.tmp")), [])
+
+
+class TopPageArchiveLinkTest(unittest.TestCase):
+    def test_top_page_has_archive_index_link_without_external_attrs(self):
+        html = fetch.build_html([], None)
+        parser = parse_anchors(html)
+        archive_links = [a for a in parser.anchors if a.get("href") == "archive/index.html"]
+
+        self.assertEqual(len(archive_links), 1)
+        self.assertIn("過去のダイジェストを見る", html)
+        self.assertTrue(all("target" not in a and "rel" not in a for a in archive_links))
+
+
+if __name__ == "__main__":
+    unittest.main()

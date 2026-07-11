@@ -3,7 +3,7 @@
 Security Digest — サイバーセキュリティニュースを収集してindex.htmlを生成する
 """
 
-import sys, json, datetime, time, re, os
+import sys, json, datetime, time, re, os, tempfile
 import urllib.request, urllib.parse
 import urllib.error
 import xml.etree.ElementTree as ET
@@ -27,6 +27,8 @@ NAMESPACES = {
 }
 
 CACHE_PATH = Path(__file__).parent / "docs" / "translate_cache.json"
+DOCS_DIR = Path(__file__).parent / "docs"
+ARCHIVE_DIR = DOCS_DIR / "archive"
 
 # ── ソース定義 (source_definitions.json) ─────────────────────────────────────
 # ソース関連の設定(RSS_FEEDS・SOURCE_COLORS・TRUSTED_CYBER_SOURCES等)の正本は
@@ -734,6 +736,137 @@ def render_dashboard_html(items):
       </section>
     </div>
   </section>"""
+
+
+def atomic_write_text(path, text, validator=None):
+    """HTMLを同一ディレクトリ内の一時ファイル経由で原子的に保存する。"""
+    path = Path(path)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_fd, tmp_path_str = tempfile.mkstemp(
+        dir=str(path.parent), prefix=f".{path.name}.", suffix=".tmp"
+    )
+    tmp_path = Path(tmp_path_str)
+
+    try:
+        with os.fdopen(tmp_fd, "w", encoding="utf-8") as f:
+            f.write(text)
+
+        reloaded = tmp_path.read_text(encoding="utf-8")
+        if validator is not None:
+            validator(reloaded)
+
+        os.replace(str(tmp_path), str(path))
+    except Exception:
+        if tmp_path.exists():
+            tmp_path.unlink()
+        raise
+
+
+def validate_html_document(html):
+    if not isinstance(html, str) or "<!DOCTYPE html>" not in html or "</html>" not in html:
+        raise ValueError("HTML document is incomplete")
+    return True
+
+
+def clean_archive_text(value):
+    return clean_display_text(value)
+
+
+def parse_archive_datetime(value):
+    if not value:
+        return None
+    if isinstance(value, datetime.datetime):
+        return value
+    text = str(value).strip()
+    if not text:
+        return None
+    try:
+        return datetime.datetime.fromisoformat(text)
+    except ValueError:
+        return None
+
+
+def format_archive_datetime(value):
+    dt = parse_archive_datetime(value)
+    if not dt:
+        return ""
+    return dt.astimezone(JST).strftime("%Y年%m月%d日 %H:%M")
+
+
+def format_digest_date_label(digest_date):
+    try:
+        dt = datetime.datetime.strptime(digest_date, "%Y-%m-%d")
+    except (TypeError, ValueError):
+        return clean_archive_text(digest_date)
+    return dt.strftime("%Y年%m月%d日")
+
+
+def load_daily_digest(path):
+    path = Path(path)
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as e:
+        raise daily_json.DailyJsonError(f"{path.name} のJSON解析に失敗しました: {e}") from e
+    except OSError as e:
+        raise daily_json.DailyJsonError(f"{path.name} を読み込めません: {e}") from e
+
+    if not isinstance(data, dict):
+        raise daily_json.DailyJsonError(f"{path.name}: トップレベルがオブジェクトではありません")
+    digest_date = data.get("digest_date")
+    if not isinstance(digest_date, str) or not daily_json.DIGEST_DATE_RE.fullmatch(digest_date):
+        raise daily_json.DailyJsonError(f"{path.name}: digest_dateが不正です: {digest_date!r}")
+    expected_name = f"{digest_date}.json"
+    if path.name != expected_name:
+        raise daily_json.DailyJsonError(
+            f"{path.name}: ファイル名とdigest_dateが一致しません: {digest_date!r}"
+        )
+    return data
+
+
+def digest_items_for_html(digest):
+    items = []
+    for entry in digest.get("items") or []:
+        if not isinstance(entry, dict):
+            continue
+        published = (
+            entry.get("published_at_jst")
+            or entry.get("published_at")
+            or entry.get("date")
+        )
+        items.append({
+            "id": entry.get("id"),
+            "title": clean_archive_text(entry.get("title")) or clean_archive_text(entry.get("raw_title")) or "無題",
+            "raw_title": entry.get("raw_title"),
+            "link": clean_archive_text(entry.get("url")) or clean_archive_text(entry.get("canonical_url")) or clean_archive_text(entry.get("link")),
+            "summary": "",
+            "date": parse_archive_datetime(published),
+            "source": clean_archive_text(entry.get("source_name")) or clean_archive_text(entry.get("source_id")) or clean_archive_text(entry.get("source")) or "不明",
+            "lang": clean_archive_text(entry.get("language")) or clean_archive_text(entry.get("lang")),
+            "ai_analysis": entry.get("analysis") if isinstance(entry.get("analysis"), dict) else entry.get("ai_analysis"),
+        })
+    return items
+
+
+def brief_for_html_from_digest(digest):
+    brief = digest.get("brief")
+    if not isinstance(brief, dict):
+        return None
+
+    normalized = {
+        "overview": clean_archive_text(brief.get("overview")),
+        "important_highlights": [
+            text for text in (clean_archive_text(v) for v in (brief.get("important_highlights") or [])) if text
+        ],
+        "discussion_points": [
+            text for text in (clean_archive_text(v) for v in (brief.get("discussion_points") or [])) if text
+        ],
+        "check_items": [
+            text for text in (clean_archive_text(v) for v in (brief.get("check_items") or [])) if text
+        ],
+    }
+    if not normalized["overview"] and not normalized["important_highlights"] and not normalized["discussion_points"] and not normalized["check_items"]:
+        return None
+    return normalized
 
 
 def important_item_identity(item):
@@ -1718,9 +1851,21 @@ def build_todays_brief(items):
     return result
 
 
-def build_html(items, brief=None):
+def build_html(
+    items,
+    brief=None,
+    *,
+    page_title="🔐 Security Digest",
+    subtitle=None,
+    generated_at=None,
+    archive_nav_html=None,
+):
     now      = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
-    date_str = now.strftime("%Y年%m月%d日 %H:%M")
+    date_source = generated_at or now
+    if isinstance(date_source, datetime.datetime):
+        date_str = date_source.astimezone(JST).strftime("%Y年%m月%d日 %H:%M")
+    else:
+        date_str = clean_archive_text(date_source)
     dashboard_html = render_dashboard_html(items)
 
     important_cards = []
@@ -1902,10 +2047,14 @@ def build_html(items, brief=None):
     )
 
     if brief:
-        brief_sections = [f"""<div class="brief-section">
+        brief_sections = []
+        overview = clean_display_text(brief.get("overview"))
+        if overview:
+            brief_sections.append(f"""<div class="brief-section">
       <h3 class="brief-section-title">本日の概況</h3>
-      <p class="brief-overview">{esc(brief.get("overview") or "")}</p>
-    </div>"""]
+      <p class="brief-overview">{esc(overview)}</p>
+    </div>"""
+            )
 
         highlights_html = "".join(
             f"<li>{esc(text)}</li>" for text in (brief.get("important_highlights") or [])
@@ -1939,9 +2088,15 @@ def build_html(items, brief=None):
       <h2>Today's Brief</h2>
       {''.join(brief_sections)}
     </div>
-  </div>"""
+  </div>""" if brief_sections else ""
     else:
         brief_html = ""
+
+    if archive_nav_html is None:
+        archive_nav_html = '<nav class="archive-nav"><a class="archive-link" href="archive/index.html">過去のダイジェストを見る</a></nav>'
+    subtitle_html = (
+        f'\n    <div class="sub">{esc(subtitle)}</div>' if subtitle else ""
+    )
 
     return f"""<!DOCTYPE html>
 <html lang="ja">
@@ -1956,6 +2111,9 @@ def build_html(items, brief=None):
     header h1{{font-size:18px;font-weight:600;letter-spacing:.02em}}
     .sub{{font-size:12px;color:#8b949e;margin-top:4px}}
     .count{{font-size:12px;color:#58a6ff;margin-top:2px}}
+    .archive-nav{{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}}
+    .archive-link{{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
+    .archive-link:hover{{text-decoration:underline}}
     .cards{{padding:12px 12px 0;display:flex;flex-direction:column;gap:10px;max-width:680px;margin:0 auto}}
     .card{{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent}}
     .card:active{{background:#1c2128;border-color:#388bfd}}
@@ -2024,9 +2182,10 @@ def build_html(items, brief=None):
 </head>
 <body>
   <header>
-    <h1>🔐 Security Digest</h1>
+    <h1>{esc(page_title)}</h1>{subtitle_html}
     <div class="sub">最終更新: {esc(date_str)}</div>
     <div class="count">{esc(str(len(items)))} 件</div>
+    {archive_nav_html}
   </header>
   {brief_html}
   {dashboard_html}
@@ -2041,10 +2200,190 @@ def build_html(items, brief=None):
 </body>
 </html>"""
 
+
+def build_daily_archive_html(digest):
+    digest_date = digest["digest_date"]
+    items = digest_items_for_html(digest)
+    brief = brief_for_html_from_digest(digest)
+    subtitle = f"日次ダイジェスト：{format_digest_date_label(digest_date)}"
+    generated_at = parse_archive_datetime(digest.get("generated_at"))
+    nav = (
+        '<nav class="archive-nav">'
+        '<a class="archive-link" href="../index.html">最新のダイジェストへ戻る</a>'
+        '<a class="archive-link" href="index.html">過去のダイジェスト一覧へ戻る</a>'
+        '</nav>'
+    )
+    return build_html(
+        items,
+        brief,
+        page_title="Security Digest",
+        subtitle=subtitle,
+        generated_at=generated_at or digest.get("generated_at"),
+        archive_nav_html=nav,
+    )
+
+
+def archive_summary_from_digest(digest):
+    digest_date = digest["digest_date"]
+    brief = brief_for_html_from_digest(digest)
+    run = digest.get("run") or {}
+    counts = digest.get("counts") or {}
+    return {
+        "digest_date": digest_date,
+        "label": format_digest_date_label(digest_date),
+        "archive_path": f"docs/archive/{digest_date}.html",
+        "href": f"{digest_date}.html",
+        "generated_at": digest.get("generated_at"),
+        "total_items": int(run.get("total_items") or len(digest.get("items") or [])),
+        "high_count": int((counts.get("importance") or {}).get("高", 0) or 0),
+        "brief_status": "Today’s Briefあり" if brief else "Today’s Briefなし",
+    }
+
+
+def build_archive_index_html(summaries, generated_at=None):
+    seen = set()
+    unique = []
+    for summary in sorted(summaries, key=lambda s: s["digest_date"], reverse=True):
+        if summary["digest_date"] in seen:
+            continue
+        seen.add(summary["digest_date"])
+        unique.append(summary)
+
+    items_html = []
+    for summary in unique:
+        items_html.append(f"""<li class="archive-list-item">
+        <a class="archive-link archive-date-link" href="{esc(summary['href'])}">{esc(summary['label'])}</a>
+        <div class="archive-meta">記事{esc(str(summary['total_items']))}件</div>
+        <div class="archive-meta">重要度 高{esc(str(summary['high_count']))}件</div>
+        <div class="archive-meta">{esc(summary['brief_status'])}</div>
+      </li>""")
+
+    list_body = "\n      ".join(items_html) if items_html else '<li class="archive-list-item"><div class="archive-meta">公開済みのダイジェストはありません。</div></li>'
+    updated = format_archive_datetime(generated_at) if generated_at else ""
+    updated_html = f'\n    <div class="sub">最終更新: {esc(updated)}</div>' if updated else ""
+    return f"""<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>過去のダイジェスト - Security Digest</title>
+  <style>
+    *{{margin:0;padding:0;box-sizing:border-box}}
+    body{{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:40px}}
+    header{{background:#161b22;border-bottom:1px solid #21262d;padding:20px 16px 16px;position:sticky;top:0;z-index:10}}
+    header h1{{font-size:18px;font-weight:600}}
+    .sub,.archive-meta{{font-size:12px;color:#8b949e;line-height:1.5}}
+    .archive-nav{{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}}
+    .archive-link{{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
+    .archive-link:hover{{text-decoration:underline}}
+    .archive-list{{max-width:680px;margin:12px auto 0;padding:0 12px;list-style:none;display:grid;gap:10px}}
+    .archive-list-item{{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;display:grid;gap:4px}}
+    .archive-date-link{{font-size:14px}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>過去のダイジェスト</h1>{updated_html}
+    <nav class="archive-nav"><a class="archive-link" href="../index.html">最新のダイジェストへ戻る</a></nav>
+  </header>
+  <ul class="archive-list">
+      {list_body}
+  </ul>
+</body>
+</html>"""
+
+
+def daily_digest_paths(data_dir):
+    data_dir = Path(data_dir)
+    if not data_dir.exists():
+        return []
+    return sorted(
+        (p for p in data_dir.glob("*.json") if daily_json.DAILY_FILENAME_RE.fullmatch(p.name)),
+        reverse=True,
+    )
+
+
+def update_index_archive_paths(data_dir, summaries, generated_at=None):
+    data_dir = Path(data_dir)
+    index_path = data_dir / "index.json"
+    if index_path.exists():
+        try:
+            index = json.loads(index_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as e:
+            raise daily_json.DailyJsonError(f"index.json のJSON解析に失敗しました: {e}") from e
+    else:
+        updated_at = generated_at or datetime.datetime.now(JST)
+        index = {
+            "schema_version": daily_json.SCHEMA_VERSION,
+            "updated_at": updated_at.isoformat(),
+            "digests": [],
+        }
+
+    summary_by_date = {s["digest_date"]: s for s in summaries}
+    seen = set()
+    digests = []
+    for entry in index.get("digests") or []:
+        if not isinstance(entry, dict):
+            continue
+        digest_date = entry.get("digest_date")
+        if not digest_date or digest_date in seen:
+            continue
+        seen.add(digest_date)
+        updated = dict(entry)
+        if digest_date in summary_by_date:
+            updated["archive_path"] = summary_by_date[digest_date]["archive_path"]
+        elif updated.get("archive_path"):
+            archive_rel = str(updated["archive_path"]).removeprefix("docs/")
+            if not (DOCS_DIR / archive_rel).exists():
+                updated["archive_path"] = None
+        digests.append(updated)
+
+    for digest_date, summary in summary_by_date.items():
+        if digest_date in seen:
+            continue
+        digests.append({
+            "digest_date": digest_date,
+            "path": f"data/{digest_date}.json",
+            "generated_at": summary.get("generated_at"),
+            "total_items": summary["total_items"],
+            "high_count": summary["high_count"],
+            "ai_run_status": None,
+            "archive_path": summary["archive_path"],
+        })
+
+    digests.sort(key=lambda d: d["digest_date"], reverse=True)
+    updated_index = dict(index)
+    updated_index["digests"] = digests
+    daily_json.atomic_write_json(index_path, updated_index, validator=daily_json.validate_index)
+    return updated_index
+
+
+def generate_archive_outputs(data_dir=None, docs_dir=None, generated_at=None):
+    data_dir = Path(data_dir) if data_dir is not None else daily_json.DATA_DIR
+    docs_dir = Path(docs_dir) if docs_dir is not None else DOCS_DIR
+    archive_dir = docs_dir / "archive"
+    summaries = []
+
+    for path in daily_digest_paths(data_dir):
+        try:
+            digest = load_daily_digest(path)
+            archive_path = archive_dir / f"{digest['digest_date']}.html"
+            html = build_daily_archive_html(digest)
+            atomic_write_text(archive_path, html, validator=validate_html_document)
+        except daily_json.DailyJsonError as e:
+            print(f"[WARN] アーカイブ生成をスキップ: {e}", file=sys.stderr)
+            continue
+        summaries.append(archive_summary_from_digest(digest))
+
+    index_html = build_archive_index_html(summaries, generated_at=generated_at)
+    atomic_write_text(archive_dir / "index.html", index_html, validator=validate_html_document)
+    update_index_archive_paths(data_dir, summaries, generated_at=generated_at)
+    return summaries
+
 # ── メイン ───────────────────────────────────────────────────────────────────
 
 def main():
-    out_path = Path(__file__).parent / "docs" / "index.html"
+    out_path = DOCS_DIR / "index.html"
     out_path.parent.mkdir(exist_ok=True)
 
     print("フィードを収集中...")
@@ -2072,7 +2411,7 @@ def main():
     print(f"  翻訳キャッシュ: {len(cache)} 件")
 
     html = build_html(items, brief_for_html)
-    out_path.write_text(html, encoding="utf-8")
+    atomic_write_text(out_path, html, validator=validate_html_document)
     print(f"  生成完了: {out_path}")
 
     print("日次JSONを保存中...")
@@ -2090,6 +2429,13 @@ def main():
         f"  日次JSON生成完了: data/{digest['digest_date']}.json "
         f"(run.status={digest['run']['status']})"
     )
+    print("アーカイブHTMLを生成中...")
+    summaries = generate_archive_outputs(
+        data_dir=daily_json.DATA_DIR,
+        docs_dir=DOCS_DIR,
+        generated_at=generated_at,
+    )
+    print(f"  アーカイブ生成完了: {len(summaries)} 件")
 
 if __name__ == "__main__":
     main()
