@@ -368,6 +368,143 @@ class ArticleCardDisplayTest(unittest.TestCase):
         self.assertFalse(parser.nested_anchor)
 
 
+class AllItemsDisplayOrderTest(unittest.TestCase):
+    def _analysis(self, importance=None, urgency=None, status="success"):
+        return {
+            "status": status,
+            "category": "その他",
+            "importance": importance,
+            "urgency": urgency,
+            "summary": "表示用の要約",
+            "financial_impact": "表示用の金融影響",
+            "recommended_actions": ["確認する"],
+            "reason": "通常カードには表示しない理由",
+            "tags": [],
+        }
+
+    def _make_item(self, title, importance=None, urgency=None, **overrides):
+        item = {
+            "title": title,
+            "link": f"https://example.com/{title}",
+            "summary": f"{title}の概要",
+            "date": datetime.datetime(2026, 7, 11, 6, 0),
+            "source": "CISA",
+            "lang": "ja",
+            "ai_analysis": self._analysis(importance, urgency),
+        }
+        item.update(overrides)
+        return item
+
+    def _display_titles(self, items):
+        return [item["title"] for item in fetch.sort_items_for_display(items)]
+
+    def test_sort_items_for_display_orders_by_urgency_then_importance(self):
+        items = [
+            self._make_item("reference-high", "高", "参考"),
+            self._make_item("today-low", "低", "本日確認"),
+            self._make_item("week-high", "高", "今週確認"),
+            self._make_item("today-high", "高", "本日確認"),
+            self._make_item("today-medium", "中", "本日確認"),
+        ]
+
+        self.assertEqual(
+            self._display_titles(items),
+            ["today-high", "today-medium", "today-low", "week-high", "reference-high"],
+        )
+
+    def test_sort_items_for_display_keeps_same_condition_original_order(self):
+        items = [
+            self._make_item("first", "中", "今週確認"),
+            self._make_item("second", "中", "今週確認"),
+            self._make_item("third", "中", "今週確認"),
+        ]
+
+        self.assertEqual(self._display_titles(items), ["first", "second", "third"])
+
+    def test_sort_items_for_display_does_not_mutate_input(self):
+        items = [
+            self._make_item("reference", "低", "参考"),
+            self._make_item("today", "高", "本日確認"),
+        ]
+        original_titles = [item["title"] for item in items]
+        ordered = fetch.sort_items_for_display(items)
+
+        self.assertEqual([item["title"] for item in items], original_titles)
+        self.assertIsNot(ordered, items)
+        self.assertEqual([item["title"] for item in ordered], ["today", "reference"])
+
+    def test_unknown_urgency_and_importance_are_ranked_independently(self):
+        items = [
+            self._make_item("missing-analysis", "高", "本日確認", ai_analysis=None),
+            self._make_item("invalid-urgency-high", "高", "即時"),
+            self._make_item("invalid-urgency-low", "低", "None"),
+            self._make_item("reference-medium", "中", "参考"),
+            self._make_item("empty-importance", "", ""),
+            self._make_item("null-importance", "null", None),
+        ]
+
+        self.assertEqual(
+            self._display_titles(items),
+            [
+                "reference-medium",
+                "invalid-urgency-high",
+                "invalid-urgency-low",
+                "missing-analysis",
+                "empty-importance",
+                "null-importance",
+            ],
+        )
+
+    def test_failed_and_not_attempted_analysis_are_unknown_for_display_order(self):
+        items = [
+            self._make_item("failed", "高", "本日確認", ai_analysis=self._analysis("高", "本日確認", status="failed")),
+            self._make_item("normal", "低", "参考"),
+            self._make_item("not-attempted", "高", "本日確認", ai_analysis=self._analysis("高", "本日確認", status="not_attempted")),
+        ]
+
+        self.assertEqual(self._display_titles(items), ["normal", "failed", "not-attempted"])
+
+    def test_build_html_uses_display_order_and_sequential_numbers(self):
+        items = [
+            self._make_item("reference-high", "高", "参考"),
+            self._make_item("today-low", "低", "本日確認"),
+            self._make_item("week-high", "高", "今週確認"),
+        ]
+        html = fetch.build_html(items)
+        cards = cards_segment(html)
+
+        self.assertIn("全記事一覧", html)
+        self.assertIn("緊急度・重要度の順に表示しています。", html)
+        self.assertLess(cards.index("today-low"), cards.index("week-high"))
+        self.assertLess(cards.index("week-high"), cards.index("reference-high"))
+        self.assertIn('<span class="article-number">No. 1</span>', cards)
+        self.assertIn('<span class="article-number">No. 2</span>', cards)
+        self.assertIn('<span class="article-number">No. 3</span>', cards)
+        self.assertEqual(cards.count('class="card"'), 3)
+        self.assertEqual(cards.count('class="article-number"'), 3)
+
+    def test_all_items_order_does_not_change_important_items_or_dashboard(self):
+        important_today_low = self._make_item("important-today-low", "低", "本日確認")
+        important_high_week = self._make_item("important-high-week", "高", "今週確認")
+        ordinary_reference = self._make_item("ordinary-reference", "中", "参考")
+        items = [important_high_week, ordinary_reference, important_today_low]
+        html = fetch.build_html(items)
+
+        self.assertEqual(
+            [item["title"] for item in fetch.select_important_items(items)],
+            ["important-today-low", "important-high-week"],
+        )
+        self.assertLess(
+            important_segment(html).index("important-today-low"),
+            important_segment(html).index("important-high-week"),
+        )
+        self.assertIn("<strong>3件</strong>", dashboard_segment(html))
+        self.assertLess(
+            cards_segment(html).index("important-today-low"),
+            cards_segment(html).index("important-high-week"),
+        )
+
+
 class TodaysBriefHtmlTest(unittest.TestCase):
     def _make_item(self, title="記事"):
         return {
@@ -864,7 +1001,7 @@ class ImportantItemsTest(unittest.TestCase):
             ["high-today-a", "high-today-b", "mid-today", "high-week"],
         )
 
-    def test_full_article_order_is_not_changed(self):
+    def test_full_article_order_uses_ticket10_display_order(self):
         items = [
             self._make_item("first", importance="高", urgency="今週確認"),
             self._make_item("second", importance="中", urgency="本日確認"),
@@ -873,8 +1010,8 @@ class ImportantItemsTest(unittest.TestCase):
         html = fetch.build_html(items)
         cards = cards_segment(html)
 
-        self.assertLess(cards.index("first"), cards.index("second"))
-        self.assertLess(cards.index("second"), cards.index("third"))
+        self.assertLess(cards.index("second"), cards.index("first"))
+        self.assertLess(cards.index("first"), cards.index("third"))
 
     def test_important_items_section_displays_only_compact_fields(self):
         item = self._make_item("compact", importance="高", urgency="本日確認")

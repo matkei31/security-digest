@@ -207,6 +207,31 @@ class ArchiveGenerationTest(unittest.TestCase):
         self.assertFalse(parser.nested_anchor)
         self.assertEqual(parser.comments, [])
 
+    def test_daily_archive_all_items_uses_same_display_order_and_numbers_as_top(self):
+        digest = make_digest(total_items=3, high_count=0)
+        digest["items"][0]["title"] = "reference-high"
+        digest["items"][0]["analysis"]["importance"] = "高"
+        digest["items"][0]["analysis"]["urgency"] = "参考"
+        digest["items"][1]["title"] = "today-low"
+        digest["items"][1]["analysis"]["importance"] = "低"
+        digest["items"][1]["analysis"]["urgency"] = "本日確認"
+        digest["items"][2]["title"] = "week-high"
+        digest["items"][2]["analysis"]["importance"] = "高"
+        digest["items"][2]["analysis"]["urgency"] = "今週確認"
+
+        archive_html = fetch.build_daily_archive_html(digest)
+        top_html = fetch.build_html(fetch.digest_items_for_html(digest), fetch.brief_for_html_from_digest(digest))
+        archive_cards = archive_html[archive_html.index('<div class="cards">'):archive_html.index('<div class="sources">')]
+        top_cards = top_html[top_html.index('<div class="cards">'):top_html.index('<div class="sources">')]
+
+        self.assertIn("緊急度・重要度の順に表示しています。", archive_html)
+        self.assertLess(archive_cards.index("today-low"), archive_cards.index("week-high"))
+        self.assertLess(archive_cards.index("week-high"), archive_cards.index("reference-high"))
+        self.assertIn('<span class="article-number">No. 1</span>', archive_cards)
+        self.assertIn('<span class="article-number">No. 2</span>', archive_cards)
+        self.assertIn('<span class="article-number">No. 3</span>', archive_cards)
+        self.assertEqual(archive_cards, top_cards)
+
 
 class ArchiveIndexAndPathTest(unittest.TestCase):
     def test_generate_archive_outputs_writes_daily_list_and_archive_paths(self):
