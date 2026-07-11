@@ -1094,6 +1094,83 @@ class ImportantItemsTest(unittest.TestCase):
         self.assertIn("&lt;b&gt;reason&lt;/b&gt;", important)
         self.assertNotIn("<b>reason</b>", html)
 
+    def test_reason_display_rewrites_importance_label_with_ha(self):
+        item = self._make_item(
+            "label-high",
+            importance="高",
+            urgency="本日確認",
+            reason="被害が大きいため、重要度は高いと判断しました。",
+        )
+        html = fetch.build_html([item])
+        important = important_segment(html)
+
+        self.assertIn("確認優先度は高い", important)
+        self.assertNotIn("重要度は高い", important)
+        self.assertEqual(item["ai_analysis"]["reason"], "被害が大きいため、重要度は高いと判断しました。")
+
+    def test_reason_display_rewrites_importance_label_with_colon(self):
+        item = self._make_item(
+            "label-medium",
+            importance="高",
+            urgency="本日確認",
+            reason="重要度：中、追加調査が必要です。",
+        )
+        html = fetch.build_html([item])
+
+        self.assertIn("確認優先度：中", important_segment(html))
+        self.assertNotIn("重要度：中", important_segment(html))
+
+    def test_reason_display_rewrites_urgency_label_with_ha(self):
+        item = self._make_item(
+            "label-urgency",
+            importance="高",
+            urgency="本日確認",
+            reason="緊急度は本日確認、影響範囲を確認してください。",
+        )
+        html = fetch.build_html([item])
+
+        self.assertIn("確認目安は本日確認", important_segment(html))
+        self.assertNotIn("緊急度は本日確認", important_segment(html))
+
+    def test_reason_display_keeps_general_importance_phrases(self):
+        item = self._make_item(
+            "general-importance",
+            importance="高",
+            urgency="本日確認",
+            reason="脆弱性の重要度と重要度の高い脆弱性を確認する必要があります。",
+        )
+        html = fetch.build_html([item])
+        important = important_segment(html)
+
+        self.assertIn("脆弱性の重要度", important)
+        self.assertIn("重要度の高い脆弱性", important)
+        self.assertNotIn("確認優先度の高い脆弱性", important)
+
+    def test_reason_display_escaping_after_label_rewrite(self):
+        item = self._make_item(
+            "escaped-label",
+            importance="高",
+            urgency="本日確認",
+            reason="重要度は高い <script>alert(1)</script>",
+        )
+        html = fetch.build_html([item])
+        important = important_segment(html)
+
+        self.assertIn("確認優先度は高い &lt;script&gt;alert(1)&lt;/script&gt;", important)
+        self.assertNotIn("<script>alert(1)</script>", html)
+
+    def test_anchor_structure_and_scroll_margin_are_preserved(self):
+        item = self._make_item("anchor", importance="高", urgency="本日確認")
+        html = fetch.build_html([item])
+        important = important_segment(html)
+        cards = cards_segment(html)
+
+        self.assertIn('href="#article-1"', important)
+        self.assertIn('id="article-1"', cards)
+        self.assertIn("--anchor-offset:112px", html)
+        self.assertIn("--anchor-offset:168px", html)
+        self.assertIn("scroll-margin-top:var(--anchor-offset)", html)
+
     def test_important_items_section_precedes_all_cards(self):
         html = fetch.build_html([self._make_item("ordered", importance="高", urgency="本日確認")])
 

@@ -234,6 +234,27 @@ class ArchiveGenerationTest(unittest.TestCase):
         self.assertNotIn("No. 1", archive_cards)
         self.assertEqual(archive_cards, top_cards)
 
+    def test_priority_reason_label_rewrite_matches_top_and_archive(self):
+        digest = make_digest(total_items=1, high_count=1)
+        digest["items"][0]["analysis"]["reason"] = (
+            "重要度は高い一方、脆弱性の重要度と重要度の高い脆弱性は一般表現です。"
+        )
+
+        archive_html = fetch.build_daily_archive_html(digest)
+        top_html = fetch.build_html(fetch.digest_items_for_html(digest), fetch.brief_for_html_from_digest(digest))
+        archive_important = archive_html[
+            archive_html.index('<section class="important-items">'):archive_html.index('<section class="dashboard">')
+        ]
+        top_important = top_html[
+            top_html.index('<section class="important-items">'):top_html.index('<section class="dashboard">')
+        ]
+
+        self.assertIn("確認優先度は高い", archive_important)
+        self.assertNotIn("重要度は高い", archive_important)
+        self.assertIn("脆弱性の重要度", archive_important)
+        self.assertIn("重要度の高い脆弱性", archive_important)
+        self.assertEqual(archive_important, top_important)
+
 
 class ArchiveIndexAndPathTest(unittest.TestCase):
     def test_generate_archive_outputs_writes_daily_list_and_archive_paths(self):
