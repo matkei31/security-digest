@@ -322,6 +322,166 @@ class RecommendedActionsNormalizationTest(unittest.TestCase):
         self.assertEqual(fetch.normalize_recommended_actions(None), [])
 
 
+# ── recommended_actions: 「明示的な空配列」と「欠落/解析不能」の区別 (Ticket 11a-fix) ──
+
+class RecommendedActionsKeyStateTest(unittest.TestCase):
+    """normalize_ai_analysis()に対して直接、キーの有無・型・値のパターンを検証する。
+    「明示的な空配列」だけを正常とし、キー欠落・null・文字列・配列として解析
+    できない値は、抽出できても0件と同じ扱いにせず失敗として扱うことを確認する。
+    """
+
+    def _valid_core_fields(self):
+        return {
+            "importance": "高", "summary": "テスト要約です。",
+            "financial_impact": "影響があります。",
+        }
+
+    # 1. strict JSON: recommended_actions=[] はsuccess ──────────────────────
+    def test_strict_explicit_empty_array_is_accepted(self):
+        value = {**self._valid_core_fields(), "recommended_actions": []}
+        result = fetch.normalize_ai_analysis(value)
+        self.assertIsNotNone(result)
+        self.assertEqual(result["recommended_actions"], [])
+
+    def test_strict_explicit_empty_array_end_to_end_is_success(self):
+        mock = {**VALID_ANALYSIS_RESPONSE, "recommended_actions": []}
+        result = call_gemini_analyze(response_body=make_candidate_body(mock))
+        self.assertEqual(result["status"], "success")
+        self.assertEqual(result["analysis"]["recommended_actions"], [])
+
+    # 2. strict JSON: キー欠落は失敗 ─────────────────────────────────────────
+    def test_strict_missing_key_is_rejected(self):
+        value = self._valid_core_fields()  # recommended_actionsキーを含めない
+        self.assertNotIn("recommended_actions", value)
+        self.assertIsNone(fetch.normalize_ai_analysis(value))
+
+    # 3. strict JSON: nullは失敗 ────────────────────────────────────────────
+    def test_strict_null_value_is_rejected(self):
+        value = {**self._valid_core_fields(), "recommended_actions": None}
+        self.assertIsNone(fetch.normalize_ai_analysis(value))
+
+    # 4. strict JSON: 文字列は失敗 ───────────────────────────────────────────
+    def test_strict_string_value_is_rejected(self):
+        value = {**self._valid_core_fields(), "recommended_actions": "対応不要"}
+        self.assertIsNone(fetch.normalize_ai_analysis(value))
+
+    # extract_partial_array_state()自体の3状態判定 ───────────────────────────
+    def test_extract_state_found_for_explicit_empty_array(self):
+        state, values = fetch.extract_partial_array_state(
+            '{"recommended_actions": []}', "recommended_actions"
+        )
+        self.assertEqual(state, "found")
+        self.assertEqual(values, [])
+
+    def test_extract_state_found_for_populated_array(self):
+        state, values = fetch.extract_partial_array_state(
+            '{"recommended_actions": ["対応1", "対応2"]}', "recommended_actions"
+        )
+        self.assertEqual(state, "found")
+        self.assertEqual(values, ["対応1", "対応2"])
+
+    def test_extract_state_missing_when_key_absent(self):
+        state, values = fetch.extract_partial_array_state(
+            '{"importance": "高"}', "recommended_actions"
+        )
+        self.assertEqual(state, "missing")
+        self.assertEqual(values, [])
+
+    def test_extract_state_invalid_for_null_value(self):
+        state, values = fetch.extract_partial_array_state(
+            '{"recommended_actions": null}', "recommended_actions"
+        )
+        self.assertEqual(state, "invalid")
+
+    def test_extract_state_invalid_for_string_value(self):
+        state, values = fetch.extract_partial_array_state(
+            '{"recommended_actions": "対応不要"}', "recommended_actions"
+        )
+        self.assertEqual(state, "invalid")
+
+    def test_extract_state_invalid_for_unterminated_array(self):
+        state, values = fetch.extract_partial_array_state(
+            '{"recommended_actions": ["対応1"', "recommended_actions"
+        )
+        self.assertEqual(state, "invalid")
+
+    # 5. fallback応答: recommended_actions=[]が明示されていれば受理 ────────────
+    def test_fallback_explicit_empty_array_is_accepted(self):
+        truncated = (
+            '{"importance": "高", "summary": "テスト要約です。", '
+            '"financial_impact": "影響があります。", "recommended_actions": []'
+        )
+        fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
+        self.assertIsNotNone(fb)
+        self.assertEqual(fb["recommended_actions"], [])
+
+    # 6. fallback応答: キー欠落は失敗 (FallbackTest側で従来テストとして復元済み) ──
+
+    # 7. fallback応答: 配列構文不正は失敗 ──────────────────────────────────────
+    def test_fallback_unterminated_array_is_rejected(self):
+        truncated = (
+            '{"importance": "高", "summary": "テスト要約です。", '
+            '"financial_impact": "影響があります。", "recommended_actions": ["対応1"'
+        )
+        fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
+        self.assertIsNone(fb)
+
+    def test_fallback_string_instead_of_array_is_rejected(self):
+        truncated = (
+            '{"importance": "高", "summary": "テスト要約です。", '
+            '"financial_impact": "影響があります。", "recommended_actions": "対応不要"'
+        )
+        fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
+        self.assertIsNone(fb)
+
+    def test_fallback_null_is_rejected(self):
+        truncated = (
+            '{"importance": "高", "summary": "テスト要約です。", '
+            '"financial_impact": "影響があります。", "recommended_actions": null'
+        )
+        fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
+        self.assertIsNone(fb)
+
+    # 8. ["特になし"]は明示配列として受理し、正規化後[] ───────────────────────
+    def test_strict_placeholder_only_array_is_accepted_and_normalized_to_empty(self):
+        value = {**self._valid_core_fields(), "recommended_actions": ["特になし"]}
+        result = fetch.normalize_ai_analysis(value)
+        self.assertIsNotNone(result)
+        self.assertEqual(result["recommended_actions"], [])
+
+    def test_fallback_placeholder_only_array_is_accepted_and_normalized_to_empty(self):
+        truncated = (
+            '{"importance": "高", "summary": "テスト要約です。", '
+            '"financial_impact": "影響があります。", "recommended_actions": ["特になし"]'
+        )
+        fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
+        self.assertIsNotNone(fb)
+        self.assertEqual(fb["recommended_actions"], [])
+
+    # 9. 有効アクションは従来どおり保持 ─────────────────────────────────────
+    def test_fallback_valid_action_mixed_with_placeholder_keeps_only_valid(self):
+        truncated = (
+            '{"importance": "高", "summary": "テスト要約です。", '
+            '"financial_impact": "影響があります。", '
+            '"recommended_actions": ["特になし", "該当製品を利用している場合、パッチ適用状況を確認してください"]'
+        )
+        fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
+        self.assertIsNotNone(fb)
+        self.assertEqual(
+            fb["recommended_actions"],
+            ["該当製品を利用している場合、パッチ適用状況を確認してください"],
+        )
+
+    # 10. 固定アクションを生成しない ────────────────────────────────────────
+    def test_no_fixed_action_text_is_ever_injected_on_key_absence(self):
+        truncated = (
+            '{"importance": "高", "summary": "テスト要約です。", '
+            '"financial_impact": "影響があります。"'
+        )
+        fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
+        self.assertIsNone(fb)  # 固定項目で埋めてNoneを回避したりしない
+
+
 # ── fallback ──────────────────────────────────────────────────────────────
 
 class FallbackTest(unittest.TestCase):
@@ -365,17 +525,17 @@ class FallbackTest(unittest.TestCase):
         fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
         self.assertIsNone(fb)
 
-    def test_missing_recommended_actions_normalizes_to_empty_list(self):
-        # Ticket 11a: recommended_actionsが抽出できない場合でも、他の3項目
-        # (importance/summary/financial_impact)が揃っていれば、固定の一般的
-        # 確認事項を生成する代わりに空配列として正常に扱う(failedにしない)。
+    def test_missing_recommended_actions_does_not_generate_fixed_items(self):
+        # Ticket 11a-fix: recommended_actionsキー自体が応答から見つからない場合、
+        # 固定の一般的確認事項を生成しないのはもちろん、「明示的な空配列」として
+        # 黙って正常化もしない(=抽出失敗として全体がNone/failed扱いになる)。
+        # 「記事固有の確認事項がなく明示的に[]が返った」場合とは区別する。
         truncated = (
             '{"importance": "高", "summary": "テスト要約です。", '
             '"financial_impact": "影響があります。"'
         )
         fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
-        self.assertIsNotNone(fb)
-        self.assertEqual(fb["recommended_actions"], [])
+        self.assertIsNone(fb)
 
     def test_missing_any_core_field_results_in_failed_status(self):
         # 主要4項目のいずれかが欠ける場合、gemini_analyze()全体としてfailedになる

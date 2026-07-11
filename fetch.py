@@ -584,15 +584,20 @@ def normalize_ai_analysis(value):
     importance = str(value.get("importance", "")).strip()
     summary = str(value.get("summary", "")).strip()
     impact = str(value.get("financial_impact", "")).strip()
-    actions = value.get("recommended_actions", [])
 
     if importance not in ("高", "中", "低") or not summary or not impact:
         return None
+
+    # Ticket 11a/11a-fix: recommended_actionsは必須フィールドのままであり、
+    # キー欠落・null・文字列等は失敗として扱う。「明示的な空配列」だけを
+    # 正常値として許容する(記事から直接導ける固有の確認事項がなければ[]が
+    # 正しい結果のため。抽出失敗やフィールド欠落まで[]へ正常化はしない)。
+    if "recommended_actions" not in value:
+        return None
+    actions = value["recommended_actions"]
     if not isinstance(actions, list):
         return None
 
-    # Ticket 11a: 記事から直接導ける固有の確認事項がなければ0件を正常値として
-    # 許容する(以前は空配列をNone=failed扱いにしていたが、それは行わない)。
     actions = normalize_recommended_actions(actions)
 
     return {
@@ -1150,7 +1155,9 @@ def extract_partial_array(response_text, field):
     """フォールバック用: 壊れたJSON応答からfield(文字列配列)の要素を正規表現で
     抽出する。recommended_actionsの既存抽出とは異なり閉じ括弧までを対象とする
     (tags等、応答内で最後のフィールドとは限らないフィールド向け)。
-    見つからない、または配列として復元できない場合は空配列を返す。
+    見つからない、または配列として復元できない場合は空配列を返す(緩い救済用。
+    「キー欠落」と「有効な空配列」を区別する必要がある呼び出し元は
+    extract_partial_array_state()を使う)。
     """
     if not isinstance(response_text, str):
         return []
@@ -1170,15 +1177,55 @@ def extract_partial_array(response_text, field):
     ]
 
 
-def fallback_ai_analysis(response_text, source_text):
-    """importance/summary/financial_impactが応答から安全に取得できた場合のみ、
-    部分的な分析結果として返す(=fallback扱い)。いずれか1つでも取得できない
-    場合はNoneを返し、呼び出し側でfailed扱いにする(コード側で「重要度は中」
-    「一般的な確認事項」等の一般論を補完しない。記事に基づかない判断・定型文を
-    作らないため)。recommended_actionsは、抽出できても0件でも正常値として扱う
-    (Ticket 11a: 記事固有の確認事項がなければ空配列が正しい結果のため)。
+def extract_partial_array_state(response_text, field):
+    """フォールバック用: fieldの状態を"missing"/"invalid"/"found"の3値で判定する
+    (Ticket 11a-fix)。extract_partial_array()と異なり、「キー自体が見つからない」
+    ことと「キーはあるが配列として解析できない(null・文字列・壊れた配列構文等)」
+    ことを区別し、どちらも[]へ黙って正常化しない。
 
-    category/category_reason/urgency/reason/tagsは上記3項目とは独立に、
+    戻り値: (state, values)
+    - "missing": フィールドキー自体が見つからない → values=[]
+    - "invalid": キーはあるが値を配列として解析できない → values=[]
+    - "found":   キーがあり、有効な配列として解析できた(要素0件を含む) → values=抽出した要素
+    """
+    if not isinstance(response_text, str):
+        return "missing", []
+
+    key_match = re.search(rf'"{re.escape(field)}"\s*:\s*', response_text)
+    if not key_match:
+        return "missing", []
+
+    rest = response_text[key_match.end():].lstrip()
+    if not rest.startswith("["):
+        # null・文字列・数値等、配列以外の値、または応答がここで途切れている
+        return "invalid", []
+
+    array_match = re.match(r"\[(.*?)\]", rest, re.DOTALL)
+    if not array_match:
+        # 開き括弧はあるが閉じ括弧まで復元できない(応答が途中で途切れている等)
+        return "invalid", []
+
+    values = [
+        value.strip()
+        for value in re.findall(r'"((?:\\.|[^"])*)"', array_match.group(1))
+        if value.strip()
+    ]
+    return "found", values
+
+
+def fallback_ai_analysis(response_text, source_text):
+    """importance/summary/financial_impact/recommended_actionsが応答から
+    安全に取得できた場合のみ、部分的な分析結果として返す(=fallback扱い)。
+    いずれか1つでも取得できない場合はNoneを返し、呼び出し側でfailed扱いにする
+    (コード側で「重要度は中」「一般的な確認事項」等の一般論を補完しない。
+    記事に基づかない判断・定型文を作らないため)。
+
+    recommended_actionsは、応答中に明示的な配列として存在する場合のみ有効とし
+    (要素0件を含む)、キー自体が見つからない場合や配列として解析できない場合は
+    「取得できなかった」ものとしてfailed扱いにする(Ticket 11a-fix: 「記事固有の
+    確認事項がない」=明示的な空配列と、「抽出に失敗した」を区別する)。
+
+    category/category_reason/urgency/reason/tagsは上記4項目とは独立に、
     抽出できた分だけ緩く救済する(欠けていてもfallback自体は成立する)。
     """
     importance = extract_partial_field(response_text, "importance")
@@ -1211,21 +1258,24 @@ def fallback_ai_analysis(response_text, source_text):
     # recommended_actionsはTicket 4で"reason"/"tags"より前の項目になった
     # (v1では最後の項目だったため、閉じ括弧を要求しない抽出でも安全だった)。
     # 境界のないパターンのままだと後続フィールドの文字列まで誤って
-    # recommended_actionsに取り込んでしまうため、extract_partial_array()で
-    # 閉じ括弧までに限定して抽出する。
-    actions = extract_partial_array(response_text, "recommended_actions")
+    # recommended_actionsに取り込んでしまうため、閉じ括弧までに限定して抽出する。
+    # Ticket 11a-fix: 「キー欠落」「配列として解析不能」「有効な配列(0件を含む)」
+    # の3状態を区別し、found以外はnormalize_ai_analysis()へキー自体を渡さない
+    # (=そのままキー欠落として失敗させ、[]へ黙って正常化しない)。
+    actions_state, actions_values = extract_partial_array_state(response_text, "recommended_actions")
 
-    # importance/summary/financial_impactは応答から実際に取得できた場合のみ
-    # 有効とする(1つでも欠ける場合はnormalize_ai_analysis()がNoneを返し、
-    # fallback_ai_analysis()全体もNoneを返す=failed扱いになる)。
-    # recommended_actionsは抽出結果が0件でもnormalize_ai_analysis()内で
-    # 正常値として扱われる(Ticket 11a)。
-    core = normalize_ai_analysis({
+    # importance/summary/financial_impact/recommended_actionsは応答から実際に
+    # 取得できた場合のみ有効とする(1つでも欠ける場合はnormalize_ai_analysis()が
+    # Noneを返し、fallback_ai_analysis()全体もNoneを返す=failed扱いになる)。
+    core_input = {
         "importance": importance,
         "summary": summary,
         "financial_impact": impact[:140] if impact else "",
-        "recommended_actions": actions[:3],
-    })
+    }
+    if actions_state == "found":
+        core_input["recommended_actions"] = actions_values[:3]
+
+    core = normalize_ai_analysis(core_input)
     if core is None:
         return None
 
