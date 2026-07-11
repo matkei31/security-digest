@@ -675,6 +675,8 @@ IMPORTANCE_DISPLAY_ORDER = {
 }
 UNKNOWN_LABEL = "未判定"
 JAPANESE_TEXT_RE = re.compile(r"[\u3040-\u30ff\u3400-\u9fff]")
+IMPORTANCE_REASON_LABEL_RE = re.compile(r"重要度(\s*(?:は|[:：])\s*)(高い|高|中|低)")
+URGENCY_REASON_LABEL_RE = re.compile(r"緊急度(\s*(?:は|[:：])\s*)(本日確認|今週確認|参考)")
 
 
 def _display_order_analysis(item):
@@ -787,6 +789,16 @@ def render_title_stack(item, *, href=None, external=False, heading_level=2, disp
         f'<span class="article-title-stack">{main_html}{subtitle_html}</span>'
         f'</h{heading_level}>'
     )
+
+
+def normalize_reason_display_labels(reason):
+    """reason内の評価ラベル表現だけを、HTML表示名に合わせる。"""
+    text = clean_display_text(reason)
+    if not text:
+        return ""
+    text = IMPORTANCE_REASON_LABEL_RE.sub(r"確認優先度\1\2", text)
+    text = URGENCY_REASON_LABEL_RE.sub(r"確認目安\1\2", text)
+    return text
 
 
 def _count_display_value(counts, value, allowed_values):
@@ -2168,9 +2180,10 @@ def build_html(
             display_index=ref["index"],
         )
 
+        reason = normalize_reason_display_labels(analysis["reason"])
         reason_html = (
-            f'\n        <p class="important-item-reason">{esc(analysis["reason"])}</p>'
-            if analysis["reason"] else ""
+            f'\n        <p class="important-item-reason">{esc(reason)}</p>'
+            if reason else ""
         )
         priority_items.append(f"""<article class="priority-item">
         {title_html}{reason_html}
@@ -2369,6 +2382,8 @@ def build_html(
   <title>🔐 Security Digest</title>
   <style>
     *{{margin:0;padding:0;box-sizing:border-box}}
+    :root{{--anchor-offset:112px}}
+    @media (max-width:600px){{:root{{--anchor-offset:168px}}}}
     body{{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:40px}}
     header{{background:#161b22;border-bottom:1px solid #21262d;padding:20px 16px 16px;position:sticky;top:0;z-index:10}}
     header h1{{font-size:18px;font-weight:600;letter-spacing:.02em}}
@@ -2381,7 +2396,7 @@ def build_html(
     .article-list-header h2{{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}}
     .article-list-note{{font-size:12px;color:#8b949e;line-height:1.5}}
     .cards{{padding:12px 12px 0;display:flex;flex-direction:column;gap:10px;max-width:680px;margin:0 auto}}
-    .card{{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;scroll-margin-top:88px}}
+    .card{{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;scroll-margin-top:var(--anchor-offset)}}
     .card:active{{background:#1c2128;border-color:#388bfd}}
     .card-meta{{display:flex;align-items:center;gap:8px;margin-bottom:8px}}
     .tag{{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;color:#fff;white-space:nowrap}}
