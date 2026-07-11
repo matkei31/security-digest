@@ -47,6 +47,13 @@
     .exec-summary-box ul{list-style:none;display:grid;gap:6px}
     .exec-summary-box li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
     .exec-summary-box li::before{content:"・";position:absolute;left:0}
+    .important-items{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .important-items h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}
+    .important-items-note{font-size:12px;color:#8b949e;line-height:1.5;margin-bottom:8px}
+    .important-items-list{display:grid;gap:8px}
+    .important-item-card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 16px;display:grid;gap:8px}
+    .important-item-card h3{font-size:13px;font-weight:600;line-height:1.5;color:#e6edf3}
+    .important-item-reason,.important-items-empty{font-size:12px;color:#c9d1d9;line-height:1.6}
     .sources{max-width:680px;margin:20px auto 0;padding:0 12px}
     .sources details{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 16px}
     .sources summary{font-size:12px;color:#8b949e;cursor:pointer;list-style:none}
@@ -59,15 +66,27 @@
 <body>
   <header>
     <h1>🔐 Security Digest</h1>
-    <div class="sub">最終更新: 2026年07月11日 08:02</div>
-    <div class="count">15 件</div>
+    <div class="sub">最終更新: 2026年07月11日 11:12</div>
+    <div class="count">13 件</div>
   </header>
   <div class="exec-summary">
     <div class="exec-summary-box">
       <h2>本日のポイント（金融機関サイバー担当者向け）</h2>
-      <ul><li>Progress ShareFileのStorage Zone Controller利用者は、緊急のセキュリティ脅威に対応するため、Windowsサーバー上のコントローラーを直ちにシャットダウンしてください。</li><li>Balbooa FormsおよびiCagendaに危険な種類のファイルを無制限にアップロードできる脆弱性が発見され、認証されていない攻撃者によるリモートコード実行のリスクがあるため、早急な対応が必要です。</li></ul>
+      <ul><li>Progress SoftwareがShareFileのStorage Zone Controller利用顧客に対し、セキュリティ脅威への対応としてWindowsサーバー上のコントローラーをシャットダウンするよう緊急指示しました。</li><li>外部からの信頼できる脅威に対応中であり、指示に従わない場合、情報漏えいやシステム停止のリスクが高まるため、早急な対応が必要です。</li></ul>
     </div>
   </div>
+  <section class="important-items">
+    <h2>本日の重要情報</h2>
+    <p class="important-items-note">本日中の確認、または優先的な共有を検討したい情報です。</p>
+    <div class="important-items-list">
+      <article class="important-item-card">
+        <div class="analysis-badges"><span class="importance-badge importance-high">重要度 高</span><span class="urgency-badge urgency-today">本日確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
+        <h3><a class="article-title-link" href="https://thehackernews.com/2026/07/urgent-progress-tells-sharefile.html" target="_blank" rel="noopener noreferrer">緊急 - セキュリティ上の脅威を理由に、ShareFile のお客様に Storage Zone Controller をシャットダウンするよう進捗状況が伝えられています</a></h3>
+        <p class="important-item-reason">Progress Softwareが顧客に対し、セキュリティ脅威への対応としてStorage Zone Controllerのシャットダウンを緊急に指示しているため、金融機関は直ちに自社の利用状況を確認し、対応する必要があるため「高」および「本日確認」と判断しました。</p>
+        <a class="article-source-link" href="https://thehackernews.com/2026/07/urgent-progress-tells-sharefile.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      </article>
+    </div>
+  </section>
   <div class="cards">
     <div class="card">
       <div class="card-meta">
@@ -77,18 +96,18 @@
       <h2><a class="article-title-link" href="https://thehackernews.com/2026/07/urgent-progress-tells-sharefile.html" target="_blank" rel="noopener noreferrer">緊急 - セキュリティ上の脅威を理由に、ShareFile のお客様に Storage Zone Controller をシャットダウンするよう進捗状況が伝えられています</a></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-high">重要度 高</span><span class="urgency-badge urgency-today">本日確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
-        <div class="article-tags"><span class="article-tag">悪用確認済み</span><span class="article-tag">業務停止</span><span class="article-tag">情報漏えい</span></div>
+        <div class="article-tags"><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span><span class="article-tag">サプライチェーン</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Progress Softwareは、ShareFileのStorage Zone Controllerを使用している顧客に対し、セキュリティ脅威に対応するため、Windowsサーバー上のStorage Zone Controllerをシャットダウンするよう緊急に指示しました。同社は、影響を受けるアカウントへのアクセスを一時的に無効化しています。</p>
+          <p>Progress Softwareは、ShareFileのStorage Zone Controllerを使用している顧客に対し、セキュリティ脅威に対応するため、Windowsサーバー上のStorage Zone Controllerをシャットダウンするよう指示しました。同社は「外部からの信頼できるセキュリティ脅威」に対応中であり、影響を受けるアカウントへのアクセスを一時的に無効化しています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>ShareFileのStorage Zone Controllerを利用している金融機関は、業務停止やデータ漏えいのリスクに直面する可能性があります。サービス停止により、顧客へのサービス提供に影響が出ることも考えられます。</p>
+          <p>ShareFileのStorage Zone Controllerを利用している金融機関は、業務継続性やデータセキュリティに直接的な影響を受ける可能性があります。指示に従わない場合、情報漏えいやシステム停止のリスクが高まります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>ShareFileのStorage Zone Controllerを利用している場合、Progress Softwareの指示に従い、速やかにシャットダウンを検討する。</li><li>関連するシステムやログを監視し、不審な活動がないか確認する。</li><li>Progress Softwareからの追加情報やパッチ提供に注意し、迅速な対応計画を準備する。</li></ul>
+          <ul class="action-list"><li>ShareFileのStorage Zone Controllerの利用状況を確認し、Progress Softwareからの指示に従い、該当するサーバーをシャットダウンする。</li><li>Progress Softwareからの公式発表やセキュリティアドバイザリを継続的に監視し、追加の指示やパッチ情報に迅速に対応する。</li><li>シャットダウンによる業務影響を評価し、代替手段や緊急時対応計画を検討・実施する。</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://thehackernews.com/2026/07/urgent-progress-tells-sharefile.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -102,18 +121,18 @@
       <h2><a class="article-title-link" href="https://thehackernews.com/2026/07/injective-labs-github-compromise-pushes.html" target="_blank" rel="noopener noreferrer">Injective Labs GitHub の侵害により、ウォレット キーを盗む npm パッケージがプッシュされる</a></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">今週確認</span><span class="category-badge">カテゴリ：インシデント</span></div>
-        <div class="article-tags"><span class="article-tag">インシデント</span><span class="article-tag">サプライチェーン</span><span class="article-tag">情報漏えい</span></div>
+        <div class="article-tags"><span class="article-tag">サプライチェーン</span><span class="article-tag">インシデント</span><span class="article-tag">情報漏えい</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Injective LabsのSDKプロジェクトのGitHubリポジトリが侵害され、攻撃者は暗号通貨ウォレットの秘密鍵やニーモニックフレーズを盗む悪意のあるnpmパッケージを公開しました。</p>
+          <p>Injective LabsのGitHubリポジトリが侵害され、攻撃者は悪意のあるnpmパッケージを公開しました。このパッケージは、仮想通貨ウォレットの秘密鍵やニーモニックフレーズを窃取する機能を持っていました。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関が暗号資産関連サービスを提供している場合、または開発環境で当該SDKを使用している場合、顧客資産の損失やシステム侵害のリスクに直結する可能性があります。直接的な影響がない場合でも、サプライチェーン攻撃の一例として注意が必要です。</p>
+          <p>金融機関が仮想通貨関連サービスを提供している場合や、開発環境でnpmパッケージを利用している場合、サプライチェーンリスクとして影響を受ける可能性があります。直接的な影響は限定的かもしれませんが、類似の攻撃手法が他の開発ツールやライブラリに拡大する可能性を考慮する必要があります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>Injective Labs SDKを使用している場合、悪意のあるnpmパッケージ（@injectivelabs/sdk-ts@1.20.21）が導入されていないか確認する。</li><li>開発環境におけるサードパーティ製ライブラリの導入プロセスとサプライチェーンセキュリティ管理体制を再評価する。</li><li>暗号資産関連サービスを提供している場合、顧客への注意喚起や資産保護策について検討する。</li></ul>
+          <ul class="action-list"><li>開発環境で使用しているnpmパッケージに不審なバージョンがないか確認する。</li><li>サプライチェーンリスク管理の一環として、利用しているオープンソースライブラリや開発ツールのセキュリティ監視を強化する。</li><li>仮想通貨関連サービスを提供している場合、顧客資産の保護策とインシデント対応計画を見直す。</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://thehackernews.com/2026/07/injective-labs-github-compromise-pushes.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -130,15 +149,15 @@
         <div class="article-tags"><span class="article-tag">パッチ</span><span class="article-tag">サプライチェーン</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>ファームウェアセキュリティ企業Binarlyの研究者が、U-Bootに6つの新たな脆弱性を発見しました。これらの脆弱性は、ホームルーター、スマートカメラ、データセンターサーバーの管理チップなど、様々なハードウェアの起動プログラムに影響を与えます。</p>
+          <p>ファームウェアセキュリティ企業Binarlyの研究者が、U-Bootに6つの新たな脆弱性を発見しました。これらの脆弱性は、ホームルーターやスマートカメラ、データセンターサーバーの管理チップなど、様々なハードウェアの起動時に悪意のあるイメージを介してデバイスをクラッシュさせたり、コードを実行させたりする可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>U-Bootは幅広いデバイスで使用されているため、金融機関が利用するネットワーク機器、IoTデバイス、またはデータセンターインフラの管理チップに影響を与える可能性があります。これにより、デバイスのクラッシュや不正なコード実行によるシステム停止、情報漏えい、またはサービス妨害のリスクが生じ得ます。</p>
+          <p>U-Bootは幅広い組み込みデバイスで利用されており、金融機関が利用するネットワーク機器、IoTデバイス、データセンターのサーバー管理チップなどに影響を与える可能性があります。これらの脆弱性が悪用された場合、システム停止や不正アクセスにつながる恐れがあります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自組織でU-Bootを使用しているデバイス（ルーター、IoT機器、サーバー管理チップ等）の有無を確認する。</li><li>該当するデバイスがある場合、ベンダーからのセキュリティアップデートやパッチ情報を確認し、適用計画を検討する。</li><li>U-Bootの脆弱性に関する詳細情報や緩和策について、セキュリティベンダーや関連機関の情報を継続的に監視する。</li></ul>
+          <ul class="action-list"><li>自組織で利用している機器にU-Bootが使用されているかを確認する。</li><li>U-Bootを使用している機器のベンダーから、本脆弱性に関する情報提供やパッチの有無を確認する。</li><li>該当する機器がある場合、ベンダーの指示に従い、必要な対策を検討・実施する。</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://thehackernews.com/2026/07/six-new-u-boot-flaws-could-let.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -155,7 +174,7 @@
         
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>本記事は、サイバーセキュリティ分野の専門家であるジェン・エリス氏の功績と、セキュリティ研究者の擁護活動に焦点を当てた人物紹介です。</p>
+          <p>本記事は、サイバーセキュリティ分野の専門家であるJen Ellis氏の功績と、セキュリティ研究者の擁護活動に焦点を当てた人物紹介です。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
@@ -177,18 +196,18 @@
       <h2><a class="article-title-link" href="https://www.darkreading.com/threat-intelligence/cybercriminals-healthcare-businesses-attacks-surge" target="_blank" rel="noopener noreferrer">攻撃が急増する中、サイバー犯罪者がヘルスケア企業に殺到</a></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tag">サプライチェーン</span><span class="article-tag">委託先管理</span><span class="article-tag">インシデント</span></div>
+        <div class="article-tags"><span class="article-tag">サプライチェーン</span><span class="article-tag">委託先管理</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>2026年上半期、病院や診療所へのサイバー攻撃は緩やかな増加にとどまった一方、サービスプロバイダーやその他の医療関連企業への攻撃が倍増した。</p>
+          <p>2026年上半期、病院や診療所へのサイバー攻撃は緩やかな増加にとどまった一方、サービスプロバイダーやその他の医療関連企業への攻撃は2倍以上に急増しました。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>医療機関へのサイバー攻撃の増加は、金融機関が医療業界の顧客やパートナーを持つ場合、サプライチェーンリスクとして間接的に影響する可能性がある。また、医療業界における攻撃対象の変化は、他業界におけるサプライチェーン攻撃の傾向を理解する上で参考となる。</p>
+          <p>金融機関が医療業界のサービスプロバイダーを委託先として利用している場合、サプライチェーンリスクとして間接的な影響を受ける可能性があります。また、他業界における攻撃対象の変化の兆候として、自社のサプライチェーンリスク評価の参考になり得ます。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社のサプライチェーンにおいて、医療関連サービスプロバイダーとの取引がある場合、それらの委託先のセキュリティ対策状況を確認する。</li><li>業界を問わず、サービスプロバイダーや委託先に対するサイバー攻撃の動向を継続的に監視し、自社の委託先管理態勢に反映させる。</li><li>医療業界における攻撃対象の変化が、金融業界のサプライチェーンリスクに与える潜在的な影響について、情報収集と分析を行う。</li></ul>
+          <ul class="action-list"><li>委託先管理プロセスにおいて、医療関連サービスプロバイダーを含むサプライチェーンリスク評価を見直す。</li><li>自社の業界における攻撃動向の変化がないか、継続的に情報収集を行う。</li><li>インシデント発生時の事業継続計画や復旧計画に、サプライチェーン起因のリスクを考慮したシナリオを追加する。</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://www.darkreading.com/threat-intelligence/cybercriminals-healthcare-businesses-attacks-surge" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -202,18 +221,18 @@
       <h2><a class="article-title-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/10/securing-our-future-july-2026-progress-report-on-microsofts-secure-future-initiative/" target="_blank" rel="noopener noreferrer">私たちの未来を守る: Microsoft の Secure Future Initiative に関する 2026 年 7 月の進捗レポート</a></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">今週確認</span><span class="category-badge">カテゴリ：その他</span></div>
-        <div class="article-tags"><span class="article-tag">クラウド</span><span class="article-tag">AI</span></div>
+        <div class="article-tags"><span class="article-tag">サプライチェーン</span><span class="article-tag">委託先管理</span><span class="article-tag">AI</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Microsoftは、Secure Future Initiativeの2026年7月進捗レポートを公開し、セキュアな基盤、AIを活用した防御、将来を見据えたサイバーセキュリティに関する取り組みの進捗を報告しました。</p>
+          <p>Microsoftは、Secure Future Initiativeの2026年7月進捗レポートを公開し、セキュアな基盤、AIを活用した防御、将来を見据えたサイバーセキュリティに関する取り組みの進捗状況を説明しました。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>多くの金融機関がMicrosoft製品を利用しているため、Microsoftのセキュリティ強化への取り組みは、金融機関のIT環境の安全性に間接的に影響します。将来的な製品のセキュリティ向上や新機能の導入に繋がる可能性があります。</p>
+          <p>多くの金融機関がMicrosoft製品を利用しているため、同社のセキュリティ強化への取り組みは、金融機関のシステムセキュリティやサプライチェーンリスク管理に間接的に影響を与える可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>Microsoftのセキュリティ戦略の方向性を把握し、自社のセキュリティロードマップ策定の参考にすること。</li><li>Microsoft製品の利用状況を鑑み、AIを活用した防御策や将来的なセキュリティ機能の導入計画について情報収集を行うこと。</li><li>Microsoftのセキュリティ強化が自社のセキュリティ態勢に与える潜在的な影響について評価すること。</li></ul>
+          <ul class="action-list"><li>Microsoft製品の利用状況を再確認し、同社のセキュリティ強化策が自社のセキュリティ態勢にどのように貢献するかを評価する。</li><li>Microsoftのセキュリティロードマップや将来の製品・サービスのセキュリティ機能に関する情報を継続的に収集し、自社のセキュリティ戦略に反映させる。</li><li>委託先管理の一環として、Microsoftのセキュリティ対策の進捗状況を把握し、自社のサプライチェーンリスク評価に活用する。</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/10/securing-our-future-july-2026-progress-report-on-microsofts-secure-future-initiative/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -227,71 +246,21 @@
       <h2><a class="article-title-link" href="https://www.darkreading.com/vulnerabilities-threats/atm-crypto-software-bugs-jackpot-bust" target="_blank" rel="noopener noreferrer">新たな ATM 暗号化ソフトウェアのバグ: 大当たりか破綻か?</a></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
-        <div class="article-tags"><span class="article-tag">パッチ</span><span class="article-tag">情報漏えい</span></div>
+        <div class="article-tags"><span class="article-tag">パッチ</span><span class="article-tag">情報漏えい</span><span class="article-tag">業務停止</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Microsoft BitLockerのセキュリティラッパーに複数の脆弱性が発見され、組織やATMが侵害されるリスクがあることが報告されました。</p>
+          <p>Microsoft BitLockerのセキュリティラッパーに脆弱性が発見され、組織やATMが侵害されるリスクがあることが報告されました。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>BitLockerを利用している金融機関のATMやシステムにおいて、これらの脆弱性が悪用された場合、情報漏えいやシステム停止、不正な現金引き出しなどの被害につながる可能性があります。</p>
+          <p>BitLockerを利用している金融機関のATMやシステムにおいて、情報漏えいや不正アクセス、業務停止などのリスクが生じる可能性があります。特にATMへの影響は、顧客資産の直接的な損失につながる恐れがあります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自組織でBitLockerを利用しているシステムやATMの有無を確認する。</li><li>ベンダーからのパッチや緩和策が提供された場合、速やかに適用を検討する。</li><li>BitLockerの構成設定が推奨されるセキュリティ基準に準拠しているか確認する。</li></ul>
+          <ul class="action-list"><li>自組織のシステムおよびATMにおけるBitLockerの利用状況を確認する。</li><li>BitLockerのセキュリティラッパーに関するベンダーからのパッチや緩和策の情報を収集し、適用を検討する。</li><li>関連するシステムやATMの監視体制を強化し、不審な挙動がないか確認する。</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://www.darkreading.com/vulnerabilities-threats/atm-crypto-software-bugs-jackpot-bust" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </div>
-
-    <div class="card">
-      <div class="card-meta">
-        <span class="tag" style="background:#e74c3c">CISA KEV</span>
-        <span class="date">07/10 00:00</span>
-      </div>
-      <h2><a class="article-title-link" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">CVE-2026-56291 — Balbooa フォーム、危険なタイプの脆弱性を持つファイルの無制限アップロード</a></h2>
-      <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-high">重要度 高</span><span class="urgency-badge urgency-today">本日確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
-        <div class="article-tags"><span class="article-tag">CVE</span><span class="article-tag">KEV</span><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span></div>
-        <section class="article-section">
-          <h3>何が起きた</h3>
-          <p>Balbooa Formsに危険な種類のファイルを無制限にアップロードできる脆弱性(CVE-2026-56291)が発見されました。これにより、認証されていない攻撃者が実行ファイルをアップロードし、リモートコード実行(RCE)が可能になる可能性があります。</p>
-        </section>
-        <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
-          <p>Balbooa Formsを利用している金融機関は、この脆弱性を悪用されることでシステムが侵害され、情報漏えいや業務停止につながる可能性があります。CISA KEVに登録されているため、早急な対応が求められます。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自組織内でBalbooa Formsの利用状況を確認する。</li><li>該当製品を利用している場合、ベンダーからのパッチや緩和策の情報を確認し、速やかに適用を検討する。</li><li>当該製品が外部公開されている場合、緊急度を上げて対応を検討する。</li></ul>
-        </section>
-      </div>
-      <a class="article-source-link" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </div>
-
-    <div class="card">
-      <div class="card-meta">
-        <span class="tag" style="background:#e74c3c">CISA KEV</span>
-        <span class="date">07/10 00:00</span>
-      </div>
-      <h2><a class="article-title-link" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">CVE-2026-48939 — iCagenda による危険なタイプの脆弱性のあるファイルの無制限アップロード</a></h2>
-      <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-high">重要度 高</span><span class="urgency-badge urgency-today">本日確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
-        <div class="article-tags"><span class="article-tag">CVE</span><span class="article-tag">KEV</span><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span></div>
-        <section class="article-section">
-          <h3>何が起きた</h3>
-          <p>iCagendaのファイル添付機能に危険な種類のファイルを無制限にアップロードできる脆弱性(CVE-2026-48939)が存在し、PHPコードのアップロードと実行が可能になることが判明しました。</p>
-        </section>
-        <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
-          <p>iCagendaを利用している金融機関は、攻撃者によって任意のコードが実行され、システム侵害や情報漏えい、業務停止などの重大な影響を受ける可能性があります。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>iCagendaの利用状況を確認し、該当製品を使用している場合は速やかに脆弱性への対応状況を調査する。</li><li>CISA KEVに登録されているため、ベンダーからのパッチ適用や緩和策の実施を検討する。</li><li>システムへの影響範囲を特定し、必要に応じて監視体制を強化する。</li></ul>
-        </section>
-      </div>
-      <a class="article-source-link" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </div>
 
     <div class="card">
@@ -309,11 +278,11 @@
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関がAI技術を導入・活用する際、適切なガバナンス体制と具体的な安全策を講じなければ、潜在的なリスク（データ漏洩、誤情報生成、システム障害など）に晒される可能性があります。これにより、顧客信頼の失墜や規制違反につながる恐れがあります。</p>
+          <p>金融機関がAI技術を導入・活用する際、適切なガバナンス体制と具体的な安全策を講じなければ、潜在的なリスク（誤情報、プライバシー侵害、セキュリティ脆弱性など）に晒される可能性があります。これにより、規制遵守違反や風評被害、システム障害につながるリスクがあります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>AI利用における既存のガバナンスフレームワークやポリシーに、具体的な安全策（ガードレール）が組み込まれているかを確認する。</li><li>AIシステムの導入・運用前に、リスク評価と緩和策の検討を徹底し、技術的・運用的なガードレールを定義する。</li><li>AI関連の規制動向や業界ベストプラクティスを継続的に監視し、自社のAIガバナンス体制を適宜見直す。</li></ul>
+          <ul class="action-list"><li>AI利用における既存のガバナンスフレームワークやポリシーに、具体的なガードレールが組み込まれているかを確認する。</li><li>AIシステムの導入・運用に際し、リスク評価と緩和策としてのガードレール設計が適切に行われているかを評価する。</li><li>AI関連の規制動向やベストプラクティスを継続的に監視し、自社のAIガバナンス体制に反映させることを検討する。</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -330,15 +299,15 @@
         
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>CrowdStrikeは、ゼロトラストブラウザセキュリティ製品「Falcon Secure Access」を発表しました。この製品は、ブラウザベースの脅威からの保護、データ損失防止、およびセキュアなリモートアクセスを提供します。</p>
+          <p>CrowdStrikeは、ゼロトラストブラウザセキュリティ製品「Falcon Secure Access」を発表しました。この製品は、ブラウザベースの脅威からの保護、データ損失防止、およびセキュアなアクセスを提供します。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>本記事は特定の脅威やインシデントに関するものではなく、CrowdStrikeの製品紹介であるため、金融機関への直接的な影響は確認できません。ゼロトラストブラウザセキュリティに関心のある金融機関にとっては参考情報となり得ます。</p>
+          <p>本記事は特定の脅威や規制に関するものではなく、CrowdStrikeの製品紹介であるため、金融機関への直接的な影響は確認できません。ゼロトラストブラウザセキュリティは一般的なセキュリティ対策の一つとして検討され得るものです。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>ゼロトラストセキュリティモデルの導入を検討している場合、ブラウザセキュリティの選択肢として本製品の機能を確認する。</li><li>既存のブラウザセキュリティ対策やデータ損失防止策との比較検討を行う。</li></ul>
+          <ul class="action-list"><li>ゼロトラストセキュリティモデルの導入状況を確認する。</li><li>ブラウザベースの脅威に対する既存の防御策を評価する。</li><li>データ損失防止（DLP）対策の有効性を確認する。</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -355,15 +324,15 @@
         <div class="article-tags"><span class="article-tag">AI</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>CrowdStrikeは、AIモデルに対する新たなプロンプトインジェクション技術を発見しました。これらの技術は、AIモデルの意図しない動作を引き起こす可能性があります。</p>
+          <p>CrowdStrikeは、AIモデルに対する新たなプロンプトインジェクション技術を発見しました。これらの技術は、AIのセキュリティ対策を回避し、悪意のある目的でAIモデルを操作する可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関がAIモデルを業務に利用している場合、これらの新しいプロンプトインジェクション技術によって、情報漏えいや不正な操作、サービス停止などのリスクが生じる可能性があります。</p>
+          <p>金融機関がAIモデルを業務に導入している場合、これらの新しいプロンプトインジェクション技術により、AIモデルが意図しない動作をしたり、機密情報が漏洩したりするリスクが生じる可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>AIモデルを利用している場合、プロンプトインジェクション対策の現状を確認する。</li><li>AIモデルの利用におけるセキュリティガイドラインやリスク評価を見直す。</li><li>AIモデルのセキュリティに関する最新の脅威動向を継続的に情報収集する。</li></ul>
+          <ul class="action-list"><li>AIモデルを利用している場合、プロンプトインジェクション対策の現状を確認する。</li><li>AIモデルの導入を検討している場合、セキュリティ要件にプロンプトインジェクション対策を盛り込む。</li><li>AIモデルの利用におけるリスク評価と緩和策について、継続的に情報収集と検討を行う。</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -380,15 +349,15 @@
         <div class="article-tags"><span class="article-tag">AI</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Googleの脅威分析グループ(TAG)は、AIモデルに対するプロンプトインジェクション攻撃の現状について分析し、ウェブ上での悪用事例や攻撃手法の進化について報告しています。</p>
+          <p>Googleの脅威分析グループ(TAG)は、AIモデルに対するプロンプトインジェクション攻撃の現状について分析し、ウェブ上での悪用事例や攻撃手法、防御策について報告しました。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関が顧客向けサービスや業務効率化のためにAIモデルを導入・利用している場合、プロンプトインジェクション攻撃により、情報漏えい、不正操作、サービス停止などのリスクに直面する可能性があります。特に、機密情報を扱うAIシステムでは、その影響は甚大になり得ます。</p>
+          <p>金融機関が顧客向けサービスや業務効率化のためにAIモデルを導入・利用している場合、プロンプトインジェクション攻撃による情報漏えい、不正操作、サービス停止などのリスクに直面する可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>AIモデルを利用しているシステムにおいて、プロンプトインジェクションに対する防御策が適切に実装されているか確認する。</li><li>AIモデルの利用ガイドラインやセキュリティポリシーに、プロンプトインジェクションのリスクと対策に関する項目を追加・更新する。</li><li>AIモデルの導入を検討している場合、設計段階からプロンプトインジェクション耐性を考慮したセキュリティ要件を定義する。</li></ul>
+          <ul class="action-list"><li>AIモデルを利用しているシステムにおいて、プロンプトインジェクション攻撃に対する防御策が適切に実装されているか確認する。</li><li>AIモデルの利用ガイドラインやセキュリティ要件に、プロンプトインジェクション攻撃への対策を組み込むことを検討する。</li><li>AIモデルの利用状況を把握し、潜在的なリスクを評価するとともに、継続的な脅威情報の収集と監視を行う。</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -405,15 +374,15 @@
         
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Googleは、PixelデバイスのベースバンドファームウェアにRust言語を導入する取り組みを進めており、メモリ安全性の向上と脆弱性の削減を目指しています。</p>
+          <p>Googleは、PixelスマートフォンのベースバンドプロセッサにRust言語を導入したことを発表しました。これにより、メモリ安全性の脆弱性を削減し、セキュリティを向上させることを目指しています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>本記事はGoogle Pixelの特定の技術的改善に関するものであり、金融機関の業務やシステムに直接的な影響を与えるものではありません。Rust言語の採用はセキュリティ向上に寄与する可能性はありますが、金融機関が直ちに対応すべき事項は記事からは確認できません。</p>
+          <p>この記事はGoogle Pixelの内部技術に関するものであり、金融機関のシステムやサービスに直接的な影響を与えるものではありません。金融機関がモバイルデバイスを従業員に支給している場合でも、この技術的な変更が直ちにセキュリティ運用に影響を及ぼす可能性は低いと考えられます。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>特になし。</li></ul>
+          <ul class="action-list"><li>モバイルデバイスのセキュリティに関する一般的な動向として、情報収集の参考とする。</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="http://security.googleblog.com/feeds/1469360228826887140/comments/default" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -430,15 +399,15 @@
         <div class="article-tags"><span class="article-tag">認証</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Google TAGは、デバイスバウンドセッションクレデンシャル（DBSC）によるクッキー保護の重要性を強調しており、これによりセッションハイジャック攻撃からの保護が強化されると述べています。</p>
+          <p>Google TAGは、Device Bound Session Credentials (DBSC) を用いたCookie保護の技術について解説しており、これによりセッションハイジャック攻撃への耐性が向上すると説明しています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関では、顧客認証や内部システムへのアクセスにセッションクッキーが広く利用されており、セッションハイジャックは不正アクセスや情報漏えいのリスクを高めます。DBSCのような新しい認証技術は、これらのリスクを軽減する可能性を秘めています。</p>
+          <p>金融機関では、顧客認証や従業員のシステムアクセスにおいてセッションハイジャック攻撃のリスクに常に晒されています。DBSCのような新しい認証技術は、これらの攻撃に対する防御策として将来的に導入が検討される可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>DBSCのような新しい認証技術の動向を継続的に監視し、将来的な導入可能性を評価する。</li><li>現在の認証メカニズムにおけるセッションハイジャック対策の有効性を定期的にレビューする。</li><li>多要素認証（MFA）の導入状況や利用範囲を再確認し、セッションハイジャック以外の認証リスクにも対応する。</li></ul>
+          <ul class="action-list"><li>DBSCのような新しい認証技術の動向について情報収集を行い、将来的な導入可能性や既存システムへの影響を評価する。</li><li>現在の認証システムにおけるセッションハイジャック対策の有効性を定期的に見直し、必要に応じて強化策を検討する。</li><li>多要素認証（MFA）の導入状況や利用状況を確認し、セッションハイジャック以外の認証関連リスクへの対策も継続的に強化する。</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="http://security.googleblog.com/feeds/3718049046001981559/comments/default" target="_blank" rel="noopener noreferrer">元記事を読む</a>
