@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "digest_date": "2026-07-11",
-  "generated_at": "2026-07-11T11:12:23.648721+09:00",
+  "generated_at": "2026-07-11T11:48:16.949844+09:00",
   "generator": {
     "application": "security-digest",
     "model": "gemini-2.5-flash",
@@ -48,8 +48,8 @@
     "prompt_version": "executive-summary-v1",
     "overview": null,
     "important_highlights": [
-      "Progress SoftwareがShareFileのStorage Zone Controller利用顧客に対し、セキュリティ脅威への対応としてWindowsサーバー上のコントローラーをシャットダウンするよう緊急指示しました。",
-      "外部からの信頼できる脅威に対応中であり、指示に従わない場合、情報漏えいやシステム停止のリスクが高まるため、早急な対応が必要です。"
+      "Progress SoftwareがShareFileのStorage Zone Controllerにセキュリティ脅威を報告し、Windowsサーバーのシャットダウンを指示しました。",
+      "ShareFileを利用中の金融機関は、システム停止やデータ侵害のリスクがあるため、早急な対応が必要です。"
     ],
     "discussion_points": [],
     "check_items": [],
@@ -67,7 +67,7 @@
       "url": "https://thehackernews.com/2026/07/urgent-progress-tells-sharefile.html",
       "canonical_url": "https://thehackernews.com/2026/07/urgent-progress-tells-sharefile.html",
       "published_at": "2026-07-11T01:30:00+09:00",
-      "fetched_at": "2026-07-11T11:12:07.666262+09:00",
+      "fetched_at": "2026-07-11T11:48:01.096517+09:00",
       "title": "緊急 - セキュリティ上の脅威を理由に、ShareFile のお客様に Storage Zone Controller をシャットダウンするよう進捗状況が伝えられています",
       "raw_title": "URGENT - Progress Tells ShareFile Customers to Shut Down Storage Zone Controllers Over Security Threat",
       "raw_excerpt": "Progress Software has told ShareFile customers to shut down the Windows servers running their Storage Zone Controllers, confirming to The Hacker News that it is responding to a \"credible external secu",
@@ -77,25 +77,25 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v2",
-        "generated_at": "2026-07-11T11:08:26.885750+09:00",
+        "generated_at": "2026-07-11T11:44:17.503749+09:00",
         "category": "脆弱性・パッチ",
         "category_version": "v1",
-        "category_reason": "Progress SoftwareがShareFileのStorage Zone Controllerに関するセキュリティ脅威に対応しており、顧客にシャットダウンを指示しているため。",
+        "category_reason": "Progress SoftwareがShareFileのStorage Zone Controllerに関するセキュリティ脅威に対応しており、顧客にシャットダウンを指示しているため、脆弱性・パッチが主題です。",
         "tags": [
           "悪用確認済み",
           "パッチ",
-          "サプライチェーン"
+          "インシデント"
         ],
         "importance": "高",
         "urgency": "本日確認",
-        "summary": "Progress Softwareは、ShareFileのStorage Zone Controllerを使用している顧客に対し、セキュリティ脅威に対応するため、Windowsサーバー上のStorage Zone Controllerをシャットダウンするよう指示しました。同社は「外部からの信頼できるセキュリティ脅威」に対応中であり、影響を受けるアカウントへのアクセスを一時的に無効化しています。",
-        "financial_impact": "ShareFileのStorage Zone Controllerを利用している金融機関は、業務継続性やデータセキュリティに直接的な影響を受ける可能性があります。指示に従わない場合、情報漏えいやシステム停止のリスクが高まります。",
+        "summary": "Progress Softwareは、ShareFileの顧客に対し、セキュリティ脅威に対応するため、Storage Zone Controllerを実行しているWindowsサーバーをシャットダウンするよう指示しました。同社は、影響を受けるアカウントへのアクセスを一時的に無効化しています。",
+        "financial_impact": "ShareFileのStorage Zone Controllerを利用している金融機関は、システム停止やデータ侵害のリスクに直面する可能性があります。業務継続性への影響や顧客データの保護に関する懸念が生じ得ます。",
         "recommended_actions": [
-          "ShareFileのStorage Zone Controllerの利用状況を確認し、Progress Softwareからの指示に従い、該当するサーバーをシャットダウンする。",
-          "Progress Softwareからの公式発表やセキュリティアドバイザリを継続的に監視し、追加の指示やパッチ情報に迅速に対応する。",
-          "シャットダウンによる業務影響を評価し、代替手段や緊急時対応計画を検討・実施する。"
+          "ShareFileのStorage Zone Controllerを利用している場合、Progress Softwareの指示に従い、直ちに該当サーバーをシャットダウンする。",
+          "Progress Softwareからの公式なセキュリティアドバイザリやパッチ情報を継続的に監視し、速やかに対応計画を策定・実行する。",
+          "今回の事態が自社の事業継続計画やインシデント対応計画に与える影響を評価し、必要に応じて計画を更新する。"
         ],
-        "reason": "Progress Softwareが顧客に対し、セキュリティ脅威への対応としてStorage Zone Controllerのシャットダウンを緊急に指示しているため、金融機関は直ちに自社の利用状況を確認し、対応する必要があるため「高」および「本日確認」と判断しました。",
+        "reason": "Progress Softwareが「信頼できる外部セキュリティ脅威」に対応し、顧客にStorage Zone Controllerのシャットダウンを指示しているため、金融機関にとって見落とせない緊急性の高い情報です。システム停止やデータ侵害のリスクがあるため、本日中の確認が必要です。",
         "error_type": null,
         "http_status": null
       }
@@ -111,7 +111,7 @@
       "url": "https://thehackernews.com/2026/07/injective-labs-github-compromise-pushes.html",
       "canonical_url": "https://thehackernews.com/2026/07/injective-labs-github-compromise-pushes.html",
       "published_at": "2026-07-11T01:29:00+09:00",
-      "fetched_at": "2026-07-11T11:12:07.666262+09:00",
+      "fetched_at": "2026-07-11T11:48:01.096517+09:00",
       "title": "Injective Labs GitHub の侵害により、ウォレット キーを盗む npm パッケージがプッシュされる",
       "raw_title": "Injective Labs GitHub Compromise Pushes Wallet-Key-Stealing npm Packages",
       "raw_excerpt": "Unknown threat actors compromised the Injective Labs SDK project's GitHub repository and leveraged it to publish a malicious package on the npm registry to steal cryptocurrency wallet private keys and",
@@ -121,25 +121,25 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v2",
-        "generated_at": "2026-07-11T11:08:44.198161+09:00",
+        "generated_at": "2026-07-11T11:44:35.004285+09:00",
         "category": "インシデント",
         "category_version": "v1",
-        "category_reason": "Injective LabsのGitHubリポジトリが侵害され、悪意のあるnpmパッケージが公開された実際の被害事例が主題であるため。",
+        "category_reason": "Injective LabsのGitHubリポジトリが侵害され、悪意のあるnpmパッケージが公開された実際のインシデントが主題であるため。",
         "tags": [
-          "サプライチェーン",
           "インシデント",
+          "サプライチェーン",
           "情報漏えい"
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "Injective LabsのGitHubリポジトリが侵害され、攻撃者は悪意のあるnpmパッケージを公開しました。このパッケージは、仮想通貨ウォレットの秘密鍵やニーモニックフレーズを窃取する機能を持っていました。",
-        "financial_impact": "金融機関が仮想通貨関連サービスを提供している場合や、開発環境でnpmパッケージを利用している場合、サプライチェーンリスクとして影響を受ける可能性があります。直接的な影響は限定的かもしれませんが、類似の攻撃手法が他の開発ツールやライブラリに拡大する可能性を考慮する必要があります。",
+        "summary": "Injective LabsのGitHubリポジトリが侵害され、攻撃者は暗号通貨ウォレットの秘密鍵やニーモニックフレーズを盗む悪意のあるnpmパッケージを公開しました。この悪意のあるバージョンは、偽のテレメトリー機能を通じてデータを窃取しました。",
+        "financial_impact": "金融機関が直接Injective LabsのSDKを利用している場合、または関連する暗号通貨サービスを提供している場合、顧客のウォレット情報漏えいリスクに直結する可能性があります。サプライチェーン攻撃の一種として、開発環境や利用するオープンソースライブラリのセキュリティ管理の重要性を示唆します。",
         "recommended_actions": [
-          "開発環境で使用しているnpmパッケージに不審なバージョンがないか確認する。",
-          "サプライチェーンリスク管理の一環として、利用しているオープンソースライブラリや開発ツールのセキュリティ監視を強化する。",
-          "仮想通貨関連サービスを提供している場合、顧客資産の保護策とインシデント対応計画を見直す。"
+          "自社または委託先でInjective LabsのSDKを利用している場合、影響を受けたnpmパッケージのバージョン（@injectivelabs/sdk-ts@1.20.21）が使用されていないか確認する。",
+          "開発環境におけるオープンソースライブラリの利用状況を棚卸し、サプライチェーンリスク管理のプロセスを見直す。",
+          "開発者が利用するGitHubリポジトリやnpmレジストリからのパッケージ導入におけるセキュリティチェック体制を強化する。"
         ],
-        "reason": "GitHubリポジトリの侵害と悪意のあるnpmパッケージの公開は、サプライチェーン攻撃の一種であり、金融機関の開発環境や仮想通貨関連サービスに間接的な影響を与える可能性があるため、重要度は「中」と判断しました。即座の対応は不要ですが、同様の攻撃への備えとして今週中に確認・共有すべき事項です。",
+        "reason": "GitHubリポジトリの侵害と悪意あるパッケージ公開は、サプライチェーン攻撃の具体的な事例であり、金融機関が利用する開発環境やオープンソースソフトウェアのセキュリティ管理に示唆を与えるため、重要度は「中」と判断しました。即座の対応が必要な脆弱性ではないものの、関連するリスク管理の観点から「今週確認」が適切です。",
         "error_type": null,
         "http_status": null
       }
@@ -155,7 +155,7 @@
       "url": "https://thehackernews.com/2026/07/six-new-u-boot-flaws-could-let.html",
       "canonical_url": "https://thehackernews.com/2026/07/six-new-u-boot-flaws-could-let.html",
       "published_at": "2026-07-11T00:57:14+09:00",
-      "fetched_at": "2026-07-11T11:12:07.666262+09:00",
+      "fetched_at": "2026-07-11T11:48:01.096517+09:00",
       "title": "U-Boot の 6 つの新たな欠陥により、悪意のあるイメージがデバイスをクラッシュさせたり、起動時にコードを実行したりする可能性があります",
       "raw_title": "Six New U-Boot Flaws Could Let Malicious Images Crash Devices or Run Code at Boot",
       "raw_excerpt": "Researchers at firmware security firm&nbsp;Binarly&nbsp;have found six new flaws in U-Boot, the small program that starts up hardware as varied as home routers, smart cameras, and the management chips",
@@ -165,7 +165,7 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v2",
-        "generated_at": "2026-07-11T11:09:01.418504+09:00",
+        "generated_at": "2026-07-11T11:44:52.281909+09:00",
         "category": "脆弱性・パッチ",
         "category_version": "v1",
         "category_reason": "U-Bootの新しい脆弱性が発見され、デバイスのクラッシュや悪意のあるコード実行の可能性が主題であるため。",
@@ -175,14 +175,14 @@
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "ファームウェアセキュリティ企業Binarlyの研究者が、U-Bootに6つの新たな脆弱性を発見しました。これらの脆弱性は、ホームルーターやスマートカメラ、データセンターサーバーの管理チップなど、様々なハードウェアの起動時に悪意のあるイメージを介してデバイスをクラッシュさせたり、コードを実行させたりする可能性があります。",
-        "financial_impact": "U-Bootは幅広い組み込みデバイスで利用されており、金融機関が利用するネットワーク機器、IoTデバイス、データセンターのサーバー管理チップなどに影響を与える可能性があります。これらの脆弱性が悪用された場合、システム停止や不正アクセスにつながる恐れがあります。",
+        "summary": "ファームウェアセキュリティ企業Binarlyの研究者が、U-Bootに6つの新たな脆弱性を発見しました。これらの脆弱性は、ホームルーター、スマートカメラ、データセンターサーバーの管理チップなど、様々なハードウェアの起動時に悪意のあるイメージを介してデバイスをクラッシュさせたり、コードを実行させたりする可能性があります。",
+        "financial_impact": "U-Bootは幅広い組み込みシステムで利用されており、金融機関が利用するネットワーク機器、IoTデバイス、データセンターのサーバー管理チップなどに影響を与える可能性があります。これらの脆弱性が悪用された場合、システムの可用性低下や不正なコード実行による情報漏えい、業務停止につながるリスクがあります。",
         "recommended_actions": [
-          "自組織で利用している機器にU-Bootが使用されているかを確認する。",
-          "U-Bootを使用している機器のベンダーから、本脆弱性に関する情報提供やパッチの有無を確認する。",
-          "該当する機器がある場合、ベンダーの指示に従い、必要な対策を検討・実施する。"
+          "自組織で利用している機器やシステムにU-Bootが組み込まれているかを確認する。",
+          "U-Bootの脆弱性に関するベンダーからの情報提供を監視し、該当する場合はパッチ適用計画を策定する。",
+          "サプライチェーンを通じて導入される機器のファームウェアセキュリティについて、調達基準や委託先管理の観点から確認する。"
         ],
-        "reason": "U-Bootは広範なデバイスで利用されており、金融機関のインフラにも影響を与える可能性があるため重要度は中と判断しました。直ちに悪用が確認されているわけではないため、今週中に情報収集と影響範囲の確認を行うべきです。",
+        "reason": "U-Bootは広範な組み込みシステムで利用されており、金融機関のインフラにも影響を及ぼす可能性があるため重要度は「中」と判断しました。直ちに悪用が確認されているわけではないため、緊急度は「今週確認」としました。",
         "error_type": null,
         "http_status": null
       }
@@ -198,7 +198,7 @@
       "url": "https://www.darkreading.com/cybersecurity-operations/jen-ellis-connecting-cyber-community-political-machinery",
       "canonical_url": "https://www.darkreading.com/cybersecurity-operations/jen-ellis-connecting-cyber-community-political-machinery",
       "published_at": "2026-07-11T04:08:04+09:00",
-      "fetched_at": "2026-07-11T11:12:07.666262+09:00",
+      "fetched_at": "2026-07-11T11:48:01.096517+09:00",
       "title": "ジェン・エリス: サイバーコミュニティと政治機構を結びつける",
       "raw_title": "Jen Ellis: Connecting Cyber Community With Political Machinery",
       "raw_excerpt": "Security Pro File: On the heels of her recent honors as a Member of the Order of the British Empire (MBE), we take a look back at the events that shaped Jen Ellis' advocacy on behalf of security resea",
@@ -208,7 +208,7 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v2",
-        "generated_at": "2026-07-11T11:09:17.845920+09:00",
+        "generated_at": "2026-07-11T11:45:11.593188+09:00",
         "category": "その他",
         "category_version": "v1",
         "category_reason": "本記事は特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも該当せず、サイバーセキュリティ分野の人物紹介が主題であるため。",
@@ -216,11 +216,11 @@
         "importance": "低",
         "urgency": "参考",
         "summary": "本記事は、サイバーセキュリティ分野の専門家であるJen Ellis氏の功績と、セキュリティ研究者の擁護活動に焦点を当てた人物紹介です。",
-        "financial_impact": "本記事は特定のサイバーセキュリティリスクや規制変更に関するものではなく、金融機関の業務やシステムに直接的な影響を与えるものではありません。",
+        "financial_impact": "本記事は特定のサイバーセキュリティリスクや規制に関するものではなく、金融機関の業務やシステムに直接的な影響を与えるものではありません。",
         "recommended_actions": [
-          "特になし"
+          "サイバーセキュリティ分野の主要人物やその活動について、一般的な情報収集として参照する。"
         ],
-        "reason": "本記事はサイバーセキュリティ分野の人物紹介であり、金融機関のセキュリティ運用や管理態勢に直接的な影響を与える情報ではないため、重要度・緊急度ともに低いと判断しました。",
+        "reason": "本記事は特定の脅威や規制に関するものではなく、サイバーセキュリティ分野の人物紹介であるため、金融機関にとっての緊急性や重要性は低いと判断しました。",
         "error_type": null,
         "http_status": null
       }
@@ -236,7 +236,7 @@
       "url": "https://www.darkreading.com/threat-intelligence/cybercriminals-healthcare-businesses-attacks-surge",
       "canonical_url": "https://www.darkreading.com/threat-intelligence/cybercriminals-healthcare-businesses-attacks-surge",
       "published_at": "2026-07-11T01:51:34+09:00",
-      "fetched_at": "2026-07-11T11:12:07.666262+09:00",
+      "fetched_at": "2026-07-11T11:48:01.096517+09:00",
       "title": "攻撃が急増する中、サイバー犯罪者がヘルスケア企業に殺到",
       "raw_title": "Cybercriminals Flock to Healthcare Businesses as Attacks Surge",
       "raw_excerpt": "While cyberattacks against hospitals and clinics grew modestly in the first half of 2026, attacks on service providers and other healthcare businesses more than doubled.",
@@ -246,24 +246,24 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v2",
-        "generated_at": "2026-07-11T11:09:35.562875+09:00",
+        "generated_at": "2026-07-11T11:45:28.690643+09:00",
         "category": "攻撃・脅威動向",
         "category_version": "v1",
-        "category_reason": "医療業界に対するサイバー攻撃の増加と攻撃対象の変化に関する記事であり、脅威の動向が主題であるため。",
+        "category_reason": "医療業界におけるサイバー攻撃の増加と攻撃対象の変化に関する記事であり、脅威の動向が主題であるため。",
         "tags": [
           "サプライチェーン",
           "委託先管理"
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "2026年上半期、病院や診療所へのサイバー攻撃は緩やかな増加にとどまった一方、サービスプロバイダーやその他の医療関連企業への攻撃は2倍以上に急増しました。",
-        "financial_impact": "金融機関が医療業界のサービスプロバイダーを委託先として利用している場合、サプライチェーンリスクとして間接的な影響を受ける可能性があります。また、他業界における攻撃対象の変化の兆候として、自社のサプライチェーンリスク評価の参考になり得ます。",
+        "summary": "2026年上半期、病院や診療所に対するサイバー攻撃は緩やかな増加にとどまった一方、サービスプロバイダーやその他の医療関連企業に対する攻撃は倍増しました。",
+        "financial_impact": "医療業界のサービスプロバイダーへの攻撃増加は、金融機関が利用する可能性のある医療関連の福利厚生サービスや健康管理サービスを提供する委託先にも影響を及ぼす可能性があります。これにより、サプライチェーンリスクが高まる可能性があります。",
         "recommended_actions": [
-          "委託先管理プロセスにおいて、医療関連サービスプロバイダーを含むサプライチェーンリスク評価を見直す。",
-          "自社の業界における攻撃動向の変化がないか、継続的に情報収集を行う。",
-          "インシデント発生時の事業継続計画や復旧計画に、サプライチェーン起因のリスクを考慮したシナリオを追加する。"
+          "医療関連の委託先やサプライヤーにおけるサイバーセキュリティ対策の状況を確認する。",
+          "委託先管理プロセスにおいて、医療業界の脅威動向を考慮したリスク評価を実施する。",
+          "医療関連サービスを利用する従業員に対し、フィッシング詐欺などへの注意喚起を行う。"
         ],
-        "reason": "医療業界におけるサイバー攻撃の動向は、金融機関の直接的な脅威ではないものの、サプライチェーンリスク管理や他業界の脅威動向を把握する上で有用な情報であり、中程度の重要性があります。即時対応は不要ですが、今週中に確認し、関連部署で共有することが望ましいです。",
+        "reason": "医療業界におけるサイバー攻撃の動向は、金融機関のサプライチェーンリスクや委託先管理に示唆を与えるため「中」と判断しました。即時対応が必要な情報ではないため「今週確認」としました。",
         "error_type": null,
         "http_status": null
       }
@@ -279,7 +279,7 @@
       "url": "https://www.microsoft.com/en-us/security/blog/2026/07/10/securing-our-future-july-2026-progress-report-on-microsofts-secure-future-initiative/",
       "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/07/10/securing-our-future-july-2026-progress-report-on-microsofts-secure-future-initiative/",
       "published_at": "2026-07-11T01:00:00+09:00",
-      "fetched_at": "2026-07-11T11:12:07.666262+09:00",
+      "fetched_at": "2026-07-11T11:48:01.096517+09:00",
       "title": "私たちの未来を守る: Microsoft の Secure Future Initiative に関する 2026 年 7 月の進捗レポート",
       "raw_title": "Securing our future: July 2026 progress report on Microsoft’s Secure Future Initiative",
       "raw_excerpt": "Microsoft’s latest Secure Future Initiative report outlines progress on secure foundations, AI-powered defense, and future-ready cybersecurity.\nThe post Securing our future: July 2026 progress report ",
@@ -289,25 +289,24 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v2",
-        "generated_at": "2026-07-11T11:09:52.717191+09:00",
+        "generated_at": "2026-07-11T11:45:46.085188+09:00",
         "category": "その他",
         "category_version": "v1",
         "category_reason": "Microsoftのセキュリティ強化への取り組みに関する進捗報告であり、特定の脆弱性、インシデント、攻撃動向、規制、クラウド、AIリスクのいずれにも直接該当しないため。",
         "tags": [
-          "サプライチェーン",
-          "委託先管理",
+          "クラウド",
           "AI"
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "Microsoftは、Secure Future Initiativeの2026年7月進捗レポートを公開し、セキュアな基盤、AIを活用した防御、将来を見据えたサイバーセキュリティに関する取り組みの進捗状況を説明しました。",
-        "financial_impact": "多くの金融機関がMicrosoft製品を利用しているため、同社のセキュリティ強化への取り組みは、金融機関のシステムセキュリティやサプライチェーンリスク管理に間接的に影響を与える可能性があります。",
+        "summary": "Microsoftは、Secure Future Initiativeの最新進捗レポートを公開し、セキュアな基盤、AIを活用した防御、将来を見据えたサイバーセキュリティに関する取り組みの進捗を説明しました。",
+        "financial_impact": "多くの金融機関がMicrosoft製品を利用しているため、同社のセキュリティ強化への取り組みは、金融機関のIT環境の安全性に間接的に影響を与えます。将来的な製品のセキュリティ向上や新機能の導入に繋がる可能性があります。",
         "recommended_actions": [
-          "Microsoft製品の利用状況を再確認し、同社のセキュリティ強化策が自社のセキュリティ態勢にどのように貢献するかを評価する。",
-          "Microsoftのセキュリティロードマップや将来の製品・サービスのセキュリティ機能に関する情報を継続的に収集し、自社のセキュリティ戦略に反映させる。",
-          "委託先管理の一環として、Microsoftのセキュリティ対策の進捗状況を把握し、自社のサプライチェーンリスク評価に活用する。"
+          "Microsoft製品の利用状況を再確認し、同社のセキュリティ強化策が自社のセキュリティ戦略と整合しているかを確認する。",
+          "Microsoftが提供するセキュリティ機能や推奨事項について、最新情報を継続的に収集する。",
+          "AIを活用した防御策など、将来的なセキュリティ技術の導入可能性について情報収集を行う。"
         ],
-        "reason": "Microsoftの広範なセキュリティ強化イニシアチブに関する進捗報告であり、金融機関のセキュリティ戦略や委託先管理に中長期的な示唆を与えるため、中程度の重要度で今週中の確認が適切と判断しました。",
+        "reason": "Microsoftの広範なセキュリティ強化への取り組みは、多くの金融機関にとって重要なベンダー情報であり、中長期的なセキュリティ戦略を検討する上で参考になるため「中」と判断しました。即時対応を要する内容ではないため「今週確認」としました。",
         "error_type": null,
         "http_status": null
       }
@@ -323,7 +322,7 @@
       "url": "https://www.darkreading.com/vulnerabilities-threats/atm-crypto-software-bugs-jackpot-bust",
       "canonical_url": "https://www.darkreading.com/vulnerabilities-threats/atm-crypto-software-bugs-jackpot-bust",
       "published_at": "2026-07-10T23:00:00+09:00",
-      "fetched_at": "2026-07-11T11:12:07.666262+09:00",
+      "fetched_at": "2026-07-11T11:48:01.096517+09:00",
       "title": "新たな ATM 暗号化ソフトウェアのバグ: 大当たりか破綻か?",
       "raw_title": "Fresh ATM Crypto Software Bugs: Jackpot or Bust?",
       "raw_excerpt": "Organizations, and possibly ATMs, are at risk of compromise, thanks to holes in a Microsoft BitLocker security wrapper.",
@@ -333,10 +332,10 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v2",
-        "generated_at": "2026-07-11T11:10:09.680831+09:00",
+        "generated_at": "2026-07-11T11:46:02.833606+09:00",
         "category": "脆弱性・パッチ",
         "category_version": "v1",
-        "category_reason": "Microsoft BitLockerのセキュリティラッパーにおける脆弱性が主題であるため。",
+        "category_reason": "Microsoft BitLockerのセキュリティラッパーに存在する脆弱性が主題であるため。",
         "tags": [
           "パッチ",
           "情報漏えい",
@@ -344,14 +343,14 @@
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "Microsoft BitLockerのセキュリティラッパーに脆弱性が発見され、組織やATMが侵害されるリスクがあることが報告されました。",
-        "financial_impact": "BitLockerを利用している金融機関のATMやシステムにおいて、情報漏えいや不正アクセス、業務停止などのリスクが生じる可能性があります。特にATMへの影響は、顧客資産の直接的な損失につながる恐れがあります。",
+        "summary": "Microsoft BitLockerのセキュリティラッパーに複数の脆弱性が発見され、組織やATMが侵害されるリスクがあることが報告されました。",
+        "financial_impact": "BitLockerを利用している金融機関のATMやシステムにおいて、これらの脆弱性が悪用された場合、情報漏えいやシステム停止、不正な現金引き出しなどの被害が発生する可能性があります。",
         "recommended_actions": [
-          "自組織のシステムおよびATMにおけるBitLockerの利用状況を確認する。",
-          "BitLockerのセキュリティラッパーに関するベンダーからのパッチや緩和策の情報を収集し、適用を検討する。",
-          "関連するシステムやATMの監視体制を強化し、不審な挙動がないか確認する。"
+          "自組織でBitLockerを利用しているシステム、特にATMへの影響有無を確認する。",
+          "ベンダーからのパッチや緩和策が提供された場合、適用計画を検討する。",
+          "関連するセキュリティ監視体制を強化し、不審な活動がないか確認する。"
         ],
-        "reason": "BitLockerの脆弱性はATMを含むシステムに影響を与える可能性があり、金融機関にとって見過ごせないため「中」と判断しました。直ちに悪用が確認されているわけではないため「今週確認」としました。",
+        "reason": "BitLockerの脆弱性は金融機関のATMに影響を与える可能性があり、潜在的なリスクは中程度と判断しました。直ちに悪用が確認されているわけではないため、今週中の確認が適切です。",
         "error_type": null,
         "http_status": null
       }
@@ -367,7 +366,7 @@
       "url": "https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/",
       "canonical_url": "https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/",
       "published_at": null,
-      "fetched_at": "2026-07-11T11:12:07.666262+09:00",
+      "fetched_at": "2026-07-11T11:48:01.096517+09:00",
       "title": "ガードレールのない AI ガバナンスが劇場である理由",
       "raw_title": "Why AI Governance Without Guardrails Is Theater",
       "raw_excerpt": null,
@@ -377,25 +376,24 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v2",
-        "generated_at": "2026-07-11T11:10:27.283066+09:00",
+        "generated_at": "2026-07-11T11:46:20.361792+09:00",
         "category": "AI・新技術リスク",
         "category_version": "v1",
         "category_reason": "AIガバナンスとガードレールに関する議論が主題であり、AIの利用に伴うリスク管理に焦点を当てているため。",
         "tags": [
           "AI",
-          "ガイドライン",
-          "規制"
+          "ガイドライン"
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "CrowdStrikeは、AIガバナンスが実効性を持つためには、具体的なガードレール（安全策）の導入が不可欠であると指摘しています。ガードレールがなければ、AIガバナンスは形だけのものになりかねません。",
-        "financial_impact": "金融機関がAI技術を導入・活用する際、適切なガバナンス体制と具体的な安全策を講じなければ、潜在的なリスク（誤情報、プライバシー侵害、セキュリティ脆弱性など）に晒される可能性があります。これにより、規制遵守違反や風評被害、システム障害につながるリスクがあります。",
+        "summary": "CrowdStrikeは、AIガバナンスが実効性を持つためには、具体的なガードレール（安全策）が不可欠であると指摘しています。ガードレールがなければ、AIガバナンスは形だけのものになりかねません。",
+        "financial_impact": "金融機関がAI技術を導入・活用する際、単にAIガバナンス体制を構築するだけでなく、具体的なリスク軽減策としてのガードレールを実装しなければ、AI利用に伴う潜在的なリスク（誤情報、倫理問題、セキュリティ脆弱性など）を適切に管理できない可能性があります。",
         "recommended_actions": [
-          "AI利用における既存のガバナンスフレームワークやポリシーに、具体的なガードレールが組み込まれているかを確認する。",
-          "AIシステムの導入・運用に際し、リスク評価と緩和策としてのガードレール設計が適切に行われているかを評価する。",
-          "AI関連の規制動向やベストプラクティスを継続的に監視し、自社のAIガバナンス体制に反映させることを検討する。"
+          "AI導入・活用における既存のガバナンスフレームワークに、具体的なガードレール（例: データ入力検証、出力フィルタリング、利用ポリシー）が組み込まれているかを確認する。",
+          "AI利用に伴うリスク評価プロセスにおいて、ガードレールの有効性評価を組み込み、継続的に監視・改善する計画を策定する。",
+          "AI利用に関する従業員への教育・トレーニングに、ガードレールの重要性と具体的な運用方法を含めることを検討する。"
         ],
-        "reason": "AIの利用は金融機関にとって不可避であり、そのガバナンスは重要な論点です。本記事は具体的なガードレールの必要性を説いており、今後のAI導入・運用における管理態勢の検討材料として有用なため、今週確認すべき中程度の重要性があると判断しました。",
+        "reason": "AIのガバナンスは金融機関にとって継続的な重要論点であり、本記事はAI利用における実効性のあるリスク管理の必要性を示唆しているため、今週中に確認し、今後のAI戦略やリスク管理体制の議論に役立てるべきです。",
         "error_type": null,
         "http_status": null
       }
@@ -411,7 +409,7 @@
       "url": "https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/",
       "canonical_url": "https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/",
       "published_at": null,
-      "fetched_at": "2026-07-11T11:12:07.666262+09:00",
+      "fetched_at": "2026-07-11T11:48:01.096517+09:00",
       "title": "Falcon Secure Access がゼロトラスト ブラウザ セキュリティの標準を設定",
       "raw_title": "Falcon Secure Access Sets the Standard for Zero Trust Browser Security",
       "raw_excerpt": null,
@@ -421,21 +419,20 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v2",
-        "generated_at": "2026-07-11T11:10:44.206815+09:00",
+        "generated_at": "2026-07-11T11:46:37.280214+09:00",
         "category": "その他",
         "category_version": "v1",
-        "category_reason": "本記事はCrowdStrikeの製品紹介であり、特定の脆弱性、攻撃、インシデント、規制、サプライチェーン、AIリスクのいずれにも明確に該当しないため。",
+        "category_reason": "CrowdStrikeの製品紹介記事であり、特定の脆弱性、攻撃、規制、インシデント、サプライチェーン、AIリスクのいずれにも該当しないため。",
         "tags": [],
         "importance": "低",
         "urgency": "参考",
-        "summary": "CrowdStrikeは、ゼロトラストブラウザセキュリティ製品「Falcon Secure Access」を発表しました。この製品は、ブラウザベースの脅威からの保護、データ損失防止、およびセキュアなアクセスを提供します。",
-        "financial_impact": "本記事は特定の脅威や規制に関するものではなく、CrowdStrikeの製品紹介であるため、金融機関への直接的な影響は確認できません。ゼロトラストブラウザセキュリティは一般的なセキュリティ対策の一つとして検討され得るものです。",
+        "summary": "CrowdStrikeは、ゼロトラストブラウザセキュリティ製品「Falcon Secure Access」を発表しました。この製品は、ブラウザベースの脅威から保護し、企業リソースへの安全なアクセスを提供することを目的としています。",
+        "financial_impact": "本記事は特定の製品の紹介であり、金融機関に直接的な影響を与えるものではありません。ゼロトラストブラウザセキュリティの導入を検討している金融機関にとっては、参考情報となり得ます。",
         "recommended_actions": [
-          "ゼロトラストセキュリティモデルの導入状況を確認する。",
-          "ブラウザベースの脅威に対する既存の防御策を評価する。",
-          "データ損失防止（DLP）対策の有効性を確認する。"
+          "ゼロトラストブラウザセキュリティソリューションの導入を検討している場合、市場の動向や製品情報を継続的に収集する。",
+          "既存のセキュリティ対策がブラウザベースの脅威に対して十分であるか、定期的に評価する。"
         ],
-        "reason": "本記事は特定の脅威やインシデントに関するものではなく、CrowdStrikeの製品紹介であるため、金融機関にとっての緊急性や重要性は低いと判断しました。",
+        "reason": "本記事はCrowdStrikeの製品紹介であり、金融機関にとって見落とせない具体的な脅威や規制変更に関する情報ではないため、重要度は低く、緊急性も参考レベルと判断しました。",
         "error_type": null,
         "http_status": null
       }
@@ -451,7 +448,7 @@
       "url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/",
       "canonical_url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/",
       "published_at": null,
-      "fetched_at": "2026-07-11T11:12:07.666262+09:00",
+      "fetched_at": "2026-07-11T11:48:01.096517+09:00",
       "title": "CrowdStrike が新しいプロンプト インジェクション技術を発見",
       "raw_title": "CrowdStrike Uncovers New Prompt Injection Techniques",
       "raw_excerpt": null,
@@ -461,7 +458,7 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v2",
-        "generated_at": "2026-07-11T11:11:01.289129+09:00",
+        "generated_at": "2026-07-11T11:46:54.320829+09:00",
         "category": "AI・新技術リスク",
         "category_version": "v1",
         "category_reason": "記事の主題がAIのプロンプトインジェクションという新しい攻撃手法の発見であるため。",
@@ -470,14 +467,14 @@
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "CrowdStrikeは、AIモデルに対する新たなプロンプトインジェクション技術を発見しました。これらの技術は、AIのセキュリティ対策を回避し、悪意のある目的でAIモデルを操作する可能性があります。",
-        "financial_impact": "金融機関がAIモデルを業務に導入している場合、これらの新しいプロンプトインジェクション技術により、AIモデルが意図しない動作をしたり、機密情報が漏洩したりするリスクが生じる可能性があります。",
+        "summary": "CrowdStrikeは、AIモデルに対する新たなプロンプトインジェクション技術を発見しました。これらの技術は、AIモデルの意図しない動作を引き起こす可能性があります。",
+        "financial_impact": "金融機関がAIモデルを業務に導入している場合、これらの新しいプロンプトインジェクション技術が悪用されると、情報漏えいやシステム誤動作、不正取引などのリスクに繋がる可能性があります。",
         "recommended_actions": [
           "AIモデルを利用している場合、プロンプトインジェクション対策の現状を確認する。",
-          "AIモデルの導入を検討している場合、セキュリティ要件にプロンプトインジェクション対策を盛り込む。",
-          "AIモデルの利用におけるリスク評価と緩和策について、継続的に情報収集と検討を行う。"
+          "AIモデルの導入を検討している場合、セキュリティ要件にプロンプトインジェクション対策を含める。",
+          "AIモデルの利用におけるリスク評価とセキュリティテストを定期的に実施する。"
         ],
-        "reason": "AIモデルのプロンプトインジェクションは、金融機関におけるAI利用の拡大に伴い、潜在的な脅威となり得るため重要度は「中」と判断しました。即座の対応は求められないものの、今後のAI利用におけるリスク管理の観点から「今週確認」が適切です。",
+        "reason": "AIのプロンプトインジェクションは、金融機関がAIを導入する上で考慮すべき新しいリスクであり、今後の管理態勢に示唆を与えるため「中」と判断しました。即時対応が必要な脆弱性ではないため「今週確認」としました。",
         "error_type": null,
         "http_status": null
       }
@@ -493,7 +490,7 @@
       "url": "http://security.googleblog.com/feeds/820776653483778595/comments/default",
       "canonical_url": "http://security.googleblog.com/feeds/820776653483778595/comments/default",
       "published_at": null,
-      "fetched_at": "2026-07-11T11:12:07.666262+09:00",
+      "fetched_at": "2026-07-11T11:48:01.096517+09:00",
       "title": "現実の AI の脅威: Web 上でのプロンプト インジェクションの現状",
       "raw_title": "AI threats in the wild: The current state of prompt injections on the web",
       "raw_excerpt": null,
@@ -503,7 +500,7 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v2",
-        "generated_at": "2026-07-11T11:11:18.490459+09:00",
+        "generated_at": "2026-07-11T11:47:11.477251+09:00",
         "category": "AI・新技術リスク",
         "category_version": "v1",
         "category_reason": "記事の主題がAIに対するプロンプトインジェクション攻撃の現状分析であるため。",
@@ -512,14 +509,14 @@
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "Googleの脅威分析グループ(TAG)は、AIモデルに対するプロンプトインジェクション攻撃の現状について分析し、ウェブ上での悪用事例や攻撃手法、防御策について報告しました。",
-        "financial_impact": "金融機関が顧客向けサービスや業務効率化のためにAIモデルを導入・利用している場合、プロンプトインジェクション攻撃による情報漏えい、不正操作、サービス停止などのリスクに直面する可能性があります。",
+        "summary": "Googleの脅威分析グループ(TAG)は、AIモデルに対するプロンプトインジェクション攻撃の現状について分析し、ウェブ上での悪用事例や攻撃手法の進化について報告しています。",
+        "financial_impact": "金融機関が顧客向けサービスや業務効率化のためにAIモデルを導入・利用している場合、プロンプトインジェクション攻撃による情報漏えいや誤動作、サービス停止のリスクに直面する可能性があります。",
         "recommended_actions": [
-          "AIモデルを利用しているシステムにおいて、プロンプトインジェクション攻撃に対する防御策が適切に実装されているか確認する。",
-          "AIモデルの利用ガイドラインやセキュリティ要件に、プロンプトインジェクション攻撃への対策を組み込むことを検討する。",
-          "AIモデルの利用状況を把握し、潜在的なリスクを評価するとともに、継続的な脅威情報の収集と監視を行う。"
+          "AIモデルを利用しているシステムにおいて、プロンプトインジェクション対策の現状を確認する。",
+          "AIモデルの利用ガイドラインやセキュリティ要件に、プロンプトインジェクション対策を組み込むことを検討する。",
+          "AIモデルのセキュリティ評価や脆弱性診断に、プロンプトインジェクション攻撃のシナリオを含めることを検討する。"
         ],
-        "reason": "AIモデルに対するプロンプトインジェクション攻撃は、金融機関がAIを導入する上で考慮すべき重要なリスクであり、今後の管理態勢に示唆を与えるため「中」と判断しました。即時対応が必要な脆弱性ではないため「今週確認」としました。",
+        "reason": "AIモデルのプロンプトインジェクションは、金融機関がAIを導入する上で考慮すべき重要なリスクであり、今後の対策検討に資するため中程度の重要度と判断しました。即時対応が必要な脆弱性ではないため、今週中の確認が適切です。",
         "error_type": null,
         "http_status": null
       }
@@ -535,7 +532,7 @@
       "url": "http://security.googleblog.com/feeds/1469360228826887140/comments/default",
       "canonical_url": "http://security.googleblog.com/feeds/1469360228826887140/comments/default",
       "published_at": null,
-      "fetched_at": "2026-07-11T11:12:07.666262+09:00",
+      "fetched_at": "2026-07-11T11:48:01.096517+09:00",
       "title": "Pixel ベースバンドに Rust を導入する",
       "raw_title": "Bringing Rust to the Pixel Baseband",
       "raw_excerpt": null,
@@ -545,19 +542,20 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v2",
-        "generated_at": "2026-07-11T11:11:35.359892+09:00",
+        "generated_at": "2026-07-11T11:47:28.633157+09:00",
         "category": "その他",
         "category_version": "v1",
         "category_reason": "記事の主題がGoogle PixelのベースバンドにRustを導入するという技術的な内容であり、脆弱性、攻撃、インシデント、規制、クラウド、AIのいずれにも明確に該当しないため。",
         "tags": [],
         "importance": "低",
         "urgency": "参考",
-        "summary": "Googleは、PixelスマートフォンのベースバンドプロセッサにRust言語を導入したことを発表しました。これにより、メモリ安全性の脆弱性を削減し、セキュリティを向上させることを目指しています。",
-        "financial_impact": "この記事はGoogle Pixelの内部技術に関するものであり、金融機関のシステムやサービスに直接的な影響を与えるものではありません。金融機関がモバイルデバイスを従業員に支給している場合でも、この技術的な変更が直ちにセキュリティ運用に影響を及ぼす可能性は低いと考えられます。",
+        "summary": "Googleは、PixelスマートフォンのベースバンドプロセッサにRust言語を導入したことを発表しました。これにより、メモリ安全性の脆弱性を減少させ、セキュリティを向上させることを目指しています。",
+        "financial_impact": "本記事はGoogle Pixelの技術的な改善に関するものであり、金融機関のシステムや業務に直接的な影響を与えるものではありません。金融機関がモバイルデバイスを従業員に貸与している場合でも、この変更が直ちにセキュリティ対策の見直しを必要とするものではないと考えられます。",
         "recommended_actions": [
-          "モバイルデバイスのセキュリティに関する一般的な動向として、情報収集の参考とする。"
+          "モバイルデバイス管理ポリシーにおいて、OSやファームウェアのアップデートを常に最新の状態に保つよう従業員に推奨しているか確認する。",
+          "モバイルデバイスのセキュリティに関する最新の技術動向について、継続的に情報収集を行う。"
         ],
-        "reason": "Google Pixelのベースバンドに関する技術的な内容であり、金融機関の業務やセキュリティ態勢に直接的な影響を与えるものではないため、重要度・緊急度ともに低いと判断しました。",
+        "reason": "本記事はGoogle PixelのベースバンドにRustを導入するという技術的な内容であり、金融機関の業務やセキュリティ態勢に直接的な影響を与えるものではないため、重要度は低く、緊急性も参考と判断しました。",
         "error_type": null,
         "http_status": null
       }
@@ -573,7 +571,7 @@
       "url": "http://security.googleblog.com/feeds/3718049046001981559/comments/default",
       "canonical_url": "http://security.googleblog.com/feeds/3718049046001981559/comments/default",
       "published_at": null,
-      "fetched_at": "2026-07-11T11:12:07.666262+09:00",
+      "fetched_at": "2026-07-11T11:48:01.096517+09:00",
       "title": "デバイスにバインドされたセッション認証情報による Cookie の保護",
       "raw_title": "Protecting Cookies with Device Bound Session Credentials",
       "raw_excerpt": null,
@@ -583,23 +581,23 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v2",
-        "generated_at": "2026-07-11T11:11:52.666089+09:00",
+        "generated_at": "2026-07-11T11:47:46.096345+09:00",
         "category": "攻撃・脅威動向",
         "category_version": "v1",
-        "category_reason": "記事はデバイスバウンドセッションクレデンシャルによるCookie保護という新しい認証技術と、それに関連する攻撃手法の動向について述べているため。",
+        "category_reason": "記事はセッションハイジャック攻撃からの保護技術について述べており、攻撃手法とそれに対する防御策が主題であるため。",
         "tags": [
           "認証"
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "Google TAGは、Device Bound Session Credentials (DBSC) を用いたCookie保護の技術について解説しており、これによりセッションハイジャック攻撃への耐性が向上すると説明しています。",
-        "financial_impact": "金融機関では、顧客認証や従業員のシステムアクセスにおいてセッションハイジャック攻撃のリスクに常に晒されています。DBSCのような新しい認証技術は、これらの攻撃に対する防御策として将来的に導入が検討される可能性があります。",
+        "summary": "Google TAGは、セッションハイジャック攻撃からクッキーを保護するための新しい技術「Device Bound Session Credentials (DBSC)」について解説しています。DBSCは、セッションクッキーをデバイスにバインドすることで、攻撃者が盗んだクッキーを使用できないようにします。",
+        "financial_impact": "金融機関では、顧客の認証情報やセッションクッキーが窃取されることによる不正アクセスや情報漏えいのリスクがあります。DBSCのような技術は、これらの攻撃に対する防御策として有効であり、将来的な認証基盤の強化に役立つ可能性があります。",
         "recommended_actions": [
-          "DBSCのような新しい認証技術の動向について情報収集を行い、将来的な導入可能性や既存システムへの影響を評価する。",
-          "現在の認証システムにおけるセッションハイジャック対策の有効性を定期的に見直し、必要に応じて強化策を検討する。",
-          "多要素認証（MFA）の導入状況や利用状況を確認し、セッションハイジャック以外の認証関連リスクへの対策も継続的に強化する。"
+          "セッションハイジャック攻撃の手法と、それに対する現在の自組織の防御策を確認する。",
+          "DBSCのような新しい認証技術の動向を継続的に調査し、将来的な導入可能性について検討する。",
+          "既存の認証システムにおけるセッキー保護の強化策について、ベンダーや専門家と情報交換を行う。"
         ],
-        "reason": "DBSCはセッションハイジャック対策として有望な新技術であり、金融機関の認証セキュリティ強化に資する可能性があるため重要度は中と判断しました。現時点では具体的な導入が求められる段階ではないため、今週確認として情報収集を推奨します。",
+        "reason": "DBSCはセッションハイジャック対策として有望な技術であり、金融機関の認証基盤強化に資する可能性があるため重要度は中と判断しました。即時対応が必要な脆弱性情報ではないため、今週確認としています。",
         "error_type": null,
         "http_status": null
       }
