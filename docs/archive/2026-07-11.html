@@ -18,15 +18,18 @@
     .article-list-header h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}
     .article-list-note{font-size:12px;color:#8b949e;line-height:1.5}
     .cards{padding:12px 12px 0;display:flex;flex-direction:column;gap:10px;max-width:680px;margin:0 auto}
-    .card{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent}
+    .card{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;scroll-margin-top:88px}
     .card:active{background:#1c2128;border-color:#388bfd}
     .card-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-    .article-number{font-size:10px;font-weight:700;line-height:1;color:#8b949e;border:1px solid #30363d;border-radius:100px;padding:3px 7px;white-space:nowrap}
     .tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;color:#fff;white-space:nowrap}
     .date{font-size:11px;color:#8b949e;margin-left:auto}
     h2{font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3}
-    .article-title-link{color:inherit;text-decoration:none}
-    .article-title-link:hover,.article-source-link:hover{text-decoration:underline}
+    .article-heading{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:6px;align-items:start;font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3;overflow-wrap:anywhere}
+    .article-index{color:#8b949e;font-weight:700;white-space:nowrap}
+    .article-title-stack{display:grid;gap:2px;min-width:0}
+    .article-title-translation{font-size:12px;color:#8b949e;line-height:1.5;font-weight:500}
+    .article-title-link,.priority-title-link{color:inherit;text-decoration:none}
+    .article-title-link:hover,.article-source-link:hover,.priority-title-link:hover{text-decoration:underline}
     .summary{font-size:12px;color:#8b949e;line-height:1.5;margin-top:6px}
     .ai-analysis{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:grid;gap:10px}
     .analysis-badges,.article-tags{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
@@ -40,6 +43,7 @@
     .urgency-reference{background:#30363d;color:#c9d1d9}
     .urgency-unknown{background:#30363d;color:#c9d1d9}
     .category-badge{border:1px solid #388bfd;color:#79c0ff;background:#0d1117}
+    .article-tags-label{font-size:11px;color:#8b949e;font-weight:500}
     .article-tag{font-size:10px;font-weight:600;border:1px solid #30363d;color:#8b949e;background:#0d1117}
     .article-section h3{font-size:11px;font-weight:600;color:#8b949e}
     .article-section p,.article-section li{font-size:12px;color:#c9d1d9;line-height:1.6}
@@ -71,9 +75,12 @@
     .important-items{max-width:680px;margin:12px auto 0;padding:0 12px}
     .important-items h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}
     .important-items-note{font-size:12px;color:#8b949e;line-height:1.5;margin-bottom:8px}
-    .important-items-list{display:grid;gap:8px}
-    .important-item-card{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 16px;display:grid;gap:8px}
-    .important-item-card h3{font-size:13px;font-weight:600;line-height:1.5;color:#e6edf3}
+    .important-items-list{display:grid;gap:6px}
+    .priority-item{border-top:1px solid #21262d;padding:10px 0;display:grid;gap:6px}
+    .priority-item:first-child{border-top:0;padding-top:0}
+    .priority-item .article-heading{font-size:13px;font-weight:600}
+    .priority-item-link{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none;width:max-content;max-width:100%}
+    .priority-item-link:hover{text-decoration:underline}
     .important-item-reason,.important-items-empty{font-size:12px;color:#c9d1d9;line-height:1.6}
     .sources{max-width:680px;margin:20px auto 0;padding:0 12px}
     .sources details{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 16px}
@@ -99,9 +106,6 @@
       <h3 class="brief-section-title">本日の概況</h3>
       <p class="brief-overview">本日は、SaaS製品の重大な脆弱性に関する緊急対応要請が報告されており、サプライチェーンリスクへの迅速な確認が求められます。また、Zimbraのメールクライアントにおける脆弱性や、暗号通貨関連プロジェクトのGitHub侵害といった具体的なインシデント事例も確認されました。さらに、AI技術の活用が進む中で、プロンプトインジェクション攻撃の脅威やAIガバナンスの重要性に関する論点が複数提示されており、中長期的な視点での対策検討が不可欠です。</p>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">重要情報ハイライト</h3>
-      <ul class="brief-list"><li>Progress Softwareは、ShareFileの顧客に対し、セキュリティ上の脅威に対応するため、Storage Zone Controllersを実行しているWindowsサーバーをシャットダウンするよう緊急指示を出しました。ShareFileを利用している金融機関は、業務停止や情報漏えいのリスクを避けるため、速やかに公式発表を確認し対応する必要があります。</li><li>ZimbraのClassic Web Clientに、細工されたメールによって悪意のあるコードがユーザーセッションで実行される可能性のある重大なクロスサイトスクリプティング（XSS）脆弱性が発見されました。Zimbra Classic Web Clientを利用している金融機関は、ベンダーが提供するアップデートの適用状況を早急に確認することが推奨されます。</li><li>Injective LabsのGitHubリポジトリが侵害され、攻撃者が暗号通貨ウォレットの秘密鍵を窃取する悪意のあるnpmパッケージを公開しました。暗号資産関連サービスを提供している金融機関や、関連技術を開発・利用している場合は、サプライチェーン攻撃のリスク評価の参考として、自社環境での影響がないか確認することが重要です。</li></ul>
-    </div><div class="brief-section">
       <h3 class="brief-section-title">本日の注目論点</h3>
       <ul class="brief-list"><li>SaaS製品の利用が拡大する中で、ベンダーからの緊急指示に迅速に対応できる体制が確立されているか、また委託先を含めたサプライチェーン全体でのリスク管理が適切に行われているか。</li><li>AI技術の導入が進む中で、プロンプトインジェクションのような新しい攻撃手法に対するセキュリティ対策が、AIガバナンスの枠組みの中で具体的にどのように検討・実装されているか。</li><li>開発環境におけるオープンソースライブラリやパッケージの利用において、サプライチェーン攻撃のリスクを低減するための整合性検証や信頼できるソースからの取得に関する管理策が十分であるか。</li></ul>
     </div><div class="brief-section">
@@ -110,6 +114,17 @@
     </div>
     </div>
   </div>
+  <section class="important-items">
+    <h2>優先確認</h2>
+    <p class="important-items-note">確認優先度が高い、または確認目安が本日確認の記事です。</p>
+    <div class="important-items-list">
+      <article class="priority-item">
+        <h3 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-1" lang="en">URGENT - Progress Tells ShareFile Customers to Shut Down Storage Zone Controllers Over Security Threat</a><span class="article-title-translation" lang="ja">緊急 - セキュリティ上の脅威を理由に、ShareFile のお客様に Storage Zone Controller をシャットダウンするよう進捗状況が伝えられています</span></span></h3>
+        <p class="important-item-reason">広く利用される可能性のあるSaaS製品のベンダーが、信頼できる外部セキュリティ脅威を理由に顧客へサーバーシャットダウンを指示しており、業務停止や情報漏えいに直結する可能性があるため、本日中の確認が必要です。</p>
+        <a class="priority-item-link" href="#article-1">本文を見る</a>
+      </article>
+    </div>
+  </section>
   <section class="dashboard">
     <h2>本日のダッシュボード</h2>
     <div class="dashboard-total">
@@ -118,11 +133,11 @@
     </div>
     <div class="dashboard-groups">
       <section class="dashboard-group">
-        <h3>重要度</h3>
+        <h3>確認優先度</h3>
         <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>高</span><strong>1</strong></li><li class="dashboard-count-item"><span>中</span><strong>6</strong></li><li class="dashboard-count-item"><span>低</span><strong>5</strong></li></ul>
       </section>
       <section class="dashboard-group">
-        <h3>緊急度</h3>
+        <h3>確認目安</h3>
         <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>本日確認</span><strong>1</strong></li><li class="dashboard-count-item"><span>今週確認</span><strong>2</strong></li><li class="dashboard-count-item"><span>参考</span><strong>9</strong></li></ul>
       </section>
       <section class="dashboard-group dashboard-category-group">
@@ -131,33 +146,20 @@
       </section>
     </div>
   </section>
-  <section class="important-items">
-    <h2>本日の重要情報</h2>
-    <p class="important-items-note">本日中の確認、または優先的な共有を検討したい情報です。</p>
-    <div class="important-items-list">
-      <article class="important-item-card">
-        <div class="analysis-badges"><span class="importance-badge importance-high">重要度 高</span><span class="urgency-badge urgency-today">本日確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
-        <h3><a class="article-title-link" href="https://thehackernews.com/2026/07/urgent-progress-tells-sharefile.html" target="_blank" rel="noopener noreferrer">緊急 - セキュリティ上の脅威を理由に、ShareFile のお客様に Storage Zone Controller をシャットダウンするよう進捗状況が伝えられています</a></h3>
-        <p class="important-item-reason">広く利用される可能性のあるSaaS製品のベンダーが、信頼できる外部セキュリティ脅威を理由に顧客へサーバーシャットダウンを指示しており、業務停止や情報漏えいに直結する可能性があるため、本日中の確認が必要です。</p>
-        <a class="article-source-link" href="https://thehackernews.com/2026/07/urgent-progress-tells-sharefile.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      </article>
-    </div>
-  </section>
   <section class="article-list-header">
-    <h2>全記事一覧</h2>
-    <p class="article-list-note">緊急度・重要度の順に表示しています。</p>
+    <h2>本日の情報</h2>
+    <p class="article-list-note">確認目安、確認優先度、元の収集順で表示しています。</p>
   </section>
   <div class="cards">
-    <div class="card">
+    <article class="card" id="article-1">
       <div class="card-meta">
-        <span class="article-number">No. 1</span>
         <span class="tag" style="background:#555">The Hacker News</span>
         <span class="date">07/11 01:30</span>
       </div>
-      <h2><a class="article-title-link" href="https://thehackernews.com/2026/07/urgent-progress-tells-sharefile.html" target="_blank" rel="noopener noreferrer">緊急 - セキュリティ上の脅威を理由に、ShareFile のお客様に Storage Zone Controller をシャットダウンするよう進捗状況が伝えられています</a></h2>
+      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/urgent-progress-tells-sharefile.html" target="_blank" rel="noopener noreferrer" lang="en">URGENT - Progress Tells ShareFile Customers to Shut Down Storage Zone Controllers Over Security Threat</a><span class="article-title-translation" lang="ja">緊急 - セキュリティ上の脅威を理由に、ShareFile のお客様に Storage Zone Controller をシャットダウンするよう進捗状況が伝えられています</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-high">重要度 高</span><span class="urgency-badge urgency-today">本日確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
-        <div class="article-tags"><span class="article-tag">サプライチェーン</span><span class="article-tag">SaaS</span><span class="article-tag">業務停止</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-high">確認優先度 高</span><span class="urgency-badge urgency-today">確認目安 本日確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">サプライチェーン</span><span class="article-tag">SaaS</span><span class="article-tag">業務停止</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>Progress Softwareは、ShareFileの顧客に対し、セキュリティ上の脅威に対応するため、Storage Zone Controllersを実行しているWindowsサーバーをシャットダウンするよう指示しました。同社は「信頼できる外部セキュリティ脅威」に対応中であり、影響を受けるアカウントへのアクセスを一時的に無効化しています。</p>
@@ -172,18 +174,17 @@
         </section>
       </div>
       <a class="article-source-link" href="https://thehackernews.com/2026/07/urgent-progress-tells-sharefile.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </div>
+    </article>
 
-    <div class="card">
+    <article class="card" id="article-2">
       <div class="card-meta">
-        <span class="article-number">No. 2</span>
         <span class="tag" style="background:#555">The Hacker News</span>
         <span class="date">07/11 15:45</span>
       </div>
-      <h2><a class="article-title-link" href="https://thehackernews.com/2026/07/critical-zimbra-flaw-could-let-crafted_0483473395.html" target="_blank" rel="noopener noreferrer">Zimbra の重大な欠陥により、細工されたメールによりユーザー セッションで悪意のあるコードが実行される可能性がある</a></h2>
+      <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/critical-zimbra-flaw-could-let-crafted_0483473395.html" target="_blank" rel="noopener noreferrer" lang="en">Critical Zimbra Flaw Could Let Crafted Emails Run Malicious Code in User Sessions</a><span class="article-title-translation" lang="ja">Zimbra の重大な欠陥により、細工されたメールによりユーザー セッションで悪意のあるコードが実行される可能性がある</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
-        <div class="article-tags"><span class="article-tag">パッチ</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">パッチ</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>ZimbraのClassic Web Clientに、細工されたメールによって悪意のあるコードがユーザーセッションで実行される可能性のある重大なクロスサイトスクリプティング（XSS）脆弱性が発見されました。Zimbraは顧客に対し、この脆弱性に対処するためのアップデート適用を促しています。</p>
@@ -198,18 +199,17 @@
         </section>
       </div>
       <a class="article-source-link" href="https://thehackernews.com/2026/07/critical-zimbra-flaw-could-let-crafted_0483473395.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </div>
+    </article>
 
-    <div class="card">
+    <article class="card" id="article-3">
       <div class="card-meta">
-        <span class="article-number">No. 3</span>
         <span class="tag" style="background:#555">The Hacker News</span>
         <span class="date">07/11 01:29</span>
       </div>
-      <h2><a class="article-title-link" href="https://thehackernews.com/2026/07/injective-labs-github-compromise-pushes.html" target="_blank" rel="noopener noreferrer">Injective Labs GitHub の侵害により、ウォレット キーを盗む npm パッケージがプッシュされる</a></h2>
+      <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/injective-labs-github-compromise-pushes.html" target="_blank" rel="noopener noreferrer" lang="en">Injective Labs GitHub Compromise Pushes Wallet-Key-Stealing npm Packages</a><span class="article-title-translation" lang="ja">Injective Labs GitHub の侵害により、ウォレット キーを盗む npm パッケージがプッシュされる</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">今週確認</span><span class="category-badge">カテゴリ：インシデント</span></div>
-        <div class="article-tags"><span class="article-tag">サプライチェーン</span><span class="article-tag">インシデント</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：インシデント</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">サプライチェーン</span><span class="article-tag">インシデント</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>Injective LabsのGitHubリポジトリが侵害され、攻撃者が暗号通貨ウォレットの秘密鍵やニーモニックフレーズを窃取する悪意のあるnpmパッケージを公開しました。このパッケージは、偽のテレメトリー機能を通じてデータを外部に送信するよう設計されていました。</p>
@@ -224,18 +224,17 @@
         </section>
       </div>
       <a class="article-source-link" href="https://thehackernews.com/2026/07/injective-labs-github-compromise-pushes.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </div>
+    </article>
 
-    <div class="card">
+    <article class="card" id="article-4">
       <div class="card-meta">
-        <span class="article-number">No. 4</span>
         <span class="tag" style="background:#cc0000">CrowdStrike</span>
         <span class="date"></span>
       </div>
-      <h2><a class="article-title-link" href="https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/" target="_blank" rel="noopener noreferrer">ガードレールのない AI ガバナンスが劇場である理由</a></h2>
+      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/" target="_blank" rel="noopener noreferrer" lang="en">Why AI Governance Without Guardrails Is Theater</a><span class="article-title-translation" lang="ja">ガードレールのない AI ガバナンスが劇場である理由</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-reference">参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tag">AI</span><span class="article-tag">ガイドライン</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">ガイドライン</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>AIガバナンスは、具体的なガードレール（安全策）がなければ形骸化し、AIの潜在的なリスクを適切に管理できないという警鐘を鳴らす記事です。</p>
@@ -246,18 +245,17 @@
         </section>
       </div>
       <a class="article-source-link" href="https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </div>
+    </article>
 
-    <div class="card">
+    <article class="card" id="article-5">
       <div class="card-meta">
-        <span class="article-number">No. 5</span>
         <span class="tag" style="background:#cc0000">CrowdStrike</span>
         <span class="date"></span>
       </div>
-      <h2><a class="article-title-link" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/" target="_blank" rel="noopener noreferrer">CrowdStrike が新しいプロンプト インジェクション技術を発見</a></h2>
+      <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/" target="_blank" rel="noopener noreferrer" lang="en">CrowdStrike Uncovers New Prompt Injection Techniques</a><span class="article-title-translation" lang="ja">CrowdStrike が新しいプロンプト インジェクション技術を発見</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-reference">参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tag">AI</span><span class="article-tag">LLM</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">LLM</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>CrowdStrikeは、大規模言語モデル(LLM)に対する新しいプロンプトインジェクション技術を発見しました。これらの技術は、LLMのセキュリティリスクを増大させる可能性があります。</p>
@@ -272,18 +270,17 @@
         </section>
       </div>
       <a class="article-source-link" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </div>
+    </article>
 
-    <div class="card">
+    <article class="card" id="article-6">
       <div class="card-meta">
-        <span class="article-number">No. 6</span>
         <span class="tag" style="background:#4285f4">Google TAG</span>
         <span class="date"></span>
       </div>
-      <h2><a class="article-title-link" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener noreferrer">現実の AI の脅威: Web 上でのプロンプト インジェクションの現状</a></h2>
+      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener noreferrer" lang="en">AI threats in the wild: The current state of prompt injections on the web</a><span class="article-title-translation" lang="ja">現実の AI の脅威: Web 上でのプロンプト インジェクションの現状</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-reference">参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tag">AI</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>Googleの脅威分析グループ(TAG)は、AIモデルに対するプロンプトインジェクション攻撃の現状について報告しました。攻撃者は、AIモデルの出力や動作を操作するために、悪意のあるプロンプトを注入する手法を用いています。</p>
@@ -294,18 +291,17 @@
         </section>
       </div>
       <a class="article-source-link" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </div>
+    </article>
 
-    <div class="card">
+    <article class="card" id="article-7">
       <div class="card-meta">
-        <span class="article-number">No. 7</span>
         <span class="tag" style="background:#4285f4">Google TAG</span>
         <span class="date"></span>
       </div>
-      <h2><a class="article-title-link" href="http://security.googleblog.com/feeds/3718049046001981559/comments/default" target="_blank" rel="noopener noreferrer">デバイスにバインドされたセッション認証情報による Cookie の保護</a></h2>
+      <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="http://security.googleblog.com/feeds/3718049046001981559/comments/default" target="_blank" rel="noopener noreferrer" lang="en">Protecting Cookies with Device Bound Session Credentials</a><span class="article-title-translation" lang="ja">デバイスにバインドされたセッション認証情報による Cookie の保護</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-reference">参考</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tag">認証</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">認証</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>Google TAGは、セッションハイジャック攻撃からCookieを保護するための新しい技術「Device Bound Session Credentials (DBSC)」について解説しています。これは、認証情報が盗まれた場合でも、攻撃者がセッションを悪用することを防ぐことを目的としています。</p>
@@ -316,17 +312,16 @@
         </section>
       </div>
       <a class="article-source-link" href="http://security.googleblog.com/feeds/3718049046001981559/comments/default" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </div>
+    </article>
 
-    <div class="card">
+    <article class="card" id="article-8">
       <div class="card-meta">
-        <span class="article-number">No. 8</span>
         <span class="tag" style="background:#555">Dark Reading</span>
         <span class="date">07/11 04:08</span>
       </div>
-      <h2><a class="article-title-link" href="https://www.darkreading.com/cybersecurity-operations/jen-ellis-connecting-cyber-community-political-machinery" target="_blank" rel="noopener noreferrer">ジェン・エリス: サイバーコミュニティと政治機構を結びつける</a></h2>
+      <h2 class="article-heading"><span class="article-index">8.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/cybersecurity-operations/jen-ellis-connecting-cyber-community-political-machinery" target="_blank" rel="noopener noreferrer" lang="en">Jen Ellis: Connecting Cyber Community With Political Machinery</a><span class="article-title-translation" lang="ja">ジェン・エリス: サイバーコミュニティと政治機構を結びつける</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-low">重要度 低</span><span class="urgency-badge urgency-reference">参考</span><span class="category-badge">カテゴリ：その他</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
         
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -338,18 +333,17 @@
         </section>
       </div>
       <a class="article-source-link" href="https://www.darkreading.com/cybersecurity-operations/jen-ellis-connecting-cyber-community-political-machinery" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </div>
+    </article>
 
-    <div class="card">
+    <article class="card" id="article-9">
       <div class="card-meta">
-        <span class="article-number">No. 9</span>
         <span class="tag" style="background:#555">Dark Reading</span>
         <span class="date">07/11 01:51</span>
       </div>
-      <h2><a class="article-title-link" href="https://www.darkreading.com/threat-intelligence/cybercriminals-healthcare-businesses-attacks-surge" target="_blank" rel="noopener noreferrer">攻撃が急増する中、サイバー犯罪者がヘルスケア企業に殺到</a></h2>
+      <h2 class="article-heading"><span class="article-index">9.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/threat-intelligence/cybercriminals-healthcare-businesses-attacks-surge" target="_blank" rel="noopener noreferrer" lang="en">Cybercriminals Flock to Healthcare Businesses as Attacks Surge</a><span class="article-title-translation" lang="ja">攻撃が急増する中、サイバー犯罪者がヘルスケア企業に殺到</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-low">重要度 低</span><span class="urgency-badge urgency-reference">参考</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tag">サプライチェーン</span><span class="article-tag">インシデント</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">サプライチェーン</span><span class="article-tag">インシデント</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>2026年上半期、病院や診療所へのサイバー攻撃は緩やかな増加にとどまった一方、医療サービスプロバイダーやその他の医療関連企業への攻撃が2倍以上に急増しました。</p>
@@ -360,17 +354,16 @@
         </section>
       </div>
       <a class="article-source-link" href="https://www.darkreading.com/threat-intelligence/cybercriminals-healthcare-businesses-attacks-surge" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </div>
+    </article>
 
-    <div class="card">
+    <article class="card" id="article-10">
       <div class="card-meta">
-        <span class="article-number">No. 10</span>
         <span class="tag" style="background:#0078d4">Microsoft Security</span>
         <span class="date">07/11 01:00</span>
       </div>
-      <h2><a class="article-title-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/10/securing-our-future-july-2026-progress-report-on-microsofts-secure-future-initiative/" target="_blank" rel="noopener noreferrer">私たちの未来を守る: Microsoft の Secure Future Initiative に関する 2026 年 7 月の進捗レポート</a></h2>
+      <h2 class="article-heading"><span class="article-index">10.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/10/securing-our-future-july-2026-progress-report-on-microsofts-secure-future-initiative/" target="_blank" rel="noopener noreferrer" lang="en">Securing our future: July 2026 progress report on Microsoft’s Secure Future Initiative</a><span class="article-title-translation" lang="ja">私たちの未来を守る: Microsoft の Secure Future Initiative に関する 2026 年 7 月の進捗レポート</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-low">重要度 低</span><span class="urgency-badge urgency-reference">参考</span><span class="category-badge">カテゴリ：その他</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
         
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -382,17 +375,16 @@
         </section>
       </div>
       <a class="article-source-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/10/securing-our-future-july-2026-progress-report-on-microsofts-secure-future-initiative/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </div>
+    </article>
 
-    <div class="card">
+    <article class="card" id="article-11">
       <div class="card-meta">
-        <span class="article-number">No. 11</span>
         <span class="tag" style="background:#cc0000">CrowdStrike</span>
         <span class="date"></span>
       </div>
-      <h2><a class="article-title-link" href="https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/" target="_blank" rel="noopener noreferrer">Falcon Secure Access がゼロトラスト ブラウザ セキュリティの標準を設定</a></h2>
+      <h2 class="article-heading"><span class="article-index">11.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/" target="_blank" rel="noopener noreferrer" lang="en">Falcon Secure Access Sets the Standard for Zero Trust Browser Security</a><span class="article-title-translation" lang="ja">Falcon Secure Access がゼロトラスト ブラウザ セキュリティの標準を設定</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-low">重要度 低</span><span class="urgency-badge urgency-reference">参考</span><span class="category-badge">カテゴリ：その他</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
         
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -404,17 +396,16 @@
         </section>
       </div>
       <a class="article-source-link" href="https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </div>
+    </article>
 
-    <div class="card">
+    <article class="card" id="article-12">
       <div class="card-meta">
-        <span class="article-number">No. 12</span>
         <span class="tag" style="background:#4285f4">Google TAG</span>
         <span class="date"></span>
       </div>
-      <h2><a class="article-title-link" href="http://security.googleblog.com/feeds/1469360228826887140/comments/default" target="_blank" rel="noopener noreferrer">Pixel ベースバンドに Rust を導入する</a></h2>
+      <h2 class="article-heading"><span class="article-index">12.</span><span class="article-title-stack"><a class="article-title-link" href="http://security.googleblog.com/feeds/1469360228826887140/comments/default" target="_blank" rel="noopener noreferrer" lang="en">Bringing Rust to the Pixel Baseband</a><span class="article-title-translation" lang="ja">Pixel ベースバンドに Rust を導入する</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-low">重要度 低</span><span class="urgency-badge urgency-reference">参考</span><span class="category-badge">カテゴリ：その他</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
         
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -426,7 +417,7 @@
         </section>
       </div>
       <a class="article-source-link" href="http://security.googleblog.com/feeds/1469360228826887140/comments/default" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </div></div>
+    </article></div>
   <div class="sources">
     <details>
       <summary>収集元 (17ソース)</summary>
