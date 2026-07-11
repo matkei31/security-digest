@@ -23,12 +23,18 @@ DATA_DIR = REPOSITORY_ROOT / "data"
 # ── バージョン・スキーマ定数(一元管理) ───────────────────────────────────────
 SCHEMA_VERSION = 1
 ARTICLE_PROMPT_VERSION = "article-analysis-v2"
-BRIEF_PROMPT_VERSION = "executive-summary-v1"
+BRIEF_PROMPT_VERSION = "today-brief-v2"
 CATEGORY_VERSION = "v1"
 
 VALID_RUN_STATUSES = {"success", "partial", "failed", "not_attempted"}
 VALID_ANALYSIS_STATUSES = {"success", "fallback", "failed", "not_attempted"}
 VALID_BRIEF_STATUSES = {"success", "failed", "not_attempted"}
+
+# Ticket 8: Today's Brief 4要素の件数上限。fetch.py側の正規化・response_schemaと
+# ここでの保存前検証の両方から参照し、値を二重管理しない。
+BRIEF_MAX_HIGHLIGHTS = 3
+BRIEF_MAX_DISCUSSION_POINTS = 3
+BRIEF_MAX_CHECK_ITEMS = 4
 VALID_ERROR_TYPES = {
     "rate_limit", "quota_exceeded", "billing_or_balance", "schema_parse_error",
     "network_error", "api_error", "unknown",
@@ -418,25 +424,31 @@ def compute_counts(article_entries):
     }
 
 
-def build_brief_section(exec_result, model):
-    """fetch.py の build_executive_summary() の戻り値
-    ({"lines":..., "status":..., "error_type":..., "http_status":...}) から
-    Today's Brief用のbriefオブジェクトを構築する。"""
+def build_brief_section(brief_result, model):
+    """fetch.py の build_todays_brief() の戻り値
+    ({"overview":..., "important_highlights":..., "discussion_points":...,
+    "check_items":..., "status":..., "error_type":..., "http_status":...}) から
+    Today's Brief用のbriefオブジェクトを構築する。
+
+    brief_resultにこれらのキーが無い場合(Ticket 3時点の旧
+    {"lines":...}形式など)は、.get()のデフォルトによりoverview=None・
+    各配列=[]として扱う(not_attempted/failed相当の空データとして安全側に倒す)。
+    """
     return {
-        "status": exec_result["status"],
+        "status": brief_result["status"],
         "model": model,
         "prompt_version": BRIEF_PROMPT_VERSION,
-        "overview": None,
-        "important_highlights": exec_result["lines"] or [],
-        "discussion_points": [],
-        "check_items": [],
-        "error_type": exec_result.get("error_type"),
+        "overview": brief_result.get("overview"),
+        "important_highlights": brief_result.get("important_highlights") or [],
+        "discussion_points": brief_result.get("discussion_points") or [],
+        "check_items": brief_result.get("check_items") or [],
+        "error_type": brief_result.get("error_type"),
     }
 
 
 # ── 日次JSON全体の構築 ────────────────────────────────────────────────────
 
-def build_daily_digest(items, exec_result, source_definitions, model, fetched_at, generated_at):
+def build_daily_digest(items, brief_result, source_definitions, model, fetched_at, generated_at):
     """収集・分析結果一式から、日次JSON全体の辞書を組み立てる。
     fetched_at/generated_at: いずれもJSTのtz付きdatetime。
     """
@@ -457,7 +469,7 @@ def build_daily_digest(items, exec_result, source_definitions, model, fetched_at
         },
         "run": compute_run_meta(article_entries),
         "counts": compute_counts(article_entries),
-        "brief": build_brief_section(exec_result, model),
+        "brief": build_brief_section(brief_result, model),
         "items": article_entries,
     }
 
@@ -571,6 +583,58 @@ def validate_daily_digest(digest):
             raise DailyJsonError(
                 f"items[{i}] (id={item_id!r}): analysis.tagsに許可外の値があります: {invalid_tags!r}"
             )
+
+    # Ticket 8: Today's Brief (4要素) の最低限の検証。
+    # この検証は保存直前(save_daily_digest)にのみ適用され、scan_daily_digest_files()
+    # による既存日次JSONの走査(index再構築)では呼び出されないため、Ticket 3時点の
+    # 旧brief形式のファイルがディスク上に残っていても、それらの読み込みには影響しない。
+    brief = digest.get("brief")
+    if not isinstance(brief, dict):
+        raise DailyJsonError("briefがオブジェクトではありません")
+
+    brief_status = brief.get("status")
+    if brief_status not in VALID_BRIEF_STATUSES:
+        raise DailyJsonError(
+            f"brief.statusが不正です: {brief_status!r} (許容値: {sorted(VALID_BRIEF_STATUSES)})"
+        )
+
+    if not isinstance(brief.get("prompt_version"), str) or not brief.get("prompt_version"):
+        raise DailyJsonError(f"brief.prompt_versionが文字列ではありません: {brief.get('prompt_version')!r}")
+
+    overview = brief.get("overview")
+    if overview is not None and not isinstance(overview, str):
+        raise DailyJsonError(f"brief.overviewが文字列でもnullでもありません: {overview!r}")
+
+    brief_list_specs = (
+        ("important_highlights", BRIEF_MAX_HIGHLIGHTS),
+        ("discussion_points", BRIEF_MAX_DISCUSSION_POINTS),
+        ("check_items", BRIEF_MAX_CHECK_ITEMS),
+    )
+    for key, max_items in brief_list_specs:
+        values = brief.get(key)
+        if not isinstance(values, list):
+            raise DailyJsonError(f"brief.{key}が配列ではありません: {values!r}")
+        if len(values) > max_items:
+            raise DailyJsonError(f"brief.{key}が{max_items}件を超えています: {len(values)}件")
+        for i, v in enumerate(values):
+            if not isinstance(v, str) or not v.strip():
+                raise DailyJsonError(f"brief.{key}[{i}]が空でない文字列ではありません: {v!r}")
+
+    if brief_status == "success":
+        if not overview or not overview.strip():
+            raise DailyJsonError("brief.status=successですが、brief.overviewが空です")
+    else:
+        # failed/not_attempted時は、前日流用や固定一般論の混入を防ぐため、
+        # overview=null・各配列=[]であることを明示的に要求する。
+        if overview is not None:
+            raise DailyJsonError(
+                f"brief.status={brief_status!r}ですが、brief.overviewがnullではありません: {overview!r}"
+            )
+        for key, _ in brief_list_specs:
+            if brief.get(key):
+                raise DailyJsonError(
+                    f"brief.status={brief_status!r}ですが、brief.{key}が空配列ではありません: {brief.get(key)!r}"
+                )
 
     return True
 
@@ -714,13 +778,13 @@ def build_index(data_dir, generated_at):
 # ── 統合エントリポイント ──────────────────────────────────────────────────
 
 def generate_and_save_daily_digest(
-    items, exec_result, source_definitions, model, fetched_at, generated_at, data_dir=None,
+    items, brief_result, source_definitions, model, fetched_at, generated_at, data_dir=None,
 ):
     """日次JSON(data/YYYY-MM-DD.json)を構築・保存し、続けてdata/index.jsonを
     再構築・保存する。保存した日次JSONの辞書を返す。"""
     data_dir = Path(data_dir) if data_dir is not None else DATA_DIR
 
-    digest = build_daily_digest(items, exec_result, source_definitions, model, fetched_at, generated_at)
+    digest = build_daily_digest(items, brief_result, source_definitions, model, fetched_at, generated_at)
     save_daily_digest(digest, data_dir)
     save_index(data_dir, generated_at)
     return digest
