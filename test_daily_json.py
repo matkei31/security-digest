@@ -77,6 +77,26 @@ SAMPLE_ANALYSIS_V2 = {
     "tags": ["KEV", "悪用確認済み"],
 }
 
+# Ticket 8: Today's Brief (4要素) の戻り値サンプル。fetch.py の
+# build_todays_brief()/gemini_todays_brief() が返す形をそのまま模す。
+NOT_ATTEMPTED_BRIEF_RESULT = {
+    "overview": None, "important_highlights": [], "discussion_points": [], "check_items": [],
+    "status": "not_attempted", "error_type": None, "http_status": None,
+}
+
+SUCCESS_BRIEF_RESULT = {
+    "overview": "本日は脆弱性関連の情報が中心で、金融機関に影響し得る内容が複数確認されました。",
+    "important_highlights": ["重要情報ハイライト1", "重要情報ハイライト2"],
+    "discussion_points": ["本日の注目論点1"],
+    "check_items": ["確認事項1", "確認事項2"],
+    "status": "success", "error_type": None, "http_status": None,
+}
+
+FAILED_BRIEF_RESULT = {
+    "overview": None, "important_highlights": [], "discussion_points": [], "check_items": [],
+    "status": "failed", "error_type": "schema_parse_error", "http_status": None,
+}
+
 
 # ── エラー分類 ────────────────────────────────────────────────────────────
 
@@ -117,7 +137,7 @@ class ErrorClassificationTest(unittest.TestCase):
                 error_type="resource_exhausted", http_status=429)),
         ]
         digest = dj.build_daily_digest(
-            items, {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+            items, NOT_ATTEMPTED_BRIEF_RESULT,
             SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW,
         )
         dj.validate_daily_digest(digest)  # 例外が出なければOK
@@ -130,12 +150,11 @@ class ErrorClassificationTest(unittest.TestCase):
 class SchemaMetaTest(unittest.TestCase):
     def test_generates_valid_daily_digest(self):
         item = make_item(ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta())
-        exec_result = {"lines": ["行1", "行2"], "status": "success", "error_type": None, "http_status": None}
-        digest = dj.build_daily_digest([item], exec_result, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        digest = dj.build_daily_digest([item], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
         dj.validate_daily_digest(digest)  # 例外が出なければOK
 
     def test_schema_version_is_1(self):
-        digest = dj.build_daily_digest([], {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+        digest = dj.build_daily_digest([], NOT_ATTEMPTED_BRIEF_RESULT,
                                         SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
         self.assertEqual(digest["schema_version"], 1)
         self.assertIsInstance(digest["schema_version"], int)
@@ -143,18 +162,18 @@ class SchemaMetaTest(unittest.TestCase):
     def test_digest_date_is_jst_based(self):
         # UTC 15:30 = JST 翌日00:30 となるケースでdigest_dateがJST日付になることを確認
         generated_at_jst = datetime.datetime(2026, 7, 12, 0, 30, tzinfo=JST)
-        digest = dj.build_daily_digest([], {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+        digest = dj.build_daily_digest([], NOT_ATTEMPTED_BRIEF_RESULT,
                                         SOURCE_DEFS, "gemini-2.5-flash", NOW, generated_at_jst)
         self.assertEqual(digest["digest_date"], "2026-07-12")
 
     def test_generated_at_has_timezone(self):
-        digest = dj.build_daily_digest([], {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+        digest = dj.build_daily_digest([], NOT_ATTEMPTED_BRIEF_RESULT,
                                         SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
         parsed = datetime.datetime.fromisoformat(digest["generated_at"])
         self.assertIsNotNone(parsed.tzinfo)
 
     def test_generator_model_and_prompt_versions_are_set(self):
-        digest = dj.build_daily_digest([], {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+        digest = dj.build_daily_digest([], NOT_ATTEMPTED_BRIEF_RESULT,
                                         SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
         self.assertEqual(digest["generator"]["model"], "gemini-2.5-flash")
         self.assertEqual(digest["generator"]["article_prompt_version"], dj.ARTICLE_PROMPT_VERSION)
@@ -162,7 +181,7 @@ class SchemaMetaTest(unittest.TestCase):
 
     def test_total_items_matches_items_length(self):
         items = [make_item(ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta()) for _ in range(3)]
-        digest = dj.build_daily_digest(items, {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+        digest = dj.build_daily_digest(items, NOT_ATTEMPTED_BRIEF_RESULT,
                                         SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
         self.assertEqual(digest["run"]["total_items"], len(digest["items"]))
         self.assertEqual(digest["run"]["total_items"], 3)
@@ -177,7 +196,7 @@ class RunStatusTest(unittest.TestCase):
                       ai_analysis_meta=m)
             for m in metas
         ]
-        return dj.build_daily_digest(items, {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+        return dj.build_daily_digest(items, NOT_ATTEMPTED_BRIEF_RESULT,
                                       SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
 
     def test_all_success_is_success(self):
@@ -194,12 +213,12 @@ class RunStatusTest(unittest.TestCase):
 
     def test_all_not_attempted_is_not_attempted(self):
         items = [make_item() for _ in range(2)]  # ai_analysis_meta キーなし
-        digest = dj.build_daily_digest(items, {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+        digest = dj.build_daily_digest(items, NOT_ATTEMPTED_BRIEF_RESULT,
                                         SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
         self.assertEqual(digest["run"]["status"], "not_attempted")
 
     def test_zero_items_is_success(self):
-        digest = dj.build_daily_digest([], {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+        digest = dj.build_daily_digest([], NOT_ATTEMPTED_BRIEF_RESULT,
                                         SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
         self.assertEqual(digest["run"]["status"], "success")
 
@@ -222,7 +241,7 @@ class CountsTest(unittest.TestCase):
             make_item(ai_analysis={**SAMPLE_ANALYSIS, "importance": "中"}, ai_analysis_meta=success_meta()),
             make_item(ai_analysis=None, ai_analysis_meta=failed_meta()),
         ]
-        digest = dj.build_daily_digest(items, {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+        digest = dj.build_daily_digest(items, NOT_ATTEMPTED_BRIEF_RESULT,
                                         SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
         importance = digest["counts"]["importance"]
         self.assertEqual(importance["高"], 1)
@@ -234,7 +253,7 @@ class CountsTest(unittest.TestCase):
         # Ticket 3形式(urgency/categoryキーを持たない)のanalysisは、
         # statusがsuccessでも未判定に集計される(後方互換の確認)。
         items = [make_item(ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta()) for _ in range(4)]
-        digest = dj.build_daily_digest(items, {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+        digest = dj.build_daily_digest(items, NOT_ATTEMPTED_BRIEF_RESULT,
                                         SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
         self.assertEqual(digest["counts"]["urgency"]["未判定"], 4)
         self.assertEqual(sum(digest["counts"]["urgency"].values()), 4)
@@ -254,7 +273,7 @@ class CountsTest(unittest.TestCase):
             ),
             make_item(ai_analysis=None, ai_analysis_meta=failed_meta()),
         ]
-        digest = dj.build_daily_digest(items, {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+        digest = dj.build_daily_digest(items, NOT_ATTEMPTED_BRIEF_RESULT,
                                         SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
         self.assertEqual(digest["counts"]["category"]["脆弱性・パッチ"], 1)
         self.assertEqual(digest["counts"]["category"]["規制・ガバナンス"], 1)
@@ -426,27 +445,138 @@ class AnalysisSectionTest(unittest.TestCase):
 # ── brief ─────────────────────────────────────────────────────────────────
 
 class BriefTest(unittest.TestCase):
-    def test_current_summary_lines_go_into_important_highlights(self):
-        exec_result = {"lines": ["行1", "行2", "行3"], "status": "success", "error_type": None, "http_status": None}
-        digest = dj.build_daily_digest([], exec_result, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
-        self.assertEqual(digest["brief"]["important_highlights"], ["行1", "行2", "行3"])
+    def test_four_fields_are_saved_from_brief_result(self):
+        digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        brief = digest["brief"]
+        self.assertEqual(brief["overview"], SUCCESS_BRIEF_RESULT["overview"])
+        self.assertEqual(brief["important_highlights"], SUCCESS_BRIEF_RESULT["important_highlights"])
+        self.assertEqual(brief["discussion_points"], SUCCESS_BRIEF_RESULT["discussion_points"])
+        self.assertEqual(brief["check_items"], SUCCESS_BRIEF_RESULT["check_items"])
 
-    def test_overview_is_null(self):
-        exec_result = {"lines": ["行1", "行2"], "status": "success", "error_type": None, "http_status": None}
-        digest = dj.build_daily_digest([], exec_result, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
-        self.assertIsNone(digest["brief"]["overview"])
+    def test_prompt_version_is_today_brief_v2(self):
+        digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        self.assertEqual(digest["brief"]["prompt_version"], "today-brief-v2")
+        self.assertEqual(digest["generator"]["brief_prompt_version"], "today-brief-v2")
+        self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-v2")
 
-    def test_discussion_points_and_check_items_are_empty_arrays(self):
-        exec_result = {"lines": ["行1", "行2"], "status": "success", "error_type": None, "http_status": None}
-        digest = dj.build_daily_digest([], exec_result, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
-        self.assertEqual(digest["brief"]["discussion_points"], [])
-        self.assertEqual(digest["brief"]["check_items"], [])
+    def test_schema_version_stays_1(self):
+        digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        self.assertEqual(digest["schema_version"], 1)
 
-    def test_not_attempted_without_api_key_or_high_items(self):
-        exec_result = {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None}
-        digest = dj.build_daily_digest([], exec_result, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
-        self.assertEqual(digest["brief"]["status"], "not_attempted")
-        self.assertEqual(digest["brief"]["important_highlights"], [])
+    def test_success_overview_is_a_string(self):
+        digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        self.assertIsInstance(digest["brief"]["overview"], str)
+        self.assertTrue(digest["brief"]["overview"])
+
+    def test_failed_overview_null_and_arrays_empty(self):
+        digest = dj.build_daily_digest([], FAILED_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        brief = digest["brief"]
+        self.assertEqual(brief["status"], "failed")
+        self.assertIsNone(brief["overview"])
+        self.assertEqual(brief["important_highlights"], [])
+        self.assertEqual(brief["discussion_points"], [])
+        self.assertEqual(brief["check_items"], [])
+        self.assertEqual(brief["error_type"], "schema_parse_error")
+
+    def test_not_attempted_without_api_key_or_valid_analysis(self):
+        digest = dj.build_daily_digest([], NOT_ATTEMPTED_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        brief = digest["brief"]
+        self.assertEqual(brief["status"], "not_attempted")
+        self.assertIsNone(brief["overview"])
+        self.assertEqual(brief["important_highlights"], [])
+        self.assertEqual(brief["discussion_points"], [])
+        self.assertEqual(brief["check_items"], [])
+
+    def test_validation_passes_for_success(self):
+        digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        dj.validate_daily_digest(digest)  # 例外が出なければOK
+
+    def test_validation_passes_for_failed_and_not_attempted(self):
+        for brief_result in (FAILED_BRIEF_RESULT, NOT_ATTEMPTED_BRIEF_RESULT):
+            with self.subTest(status=brief_result["status"]):
+                digest = dj.build_daily_digest([], brief_result, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+                dj.validate_daily_digest(digest)  # 例外が出なければOK
+
+    def test_validation_rejects_success_with_empty_overview(self):
+        digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        digest["brief"]["overview"] = ""
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_validation_rejects_failed_with_non_null_overview(self):
+        digest = dj.build_daily_digest([], FAILED_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        digest["brief"]["overview"] = "前日の概況を流用"
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_validation_rejects_too_many_highlights(self):
+        digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        digest["brief"]["important_highlights"] = ["a", "b", "c", "d"]
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_validation_rejects_too_many_discussion_points(self):
+        digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        digest["brief"]["discussion_points"] = ["a", "b", "c", "d"]
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_validation_rejects_too_many_check_items(self):
+        digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        digest["brief"]["check_items"] = ["a", "b", "c", "d", "e"]
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_validation_rejects_non_string_array_items(self):
+        digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        digest["brief"]["check_items"] = [123]
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_validation_rejects_invalid_status(self):
+        digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        digest["brief"]["status"] = "fallback"
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_old_ticket3_style_digest_file_still_scans(self):
+        """scan_daily_digest_files()(index再構築)はbrief内容を検証しないため、
+        Ticket 3時点の旧brief形式(overview固定null等)のファイルも引き続き読み取れる。
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            data_dir = Path(tmp)
+            data_dir.mkdir(parents=True, exist_ok=True)
+            old_digest = {
+                "schema_version": 1,
+                "digest_date": "2026-07-01",
+                "generated_at": "2026-07-01T07:00:00+09:00",
+                "generator": {
+                    "application": "security-digest", "model": "gemini-2.5-flash",
+                    "article_prompt_version": "article-analysis-v2",
+                    "brief_prompt_version": "executive-summary-v1",
+                },
+                "run": {"status": "not_attempted", "overwrite_policy": "replace", "total_items": 0,
+                        "ai_attempted_count": 0, "ai_success_count": 0, "ai_fallback_count": 0,
+                        "ai_failed_count": 0, "ai_not_attempted_count": 0},
+                "counts": {
+                    "importance": {k: 0 for k in dj.IMPORTANCE_KEYS},
+                    "urgency": {k: 0 for k in dj.URGENCY_KEYS},
+                    "category": {k: 0 for k in dj.CATEGORY_KEYS},
+                },
+                "brief": {
+                    "status": "not_attempted", "model": "gemini-2.5-flash",
+                    "prompt_version": "executive-summary-v1", "overview": None,
+                    "important_highlights": [], "discussion_points": [], "check_items": [],
+                    "error_type": None,
+                },
+                "items": [],
+            }
+            (data_dir / "2026-07-01.json").write_text(
+                json.dumps(old_digest, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+            entries = dj.scan_daily_digest_files(data_dir)
+            self.assertEqual(len(entries), 1)
+            self.assertEqual(entries[0]["digest_date"], "2026-07-01")
 
 
 # ── ファイル保存 ──────────────────────────────────────────────────────────
@@ -456,7 +586,7 @@ class FileSaveTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             data_dir = Path(tmp) / "nested" / "data"
             self.assertFalse(data_dir.exists())
-            digest = dj.build_daily_digest([], {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+            digest = dj.build_daily_digest([], NOT_ATTEMPTED_BRIEF_RESULT,
                                             SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
             dj.save_daily_digest(digest, data_dir)
             self.assertTrue(data_dir.exists())
@@ -464,7 +594,7 @@ class FileSaveTest(unittest.TestCase):
     def test_saved_via_temp_file_no_leftover_tmp(self):
         with tempfile.TemporaryDirectory() as tmp:
             data_dir = Path(tmp)
-            digest = dj.build_daily_digest([], {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+            digest = dj.build_daily_digest([], NOT_ATTEMPTED_BRIEF_RESULT,
                                             SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
             dj.save_daily_digest(digest, data_dir)
             leftover = [p for p in data_dir.iterdir() if p.suffix == ".tmp"]
@@ -474,12 +604,12 @@ class FileSaveTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             data_dir = Path(tmp)
             item1 = make_item(ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta())
-            digest1 = dj.build_daily_digest([item1], {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+            digest1 = dj.build_daily_digest([item1], NOT_ATTEMPTED_BRIEF_RESULT,
                                              SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
             path = dj.save_daily_digest(digest1, data_dir)
             self.assertEqual(json.loads(path.read_text())["run"]["total_items"], 1)
 
-            digest2 = dj.build_daily_digest([], {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+            digest2 = dj.build_daily_digest([], NOT_ATTEMPTED_BRIEF_RESULT,
                                              SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
             dj.save_daily_digest(digest2, data_dir)
             self.assertEqual(json.loads(path.read_text())["run"]["total_items"], 0)
@@ -487,7 +617,7 @@ class FileSaveTest(unittest.TestCase):
     def test_same_day_data_not_duplicated_on_disk(self):
         with tempfile.TemporaryDirectory() as tmp:
             data_dir = Path(tmp)
-            digest = dj.build_daily_digest([], {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+            digest = dj.build_daily_digest([], NOT_ATTEMPTED_BRIEF_RESULT,
                                             SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
             dj.save_daily_digest(digest, data_dir)
             dj.save_daily_digest(digest, data_dir)
@@ -498,7 +628,7 @@ class FileSaveTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             data_dir = Path(tmp)
             item = make_item(ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta())
-            digest = dj.build_daily_digest([item], {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+            digest = dj.build_daily_digest([item], NOT_ATTEMPTED_BRIEF_RESULT,
                                             SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
             path = dj.save_daily_digest(digest, data_dir)
             reloaded = json.loads(path.read_text(encoding="utf-8"))
@@ -507,7 +637,7 @@ class FileSaveTest(unittest.TestCase):
     def test_validation_failure_does_not_corrupt_existing_file(self):
         with tempfile.TemporaryDirectory() as tmp:
             data_dir = Path(tmp)
-            good_digest = dj.build_daily_digest([], {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None},
+            good_digest = dj.build_daily_digest([], NOT_ATTEMPTED_BRIEF_RESULT,
                                                  SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
             path = dj.save_daily_digest(good_digest, data_dir)
             original_content = path.read_text(encoding="utf-8")

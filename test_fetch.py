@@ -62,6 +62,20 @@ def anchors_with_class(parser, class_name):
     return [a for a in parser.anchors if a.get("class") == class_name]
 
 
+def brief_segment(html):
+    start = html.index('<div class="todays-brief">')
+    end = html.index('<section class="dashboard">')
+    return html[start:end]
+
+
+SAMPLE_BRIEF = {
+    "overview": "本日は脆弱性関連の情報が中心で、金融機関に影響し得る内容が複数確認されました。",
+    "important_highlights": ["重要情報ハイライト1", "重要情報ハイライト2"],
+    "discussion_points": ["本日の注目論点1"],
+    "check_items": ["確認事項1", "確認事項2"],
+}
+
+
 class EscTest(unittest.TestCase):
     def test_script_tag_is_escaped(self):
         out = fetch.esc("<script>alert(1)</script>")
@@ -345,6 +359,136 @@ class ArticleCardDisplayTest(unittest.TestCase):
         self.assertFalse(parser.nested_anchor)
 
 
+class TodaysBriefHtmlTest(unittest.TestCase):
+    def _make_item(self, title="記事"):
+        return {
+            "title": title,
+            "link": f"https://example.com/{title}",
+            "summary": f"{title}の概要",
+            "date": datetime.datetime(2026, 7, 11, 6, 0),
+            "source": "CISA",
+            "lang": "ja",
+        }
+
+    def test_heading_todays_brief_is_shown(self):
+        html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
+        self.assertIn("Today's Brief", brief_segment(html))
+
+    def test_overview_heading_and_paragraph_are_shown(self):
+        html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
+        segment = brief_segment(html)
+        self.assertIn("本日の概況", segment)
+        self.assertIn(
+            f'<p class="brief-overview">{SAMPLE_BRIEF["overview"]}</p>', segment
+        )
+
+    def test_important_highlights_render_as_list(self):
+        html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
+        segment = brief_segment(html)
+        self.assertIn("重要情報ハイライト", segment)
+        for text in SAMPLE_BRIEF["important_highlights"]:
+            self.assertIn(f"<li>{text}</li>", segment)
+
+    def test_discussion_points_render_as_list(self):
+        html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
+        segment = brief_segment(html)
+        self.assertIn("本日の注目論点", segment)
+        for text in SAMPLE_BRIEF["discussion_points"]:
+            self.assertIn(f"<li>{text}</li>", segment)
+
+    def test_check_items_render_as_list(self):
+        html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
+        segment = brief_segment(html)
+        self.assertIn("本日の確認事項", segment)
+        for text in SAMPLE_BRIEF["check_items"]:
+            self.assertIn(f"<li>{text}</li>", segment)
+
+    def test_empty_array_section_is_not_rendered(self):
+        brief = dict(SAMPLE_BRIEF, discussion_points=[])
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertNotIn("本日の注目論点", segment)
+        self.assertNotIn("<ul", segment.split("重要情報ハイライト")[0])  # overviewセクションにulがないこと
+
+    def test_success_with_all_arrays_empty_still_shows_overview(self):
+        brief = {
+            "overview": "本日は特筆すべき高重要度の情報はありませんでした。通常運用を継続してください。",
+            "important_highlights": [], "discussion_points": [], "check_items": [],
+        }
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertIn(brief["overview"], segment)
+        self.assertNotIn("重要情報ハイライト", segment)
+        self.assertNotIn("本日の注目論点", segment)
+        self.assertNotIn("本日の確認事項", segment)
+
+    def test_brief_none_hides_section_entirely(self):
+        html = fetch.build_html([self._make_item()], None)
+        self.assertNotIn('<div class="todays-brief">', html)
+        self.assertNotIn("Today's Brief", html)
+
+    def test_brief_omitted_defaults_to_hidden(self):
+        html = fetch.build_html([self._make_item()])
+        self.assertNotIn('<div class="todays-brief">', html)
+
+    def test_brief_section_precedes_dashboard(self):
+        html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
+        self.assertLess(
+            html.index('<div class="todays-brief">'),
+            html.index('<section class="dashboard">'),
+        )
+
+    def test_brief_section_precedes_important_items(self):
+        html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
+        self.assertLess(
+            html.index('<div class="todays-brief">'),
+            html.index('<section class="important-items">'),
+        )
+
+    def test_dashboard_content_unaffected_by_brief(self):
+        items = [self._make_item("a"), self._make_item("b")]
+        with_brief = dashboard_segment(fetch.build_html(items, SAMPLE_BRIEF))
+        without_brief = dashboard_segment(fetch.build_html(items, None))
+        self.assertEqual(with_brief, without_brief)
+
+    def test_card_count_and_order_unaffected_by_brief(self):
+        items = [self._make_item("a"), self._make_item("b"), self._make_item("c")]
+        with_brief = cards_segment(fetch.build_html(items, SAMPLE_BRIEF))
+        without_brief = cards_segment(fetch.build_html(items, None))
+        self.assertEqual(with_brief, without_brief)
+
+    def test_overview_is_html_escaped(self):
+        brief = dict(SAMPLE_BRIEF, overview='<script>alert(1)</script>')
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertNotIn("<script>alert(1)</script>", segment)
+        self.assertIn("&lt;script&gt;", segment)
+
+    def test_array_items_are_html_escaped(self):
+        brief = dict(
+            SAMPLE_BRIEF,
+            important_highlights=['<img src=x onerror=alert(1)>'],
+            discussion_points=['<b>強調</b>'],
+            check_items=['"quoted" & <tag>'],
+        )
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertNotIn("<img src=x", segment)
+        self.assertNotIn("<b>強調</b>", segment)
+        self.assertNotIn('"quoted" & <tag>', segment)
+        self.assertIn("&lt;img", segment)
+        self.assertIn("&lt;b&gt;", segment)
+
+    def test_no_html_comment_carries_brief_content(self):
+        html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
+        self.assertNotIn("<!--", html)
+
+    def test_reason_and_category_reason_are_not_added_to_brief(self):
+        html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
+        segment = brief_segment(html)
+        self.assertNotIn("category_reason", segment)
+
+
 class DashboardTest(unittest.TestCase):
     def _make_item(self, title="記事", **analysis_overrides):
         item_overrides = {}
@@ -454,7 +598,7 @@ class DashboardTest(unittest.TestCase):
             self._make_item("first", importance="高", urgency="本日確認", category="脆弱性・パッチ"),
             self._make_item("second", importance="中", urgency="今週確認", category="その他"),
         ]
-        html = fetch.build_html(items, exec_summary=["要約1"])
+        html = fetch.build_html(items, SAMPLE_BRIEF)
         dashboard = dashboard_segment(html)
 
         self.assertIn("本日のダッシュボード", dashboard)
@@ -463,7 +607,7 @@ class DashboardTest(unittest.TestCase):
         self.assertIn("<h3>重要度</h3>", dashboard)
         self.assertIn("<h3>緊急度</h3>", dashboard)
         self.assertIn("<h3>カテゴリ</h3>", dashboard)
-        self.assertLess(html.index('<div class="exec-summary">'), html.index('<section class="dashboard">'))
+        self.assertLess(html.index('<div class="todays-brief">'), html.index('<section class="dashboard">'))
         self.assertLess(html.index('<section class="dashboard">'), html.index('<section class="important-items">'))
         self.assertLess(html.index('<section class="dashboard">'), html.index('<div class="cards">'))
         self.assertEqual(cards_segment(html).count('class="card"'), 2)

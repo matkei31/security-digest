@@ -1385,24 +1385,124 @@ rule_flags: {json.dumps(rule_flags, ensure_ascii=False)}
     return items
 
 
-# ── エグゼクティブサマリー ─────────────────────────────────────────────────────
+# ── Today's Brief (Ticket 8) ──────────────────────────────────────────────
 
-def normalize_executive_summary(value):
+def select_brief_input_items(items):
+    """Today's Brief生成の入力として使う記事を選ぶ。
+    analysis.statusがsuccess/fallbackで、利用可能なai_analysisを持つ記事のみを対象とする
+    (記事本文・raw_excerpt・Geminiの生レスポンス・前日以前の記事は使わない)。
+    """
+    selected = []
+    for item in items:
+        meta = item.get("ai_analysis_meta") or {}
+        if meta.get("status") not in ("success", "fallback"):
+            continue
+        analysis = item.get("ai_analysis")
+        if not isinstance(analysis, dict) or not analysis:
+            continue
+        selected.append(item)
+    return selected
+
+
+def format_brief_input_item(item):
+    """Today's Brief生成プロンプトへ渡す1記事分のテキストを組み立てる。
+    利用してよい項目(title/source/category/importance/urgency/summary/
+    financial_impact/recommended_actions/reason/tags)のみを使う。
+    """
+    analysis = item.get("ai_analysis") or {}
+    actions = analysis.get("recommended_actions", [])
+    if not isinstance(actions, list):
+        actions = []
+    tags = analysis.get("tags", [])
+    if not isinstance(tags, list):
+        tags = []
+
+    return (
+        f"- title: {item.get('title', '')}\n"
+        f"  source: {item.get('source', '')}\n"
+        f"  category: {analysis.get('category', '')}\n"
+        f"  importance: {analysis.get('importance', '')}\n"
+        f"  urgency: {analysis.get('urgency', '')}\n"
+        f"  summary: {analysis.get('summary', '')}\n"
+        f"  financial_impact: {analysis.get('financial_impact', '')}\n"
+        f"  recommended_actions: {'; '.join(str(a) for a in actions)}\n"
+        f"  reason: {analysis.get('reason', '')}\n"
+        f"  tags: {', '.join(str(t) for t in tags)}"
+    )
+
+
+def _normalize_brief_list(value, max_items):
+    """配列項目を正規化する: list以外はNone、空文字・"null"/"None"は除外、
+    完全重複は除外し、max_items件を超える分は黙って全件採用せず切り詰める。
+    """
+    if not isinstance(value, list):
+        return None
+
+    cleaned = []
+    seen = set()
+    for entry in value:
+        text = clean_display_text(entry)
+        if not text or text in seen:
+            continue
+        seen.add(text)
+        cleaned.append(text)
+
+    if len(cleaned) > max_items:
+        print(
+            f"[WARN] Today's Brief: 配列が上限({max_items}件)を超えたため切り詰めます: "
+            f"{len(cleaned)}件 → {max_items}件",
+            file=sys.stderr,
+        )
+    return cleaned[:max_items]
+
+
+def normalize_brief_response(value):
+    """Geminiレスポンスの1候補(dict)を、Today's Briefの内部構造へ正規化する。
+    必須条件(overviewが空でない文字列、各配列がlist)を満たさない場合はNoneを返す。
+    """
     if not isinstance(value, dict):
         return None
 
-    lines = value.get("summary_lines")
-    if not isinstance(lines, list):
+    overview = clean_display_text(value.get("overview"))
+    if not overview:
         return None
 
-    lines = [str(line).strip() for line in lines if str(line).strip()][:3]
-    if len(lines) < 2:
+    highlights = _normalize_brief_list(value.get("important_highlights"), daily_json.BRIEF_MAX_HIGHLIGHTS)
+    if highlights is None:
+        return None
+    discussion_points = _normalize_brief_list(value.get("discussion_points"), daily_json.BRIEF_MAX_DISCUSSION_POINTS)
+    if discussion_points is None:
+        return None
+    check_items = _normalize_brief_list(value.get("check_items"), daily_json.BRIEF_MAX_CHECK_ITEMS)
+    if check_items is None:
         return None
 
-    return lines
+    if len(overview) > 700:
+        print(
+            f"[WARN] Today's Brief: overviewが異常に長い可能性があります({len(overview)}文字)",
+            file=sys.stderr,
+        )
+    for key, texts in (
+        ("important_highlights", highlights),
+        ("discussion_points", discussion_points),
+        ("check_items", check_items),
+    ):
+        for text in texts:
+            if len(text) > 500:
+                print(
+                    f"[WARN] Today's Brief: {key}に異常に長い項目があります({len(text)}文字)",
+                    file=sys.stderr,
+                )
+
+    return {
+        "overview": overview,
+        "important_highlights": highlights,
+        "discussion_points": discussion_points,
+        "check_items": check_items,
+    }
 
 
-def parse_executive_summary(response_text):
+def parse_brief_response(response_text):
     if not isinstance(response_text, str):
         return None
 
@@ -1413,47 +1513,71 @@ def parse_executive_summary(response_text):
         except json.JSONDecodeError:
             continue
 
-        lines = normalize_executive_summary(value)
-        if lines:
-            return lines
+        normalized = normalize_brief_response(value)
+        if normalized:
+            return normalized
 
     return None
 
 
-def gemini_executive_summary(high_items):
-    """戻り値: {"lines": list[str]|None, "status": "success"|"failed"|"not_attempted",
+def _empty_brief_result(status, error_type=None, http_status=None):
+    return {
+        "overview": None,
+        "important_highlights": [],
+        "discussion_points": [],
+        "check_items": [],
+        "status": status,
+        "error_type": error_type,
+        "http_status": http_status,
+    }
+
+
+def gemini_todays_brief(brief_items):
+    """戻り値: {"overview": str|None, "important_highlights": list[str],
+    "discussion_points": list[str], "check_items": list[str],
+    "status": "success"|"failed"|"not_attempted",
     "error_type": str|None, "http_status": int|None}
-    既存のエグゼクティブサマリー生成条件・プロンプトは変更していない。
     """
     api_key = os.environ.get("GEMINI_API_KEY")
     if not api_key:
-        # build_executive_summary() がhigh_itemsの有無で先に判定するため、
+        # build_todays_brief() がbrief_itemsの有無で先に判定するため、
         # 実際にはこの分岐には到達しない(防御的な分岐)。
-        return {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None}
+        return _empty_brief_result("not_attempted")
 
-    bullets = []
-    for item in high_items:
-        analysis = item.get("ai_analysis") or {}
-        bullets.append(
-            f"- source: {item.get('source', '')} / title: {item.get('title', '')} / "
-            f"summary: {analysis.get('summary', '')} / "
-            f"financial_impact: {analysis.get('financial_impact', '')}"
-        )
-    text = "\n".join(bullets)
+    articles_text = "\n".join(format_brief_input_item(item) for item in brief_items)
 
     prompt = f"""
 あなたは日本の金融機関のサイバーセキュリティ責任者です。
-以下は本日、重要度「高」と判定されたセキュリティニュースの分析結果一覧です。
-金融機関のサイバー担当者が出社直後にまず読む「本日のポイント」を、日本語の箇条書き2〜3行で作成してください。
+以下は本日収集・分析されたセキュリティニュースの分析結果一覧です。
+金融機関のサイバーセキュリティ担当者・管理者・担当役員が、当日のニュース全体を短時間で
+把握し、会議・共有・確認行動へつなげられる「Today's Brief」を、次の4項目で作成してください。
 
-記述ルール:
-- 各行は1文、80文字以内で、何が起きていて、なぜ緊急なのかが分かるように具体的に書く
-- 関連する複数のニュースがあれば要点をまとめてもよい
-- 入力にない事実、製品利用状況、被害、期限は推測しない
-- 箇条書き記号（・や-など）や見出しは付けない(呼び出し側で付与する)
+1. overview（本日の概況）: 当日の情報全体の傾向を説明する文章。個別記事の羅列ではなく、
+   主なカテゴリ・緊急性・金融機関との関係を簡潔にまとめる全体像を示す。
+   日本語で2〜4文、200〜350文字程度を目安にする。Markdownや箇条書き記号を含めない。
+2. important_highlights（重要情報ハイライト）: 当日特に見落としたくない具体的情報。
+   importance=高またはurgency=本日確認の記事を優先する。該当記事がなければ無理に作らない。
+   最大3件、各項目は1〜2文・120〜220文字程度を目安にし、同じ記事や同じ論点を重複させない。
+3. discussion_points（本日の注目論点）: 個別記事を超えて、金融機関の管理態勢・統制・運用上、
+   共有や議論の対象になり得る論点。複数記事に共通する傾向があればまとめる。
+   最大3件、各項目は1〜2文。疑問文だけの抽象的な表現にせず、単なる記事要約の繰り返しにもしない。
+4. check_items（本日の確認事項）: 当日または今週、金融機関側で確認を検討できる具体項目。
+   各記事のrecommended_actionsをそのまま全件並べず、重複を統合して簡潔にする。
+   最大4件、各項目は短い確認事項とし、「該当する場合」「必要に応じて」等の条件を適切に使う。
 
-重要度「高」のニュース一覧:
-{text}
+厳守事項:
+- 入力された記事分析結果だけを根拠にする。記事にない事実、製品利用状況、規制要求、
+  被害額や影響範囲を推測・捏造しない。
+- 一般論で空欄を埋めない。無理に指定件数を埋めない。該当事項がない項目は空配列にする。
+- 全金融機関への一律の影響を断定しない。ベンダーの宣伝表現を事実として繰り返さない。
+- 同じ記事・同じ内容を複数項目で過度に反復しない。
+- important_highlightsは、個別記事一覧とは役割が近いが重複ではない。Briefでは
+  全体の文脈における位置付けを簡潔に説明する。
+- check_itemsはrecommended_actionsの単純連結ではなく、重複を統合して簡潔にする。
+- JSON以外の説明・Markdown・コードフェンスを一切含めない。
+
+本日の記事分析結果一覧:
+{articles_text}
 """
 
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{GEMINI_MODEL}:generateContent"
@@ -1461,24 +1585,43 @@ def gemini_executive_summary(high_items):
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
             "temperature": 0.2,
-            "maxOutputTokens": 500,
+            "maxOutputTokens": 2048,
             "thinking_config": {
                 "thinking_budget": 0
             },
             "response_mime_type": "application/json",
             "response_schema": {
                 "type": "OBJECT",
-                "propertyOrdering": ["summary_lines"],
+                "propertyOrdering": [
+                    "overview", "important_highlights", "discussion_points", "check_items"
+                ],
                 "properties": {
-                    "summary_lines": {
+                    "overview": {
+                        "type": "STRING",
+                        "description": "本日の概況（2〜4文、200〜350文字程度）"
+                    },
+                    "important_highlights": {
                         "type": "ARRAY",
                         "items": {"type": "STRING"},
-                        "minItems": 2,
-                        "maxItems": 3,
-                        "description": "本日のポイント（2〜3行の箇条書き）"
+                        "maxItems": daily_json.BRIEF_MAX_HIGHLIGHTS,
+                        "description": "重要情報ハイライト（最大3件）"
+                    },
+                    "discussion_points": {
+                        "type": "ARRAY",
+                        "items": {"type": "STRING"},
+                        "maxItems": daily_json.BRIEF_MAX_DISCUSSION_POINTS,
+                        "description": "本日の注目論点（最大3件）"
+                    },
+                    "check_items": {
+                        "type": "ARRAY",
+                        "items": {"type": "STRING"},
+                        "maxItems": daily_json.BRIEF_MAX_CHECK_ITEMS,
+                        "description": "本日の確認事項（最大4件）"
                     }
                 },
-                "required": ["summary_lines"]
+                "required": [
+                    "overview", "important_highlights", "discussion_points", "check_items"
+                ]
             }
         }
     }).encode("utf-8")
@@ -1503,68 +1646,64 @@ def gemini_executive_summary(high_items):
                 for part in parts
                 if isinstance(part, dict)
             )
-            lines = parse_executive_summary(response_text)
-            if lines:
-                return {"lines": lines, "status": "success", "error_type": None, "http_status": None}
+            brief = parse_brief_response(response_text)
+            if brief:
+                return {**brief, "status": "success", "error_type": None, "http_status": None}
 
-            print("[WARN] エグゼクティブサマリー: JSON解析失敗", file=sys.stderr)
-            return {
-                "lines": None, "status": "failed",
-                "error_type": "schema_parse_error", "http_status": None,
-            }
+            print("[WARN] Today's Brief: JSON解析失敗", file=sys.stderr)
+            return _empty_brief_result("failed", error_type="schema_parse_error")
         except urllib.error.HTTPError as e:
             if e.code in (429, 503) and attempt < max_retries:
                 wait_seconds = 3 * (attempt + 1)
                 print(
-                    f"[WARN] エグゼクティブサマリー: HTTP {e.code}、"
+                    f"[WARN] Today's Brief: HTTP {e.code}、"
                     f"{wait_seconds}秒後に再試行 ({attempt + 1}/{max_retries})",
                     file=sys.stderr,
                 )
                 time.sleep(wait_seconds)
                 continue
-            print(f"[WARN] エグゼクティブサマリー: HTTP {e.code}", file=sys.stderr)
-            return {
-                "lines": None, "status": "failed",
-                "error_type": daily_json.classify_gemini_error(http_status=e.code),
-                "http_status": e.code,
-            }
+            print(f"[WARN] Today's Brief: HTTP {e.code}", file=sys.stderr)
+            return _empty_brief_result(
+                "failed",
+                error_type=daily_json.classify_gemini_error(http_status=e.code),
+                http_status=e.code,
+            )
         except Exception as e:
             print(
-                f"[WARN] エグゼクティブサマリー: {type(e).__name__}: {e}",
+                f"[WARN] Today's Brief: {type(e).__name__}: {e}",
                 file=sys.stderr,
             )
-            return {
-                "lines": None, "status": "failed",
-                "error_type": daily_json.classify_gemini_error(exception=e),
-                "http_status": None,
-            }
+            return _empty_brief_result(
+                "failed",
+                error_type=daily_json.classify_gemini_error(exception=e),
+            )
 
-    return {"lines": None, "status": "failed", "error_type": "unknown", "http_status": None}
+    return _empty_brief_result("failed", error_type="unknown")
 
 
-def build_executive_summary(items):
-    """戻り値: {"lines": list[str]|None, "status": "success"|"failed"|"not_attempted",
-    "error_type": str|None, "http_status": int|None}
-    既存のHTML表示にはこれまで通り戻り値の"lines"を渡す(呼び出し側で変更不要)。
+def build_todays_brief(items):
+    """戻り値: gemini_todays_brief()と同じ形。
+    Today's Briefの入力選定・not_attempted判定を行う。
+    同一日の再実行では、常にこの実行のitemsから再生成する(前日以前のBriefは
+    一切参照・流用しない)。
     """
-    high_items = [
-        item for item in items
-        if normalize_ai_analysis(item.get("ai_analysis")) is not None
-        and normalize_ai_analysis(item.get("ai_analysis"))["importance"] == "高"
-    ]
-    if not high_items:
-        return {"lines": None, "status": "not_attempted", "error_type": None, "http_status": None}
+    brief_items = select_brief_input_items(items)
+    if not brief_items:
+        return _empty_brief_result("not_attempted")
 
-    print("エグゼクティブサマリーを生成中...")
-    result = gemini_executive_summary(high_items)
-    if result["lines"]:
-        print(f"  エグゼクティブサマリー: {len(result['lines'])} 行")
+    print("Today's Briefを生成中...")
+    result = gemini_todays_brief(brief_items)
+    if result["status"] == "success":
+        print(
+            f"  Today's Brief: 概況1件 / ハイライト{len(result['important_highlights'])}件 / "
+            f"論点{len(result['discussion_points'])}件 / 確認事項{len(result['check_items'])}件"
+        )
     else:
-        print("  エグゼクティブサマリー: 生成失敗")
+        print(f"  Today's Brief: {'未実施' if result['status'] == 'not_attempted' else '生成失敗'}")
     return result
 
 
-def build_html(items, exec_summary=None):
+def build_html(items, brief=None):
     now      = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     date_str = now.strftime("%Y年%m月%d日 %H:%M")
     dashboard_html = render_dashboard_html(items)
@@ -1747,16 +1886,47 @@ def build_html(items, exec_summary=None):
         for n, *_ in all_sources
     )
 
-    if exec_summary:
-        exec_lines_html = "".join(f"<li>{esc(line)}</li>" for line in exec_summary)
-        exec_summary_html = f"""<div class="exec-summary">
-    <div class="exec-summary-box">
-      <h2>本日のポイント（金融機関サイバー担当者向け）</h2>
-      <ul>{exec_lines_html}</ul>
+    if brief:
+        brief_sections = [f"""<div class="brief-section">
+      <h3 class="brief-section-title">本日の概況</h3>
+      <p class="brief-overview">{esc(brief.get("overview") or "")}</p>
+    </div>"""]
+
+        highlights_html = "".join(
+            f"<li>{esc(text)}</li>" for text in (brief.get("important_highlights") or [])
+        )
+        if highlights_html:
+            brief_sections.append(f"""<div class="brief-section">
+      <h3 class="brief-section-title">重要情報ハイライト</h3>
+      <ul class="brief-list">{highlights_html}</ul>
+    </div>""")
+
+        discussion_html = "".join(
+            f"<li>{esc(text)}</li>" for text in (brief.get("discussion_points") or [])
+        )
+        if discussion_html:
+            brief_sections.append(f"""<div class="brief-section">
+      <h3 class="brief-section-title">本日の注目論点</h3>
+      <ul class="brief-list">{discussion_html}</ul>
+    </div>""")
+
+        check_html = "".join(
+            f"<li>{esc(text)}</li>" for text in (brief.get("check_items") or [])
+        )
+        if check_html:
+            brief_sections.append(f"""<div class="brief-section">
+      <h3 class="brief-section-title">本日の確認事項</h3>
+      <ul class="brief-list">{check_html}</ul>
+    </div>""")
+
+        brief_html = f"""<div class="todays-brief">
+    <div class="brief-box">
+      <h2>Today's Brief</h2>
+      {''.join(brief_sections)}
     </div>
   </div>"""
     else:
-        exec_summary_html = ""
+        brief_html = ""
 
     return f"""<!DOCTYPE html>
 <html lang="ja">
@@ -1801,12 +1971,14 @@ def build_html(items, exec_summary=None):
     .action-list li+li{{margin-top:3px}}
     .article-source-link{{display:inline-flex;align-items:center;width:max-content;max-width:100%;margin-top:10px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
     .empty{{text-align:center;color:#8b949e;padding:60px 0;font-size:14px}}
-    .exec-summary{{max-width:680px;margin:12px auto 0;padding:0 12px}}
-    .exec-summary-box{{background:#161b22;border:1px solid #9e6a03;border-radius:10px;padding:14px 16px}}
-    .exec-summary-box h2{{font-size:13px;font-weight:700;color:#f0b429;margin-bottom:8px}}
-    .exec-summary-box ul{{list-style:none;display:grid;gap:6px}}
-    .exec-summary-box li{{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}}
-    .exec-summary-box li::before{{content:"・";position:absolute;left:0}}
+    .todays-brief{{max-width:680px;margin:12px auto 0;padding:0 12px}}
+    .brief-box{{background:#161b22;border:1px solid #9e6a03;border-radius:10px;padding:14px 16px;display:grid;gap:12px}}
+    .brief-box h2{{font-size:13px;font-weight:700;color:#f0b429}}
+    .brief-section-title{{font-size:12px;font-weight:700;color:#8b949e;margin-bottom:6px}}
+    .brief-overview{{font-size:13px;color:#e6edf3;line-height:1.6}}
+    .brief-list{{list-style:none;display:grid;gap:6px}}
+    .brief-list li{{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}}
+    .brief-list li::before{{content:"・";position:absolute;left:0}}
     .dashboard{{max-width:680px;margin:12px auto 0;padding:0 12px}}
     .dashboard h2{{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:8px}}
     .dashboard-total{{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}}
@@ -1841,7 +2013,7 @@ def build_html(items, exec_summary=None):
     <div class="sub">最終更新: {esc(date_str)}</div>
     <div class="count">{esc(str(len(items)))} 件</div>
   </header>
-  {exec_summary_html}
+  {brief_html}
   {dashboard_html}
   {important_items_html}
   <div class="cards">{cards_html}</div>
@@ -1872,8 +2044,8 @@ def main():
         item["raw_summary"] = item["summary"]
 
     time.sleep(15)
-    exec_result = build_executive_summary(items)
-    exec_summary = exec_result["lines"]
+    brief_result = build_todays_brief(items)
+    brief_for_html = brief_result if brief_result["status"] == "success" else None
 
     cache = load_cache()
     print("タイトルを日本語に翻訳中...")
@@ -1884,7 +2056,7 @@ def main():
     save_cache(cache)
     print(f"  翻訳キャッシュ: {len(cache)} 件")
 
-    html = build_html(items, exec_summary)
+    html = build_html(items, brief_for_html)
     out_path.write_text(html, encoding="utf-8")
     print(f"  生成完了: {out_path}")
 
@@ -1892,7 +2064,7 @@ def main():
     generated_at = datetime.datetime.now(JST)
     digest = daily_json.generate_and_save_daily_digest(
         items=items,
-        exec_result=exec_result,
+        brief_result=brief_result,
         source_definitions=SOURCE_DEFINITIONS,
         model=GEMINI_MODEL,
         fetched_at=fetched_at,
