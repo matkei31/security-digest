@@ -803,5 +803,7 @@
   "iCagenda contains an unrestricted upload of file with dangerous type vulnerability that allows the upload of arbitrary files in the file attachment feature, ultimately resulting in PHP code upload and": "iCagenda には、ファイル添付機能で任意のファイルをアップロードできる危険なタイプの脆弱性を持つファイルの無制限のアップロードが含まれており、最終的には PHP コードがアップロードされ、",
   "Jen Ellis: Connecting Cyber Community With Political Machinery": "ジェン・エリス: サイバーコミュニティと政治機構を結びつける",
   "On the heels of her recent honors as a Member of the Order of the British Empire (MBE), we take a look back at the events that shaped Ellis' advocacy on behalf of security researchers.": "彼女が最近大英帝国勲章 (MBE) の勲章を受章したことに続き、セキュリティ研究者を代表してエリスの主張を形作った出来事を振り返ります。",
-  "Security Pro File: On the heels of her recent honors as a Member of the Order of the British Empire (MBE), we take a look back at the events that shaped Jen Ellis' advocacy on behalf of security resea": "セキュリティ プロ ファイル: 大英帝国勲章 (MBE) の会員としての彼女の最近の栄誉を受けて、セキュリティ研究を代表するジェン エリスの擁護活動を形作った出来事を振り返ります。"
+  "Security Pro File: On the heels of her recent honors as a Member of the Order of the British Empire (MBE), we take a look back at the events that shaped Jen Ellis' advocacy on behalf of security resea": "セキュリティ プロ ファイル: 大英帝国勲章 (MBE) の会員としての彼女の最近の栄誉を受けて、セキュリティ研究を代表するジェン エリスの擁護活動を形作った出来事を振り返ります。",
+  "Critical Zimbra Flaw Could Let Crafted Emails Run Malicious Code in User Sessions": "Zimbra の重大な欠陥により、細工されたメールによりユーザー セッションで悪意のあるコードが実行される可能性がある",
+  "Zimbra is urging customers to apply updates to address a critical security vulnerability impacting the Classic Web Client that could result in arbitrary code execution.\n\nThe vulnerability has been des": "Zimbraは、クラシックWebクライアントに影響を及ぼし、任意のコードが実行される可能性がある重大なセキュリティ脆弱性に対処するアップデートを適用するよう顧客に呼びかけている。\n\nこの脆弱性はすでに存在しており、"
 }
