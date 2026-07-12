@@ -136,8 +136,8 @@ class ResponseSchemaTest(unittest.TestCase):
 # ── prompt_versionの反映 (Ticket 11a) ───────────────────────────────────────
 
 class PromptVersionPropagationTest(unittest.TestCase):
-    def test_article_prompt_version_is_v3(self):
-        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v3")
+    def test_article_prompt_version_is_v4(self):
+        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v4")
 
     def test_brief_prompt_version_is_unchanged(self):
         self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-v2")
@@ -150,7 +150,7 @@ class PromptVersionPropagationTest(unittest.TestCase):
             datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
             datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
         )
-        self.assertEqual(digest["generator"]["article_prompt_version"], "article-analysis-v3")
+        self.assertEqual(digest["generator"]["article_prompt_version"], "article-analysis-v4")
         self.assertEqual(digest["generator"]["brief_prompt_version"], "today-brief-v2")
 
     def test_each_article_analysis_reflects_new_prompt_version(self):
@@ -167,7 +167,7 @@ class PromptVersionPropagationTest(unittest.TestCase):
                         "source_tier": "Tier 1", "collection_method": "rss", "language": "en"}]
         entry = dj.build_article_entry(item, source_defs, "gemini-2.5-flash",
                                         datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST))
-        self.assertEqual(entry["analysis"]["prompt_version"], "article-analysis-v3")
+        self.assertEqual(entry["analysis"]["prompt_version"], "article-analysis-v4")
 
 
 # ── 正常分析 ──────────────────────────────────────────────────────────────
@@ -212,8 +212,8 @@ class NormalAnalysisTest(unittest.TestCase):
         self.assertEqual(counts["category"]["脆弱性・パッチ"], 1)
         self.assertEqual(counts["urgency"]["本日確認"], 1)
 
-    def test_prompt_version_is_v3(self):
-        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v3")
+    def test_prompt_version_is_v4(self):
+        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v4")
 
     def test_recommended_actions_is_html_compatible_array(self):
         result = call_gemini_analyze(response_body=make_candidate_body(VALID_ANALYSIS_RESPONSE))
@@ -696,12 +696,13 @@ class FailedNotAttemptedTest(unittest.TestCase):
 # ── 判定例 (モック応答) ────────────────────────────────────────────────────
 
 class JudgmentExampleTest(unittest.TestCase):
-    def test_prompt_contains_all_six_few_shot_examples(self):
-        # Ticket 11a: 新しいimportance/urgency定義に合わせた6例(うち3例は
-        # ネガティブ例)がプロンプトへ含まれることを確認する。
+    def test_prompt_contains_facts_aware_few_shot_examples(self):
+        # Ticket 11a由来の6例のうち、例1・例5をvulnerability_facts対応へ更新し、
+        # 新たに例7(CVSS未評価+KEV掲載)を追加した、計7例がプロンプトへ
+        # 含まれることを確認する(Ticket 12c-review: 例8・例9は削除し7例へ集約)。
         body = get_request_body_json()
         prompt_text = body["contents"][0]["parts"][0]["text"]
-        # 例1: 高×本日確認(広く利用される製品+悪用確認済み)
+        # 例1: 高×本日確認(KEV掲載+高CVSSを組み合わせる)
         self.assertIn("KEV", prompt_text)
         self.assertIn("高 × 本日確認", prompt_text)
         # 例2: 高×参考(重要だが短期対応のないガバナンス情報)
@@ -711,10 +712,20 @@ class JudgmentExampleTest(unittest.TestCase):
         self.assertIn("サプライチェーン事例として参考情報にとどまります", prompt_text)
         # 例4: 中×本日確認(範囲限定だが当日確認が必要)
         self.assertIn("中 × 本日確認", prompt_text)
-        # 例5: 中×参考(CVSS高・限定製品)
-        self.assertIn("CVSSは高いが利用範囲が限定的", prompt_text)
+        # 例5: 中×参考(CVSS満点でもKEV非掲載のニッチ消費者向け製品。最重要の
+        # アンカリング防止ネガティブ例。kev_status=not_listed自体は根拠にしない)
+        self.assertIn("cvss_score=10.0のニッチ消費者向け製品", prompt_text)
+        self.assertIn("kev_status=not_listed自体は根拠にしない", prompt_text)
+        self.assertNotIn("KEVにも未掲載のため", prompt_text)
         # 例6: 低×参考(ベンダー宣伝記事)
         self.assertIn("ベンダー宣伝記事", prompt_text)
+        # 例7: 中×本日確認(CVSS未評価+KEV掲載。KEV単独ではなく製品特性・
+        # 利用有無未確認も踏まえる)
+        self.assertIn("cvss_score=null(未評価)だがkev_status=listed", prompt_text)
+        self.assertIn('"importance": "中", "urgency": "本日確認"', prompt_text)
+        # 例8・例9は削除済み
+        self.assertNotIn("# 例8", prompt_text)
+        self.assertNotIn("# 例9", prompt_text)
 
     def test_prompt_defines_importance_without_time_axis(self):
         body = get_request_body_json()
@@ -753,7 +764,7 @@ class JudgmentExampleTest(unittest.TestCase):
         self.assertIn("0〜3件", prompt_text)
         self.assertIn("0件を正常な結果として認め", prompt_text)
         self.assertIn("リスク評価を実施", prompt_text)
-        self.assertIn("多要素認証を導入する", prompt_text)
+        self.assertIn("多要素認証・ゼロトラストを検討する", prompt_text)
 
     def test_prompt_reason_distinguishes_event_and_applicability(self):
         body = get_request_body_json()
