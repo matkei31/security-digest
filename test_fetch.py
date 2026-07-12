@@ -1247,15 +1247,20 @@ class VulnerabilityFactsIntegrationTest(unittest.TestCase):
         for internal_needle in ("live", "fetched_at", "\"nvd\"", "\"kev\"", "\"cve_id\""):
             self.assertNotIn(internal_needle, html)
 
-    def test_gemini_prompt_does_not_reference_facts(self):
-        # enrich_with_ai()が生成する記事分析プロンプトの入力テキストに、
-        # facts由来の情報(CVE ID・CVSS・KEV)が含まれないことを確認する。
-        # (gemini_analyze()の呼び出し自体はモックしない: プロンプト組み立てに
-        # 使うテキストがitem["facts"]を一切参照していないことをソース側で確認する)
+    def test_gemini_prompt_references_facts_only_via_serializer(self):
+        # Ticket 12c: enrich_with_ai()はTicket 12aのfacts生構造(cvss・
+        # retrieval等)を直接参照せず、serialize_vulnerability_facts_for_prompt()
+        # 経由でのみフィルタ済みのvulnerability_facts行をプロンプト入力へ渡す
+        # (Ticket 12aでは一切facts/cvssを参照しなかったが、Ticket 12cで
+        # 意図的にserializer経由の参照のみを追加した)。
         import inspect
         source = inspect.getsource(fetch.enrich_with_ai)
-        self.assertNotIn("facts", source)
+        self.assertIn("serialize_vulnerability_facts_for_prompt(item)", source)
+        self.assertIn("vulnerability_facts:", source)
+        # 生フィールド名を直接参照していないこと(すべて
+        # serialize_vulnerability_facts_for_prompt()側に閉じ込める)。
         self.assertNotIn("cvss", source.lower())
+        self.assertNotIn("retrieval", source.lower())
 
     def test_collect_recent_no_longer_calls_gemini_enrichment_internally(self):
         # Ticket 12a: enrich_with_ai()はcollect_recent()から分離され、main()側で
@@ -1264,11 +1269,13 @@ class VulnerabilityFactsIntegrationTest(unittest.TestCase):
         source = inspect.getsource(fetch.collect_recent)
         self.assertNotIn("enrich_with_ai(", source)
 
-    def test_gemini_request_body_does_not_leak_facts_data(self):
-        # ソースコード上の静的確認(test_gemini_prompt_does_not_reference_facts)に
-        # 加え、enrich_with_ai()が実際にGeminiへ送信するリクエストボディ(prompt
-        # 本文を含む)を動的にキャプチャし、item["facts"]に混入させたCVE ID・
-        # CVSS・KEV情報が漏れていないことを直接検証する。
+    def test_gemini_request_body_includes_filtered_facts_but_not_raw_fields(self):
+        # Ticket 12c: enrich_with_ai()が実際にGeminiへ送信するリクエストボディに、
+        # serialize_vulnerability_facts_for_prompt()がフィルタしたCVE ID・
+        # CVSSスコア/severity・KEV状態は含まれる一方、Ticket 12aの運用情報
+        # (retrieval・fetched_at・CVSS vector/source/type・vuln_status・
+        # published_at・last_modified_at・NVD詳細URL)は一切含まれないことを
+        # 動的に検証する。
         item = self._make_item(facts=self._sample_facts())
         item["raw_title"] = item["title"]
         item["raw_summary"] = item["summary"]
@@ -1306,21 +1313,24 @@ class VulnerabilityFactsIntegrationTest(unittest.TestCase):
 
         self.assertEqual(len(captured), 1)
         sent_body = captured[0].data.decode("utf-8")
-        sent_body_lower = sent_body.lower()
 
-        # "facts"/"cves"はTicket 12aのJSON構造フィールド名であり、記事分析
-        # プロンプトの固定文言には一切登場しない語のため、単純な部分一致で
-        # 判定してよい。
-        self.assertNotIn("facts", sent_body_lower)
-        self.assertNotIn("cves", sent_body_lower)
+        # Ticket 12c: フィルタ済みfacts(CVE ID・スコア・severity・KEV状態・
+        # KEV追加日)は意図的に送信される。
+        for included_value in ("CVE-2026-1234", "9.8", "CRITICAL", "listed", "2026-07-11"):
+            self.assertIn(included_value, sent_body, f"{included_value!r} was expected in Gemini request body")
 
-        # "cvss"/"kev"は、記事分析プロンプトの固定文言(カテゴリ定義・importance
-        # 判定の禁止事項)が一般語彙として元々使用しているため、語の有無ではなく、
-        # item["facts"]に埋め込んだ具体的な値(CVE ID・スコア・重大度・NVD詳細
-        # URL・ベクター文字列・KEV追加日)が実際に送信されていないことを確認する。
+        # Ticket 12aの運用情報・生フィールドは一切送信しない。last_modified_at/
+        # published_at/fetched_atはフルタイムスタンプ(T00:00:00Z等)で判定し、
+        # kev_date_added用の素の日付("2026-07-11")との誤検知を避ける。
         for leaked_value in (
-            "CVE-2026-1234", "9.8", "CRITICAL", "nvd.nist.gov/vuln/detail",
-            "AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", "2026-07-11",
+            "retrieval", "fetched_at", "nvd.nist.gov/vuln/detail",
+            "AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",  # cvss vector
+            "nvd@nist.gov",  # cvss source(生のメールアドレス形式)
+            "Primary",  # cvss type
+            "Analyzed",  # vuln_status
+            "2026-07-10T00:00:00Z",  # published_at
+            "2026-07-11T00:00:00Z",  # last_modified_at
+            "2026-07-12T01:00:00Z",  # nvd/kevのfetched_at
         ):
             self.assertNotIn(leaked_value, sent_body, f"{leaked_value!r} leaked into Gemini request body")
 

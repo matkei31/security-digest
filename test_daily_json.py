@@ -775,7 +775,7 @@ class FactsFieldTest(unittest.TestCase):
         )
         digest = dj.build_daily_digest([item], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
         self.assertEqual(digest["generator"]["article_prompt_version"], dj.ARTICLE_PROMPT_VERSION)
-        self.assertEqual(digest["generator"]["article_prompt_version"], "article-analysis-v3")
+        self.assertEqual(digest["generator"]["article_prompt_version"], "article-analysis-v4")
 
 
 # ── facts契約の強化 (Ticket 12a-review #4) ──────────────────────────────────
