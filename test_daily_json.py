@@ -654,6 +654,208 @@ class FileSaveTest(unittest.TestCase):
             self.assertEqual(leftover, [])
 
 
+# ── facts (Ticket 12a) ──────────────────────────────────────────────────
+
+SAMPLE_NVD_FOUND = {
+    "status": "found", "retrieval": "live", "fetched_at": "2026-07-12T01:00:00Z",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-1234",
+    "vuln_status": "Analyzed", "published_at": "2026-07-10T00:00:00Z",
+    "last_modified_at": "2026-07-11T00:00:00Z",
+    "cvss": {"version": "3.1", "base_score": 9.8, "base_severity": "CRITICAL",
+             "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+             "source": "nvd@nist.gov", "type": "Primary"},
+}
+
+SAMPLE_KEV_LISTED = {
+    "status": "listed", "retrieval": "live",
+    "fetched_at": "2026-07-12T01:00:00Z", "date_added": "2026-07-11",
+}
+
+SAMPLE_NVD_NOT_FOUND = {
+    "status": "not_found", "retrieval": "live", "fetched_at": "2026-07-12T01:00:00Z",
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-9999",
+    "vuln_status": None, "published_at": None, "last_modified_at": None, "cvss": None,
+}
+
+SAMPLE_KEV_NOT_LISTED = {
+    "status": "not_listed", "retrieval": "live",
+    "fetched_at": "2026-07-12T01:00:00Z", "date_added": None,
+}
+
+SAMPLE_NVD_UNAVAILABLE = {
+    "status": "unavailable", "retrieval": "unavailable", "fetched_at": None,
+    "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-5555",
+    "vuln_status": None, "published_at": None, "last_modified_at": None, "cvss": None,
+}
+
+SAMPLE_KEV_UNKNOWN = {
+    "status": "unknown", "retrieval": "unavailable", "fetched_at": None, "date_added": None,
+}
+
+
+class FactsFieldTest(unittest.TestCase):
+    def test_article_without_cve_gets_empty_cves_list(self):
+        item = make_item(ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta())
+        entry = dj.build_article_entry(item, SOURCE_DEFS, "gemini-2.5-flash", NOW)
+        self.assertEqual(entry["facts"], {"cves": []})
+
+    def test_facts_key_is_never_omitted(self):
+        item = make_item(ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta())
+        entry = dj.build_article_entry(item, SOURCE_DEFS, "gemini-2.5-flash", NOW)
+        self.assertIn("facts", entry)
+
+    def test_single_cve_facts_are_saved_as_is(self):
+        item = make_item(
+            ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta(),
+            facts={"cves": [{"cve_id": "CVE-2026-1234", "nvd": SAMPLE_NVD_FOUND, "kev": SAMPLE_KEV_LISTED}]},
+        )
+        entry = dj.build_article_entry(item, SOURCE_DEFS, "gemini-2.5-flash", NOW)
+        self.assertEqual(len(entry["facts"]["cves"]), 1)
+        self.assertEqual(entry["facts"]["cves"][0]["cve_id"], "CVE-2026-1234")
+        self.assertEqual(entry["facts"]["cves"][0]["nvd"]["cvss"]["base_score"], 9.8)
+
+    def test_multiple_cve_order_is_preserved(self):
+        cves = [
+            {"cve_id": "CVE-2026-0002", "nvd": SAMPLE_NVD_NOT_FOUND, "kev": SAMPLE_KEV_NOT_LISTED},
+            {"cve_id": "CVE-2026-0001", "nvd": SAMPLE_NVD_FOUND, "kev": SAMPLE_KEV_LISTED},
+        ]
+        item = make_item(ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta(), facts={"cves": cves})
+        entry = dj.build_article_entry(item, SOURCE_DEFS, "gemini-2.5-flash", NOW)
+        self.assertEqual([c["cve_id"] for c in entry["facts"]["cves"]], ["CVE-2026-0002", "CVE-2026-0001"])
+
+    def test_not_found_nullable_fields_pass_validation(self):
+        item = make_item(
+            ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta(),
+            facts={"cves": [{"cve_id": "CVE-2026-9999", "nvd": SAMPLE_NVD_NOT_FOUND, "kev": SAMPLE_KEV_NOT_LISTED}]},
+        )
+        digest = dj.build_daily_digest([item], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        dj.validate_daily_digest(digest)  # 例外が出なければOK
+
+    def test_unavailable_nullable_fields_pass_validation(self):
+        item = make_item(
+            ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta(),
+            facts={"cves": [{"cve_id": "CVE-2026-5555", "nvd": SAMPLE_NVD_UNAVAILABLE, "kev": SAMPLE_KEV_UNKNOWN}]},
+        )
+        digest = dj.build_daily_digest([item], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        dj.validate_daily_digest(digest)  # 例外が出なければOK
+
+    def test_validation_rejects_missing_facts(self):
+        item = make_item(ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta())
+        digest = dj.build_daily_digest([item], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        digest["items"][0]["facts"] = None
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_validation_rejects_non_list_cves(self):
+        item = make_item(ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta())
+        digest = dj.build_daily_digest([item], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        digest["items"][0]["facts"] = {"cves": "not-a-list"}
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_validation_rejects_cve_entry_without_cve_id(self):
+        item = make_item(ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta())
+        digest = dj.build_daily_digest([item], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        digest["items"][0]["facts"] = {"cves": [{"nvd": SAMPLE_NVD_FOUND, "kev": SAMPLE_KEV_LISTED}]}
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_schema_version_stays_1_with_facts_present(self):
+        item = make_item(
+            ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta(),
+            facts={"cves": [{"cve_id": "CVE-2026-1234", "nvd": SAMPLE_NVD_FOUND, "kev": SAMPLE_KEV_LISTED}]},
+        )
+        digest = dj.build_daily_digest([item], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        self.assertEqual(digest["schema_version"], 1)
+
+    def test_article_prompt_version_unaffected_by_facts(self):
+        item = make_item(
+            ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta(),
+            facts={"cves": [{"cve_id": "CVE-2026-1234", "nvd": SAMPLE_NVD_FOUND, "kev": SAMPLE_KEV_LISTED}]},
+        )
+        digest = dj.build_daily_digest([item], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+        self.assertEqual(digest["generator"]["article_prompt_version"], dj.ARTICLE_PROMPT_VERSION)
+        self.assertEqual(digest["generator"]["article_prompt_version"], "article-analysis-v3")
+
+
+# ── facts契約の強化 (Ticket 12a-review #4) ──────────────────────────────────
+
+class FactsContractTest(unittest.TestCase):
+    def test_falsy_but_present_facts_is_not_replaced_by_default(self):
+        # item.get("facts") or {...} をやめたため、facts={}のような壊れた値が
+        # 渡された場合はデフォルトへフォールバックせず、そのまま保持される
+        # (validate_daily_digest側の検証で検出させる)。
+        item = make_item(ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta(), facts={})
+        entry = dj.build_article_entry(item, SOURCE_DEFS, "gemini-2.5-flash", NOW)
+        self.assertEqual(entry["facts"], {})
+
+    def test_missing_facts_key_still_defaults_to_empty_cves(self):
+        item = make_item(ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta())
+        self.assertNotIn("facts", item)
+        entry = dj.build_article_entry(item, SOURCE_DEFS, "gemini-2.5-flash", NOW)
+        self.assertEqual(entry["facts"], {"cves": []})
+
+    def _digest_with_facts(self, facts):
+        item = make_item(ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta(), facts=facts)
+        return dj.build_daily_digest([item], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
+
+    def test_falsy_facts_dict_fails_validation(self):
+        digest = self._digest_with_facts({})
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_invalid_cve_id_format_is_rejected(self):
+        digest = self._digest_with_facts({"cves": [
+            {"cve_id": "NOT-A-CVE", "nvd": SAMPLE_NVD_NOT_FOUND, "kev": SAMPLE_KEV_NOT_LISTED},
+        ]})
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_nvd_not_a_dict_is_rejected(self):
+        digest = self._digest_with_facts({"cves": [
+            {"cve_id": "CVE-2026-0001", "nvd": "not-a-dict", "kev": SAMPLE_KEV_NOT_LISTED},
+        ]})
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_kev_not_a_dict_is_rejected(self):
+        digest = self._digest_with_facts({"cves": [
+            {"cve_id": "CVE-2026-0001", "nvd": SAMPLE_NVD_NOT_FOUND, "kev": "not-a-dict"},
+        ]})
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_nvd_status_out_of_range_is_rejected(self):
+        bad_nvd = {**SAMPLE_NVD_NOT_FOUND, "status": "maybe_found"}
+        digest = self._digest_with_facts({"cves": [
+            {"cve_id": "CVE-2026-0001", "nvd": bad_nvd, "kev": SAMPLE_KEV_NOT_LISTED},
+        ]})
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_kev_status_out_of_range_is_rejected(self):
+        bad_kev = {**SAMPLE_KEV_NOT_LISTED, "status": "maybe_listed"}
+        digest = self._digest_with_facts({"cves": [
+            {"cve_id": "CVE-2026-0001", "nvd": SAMPLE_NVD_NOT_FOUND, "kev": bad_kev},
+        ]})
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_retrieval_out_of_range_is_rejected(self):
+        bad_nvd = {**SAMPLE_NVD_NOT_FOUND, "retrieval": "from_the_future"}
+        digest = self._digest_with_facts({"cves": [
+            {"cve_id": "CVE-2026-0001", "nvd": bad_nvd, "kev": SAMPLE_KEV_NOT_LISTED},
+        ]})
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_valid_facts_pass_validation(self):
+        digest = self._digest_with_facts({"cves": [
+            {"cve_id": "CVE-2026-1234", "nvd": SAMPLE_NVD_FOUND, "kev": SAMPLE_KEV_LISTED},
+        ]})
+        dj.validate_daily_digest(digest)  # 例外が出なければOK
+
+
 # ── index.json ────────────────────────────────────────────────────────────
 
 class IndexTest(unittest.TestCase):
@@ -749,6 +951,35 @@ class IndexTest(unittest.TestCase):
             )
             with self.assertRaises(dj.DailyJsonError):
                 dj.scan_daily_digest_files(data_dir)
+
+    def test_vulnerability_facts_cache_file_excluded_from_index(self):
+        # Ticket 12a: data/vulnerability_facts_cache.jsonは日別ダイジェストではない。
+        # DAILY_FILENAME_REがYYYY-MM-DD.json形式のみに一致するため、この
+        # キャッシュファイルはdata/index.jsonのdigestsへ混入してはならない。
+        with tempfile.TemporaryDirectory() as tmp:
+            data_dir = Path(tmp)
+            self._make_daily_file(data_dir, "2026-07-11")
+            (data_dir / "vulnerability_facts_cache.json").write_text(
+                json.dumps({"schema_version": 1, "nvd": {}, "kev": {"fetched_at": None, "entries": {}}}),
+                encoding="utf-8",
+            )
+            index = dj.build_index(data_dir, NOW)
+            paths = [d["path"] for d in index["digests"]]
+            self.assertEqual(len(index["digests"]), 1)
+            self.assertNotIn("data/vulnerability_facts_cache.json", paths)
+
+    def test_vulnerability_facts_cache_file_not_treated_as_daily_digest(self):
+        self.assertFalse(dj.DAILY_FILENAME_RE.fullmatch("vulnerability_facts_cache.json"))
+
+    def test_malformed_cache_file_does_not_break_index_rebuild(self):
+        # キャッシュファイル自体が壊れていても(facts取得側の破損キャッシュ処理とは
+        # 別に)、日次ダイジェストの走査対象外である以上、index再構築には影響しない。
+        with tempfile.TemporaryDirectory() as tmp:
+            data_dir = Path(tmp)
+            self._make_daily_file(data_dir, "2026-07-11")
+            (data_dir / "vulnerability_facts_cache.json").write_text("{ not valid json", encoding="utf-8")
+            index = dj.build_index(data_dir, NOW)  # 例外が出なければOK
+            self.assertEqual(len(index["digests"]), 1)
 
 
 # ── 回帰: build_htmlは保存用メタデータを表示しない ────────────────────────
