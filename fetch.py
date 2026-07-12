@@ -3,7 +3,7 @@
 Security Digest — サイバーセキュリティニュースを収集してindex.htmlを生成する
 """
 
-import sys, json, datetime, time, re, os, tempfile, unicodedata
+import sys, json, datetime, time, re, os, tempfile, unicodedata, math
 import urllib.request, urllib.parse
 import urllib.error
 import xml.etree.ElementTree as ET
@@ -1031,6 +1031,10 @@ def digest_items_for_html(digest):
             "source": clean_archive_text(entry.get("source_name")) or clean_archive_text(entry.get("source_id")) or clean_archive_text(entry.get("source")) or "不明",
             "lang": clean_archive_text(entry.get("language")) or clean_archive_text(entry.get("lang")),
             "ai_analysis": entry.get("analysis") if isinstance(entry.get("analysis"), dict) else entry.get("ai_analysis"),
+            # Ticket 12b: アーカイブページでも脆弱性情報を表示するため、保存済み
+            # factsをそのまま引き継ぐ(型検証はrender_vulnerability_facts_html側で
+            # 行う。factsキーの無い過去のdaily JSONではNoneのままでよい)。
+            "facts": entry.get("facts"),
         })
     return items
 
@@ -2154,6 +2158,158 @@ def build_todays_brief(items):
     return result
 
 
+# ── 脆弱性情報 (Ticket 12b) ───────────────────────────────────────────────
+# Ticket 12aが保存したfacts(CVE/CVSS/CISA KEV)を記事カードへ表示専用に
+# 描画する。ここではGeminiへの入力・importance/urgency判定には一切使わない
+# (Ticket 12bのスコープ外。表示のみ)。daily JSONの値は信頼せず、
+# 表示に使う値はすべてここで再検証する。
+
+CVSS_SEVERITY_DISPLAY = {
+    "CRITICAL": "Critical",
+    "HIGH": "High",
+    "MEDIUM": "Medium",
+    "LOW": "Low",
+    "NONE": "None",
+}
+
+
+def _display_cve_id(raw_value):
+    """表示用にCVE IDを正規化・検証する(Ticket 12aと同じ形式チェックを
+    vulnerability_facts.CVE_ID_KEY_REで共有する)。不正な場合はNoneを返し、
+    呼び出し側でその1件だけを表示対象から除外する。
+    """
+    if not isinstance(raw_value, str):
+        return None
+    normalized = raw_value.strip().upper()
+    if not vulnerability_facts.CVE_ID_KEY_RE.fullmatch(normalized):
+        return None
+    return normalized
+
+
+def _display_cvss_score(value):
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        return None
+    # math.isfinite()は巨大なPython整数(intは任意精度)に対してOverflowErrorを
+    # 送出しうるため、float型の場合のみ適用する(intは有限であることが保証済み)。
+    if isinstance(value, float) and not math.isfinite(value):
+        return None
+    if value < 0 or value > 10:
+        return None
+    return f"{value:.1f}"
+
+
+def _display_cvss_severity(value):
+    if not isinstance(value, str):
+        return None
+    return CVSS_SEVERITY_DISPLAY.get(value.strip().upper())
+
+
+def _display_cvss_version(value):
+    """Ticket 12a(vulnerability_facts.CVSS_VERSION_PRIORITY)が選択しうる
+    バージョンだけを許容値として共有する(値の二重管理をしない)。
+    それ以外の値(999.9等、選択ロジック上あり得ない値)は表示しない。
+    """
+    if not isinstance(value, str):
+        return None
+    version = value.strip()
+    if version[:1].lower() == "v":
+        version = version[1:]
+    if version not in vulnerability_facts.CVSS_VERSION_PRIORITY:
+        return None
+    return f"v{version}"
+
+
+def _display_cvss_provider(value):
+    """CVSSのsource文字列を提供元ラベルへ変換する。NVD以外はCISA-ADP等の
+    多様な提供元を含みうるため、一律に「CNA」と断定せず「他機関」とする。
+    生のsource文字列(メールアドレス等)自体はHTMLへ一切出力しない。
+    """
+    if not isinstance(value, str) or not value.strip():
+        return None
+    return "NVD" if value.strip().lower() == "nvd@nist.gov" else "他機関"
+
+
+def _render_cvss_text(cvss):
+    """有効なCVSSスコアが無い場合、NVDの内部status(not_found/unavailable等)に
+    関わらず「CVSS未評価」を返す(Ticket 12b #9.5: 取得状態の違いを
+    利用者へ見せない)。
+    """
+    score = _display_cvss_score(cvss.get("base_score")) if isinstance(cvss, dict) else None
+    if score is None:
+        return "CVSS未評価"
+
+    text = f"CVSS {score}"
+    severity = _display_cvss_severity(cvss.get("base_severity"))
+    if severity:
+        text += f" / {severity}"
+
+    meta = [m for m in (_display_cvss_version(cvss.get("version")),
+                         _display_cvss_provider(cvss.get("source"))) if m]
+    if meta:
+        text += "（" + "・".join(meta) + "）"
+    return text
+
+
+def _render_vulnerability_item_html(cve_entry):
+    """1件のCVEエントリをリスト項目HTMLへ変換する。CVE IDが不正な場合は
+    Noneを返す(その1件だけを除外し、他の正常な項目は表示を継続する)。
+    """
+    if not isinstance(cve_entry, dict):
+        return None
+    cve_id = _display_cve_id(cve_entry.get("cve_id"))
+    if cve_id is None:
+        return None
+
+    nvd = cve_entry.get("nvd")
+    kev = cve_entry.get("kev")
+    cvss = nvd.get("cvss") if isinstance(nvd, dict) else None
+
+    cvss_text = _render_cvss_text(cvss)
+    kev_badge_html = (
+        '<span class="kev-badge">CISA KEV掲載</span>'
+        if isinstance(kev, dict) and kev.get("status") == "listed" else ""
+    )
+
+    # cve_idは直前にCVE_ID_KEY_RE(先頭CVE-固定・以降は数字とハイフンのみ)で
+    # 検証済みのため、このURLにスキーム偽装等が混入する経路はない。
+    cve_url = f"https://nvd.nist.gov/vuln/detail/{cve_id}"
+    cve_link_html = (
+        f'<a class="vulnerability-cve-link" href="{esc(cve_url)}" '
+        f'target="_blank" rel="noopener noreferrer">{esc(cve_id)}</a>'
+    )
+
+    parts = [cve_link_html, f'<span class="vulnerability-cvss">{esc(cvss_text)}</span>']
+    if kev_badge_html:
+        parts.append(kev_badge_html)
+
+    return f'<li class="vulnerability-item">{"".join(parts)}</li>'
+
+
+def render_vulnerability_facts_html(facts):
+    """記事カードの「脆弱性情報」欄を描画する(Ticket 12b)。
+    facts・facts.cvesが無い・不正な型、または有効なCVE要素が1件も無い場合は
+    空文字列を返す(見出し・空枠を一切出力しない。factsキーの無い過去の
+    daily JSONとの後方互換のため)。
+    """
+    if not isinstance(facts, dict):
+        return ""
+    cves = facts.get("cves")
+    if not isinstance(cves, list):
+        return ""
+
+    items_html = [html for html in (_render_vulnerability_item_html(c) for c in cves) if html]
+    if not items_html:
+        return ""
+
+    count = len(items_html)
+    title = "脆弱性情報" if count == 1 else f"脆弱性情報（{count}件）"
+
+    return f"""<section class="vulnerability-facts">
+        <h3 class="vulnerability-facts-title">{esc(title)}</h3>
+        <ul class="vulnerability-list">{"".join(items_html)}</ul>
+      </section>"""
+
+
 def build_html(
     items,
     brief=None,
@@ -2229,6 +2385,7 @@ def build_html(
         raw_summary = strip_html(item["summary"])
         analysis = normalize_display_analysis(item.get("ai_analysis"))
         anchor_id = article_anchor_id(display_index)
+        facts_html = render_vulnerability_facts_html(item.get("facts"))
 
         if analysis:
             importance_class = {
@@ -2276,6 +2433,11 @@ def build_html(
           <h3>何が起きた</h3>
           <p>{esc(analysis["summary"])}</p>
         </section>""")
+            if facts_html:
+                # 概要(何が起きた)の後、AI分析による解釈(なぜ金融機関に関係する・
+                # 確認すべきこと)の前に、外部機関の客観的ファクトを挿入する
+                # (Ticket 12b #4)。
+                sections.append(facts_html)
             if analysis["financial_impact"]:
                 sections.append(f"""<section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
@@ -2304,11 +2466,13 @@ def build_html(
         else:
             max_len = 120
             summary = raw_summary[:max_len]
-            summary_html = (
+            raw_summary_html = (
                 f'<p class="summary">{esc(summary)}'
                 f'{"…" if len(raw_summary) > max_len else ""}</p>'
                 if summary else ""
             )
+            # AI分析が無い場合も、概要の後に脆弱性情報を表示する(Ticket 12b #4)。
+            summary_html = raw_summary_html + facts_html
         summary_block = f"\n      {summary_html}" if summary_html else ""
 
         safe_link = safe_url(item['link'])
@@ -2444,6 +2608,14 @@ def build_html(
     .article-section p,.article-section ul{{margin-top:3px}}
     .action-list{{padding-left:18px}}
     .action-list li+li{{margin-top:3px}}
+    .vulnerability-facts{{margin-top:8px}}
+    .vulnerability-facts-title{{font-size:11px;font-weight:600;color:#8b949e}}
+    .vulnerability-list{{list-style:none;margin-top:4px;display:grid;gap:4px}}
+    .vulnerability-item{{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;color:#c9d1d9;line-height:1.6}}
+    .vulnerability-cve-link{{color:#79c0ff;text-decoration:none;font-weight:600}}
+    .vulnerability-cve-link:hover{{text-decoration:underline}}
+    .vulnerability-cvss{{color:#8b949e}}
+    .kev-badge{{font-size:10px;font-weight:700;line-height:1;padding:3px 8px;border-radius:100px;border:1px solid #9e6a03;color:#e3b341;background:#1c1506;white-space:nowrap}}
     .article-source-link{{display:inline-flex;align-items:center;width:max-content;max-width:100%;margin-top:10px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
     .empty{{text-align:center;color:#8b949e;padding:60px 0;font-size:14px}}
     .todays-brief{{max-width:680px;margin:12px auto 0;padding:0 12px}}
