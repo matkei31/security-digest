@@ -1,0 +1,407 @@
+{
+  "schema_version": 1,
+  "digest_date": "2026-07-13",
+  "generated_at": "2026-07-13T01:54:16.964199+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v4",
+    "brief_prompt_version": "today-brief-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 8,
+    "ai_attempted_count": 8,
+    "ai_success_count": 8,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 5,
+      "低": 3,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 1,
+      "今週確認": 2,
+      "参考": 5,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 0,
+      "攻撃・脅威動向": 3,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 3,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "gemini-2.5-flash",
+    "prompt_version": "today-brief-v2",
+    "overview": "本日は、サプライチェーン攻撃による情報窃取マルウェアの拡散と、AIモデルに対するプロンプトインジェクション技術の進化という二つの主要な脅威動向が注目されます。特に、開発環境で利用されるnpmパッケージの侵害は、金融機関のシステム開発プロセスに直接的な影響を及ぼす可能性があり、緊急の確認が必要です。また、AI技術の導入が進む中で、プロンプトインジェクションは新たなセキュリティリスクとして浮上しており、中長期的な対策検討が求められます。",
+    "important_highlights": [
+      "jscrambler npmパッケージのバージョン8.14.0が侵害され、インストール時に情報窃取マルウェアが実行されるサプライチェーン攻撃が発生しました。金融機関が開発プロセスでnpmパッケージを利用している場合、開発環境やCI/CDパイプラインでの利用状況を緊急に確認する必要があります。",
+      "CrowdStrikeおよびGoogle TAGが、AIモデルに対する新たなプロンプトインジェクション技術の発見と現状について報告しました。金融機関がAIモデルを業務に導入・利用している場合、情報漏えいや誤情報生成のリスクに繋がる可能性があるため、既存対策の見直しや新たな脅威への対応検討が重要です。"
+    ],
+    "discussion_points": [
+      "開発環境におけるサプライチェーンリスク管理の強化について、npmパッケージなどの外部コンポーネント利用に関するリスク評価と対策の現状を議論し、必要に応じて見直しを行うべきです。",
+      "AI技術の導入・活用が進む中で、プロンプトインジェクションのような新たな攻撃手法に対するセキュリティ対策をどのように組み込み、AIガバナンスを実効性のあるものにしていくか、組織全体で議論が必要です。",
+      "顧客認証におけるセッションハイジャック攻撃のリスク軽減のため、デバイスに紐付けられたセッション認証情報（DBSC）のような新しい認証技術の動向を注視し、将来的なセキュリティ強化策として導入可能性を検討するべきです。"
+    ],
+    "check_items": [
+      "jscrambler npmパッケージのバージョン8.14.0が自社または委託先の開発環境やCI/CDパイプラインで利用されていないか、本日中に確認してください。",
+      "AIモデルを業務で利用している場合、プロンプトインジェクションに対する既存の対策を見直し、新たな脅威への対応を今週中に検討してください。",
+      "AIモデルやAIを活用したシステムを導入している場合、プロンプトインジェクションに対する防御策の検討状況を確認し、AI利用におけるセキュリティガイドラインやリスク評価プロセスに組み込むことを検討してください。",
+      "npmパッケージの利用状況を棚卸し、サプライチェーンリスク管理の強化を検討してください。"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:440f70b0e78588e23ea6cb49b170ef95db10e009d2648e8468063ce756c12378",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/compromised-jscrambler-8140-npm-release.html",
+      "canonical_url": "https://thehackernews.com/2026/07/compromised-jscrambler-8140-npm-release.html",
+      "published_at": "2026-07-12T02:59:26+09:00",
+      "fetched_at": "2026-07-13T01:51:44.164133+09:00",
+      "title": "侵害された jscrambler 8.14.0 npm リリースにより、インストール中に Rust Infostealer がドロップされる",
+      "raw_title": "Compromised jscrambler 8.14.0 npm Release Drops Rust Infostealer During Install",
+      "raw_excerpt": "The jscrambler npm package was compromised, and simply installing its&nbsp;8.14.0&nbsp;release runs an infostealer on your machine. Published on July 11, 2026, the malicious version carries a&nbsp;pre",
+      "content_hash": "sha256:afd6c823ed462a6bbc1d5d3d191383f70af5bb03eb8e9c7ee28360670cb97cb1",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v4",
+        "generated_at": "2026-07-13T01:51:46.280720+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "npmパッケージのサプライチェーン攻撃と情報窃取マルウェアの配布が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "情報漏えい",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "本日確認",
+        "summary": "jscrambler npmパッケージのバージョン8.14.0が侵害され、インストール時に情報窃取マルウェアが実行されるサプライチェーン攻撃が発生しました。この悪意あるバージョンは、Windows、macOS、Linux向けにビルドされたネイティブバイナリをドロップし実行します。",
+        "financial_impact": "金融機関が開発プロセスでnpmパッケージを利用している場合、このサプライチェーン攻撃の影響を受ける可能性があります。特に、開発環境やCI/CDパイプラインでの利用状況を確認する必要があります。",
+        "recommended_actions": [
+          "jscrambler npmパッケージのバージョン8.14.0が自社または委託先の開発環境やCI/CDパイプラインで利用されていないか確認してください。",
+          "npmパッケージの利用状況を棚卸し、サプライチェーンリスク管理の強化を検討してください。"
+        ],
+        "reason": "npmパッケージのサプライチェーン攻撃は広範な影響を及ぼす可能性があり、情報窃取マルウェアが実行されるため重要度は中と判断しました。公開後すぐに悪用が確認されており、開発環境への影響を考慮し本日中の確認が必要です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5a78286d4eea74fb31f26c8096b3dbd1db3cfbb7dcbea67fa05af998d14bd608",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/hackers-weaponize-balochistan-police.html",
+      "canonical_url": "https://thehackernews.com/2026/07/hackers-weaponize-balochistan-police.html",
+      "published_at": "2026-07-12T02:49:31+09:00",
+      "fetched_at": "2026-07-13T01:51:44.164133+09:00",
+      "title": "ハッカーが複数グループのスパイ活動でバロチスタン警察ポータルを武器化",
+      "raw_title": "Hackers Weaponize Balochistan Police Portal in Multi-Group Espionage Campaigns",
+      "raw_excerpt": "Cybersecurity researchers have disclosed details of sustained cyber espionage activity against several Pakistani law enforcement organizations undertaken by suspected China- and India-aligned threat a",
+      "content_hash": "sha256:1b65e7b09c61cc7d31ba47540ff28a568fb60a164b248d10ea7cffecb58b8b72",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v4",
+        "generated_at": "2026-07-13T01:52:03.261848+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "パキスタンの法執行機関に対するサイバー攻撃キャンペーンと、それに利用された手法や攻撃グループの動向が主題であるため。",
+        "tags": [
+          "APT",
+          "情報漏えい"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "2024年2月から2026年4月にかけて、中国およびインドに関連するとされる脅威アクターが、パキスタンの複数の法執行機関に対し、持続的なサイバー諜報活動を行っていたことが明らかになりました。攻撃者はバロチスタン警察のポータルサイトを悪用し、警察や市民のデータを管理するウェブアプリケーションのサーバーが侵害されました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。他国の法執行機関に対するサイバー諜報活動の事例であり、金融機関が直接的な標的となる可能性は低いと考えられます。",
+        "recommended_actions": [],
+        "reason": "他国の法執行機関を標的としたサイバー諜報活動の事例であり、金融機関への直接的な関係や具体的な脅威は確認できません。一般的な脅威動向の参考情報としての位置付けです。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2be33f1297b6962ad42069dda9c62ccb8a258f231ef9c38fa1f1b87037c16ba0",
+      "source_id": "crowdstrike",
+      "source_name": "CrowdStrike",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/",
+      "canonical_url": "https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/",
+      "published_at": null,
+      "fetched_at": "2026-07-13T01:51:44.164133+09:00",
+      "title": "ガードレールのない AI ガバナンスが劇場である理由",
+      "raw_title": "Why AI Governance Without Guardrails Is Theater",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1bd8f580fdc86786f1cce1bd0cc85a5b0f03edc5365d6fc02f40e7a6ec338a2b",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v4",
+        "generated_at": "2026-07-13T01:52:19.849105+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIガバナンスとガードレールに関する記事であり、AI技術のリスク管理が主題であるため。",
+        "tags": [
+          "AI",
+          "ガイドライン"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AIガバナンスが実効性を持つためには、単なるポリシー策定だけでなく、具体的なガードレール（保護措置）の実装が不可欠であると指摘しています。",
+        "financial_impact": "金融機関はAI技術の導入を進めており、AIガバナンスの構築は重要な課題です。本記事は、実効性のあるAIガバナンスを検討する上での参考情報となります。",
+        "recommended_actions": [],
+        "reason": "AIガバナンスは金融機関にとって中長期的な重要課題ですが、記事は一般的な提言であり、具体的な短期的な行動を促すものではないため。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7e4aa4074fe78fa3cf7cd1beaac775b421c309ea8cda5bb84f373696163dd029",
+      "source_id": "crowdstrike",
+      "source_name": "CrowdStrike",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/",
+      "canonical_url": "https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/",
+      "published_at": null,
+      "fetched_at": "2026-07-13T01:51:44.164133+09:00",
+      "title": "Falcon Secure Access がゼロトラスト ブラウザ セキュリティの標準を設定",
+      "raw_title": "Falcon Secure Access Sets the Standard for Zero Trust Browser Security",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ba680d95712b6fa0dd80ab0eaacb1cea395b2d81eec3bf0283b117c86b5dba9c",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v4",
+        "generated_at": "2026-07-13T01:52:36.233669+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "CrowdStrikeの製品に関する記事であり、特定の脆弱性、攻撃、インシデント、規制、クラウド、AIのいずれにも直接関連しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "CrowdStrikeがFalcon Secure Accessを発表し、ゼロトラストブラウザセキュリティの新たな標準を確立したと主張しています。",
+        "financial_impact": "CrowdStrikeの製品に関する宣伝記事であり、金融機関への直接的な影響は限定的です。一般的なセキュリティ動向として参考になります。",
+        "recommended_actions": [],
+        "reason": "CrowdStrikeの製品発表に関する宣伝記事であり、具体的な脅威や対応を要する情報が含まれていないため、一般的な参考情報として位置付けます。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:768ec60708c6179611779d373df6dc6e4233beecc195f68dcea4174c12165578",
+      "source_id": "crowdstrike",
+      "source_name": "CrowdStrike",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/",
+      "canonical_url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/",
+      "published_at": null,
+      "fetched_at": "2026-07-13T01:51:44.164133+09:00",
+      "title": "CrowdStrike が新しいプロンプト インジェクション技術を発見",
+      "raw_title": "CrowdStrike Uncovers New Prompt Injection Techniques",
+      "raw_excerpt": null,
+      "content_hash": "sha256:990a14498dd4e36700d3e6099b64500201463402e656abfb6f92b6c84684da8e",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v4",
+        "generated_at": "2026-07-13T01:52:53.588696+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事は新しいプロンプトインジェクション技術の発見を主題としており、AIに関連するリスク情報であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "CrowdStrikeが、AIモデルに対する新たなプロンプトインジェクション技術を発見しました。これは、AIのセキュリティリスクに関する新たな知見を提供します。",
+        "financial_impact": "金融機関がAIモデルを業務に導入・利用している場合、これらの新たなプロンプトインジェクション技術がセキュリティリスクとなる可能性があります。特に、顧客対応やデータ分析にAIを利用している場合は、情報漏えいや誤情報生成のリスクに繋がる可能性があります。",
+        "recommended_actions": [
+          "AIモデルを業務で利用している場合、プロンプトインジェクションに対する既存の対策を見直し、新たな脅威への対応を検討してください",
+          "AIモデルの利用を計画している場合、本記事で言及されているようなプロンプトインジェクション技術を考慮したセキュリティ設計を検討してください"
+        ],
+        "reason": "AIモデルに対する新たな攻撃手法の発見であり、金融機関でのAI利用が進む中で潜在的なリスクとなるため、今週中に自社のAI利用状況と関連リスクを確認する価値があります。ただし、具体的な被害事例や緊急対応を要する情報ではないため、本日確認の緊急性はありません。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b6c56b0f1d2d52f167e8e98cfffef0fc0df9a6b36d298d5a37a999a8b114a507",
+      "source_id": "google_tag",
+      "source_name": "Google TAG",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "http://security.googleblog.com/feeds/820776653483778595/comments/default",
+      "canonical_url": "http://security.googleblog.com/feeds/820776653483778595/comments/default",
+      "published_at": null,
+      "fetched_at": "2026-07-13T01:51:44.164133+09:00",
+      "title": "現実の AI の脅威: Web 上でのプロンプト インジェクションの現状",
+      "raw_title": "AI threats in the wild: The current state of prompt injections on the web",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2ca8a6fb8c4d911ea63b159398723532a5ff146d6e1bd441eb3be271281cbc08",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v4",
+        "generated_at": "2026-07-13T01:53:10.281807+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIにおけるプロンプトインジェクションの脅威動向であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Google TAGが、AIにおけるプロンプトインジェクションの現状と脅威について報告しました。",
+        "financial_impact": "金融機関がAI技術を導入・活用する際、プロンプトインジェクションは情報漏えいや不正操作のリスクとなり得るため、AI利用におけるセキュリティ対策の検討が必要です。",
+        "recommended_actions": [
+          "AIモデルやAIを活用したシステムを導入している場合、プロンプトインジェクションに対する防御策の検討状況を確認してください",
+          "AI利用におけるセキュリティガイドラインやリスク評価プロセスにプロンプトインジェクションのリスクを組み込むことを検討してください"
+        ],
+        "reason": "AI技術の利用が広がる中で、プロンプトインジェクションは新たな脅威として認識されており、金融機関においてもAI導入時のリスク評価や対策検討が必要となるため、今週中に確認する価値があります。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:96f3e1892bed0eba637d470b56c030489e54ac349a43d3ba2379315c532a5678",
+      "source_id": "google_tag",
+      "source_name": "Google TAG",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "http://security.googleblog.com/feeds/1469360228826887140/comments/default",
+      "canonical_url": "http://security.googleblog.com/feeds/1469360228826887140/comments/default",
+      "published_at": null,
+      "fetched_at": "2026-07-13T01:51:44.164133+09:00",
+      "title": "Pixel ベースバンドに Rust を導入する",
+      "raw_title": "Bringing Rust to the Pixel Baseband",
+      "raw_excerpt": null,
+      "content_hash": "sha256:434656bbad3d91a40d476106d23752eec8a468717d1007916379318de42fd37c",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v4",
+        "generated_at": "2026-07-13T01:53:26.866452+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "記事はGoogle PixelのベースバンドにRustを導入するという技術的な内容であり、特定の脆弱性、攻撃、インシデント、規制、サプライチェーン、AIリスクのいずれにも直接該当しないため、「その他」に分類します。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "GoogleがPixelスマートフォンのベースバンドにRust言語を導入したという技術的な取り組みに関する記事です。",
+        "financial_impact": "本記事はGoogle Pixelの技術的な改善に関するものであり、金融機関の業務システムやセキュリティに直接的な影響を与えるものではありません。一般的な技術動向として参考になります。",
+        "recommended_actions": [],
+        "reason": "Google Pixelの技術的な改善に関する記事であり、金融機関の業務に直接関連する具体的な脅威や対応が示されていないため、重要度・緊急度ともに低いと判断しました。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b363427aeeb4e9fc7fca928e836024aa441037d6d3d0088ed729ef47e7c1d2b6",
+      "source_id": "google_tag",
+      "source_name": "Google TAG",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "http://security.googleblog.com/feeds/3718049046001981559/comments/default",
+      "canonical_url": "http://security.googleblog.com/feeds/3718049046001981559/comments/default",
+      "published_at": null,
+      "fetched_at": "2026-07-13T01:51:44.164133+09:00",
+      "title": "デバイスにバインドされたセッション認証情報による Cookie の保護",
+      "raw_title": "Protecting Cookies with Device Bound Session Credentials",
+      "raw_excerpt": null,
+      "content_hash": "sha256:78cc9c2490980284bfe27efc2b4fbd153ff7db788c85466229f0539dfb05299e",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v4",
+        "generated_at": "2026-07-13T01:53:43.803605+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "記事はクッキー保護のための新しい認証技術に関するもので、攻撃手法や脅威動向に関連する内容であるため。",
+        "tags": [
+          "認証"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Google TAGは、デバイスに紐付けられたセッション認証情報（DBSC）を用いてクッキーを保護する新しい技術について解説しています。",
+        "financial_impact": "金融機関は顧客認証にクッキーを広く利用しており、セッションハイジャック攻撃のリスク軽減は顧客資産保護に直結します。DBSCのような新しい認証技術の動向は、将来的なセキュリティ強化策を検討する上で参考になります。",
+        "recommended_actions": [],
+        "reason": "記事は新しい認証技術の概念紹介であり、具体的な脆弱性や緊急対応を要する情報ではないため、中長期的な脅威動向と対策の参考情報として位置付けます。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
