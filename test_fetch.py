@@ -1185,7 +1185,13 @@ class ImportantItemsTest(unittest.TestCase):
 
 
 class VulnerabilityFactsIntegrationTest(unittest.TestCase):
-    """Ticket 12a: factsがGeminiプロンプト・HTMLへ一切影響しないことの回帰テスト。
+    """Ticket 12a/12b: factsの扱いに関する回帰テスト。
+
+    Ticket 12aではfactsはGeminiプロンプト・HTMLのいずれにも一切影響しなかったが、
+    Ticket 12bでHTML表示(記事カードへの脆弱性情報欄)を追加したため、HTML関連の
+    2件はTicket 12bの新しい期待値へ更新されている(下のVulnerabilityFactsHtml*
+    クラス群を参照)。Geminiプロンプトへfactsを一切渡さないという制約(Ticket 12b
+    のスコープ外事項)は本クラスの残りのテストで引き続き検証する。
     実際のCVE/NVD/KEV取得ロジック自体はtest_vulnerability_facts.pyで検証する。
     """
 
@@ -1219,18 +1225,27 @@ class VulnerabilityFactsIntegrationTest(unittest.TestCase):
             ]
         }
 
-    def test_html_output_identical_with_and_without_facts(self):
+    def test_html_without_facts_key_omits_vulnerability_section(self):
+        # Ticket 12b: factsキーが無い記事(過去のdaily JSON互換)では、脆弱性情報欄
+        # 自体が出力されないことを確認する(Ticket 12bで挙動が意図的に変わった点)。
         item_without = self._make_item()
-        item_with = self._make_item(facts=self._sample_facts())
         html_without = fetch.build_html([item_without])
-        html_with = fetch.build_html([item_with])
-        self.assertEqual(html_without, html_with)
+        self.assertNotIn('class="vulnerability-facts"', html_without)
 
-    def test_html_does_not_mention_cve_cvss_kev(self):
+    def test_html_renders_cve_cvss_kev_when_facts_present(self):
+        # Ticket 12b: factsが有効なCVEを含む場合、記事カードへCVE ID・CVSS・
+        # KEV掲載表示を追加する(Ticket 12aでは非表示だったが、Ticket 12bで
+        # 表示専用機能として意図的に反転した)。
         item = self._make_item(facts=self._sample_facts())
         html = fetch.build_html([item])
-        for needle in ("CVE-2026-1234", "CVSS", "9.8", "CRITICAL", "nvd.nist.gov"):
-            self.assertNotIn(needle, html)
+        for needle in (
+            "CVE-2026-1234", "CVSS 9.8 / Critical", "v3.1", "NVD", "CISA KEV掲載",
+            "https://nvd.nist.gov/vuln/detail/CVE-2026-1234",
+        ):
+            self.assertIn(needle, html)
+        # 内部取得状態・生JSON構造由来の文字列は表示しない(Ticket 12b #11)。
+        for internal_needle in ("live", "fetched_at", "\"nvd\"", "\"kev\"", "\"cve_id\""):
+            self.assertNotIn(internal_needle, html)
 
     def test_gemini_prompt_does_not_reference_facts(self):
         # enrich_with_ai()が生成する記事分析プロンプトの入力テキストに、
@@ -1539,6 +1554,427 @@ class VulnerabilityFactsIntegrationTest(unittest.TestCase):
         )
         self.assertEqual(len(items), 1)
         self.assertTrue(items[0]["title"].startswith("CVE-2026-0001"))
+
+
+class VulnerabilityFactsHelperFunctionTest(unittest.TestCase):
+    """Ticket 12b: 記事カードへの脆弱性情報表示で使う個別ヘルパーの単体テスト。"""
+
+    def test_cve_id_is_normalized_stripped_and_uppercased(self):
+        self.assertEqual(fetch._display_cve_id(" cve-2026-1234 "), "CVE-2026-1234")
+
+    def test_cve_id_rejects_three_digit_sequence(self):
+        self.assertIsNone(fetch._display_cve_id("CVE-2026-123"))
+
+    def test_cve_id_rejects_non_cve_string(self):
+        self.assertIsNone(fetch._display_cve_id("NOT-A-CVE"))
+
+    def test_cve_id_rejects_non_string_types(self):
+        self.assertIsNone(fetch._display_cve_id(None))
+        self.assertIsNone(fetch._display_cve_id(12345))
+        self.assertIsNone(fetch._display_cve_id(["CVE-2026-1234"]))
+
+    def test_score_formats_to_one_decimal_place(self):
+        self.assertEqual(fetch._display_cvss_score(9.8), "9.8")
+        self.assertEqual(fetch._display_cvss_score(7), "7.0")
+        self.assertEqual(fetch._display_cvss_score(4.3), "4.3")
+        self.assertEqual(fetch._display_cvss_score(0), "0.0")
+        self.assertEqual(fetch._display_cvss_score(10), "10.0")
+
+    def test_score_rejects_out_of_range(self):
+        self.assertIsNone(fetch._display_cvss_score(-0.1))
+        self.assertIsNone(fetch._display_cvss_score(10.1))
+
+    def test_score_rejects_huge_integers_without_overflow_error(self):
+        # Ticket 12b-review: math.isfinite()はint(任意精度)に対して
+        # OverflowErrorを送出しうるため、float型のみへ適用する。
+        self.assertIsNone(fetch._display_cvss_score(10**1000))
+        self.assertIsNone(fetch._display_cvss_score(-(10**1000)))
+
+    def test_score_rejects_nan_and_infinity(self):
+        self.assertIsNone(fetch._display_cvss_score(float("nan")))
+        self.assertIsNone(fetch._display_cvss_score(float("inf")))
+        self.assertIsNone(fetch._display_cvss_score(float("-inf")))
+
+    def test_score_rejects_non_numeric_and_bool(self):
+        self.assertIsNone(fetch._display_cvss_score("9.8"))
+        self.assertIsNone(fetch._display_cvss_score(None))
+        self.assertIsNone(fetch._display_cvss_score(True))
+        self.assertIsNone(fetch._display_cvss_score(False))
+
+    def test_severity_normalizes_known_values_case_insensitively(self):
+        self.assertEqual(fetch._display_cvss_severity("CRITICAL"), "Critical")
+        self.assertEqual(fetch._display_cvss_severity("high"), "High")
+        self.assertEqual(fetch._display_cvss_severity("Medium"), "Medium")
+        self.assertEqual(fetch._display_cvss_severity("low"), "Low")
+        self.assertEqual(fetch._display_cvss_severity("none"), "None")
+
+    def test_severity_rejects_unknown_values(self):
+        self.assertIsNone(fetch._display_cvss_severity("SUPER_CRITICAL"))
+        self.assertIsNone(fetch._display_cvss_severity(None))
+        self.assertIsNone(fetch._display_cvss_severity(123))
+
+    def test_version_normalizes_and_prevents_double_v_prefix(self):
+        self.assertEqual(fetch._display_cvss_version("3.1"), "v3.1")
+        self.assertEqual(fetch._display_cvss_version("v3.1"), "v3.1")
+        self.assertEqual(fetch._display_cvss_version("V4.0"), "v4.0")
+
+    def test_version_rejects_invalid_values(self):
+        self.assertIsNone(fetch._display_cvss_version("<script>"))
+        self.assertIsNone(fetch._display_cvss_version(""))
+        self.assertIsNone(fetch._display_cvss_version(None))
+
+    def test_version_is_limited_to_ticket12a_allowed_values(self):
+        # Ticket 12b-review #3: vulnerability_facts.CVSS_VERSION_PRIORITYに
+        # 無い値(選択ロジック上あり得ない値)は、数値形式として妥当に見えても
+        # 表示しない。
+        self.assertEqual(fetch._display_cvss_version("3.1"), "v3.1")
+        self.assertEqual(fetch._display_cvss_version("v3.1"), "v3.1")
+        self.assertEqual(fetch._display_cvss_version("V4.0"), "v4.0")
+        self.assertIsNone(fetch._display_cvss_version("999.9"))
+        self.assertIsNone(fetch._display_cvss_version("3.2"))
+        self.assertIsNone(fetch._display_cvss_version("<script>"))
+        self.assertIsNone(fetch._display_cvss_version(3.1))  # 数値型は文字列ではないため不正
+
+    def test_invalid_version_does_not_hide_valid_score_or_provider(self):
+        cvss = {"base_score": 7.5, "base_severity": "HIGH", "version": "999.9", "source": "nvd@nist.gov"}
+        self.assertEqual(fetch._render_cvss_text(cvss), "CVSS 7.5 / High（NVD）")
+
+    def test_provider_nvd_is_case_insensitive(self):
+        self.assertEqual(fetch._display_cvss_provider("nvd@nist.gov"), "NVD")
+        self.assertEqual(fetch._display_cvss_provider("NVD@NIST.GOV"), "NVD")
+
+    def test_provider_other_source_becomes_other_organization(self):
+        # Ticket 12b-review: 非NVDのsourceはCNAとは限らない(CISA-ADP等も
+        # 含みうる)ため、一律「他機関」とする。
+        self.assertEqual(fetch._display_cvss_provider("cve@mitre.org"), "他機関")
+        self.assertEqual(fetch._display_cvss_provider("some-vendor@example.com"), "他機関")
+
+    def test_provider_empty_or_invalid_is_omitted(self):
+        self.assertIsNone(fetch._display_cvss_provider(""))
+        self.assertIsNone(fetch._display_cvss_provider(None))
+        self.assertIsNone(fetch._display_cvss_provider(123))
+
+    def test_cvss_text_unassessed_when_cvss_missing(self):
+        self.assertEqual(fetch._render_cvss_text(None), "CVSS未評価")
+        self.assertEqual(fetch._render_cvss_text({}), "CVSS未評価")
+
+    def test_cvss_text_full_combination(self):
+        cvss = {"base_score": 9.8, "base_severity": "CRITICAL", "version": "3.1", "source": "nvd@nist.gov"}
+        self.assertEqual(fetch._render_cvss_text(cvss), "CVSS 9.8 / Critical（v3.1・NVD）")
+
+    def test_cvss_text_omits_missing_severity(self):
+        cvss = {"base_score": 7.5, "base_severity": None, "version": "3.1", "source": "nvd@nist.gov"}
+        self.assertEqual(fetch._render_cvss_text(cvss), "CVSS 7.5（v3.1・NVD）")
+
+    def test_cvss_text_version_only(self):
+        cvss = {"base_score": 8.7, "base_severity": "HIGH", "version": "4.0", "source": ""}
+        self.assertEqual(fetch._render_cvss_text(cvss), "CVSS 8.7 / High（v4.0）")
+
+    def test_cvss_text_provider_only(self):
+        cvss = {"base_score": 8.7, "base_severity": "HIGH", "version": None, "source": "cve@mitre.org"}
+        self.assertEqual(fetch._render_cvss_text(cvss), "CVSS 8.7 / High（他機関）")
+
+
+class VulnerabilityFactsHtmlRenderTest(unittest.TestCase):
+    """Ticket 12b: 記事カードの脆弱性情報欄のHTML描画テスト(#18の必須ケース)。"""
+
+    def _make_item(self, **overrides):
+        item = {
+            "title": "テスト記事", "link": "https://example.com/article",
+            "summary": "取得時の概要文", "date": datetime.datetime(2026, 7, 11, 6, 0),
+            "source": "CISA", "lang": "ja",
+        }
+        item.update(overrides)
+        return item
+
+    def _sample_facts(self):
+        return {
+            "cves": [
+                {
+                    "cve_id": "CVE-2026-1234",
+                    "nvd": {
+                        "status": "found", "retrieval": "live",
+                        "fetched_at": "2026-07-12T01:00:00Z",
+                        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-1234",
+                        "vuln_status": "Analyzed", "published_at": "2026-07-10T00:00:00Z",
+                        "last_modified_at": "2026-07-11T00:00:00Z",
+                        "cvss": {"version": "3.1", "base_score": 9.8, "base_severity": "CRITICAL",
+                                  "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                                  "source": "nvd@nist.gov", "type": "Primary"},
+                    },
+                    "kev": {"status": "listed", "retrieval": "live",
+                            "fetched_at": "2026-07-12T01:00:00Z", "date_added": "2026-07-11"},
+                }
+            ]
+        }
+
+    # 18.1 factsなし
+    def test_no_facts_key_renders_no_section_no_exception(self):
+        item = self._make_item()
+        self.assertNotIn("facts", item)
+        html = fetch.build_html([item])
+        self.assertNotIn('class="vulnerability-facts"', html)
+
+    # 18.2 CVE空配列
+    def test_empty_cves_array_renders_no_section_and_no_extra_blank(self):
+        item_no_facts = self._make_item()
+        item_empty_cves = self._make_item(facts={"cves": []})
+        html_no_facts = fetch.build_html([item_no_facts])
+        html_empty_cves = fetch.build_html([item_empty_cves])
+        # 空配列は「facts自体が無い」場合とバイト単位で同一になるべき
+        # (余分な余白・空枠が一切追加されない)。
+        self.assertEqual(html_no_facts, html_empty_cves)
+        self.assertNotIn('class="vulnerability-facts"', html_empty_cves)
+
+    # 18.3 CVE1件・NVD・CVSS・KEV掲載
+    def test_single_cve_nvd_cvss_kev_listed(self):
+        item = self._make_item(facts=self._sample_facts())
+        html = fetch.build_html([item])
+        self.assertIn(
+            '<a class="vulnerability-cve-link" '
+            'href="https://nvd.nist.gov/vuln/detail/CVE-2026-1234" '
+            'target="_blank" rel="noopener noreferrer">CVE-2026-1234</a>',
+            html,
+        )
+        self.assertIn("CVSS 9.8 / Critical（v3.1・NVD）", html)
+        self.assertIn('<span class="kev-badge">CISA KEV掲載</span>', html)
+        self.assertIn("脆弱性情報", html)
+
+    # 18.4 CVE1件・他機関(非NVD)・KEV非掲載
+    def test_single_cve_other_organization_kev_not_listed(self):
+        facts = {"cves": [{
+            "cve_id": "CVE-2026-5678",
+            "nvd": {
+                "status": "found", "retrieval": "live", "fetched_at": "2026-07-12T01:00:00Z",
+                "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-5678",
+                "vuln_status": "Analyzed", "published_at": None, "last_modified_at": None,
+                "cvss": {"version": "4.0", "base_score": 8.7, "base_severity": "HIGH",
+                          "vector": "x", "source": "cve@mitre.org", "type": "Secondary"},
+            },
+            "kev": {"status": "not_listed", "retrieval": "live",
+                    "fetched_at": "2026-07-12T01:00:00Z", "date_added": None},
+        }]}
+        item = self._make_item(facts=facts)
+        html = fetch.build_html([item])
+        self.assertIn("CVSS 8.7 / High（v4.0・他機関）", html)
+        self.assertNotIn("KEV非掲載", html)
+        self.assertNotIn("not_listed", html)
+        self.assertNotIn("cve@mitre.org", html)
+        self.assertNotIn("CISA KEV掲載", html)
+        self.assertNotIn('class="kev-badge"', html)
+
+    # 18.5 CVSSなし
+    def test_no_cvss_shows_unassessed_label_only(self):
+        facts = {"cves": [{
+            "cve_id": "CVE-2026-0001",
+            "nvd": {"status": "not_found", "retrieval": "live", "fetched_at": "2026-07-12T01:00:00Z",
+                    "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-0001",
+                    "vuln_status": None, "published_at": None, "last_modified_at": None, "cvss": None},
+            "kev": {"status": "not_listed", "retrieval": "live",
+                    "fetched_at": "2026-07-12T01:00:00Z", "date_added": None},
+        }]}
+        item = self._make_item(facts=facts)
+        html = fetch.build_html([item])
+        self.assertIn("CVSS未評価", html)
+        self.assertNotIn("not_found", html)
+
+    # 18.6 NVD unavailable
+    def test_nvd_unavailable_shows_cve_id_and_unassessed_not_internal_state(self):
+        facts = {"cves": [{
+            "cve_id": "CVE-2026-0002",
+            "nvd": {"status": "unavailable", "retrieval": "unavailable", "fetched_at": None,
+                    "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-0002",
+                    "vuln_status": None, "published_at": None, "last_modified_at": None, "cvss": None},
+            "kev": {"status": "unknown", "retrieval": "unavailable", "fetched_at": None, "date_added": None},
+        }]}
+        item = self._make_item(facts=facts)
+        html = fetch.build_html([item])
+        self.assertIn("CVE-2026-0002", html)
+        self.assertIn("CVSS未評価", html)
+        self.assertNotIn("unavailable", html)
+        # "unknown"は既存CSS(.importance-unknown/.urgency-unknown)にも含まれる
+        # ため、KEVバッジ自体が出力されないこと(status="unknown"はlisted以外
+        # 一切表示しない)で内部状態の非表示を確認する。
+        self.assertNotIn('class="kev-badge"', html)
+
+    # 18.7 複数CVE
+    def test_multiple_cves_all_shown_in_order_with_correct_count(self):
+        cves = [
+            {"cve_id": "CVE-2026-1001",
+             "nvd": {"cvss": {"version": "3.1", "base_score": 9.8, "base_severity": "CRITICAL",
+                               "source": "nvd@nist.gov"}},
+             "kev": {"status": "listed"}},
+            {"cve_id": "CVE-2026-1002",
+             "nvd": {"cvss": {"version": "4.0", "base_score": 8.7, "base_severity": "HIGH",
+                               "source": "cve@mitre.org"}},
+             "kev": {"status": "not_listed"}},
+            {"cve_id": "CVE-2026-1003",
+             "nvd": {"cvss": {"version": "3.0", "base_score": 5.4, "base_severity": "MEDIUM",
+                               "source": "nvd@nist.gov"}},
+             "kev": {"status": "unknown"}},
+            {"cve_id": "CVE-2026-1004",
+             "nvd": {"cvss": {"version": "2.0", "base_score": 3.9, "base_severity": "LOW",
+                               "source": "cve@example.org"}},
+             "kev": {"status": "not_listed"}},
+            {"cve_id": "CVE-2026-1005", "nvd": {"cvss": None}, "kev": {"status": "listed"}},
+            {"cve_id": "CVE-2026-1006",
+             "nvd": {"cvss": {"version": "3.1", "base_score": 0.0, "base_severity": "NONE",
+                               "source": "nvd@nist.gov"}},
+             "kev": {"status": "unknown"}},
+            {"cve_id": "CVE-2026-1007",
+             "nvd": {"cvss": {"version": "3.1", "base_score": 7.5, "base_severity": None, "source": ""}},
+             "kev": {"status": "not_listed"}},
+        ]
+        item = self._make_item(facts={"cves": cves})
+        html = fetch.build_html([item])
+
+        self.assertIn("脆弱性情報（7件）", html)
+        positions = [html.index(c["cve_id"]) for c in cves]
+        self.assertEqual(positions, sorted(positions))  # JSON順を維持
+        self.assertIn("CVSS 0.0 / None（v3.1・NVD）", html)
+        self.assertIn("CVSS 7.5", html)
+        self.assertIn("CVSS未評価", html)  # CVE-2026-1005分
+
+    # 18.8 不正データ
+    def test_malformed_entries_excluded_valid_ones_survive(self):
+        cves = [
+            {"cve_id": "NOT-A-CVE", "nvd": {}, "kev": {}},
+            None,
+            "just-a-string",
+            {"cve_id": "CVE-2026-2001",
+             "nvd": {"cvss": {"version": "3.1", "base_score": "not-a-number",
+                               "base_severity": "CRITICAL", "source": "nvd@nist.gov"}}, "kev": {}},
+            {"cve_id": "CVE-2026-2002",
+             "nvd": {"cvss": {"version": "3.1", "base_score": 9999,
+                               "base_severity": "WEIRD_VALUE", "source": "nvd@nist.gov"}}, "kev": {}},
+            {"cve_id": "CVE-2026-2003",
+             "nvd": {"cvss": {"version": "3.1", "base_score": float("nan"),
+                               "base_severity": "HIGH", "source": "nvd@nist.gov"}}, "kev": {}},
+            {"cve_id": "CVE-2026-2004",
+             "nvd": {"cvss": {"version": "3.1", "base_score": 7.1, "base_severity": "HIGH",
+                               "source": "nvd@nist.gov"}},
+             "kev": {"status": "listed"}},
+        ]
+        item = self._make_item(facts={"cves": cves})
+        html = fetch.build_html([item])
+
+        self.assertNotIn("NOT-A-CVE", html)
+        self.assertNotIn("just-a-string", html)
+        self.assertIn("CVE-2026-2001", html)
+        self.assertIn("CVE-2026-2002", html)
+        self.assertIn("CVE-2026-2003", html)
+        self.assertNotIn("WEIRD_VALUE", html)
+        self.assertNotIn("9999", html)
+        self.assertNotIn("nan", html.lower())
+        self.assertIn("CVE-2026-2004", html)
+        self.assertIn("CISA KEV掲載", html)
+        self.assertIn("脆弱性情報（4件）", html)
+
+    # 18.9 HTMLインジェクション
+    def test_html_injection_payloads_excluded_valid_entry_still_shown(self):
+        cves = [
+            {"cve_id": "<script>alert(1)</script>", "nvd": {}, "kev": {}},
+            {"cve_id": 'CVE-2026-3001"><script>alert(1)</script>', "nvd": {}, "kev": {}},
+            {"cve_id": "javascript:alert(1)//CVE-2026-3002", "nvd": {}, "kev": {}},
+            {"cve_id": "CVE-2026-3003",
+             "nvd": {"cvss": {"version": "3.1", "base_score": 6.5, "base_severity": "MEDIUM",
+                               "source": "nvd@nist.gov"}},
+             "kev": {"status": "listed"}},
+        ]
+        item = self._make_item(facts={"cves": cves})
+        html = fetch.build_html([item])
+
+        self.assertNotIn("<script>", html)
+        self.assertNotIn("javascript:", html)
+        self.assertNotIn("alert(1)", html)
+        self.assertIn("CVE-2026-3003", html)
+        # 有効なCVEは1件のみ生き残るため、件数表示は付かない(#6: 1件の場合は
+        # 「脆弱性情報」のみ)。
+        self.assertIn('<h3 class="vulnerability-facts-title">脆弱性情報</h3>', html)
+
+    # 18.10 トップページ・アーカイブ
+    def test_top_page_and_archive_both_render_vulnerability_facts(self):
+        item = self._make_item(facts=self._sample_facts())
+        top_html = fetch.build_html([item])
+        self.assertIn('class="vulnerability-facts"', top_html)
+        self.assertIn("CVE-2026-1234", top_html)
+
+        digest = {
+            "digest_date": "2026-07-12",
+            "generated_at": "2026-07-12T07:00:00+09:00",
+            "items": [{
+                "id": "sha256:test",
+                "title": item["title"], "raw_title": item["title"],
+                "url": item["link"],
+                "source_name": item["source"], "language": item["lang"],
+                "published_at": "2026-07-11T06:00:00+09:00",
+                "analysis": {"status": "not_attempted"},
+                "facts": self._sample_facts(),
+            }],
+        }
+        archive_html = fetch.build_daily_archive_html(digest)
+        self.assertIn('class="vulnerability-facts"', archive_html)
+        self.assertIn("CVE-2026-1234", archive_html)
+
+    # 18.11 生JSON非露出
+    def test_raw_json_structure_not_exposed(self):
+        item = self._make_item(facts=self._sample_facts())
+        html = fetch.build_html([item])
+        for needle in ('"facts":', '"nvd":', '"kev":', '"cve_id"', '"cache_fresh"', '"cache_stale"'):
+            self.assertNotIn(needle, html)
+        # CVE IDの表示文字列そのものは許容する
+        self.assertIn("CVE-2026-1234", html)
+
+    # Ticket 12b-review #1: 巨大整数スコアでbuild_html()が例外を出さないこと
+    def test_huge_integer_score_does_not_raise_and_shows_unassessed(self):
+        facts = {"cves": [{
+            "cve_id": "CVE-2026-4001",
+            "nvd": {"cvss": {"version": "3.1", "base_score": 10**1000,
+                              "base_severity": "CRITICAL", "source": "nvd@nist.gov"}},
+            "kev": {},
+        }]}
+        item = self._make_item(facts=facts)
+        html = fetch.build_html([item])  # 例外が出なければOK
+        self.assertIn("CVE-2026-4001", html)
+        self.assertIn("CVSS未評価", html)
+
+    # Ticket 12b-review #4: 不正なfacts型全般
+    def test_malformed_facts_types_render_nothing_without_exception(self):
+        malformed_facts_values = [
+            None,
+            [],
+            "invalid",
+            {"cves": None},
+            {"cves": {}},
+            {"cves": "invalid"},
+        ]
+        for facts_value in malformed_facts_values:
+            with self.subTest(facts=facts_value):
+                item = self._make_item(facts=facts_value)
+                html = fetch.build_html([item])  # 例外が出なければOK
+                self.assertNotIn('class="vulnerability-facts"', html)
+                self.assertNotIn('class="vulnerability-facts-title"', html)
+
+    # Ticket 12b-review #5: 挿入位置の固定
+    def test_facts_position_between_summary_and_financial_impact(self):
+        item = self._make_item(
+            facts=self._sample_facts(),
+            ai_analysis={
+                "status": "success", "importance": "高", "urgency": "本日確認",
+                "category": "脆弱性・パッチ", "category_reason": "x", "tags": [],
+                "summary": "何が起きたの本文", "financial_impact": "なぜ金融機関に関係するの本文",
+                "recommended_actions": ["確認すべきことの項目1"], "reason": "x",
+            },
+        )
+        html = fetch.build_html([item])
+        self.assertLess(html.index("何が起きた"), html.index("脆弱性情報"))
+        self.assertLess(html.index("脆弱性情報"), html.index("なぜ金融機関に関係する"))
+        self.assertLess(html.index("なぜ金融機関に関係する"), html.index("確認すべきこと"))
+
+    def test_facts_position_after_raw_summary_when_no_analysis(self):
+        item = self._make_item(facts=self._sample_facts())  # ai_analysis無し
+        html = fetch.build_html([item])
+        self.assertLess(html.index("取得時の概要文"), html.index("脆弱性情報"))
 
 
 class KevUrlFromSourceDefinitionsTest(unittest.TestCase):
