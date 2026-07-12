@@ -5,11 +5,16 @@ HTMLエスケープ・URL検証の回帰テスト (Ticket 1)
 """
 
 import datetime
+import json
+import os
+import tempfile
 from html.parser import HTMLParser
-import unittest
 from pathlib import Path
+from unittest.mock import patch
+import unittest
 
 import fetch
+import vulnerability_facts as vf
 
 
 class AnchorParser(HTMLParser):
@@ -1177,6 +1182,445 @@ class ImportantItemsTest(unittest.TestCase):
         self.assertLess(html.index('<section class="important-items">'), html.index('<div class="cards">'))
         self.assertIn('<meta name="viewport"', html)
         self.assertIn("article-section", html)
+
+
+class VulnerabilityFactsIntegrationTest(unittest.TestCase):
+    """Ticket 12a: factsがGeminiプロンプト・HTMLへ一切影響しないことの回帰テスト。
+    実際のCVE/NVD/KEV取得ロジック自体はtest_vulnerability_facts.pyで検証する。
+    """
+
+    def _make_item(self, **overrides):
+        item = {
+            "title": "テスト記事", "link": "https://example.com/article",
+            "summary": "取得時の概要文", "date": datetime.datetime(2026, 7, 11, 6, 0),
+            "source": "CISA", "lang": "ja",
+        }
+        item.update(overrides)
+        return item
+
+    def _sample_facts(self):
+        return {
+            "cves": [
+                {
+                    "cve_id": "CVE-2026-1234",
+                    "nvd": {
+                        "status": "found", "retrieval": "live",
+                        "fetched_at": "2026-07-12T01:00:00Z",
+                        "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-1234",
+                        "vuln_status": "Analyzed", "published_at": "2026-07-10T00:00:00Z",
+                        "last_modified_at": "2026-07-11T00:00:00Z",
+                        "cvss": {"version": "3.1", "base_score": 9.8, "base_severity": "CRITICAL",
+                                  "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                                  "source": "nvd@nist.gov", "type": "Primary"},
+                    },
+                    "kev": {"status": "listed", "retrieval": "live",
+                            "fetched_at": "2026-07-12T01:00:00Z", "date_added": "2026-07-11"},
+                }
+            ]
+        }
+
+    def test_html_output_identical_with_and_without_facts(self):
+        item_without = self._make_item()
+        item_with = self._make_item(facts=self._sample_facts())
+        html_without = fetch.build_html([item_without])
+        html_with = fetch.build_html([item_with])
+        self.assertEqual(html_without, html_with)
+
+    def test_html_does_not_mention_cve_cvss_kev(self):
+        item = self._make_item(facts=self._sample_facts())
+        html = fetch.build_html([item])
+        for needle in ("CVE-2026-1234", "CVSS", "9.8", "CRITICAL", "nvd.nist.gov"):
+            self.assertNotIn(needle, html)
+
+    def test_gemini_prompt_does_not_reference_facts(self):
+        # enrich_with_ai()が生成する記事分析プロンプトの入力テキストに、
+        # facts由来の情報(CVE ID・CVSS・KEV)が含まれないことを確認する。
+        # (gemini_analyze()の呼び出し自体はモックしない: プロンプト組み立てに
+        # 使うテキストがitem["facts"]を一切参照していないことをソース側で確認する)
+        import inspect
+        source = inspect.getsource(fetch.enrich_with_ai)
+        self.assertNotIn("facts", source)
+        self.assertNotIn("cvss", source.lower())
+
+    def test_collect_recent_no_longer_calls_gemini_enrichment_internally(self):
+        # Ticket 12a: enrich_with_ai()はcollect_recent()から分離され、main()側で
+        # facts取得の後に明示的に呼び出す設計になっている。
+        import inspect
+        source = inspect.getsource(fetch.collect_recent)
+        self.assertNotIn("enrich_with_ai(", source)
+
+    def test_gemini_request_body_does_not_leak_facts_data(self):
+        # ソースコード上の静的確認(test_gemini_prompt_does_not_reference_facts)に
+        # 加え、enrich_with_ai()が実際にGeminiへ送信するリクエストボディ(prompt
+        # 本文を含む)を動的にキャプチャし、item["facts"]に混入させたCVE ID・
+        # CVSS・KEV情報が漏れていないことを直接検証する。
+        item = self._make_item(facts=self._sample_facts())
+        item["raw_title"] = item["title"]
+        item["raw_summary"] = item["summary"]
+
+        captured = []
+
+        def fake_urlopen(req, timeout=None):
+            captured.append(req)
+            analysis = {
+                "category": "脆弱性・パッチ", "category_reason": "テスト理由",
+                "importance": "中", "urgency": "参考",
+                "summary": "テスト要約です。", "financial_impact": "テスト影響です。",
+                "recommended_actions": [], "reason": "テスト理由です。", "tags": [],
+            }
+            body = json.dumps({
+                "candidates": [{"content": {"parts": [{"text": json.dumps(analysis, ensure_ascii=False)}]}}]
+            }).encode("utf-8")
+
+            class FakeResponse:
+                def read(self_inner):
+                    return body
+
+                def __enter__(self_inner):
+                    return self_inner
+
+                def __exit__(self_inner, *a):
+                    return False
+
+            return FakeResponse()
+
+        with patch.dict(os.environ, {"GEMINI_API_KEY": "test-key-not-real"}):
+            with patch("fetch.urllib.request.urlopen", side_effect=fake_urlopen):
+                with patch("fetch.time.sleep"):
+                    fetch.enrich_with_ai([item])
+
+        self.assertEqual(len(captured), 1)
+        sent_body = captured[0].data.decode("utf-8")
+        sent_body_lower = sent_body.lower()
+
+        # "facts"/"cves"はTicket 12aのJSON構造フィールド名であり、記事分析
+        # プロンプトの固定文言には一切登場しない語のため、単純な部分一致で
+        # 判定してよい。
+        self.assertNotIn("facts", sent_body_lower)
+        self.assertNotIn("cves", sent_body_lower)
+
+        # "cvss"/"kev"は、記事分析プロンプトの固定文言(カテゴリ定義・importance
+        # 判定の禁止事項)が一般語彙として元々使用しているため、語の有無ではなく、
+        # item["facts"]に埋め込んだ具体的な値(CVE ID・スコア・重大度・NVD詳細
+        # URL・ベクター文字列・KEV追加日)が実際に送信されていないことを確認する。
+        for leaked_value in (
+            "CVE-2026-1234", "9.8", "CRITICAL", "nvd.nist.gov/vuln/detail",
+            "AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H", "2026-07-11",
+        ):
+            self.assertNotIn(leaked_value, sent_body, f"{leaked_value!r} leaked into Gemini request body")
+
+    def test_todays_brief_request_body_does_not_leak_facts_data(self):
+        # Ticket 12a-review: Today's Brief生成(build_todays_brief() →
+        # gemini_todays_brief())へもfactsを一切渡さないことを動的に確認する。
+        # "cvss"/"kev"という語自体の有無ではなく(既存プロンプトが一般語彙として
+        # 使用しているため)、item["facts"]に埋め込んだ一意なマーカー値が実際に
+        # 送信されていないことを直接検証する。
+        unique_cve = "CVE-2099-999999"
+        unique_score = 9.7
+        unique_severity = "CRITICAL-UNIQUE-FACTS-MARKER"
+        unique_vector = "CVSS:4.0/UNIQUE-FACTS-MARKER"
+        unique_url = "https://nvd.nist.gov/vuln/detail/CVE-2099-999999"
+        unique_date_added = "2099-12-31"
+
+        # Today's Briefの入力選定条件(analysis.statusがsuccess/fallbackで、
+        # 利用可能なai_analysisを持つ)を満たす有効な記事として構成する。
+        item = {
+            "title": "テスト記事", "source": "CISA",
+            "ai_analysis": {
+                "category": "脆弱性・パッチ", "importance": "高", "urgency": "本日確認",
+                "summary": "テスト要約文です。", "financial_impact": "テスト影響文です。",
+                "recommended_actions": ["UNIQUE-RECOMMENDED-ACTION-MARKER"],
+                "reason": "テスト理由文です。", "tags": ["KEV"],
+            },
+            "ai_analysis_meta": {
+                "status": "success", "error_type": None, "http_status": None,
+                "generated_at": "2026-07-11T07:00:00+09:00",
+            },
+            "facts": {"cves": [{
+                "cve_id": unique_cve,
+                "nvd": {
+                    "status": "found", "retrieval": "live", "fetched_at": "2026-07-12T00:00:00Z",
+                    "url": unique_url, "vuln_status": "Analyzed",
+                    "published_at": "2026-07-01T00:00:00Z", "last_modified_at": "2026-07-02T00:00:00Z",
+                    "cvss": {"version": "4.0", "base_score": unique_score,
+                             "base_severity": unique_severity, "vector": unique_vector,
+                             "source": "nvd@nist.gov", "type": "Primary"},
+                },
+                "kev": {"status": "listed", "retrieval": "live",
+                        "fetched_at": "2026-07-12T00:00:00Z", "date_added": unique_date_added},
+            }]},
+        }
+
+        captured = []
+
+        def fake_urlopen(req, timeout=None):
+            captured.append(req)
+            brief_response = {
+                "overview": "本日は脆弱性関連の情報が中心の一日でした。金融機関への影響確認が望まれる内容です。",
+                "important_highlights": ["重要なハイライトのテスト文です。"],
+                "discussion_points": ["注目論点のテスト文です。"],
+                "check_items": ["確認事項のテスト文です。"],
+            }
+            body = json.dumps({
+                "candidates": [{"content": {"parts": [{"text": json.dumps(brief_response, ensure_ascii=False)}]}}]
+            }).encode("utf-8")
+
+            class FakeResponse:
+                def read(self_inner):
+                    return body
+
+                def __enter__(self_inner):
+                    return self_inner
+
+                def __exit__(self_inner, *a):
+                    return False
+
+            return FakeResponse()
+
+        with patch.dict(os.environ, {"GEMINI_API_KEY": "test-key-not-real"}):
+            with patch("fetch.urllib.request.urlopen", side_effect=fake_urlopen):
+                with patch("fetch.time.sleep"):
+                    result = fetch.build_todays_brief([item])
+
+        # Today's Briefのリクエストが実際に発生したことを確認する
+        self.assertEqual(len(captured), 1)
+        self.assertEqual(result["status"], "success")
+
+        sent_body = captured[0].data.decode("utf-8")
+        # json.dumps()はデフォルトで非ASCII文字を\uXXXXへエスケープするため、
+        # 日本語部分文字列の検証はデコード後のプロンプト本文に対して行う。
+        sent_prompt_text = json.loads(sent_body)["contents"][0]["parts"][0]["text"]
+
+        # 記事分析結果として必要な情報(ai_analysis由来)は含まれることを確認する
+        self.assertIn("UNIQUE-RECOMMENDED-ACTION-MARKER", sent_body)
+        self.assertIn("テスト要約文です。", sent_prompt_text)
+
+        # item["facts"]内の固有値は1つも含まれないことを確認する
+        for leaked_value in (
+            unique_cve, str(unique_score), unique_severity, unique_vector,
+            unique_url, unique_date_added,
+        ):
+            self.assertNotIn(
+                leaked_value, sent_body,
+                f"{leaked_value!r} leaked into Today's Brief request body",
+            )
+
+    def test_facts_extraction_uses_raw_snapshot_fields_not_mutated_title(self):
+        # 注意: このテストは実際のfetch.main()を呼び出さない。main()の処理順
+        # (collect_recent → raw_title/raw_summaryスナップショット →
+        # build_facts_for_items → enrich_with_ai → build_todays_brief)自体は
+        # fetch.pyの実装(main()のソース差分)で直接確認済みであり、ここでは
+        # その順序が要求する契約——build_facts_for_items()呼び出し時点で
+        # raw_title/raw_summaryが記事に存在し、CVE抽出がそれらraw値だけを見て
+        # 翻訳後のtitle書き換えに影響されないこと、facts設定後もenrich_with_ai()
+        # が問題なく動作すること——を単体テストとして検証する。
+        item = {
+            "title": "CVE-2026-4321 disclosed", "summary": "raw summary, no markers here",
+            "link": "https://example.com/a", "source": "CISA", "lang": "en",
+            "date": None,
+        }
+        items = [item]
+
+        # main()のraw_title/raw_summaryスナップショット処理と同じ内容を再現する
+        # (main()自体は呼び出していない)。
+        for it in items:
+            it["raw_title"] = it["title"]
+            it["raw_summary"] = it["summary"]
+
+        # build_facts_for_items()呼び出し時点で両フィールドが存在することを確認
+        self.assertIn("raw_title", items[0])
+        self.assertIn("raw_summary", items[0])
+
+        with tempfile.TemporaryDirectory() as tmp:
+            cache_path = Path(tmp) / "cache.json"
+
+            def fake_urlopen(req, timeout=None):
+                body = json.dumps({"vulnerabilities": []}).encode("utf-8")
+
+                class FakeResponse:
+                    def read(self_inner):
+                        return body
+
+                    def __enter__(self_inner):
+                        return self_inner
+
+                    def __exit__(self_inner, *a):
+                        return False
+
+                return FakeResponse()
+
+            vf.build_facts_for_items(
+                items, cache_path=cache_path, urlopen_fn=fake_urlopen, sleep_fn=lambda s: None,
+            )
+
+        # 翻訳等でtitleが書き換わった後でも、既に確定したfactsは変化しない
+        # (extract_cve_ids_for_items()はraw_title/raw_summaryだけを見るため)。
+        self.assertEqual(len(items[0]["facts"]["cves"]), 1)
+        self.assertEqual(items[0]["facts"]["cves"][0]["cve_id"], "CVE-2026-4321")
+
+        items[0]["title"] = "翻訳後のタイトル(CVEの記載なし)"
+        self.assertEqual(items[0]["facts"]["cves"][0]["cve_id"], "CVE-2026-4321")
+
+        # enrich_with_ai()がfacts取得の後でも問題なく呼び出せる(факtsが記事
+        # オブジェクトの構造を壊していない)ことを確認する。
+        with patch.dict(os.environ, {}, clear=True):  # GEMINI_API_KEYなし
+            result_items = fetch.enrich_with_ai(items)
+        self.assertIs(result_items, items)
+        self.assertEqual(result_items[0]["facts"]["cves"][0]["cve_id"], "CVE-2026-4321")
+
+    def test_fetch_cisa_kev_behavior_preserved_via_shared_catalog_memo(self):
+        # Ticket 12a: fetch_cisa_kev()はvulnerability_facts.load_kev_catalog()経由の
+        # 共有ローダーへ委譲するよう変更されたが、既存の記事構築ロジック
+        # (cutoffフィルタ・dateAdded降順ソート・display_url使用)は変わらない。
+        memo = {
+            "https://x/kev.json": ([
+                {"cveID": "CVE-2026-0001", "vulnerabilityName": "Test Vuln 1",
+                 "shortDescription": "desc1", "dateAdded": "2026-07-11"},
+                {"cveID": "CVE-2026-0002", "vulnerabilityName": "Test Vuln 2",
+                 "shortDescription": "desc2", "dateAdded": "2026-07-10"},
+                {"cveID": "CVE-2026-0003", "vulnerabilityName": "Old Vuln",
+                 "shortDescription": "desc3", "dateAdded": "2020-01-01"},
+            ], True)
+        }
+        cutoff = datetime.datetime(2026, 7, 1)
+        items = fetch.fetch_cisa_kev(
+            cutoff, "https://x/kev.json", "https://display/kev", "CISA KEV", kev_catalog_memo=memo,
+        )
+        self.assertEqual(len(items), 2)  # cutoffより古い2020年分は除外
+        self.assertTrue(items[0]["title"].startswith("CVE-2026-0001"))  # dateAdded降順
+        self.assertTrue(all(it["link"] == "https://display/kev" for it in items))
+
+    def test_kev_catalog_memo_prevents_double_download_in_one_run(self):
+        # 既存のKEVニュース収集(fetch_cisa_kev)とTicket 12aのfacts取得
+        # (vulnerability_facts.load_kev_catalog)が、同一run内で同じmemo dictを
+        # 共有すればHTTPリクエストが1回だけになることを確認する。
+        calls = []
+
+        class FakeResponse:
+            def __init__(self, body):
+                self._body = body
+
+            def read(self):
+                return self._body
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+        def fake_urlopen(req, timeout=None):
+            calls.append(req)
+            body = json.dumps({"vulnerabilities": [
+                {"cveID": "CVE-2026-0001", "dateAdded": "2026-07-11"},
+            ]}).encode("utf-8")
+            return FakeResponse(body)
+
+        memo = {}
+        vf.load_kev_catalog("https://x/kev.json", memo=memo, urlopen_fn=fake_urlopen)
+        vf.load_kev_catalog("https://x/kev.json", memo=memo, urlopen_fn=fake_urlopen)
+        self.assertEqual(len(calls), 1)
+
+    def test_fetch_cisa_kev_skips_entries_with_unparseable_date_added(self):
+        # Ticket 12a-review #3: dateAdded欠落・解析不能な要素は記事化しない。
+        # None/文字列混在でのソート(key=lambda x: x.get("dateAdded") or "")が
+        # 例外を出さないことも合わせて確認する。
+        memo = {
+            "https://x/kev.json": ([
+                {"cveID": "CVE-2026-0001", "vulnerabilityName": "Good Vuln",
+                 "shortDescription": "d1", "dateAdded": "2026-07-11"},
+                {"cveID": "CVE-2026-0002", "vulnerabilityName": "Bad Date Vuln",
+                 "shortDescription": "d2", "dateAdded": None},
+            ], True)
+        }
+        cutoff = datetime.datetime(2026, 7, 1)
+        items = fetch.fetch_cisa_kev(
+            cutoff, "https://x/kev.json", "https://display/kev", "CISA KEV", kev_catalog_memo=memo,
+        )
+        self.assertEqual(len(items), 1)
+        self.assertTrue(items[0]["title"].startswith("CVE-2026-0001"))
+
+
+class KevUrlFromSourceDefinitionsTest(unittest.TestCase):
+    def test_kev_url_matches_source_definition_and_prevents_double_download(self):
+        # Ticket 12a-review #5: main()はKEV URLをsource_definitions.jsonの
+        # cisa_kev定義から取得しbuild_facts_for_items(..., kev_url=...)へ渡す。
+        # そのURLがKEVニュース収集処理(fetch_cisa_kev)が同一run内のmemoへ
+        # 書き込むURLと一致していれば、build_facts_for_items側は追加のHTTP
+        # 取得を行わずmemoを再利用できる。
+        cisa_kev_def = fetch.get_source_definition(fetch.SOURCE_DEFINITIONS, "cisa_kev")
+        self.assertIsNotNone(cisa_kev_def)
+        kev_url = cisa_kev_def["url"]
+
+        memo = {
+            kev_url: ([{"cveID": "CVE-2026-0001", "dateAdded": "2026-07-01"}], True),
+        }
+
+        def urlopen_nvd_only(req, timeout=None):
+            # KEV URL(cisa.gov)へのHTTP取得が発生した場合、memoが共有されて
+            # いない(=kev_urlが一致していない)ことを意味するため失敗させる。
+            if "cisa.gov" in req.full_url:
+                raise AssertionError(f"想定外のKEV HTTP取得が発生しました: {req.full_url}")
+            body = json.dumps({"vulnerabilities": []}).encode("utf-8")
+
+            class FakeResponse:
+                def read(self_inner):
+                    return body
+
+                def __enter__(self_inner):
+                    return self_inner
+
+                def __exit__(self_inner, *a):
+                    return False
+
+            return FakeResponse()
+
+        items = [{"raw_title": "CVE-2026-0001", "raw_summary": "", "link": ""}]
+        with tempfile.TemporaryDirectory() as tmp:
+            cache_path = Path(tmp) / "cache.json"
+            vf.build_facts_for_items(
+                items, cache_path=cache_path, kev_url=kev_url, kev_catalog_memo=memo,
+                urlopen_fn=urlopen_nvd_only, sleep_fn=lambda s: None,
+            )
+
+        self.assertEqual(items[0]["facts"]["cves"][0]["kev"]["status"], "listed")
+
+
+class WorkflowStaticCheckTest(unittest.TestCase):
+    """Ticket 12a #101-104: GitHub Actions workflow定義の静的確認。
+    実際のworkflow実行(GitHub Actions上)は対象外。
+    """
+
+    def _workflow_text(self):
+        return (Path(__file__).resolve().parent / ".github" / "workflows" / "fetch.yml").read_text(encoding="utf-8")
+
+    def test_nvd_api_key_env_var_is_declared(self):
+        text = self._workflow_text()
+        self.assertIn("NVD_API_KEY: ${{ secrets.NVD_API_KEY }}", text)
+
+    def test_gemini_api_key_env_var_still_present(self):
+        text = self._workflow_text()
+        self.assertIn("GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}", text)
+
+    def test_git_add_docs_and_data_is_preserved(self):
+        # data/配下に置くvulnerability_facts_cache.jsonは、既存の
+        # `git add docs/ data/` によって自動的にstage対象へ含まれる
+        # (キャッシュ専用のgit add行を新設する必要はない)。
+        text = self._workflow_text()
+        self.assertIn("git add docs/ data/", text)
+
+    def test_commit_is_skipped_when_nothing_staged(self):
+        # 既存のno-op commit防止ロジックは変更していない。save_cache()側も
+        # 実質変更が無ければファイルへ書込まないため、二重に不要commitを防ぐ。
+        text = self._workflow_text()
+        self.assertIn("git diff --cached --quiet", text)
+        self.assertIn("変更なし。スキップ。", text)
+
+    def test_workflow_trigger_and_permissions_unchanged(self):
+        text = self._workflow_text()
+        self.assertIn("workflow_dispatch:", text)
+        self.assertIn("cron: '0 22 * * *'", text)
+        self.assertIn("contents: write", text)
 
 
 class AgentsFileTest(unittest.TestCase):

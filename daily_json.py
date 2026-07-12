@@ -70,6 +70,13 @@ JST = datetime.timezone(datetime.timedelta(hours=9))
 DAILY_FILENAME_RE = re.compile(r"\d{4}-\d{2}-\d{2}\.json")
 DIGEST_DATE_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
 
+# Ticket 12a-review: facts.cvesの最低限の値検証で使う許容値。
+# nullableな日時・CVSS等の全面検証までは行わない(過剰な厳密化はしない)。
+FACTS_CVE_ID_RE = re.compile(r"CVE-\d{4}-\d{4,19}")
+VALID_NVD_STATUSES = {"found", "not_found", "unavailable"}
+VALID_KEV_STATUSES = {"listed", "not_listed", "unknown"}
+VALID_FACTS_RETRIEVAL_VALUES = {"live", "cache_fresh", "cache_stale", "unavailable"}
+
 
 class DailyJsonError(Exception):
     """日次JSON生成・検証・保存に関するエラー"""
@@ -344,6 +351,14 @@ def build_article_entry(item, source_definitions, model, fetched_at):
         "rule_flags": rule_flags,
 
         "analysis": build_analysis_section(item, model),
+
+        # Ticket 12a: vulnerability_facts.build_facts_for_items()がitem["facts"]を
+        # 設定する(fetch.pyのmain()内、Gemini記事分析より前)。未設定(=facts取得
+        # 自体を経由していない呼び出し元)の場合もfactsキー自体は省略しない。
+        # facts自体が壊れた値(例: {}や不正な型)で渡された場合はデフォルトへ
+        # フォールバックせず、そのままvalidate_daily_digest()の検証へ委ねる
+        # (キーが存在しない場合のみデフォルトを設定する)。
+        "facts": item["facts"] if "facts" in item else {"cves": []},
     }
 
 
@@ -583,6 +598,58 @@ def validate_daily_digest(digest):
             raise DailyJsonError(
                 f"items[{i}] (id={item_id!r}): analysis.tagsに許可外の値があります: {invalid_tags!r}"
             )
+
+        # Ticket 12a: facts(CVE/CVSS/KEVファクト)の最低限の構造検証。
+        # 値の意味(nvd.status等)まではここでは検証せず、構造・型だけを確認する。
+        facts = item.get("facts")
+        if not isinstance(facts, dict):
+            raise DailyJsonError(f"items[{i}] (id={item_id!r}): factsが存在しません")
+        cves = facts.get("cves")
+        if not isinstance(cves, list):
+            raise DailyJsonError(f"items[{i}] (id={item_id!r}): facts.cvesが配列ではありません")
+        for j, cve_fact in enumerate(cves):
+            if not isinstance(cve_fact, dict) or not cve_fact.get("cve_id"):
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): facts.cves[{j}].cve_idが不正です: {cve_fact!r}"
+                )
+
+            cve_id = cve_fact["cve_id"]
+            if not isinstance(cve_id, str) or not FACTS_CVE_ID_RE.fullmatch(cve_id):
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): facts.cves[{j}].cve_idがCVE形式ではありません: {cve_id!r}"
+                )
+
+            nvd = cve_fact.get("nvd")
+            if not isinstance(nvd, dict):
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): facts.cves[{j}].nvdがオブジェクトではありません: {nvd!r}"
+                )
+            if nvd.get("status") not in VALID_NVD_STATUSES:
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): facts.cves[{j}].nvd.statusが不正です: "
+                    f"{nvd.get('status')!r} (許容値: {sorted(VALID_NVD_STATUSES)})"
+                )
+            if nvd.get("retrieval") not in VALID_FACTS_RETRIEVAL_VALUES:
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): facts.cves[{j}].nvd.retrievalが不正です: "
+                    f"{nvd.get('retrieval')!r} (許容値: {sorted(VALID_FACTS_RETRIEVAL_VALUES)})"
+                )
+
+            kev = cve_fact.get("kev")
+            if not isinstance(kev, dict):
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): facts.cves[{j}].kevがオブジェクトではありません: {kev!r}"
+                )
+            if kev.get("status") not in VALID_KEV_STATUSES:
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): facts.cves[{j}].kev.statusが不正です: "
+                    f"{kev.get('status')!r} (許容値: {sorted(VALID_KEV_STATUSES)})"
+                )
+            if kev.get("retrieval") not in VALID_FACTS_RETRIEVAL_VALUES:
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): facts.cves[{j}].kev.retrievalが不正です: "
+                    f"{kev.get('retrieval')!r} (許容値: {sorted(VALID_FACTS_RETRIEVAL_VALUES)})"
+                )
 
     # Ticket 8: Today's Brief (4要素) の最低限の検証。
     # この検証は保存直前(save_daily_digest)にのみ適用され、scan_daily_digest_files()

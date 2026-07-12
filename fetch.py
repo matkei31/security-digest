@@ -10,6 +10,7 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import daily_json
+import vulnerability_facts
 
 # ── 設定 ────────────────────────────────────────────────────────────────────
 
@@ -346,25 +347,33 @@ def fetch_feed(name, url, lang):
 
 # ── CISA KEV (JSON) ───────────────────────────────────────────────────────────
 
-def fetch_cisa_kev(cutoff, url, display_url, source_name):
+def fetch_cisa_kev(cutoff, url, display_url, source_name, kev_catalog_memo=None):
     """url: 取得元JSON API、display_url: 記事表示用の固定リンク(全件共通)、
     source_name: item["source"]に設定する表示名。いずれもsource_definitions.json由来。
     取得・パース・フィルタのロジック自体は変更していない。
+
+    kev_catalog_memoを渡すと、生カタログの取得を
+    vulnerability_facts.load_kev_catalog()経由の共有ローダーへ委譲し、
+    Ticket 12aのCVEファクト取得処理と同一run内でのKEVカタログ二重ダウンロードを
+    防ぐ(Noneの場合は従来どおり単独で取得する)。
     """
-    req = urllib.request.Request(url, headers={"User-Agent": "SecurityDigest/1.0"})
-    try:
-        with urllib.request.urlopen(req, timeout=15) as res:
-            data = json.loads(res.read())
-    except Exception as e:
-        print(f"[WARN] {source_name}: {e}", file=sys.stderr)
+    vulnerabilities, ok = vulnerability_facts.load_kev_catalog(url, memo=kev_catalog_memo)
+    if not ok:
+        print(f"[WARN] {source_name}: KEVカタログの取得に失敗しました", file=sys.stderr)
         return []
+    data = {"vulnerabilities": vulnerabilities}
 
     items = []
     for v in sorted(data.get("vulnerabilities", []),
-                    key=lambda x: x.get("dateAdded", ""), reverse=True):
+                    key=lambda x: x.get("dateAdded") or "", reverse=True):
         date_added_raw = v.get("dateAdded")
         date = parse_date(date_added_raw)
-        if date and date < cutoff:
+        if date is None:
+            # dateAdded欠落・解析不能な要素は記事化しない(Ticket 12a-review)。
+            # ソート順(降順)の都合上、これらは常に配列末尾に来るため、
+            # breakではなくcontinueで良い。
+            continue
+        if date < cutoff:
             break
         items.append({
             "title":   f"{v.get('cveID','')} — {v.get('vulnerabilityName','')}",
@@ -445,11 +454,14 @@ def is_cyber_relevant(item):
     return any(k in text for k in keywords)
 
 
-def collect_non_rss_items(cutoff, sources):
+def collect_non_rss_items(cutoff, sources, kev_catalog_memo=None):
     """RSS以外の取得元(CISA KEV・NIST NVD)を、source定義のenabledに従って収集する。
     URL・表示名・有効/無効はすべてsource_definitions.json(sources)由来。
     id="cisa_kev"/"nist_nvd" はこの関数が直接参照する前提の識別子であるため、
     定義に存在しない場合は黙ってスキップせず、対象IDを含むエラーを送出する。
+
+    kev_catalog_memoはfetch_cisa_kev()へそのまま渡され、Ticket 12aのCVEファクト
+    取得処理と同一run内でのKEVカタログ二重ダウンロードを防ぐ。
     """
     all_items = []
 
@@ -464,6 +476,7 @@ def collect_non_rss_items(cutoff, sources):
             url=cisa_kev_def["url"],
             display_url=cisa_kev_def.get("display_url") or cisa_kev_def["url"],
             source_name=cisa_kev_def["name"],
+            kev_catalog_memo=kev_catalog_memo,
         )
         kev_status = "OK" if kev_items else "NG"
         print(f"  [{kev_status}] {cisa_kev_def['name']}: 取得 {len(kev_items)} 件")
@@ -487,7 +500,11 @@ def collect_non_rss_items(cutoff, sources):
     return all_items
 
 
-def collect_recent():
+def collect_recent(kev_catalog_memo=None):
+    """記事収集・既存フィルタまでを行う。Gemini enrichment(enrich_with_ai)は
+    含まない(Ticket 12a: CVEファクト取得をenrichmentより前に置くため、
+    呼び出し側(main())で収集後・enrichment前に分離して呼び出す)。
+    """
     cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=DAYS_BACK)
     all_items = []
 
@@ -499,7 +516,7 @@ def collect_recent():
         print(f"  [{status}] {name}: 取得 {len(items)} 件 / 直近 {len(recent)} 件")
         all_items.extend(recent)
 
-    all_items += collect_non_rss_items(cutoff, SOURCE_DEFINITIONS)
+    all_items += collect_non_rss_items(cutoff, SOURCE_DEFINITIONS, kev_catalog_memo=kev_catalog_memo)
 
     all_items = [
         item for item in all_items
@@ -507,7 +524,6 @@ def collect_recent():
     ]
 
     all_items.sort(key=lambda x: x["date"] or datetime.datetime.min, reverse=True)
-    all_items = enrich_with_ai(all_items)
     return all_items
 
 # ── HTML生成 ─────────────────────────────────────────────────────────────────
@@ -1752,11 +1768,11 @@ def enrich_with_ai(items):
     for item in items:
         attempts += 1
 
-        # enrich_with_ai()はcollect_recent()内で翻訳処理より前に呼ばれるため、
-        # この時点のitem["title"]/item["summary"]は取得直後の原文そのもの
-        # (raw_title/raw_excerpt相当)。翻訳後の表示用titleとは別に、既存の
-        # "title"キーとしてそのまま渡しつつ、仕様上の項目名にも合わせてraw_title
-        # としても渡す(この時点では両者は同一の値になる)。
+        # enrich_with_ai()はmain()内で翻訳処理より前(CVEファクト取得の直後)に
+        # 呼ばれるため、この時点のitem["title"]/item["summary"]は取得直後の
+        # 原文そのもの(raw_title/raw_excerpt相当)。翻訳後の表示用titleとは別に、
+        # 既存の"title"キーとしてそのまま渡しつつ、仕様上の項目名にも合わせて
+        # raw_titleとしても渡す(この時点では両者は同一の値になる)。
         try:
             source_meta = daily_json.resolve_source_meta(item.get("source", ""), SOURCE_DEFINITIONS)
         except daily_json.DailyJsonError:
@@ -2679,8 +2695,12 @@ def main():
     out_path = DOCS_DIR / "index.html"
     out_path.parent.mkdir(exist_ok=True)
 
+    # KEVカタログのHTTP取得をrun内で1回だけにするためのメモ化辞書
+    # (CISA KEVニュース収集とTicket 12aのCVEファクト取得で共有する)。
+    kev_catalog_memo = {}
+
     print("フィードを収集中...")
-    items = collect_recent()
+    items = collect_recent(kev_catalog_memo=kev_catalog_memo)
     print(f"  {len(items)} 件取得")
 
     # 日次JSON(Ticket 3)向けに、翻訳で上書きされる前の原文タイトル・概要を
@@ -2689,6 +2709,29 @@ def main():
     for item in items:
         item["raw_title"] = item["title"]
         item["raw_summary"] = item["summary"]
+
+    # Ticket 12a: CVE抽出・NVD/CISA KEVファクト取得は、既存Gemini記事分析より前に
+    # 行う(facts自体はTicket 12aではGeminiへ渡さない。処理順の理由はAGENTS.md/
+    # 設計メモ参照)。NVD・CISAの取得に失敗しても後続処理は継続する。
+    #
+    # KEVカタログのURLはsource_definitions.json(cisa_kev定義)を正本とし、
+    # vulnerability_facts.KEV_URLへ暗黙依存させない(既存のKEVニュース収集
+    # 処理と異なるURLになるとkev_catalog_memoによる二重ダウンロード防止が
+    # 効かなくなるため)。
+    cisa_kev_def = get_source_definition(SOURCE_DEFINITIONS, "cisa_kev")
+    kev_url = cisa_kev_def["url"] if cisa_kev_def else vulnerability_facts.KEV_URL
+
+    facts_cache_path = vulnerability_facts.default_cache_path(daily_json.DATA_DIR)
+    facts_stats = vulnerability_facts.build_facts_for_items(
+        items,
+        cache_path=facts_cache_path,
+        nvd_api_key=os.environ.get("NVD_API_KEY") or None,
+        kev_url=kev_url,
+        kev_catalog_memo=kev_catalog_memo,
+    )
+    print("  " + vulnerability_facts.format_facts_log_summary(facts_stats))
+
+    items = enrich_with_ai(items)
 
     time.sleep(15)
     brief_result = build_todays_brief(items)
