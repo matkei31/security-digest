@@ -52,6 +52,14 @@
     .article-section p,.article-section ul{margin-top:3px}
     .action-list{padding-left:18px}
     .action-list li+li{margin-top:3px}
+    .vulnerability-facts{margin-top:8px}
+    .vulnerability-facts-title{font-size:11px;font-weight:600;color:#8b949e}
+    .vulnerability-list{list-style:none;margin-top:4px;display:grid;gap:4px}
+    .vulnerability-item{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;color:#c9d1d9;line-height:1.6}
+    .vulnerability-cve-link{color:#79c0ff;text-decoration:none;font-weight:600}
+    .vulnerability-cve-link:hover{text-decoration:underline}
+    .vulnerability-cvss{color:#8b949e}
+    .kev-badge{font-size:10px;font-weight:700;line-height:1;padding:3px 8px;border-radius:100px;border:1px solid #9e6a03;color:#e3b341;background:#1c1506;white-space:nowrap}
     .article-source-link{display:inline-flex;align-items:center;width:max-content;max-width:100%;margin-top:10px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}
     .empty{text-align:center;color:#8b949e;padding:60px 0;font-size:14px}
     .todays-brief{max-width:680px;margin:12px auto 0;padding:0 12px}
@@ -97,7 +105,7 @@
   <header>
     <h1>Security Digest</h1>
     <div class="sub">日次ダイジェスト：2026年07月12日</div>
-    <div class="sub">最終更新: 2026年07月12日 12:28</div>
+    <div class="sub">最終更新: 2026年07月12日 15:34</div>
     <div class="count">9 件</div>
     <nav class="archive-nav"><a class="archive-link" href="../index.html">最新のダイジェストへ戻る</a><a class="archive-link" href="index.html">過去のダイジェスト一覧へ戻る</a></nav>
   </header>
@@ -106,13 +114,13 @@
       <h2>Today's Brief</h2>
       <div class="brief-section">
       <h3 class="brief-section-title">本日の概況</h3>
-      <p class="brief-overview">本日は、開発サプライチェーンにおける情報窃取マルウェアの拡散という緊急性の高いインシデントが報告されました。これは金融機関の開発環境に直接的な影響を及ぼす可能性があり、早急な確認が求められます。また、Zimbraの重大な脆弱性やAIモデルに対するプロンプトインジェクション攻撃といった、中長期的なリスクとなり得る脅威に関する情報も複数確認されました。全体として、サプライチェーンリスクとAI関連の新たな脅威への対応が本日の主要な論点となります。</p>
+      <p class="brief-overview">本日は、開発サプライチェーンにおける情報窃取マルウェアの拡散という緊急性の高いインシデントが報告されました。これは金融機関の開発環境やCI/CDパイプラインに直接的な影響を及ぼす可能性があります。また、Zimbraのメールクライアントに重大な脆弱性が発見されており、利用状況の確認と対応が求められます。さらに、AI技術の活用が進む中で、プロンプトインジェクション攻撃の新たな動向やAIガバナンスの重要性に関する情報が複数報告されており、中長期的なリスク管理の観点から注目されます。</p>
     </div><div class="brief-section">
       <h3 class="brief-section-title">本日の注目論点</h3>
-      <ul class="brief-list"><li>開発環境におけるnpmパッケージのサプライチェーンセキュリティ対策と監視体制は十分か、また、広く利用される開発用パッケージの侵害リスクに対し、どのような予防的措置や緊急対応計画が有効か。</li><li>AI技術の導入が加速する中で、プロンプトインジェクションのような新たな攻撃手法に対するセキュリティ対策を、どのようにAIガバナンスの枠組みに組み込み、リスクを管理していくべきか。</li><li>セッションハイジャック攻撃からクッキーを保護するDevice Bound Session Credentials (DBSC)のような新しい認証技術について、金融機関の認証セキュリティ強化策として導入の可能性や有効性をどのように評価すべきか。</li></ul>
+      <ul class="brief-list"><li>開発サプライチェーンにおけるソフトウェアコンポーネントのセキュリティリスクが顕在化しており、npmパッケージのような広く利用される開発ツールに対する継続的な監視と、サプライチェーン全体のセキュリティ対策の強化について議論が必要です。</li><li>AI技術の導入・活用が進む中で、プロンプトインジェクション攻撃など新たな脅威が具体化しています。金融機関におけるAI利用ガイドラインやセキュリティ対策において、これらのAI固有のリスクをどのように評価し、軽減していくべきか検討が求められます。</li><li>セッションハイジャック攻撃から認証情報を保護するための新しい技術（Device Bound Session Credentials: DBSC）の動向が報告されています。将来的な認証セキュリティの強化策として、このような先進技術の導入可能性や既存システムへの適用性について議論することが重要です。</li></ul>
     </div><div class="brief-section">
       <h3 class="brief-section-title">本日の確認事項</h3>
-      <ul class="brief-list"><li>jscrambler npmパッケージのバージョン8.14.0が開発環境やCI/CDパイプラインで利用されていないか確認し、利用されている場合は直ちに利用を停止し、感染の有無を確認してください。</li><li>Zimbra Classic Web Clientを利用している場合、ベンダーが提供するアップデートの適用状況を確認し、必要に応じて適用を検討してください。</li><li>AIモデルやLLMを組み込んだアプリケーションを利用している場合、プロンプトインジェクションに対するセキュリティ対策の現状を確認し、導入を検討している場合は設計段階から対策を考慮してください。</li><li>開発環境におけるnpmパッケージのサプライチェーンセキュリティ対策と監視体制について、現状の有効性を評価し、必要に応じて見直しを検討してください。</li></ul>
+      <ul class="brief-list"><li>jscrambler npmパッケージのバージョン8.14.0を利用している場合、直ちに利用を停止し、影響範囲を調査してください。</li><li>開発環境やCI/CDパイプラインにおいて、npmパッケージのサプライチェーンセキュリティ対策が適切に講じられているか確認してください。</li><li>Zimbra Classic Web Clientを利用している場合、ベンダーの指示に従い、速やかにアップデートを適用し、社内システムおよび委託先を含めてZimbraの利用状況を確認してください。</li><li>AI技術を導入・活用している、または検討している場合、プロンプトインジェクション攻撃のリスクについて評価し、必要な対策を検討してください。</li></ul>
     </div>
     </div>
   </div>
@@ -122,7 +130,7 @@
     <div class="important-items-list">
       <article class="priority-item">
         <h3 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-1" lang="en">Compromised jscrambler 8.14.0 npm Release Drops Rust Infostealer During Install</a><span class="article-title-translation" lang="ja">侵害された jscrambler 8.14.0 npm リリースにより、インストール中に Rust Infostealer がドロップされる</span></span></h3>
-        <p class="important-item-reason">広く利用される可能性のある開発用npmパッケージのサプライチェーン侵害であり、インストール時に情報窃取マルウェアが実行される悪用が確認されているため、本日中の確認が必要です。</p>
+        <p class="important-item-reason">広く利用される可能性のある開発関連パッケージのサプライチェーン侵害であり、インストールするだけで情報窃取マルウェアが実行されるため、当該パッケージを利用している場合は本日中の確認が必要です。</p>
         <a class="priority-item-link" href="#article-1">本文を見る</a>
       </article>
     </div>
@@ -164,15 +172,15 @@
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">サプライチェーン</span><span class="article-tag">インシデント</span><span class="article-tag">情報漏えい</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>jscramblerのnpmパッケージバージョン8.14.0が侵害され、インストール時に情報窃取マルウェアが実行される事態が発生しました。この悪意あるバージョンは2026年7月11日に公開され、Windows、macOS、Linux向けのネイティブバイナリをドロップ・実行するpreinstallフックを含んでいます。</p>
+          <p>jscrambler npmパッケージのバージョン8.14.0が侵害され、インストール時に情報窃取マルウェアが実行される事態が発生しました。この悪意あるバージョンは2026年7月11日に公開され、Windows、macOS、Linux向けのネイティブバイナリをドロップ・実行するpreinstallフックを含んでいます。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関が開発プロセスでnpmパッケージを利用している場合、サプライチェーンリスクとして直接的な影響を受ける可能性があります。特に、jscramblerパッケージを直接的または間接的に利用している場合は、情報窃取の被害に繋がる恐れがあります。</p>
+          <p>金融機関が開発プロセスでjscrambler npmパッケージを利用している場合、開発環境やCI/CDパイプラインが侵害され、機密情報が窃取されるリスクがあります。サプライチェーンリスクとして、委託先の開発環境への影響も考慮する必要があります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>jscrambler npmパッケージのバージョン8.14.0が開発環境やCI/CDパイプラインで利用されていないか確認してください。</li><li>当該バージョンが利用されている場合、直ちに利用を停止し、システムへの情報窃取マルウェア感染の有無を確認してください。</li><li>開発環境におけるnpmパッケージのサプライチェーンセキュリティ対策と監視体制を見直してください。</li></ul>
+          <ul class="action-list"><li>jscrambler npmパッケージのバージョン8.14.0を利用している場合、直ちに利用を停止し、影響範囲を調査してください。</li><li>開発環境やCI/CDパイプラインにおいて、npmパッケージのサプライチェーンセキュリティ対策が適切に講じられているか確認してください。</li><li>開発環境やCI/CDパイプラインで情報窃取マルウェアの感染兆候がないか、ログやシステムアクティビティを調査してください。</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://thehackernews.com/2026/07/compromised-jscrambler-8140-npm-release.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -189,15 +197,15 @@
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">パッチ</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>ZimbraのClassic Web Clientに、細工されたメールによって悪意のあるスクリプトが実行される可能性のある重大なXSS脆弱性が発見されました。Zimbraは顧客に対し、この脆弱性に対処するためのアップデート適用を促しています。</p>
+          <p>ZimbraのClassic Web Clientに、細工されたメールによって悪意のあるスクリプトが実行される可能性のある重大なクロスサイトスクリプティング（XSS）脆弱性が発見されました。Zimbraは顧客に対し、この脆弱性に対処するためのアップデート適用を促しています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>Zimbraは多くの組織で利用されているメールコラボレーションプラットフォームであり、金融機関で当該製品を利用している場合、情報漏えいやシステム侵害のリスクに繋がる可能性があります。</p>
+          <p>金融機関でZimbra Classic Web Clientを利用している場合に限り、本脆弱性の影響を受ける可能性があります。現時点では、金融機関におけるZimbraの利用状況に関する具体的な情報はありません。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>Zimbra Classic Web Clientを利用している場合、ベンダーが提供するアップデートの適用状況を確認してください。</li><li>Zimbra製品の利用有無について、社内システムおよび委託先における利用状況を確認してください。</li></ul>
+          <ul class="action-list"><li>Zimbra Classic Web Clientを利用している場合、ベンダーの指示に従い、速やかにアップデートを適用してください。</li><li>Zimbraの利用状況について、社内システムおよび委託先を含めて確認してください。</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://thehackernews.com/2026/07/critical-zimbra-flaw-could-let-crafted_0483473395.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -211,14 +219,14 @@
       <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/" target="_blank" rel="noopener noreferrer" lang="en">Why AI Governance Without Guardrails Is Theater</a><span class="article-title-translation" lang="ja">ガードレールのない AI ガバナンスが劇場である理由</span></span></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">規制</span><span class="article-tag">ガイドライン</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">ガイドライン</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>AIガバナンスは、AIの導入と利用におけるリスクを効果的に管理するために不可欠であり、単なる形式的なものではなく、具体的なガードレールと実践的なアプローチが必要であると指摘しています。</p>
+          <p>AIガバナンスは、具体的なガードレール（安全策）がなければ形骸化し、組織はAIの潜在的なリスクに適切に対処できないと指摘しています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関はAI技術の導入を加速しており、AIガバナンスの確立は規制遵守、リスク管理、顧客信頼維持のために重要です。本記事は、効果的なAIガバナンス構築に向けた一般的な示唆を提供します。</p>
+          <p>金融機関はAI技術の導入を加速しており、AIガバナンスの確立は重要な経営課題です。本記事は、実効性のあるAIガバナンス構築に向けた示唆を提供します。</p>
         </section>
       </div>
       <a class="article-source-link" href="https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -232,14 +240,14 @@
       <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/" target="_blank" rel="noopener noreferrer" lang="en">CrowdStrike Uncovers New Prompt Injection Techniques</a><span class="article-title-translation" lang="ja">CrowdStrike が新しいプロンプト インジェクション技術を発見</span></span></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">LLM</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>CrowdStrikeは、AIモデルに対する新しいプロンプトインジェクション技術を発見しました。これは、AIモデルのセキュリティを脅かす可能性のある新たな攻撃手法です。</p>
+          <p>CrowdStrikeが、大規模言語モデル（LLM）に対する新たなプロンプトインジェクション技術を発見しました。これらの技術は、LLMのセキュリティリスクを増大させる可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関がAIモデルを業務に導入・活用する際、プロンプトインジェクションによる情報漏えいや誤動作のリスクを考慮する必要があります。現時点では具体的な被害事例は確認できませんが、将来的なリスクとして認識しておくべきです。</p>
+          <p>金融機関がLLMを業務に導入・活用する際、これらの新たなプロンプトインジェクション技術による情報漏えいや誤動作のリスクを考慮する必要があります。</p>
         </section>
       </div>
       <a class="article-source-link" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -253,18 +261,14 @@
       <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener noreferrer" lang="en">AI threats in the wild: The current state of prompt injections on the web</a><span class="article-title-translation" lang="ja">現実の AI の脅威: Web 上でのプロンプト インジェクションの現状</span></span></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">LLM</span><span class="article-tag">AIエージェント</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Googleの脅威分析グループ(TAG)は、AIモデルに対するプロンプトインジェクション攻撃の現状について報告しました。攻撃者はAIモデルの誤用や情報漏えいを引き起こす可能性があり、特にAIエージェントやLLMを組み込んだアプリケーションが標的となっています。</p>
+          <p>Googleの脅威分析グループ(TAG)が、AIモデルに対するプロンプトインジェクション攻撃の現状について報告しました。この攻撃は、AIモデルの意図しない動作を引き起こすことを目的としています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関がAIモデルやLLMを組み込んだアプリケーションを導入・利用している場合、プロンプトインジェクション攻撃のリスク評価と対策が必要になります。現時点では具体的な金融機関への被害は報告されていませんが、将来的な脅威として認識しておくべきです。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>AIモデルやLLMを組み込んだアプリケーションを利用している場合、プロンプトインジェクションに対するセキュリティ対策の現状を確認してください。</li><li>AIエージェントやLLMの導入を検討している場合、設計段階からプロンプトインジェクション対策を考慮してください。</li></ul>
+          <p>金融機関がAI技術を導入・活用する際、プロンプトインジェクションは情報漏えいやシステム誤動作のリスクとなり得ます。特に顧客対応やデータ分析にAIを利用する場合、その影響は大きくなる可能性があります。</p>
         </section>
       </div>
       <a class="article-source-link" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -281,11 +285,11 @@
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">認証</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Google TAGが、セッションハイジャック攻撃からクッキーを保護するための新しい技術「Device Bound Session Credentials (DBSC)」について解説しています。この技術は、デバイスの暗号鍵とセッションクッキーを紐付けることで、クッキーの盗難や再利用を防ぎます。</p>
+          <p>Googleの脅威分析グループ(TAG)は、セッションハイジャック攻撃からクッキーを保護するための新しい技術「Device Bound Session Credentials (DBSC)」について解説しています。この技術は、認証情報をデバイスに紐付けることで、盗まれたクッキーの悪用を防ぐことを目指しています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関は顧客の認証情報やセッションクッキーを保護することが極めて重要であり、DBSCのような新しい認証技術は、フィッシングやセッションハイジャック攻撃に対する防御策として参考になります。</p>
+          <p>金融機関では顧客認証や内部システム認証にクッキーが広く利用されており、セッションハイジャックは不正アクセスや情報漏えいのリスクに直結します。DBSCのような新しい認証技術の動向は、将来的なセキュリティ対策の検討において参考になります。</p>
         </section>
       </div>
       <a class="article-source-link" href="http://security.googleblog.com/feeds/3718049046001981559/comments/default" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -299,14 +303,14 @@
       <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/hackers-weaponize-balochistan-police.html" target="_blank" rel="noopener noreferrer" lang="en">Hackers Weaponize Balochistan Police Portal in Multi-Group Espionage Campaigns</a><span class="article-title-translation" lang="ja">ハッカーが複数グループのスパイ活動でバロチスタン警察ポータルを武器化</span></span></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">APT</span><span class="article-tag">インシデント</span><span class="article-tag">情報漏えい</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">APT</span><span class="article-tag">インシデント</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>2024年2月から2026年4月にかけて、中国およびインド系の脅威アクターがパキスタンの法執行機関に対し、持続的なサイバースパイ活動を展開していたことが判明しました。特にバロチスタン警察のポータルサイトが武器化され、警察や市民のデータが管理されるウェブアプリケーションをホストするサーバーが侵害されました。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関への直接的な関係は確認できず、他国の政府機関を標的としたサイバースパイ活動の事例として参考情報にとどまります。</p>
+          <p>金融機関への直接的な関係は確認できず、他国の法執行機関を標的としたサイバースパイ活動の事例として参考情報にとどまります。</p>
         </section>
       </div>
       <a class="article-source-link" href="https://thehackernews.com/2026/07/hackers-weaponize-balochistan-police.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -323,11 +327,11 @@
         
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>CrowdStrikeが、ゼロトラストブラウザセキュリティの標準を確立する「Falcon Secure Access」を発表しました。</p>
+          <p>CrowdStrikeが、ゼロトラストブラウザセキュリティ製品「Falcon Secure Access」を発表しました。この製品は、ブラウザベースの脅威からの保護を目的としています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>本記事は特定の製品の紹介であり、金融機関への直接的な影響や具体的な脅威に関する情報はありません。</p>
+          <p>本記事はCrowdStrikeの製品紹介であり、金融機関への直接的な影響や具体的な脅威情報を示すものではありません。ゼロトラストやブラウザセキュリティは金融機関にとっても重要なテーマですが、本記事は一般的な参考情報にとどまります。</p>
         </section>
       </div>
       <a class="article-source-link" href="https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -344,11 +348,11 @@
         
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Google TAGのブログ記事ですが、タイトル「Bringing Rust to the Pixel Baseband」のみで、具体的な内容や公開日、要約が提供されていないため、何が起きたか不明です。</p>
+          <p>GoogleがPixelスマートフォンのベースバンドプロセッサにRust言語を導入し、メモリ安全性の向上と脆弱性の削減を目指していることを発表しました。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>記事の具体的な内容が不明なため、金融機関への直接的な関係や影響は確認できません。</p>
+          <p>本記事はGoogle Pixelの技術的な改善に関するものであり、金融機関の業務やシステムに直接的な影響を与えるものではありません。一般的な技術動向として参考になります。</p>
         </section>
       </div>
       <a class="article-source-link" href="http://security.googleblog.com/feeds/1469360228826887140/comments/default" target="_blank" rel="noopener noreferrer">元記事を読む</a>
