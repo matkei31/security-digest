@@ -307,9 +307,76 @@ class FeedFetchResult:
     retry_count: int = 0
 
 
+# 記事本文とみなすtype(未指定=alternate相当のHTMLとして扱う)。
+_ATOM_HTML_TYPES = ("", "text/html", "application/xhtml+xml")
+# 記事本文として選ばないfeed/XML系type(コメントフィード等)。
+_ATOM_FEED_TYPES = ("application/atom+xml", "application/rss+xml",
+                    "application/xml", "text/xml")
+
+
+def _is_comment_feed_url(url):
+    """コメントフィード等、記事本文ではないURLかどうかを判定する(source非依存)。
+    Blogger等の「/feeds/<id>/comments/default」形式を一般化して除外する。"""
+    low = url.lower()
+    if "/comments/default" in low:
+        return True
+    if "/feeds/" in low and "/comments/" in low:
+        return True
+    return False
+
+
+def _local_tag_name(tag):
+    """名前空間付きtag('{ns}link')からローカル名('link')を取り出す。"""
+    return tag.rsplit("}", 1)[-1] if "}" in tag else tag
+
+
+def _select_atom_article_url(entry):
+    """Atom entryから記事本文用のURLを選ぶ(Ticket 14a)。
+
+    従来は `entry.find("atom:link[@rel='alternate']") or entry.find("atom:link")`
+    としていたが、Atomの<link>は子要素を持たないため、現在のElement真偽値評価では
+    Falseとなり、orの右辺である先頭link(rel=replies等のコメントフィード)へ
+    フォールバックしていた。本関数はElementの真偽値評価に一切依存せず、全link要素を
+    走査してrel未指定/alternateかつHTTP(S)・非コメントのものだけを候補にする。
+    namespaceの有無に依存しないようtagのローカル名で'link'を判定する。
+    安全な候補が無ければ""を返す。"""
+    candidates = []
+    for child in entry:
+        if _local_tag_name(child.tag) != "link":
+            continue
+        href = (child.get("href") or "").strip()
+        if not href:
+            continue
+        rel = (child.get("rel") or "").strip().lower()
+        typ = (child.get("type") or "").strip().lower()
+        candidates.append((rel, typ, href))
+
+    def usable(rel, href):
+        # rel未指定はAtom仕様上alternate相当。コメント/メタ/購読系relは採用しない。
+        if rel not in ("", "alternate"):
+            return False
+        low = href.lower()
+        if not (low.startswith("http://") or low.startswith("https://")):
+            return False
+        if _is_comment_feed_url(href):
+            return False
+        return True
+
+    # 最優先: rel未指定/alternate かつ HTML系type(未指定含む)。
+    for rel, typ, href in candidates:
+        if usable(rel, href) and typ in _ATOM_HTML_TYPES:
+            return href
+    # 次点: rel未指定/alternate かつ 既知のfeed/XML型でないもの。
+    for rel, typ, href in candidates:
+        if usable(rel, href) and typ not in _ATOM_FEED_TYPES:
+            return href
+    return ""
+
+
 def _parse_feed_items(root, name, lang):
     """XMLルート要素から記事itemのlistを組み立てる(取得・retryロジックとは分離)。
-    parseロジック自体は従来のfetch_feed()から変更していない。"""
+    parseロジック自体は従来のfetch_feed()から変更していない
+    (Atomの記事URL選択のみTicket 14aで修正)。"""
     items = []
     tag = root.tag.lower()
 
@@ -327,14 +394,23 @@ def _parse_feed_items(root, name, lang):
                 "lang":   lang,
             })
     elif "feed" in tag:
-        for entry in root.findall("atom:entry", NAMESPACES)[:MAX_PER_FEED]:
-            link_el = (entry.find("atom:link[@rel='alternate']", NAMESPACES)
-                    or entry.find("atom:link", NAMESPACES))
+        # 有効な記事URLを持つentryを最大MAX_PER_FEED件収集する。スキップ対象(コメント
+        # フィード等)が先頭に来ても、後続の正常entryを確認して上限まで集める(Ticket 14a)。
+        # このブランチはif/elif/elifで相互排他のため、items は Atom分岐専用であり、
+        # len(items) を有効件数カウンタとして安全に使える。
+        for entry in root.findall("atom:entry", NAMESPACES):
+            if len(items) >= MAX_PER_FEED:
+                break
+            article_url = _select_atom_article_url(entry)
+            if not article_url:
+                # 記事本文URLを安全に特定できないentryは収集対象外にする。
+                # コメントフィード等を記事URLとして残すより、entryをスキップする。
+                continue
             pub_date_raw = (entry.findtext("atom:updated",   namespaces=NAMESPACES) or
                             entry.findtext("atom:published", namespaces=NAMESPACES))
             items.append({
                 "title":   (entry.findtext("atom:title",   namespaces=NAMESPACES) or "").strip(),
-                "link":    (link_el.get("href") if link_el is not None else "").strip(),
+                "link":    article_url,
                 "summary": (entry.findtext("atom:summary", namespaces=NAMESPACES) or "").strip(),
                 "date":    parse_date(pub_date_raw),
                 "published_at_jst": daily_json.parse_date_to_jst(pub_date_raw),
