@@ -821,5 +821,21 @@
   "Turning the Tables on Email Scammers With 'ScamBuster'": "「ScamBuster」で電子メール詐欺師を形勢逆転",
   "An open source, AI-driven system adopts victim personas to engage with phishing attackers, allowing organizations and law enforcement to gather relevant data on cybercriminal operations.": "オープンソースの AI 駆動システムは、フィッシング攻撃者に対処するために被害者のペルソナを採用し、組織や法執行機関がサイバー犯罪行為に関する関連データを収集できるようにします。",
   "UK and Allies urge critical sectors to improve defences against Russian intelligence targeting": "英国と同盟国は重要部門に対し、ロシア諜報機関の標的に対する防御を強化するよう要請",
-  "New advisory highlights Russian state cyber actors’ global exploitation of poorly configured routers": "新しい勧告は、ロシア国家サイバー攻撃者による不適切な設定のルーターの世界的な悪用を浮き彫りにしています"
+  "New advisory highlights Russian state cyber actors’ global exploitation of poorly configured routers": "新しい勧告は、ロシア国家サイバー攻撃者による不適切な設定のルーターの世界的な悪用を浮き彫りにしています",
+  "Defending SaaS-based applications against ShinyHunters OAuth abuse": "ShinyHunters OAuth 悪用から SaaS ベースのアプリケーションを防御する",
+  "Microsoft Threat Intelligence identified threat actor activity with overlapping tradecraft commonly associated with ShinyHunters, including voice phishing (vishing), supply-chain compromise, and misco": "Microsoft Threat Intelligence は、音声フィッシング (ビッシング)、サプライ チェーン侵害、ミスコなど、ShinyHunters に一般的に関連する重複するトレードクラフトを伴う脅威アクターの活動を特定しました。",
+  "Weak Security Continues to Fuel Russian Cyberattacks": "脆弱なセキュリティがロシアのサイバー攻撃を助長し続ける",
+  "In a first, the UK and the EU jointly impose sanctions on Russian individuals and entities for cyberattacks and disinformation campaigns in the region.": "英国とEUは初めて、この地域でのサイバー攻撃や偽情報活動を理由にロシアの個人や団体に共同で制裁を課す。",
+  "'Yellow Teams' Are Defining the Future of AI Security": "AI セキュリティの未来を定義する「イエロー チーム」",
+  "In some companies, engineers are building defense and attack tools to test the potential of artificial intelligence for cybersecurity — and its threat.": "一部の企業では、エンジニアがサイバーセキュリティに対する人工知能の可能性とその脅威をテストするための防御および攻撃ツールを構築しています。",
+  "CrashStealer macOS Malware Uses Notarized Dropper to Pass Gatekeeper Checks": "CrashStealer macOS マルウェアは公証されたドロッパーを使用してゲートキーパーのチェックを通過",
+  "Cybersecurity researchers have flagged a new macOS information stealer called CrashStealer that's capable of harvesting sensitive data from compromised systems.\n\nUnlike other information stealers that": "サイバーセキュリティ研究者は、侵害されたシステムから機密データを収集できる CrashStealer と呼ばれる新しい macOS 情報スティーラーを報告しました。\n\n他の情報窃盗犯とは異なり、",
+  "Google and Microsoft Pull ModHeader With 1.6 Million Installs After Dormant Collector Found": "GoogleとMicrosoft、休止中のコレクター発見後、160万インストールのModHeaderをプル",
+  "Google and Microsoft have pulled ModHeader, a popular header-editing extension with roughly 1.6 million installs across Chrome and Edge, after researchers found a hidden browsing-history collector bui": "GoogleとMicrosoftは、研究者が隠れた閲覧履歴収集ツールを発見したことを受けて、ChromeとEdge全体で約160万回インストールされている人気のヘッダー編集拡張機能であるModHeaderを廃止した。",
+  "Microsoft Entra ID security updates: Passkeys are the default authentication method in Entra ID": "Microsoft Entra ID のセキュリティ更新: パスキーは Entra ID のデフォルトの認証方法です",
+  "Microsoft Entra ID makes passkeys the default sign-in experience and introduces a new model for SMS and voice authentication. Read about how to prepare.\nThe post Microsoft Entra ID security updates: P": "Microsoft Entra ID では、パスキーがデフォルトのサインイン エクスペリエンスになり、SMS および音声認証の新しいモデルが導入されます。準備方法についてお読みください。\nMicrosoft Entra ID セキュリティ アップデート後の内容: P",
+  "GigaWiper Lets Threat Actors Choose Their Own Destructive Attack": "GigaWiper により、脅威アクターは独自の破壊的な攻撃を選択できます",
+  "A modular implant borrows from various malware families to combine both backdoor and wiper activities to maximize impact and minimize operational output.": "モジュール式インプラントは、さまざまなマルウェア ファミリから借用し、バックドアとワイパーの両方のアクティビティを組み合わせて、影響を最大化し、運用上の出力を最小限に抑えます。",
+  "CVE-2008-4128 — Cisco IOS Cross-Site Request Forgery Vulnerability": "CVE-2008-4128 — Cisco IOS クロスサイト リクエスト フォージェリの脆弱性",
+  "Cisco IOS 12.4 contains multiple cross-site forgery vulnerabilities that allows remote attackers to execute arbitrary commands via (1) a certain \"show privilege\" command to the /level/15/exec/- URI, a": "Cisco IOS 12.4 には複数のクロスサイト フォージェリの脆弱性が含まれており、リモート攻撃者が (1) /level/15/exec/- URI に対する特定の「showprivilege」コマンドを介して任意のコマンドを実行できます。"
 }
