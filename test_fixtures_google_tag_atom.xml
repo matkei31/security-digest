@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Ticket 14a テスト用fixture: Google TAG(Blogger Atom)フィードの構造を最小化した
+  もの。各entryは title / published / updated と複数の link 要素(rel=replies の
+  コメントフィード, rel=edit, rel=self, rel=alternate の記事本文)だけを持つ。
+  著作物本文(summary/content)は含めない。link要素の並び順は実フィードに合わせて
+  コメントフィード(replies)が alternate より前に来るようにしている。
+-->
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">Google Online Security Blog</title>
+  <updated>2026-07-10T09:00:00.000-07:00</updated>
+  <entry>
+    <title type="text">AI threats in the wild</title>
+    <published>2026-07-10T09:00:00.000-07:00</published>
+    <updated>2026-07-10T09:00:00.000-07:00</updated>
+    <link rel="replies" type="application/atom+xml" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" title="Post Comments"/>
+    <link rel="replies" type="text/html" href="http://security.googleblog.com/2026/07/ai-threats.html#comment-form" title="0 Comments"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.blogger.com/feeds/x/posts/default/820776653483778595"/>
+    <link rel="self" type="application/atom+xml" href="https://www.blogger.com/feeds/x/posts/default/820776653483778595"/>
+    <link rel="alternate" type="text/html" href="https://security.googleblog.com/2026/07/ai-threats.html" title="AI threats in the wild"/>
+  </entry>
+  <entry>
+    <title type="text">Protecting Cookies with Device Bound Session Credentials</title>
+    <published>2026-07-09T09:00:00.000-07:00</published>
+    <updated>2026-07-09T09:00:00.000-07:00</updated>
+    <link rel="alternate" type="text/html" href="https://security.googleblog.com/2026/07/device-bound-session-credentials.html" title="Protecting Cookies"/>
+    <link rel="replies" type="application/atom+xml" href="http://security.googleblog.com/feeds/3718049046001981559/comments/default" title="Post Comments"/>
+    <link rel="self" type="application/atom+xml" href="https://www.blogger.com/feeds/x/posts/default/3718049046001981559"/>
+  </entry>
+  <entry>
+    <title type="text">Bringing Rust to the Pixel Baseband</title>
+    <published>2026-07-08T09:00:00.000-07:00</published>
+    <updated>2026-07-08T09:00:00.000-07:00</updated>
+    <link rel="replies" type="application/atom+xml" href="http://security.googleblog.com/feeds/1469360228826887140/comments/default" title="Post Comments"/>
+    <link rel="edit" type="application/atom+xml" href="https://www.blogger.com/feeds/x/posts/default/1469360228826887140"/>
+    <link rel="alternate" type="text/html" href="https://security.googleblog.com/2026/07/rust-pixel-baseband.html" title="Bringing Rust to the Pixel Baseband"/>
+  </entry>
+</feed>
