@@ -274,21 +274,22 @@ def translate(text, cache):
 # ── 日付パーサー ─────────────────────────────────────────────────────────────
 
 def parse_date(s):
-    if not s:
+    """ソート・DAYS_BACKカットオフ判定用の日付parse。共通parser
+    (daily_json.parse_datetime)を用いる(Ticket 14a-3: 小数秒付きISO 8601に対応。
+    フォーマット一覧はparse_datetimeへ一本化し、parse_date_to_jstと二重管理しない)。
+
+    戻り値:
+    - timezone-aware入力: UTCへ正規化したnaive datetime(cutoffもUTC naiveのため
+      異なるタイムゾーンの記事でも同一の実時刻基準でDAYS_BACK判定できる)
+    - timezone無し入力(日付のみ等): 従来どおりnaive datetime(KEVのYYYY-MM-DD等)
+    - parse不能: None
+    """
+    dt = daily_json.parse_datetime(s)
+    if dt is None:
         return None
-    for fmt in (
-        "%a, %d %b %Y %H:%M:%S %z",
-        "%a, %d %b %Y %H:%M:%S %Z",
-        "%Y-%m-%dT%H:%M:%S%z",
-        "%Y-%m-%dT%H:%M:%SZ",
-        "%Y-%m-%dT%H:%M%z",
-        "%Y-%m-%d",
-    ):
-        try:
-            return datetime.datetime.strptime(s.strip(), fmt).replace(tzinfo=None)
-        except ValueError:
-            continue
-    return None
+    if dt.tzinfo is not None:
+        dt = dt.astimezone(datetime.timezone.utc)
+    return dt.replace(tzinfo=None)
 
 # ── RSS パーサー ──────────────────────────────────────────────────────────────
 
@@ -406,14 +407,23 @@ def _parse_feed_items(root, name, lang):
                 # 記事本文URLを安全に特定できないentryは収集対象外にする。
                 # コメントフィード等を記事URLとして残すより、entryをスキップする。
                 continue
-            pub_date_raw = (entry.findtext("atom:updated",   namespaces=NAMESPACES) or
-                            entry.findtext("atom:published", namespaces=NAMESPACES))
+            # 公開日(published)を基準にDAYS_BACKを判定する(Ticket 14a-3)。
+            # publishedが存在し空でなければpublishedを採用し、parse不能でもupdatedへ
+            # fallbackしない(古い記事の更新日で毎日再掲されるのを防ぐ)。publishedが
+            # 無い/空のときだけupdatedへfallbackする。採用したraw日時1つから
+            # dateとpublished_at_jstの両方を生成する(別々のraw/parserを使わない)。
+            published_raw = entry.findtext("atom:published", namespaces=NAMESPACES)
+            updated_raw = entry.findtext("atom:updated", namespaces=NAMESPACES)
+            if published_raw and published_raw.strip():
+                date_raw = published_raw
+            else:
+                date_raw = updated_raw
             items.append({
                 "title":   (entry.findtext("atom:title",   namespaces=NAMESPACES) or "").strip(),
                 "link":    article_url,
                 "summary": (entry.findtext("atom:summary", namespaces=NAMESPACES) or "").strip(),
-                "date":    parse_date(pub_date_raw),
-                "published_at_jst": daily_json.parse_date_to_jst(pub_date_raw),
+                "date":    parse_date(date_raw),
+                "published_at_jst": daily_json.parse_date_to_jst(date_raw),
                 "source": name,
                 "lang":   lang,
             })
@@ -711,6 +721,7 @@ def collect_recent(kev_catalog_memo=None):
 
     print("フィード別の取得状況:")
     rss_success = rss_zero = rss_failed = 0
+    undated_skipped = older_skipped = 0
     for name, url, lang in (f for f in RSS_FEEDS if not f[1].startswith("#")):
         result = _fetch_feed_result(name, url, lang)
         # 取得失敗・parse失敗は[NG]。記事件数0というだけでは[NG]にしない(Ticket 13c)。
@@ -722,14 +733,25 @@ def collect_recent(kev_catalog_memo=None):
             rss_failed += 1
             print(f"  [NG] {name}: XML parse error")
             continue
-        recent = [item for item in result.items if item["date"] is None or item["date"] >= cutoff]
+        # 日付が存在しcutoff以上の記事だけを採用する(Ticket 14a-3)。日付不明
+        # (欠落・空・parse失敗でdate=None)を「最近の記事」として無条件採用しない。
+        # source取得成功と記事の日付不明は区別し、取得失敗にはしない。
+        recent = []
+        for item in result.items:
+            if item["date"] is None:
+                undated_skipped += 1
+            elif item["date"] < cutoff:
+                older_skipped += 1
+            else:
+                recent.append(item)
         if recent:
             rss_success += 1
         else:
             rss_zero += 1
         print(f"  [OK] {name}: 取得 {len(result.items)} 件 / 直近 {len(recent)} 件")
         all_items.extend(recent)
-    print(f"  RSS sources: success={rss_success} zero={rss_zero} failed={rss_failed}")
+    print(f"  RSS sources: success={rss_success} zero={rss_zero} failed={rss_failed} "
+          f"undated_skipped={undated_skipped} older_skipped={older_skipped}")
 
     all_items += collect_non_rss_items(cutoff, SOURCE_DEFINITIONS, kev_catalog_memo=kev_catalog_memo)
 

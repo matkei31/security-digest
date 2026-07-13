@@ -115,46 +115,77 @@ def classify_gemini_error(exception=None, http_status=None):
 
 # ── 日時 ──────────────────────────────────────────────────────────────────
 
+def parse_datetime(date_string):
+    """RSS/Atom/API由来の日付文字列を解釈する共通parser(Ticket 14a-3)。
+    fetch.parse_date()とparse_date_to_jst()はこのparserを使い、フォーマット一覧を
+    二重管理しない。
+
+    戻り値:
+    - タイムゾーン情報付き日時: timezone-awareなdatetime
+    - 日付のみ(YYYY-MM-DD): naiveなdatetime(KEV等の既存用途のため維持)
+    - タイムゾーンなしの時刻付き日時(例 2026-07-13T09:00:00): 正確な瞬間を特定できず
+      解釈不能としてNone(recent判定・UTC比較の根拠がないため採用対象へ広げない)
+    - その他の解釈不能値: None
+    例外は送出しない(呼び出し元へ漏らさない)。対応: ISO 8601(小数秒あり/なし・数値
+    オフセット・Z表記)、RFC822/2822(数値オフセット・GMT/UTC)、日付のみYYYY-MM-DD。
+    日付文字列以外(レスポンス本文等)はここへ渡らない前提で、ログ出力も行わない。
+    """
+    if not isinstance(date_string, str):
+        return None
+    s = date_string.strip()
+    if not s:
+        return None
+
+    # 末尾Z/zを+00:00へ正規化する(strptimeの%zがZ非対応なPython版への保険。
+    # 3.9.6ではZも解釈できるが、明示正規化で版差を吸収する)。
+    normalized = s
+    if normalized[-1] in ("Z", "z"):
+        normalized = normalized[:-1] + "+00:00"
+
+    # (1) タイムゾーン付き(aware)。小数秒あり→なしの順に試す。
+    for fmt in (
+        "%Y-%m-%dT%H:%M:%S.%f%z",
+        "%Y-%m-%dT%H:%M:%S%z",
+        "%Y-%m-%dT%H:%M%z",
+        "%a, %d %b %Y %H:%M:%S %z",
+    ):
+        try:
+            return datetime.datetime.strptime(normalized, fmt)
+        except ValueError:
+            continue
+
+    # (2) RFC822の名前付きUTC(GMT/UTC)はUTCとして扱う(aware)。
+    for fmt in ("%a, %d %b %Y %H:%M:%S GMT", "%a, %d %b %Y %H:%M:%S UTC"):
+        try:
+            return datetime.datetime.strptime(s, fmt).replace(tzinfo=datetime.timezone.utc)
+        except ValueError:
+            continue
+
+    # (3) 日付のみ(YYYY-MM-DD)はnaiveなdatetimeとして許可する(KEV dateAdded等)。
+    # タイムゾーンなしの「時刻付き」ISO日時は正確な瞬間を特定できないため受理せず
+    # (2)以降のいずれにも一致させない=最終的にNoneとなる。
+    for fmt in (
+        "%Y-%m-%d",
+    ):
+        try:
+            return datetime.datetime.strptime(s, fmt)
+        except ValueError:
+            continue
+
+    return None
+
+
 def parse_date_to_jst(date_string):
     """RSS/API由来の日付文字列を、タイムゾーン情報を保持したままJSTへ正規化する。
     解析できない場合、またはオフセット情報がなく正確な日時を特定できない場合はNoneを返す。
-    fetch.pyのparse_date()(ソート・カットオフ判定用、tzinfoを破棄する実装)とは別関数であり、
-    既存のRSS取得・フィルタロジックには一切影響しない。
+    parse_datetime()(共通parser)を用いる。fetch.pyのparse_date()(ソート・カットオフ
+    判定用、tzinfoを破棄する実装)とは戻り値の扱いのみ異なる。表示用のため小数秒は落とす。
     """
-    if not date_string:
+    dt = parse_datetime(date_string)
+    if dt is None or dt.tzinfo is None:
+        # タイムゾーン情報が無い(日付のみ等)は正確な瞬間を特定できないためNone(従来通り)。
         return None
-    s = date_string.strip()
-
-    # 明示的にUTCを示すサフィックス(Z / GMT / UTC)
-    utc_suffix_formats = (
-        "%Y-%m-%dT%H:%M:%SZ",
-        "%a, %d %b %Y %H:%M:%S GMT",
-        "%a, %d %b %Y %H:%M:%S UTC",
-    )
-    for fmt in utc_suffix_formats:
-        try:
-            dt = datetime.datetime.strptime(s, fmt)
-            return dt.replace(tzinfo=datetime.timezone.utc).astimezone(JST)
-        except ValueError:
-            continue
-
-    # オフセット付き形式(%z)はstrptimeがそのままtzinfoを設定する
-    offset_formats = (
-        "%a, %d %b %Y %H:%M:%S %z",
-        "%Y-%m-%dT%H:%M:%S%z",
-        "%Y-%m-%dT%H:%M%z",
-    )
-    for fmt in offset_formats:
-        try:
-            dt = datetime.datetime.strptime(s, fmt)
-            if dt.tzinfo is None:
-                continue
-            return dt.astimezone(JST)
-        except ValueError:
-            continue
-
-    # 日付のみ(時刻・オフセットなし)は正確な日時を特定できないためNone
-    return None
+    return dt.astimezone(JST).replace(microsecond=0)
 
 
 # ── URL正規化・ID・content_hash ──────────────────────────────────────────
