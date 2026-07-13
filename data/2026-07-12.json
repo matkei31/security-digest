@@ -11,9 +11,9 @@
   "run": {
     "status": "success",
     "overwrite_policy": "replace",
-    "total_items": 9,
-    "ai_attempted_count": 9,
-    "ai_success_count": 9,
+    "total_items": 3,
+    "ai_attempted_count": 3,
+    "ai_success_count": 3,
     "ai_fallback_count": 0,
     "ai_failed_count": 0,
     "ai_not_attempted_count": 0
@@ -21,24 +21,24 @@
   "counts": {
     "importance": {
       "高": 1,
-      "中": 5,
-      "低": 3,
+      "中": 1,
+      "低": 1,
       "未判定": 0
     },
     "urgency": {
       "本日確認": 1,
       "今週確認": 1,
-      "参考": 7,
+      "参考": 1,
       "未判定": 0
     },
     "category": {
       "脆弱性・パッチ": 1,
-      "攻撃・脅威動向": 2,
+      "攻撃・脅威動向": 1,
       "インシデント": 1,
       "規制・ガバナンス": 0,
       "クラウド・サプライチェーン": 0,
-      "AI・新技術リスク": 3,
-      "その他": 2,
+      "AI・新技術リスク": 0,
+      "その他": 0,
       "未判定": 0
     }
   },
@@ -46,21 +46,21 @@
     "status": "success",
     "model": "gemini-2.5-flash",
     "prompt_version": "today-brief-v2",
-    "overview": "本日は、開発サプライチェーンにおける情報窃取マルウェアの拡散という緊急性の高いインシデントが報告されました。これは金融機関の開発環境やCI/CDパイプラインに直接的な影響を及ぼす可能性があります。また、Zimbraのメールクライアントに重大な脆弱性が発見されており、利用状況の確認と対応が求められます。さらに、AI技術の活用が進む中で、プロンプトインジェクション攻撃の新たな動向やAIガバナンスの重要性に関する情報が複数報告されており、中長期的なリスク管理の観点から注目されます。",
+    "overview": "本日は、開発サプライチェーンにおける情報窃取マルウェアの拡散と、メールクライアントの脆弱性に関する情報が中心です。特に、広く利用される可能性のある開発関連パッケージのサプライチェーン侵害は、金融機関の開発環境やCI/CDパイプラインに直接的な影響を及ぼす可能性があるため、本日中の確認が求められます。また、メールクライアントの脆弱性も、利用状況によっては対応が必要となる重要な情報です。他国の法執行機関を標的としたサイバースパイ活動の事例も報告されていますが、金融機関への直接的な影響は限定的とみられます。",
     "important_highlights": [
       "jscrambler npmパッケージのバージョン8.14.0が侵害され、インストール時に情報窃取マルウェアが実行される事態が発生しました。金融機関が開発プロセスで当該パッケージを利用している場合、開発環境やCI/CDパイプラインが侵害され、機密情報が窃取されるリスクがあるため、直ちに利用を停止し、影響範囲を調査する必要があります。",
       "ZimbraのClassic Web Clientに、細工されたメールによって悪意のあるスクリプトが実行される可能性のある重大なクロスサイトスクリプティング（XSS）脆弱性が発見されました。金融機関でZimbra Classic Web Clientを利用している場合、ベンダーの指示に従い、速やかにアップデートを適用することが求められます。"
     ],
     "discussion_points": [
-      "開発サプライチェーンにおけるソフトウェアコンポーネントのセキュリティリスクが顕在化しており、npmパッケージのような広く利用される開発ツールに対する継続的な監視と、サプライチェーン全体のセキュリティ対策の強化について議論が必要です。",
-      "AI技術の導入・活用が進む中で、プロンプトインジェクション攻撃など新たな脅威が具体化しています。金融機関におけるAI利用ガイドラインやセキュリティ対策において、これらのAI固有のリスクをどのように評価し、軽減していくべきか検討が求められます。",
-      "セッションハイジャック攻撃から認証情報を保護するための新しい技術（Device Bound Session Credentials: DBSC）の動向が報告されています。将来的な認証セキュリティの強化策として、このような先進技術の導入可能性や既存システムへの適用性について議論することが重要です。"
+      "開発サプライチェーンにおけるソフトウェアパッケージの信頼性確保と、それに伴う情報窃取リスクへの対応策について、改めて組織全体での管理態勢や運用プロセスの見直しが必要ではないでしょうか。",
+      "広く利用される可能性のある開発関連パッケージの侵害は、自組織だけでなく、委託先の開発環境にも影響を及ぼす可能性があるため、サプライチェーン全体のセキュリティ対策について、どのように連携・確認していくべきか議論が必要です。",
+      "メールクライアントの脆弱性対応は、利用している製品に依存しますが、定期的な脆弱性情報の収集と、迅速なパッチ適用プロセスの確立が重要です。自組織および委託先における利用状況の把握と、対応状況の確認をどのように進めるべきでしょうか。"
     ],
     "check_items": [
       "jscrambler npmパッケージのバージョン8.14.0を利用している場合、直ちに利用を停止し、影響範囲を調査してください。",
       "開発環境やCI/CDパイプラインにおいて、npmパッケージのサプライチェーンセキュリティ対策が適切に講じられているか確認してください。",
-      "Zimbra Classic Web Clientを利用している場合、ベンダーの指示に従い、速やかにアップデートを適用し、社内システムおよび委託先を含めてZimbraの利用状況を確認してください。",
-      "AI技術を導入・活用している、または検討している場合、プロンプトインジェクション攻撃のリスクについて評価し、必要な対策を検討してください。"
+      "Zimbra Classic Web Clientを利用している場合、ベンダーの指示に従い、速やかにアップデートを適用してください。",
+      "Zimbraの利用状況について、社内システムおよび委託先を含めて確認してください。"
     ],
     "error_type": null
   },
@@ -191,250 +191,6 @@
           "Zimbraの利用状況について、社内システムおよび委託先を含めて確認してください。"
         ],
         "reason": "Zimbraのメールクライアントにおける重大な脆弱性であり、当該製品を利用している場合は対応が必要となるため「中」と判断しました。悪用確認の情報はないため、緊急度は「今週確認」とします。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:2be33f1297b6962ad42069dda9c62ccb8a258f231ef9c38fa1f1b87037c16ba0",
-      "source_id": "crowdstrike",
-      "source_name": "CrowdStrike",
-      "source_type": "脅威インテリジェンス",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/",
-      "canonical_url": "https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/",
-      "published_at": null,
-      "fetched_at": "2026-07-12T15:31:57.320942+09:00",
-      "title": "ガードレールのない AI ガバナンスが劇場である理由",
-      "raw_title": "Why AI Governance Without Guardrails Is Theater",
-      "raw_excerpt": null,
-      "content_hash": "sha256:1bd8f580fdc86786f1cce1bd0cc85a5b0f03edc5365d6fc02f40e7a6ec338a2b",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v3",
-        "generated_at": "2026-07-12T15:32:50.270540+09:00",
-        "category": "AI・新技術リスク",
-        "category_version": "v1",
-        "category_reason": "AIガバナンスとリスク管理が主題であり、AI・新技術リスクに該当するため。",
-        "tags": [
-          "AI",
-          "ガイドライン"
-        ],
-        "importance": "中",
-        "urgency": "参考",
-        "summary": "AIガバナンスは、具体的なガードレール（安全策）がなければ形骸化し、組織はAIの潜在的なリスクに適切に対処できないと指摘しています。",
-        "financial_impact": "金融機関はAI技術の導入を加速しており、AIガバナンスの確立は重要な経営課題です。本記事は、実効性のあるAIガバナンス構築に向けた示唆を提供します。",
-        "recommended_actions": [],
-        "reason": "AIガバナンスは金融機関にとって中長期的な重要課題ですが、具体的な製品や緊急対応を要する脆弱性・インシデントに関する情報ではないため、参考情報としての位置付けです。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:7e4aa4074fe78fa3cf7cd1beaac775b421c309ea8cda5bb84f373696163dd029",
-      "source_id": "crowdstrike",
-      "source_name": "CrowdStrike",
-      "source_type": "脅威インテリジェンス",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/",
-      "canonical_url": "https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/",
-      "published_at": null,
-      "fetched_at": "2026-07-12T15:31:57.320942+09:00",
-      "title": "Falcon Secure Access がゼロトラスト ブラウザ セキュリティの標準を設定",
-      "raw_title": "Falcon Secure Access Sets the Standard for Zero Trust Browser Security",
-      "raw_excerpt": null,
-      "content_hash": "sha256:ba680d95712b6fa0dd80ab0eaacb1cea395b2d81eec3bf0283b117c86b5dba9c",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v3",
-        "generated_at": "2026-07-12T15:33:06.831218+09:00",
-        "category": "その他",
-        "category_version": "v1",
-        "category_reason": "CrowdStrikeの製品紹介記事であり、特定の脆弱性、攻撃、インシデント、規制、サプライチェーン、AIリスクのいずれにも該当しないため。",
-        "tags": [],
-        "importance": "低",
-        "urgency": "参考",
-        "summary": "CrowdStrikeが、ゼロトラストブラウザセキュリティ製品「Falcon Secure Access」を発表しました。この製品は、ブラウザベースの脅威からの保護を目的としています。",
-        "financial_impact": "本記事はCrowdStrikeの製品紹介であり、金融機関への直接的な影響や具体的な脅威情報を示すものではありません。ゼロトラストやブラウザセキュリティは金融機関にとっても重要なテーマですが、本記事は一般的な参考情報にとどまります。",
-        "recommended_actions": [],
-        "reason": "CrowdStrikeの製品紹介記事であり、具体的な脅威や対応を要する情報ではなく、一般的な参考情報としての価値が中心であるため。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:768ec60708c6179611779d373df6dc6e4233beecc195f68dcea4174c12165578",
-      "source_id": "crowdstrike",
-      "source_name": "CrowdStrike",
-      "source_type": "脅威インテリジェンス",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/",
-      "canonical_url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/",
-      "published_at": null,
-      "fetched_at": "2026-07-12T15:31:57.320942+09:00",
-      "title": "CrowdStrike が新しいプロンプト インジェクション技術を発見",
-      "raw_title": "CrowdStrike Uncovers New Prompt Injection Techniques",
-      "raw_excerpt": null,
-      "content_hash": "sha256:990a14498dd4e36700d3e6099b64500201463402e656abfb6f92b6c84684da8e",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v3",
-        "generated_at": "2026-07-12T15:33:24.465455+09:00",
-        "category": "AI・新技術リスク",
-        "category_version": "v1",
-        "category_reason": "記事の主題がAIのプロンプトインジェクション技術に関する新しい発見であるため。",
-        "tags": [
-          "AI",
-          "LLM"
-        ],
-        "importance": "中",
-        "urgency": "参考",
-        "summary": "CrowdStrikeが、大規模言語モデル（LLM）に対する新たなプロンプトインジェクション技術を発見しました。これらの技術は、LLMのセキュリティリスクを増大させる可能性があります。",
-        "financial_impact": "金融機関がLLMを業務に導入・活用する際、これらの新たなプロンプトインジェクション技術による情報漏えいや誤動作のリスクを考慮する必要があります。",
-        "recommended_actions": [],
-        "reason": "AI・LLMのセキュリティリスクに関する新たな脅威動向であり、金融機関でのLLM利用における潜在的な影響を考慮する必要があるため、中程度の重要度と判断しました。ただし、具体的な緊急対応を要するものではなく、中長期的な対策検討の参考情報であるため、urgencyは「参考」とします。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:b6c56b0f1d2d52f167e8e98cfffef0fc0df9a6b36d298d5a37a999a8b114a507",
-      "source_id": "google_tag",
-      "source_name": "Google TAG",
-      "source_type": "脅威インテリジェンス",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "http://security.googleblog.com/feeds/820776653483778595/comments/default",
-      "canonical_url": "http://security.googleblog.com/feeds/820776653483778595/comments/default",
-      "published_at": null,
-      "fetched_at": "2026-07-12T15:31:57.320942+09:00",
-      "title": "現実の AI の脅威: Web 上でのプロンプト インジェクションの現状",
-      "raw_title": "AI threats in the wild: The current state of prompt injections on the web",
-      "raw_excerpt": null,
-      "content_hash": "sha256:2ca8a6fb8c4d911ea63b159398723532a5ff146d6e1bd441eb3be271281cbc08",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v3",
-        "generated_at": "2026-07-12T15:33:41.316437+09:00",
-        "category": "AI・新技術リスク",
-        "category_version": "v1",
-        "category_reason": "記事の主題がAIにおけるプロンプトインジェクションの脅威動向であるため。",
-        "tags": [
-          "AI"
-        ],
-        "importance": "中",
-        "urgency": "参考",
-        "summary": "Googleの脅威分析グループ(TAG)が、AIモデルに対するプロンプトインジェクション攻撃の現状について報告しました。この攻撃は、AIモデルの意図しない動作を引き起こすことを目的としています。",
-        "financial_impact": "金融機関がAI技術を導入・活用する際、プロンプトインジェクションは情報漏えいやシステム誤動作のリスクとなり得ます。特に顧客対応やデータ分析にAIを利用する場合、その影響は大きくなる可能性があります。",
-        "recommended_actions": [],
-        "reason": "AI技術の利用が広がる中で、プロンプトインジェクションは金融機関にとっても潜在的なリスクとなるため、脅威動向として把握しておく価値があります。ただし、具体的なインシデントや緊急の対応を要する情報ではないため、参考情報としての位置付けです。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:96f3e1892bed0eba637d470b56c030489e54ac349a43d3ba2379315c532a5678",
-      "source_id": "google_tag",
-      "source_name": "Google TAG",
-      "source_type": "脅威インテリジェンス",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "http://security.googleblog.com/feeds/1469360228826887140/comments/default",
-      "canonical_url": "http://security.googleblog.com/feeds/1469360228826887140/comments/default",
-      "published_at": null,
-      "fetched_at": "2026-07-12T15:31:57.320942+09:00",
-      "title": "Pixel ベースバンドに Rust を導入する",
-      "raw_title": "Bringing Rust to the Pixel Baseband",
-      "raw_excerpt": null,
-      "content_hash": "sha256:434656bbad3d91a40d476106d23752eec8a468717d1007916379318de42fd37c",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v3",
-        "generated_at": "2026-07-12T15:33:57.968623+09:00",
-        "category": "その他",
-        "category_version": "v1",
-        "category_reason": "記事はGoogle PixelのベースバンドにRustを導入するという技術的な内容であり、特定の脆弱性、攻撃、インシデント、規制、サプライチェーン、AIリスクのいずれにも直接該当しないため。",
-        "tags": [],
-        "importance": "低",
-        "urgency": "参考",
-        "summary": "GoogleがPixelスマートフォンのベースバンドプロセッサにRust言語を導入し、メモリ安全性の向上と脆弱性の削減を目指していることを発表しました。",
-        "financial_impact": "本記事はGoogle Pixelの技術的な改善に関するものであり、金融機関の業務やシステムに直接的な影響を与えるものではありません。一般的な技術動向として参考になります。",
-        "recommended_actions": [],
-        "reason": "Google Pixelの技術的な改善に関する記事であり、金融機関への直接的な影響や緊急の対応を要する情報ではないため、参考情報としての位置付けです。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:b363427aeeb4e9fc7fca928e836024aa441037d6d3d0088ed729ef47e7c1d2b6",
-      "source_id": "google_tag",
-      "source_name": "Google TAG",
-      "source_type": "脅威インテリジェンス",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "http://security.googleblog.com/feeds/3718049046001981559/comments/default",
-      "canonical_url": "http://security.googleblog.com/feeds/3718049046001981559/comments/default",
-      "published_at": null,
-      "fetched_at": "2026-07-12T15:31:57.320942+09:00",
-      "title": "デバイスにバインドされたセッション認証情報による Cookie の保護",
-      "raw_title": "Protecting Cookies with Device Bound Session Credentials",
-      "raw_excerpt": null,
-      "content_hash": "sha256:78cc9c2490980284bfe27efc2b4fbd153ff7db788c85466229f0539dfb05299e",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v3",
-        "generated_at": "2026-07-12T15:34:15.185876+09:00",
-        "category": "攻撃・脅威動向",
-        "category_version": "v1",
-        "category_reason": "記事はGoogle TAGによるクッキー保護技術に関するもので、攻撃手法への対策という脅威動向に関連する内容が主題です。",
-        "tags": [
-          "認証"
-        ],
-        "importance": "中",
-        "urgency": "参考",
-        "summary": "Googleの脅威分析グループ(TAG)は、セッションハイジャック攻撃からクッキーを保護するための新しい技術「Device Bound Session Credentials (DBSC)」について解説しています。この技術は、認証情報をデバイスに紐付けることで、盗まれたクッキーの悪用を防ぐことを目指しています。",
-        "financial_impact": "金融機関では顧客認証や内部システム認証にクッキーが広く利用されており、セッションハイジャックは不正アクセスや情報漏えいのリスクに直結します。DBSCのような新しい認証技術の動向は、将来的なセキュリティ対策の検討において参考になります。",
-        "recommended_actions": [],
-        "reason": "DBSCはセッションハイジャック対策として将来的な導入が期待される技術であり、現時点では具体的な対応を求めるものではないため、参考情報としての位置付けです。しかし、金融機関にとって認証セキュリティは重要であるため、中程度の重要度と判断しました。",
         "error_type": null,
         "http_status": null
       },

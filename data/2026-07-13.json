@@ -11,9 +11,9 @@
   "run": {
     "status": "success",
     "overwrite_policy": "replace",
-    "total_items": 6,
-    "ai_attempted_count": 6,
-    "ai_success_count": 6,
+    "total_items": 0,
+    "ai_attempted_count": 0,
+    "ai_success_count": 0,
     "ai_fallback_count": 0,
     "ai_failed_count": 0,
     "ai_not_attempted_count": 0
@@ -21,296 +21,36 @@
   "counts": {
     "importance": {
       "高": 0,
-      "中": 4,
-      "低": 2,
+      "中": 0,
+      "低": 0,
       "未判定": 0
     },
     "urgency": {
       "本日確認": 0,
-      "今週確認": 1,
-      "参考": 5,
+      "今週確認": 0,
+      "参考": 0,
       "未判定": 0
     },
     "category": {
       "脆弱性・パッチ": 0,
-      "攻撃・脅威動向": 1,
+      "攻撃・脅威動向": 0,
       "インシデント": 0,
       "規制・ガバナンス": 0,
       "クラウド・サプライチェーン": 0,
-      "AI・新技術リスク": 3,
-      "その他": 2,
+      "AI・新技術リスク": 0,
+      "その他": 0,
       "未判定": 0
     }
   },
   "brief": {
-    "status": "success",
+    "status": "not_attempted",
     "model": "gemini-2.5-flash",
     "prompt_version": "today-brief-v2",
-    "overview": "本日は、AI技術に関連するセキュリティリスクに関する情報が複数報告されました。特に、大規模言語モデル（LLM）に対する新たなプロンプトインジェクション技術の発見は、AI活用を進める金融機関にとって潜在的な脅威となり得ます。また、AIガバナンスの重要性や、セッションハイジャック対策としての新しい認証技術に関する動向も確認されました。全体として、AIの安全な利用と、既存の認証メカニズムの強化が本日の主要なテーマです。",
-    "important_highlights": [
-      "CrowdStrikeが、大規模言語モデル(LLM)に対する新たなプロンプトインジェクション技術を発見しました。金融機関がLLMを業務に利用している場合、これらの攻撃手法が情報漏えいや不正操作のリスクを高める可能性があるため、今週中に適用性を確認することが推奨されます。",
-      "Googleの脅威分析グループ(TAG)が、AIに対するプロンプトインジェクション攻撃の現状について分析を公開しました。金融機関がAI技術を導入・活用する際、情報漏えいや不正操作のリスクとなり得るため、対策の検討が必要です。",
-      "Google TAGが、セッションクッキーをデバイスに紐付けることで、フィッシングやセッションハイジャック攻撃から保護する「Device Bound Session Credentials (DBSC)」技術について解説しています。金融機関の顧客認証におけるセキュリティ強化策として参考になります。"
-    ],
-    "discussion_points": [
-      "金融機関におけるAI技術の導入・活用が進む中で、プロンプトインジェクションのような新たな攻撃手法に対するセキュリティ対策をどのように組み込んでいくべきか、議論が必要です。",
-      "AIガバナンスを形骸化させず、具体的なガードレールを実装していくためには、どのような体制やプロセスが必要か、組織全体での検討が求められます。",
-      "フィッシングやセッションハイジャック攻撃に対する防御策として、DBSCのような新しい認証技術の導入可能性や、既存の認証メカニズムの強化について、中長期的な視点での検討が重要です。"
-    ],
-    "check_items": [
-      "LLMを業務で利用している場合、新たなプロンプトインジェクション技術に関するベンダーのガイダンスや緩和策を確認してください。",
-      "LLMの利用におけるセキュリティリスク評価を再確認し、対策の強化を検討してください。"
-    ],
+    "overview": null,
+    "important_highlights": [],
+    "discussion_points": [],
+    "check_items": [],
     "error_type": null
   },
-  "items": [
-    {
-      "id": "sha256:2be33f1297b6962ad42069dda9c62ccb8a258f231ef9c38fa1f1b87037c16ba0",
-      "source_id": "crowdstrike",
-      "source_name": "CrowdStrike",
-      "source_type": "脅威インテリジェンス",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/",
-      "canonical_url": "https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/",
-      "published_at": null,
-      "fetched_at": "2026-07-13T14:51:29.786923+09:00",
-      "title": "ガードレールのない AI ガバナンスが劇場である理由",
-      "raw_title": "Why AI Governance Without Guardrails Is Theater",
-      "raw_excerpt": null,
-      "content_hash": "sha256:1bd8f580fdc86786f1cce1bd0cc85a5b0f03edc5365d6fc02f40e7a6ec338a2b",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-13T14:51:31.592877+09:00",
-        "category": "AI・新技術リスク",
-        "category_version": "v1",
-        "category_reason": "AIガバナンスとガードレールに関する記事であり、AI・新技術リスクが主題であるため。",
-        "tags": [
-          "AI",
-          "ガイドライン"
-        ],
-        "importance": "中",
-        "urgency": "参考",
-        "summary": "AIガバナンスが形骸化しないためには、具体的なガードレール（安全策）の実装が不可欠であると指摘する記事です。",
-        "financial_impact": "金融機関はAI技術の導入を進めており、AIガバナンスの確立は重要な課題です。本記事は、効果的なAIガバナンス構築に向けた一般的な示唆を提供します。",
-        "recommended_actions": [],
-        "reason": "AIガバナンスの重要性に関する一般的な論考であり、具体的な脅威や緊急対応を要する情報ではないため、中長期的なAI戦略やガバナンス検討の参考情報として位置付けます。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:7e4aa4074fe78fa3cf7cd1beaac775b421c309ea8cda5bb84f373696163dd029",
-      "source_id": "crowdstrike",
-      "source_name": "CrowdStrike",
-      "source_type": "脅威インテリジェンス",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/",
-      "canonical_url": "https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/",
-      "published_at": null,
-      "fetched_at": "2026-07-13T14:51:29.786923+09:00",
-      "title": "Falcon Secure Access がゼロトラスト ブラウザ セキュリティの標準を設定",
-      "raw_title": "Falcon Secure Access Sets the Standard for Zero Trust Browser Security",
-      "raw_excerpt": null,
-      "content_hash": "sha256:ba680d95712b6fa0dd80ab0eaacb1cea395b2d81eec3bf0283b117c86b5dba9c",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-13T14:51:48.169788+09:00",
-        "category": "その他",
-        "category_version": "v1",
-        "category_reason": "CrowdStrikeの製品紹介記事であり、特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも該当しないため。",
-        "tags": [],
-        "importance": "低",
-        "urgency": "参考",
-        "summary": "CrowdStrikeが、ゼロトラストブラウザセキュリティの標準を確立する「Falcon Secure Access」を発表しました。",
-        "financial_impact": "本記事はCrowdStrikeの製品紹介であり、金融機関への直接的な影響は限定的です。一般的なセキュリティ対策の動向として参考になります。",
-        "recommended_actions": [],
-        "reason": "CrowdStrikeの製品紹介記事であり、具体的な脅威や対応期限、金融機関への直接的な影響に関する情報が乏しいため、参考情報としての位置付けです。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:768ec60708c6179611779d373df6dc6e4233beecc195f68dcea4174c12165578",
-      "source_id": "crowdstrike",
-      "source_name": "CrowdStrike",
-      "source_type": "脅威インテリジェンス",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/",
-      "canonical_url": "https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/",
-      "published_at": null,
-      "fetched_at": "2026-07-13T14:51:29.786923+09:00",
-      "title": "CrowdStrike が新しいプロンプト インジェクション技術を発見",
-      "raw_title": "CrowdStrike Uncovers New Prompt Injection Techniques",
-      "raw_excerpt": null,
-      "content_hash": "sha256:990a14498dd4e36700d3e6099b64500201463402e656abfb6f92b6c84684da8e",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-13T14:52:05.162805+09:00",
-        "category": "AI・新技術リスク",
-        "category_version": "v1",
-        "category_reason": "記事は新しいプロンプトインジェクション技術の発見を主題としており、AIのセキュリティリスクに関する情報であるため。",
-        "tags": [
-          "AI",
-          "LLM"
-        ],
-        "importance": "中",
-        "urgency": "今週確認",
-        "summary": "CrowdStrikeが、大規模言語モデル(LLM)に対する新たなプロンプトインジェクション技術を発見しました。",
-        "financial_impact": "金融機関がLLMを業務に利用している場合、これらの新たな攻撃手法が情報漏えいや不正操作のリスクを高める可能性があります。現時点の記事情報だけでは、金融機関への具体的な影響は確認できません。",
-        "recommended_actions": [
-          "LLMを業務で利用している場合、新たなプロンプトインジェクション技術に関するベンダーのガイダンスや緩和策を確認してください",
-          "LLMの利用におけるセキュリティリスク評価を再確認し、対策の強化を検討してください"
-        ],
-        "reason": "AI技術のセキュリティリスクに関する新たな動向であり、金融機関でのLLM利用が進む中で潜在的な脅威となるため、今週中に適用性を確認する価値があります。ただし、具体的な被害事例や緊急対応を要する情報ではないため、本日確認の必要はありません。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:b6c56b0f1d2d52f167e8e98cfffef0fc0df9a6b36d298d5a37a999a8b114a507",
-      "source_id": "google_tag",
-      "source_name": "Google TAG",
-      "source_type": "脅威インテリジェンス",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "http://security.googleblog.com/feeds/820776653483778595/comments/default",
-      "canonical_url": "http://security.googleblog.com/feeds/820776653483778595/comments/default",
-      "published_at": null,
-      "fetched_at": "2026-07-13T14:51:29.786923+09:00",
-      "title": "現実の AI の脅威: Web 上でのプロンプト インジェクションの現状",
-      "raw_title": "AI threats in the wild: The current state of prompt injections on the web",
-      "raw_excerpt": null,
-      "content_hash": "sha256:2ca8a6fb8c4d911ea63b159398723532a5ff146d6e1bd441eb3be271281cbc08",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-13T14:52:21.719818+09:00",
-        "category": "AI・新技術リスク",
-        "category_version": "v1",
-        "category_reason": "記事の主題がAIに対するプロンプトインジェクション攻撃の現状分析であるため。",
-        "tags": [
-          "AI"
-        ],
-        "importance": "中",
-        "urgency": "参考",
-        "summary": "Googleの脅威分析グループ(TAG)が、AIに対するプロンプトインジェクション攻撃の現状について分析を公開しました。",
-        "financial_impact": "金融機関がAI技術を導入・活用する際、プロンプトインジェクション攻撃は情報漏えいや不正操作のリスクとなり得るため、対策の検討が必要です。",
-        "recommended_actions": [],
-        "reason": "AI技術の脅威動向に関する情報であり、金融機関におけるAI導入時のリスク評価やセキュリティ対策の検討に参考となるため。現時点で具体的な緊急対応を要する情報ではありません。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:96f3e1892bed0eba637d470b56c030489e54ac349a43d3ba2379315c532a5678",
-      "source_id": "google_tag",
-      "source_name": "Google TAG",
-      "source_type": "脅威インテリジェンス",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "http://security.googleblog.com/feeds/1469360228826887140/comments/default",
-      "canonical_url": "http://security.googleblog.com/feeds/1469360228826887140/comments/default",
-      "published_at": null,
-      "fetched_at": "2026-07-13T14:51:29.786923+09:00",
-      "title": "Pixel ベースバンドに Rust を導入する",
-      "raw_title": "Bringing Rust to the Pixel Baseband",
-      "raw_excerpt": null,
-      "content_hash": "sha256:434656bbad3d91a40d476106d23752eec8a468717d1007916379318de42fd37c",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-13T14:52:38.336954+09:00",
-        "category": "その他",
-        "category_version": "v1",
-        "category_reason": "記事はGoogle PixelのベースバンドにRustを導入する技術的な内容であり、特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも直接該当しないためです。",
-        "tags": [],
-        "importance": "低",
-        "urgency": "参考",
-        "summary": "GoogleがPixelデバイスのベースバンドにRust言語を導入したことについて解説しています。",
-        "financial_impact": "本記事はGoogle Pixelの技術的な改善に関するものであり、金融機関の業務やシステムに直接的な影響を与えるものではありません。",
-        "recommended_actions": [],
-        "reason": "Google Pixelの技術的な改善に関する記事であり、金融機関への直接的な影響や緊急に対応すべき事項は確認できないため、参考情報としての位置付けです。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:b363427aeeb4e9fc7fca928e836024aa441037d6d3d0088ed729ef47e7c1d2b6",
-      "source_id": "google_tag",
-      "source_name": "Google TAG",
-      "source_type": "脅威インテリジェンス",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "http://security.googleblog.com/feeds/3718049046001981559/comments/default",
-      "canonical_url": "http://security.googleblog.com/feeds/3718049046001981559/comments/default",
-      "published_at": null,
-      "fetched_at": "2026-07-13T14:51:29.786923+09:00",
-      "title": "デバイスにバインドされたセッション認証情報による Cookie の保護",
-      "raw_title": "Protecting Cookies with Device Bound Session Credentials",
-      "raw_excerpt": null,
-      "content_hash": "sha256:78cc9c2490980284bfe27efc2b4fbd153ff7db788c85466229f0539dfb05299e",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-13T14:52:55.350340+09:00",
-        "category": "攻撃・脅威動向",
-        "category_version": "v1",
-        "category_reason": "記事はGoogle TAGによるクッキー保護技術に関するもので、攻撃手法や脅威動向に関連する技術的な内容が主題であるため。",
-        "tags": [
-          "認証",
-          "フィッシング"
-        ],
-        "importance": "中",
-        "urgency": "参考",
-        "summary": "Google TAGが、セッションクッキーをデバイスに紐付けることで、フィッシングやセッションハイジャック攻撃から保護する「Device Bound Session Credentials (DBSC)」技術について解説しています。",
-        "financial_impact": "金融機関は顧客認証にクッキーを利用しており、フィッシングやセッションハイジャック攻撃は金融サービスにおいて重大な脅威となります。DBSCのような技術は、これらの攻撃に対する防御策として参考になります。",
-        "recommended_actions": [],
-        "reason": "記事はGoogle TAGによる新しい認証技術の紹介であり、具体的な脆弱性や緊急対応を要するインシデントに関する情報ではないため、中長期的な脅威動向の参考情報として位置付けます。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    }
-  ]
+  "items": []
 }
