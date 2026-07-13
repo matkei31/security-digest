@@ -1,0 +1,340 @@
+{
+  "schema_version": 1,
+  "digest_date": "2026-07-14",
+  "generated_at": "2026-07-14T01:07:28.997623+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v4",
+    "brief_prompt_version": "today-brief-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 6,
+    "ai_attempted_count": 6,
+    "ai_success_count": 6,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0
+  },
+  "counts": {
+    "importance": {
+      "高": 1,
+      "中": 5,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 1,
+      "今週確認": 4,
+      "参考": 1,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 0,
+      "攻撃・脅威動向": 3,
+      "インシデント": 1,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 2,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "gemini-2.5-flash",
+    "prompt_version": "today-brief-v2",
+    "overview": "本日は、Microsoft 365を標的とした高度なフィッシングサービス「Forg365」の出現が特に注目されます。これはデバイスコードフィッシングやAitM攻撃を組み合わせ、金融機関を含む多くの組織に認証情報窃取のリスクをもたらします。また、AIエージェントに偽の記憶を植え付ける「MemGhost」攻撃や、CISAのGitHub情報漏洩事例から学ぶべきクラウド認証情報管理の教訓も報告されており、新たな技術リスクと既存の運用課題の両面で警戒が必要です。全体として、攻撃手法の高度化とAI関連のリスクが顕著な一日でした。",
+    "important_highlights": [
+      "「Forg365」と呼ばれる新しいPhishing-as-a-Service (PhaaS)が、Microsoft 365アカウントを標的に、デバイスコードフィッシングやAitM戦術を組み合わせて攻撃しています。多くの金融機関でMicrosoft 365が利用されているため、認証情報の窃取やセッションハイジャックによる情報漏えい、不正アクセス、業務停止のリスクがあります。",
+      "「MemGhost」と呼ばれる新たな攻撃手法が発見され、AIアシスタントに偽の記憶を植え付け、ユーザーに関する誤った情報を保存させることが可能です。金融機関が顧客対応や業務効率化のためにAIエージェントを導入している場合、顧客情報が誤って記憶されたり、誤った情報に基づいて応答が行われたりするリスクがあります。",
+      "CISAの請負業者がAWS Govcloudの鍵を含む内部認証情報を約6ヶ月間GitHubの公開リポジトリに誤って公開していたデータ漏洩インシデントについて、CISAが事後分析を公開しました。金融機関への直接的な影響は限定的ですが、クラウド環境における認証情報管理や委託先管理の重要性について、他業界の事例として参考になります。"
+    ],
+    "discussion_points": [
+      "Microsoft 365を標的とした高度なフィッシング攻撃が継続的に進化しており、多要素認証の強化だけでなく、デバイスコードフィッシングやAitM攻撃への具体的な対策、従業員への継続的な注意喚起と教育のあり方について議論が必要です。",
+      "AIエージェントの利用が拡大する中で、AIの記憶機能や学習プロセスに対する新たな攻撃手法が確認されており、AIシステムのセキュリティ対策、特に外部からの情報入力に対する検証メカニズムや、情報改ざん時の検知・復旧プロセスをどのように構築すべきか検討が必要です。",
+      "クラウド環境における認証情報の管理不備や委託先による情報漏洩事例が他業界で発生しており、自社のクラウド環境における認証情報管理の厳格化、公開リポジトリへの誤公開防止策、および委託先管理におけるセキュリティ要件と監査体制の強化について、改めて議論し見直す必要があります。"
+    ],
+    "check_items": [
+      "Microsoft 365の利用状況を確認し、デバイスコードフィッシングやAitM攻撃に対する防御策（条件付きアクセス、MFAの強化など）の適用状況を確認してください。",
+      "AIエージェントを利用している場合、MemGhost攻撃手法の原理と自社システムへの適用可能性について調査し、記憶機能や学習プロセスにおけるセキュリティ対策、特に外部からの情報入力に対する検証メカニズムを確認してください。",
+      "クラウド環境における認証情報の管理状況と、公開リポジトリへの誤公開防止策について、自社の運用状況を確認してください。",
+      "自社および委託先が利用するルーターの設定状況を確認し、セキュリティベストプラクティスに沿っているか評価してください。"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:ad3e33cb35b505dabdee6cb5d7e007dd00188c0ed9cf4719106562197b596614",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/weekly-recap-sharefile-threat-citrix.html",
+      "canonical_url": "https://thehackernews.com/2026/07/weekly-recap-sharefile-threat-citrix.html",
+      "published_at": "2026-07-14T00:05:57+09:00",
+      "fetched_at": "2026-07-14T01:05:16.465092+09:00",
+      "title": "⚡ 毎週の要約: ShareFile 脅威、Citrix Bleed 2 ランサムウェア、AI コーディング攻撃など",
+      "raw_title": "⚡ Weekly Recap: ShareFile Threat, Citrix Bleed 2 Ransomware, AI Coding Attacks, and More",
+      "raw_excerpt": "Somewhere right now, a security tool is quietly finding bugs faster than any human can fix them. That's supposed to be the good news. The catch is that the attackers have the same tools, pointed the o",
+      "content_hash": "sha256:966201a7d65bb3a8c73ea69f137068aa6a8e447567b8c5abb59ab7f294c4c595",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v4",
+        "generated_at": "2026-07-14T01:05:18.631857+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "記事は特定の脆弱性やインシデントではなく、ShareFile脅威、Citrix Bleed 2ランサムウェア、AIコーディング攻撃など、週間のサイバー脅威動向を幅広くまとめているため。",
+        "tags": [
+          "ランサムウェア",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "今週のサイバーセキュリティ動向として、ShareFileの脅威、Citrix Bleed 2ランサムウェア、AIコーディング攻撃などが取り上げられており、セキュリティツールが悪用される現状が示唆されています。",
+        "financial_impact": "記事は特定の金融機関への影響を直接示していませんが、ランサムウェア攻撃やAIを利用した攻撃は、金融機関のシステム停止や情報漏えい、不正取引などのリスクに繋がり得るため、脅威動向として把握しておく必要があります。",
+        "recommended_actions": [],
+        "reason": "週間の脅威動向のまとめ記事であり、特定の緊急対応を要する情報や、金融機関に直接的な影響が確認できる具体的な脆弱性情報ではないため、一般的な脅威動向の把握として今週中に確認する対象とします。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5c213df7e73fbd336f8b9ad10d944510a3e8c4e4b09a7e34fe1094d744525db1",
+      "source_id": "krebs_on_security",
+      "source_name": "Krebs on Security",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://krebsonsecurity.com/2026/07/lessons-learned-from-cisas-recent-github-leak/",
+      "canonical_url": "https://krebsonsecurity.com/2026/07/lessons-learned-from-cisas-recent-github-leak/",
+      "published_at": "2026-07-14T00:03:28+09:00",
+      "fetched_at": "2026-07-14T01:05:16.465092+09:00",
+      "title": "CISA による最近の GitHub 漏洩から学んだ教訓",
+      "raw_title": "Lessons Learned from CISA’s Recent GitHub Leak",
+      "raw_excerpt": "The Cybersecurity and Infrastructure Security Agency (CISA) has issued a postmortem on a data leak in which a contractor published dozens of internal CISA credentials -- including AWS Govcloud keys --",
+      "content_hash": "sha256:0d9bd2e6c81778909e2abfd8c79f1ed6cc13a58938ebf983498d7d126190717f",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v4",
+        "generated_at": "2026-07-14T01:05:35.879437+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "CISAのデータ漏洩という実際の侵害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "クラウド",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "CISAの請負業者がAWS Govcloudの鍵を含む内部認証情報を約6ヶ月間GitHubの公開リポジトリに誤って公開していたデータ漏洩インシデントについて、CISAが事後分析を公開しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的ですが、クラウド環境における認証情報管理や委託先管理の重要性について、他業界の事例として参考になります。",
+        "recommended_actions": [
+          "クラウド環境における認証情報の管理状況と、公開リポジトリへの誤公開防止策について、自社の運用状況を確認してください",
+          "委託先がクラウド環境で機密情報を扱う際のセキュリティ要件と監査体制について、現在の契約内容と運用状況を確認してください"
+        ],
+        "reason": "CISAのデータ漏洩という重大なインシデントですが、金融機関への直接的な影響は確認できません。しかし、クラウド環境における認証情報管理や委託先管理の教訓として、今週中に自社の状況を確認する価値があるためです。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b686c465336853b952e12bb17f0d15c530df44399447e332d451470e7924291e",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/new-memghost-attack-plants-persistent.html",
+      "canonical_url": "https://thehackernews.com/2026/07/new-memghost-attack-plants-persistent.html",
+      "published_at": "2026-07-13T22:49:48+09:00",
+      "fetched_at": "2026-07-14T01:05:16.465092+09:00",
+      "title": "新しい MemGhost 攻撃、1 通のメールで AI エージェントに永続的な偽の記憶を植え付ける",
+      "raw_title": "New MemGhost Attack Plants Persistent False Memories in AI Agents Through One Email",
+      "raw_excerpt": "Give an AI assistant a memory and access to your inbox, and you hand an attacker a way to rewrite what it thinks it knows about you. A single email can trick that agent into saving a false \"fact\" abou",
+      "content_hash": "sha256:98c9d023cb8c5cfb844655f2912ec915fb4c31f4c0c78d5c4dd443635f33f7c4",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v4",
+        "generated_at": "2026-07-14T01:05:53.760263+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントに対する新たな攻撃手法「MemGhost」が主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "「MemGhost」と呼ばれる新たな攻撃手法が発見されました。これは、AIアシスタントに偽の記憶を植え付け、ユーザーに関する誤った情報を保存させ、その後の応答を密かに操作するものです。攻撃は1通のメールを通じて行われ、ユーザーはアシスタントが改ざんされたことに気づかない可能性があります。",
+        "financial_impact": "金融機関が顧客対応や業務効率化のためにAIエージェントを導入している場合、この攻撃手法によって顧客情報が誤って記憶されたり、誤った情報に基づいて応答が行われたりするリスクがあります。これにより、顧客との信頼関係の毀損や業務上の誤判断につながる可能性があります。",
+        "recommended_actions": [
+          "AIエージェントを利用している場合、本攻撃手法の原理と自社システムへの適用可能性について調査してください。",
+          "AIエージェントの記憶機能や学習プロセスにおけるセキュリティ対策、特に外部からの情報入力に対する検証メカニズムを確認してください。",
+          "AIエージェントが顧客情報を取り扱う場合、その情報が改ざんされないための対策や、改ざんされた場合の検知・復旧プロセスを検討してください。"
+        ],
+        "reason": "AIエージェントに対する新たな攻撃手法であり、金融機関でのAI利用が進む中で潜在的なリスクとなるため、その原理と適用可能性を今週中に確認する価値があります。ただし、現時点では具体的な金融機関への被害事例や緊急対応を要する情報が示されていないため、優先度は「中」と判断しました。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:cc098c939906a0d23539c36e2e9c95f557103dfbaa9ffe2fbe424cf42701f9fb",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/forg365-phaas-targets-microsoft-365.html",
+      "canonical_url": "https://thehackernews.com/2026/07/forg365-phaas-targets-microsoft-365.html",
+      "published_at": "2026-07-13T22:03:33+09:00",
+      "fetched_at": "2026-07-14T01:05:16.465092+09:00",
+      "title": "Forg365 PhaaS はデバイス コードと AitM セッション盗難で Microsoft 365 をターゲットにします",
+      "raw_title": "Forg365 PhaaS Targets Microsoft 365 with Device Code and AitM Session Theft",
+      "raw_excerpt": "A new phishing-as-a-service (PhaaS) operation called Forg365 is using a combination of device code phishing, adversary-in-the-middle (AitM) tactics, antibot evasion, artificial intelligence (AI)-assis",
+      "content_hash": "sha256:85fa95be62f4d60e2d45a0f369a3d0969e0be7705f2ba2d762053bbf2f8e6b52",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v4",
+        "generated_at": "2026-07-14T01:06:11.389537+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "新しいPhishing-as-a-Service (PhaaS)の攻撃手法と脅威動向が主題であるため。",
+        "tags": [
+          "フィッシング",
+          "認証",
+          "クラウド",
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "「Forg365」と呼ばれる新しいPhishing-as-a-Service (PhaaS)が、Microsoft 365アカウントを標的に、デバイスコードフィッシング、AitM戦術、アンチボット回避、AI支援のルアー作成、侵害後のメールボックス操作を組み合わせて攻撃しています。",
+        "financial_impact": "多くの金融機関でMicrosoft 365が利用されており、このPhaaSは高度なフィッシング手法を用いるため、認証情報の窃取やセッションハイジャックによる情報漏えい、不正アクセス、業務停止のリスクがあります。",
+        "recommended_actions": [
+          "Microsoft 365の利用状況を確認し、デバイスコードフィッシングやAitM攻撃に対する防御策（条件付きアクセス、MFAの強化など）の適用状況を確認してください。",
+          "従業員に対し、デバイスコードフィッシングや不審な認証要求に対する注意喚起と教育を強化してください。",
+          "Microsoft 365のログ監視を強化し、不審な認証試行やセッションハイジャックの兆候がないか確認してください。"
+        ],
+        "reason": "Microsoft 365を標的とした新しいPhaaSであり、デバイスコードフィッシングやAitMといった高度な手法を用いるため、多くの金融機関に影響を与える可能性が高いです。認証情報の窃取やセッションハイジャックは重大なインシデントにつながるため、本日中の確認が必要です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6218b294007e8c3c97a7b8e943e0f13c9cb7707fd535517270f116319fca0d8a",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/cyberattacks-data-breaches/turning-tables-email-scammers-scambuster",
+      "canonical_url": "https://www.darkreading.com/cyberattacks-data-breaches/turning-tables-email-scammers-scambuster",
+      "published_at": "2026-07-13T22:00:00+09:00",
+      "fetched_at": "2026-07-14T01:05:16.465092+09:00",
+      "title": "「ScamBuster」で電子メール詐欺師を形勢逆転",
+      "raw_title": "Turning the Tables on Email Scammers With 'ScamBuster'",
+      "raw_excerpt": "An open source, AI-driven system adopts victim personas to engage with phishing attackers, allowing organizations and law enforcement to gather relevant data on cybercriminal operations.",
+      "content_hash": "sha256:8717166a749dabdb962e02ca27a718ac6925f1199a71e352a456a544d11f96bf",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v4",
+        "generated_at": "2026-07-14T01:06:28.072582+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIを活用した新しい詐欺対策システムに関する記事であり、AI・新技術リスクが主題であるため。",
+        "tags": [
+          "AI",
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "オープンソースのAI駆動システム「ScamBuster」が開発され、被害者になりすましてフィッシング攻撃者と交信し、サイバー犯罪活動に関するデータを収集できると報じられています。",
+        "financial_impact": "金融機関はフィッシング攻撃の主要な標的となることが多く、AIを活用した新しい詐欺対策技術は、将来的な脅威インテリジェンス収集や防御策の検討において参考となる可能性があります。",
+        "recommended_actions": [],
+        "reason": "AIを活用した新しい脅威対策技術の紹介であり、現時点では具体的な導入や対応を求めるものではなく、中長期的な技術動向として参考にする価値があるため。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:75714a411122eeeba0ad3f5c93736ec6adbc325a2685c5a7edacda927c806d77",
+      "source_id": "ncsc",
+      "source_name": "NCSC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.ncsc.gov.uk/news/uk-and-allies-urge-critical-sectors-to-improve-defences-against-russian-intelligence-targeting",
+      "canonical_url": "https://www.ncsc.gov.uk/news/uk-and-allies-urge-critical-sectors-to-improve-defences-against-russian-intelligence-targeting",
+      "published_at": "2026-07-13T21:00:00+09:00",
+      "fetched_at": "2026-07-14T01:05:16.465092+09:00",
+      "title": "英国と同盟国は重要部門に対し、ロシア諜報機関の標的に対する防御を強化するよう要請",
+      "raw_title": "UK and Allies urge critical sectors to improve defences against Russian intelligence targeting",
+      "raw_excerpt": "New advisory highlights Russian state cyber actors’ global exploitation of poorly configured routers",
+      "content_hash": "sha256:446df172160263feb5252d1368e6ffe9375a133c3a7fb99d3b953681d718e63d",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v4",
+        "generated_at": "2026-07-14T01:06:45.329531+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ロシアの国家支援型サイバー攻撃者が、設定が不十分なルーターを悪用しているという脅威動向が主題であるため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "英国および同盟国は、ロシアの国家支援型サイバー攻撃者が設定が不十分なルーターを世界的に悪用していることに対し、重要インフラセクターの防御強化を促す新たな勧告を発表しました。",
+        "financial_impact": "金融機関は重要インフラセクターの一部であり、ロシアの国家支援型攻撃の標的となる可能性があります。設定が不十分なルーターは、金融機関のネットワークへの侵入経路となるリスクがあるため、関連する防御策の確認が必要です。",
+        "recommended_actions": [
+          "自社および委託先が利用するルーターの設定状況を確認し、セキュリティベストプラクティスに沿っているか評価してください。",
+          "NCSCが提供する勧告の詳細を確認し、推奨される防御策を検討してください。"
+        ],
+        "reason": "ロシアの国家支援型攻撃者による重要インフラへの脅威は継続的であり、金融機関も標的となる可能性があるため重要度は中と判断しました。ただし、具体的な脆弱性や期限が示されていないため、今週中に勧告内容を確認し、自社の防御状況を評価する対象とします。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}

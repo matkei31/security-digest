@@ -809,5 +809,17 @@
   "Compromised jscrambler 8.14.0 npm Release Drops Rust Infostealer During Install": "侵害された jscrambler 8.14.0 npm リリースにより、インストール中に Rust Infostealer がドロップされる",
   "The jscrambler npm package was compromised, and simply installing its&nbsp;8.14.0&nbsp;release runs an infostealer on your machine. Published on July 11, 2026, the malicious version carries a&nbsp;pre": "jscrambler npm パッケージが侵害されており、その 8.14.0 リリースをインストールするだけでマシン上でインフォスティーラーが実行されます。 2026 年 7 月 11 日に公開された悪意のあるバージョンには、",
   "Hackers Weaponize Balochistan Police Portal in Multi-Group Espionage Campaigns": "ハッカーが複数グループのスパイ活動でバロチスタン警察ポータルを武器化",
-  "Cybersecurity researchers have disclosed details of sustained cyber espionage activity against several Pakistani law enforcement organizations undertaken by suspected China- and India-aligned threat a": "サイバーセキュリティ研究者らは、中国とインドと連携した疑いのあるパキスタンの法執行機関に対する持続的なサイバースパイ活動の詳細を明らかにした。"
+  "Cybersecurity researchers have disclosed details of sustained cyber espionage activity against several Pakistani law enforcement organizations undertaken by suspected China- and India-aligned threat a": "サイバーセキュリティ研究者らは、中国とインドと連携した疑いのあるパキスタンの法執行機関に対する持続的なサイバースパイ活動の詳細を明らかにした。",
+  "⚡ Weekly Recap: ShareFile Threat, Citrix Bleed 2 Ransomware, AI Coding Attacks, and More": "⚡ 毎週の要約: ShareFile 脅威、Citrix Bleed 2 ランサムウェア、AI コーディング攻撃など",
+  "Somewhere right now, a security tool is quietly finding bugs faster than any human can fix them. That's supposed to be the good news. The catch is that the attackers have the same tools, pointed the o": "今どこかで、セキュリティ ツールが人間が修正するよりも早くバグを静かに発見しています。それは良い知らせのはずだ。問題は、攻撃者が同じツールを使用していることです。",
+  "Lessons Learned from CISA’s Recent GitHub Leak": "CISA による最近の GitHub 漏洩から学んだ教訓",
+  "The Cybersecurity and Infrastructure Security Agency (CISA) has issued a postmortem on a data leak in which a contractor published dozens of internal CISA credentials -- including AWS Govcloud keys --": "サイバーセキュリティ・インフラセキュリティ庁 (CISA) は、請負業者が AWS Govcloud キーを含む数十の CISA 内部認証情報を公開したデータ漏洩に関する事後調査を発表しました。",
+  "New MemGhost Attack Plants Persistent False Memories in AI Agents Through One Email": "新しい MemGhost 攻撃、1 通のメールで AI エージェントに永続的な偽の記憶を植え付ける",
+  "Give an AI assistant a memory and access to your inbox, and you hand an attacker a way to rewrite what it thinks it knows about you. A single email can trick that agent into saving a false \"fact\" abou": "AI アシスタントにメモリと受信トレイへのアクセスを与えれば、あなたについて知っていると思われる内容を書き換える方法を攻撃者に渡すことになります。たった 1 通のメールでエージェントが騙され、誤った「事実」が保存される可能性があります。",
+  "Forg365 PhaaS Targets Microsoft 365 with Device Code and AitM Session Theft": "Forg365 PhaaS はデバイス コードと AitM セッション盗難で Microsoft 365 をターゲットにします",
+  "A new phishing-as-a-service (PhaaS) operation called Forg365 is using a combination of device code phishing, adversary-in-the-middle (AitM) tactics, antibot evasion, artificial intelligence (AI)-assis": "Forg365 と呼ばれる新しいサービスとしてのフィッシング (PhaaS) オペレーションでは、デバイス コード フィッシング、中間者攻撃 (AitM) 戦術、アンチボット回避、人工知能 (AI) 支援の組み合わせが使用されています。",
+  "Turning the Tables on Email Scammers With 'ScamBuster'": "「ScamBuster」で電子メール詐欺師を形勢逆転",
+  "An open source, AI-driven system adopts victim personas to engage with phishing attackers, allowing organizations and law enforcement to gather relevant data on cybercriminal operations.": "オープンソースの AI 駆動システムは、フィッシング攻撃者に対処するために被害者のペルソナを採用し、組織や法執行機関がサイバー犯罪行為に関する関連データを収集できるようにします。",
+  "UK and Allies urge critical sectors to improve defences against Russian intelligence targeting": "英国と同盟国は重要部門に対し、ロシア諜報機関の標的に対する防御を強化するよう要請",
+  "New advisory highlights Russian state cyber actors’ global exploitation of poorly configured routers": "新しい勧告は、ロシア国家サイバー攻撃者による不適切な設定のルーターの世界的な悪用を浮き彫りにしています"
 }
