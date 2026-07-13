@@ -7,7 +7,9 @@ import sys, json, datetime, time, re, os, tempfile, unicodedata, math
 import urllib.request, urllib.parse
 import urllib.error
 import xml.etree.ElementTree as ET
+from dataclasses import dataclass
 from pathlib import Path
+from typing import Optional
 
 import daily_json
 import vulnerability_facts
@@ -16,6 +18,12 @@ import vulnerability_facts
 
 MAX_PER_FEED = 3
 DAYS_BACK    = 1
+
+# RSS取得の最小retry (Ticket 13c): 一時的なサーバ側エラーに限り最大1回だけ再試行する。
+# 恒久的な4xx(403/404等)やparse失敗は再試行しない。
+RSS_RETRYABLE_HTTP_STATUSES = {429, 500, 502, 503, 504}
+RSS_MAX_RETRIES = 1
+RSS_RETRY_BACKOFF_SECONDS = 2
 
 GEMINI_MODEL = "gemini-2.5-flash"
 
@@ -284,21 +292,24 @@ def parse_date(s):
 
 # ── RSS パーサー ──────────────────────────────────────────────────────────────
 
-def fetch_feed(name, url, lang):
-    req = urllib.request.Request(url, headers={"User-Agent": "SecurityDigest/1.0"})
-    try:
-        with urllib.request.urlopen(req, timeout=12) as res:
-            data = res.read()
-    except Exception as e:
-        print(f"[WARN] {name}: {e}", file=sys.stderr)
-        return []
+@dataclass
+class FeedFetchResult:
+    """RSSフィード1件の取得結果を、正常0件・HTTP失敗・parse失敗まで区別できる形で表す
+    (Ticket 13c)。error_messageにはレスポンス本文・Cookie・request ID等は入れない
+    (HTTP status/reason・parse種別のみ)。"""
+    items: list
+    fetch_success: bool
+    parse_success: bool
+    http_status: Optional[int] = None
+    error_type: Optional[str] = None
+    error_message: Optional[str] = None
+    effective_url: Optional[str] = None
+    retry_count: int = 0
 
-    try:
-        root = ET.fromstring(data)
-    except ET.ParseError as e:
-        print(f"[WARN] {name}: XML解析エラー: {e}", file=sys.stderr)
-        return []
 
+def _parse_feed_items(root, name, lang):
+    """XMLルート要素から記事itemのlistを組み立てる(取得・retryロジックとは分離)。
+    parseロジック自体は従来のfetch_feed()から変更していない。"""
     items = []
     tag = root.tag.lower()
 
@@ -345,9 +356,107 @@ def fetch_feed(name, url, lang):
             })
     return items
 
+
+def _safe_fetch_error_text(value, fallback):
+    """フィード取得エラーの理由を、ログ・FeedFetchResult.error_message用に安全化する
+    (Ticket 13c)。OSError(subclass含む)にfilename/filename2が設定されている場合は
+    str()が内部ファイルパスを含み得るため、strerror(人間可読な理由)のみを使う。
+    改行はログ注入防止のため空白へ正規化し、最大200文字へ制限する。
+    レスポンス本文・Cookie・header・request ID・ローカルパスは含めない。"""
+    if isinstance(value, OSError) and (
+        getattr(value, "filename", None) is not None
+        or getattr(value, "filename2", None) is not None
+    ):
+        raw = getattr(value, "strerror", None) or fallback
+    else:
+        raw = str(value) if value is not None else fallback
+
+    if not raw:
+        raw = fallback
+
+    return " ".join(str(raw).splitlines())[:200]
+
+
+def _fetch_feed_result(name, url, lang):
+    """RSSフィードを取得・parseし、FeedFetchResultで返す(Ticket 13c)。
+    - 429/500/502/503/504 のみ最大1回だけ2秒backoffで再試行する。
+    - 403等の恒久的4xx・その他URLError・parse失敗は再試行しない。
+    取得先URL・User-Agent・timeoutは従来と同一(変更しない)。"""
+    req = urllib.request.Request(url, headers={"User-Agent": "SecurityDigest/1.0"})
+    retry_count = 0
+    while True:
+        try:
+            with urllib.request.urlopen(req, timeout=12) as res:
+                data = res.read()
+                effective_url = res.geturl()
+                # 実レスポンスのstatusを記録する(本番HTTPResponseは status を持つ)。
+                # status も getcode() も無い特殊mockでは None のままとし互換を壊さない。
+                http_status = getattr(res, "status", None)
+                if http_status is None and hasattr(res, "getcode"):
+                    http_status = res.getcode()
+            break
+        except urllib.error.HTTPError as e:
+            # reasonの改行・過長によるログ注入を防ぐため安全化する(retry判定は
+            # status codeだけで行い、bodyは読まない)。
+            safe_http_reason = _safe_fetch_error_text(e.reason, "HTTP error")
+            if e.code in RSS_RETRYABLE_HTTP_STATUSES and retry_count < RSS_MAX_RETRIES:
+                retry_count += 1
+                print(
+                    f"[WARN] {name}: HTTP {e.code} {safe_http_reason}、"
+                    f"{RSS_RETRY_BACKOFF_SECONDS}秒後に再試行 ({retry_count}/{RSS_MAX_RETRIES})",
+                    file=sys.stderr,
+                )
+                time.sleep(RSS_RETRY_BACKOFF_SECONDS)
+                continue
+            # 恒久的な4xx(403等)、または再試行上限に達したretryable status。
+            print(f"[WARN] {name}: HTTP {e.code} {safe_http_reason}", file=sys.stderr)
+            return FeedFetchResult(
+                items=[], fetch_success=False, parse_success=False,
+                http_status=e.code, error_type="http_error",
+                error_message=f"HTTP {e.code} {safe_http_reason}", retry_count=retry_count,
+            )
+        except (urllib.error.URLError, OSError) as e:
+            # HTTP以外の接続エラー(HTTPErrorはURLErrorのsubclassのため上で処理済み)。
+            # e.reasonがあればそれ、無ければe自身を候補にし、OSErrorのfilename等の
+            # 内部パスを含めないよう_safe_fetch_error_text()で安全化する(改行正規化・
+            # 200文字制限。本文/Cookie/header等は記録しない)。
+            candidate = e.reason if getattr(e, "reason", None) is not None else e
+            safe_reason = _safe_fetch_error_text(candidate, type(e).__name__)
+            print(f"[WARN] {name}: {type(e).__name__}: {safe_reason}", file=sys.stderr)
+            return FeedFetchResult(
+                items=[], fetch_success=False, parse_success=False,
+                http_status=None, error_type="url_error",
+                error_message=safe_reason, retry_count=retry_count,
+            )
+
+    try:
+        root = ET.fromstring(data)
+    except ET.ParseError as e:
+        # ParseErrorのメッセージは行・列位置のみでレスポンス本文を含まない。
+        print(f"[WARN] {name}: XML解析エラー: {e}", file=sys.stderr)
+        return FeedFetchResult(
+            items=[], fetch_success=True, parse_success=False,
+            http_status=http_status, error_type="parse_error",
+            error_message="XML parse error", retry_count=retry_count,
+        )
+
+    items = _parse_feed_items(root, name, lang)
+    return FeedFetchResult(
+        items=items, fetch_success=True, parse_success=True,
+        http_status=http_status, error_type=None, effective_url=effective_url,
+        retry_count=retry_count,
+    )
+
+
+def fetch_feed(name, url, lang):
+    """後方互換ラッパー: 構造化結果のうち記事listだけを返す(Ticket 13c)。
+    既存の呼び出し側・テストはこれまでどおり記事listを受け取れる。"""
+    return _fetch_feed_result(name, url, lang).items
+
 # ── CISA KEV (JSON) ───────────────────────────────────────────────────────────
 
-def fetch_cisa_kev(cutoff, url, display_url, source_name, kev_catalog_memo=None):
+def fetch_cisa_kev(cutoff, url, display_url, source_name, kev_catalog_memo=None,
+                   status_out=None):
     """url: 取得元JSON API、display_url: 記事表示用の固定リンク(全件共通)、
     source_name: item["source"]に設定する表示名。いずれもsource_definitions.json由来。
     取得・パース・フィルタのロジック自体は変更していない。
@@ -356,8 +465,16 @@ def fetch_cisa_kev(cutoff, url, display_url, source_name, kev_catalog_memo=None)
     vulnerability_facts.load_kev_catalog()経由の共有ローダーへ委譲し、
     Ticket 12aのCVEファクト取得処理と同一run内でのKEVカタログ二重ダウンロードを
     防ぐ(Noneの場合は従来どおり単独で取得する)。
+
+    status_out(dict)を渡すと、カタログ取得成功/失敗を呼び出し側が区別できるよう
+    {"catalog_ok": bool, "error_message": str|None} を書き込む(Ticket 13c)。
+    戻り値は従来どおり記事listのみ(後方互換)。「取得成功・新着0件」と
+    「取得失敗」はいずれも空listになるため、その区別はstatus_outで行う。
     """
     vulnerabilities, ok = vulnerability_facts.load_kev_catalog(url, memo=kev_catalog_memo)
+    if status_out is not None:
+        status_out["catalog_ok"] = ok
+        status_out["error_message"] = None if ok else "KEVカタログの取得に失敗しました"
     if not ok:
         print(f"[WARN] {source_name}: KEVカタログの取得に失敗しました", file=sys.stderr)
         return []
@@ -471,15 +588,23 @@ def collect_non_rss_items(cutoff, sources, kev_catalog_memo=None):
             "collect_non_rss_items: source定義に id='cisa_kev' が見つかりません"
         )
     if cisa_kev_def["enabled"]:
+        kev_status_out = {}
         kev_items = fetch_cisa_kev(
             cutoff,
             url=cisa_kev_def["url"],
             display_url=cisa_kev_def.get("display_url") or cisa_kev_def["url"],
             source_name=cisa_kev_def["name"],
             kev_catalog_memo=kev_catalog_memo,
+            status_out=kev_status_out,
         )
-        kev_status = "OK" if kev_items else "NG"
-        print(f"  [{kev_status}] {cisa_kev_def['name']}: 取得 {len(kev_items)} 件")
+        # カタログ取得成功なら新着0件でも[OK]。取得失敗のときだけ[NG](Ticket 13c)。
+        # status_outが未設定(例: fetch_cisa_kevがmock)の場合は従来挙動(件数>0でOK)。
+        catalog_ok = kev_status_out.get("catalog_ok", bool(kev_items))
+        if catalog_ok:
+            print(f"  [OK] {cisa_kev_def['name']}: 取得 {len(kev_items)} 件")
+        else:
+            reason = kev_status_out.get("error_message") or "KEVカタログの取得に失敗しました"
+            print(f"  [NG] {cisa_kev_def['name']}: {reason}")
         all_items += kev_items
 
     nist_nvd_def = get_source_definition(sources, "nist_nvd")
@@ -509,12 +634,26 @@ def collect_recent(kev_catalog_memo=None):
     all_items = []
 
     print("フィード別の取得状況:")
+    rss_success = rss_zero = rss_failed = 0
     for name, url, lang in (f for f in RSS_FEEDS if not f[1].startswith("#")):
-        items = fetch_feed(name, url, lang)
-        recent = [item for item in items if item["date"] is None or item["date"] >= cutoff]
-        status = "OK" if items else "NG"
-        print(f"  [{status}] {name}: 取得 {len(items)} 件 / 直近 {len(recent)} 件")
+        result = _fetch_feed_result(name, url, lang)
+        # 取得失敗・parse失敗は[NG]。記事件数0というだけでは[NG]にしない(Ticket 13c)。
+        if not result.fetch_success:
+            rss_failed += 1
+            print(f"  [NG] {name}: {result.error_message or '取得失敗'}")
+            continue
+        if not result.parse_success:
+            rss_failed += 1
+            print(f"  [NG] {name}: XML parse error")
+            continue
+        recent = [item for item in result.items if item["date"] is None or item["date"] >= cutoff]
+        if recent:
+            rss_success += 1
+        else:
+            rss_zero += 1
+        print(f"  [OK] {name}: 取得 {len(result.items)} 件 / 直近 {len(recent)} 件")
         all_items.extend(recent)
+    print(f"  RSS sources: success={rss_success} zero={rss_zero} failed={rss_failed}")
 
     all_items += collect_non_rss_items(cutoff, SOURCE_DEFINITIONS, kev_catalog_memo=kev_catalog_memo)
 
