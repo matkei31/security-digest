@@ -105,8 +105,8 @@
   <header>
     <h1>Security Digest</h1>
     <div class="sub">日次ダイジェスト：2026年07月13日</div>
-    <div class="sub">最終更新: 2026年07月13日 07:46</div>
-    <div class="count">8 件</div>
+    <div class="sub">最終更新: 2026年07月13日 14:53</div>
+    <div class="count">6 件</div>
     <nav class="archive-nav"><a class="archive-link" href="../index.html">最新のダイジェストへ戻る</a><a class="archive-link" href="index.html">過去のダイジェスト一覧へ戻る</a></nav>
   </header>
   <div class="todays-brief">
@@ -114,13 +114,13 @@
       <h2>Today's Brief</h2>
       <div class="brief-section">
       <h3 class="brief-section-title">本日の概況</h3>
-      <p class="brief-overview">本日は、サプライチェーン攻撃による情報窃取マルウェアの拡散と、AIモデルに対するプロンプトインジェクション攻撃の現状に関する情報が注目されます。特に開発環境におけるnpmパッケージの侵害は緊急性が高く、金融機関のシステムやデータに直接的な影響を及ぼす可能性があります。また、AI技術の活用が進む中で、そのセキュリティリスクへの対応も喫緊の課題として浮上しています。</p>
+      <p class="brief-overview">本日は、AI技術に関連するセキュリティリスクに関する情報が複数報告されました。特に、大規模言語モデル（LLM）に対する新たなプロンプトインジェクション技術の発見は、AI活用を進める金融機関にとって潜在的な脅威となり得ます。また、AIガバナンスの重要性や、セッションハイジャック対策としての新しい認証技術に関する動向も確認されました。全体として、AIの安全な利用と、既存の認証メカニズムの強化が本日の主要なテーマです。</p>
     </div><div class="brief-section">
       <h3 class="brief-section-title">本日の注目論点</h3>
-      <ul class="brief-list"><li>開発環境におけるサプライチェーンリスクへの対応状況について、自社および委託先の開発プロセスにおけるnpmパッケージ等の利用状況をどのように把握し、セキュリティ対策を講じるべきか。</li><li>AIモデルやAIを活用したサービス導入におけるセキュリティリスク評価と対策について、プロンプトインジェクション攻撃のような新たな脅威に対し、どのような防御策や検証メカニズムを導入すべきか。</li><li>AIガバナンスの実効性を確保するために、単なるポリシー策定に留まらず、具体的なガードレール（安全策）をどのように実装し、運用していくべきか。</li></ul>
+      <ul class="brief-list"><li>金融機関におけるAI技術の導入・活用が進む中で、プロンプトインジェクションのような新たな攻撃手法に対するセキュリティ対策をどのように組み込んでいくべきか、議論が必要です。</li><li>AIガバナンスを形骸化させず、具体的なガードレールを実装していくためには、どのような体制やプロセスが必要か、組織全体での検討が求められます。</li><li>フィッシングやセッションハイジャック攻撃に対する防御策として、DBSCのような新しい認証技術の導入可能性や、既存の認証メカニズムの強化について、中長期的な視点での検討が重要です。</li></ul>
     </div><div class="brief-section">
       <h3 class="brief-section-title">本日の確認事項</h3>
-      <ul class="brief-list"><li>jscrambler npmパッケージのバージョン8.14.0が自社および委託先の開発環境やCI/CDパイプラインで利用されていないか確認してください。</li><li>AIモデルやAIを活用したサービスを導入している場合、プロンプトインジェクション攻撃に対する既存の対策状況を確認し、機密情報へのアクセス制御や出力内容の検証メカニズムについて再評価してください。</li><li>開発プロセスにおけるnpmパッケージの利用状況を棚卸し、サプライチェーンリスクに対するセキュリティ対策を見直してください。</li></ul>
+      <ul class="brief-list"><li>LLMを業務で利用している場合、新たなプロンプトインジェクション技術に関するベンダーのガイダンスや緩和策を確認してください。</li><li>LLMの利用におけるセキュリティリスク評価を再確認し、対策の強化を検討してください。</li></ul>
     </div>
     </div>
   </div>
@@ -128,31 +128,27 @@
     <h2>優先確認</h2>
     <p class="important-items-note">確認優先度が高い、または確認目安が本日確認の記事です。</p>
     <div class="important-items-list">
-      <article class="priority-item">
-        <h3 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-1" lang="en">Compromised jscrambler 8.14.0 npm Release Drops Rust Infostealer During Install</a><span class="article-title-translation" lang="ja">侵害された jscrambler 8.14.0 npm リリースにより、インストール中に Rust Infostealer がドロップされる</span></span></h3>
-        <p class="important-item-reason">npmパッケージのサプライチェーン攻撃は広範な影響を及ぼす可能性があり、情報窃取マルウェアがインストール時に実行されるため、利用有無の確認と潜在的な影響の評価を本日中に開始する必要があります。</p>
-        <a class="priority-item-link" href="#article-1">本文を見る</a>
-      </article>
+      <p class="important-items-empty">本日の優先確認対象はありません。</p>
     </div>
   </section>
   <section class="dashboard">
     <h2>本日のダッシュボード</h2>
     <div class="dashboard-total">
       <span>本日の収集</span>
-      <strong>8件</strong>
+      <strong>6件</strong>
     </div>
     <div class="dashboard-groups">
       <section class="dashboard-group">
         <h3>確認優先度</h3>
-        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>高</span><strong>0</strong></li><li class="dashboard-count-item"><span>中</span><strong>6</strong></li><li class="dashboard-count-item"><span>低</span><strong>2</strong></li></ul>
+        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>高</span><strong>0</strong></li><li class="dashboard-count-item"><span>中</span><strong>4</strong></li><li class="dashboard-count-item"><span>低</span><strong>2</strong></li></ul>
       </section>
       <section class="dashboard-group">
         <h3>確認目安</h3>
-        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>本日確認</span><strong>1</strong></li><li class="dashboard-count-item"><span>今週確認</span><strong>2</strong></li><li class="dashboard-count-item"><span>参考</span><strong>5</strong></li></ul>
+        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>本日確認</span><strong>0</strong></li><li class="dashboard-count-item"><span>今週確認</span><strong>1</strong></li><li class="dashboard-count-item"><span>参考</span><strong>5</strong></li></ul>
       </section>
       <section class="dashboard-group dashboard-category-group">
         <h3>カテゴリ</h3>
-        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>攻撃・脅威動向</span><strong>3</strong></li><li class="dashboard-count-item"><span>AI・新技術リスク</span><strong>3</strong></li><li class="dashboard-count-item"><span>その他</span><strong>2</strong></li></ul>
+        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>攻撃・脅威動向</span><strong>1</strong></li><li class="dashboard-count-item"><span>AI・新技術リスク</span><strong>3</strong></li><li class="dashboard-count-item"><span>その他</span><strong>2</strong></li></ul>
       </section>
     </div>
   </section>
@@ -163,48 +159,48 @@
   <div class="cards">
     <article class="card" id="article-1">
       <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/12 02:59</span>
+        <span class="tag" style="background:#cc0000">CrowdStrike</span>
+        <span class="date"></span>
       </div>
-      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/compromised-jscrambler-8140-npm-release.html" target="_blank" rel="noopener noreferrer" lang="en">Compromised jscrambler 8.14.0 npm Release Drops Rust Infostealer During Install</a><span class="article-title-translation" lang="ja">侵害された jscrambler 8.14.0 npm リリースにより、インストール中に Rust Infostealer がドロップされる</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/" target="_blank" rel="noopener noreferrer" lang="en">CrowdStrike Uncovers New Prompt Injection Techniques</a><span class="article-title-translation" lang="ja">CrowdStrike が新しいプロンプト インジェクション技術を発見</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-today">確認目安 本日確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">サプライチェーン</span><span class="article-tag">情報漏えい</span><span class="article-tag">悪用確認済み</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">LLM</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>jscrambler npmパッケージのバージョン8.14.0が侵害され、インストール時に情報窃取マルウェアが実行されるサプライチェーン攻撃が発生しました。この悪意あるバージョンは、Windows、macOS、Linux向けにビルドされたネイティブバイナリをドロップし実行します。</p>
+          <p>CrowdStrikeが、大規模言語モデル(LLM)に対する新たなプロンプトインジェクション技術を発見しました。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関が開発プロセスでjscrambler npmパッケージを利用している場合、開発環境やCI/CDパイプラインが侵害される可能性があります。これにより、機密情報や開発中のコードが窃取されるリスクがあります。</p>
+          <p>金融機関がLLMを業務に利用している場合、これらの新たな攻撃手法が情報漏えいや不正操作のリスクを高める可能性があります。現時点の記事情報だけでは、金融機関への具体的な影響は確認できません。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>jscrambler npmパッケージのバージョン8.14.0が自社および委託先の開発環境やCI/CDパイプラインで利用されていないか確認してください。</li><li>当該バージョンが利用されていた場合、影響を受けた環境の侵害有無を調査し、マルウェアの駆除と関連する認証情報の変更を検討してください。</li><li>開発プロセスにおけるnpmパッケージの利用状況を棚卸し、サプライチェーンリスクに対するセキュリティ対策を見直してください。</li></ul>
+          <ul class="action-list"><li>LLMを業務で利用している場合、新たなプロンプトインジェクション技術に関するベンダーのガイダンスや緩和策を確認してください</li><li>LLMの利用におけるセキュリティリスク評価を再確認し、対策の強化を検討してください</li></ul>
         </section>
       </div>
-      <a class="article-source-link" href="https://thehackernews.com/2026/07/compromised-jscrambler-8140-npm-release.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-2">
       <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/12 02:49</span>
+        <span class="tag" style="background:#cc0000">CrowdStrike</span>
+        <span class="date"></span>
       </div>
-      <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/hackers-weaponize-balochistan-police.html" target="_blank" rel="noopener noreferrer" lang="en">Hackers Weaponize Balochistan Police Portal in Multi-Group Espionage Campaigns</a><span class="article-title-translation" lang="ja">ハッカーが複数グループのスパイ活動でバロチスタン警察ポータルを武器化</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/" target="_blank" rel="noopener noreferrer" lang="en">Why AI Governance Without Guardrails Is Theater</a><span class="article-title-translation" lang="ja">ガードレールのない AI ガバナンスが劇場である理由</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">APT</span><span class="article-tag">情報漏えい</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">ガイドライン</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>2024年2月から2026年4月にかけて、パキスタンの法執行機関に対し、中国およびインドに関連するとみられる脅威アクターによるサイバースパイ活動が継続的に行われていたことが判明しました。特にバロチスタン警察のポータルサイトが武器化され、警察および市民データが管理されるWebアプリケーションをホストするサーバーが侵害されました。</p>
+          <p>AIガバナンスが形骸化しないためには、具体的なガードレール（安全策）の実装が不可欠であると指摘する記事です。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関への直接的な影響は限定的ですが、政府機関を標的としたサイバースパイ活動は、国家レベルの脅威動向として参考になります。特に、機密データを扱うWebアプリケーションの侵害は、金融機関におけるデータ保護やシステムセキュリティの重要性を再認識させるものです。</p>
+          <p>金融機関はAI技術の導入を進めており、AIガバナンスの確立は重要な課題です。本記事は、効果的なAIガバナンス構築に向けた一般的な示唆を提供します。</p>
         </section>
       </div>
-      <a class="article-source-link" href="https://thehackernews.com/2026/07/hackers-weaponize-balochistan-police.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-3">
@@ -214,19 +210,15 @@
       </div>
       <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener noreferrer" lang="en">AI threats in the wild: The current state of prompt injections on the web</a><span class="article-title-translation" lang="ja">現実の AI の脅威: Web 上でのプロンプト インジェクションの現状</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">AIエージェント</span><span class="article-tag">LLM</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Googleの脅威分析グループ(TAG)が、AIモデルに対するプロンプトインジェクション攻撃の現状について報告しました。この攻撃は、AIモデルの意図しない動作を引き起こすことを目的としています。</p>
+          <p>Googleの脅威分析グループ(TAG)が、AIに対するプロンプトインジェクション攻撃の現状について分析を公開しました。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関がAIモデルやAIを活用したサービスを導入・利用している場合、プロンプトインジェクション攻撃による情報漏えいや誤動作のリスクに直面する可能性があります。特に顧客向けサービスや内部業務システムでのAI利用においては、その影響が大きくなる可能性があります。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>AIモデルやAIを活用したサービスを導入している場合、プロンプトインジェクション攻撃に対する既存の対策状況を確認してください。</li><li>AIモデルの利用において、機密情報へのアクセス制御や出力内容の検証メカニズムについて再評価してください。</li></ul>
+          <p>金融機関がAI技術を導入・活用する際、プロンプトインジェクション攻撃は情報漏えいや不正操作のリスクとなり得るため、対策の検討が必要です。</p>
         </section>
       </div>
       <a class="article-source-link" href="http://security.googleblog.com/feeds/820776653483778595/comments/default" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -234,23 +226,23 @@
 
     <article class="card" id="article-4">
       <div class="card-meta">
-        <span class="tag" style="background:#cc0000">CrowdStrike</span>
+        <span class="tag" style="background:#4285f4">Google TAG</span>
         <span class="date"></span>
       </div>
-      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/" target="_blank" rel="noopener noreferrer" lang="en">Why AI Governance Without Guardrails Is Theater</a><span class="article-title-translation" lang="ja">ガードレールのない AI ガバナンスが劇場である理由</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="http://security.googleblog.com/feeds/3718049046001981559/comments/default" target="_blank" rel="noopener noreferrer" lang="en">Protecting Cookies with Device Bound Session Credentials</a><span class="article-title-translation" lang="ja">デバイスにバインドされたセッション認証情報による Cookie の保護</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">ガイドライン</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">認証</span><span class="article-tag">フィッシング</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>AIガバナンスが形骸化しないためには、具体的なガードレール（安全策）の実装が不可欠であり、単なるポリシー策定だけでは不十分であると指摘しています。</p>
+          <p>Google TAGが、セッションクッキーをデバイスに紐付けることで、フィッシングやセッションハイジャック攻撃から保護する「Device Bound Session Credentials (DBSC)」技術について解説しています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関はAI技術の導入を進めており、AIガバナンスの確立は重要な課題です。本記事は、実効性のあるAIガバナンス構築に向けた示唆を提供します。</p>
+          <p>金融機関は顧客認証にクッキーを利用しており、フィッシングやセッションハイジャック攻撃は金融サービスにおいて重大な脅威となります。DBSCのような技術は、これらの攻撃に対する防御策として参考になります。</p>
         </section>
       </div>
-      <a class="article-source-link" href="https://www.crowdstrike.com/en-us/blog/why-ai-governance-without-guardrails-is-theater/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="http://security.googleblog.com/feeds/3718049046001981559/comments/default" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-5">
@@ -258,20 +250,20 @@
         <span class="tag" style="background:#cc0000">CrowdStrike</span>
         <span class="date"></span>
       </div>
-      <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/" target="_blank" rel="noopener noreferrer" lang="en">CrowdStrike Uncovers New Prompt Injection Techniques</a><span class="article-title-translation" lang="ja">CrowdStrike が新しいプロンプト インジェクション技術を発見</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/" target="_blank" rel="noopener noreferrer" lang="en">Falcon Secure Access Sets the Standard for Zero Trust Browser Security</a><span class="article-title-translation" lang="ja">Falcon Secure Access がゼロトラスト ブラウザ セキュリティの標準を設定</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">LLM</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
+        
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>CrowdStrikeが、AIモデルに対する新たなプロンプトインジェクション技術を発見しました。</p>
+          <p>CrowdStrikeが、ゼロトラストブラウザセキュリティの標準を確立する「Falcon Secure Access」を発表しました。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関がAIモデルやLLMを業務に導入・利用している場合、これらの新たな攻撃手法がセキュリティリスクとなる可能性があります。</p>
+          <p>本記事はCrowdStrikeの製品紹介であり、金融機関への直接的な影響は限定的です。一般的なセキュリティ対策の動向として参考になります。</p>
         </section>
       </div>
-      <a class="article-source-link" href="https://www.crowdstrike.com/en-us/blog/crowdstrike-uncovers-new-prompt-injection-techniques/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-6">
@@ -279,55 +271,13 @@
         <span class="tag" style="background:#4285f4">Google TAG</span>
         <span class="date"></span>
       </div>
-      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="http://security.googleblog.com/feeds/3718049046001981559/comments/default" target="_blank" rel="noopener noreferrer" lang="en">Protecting Cookies with Device Bound Session Credentials</a><span class="article-title-translation" lang="ja">デバイスにバインドされたセッション認証情報による Cookie の保護</span></span></h2>
-      <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">認証</span></div>
-        <section class="article-section">
-          <h3>何が起きた</h3>
-          <p>Google TAGがセッションハイジャック攻撃からCookieを保護するための新しい技術「Device Bound Session Credentials (DBSC)」について解説しています。</p>
-        </section>
-        <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関は顧客認証や内部システムにおいてセッション管理を厳格に行う必要があり、セッションハイジャックは不正アクセスや情報漏えいのリスクに直結します。DBSCのような新しい認証技術の動向は、将来的なセキュリティ強化策を検討する上で参考になります。</p>
-        </section>
-      </div>
-      <a class="article-source-link" href="http://security.googleblog.com/feeds/3718049046001981559/comments/default" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </article>
-
-    <article class="card" id="article-7">
-      <div class="card-meta">
-        <span class="tag" style="background:#cc0000">CrowdStrike</span>
-        <span class="date"></span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/" target="_blank" rel="noopener noreferrer" lang="en">Falcon Secure Access Sets the Standard for Zero Trust Browser Security</a><span class="article-title-translation" lang="ja">Falcon Secure Access がゼロトラスト ブラウザ セキュリティの標準を設定</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="http://security.googleblog.com/feeds/1469360228826887140/comments/default" target="_blank" rel="noopener noreferrer" lang="en">Bringing Rust to the Pixel Baseband</a><span class="article-title-translation" lang="ja">Pixel ベースバンドに Rust を導入する</span></span></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
         
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>CrowdStrikeがFalcon Secure Accessを発表し、ゼロトラストブラウザセキュリティの新たな標準を確立したと主張しています。</p>
-        </section>
-        <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
-          <p>本記事は特定の製品の紹介であり、金融機関への直接的な影響は限定的です。ゼロトラストの概念は金融機関のセキュリティ戦略において重要ですが、製品の導入判断は各機関のリスク評価に基づきます。</p>
-        </section>
-      </div>
-      <a class="article-source-link" href="https://www.crowdstrike.com/en-us/blog/falcon-secure-access-sets-standard-for-zero-trust-security-browser/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </article>
-
-    <article class="card" id="article-8">
-      <div class="card-meta">
-        <span class="tag" style="background:#4285f4">Google TAG</span>
-        <span class="date"></span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">8.</span><span class="article-title-stack"><a class="article-title-link" href="http://security.googleblog.com/feeds/1469360228826887140/comments/default" target="_blank" rel="noopener noreferrer" lang="en">Bringing Rust to the Pixel Baseband</a><span class="article-title-translation" lang="ja">Pixel ベースバンドに Rust を導入する</span></span></h2>
-      <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
-        
-        <section class="article-section">
-          <h3>何が起きた</h3>
-          <p>GoogleがPixelデバイスのベースバンドにRust言語を導入する取り組みについて説明しています。</p>
+          <p>GoogleがPixelデバイスのベースバンドにRust言語を導入したことについて解説しています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
