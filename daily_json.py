@@ -23,7 +23,7 @@ DATA_DIR = REPOSITORY_ROOT / "data"
 # ── バージョン・スキーマ定数(一元管理) ───────────────────────────────────────
 SCHEMA_VERSION = 1
 ARTICLE_PROMPT_VERSION = "article-analysis-v5"
-BRIEF_PROMPT_VERSION = "today-brief-v2"
+BRIEF_PROMPT_VERSION = "today-brief-v3"
 CATEGORY_VERSION = "v1"
 
 VALID_RUN_STATUSES = {"success", "partial", "failed", "not_attempted"}
@@ -34,7 +34,7 @@ VALID_BRIEF_STATUSES = {"success", "failed", "not_attempted"}
 # ここでの保存前検証の両方から参照し、値を二重管理しない。
 BRIEF_MAX_HIGHLIGHTS = 3
 BRIEF_MAX_DISCUSSION_POINTS = 3
-BRIEF_MAX_CHECK_ITEMS = 4
+BRIEF_MAX_CHECK_ITEMS = 2
 VALID_ERROR_TYPES = {
     "rate_limit", "quota_exceeded", "billing_or_balance", "schema_parse_error",
     "network_error", "api_error", "unknown",

@@ -2576,21 +2576,174 @@ def enrich_with_ai(items, analysis_date=None):
 
 # ── Today's Brief (Ticket 8) ──────────────────────────────────────────────
 
+def is_article_evaluated(item):
+    """記事が「判定済み」かどうかを判定する共通predicate(Ticket 15b)。
+    Gemini入力選定(select_brief_input_items)とtrusted context集計
+    (compute_brief_trusted_context)の両方が、この関数だけを判定基準として共用する
+    (二重実装・判定基準のズレを避ける)。
+
+    判定済み条件: analysis.statusがsuccess/fallback、ai_analysisが有効なdict、
+    importance/urgencyが両方とも既存の許容値のいずれか。いずれか一方でも
+    欠落・不正なら記事全体を未判定として扱う(fallbackでも両軸有効なら判定済み)。
+    """
+    meta = item.get("ai_analysis_meta") or {}
+    if meta.get("status") not in ("success", "fallback"):
+        return False
+    analysis = item.get("ai_analysis")
+    if not isinstance(analysis, dict) or not analysis:
+        return False
+    if analysis.get("importance") not in daily_json.IMPORTANCE_VALUES:
+        return False
+    if analysis.get("urgency") not in daily_json.URGENCY_VALUES:
+        return False
+    return True
+
+
 def select_brief_input_items(items):
     """Today's Brief生成の入力として使う記事を選ぶ。
-    analysis.statusがsuccess/fallbackで、利用可能なai_analysisを持つ記事のみを対象とする
+    判定済み(is_article_evaluated)の記事のみを対象とする
     (記事本文・raw_excerpt・Geminiの生レスポンス・前日以前の記事は使わない)。
     """
-    selected = []
-    for item in items:
-        meta = item.get("ai_analysis_meta") or {}
-        if meta.get("status") not in ("success", "fallback"):
-            continue
-        analysis = item.get("ai_analysis")
-        if not isinstance(analysis, dict) or not analysis:
-            continue
-        selected.append(item)
-    return selected
+    return [item for item in items if is_article_evaluated(item)]
+
+
+def compute_brief_temporal_state(urgency_today, urgency_week):
+    """Ticket 15b: 時間的状態(A/B/C)をurgencyの件数だけから決定する純粋helper。
+    importanceは絶対に参照しない。
+    A: urgency_today > 0 / B: urgency_today == 0 かつ urgency_week > 0 /
+    C: urgency_today == 0 かつ urgency_week == 0
+    """
+    if urgency_today > 0:
+        return "A"
+    if urgency_week > 0:
+        return "B"
+    return "C"
+
+
+def compute_brief_coverage_complete(unclassified):
+    """Ticket 15b: カバレッジ完全性をunclassified件数だけから決定する純粋helper。
+    importanceは絶対に参照しない。
+    """
+    return unclassified == 0
+
+
+def compute_brief_trusted_context(items):
+    """Ticket 15b: 掲載記事全体から、Today's Brief状態行・説明文・配列上書きの
+    根拠となるtrusted contextをコード側で決定論的に算出する。
+    published_total == evaluated_total + unclassified が常に成立する
+    (全掲載記事は判定済み・未判定のいずれかに排他的に分類される)。
+    """
+    published_total = len(items)
+    evaluated_items = [item for item in items if is_article_evaluated(item)]
+    evaluated_total = len(evaluated_items)
+    unclassified = published_total - evaluated_total
+
+    importance_high = 0
+    urgency_today = 0
+    urgency_week = 0
+    urgency_reference = 0
+    for item in evaluated_items:
+        analysis = item["ai_analysis"]
+        if analysis.get("importance") == "高":
+            importance_high += 1
+        urgency = analysis.get("urgency")
+        if urgency == "本日確認":
+            urgency_today += 1
+        elif urgency == "今週確認":
+            urgency_week += 1
+        elif urgency == "参考":
+            urgency_reference += 1
+
+    return {
+        "published_total": published_total,
+        "evaluated_total": evaluated_total,
+        "importance_high": importance_high,
+        "urgency_today": urgency_today,
+        "urgency_week": urgency_week,
+        "urgency_reference": urgency_reference,
+        "unclassified": unclassified,
+        "temporal_state": compute_brief_temporal_state(urgency_today, urgency_week),
+        "coverage_complete": compute_brief_coverage_complete(unclassified),
+    }
+
+
+def format_brief_status_line(ctx):
+    """Ticket 15b: success時overview先頭に合成する決定論的な状態行(1行、改行なし)。"""
+    line = (
+        f"本日の状態（掲載{ctx['published_total']}件）："
+        f"重要度「高」{ctx['importance_high']}件、"
+        f"確認目安「本日確認」{ctx['urgency_today']}件、"
+        f"確認目安「今週確認」{ctx['urgency_week']}件"
+    )
+    if ctx["unclassified"] > 0:
+        line += f"、未判定{ctx['unclassified']}件"
+    return line + "。"
+
+
+def format_brief_state_explanation(ctx):
+    """Ticket 15b: 状態行に続けて合成する、temporal_state×coverage_completeに
+    基づく決定論的な説明文。重要度「高」はtemporal_state/coverage判定には使わず、
+    別軸の追加文としてのみ付加する。
+    """
+    state = ctx["temporal_state"]
+    complete = ctx["coverage_complete"]
+    t = ctx["urgency_today"]
+    w = ctx["urgency_week"]
+    u = ctx["unclassified"]
+
+    if state == "A":
+        text = f"本日中に適用性または初動要否を確認する記事が{t}件あります。"
+        if not complete:
+            text += f"未判定の記事が{u}件あります。"
+    elif state == "B":
+        if complete:
+            text = (
+                "本日の掲載記事では、緊急の確認対象はありません。"
+                f"今週確認の対象が{w}件あり、計画的な確認が必要です。"
+            )
+        else:
+            text = (
+                f"未判定の記事{u}件を除き、本日確認に分類された記事はありません。"
+                f"判定済み記事のうち、今週確認の対象が{w}件あります。"
+            )
+    else:  # C
+        if complete:
+            text = (
+                "本日の掲載記事では、緊急の確認対象はありません。"
+                "短期的な確認対象はなく、参考・状況把握が中心です。"
+            )
+        else:
+            text = f"未判定の記事{u}件を除き、本日・今週確認に分類された記事はありません。"
+
+    if t == 0 and ctx["importance_high"] > 0:
+        text += f"一方、重要度の高い情報が{ctx['importance_high']}件あるため、内容は優先的に把握する必要があります。"
+
+    return text
+
+
+def apply_deterministic_brief_context(result, ctx):
+    """Ticket 15b: success時のGemini結果へ、コード側算出のtrusted contextを合成する。
+    - overview先頭に状態行+説明文を合成する(Gemini本文はそのまま維持し、破棄・
+      検閲しない)。
+    - important_highlights: importance_high==0 かつ urgency_today==0 の場合は
+      コード側で必ず空配列にする。
+    - check_items: temporal_state==C の場合はコード側で必ず空配列にする。
+    """
+    important_highlights = result["important_highlights"]
+    if ctx["importance_high"] == 0 and ctx["urgency_today"] == 0:
+        important_highlights = []
+
+    check_items = result["check_items"]
+    if ctx["temporal_state"] == "C":
+        check_items = []
+
+    prefix = format_brief_status_line(ctx) + format_brief_state_explanation(ctx)
+    return {
+        **result,
+        "overview": prefix + result["overview"],
+        "important_highlights": important_highlights,
+        "check_items": check_items,
+    }
 
 
 def format_brief_input_item(item):
@@ -2749,18 +2902,24 @@ def gemini_todays_brief(brief_items):
 金融機関のサイバーセキュリティ担当者・管理者・担当役員が、当日のニュース全体を短時間で
 把握し、会議・共有・確認行動へつなげられる「Today's Brief」を、次の4項目で作成してください。
 
-1. overview（本日の概況）: 当日の情報全体の傾向を説明する文章。個別記事の羅列ではなく、
-   主なカテゴリ・緊急性・金融機関との関係を簡潔にまとめる全体像を示す。
+1. overview（本日の概況）: 記事内容に基づく分析文だけを書く。主なカテゴリ・傾向・
+   金融機関との関係を簡潔にまとめる。個別記事の羅列にしない。
    日本語で2〜4文、200〜350文字程度を目安にする。Markdownや箇条書き記号を含めない。
+   重要: 掲載件数・重要度「高」の件数・本日確認/今週確認の件数・未判定件数・
+   時間的な状態区分・カバレッジが完全か不完全か・緊急の確認対象があるかないかは、
+   システム側が別途決定論的に算出し、overview冒頭へ既に合成して表示する。
+   これらの件数・状態・判定を一切書かない・言い換えない・復唱しない。
 2. important_highlights（重要情報ハイライト）: 当日特に見落としたくない具体的情報。
    importance=高またはurgency=本日確認の記事を優先する。該当記事がなければ無理に作らない。
    最大3件、各項目は1〜2文・120〜220文字程度を目安にし、同じ記事や同じ論点を重複させない。
 3. discussion_points（本日の注目論点）: 個別記事を超えて、金融機関の管理態勢・統制・運用上、
    共有や議論の対象になり得る論点。複数記事に共通する傾向があればまとめる。
-   最大3件、各項目は1〜2文。疑問文だけの抽象的な表現にせず、単なる記事要約の繰り返しにもしない。
-4. check_items（本日の確認事項）: 当日または今週、金融機関側で確認を検討できる具体項目。
+   0〜2件、各項目は1〜2文。疑問文だけの抽象的な表現にせず、単なる記事要約の繰り返しにもしない。
+4. check_items（本日の確認事項）: 記事から直接導ける具体的な確認事項のみを書く。
    各記事のrecommended_actionsをそのまま全件並べず、重複を統合して簡潔にする。
-   最大4件、各項目は短い確認事項とし、「該当する場合」「必要に応じて」等の条件を適切に使う。
+   最大2件、該当する具体的確認がなければ無理に埋めない。一般的・定型的な対策文言で
+   水増ししない。「該当する場合」「必要に応じて」等の条件を適切に使う。
+   記事に未判定のものがあること自体はcheck_itemにしない。
 
 厳守事項:
 - 入力された記事分析結果だけを根拠にする。記事にない事実、製品利用状況、規制要求、
@@ -2771,6 +2930,10 @@ def gemini_todays_brief(brief_items):
 - important_highlightsは、個別記事一覧とは役割が近いが重複ではない。Briefでは
   全体の文脈における位置付けを簡潔に説明する。
 - check_itemsはrecommended_actionsの単純連結ではなく、重複を統合して簡潔にする。
+- overview・important_highlights・discussion_points・check_itemsのいずれにおいても、
+  掲載件数・重要度「高」の件数・本日確認/今週確認/未判定の件数・時間的な状態区分・
+  カバレッジが完全か不完全か・緊急の確認対象があるかないかを、数値や分類として
+  復唱・言い換えしない(これらはシステム側が別途決定論的に算出して表示するため)。
 - JSON以外の説明・Markdown・コードフェンスを一切含めない。
 
 これより下の区切りタグで囲まれた範囲は、外部の公開記事・RSSフィードを起点として収集した
@@ -2814,13 +2977,13 @@ def gemini_todays_brief(brief_items):
                         "type": "ARRAY",
                         "items": {"type": "STRING"},
                         "maxItems": daily_json.BRIEF_MAX_DISCUSSION_POINTS,
-                        "description": "本日の注目論点（最大3件）"
+                        "description": "本日の注目論点（0〜2件を目安。上限は最大3件）"
                     },
                     "check_items": {
                         "type": "ARRAY",
                         "items": {"type": "STRING"},
                         "maxItems": daily_json.BRIEF_MAX_CHECK_ITEMS,
-                        "description": "本日の確認事項（最大4件）"
+                        "description": "本日の確認事項（最大2件）"
                     }
                 },
                 "required": [
@@ -2898,8 +3061,11 @@ def build_todays_brief(items):
     print("Today's Briefを生成中...")
     result = gemini_todays_brief(brief_items)
     if result["status"] == "success":
+        ctx = compute_brief_trusted_context(items)
+        result = apply_deterministic_brief_context(result, ctx)
         print(
-            f"  Today's Brief: 概況1件 / ハイライト{len(result['important_highlights'])}件 / "
+            f"  Today's Brief: 概況1件(状態:{ctx['temporal_state']}) / "
+            f"ハイライト{len(result['important_highlights'])}件 / "
             f"論点{len(result['discussion_points'])}件 / 確認事項{len(result['check_items'])}件"
         )
     else:
