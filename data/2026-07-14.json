@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
   "digest_date": "2026-07-14",
-  "generated_at": "2026-07-14T07:57:48.152184+09:00",
+  "generated_at": "2026-07-14T23:05:12.212328+09:00",
   "generator": {
     "application": "security-digest",
     "model": "gemini-2.5-flash",
-    "article_prompt_version": "article-analysis-v4",
+    "article_prompt_version": "article-analysis-v5",
     "brief_prompt_version": "today-brief-v2"
   },
   "run": {
@@ -27,18 +27,18 @@
     },
     "urgency": {
       "本日確認": 0,
-      "今週確認": 10,
-      "参考": 1,
+      "今週確認": 7,
+      "参考": 4,
       "未判定": 0
     },
     "category": {
       "脆弱性・パッチ": 1,
-      "攻撃・脅威動向": 7,
+      "攻撃・脅威動向": 4,
       "インシデント": 1,
       "規制・ガバナンス": 0,
       "クラウド・サプライチェーン": 1,
-      "AI・新技術リスク": 1,
-      "その他": 0,
+      "AI・新技術リスク": 3,
+      "その他": 1,
       "未判定": 0
     }
   },
@@ -46,26 +46,281 @@
     "status": "success",
     "model": "gemini-2.5-flash",
     "prompt_version": "today-brief-v2",
-    "overview": "本日は、SaaSアプリケーションのOAuth悪用、macOS向け情報窃取マルウェア、ブラウザ拡張機能による情報収集機能の発見など、多様な攻撃手法に関する情報が確認されました。特に、サプライチェーンリスクや設定不備を悪用する手口が目立ち、金融機関においてもSaaS利用や認証基盤、従業員デバイスの管理におけるセキュリティ対策の再確認が求められます。国家支援型攻撃者による重要インフラへの継続的な脅威も指摘されており、広範な警戒が必要です。",
+    "overview": "本日は、AIコーディングプラットフォームの脆弱性やLinux UEFI Shimの脆弱性など、サプライチェーンに関連する技術的リスク情報が複数報告されました。また、仮想通貨ウォレットのプライバシーリスクやSaaSアプリケーションを標的とした攻撃動向、Microsoft Entra IDの認証方法変更など、クラウドサービスや認証に関する確認事項も含まれています。全体として、特定の緊急性の高い脅威は少ないものの、中長期的な視点でのリスク評価や設定確認が求められる情報が中心です。",
     "important_highlights": [
-      "Microsoft Threat Intelligenceは、ShinyHuntersに関連する脅威アクターが、ボイスフィッシングやサプライチェーン侵害、ゲストアクセス設定ミスを利用してSaaSベースのアプリケーションを標的としていることを確認しました。金融機関でもSaaS利用が広範なため、委託先管理やサプライチェーンリスクの観点から対策の再確認が重要です。",
-      "macOSを標的とした新しい情報窃取マルウェア「CrashStealer」が確認され、公証済みのドロッパーを使用することでGatekeeperのチェックを回避し、機密情報を窃取する能力があります。金融機関でmacOSデバイスが利用されている場合、従業員の認証情報や機密情報が窃取されるリスクがあるため、注意が必要です。",
-      "GoogleとMicrosoftは、約160万回インストールされた人気ブラウザ拡張機能「ModHeader」をストアから削除しました。公式ストア版に隠された休眠状態の閲覧履歴収集機能が発見されたためで、従業員が業務で利用していた場合、機密情報を含む閲覧履歴が収集されるリスクがあった可能性があります。"
+      "AIコーディングプラットフォーム「Cursor IDE」に、汚染されたリポジトリから悪意のあるコードを自動実行する脆弱性が報告されています。金融機関でCursor IDEを利用している場合、サプライチェーンリスクとして影響を受ける可能性があるため、利用状況とベンダーからの修正情報を確認することが重要です。",
+      "Microsoft署名済みの古いLinux UEFIアプリケーション11件にセキュアブートを迂回される脆弱性が発見されました。金融機関でLinux UEFI Shimを使用しているシステムがある場合、攻撃者が悪用すると信頼されていないコードが実行される可能性があるため、棚卸しとベンダー情報の確認が必要です。",
+      "Microsoft Entra IDにおいて、パスキーがデフォルトのサインインエクスペリエンスとなり、SMSおよび音声認証の新しいモデルが導入されました。Microsoft Entra IDを利用している金融機関は、認証方法の変更がユーザーエクスペリエンスやセキュリティポリシーに影響を与える可能性があるため、確認が必要です。"
     ],
     "discussion_points": [
-      "SaaSアプリケーションやクラウド環境における設定不備、特にOAuth設定やゲストアクセス設定、認証情報管理の適切性が、サプライチェーン攻撃や情報漏えいの主要な経路となっている現状について、組織全体でのリスク評価と対策強化が喫緊の課題です。",
-      "従業員が利用するデバイス（macOSなど）やブラウザ拡張機能が、情報窃取マルウェアや意図しない情報収集機能の標的となるリスクが高まっています。これらのエンドポイントにおけるセキュリティ対策と、従業員への継続的なセキュリティ意識向上教育の重要性について議論が必要です。",
-      "国家支援型攻撃者による重要インフラへのサイバー攻撃は継続しており、設定が不十分なネットワーク機器が悪用される事例も報告されています。自社のネットワーク機器の設定状況だけでなく、委託先を含めたサプライチェーン全体の防御態勢をどのように強化していくべきか、戦略的な検討が求められます。"
+      "AI技術の導入が進む中で、AIコーディングプラットフォームの脆弱性やAIセキュリティエージェントの活用に関する情報が示されており、金融機関におけるAI利用時のセキュリティリスク評価と管理態勢について議論が必要です。",
+      "Pythonパッケージのライフサイクル分析やSaaSアプリケーションを標的とした攻撃動向、CISAのGitHub情報漏えい事例など、サプライチェーンおよびクラウド環境における認証情報管理や委託先管理の重要性が改めて浮き彫りになっています。これらのリスクに対する統制強化について検討すべきです。",
+      "仮想通貨ウォレット拡張機能のプライバシーリスクやMicrosoft Entra IDの認証方法変更は、金融機関における認証基盤や従業員のIT利用ポリシー、顧客資産保護の観点から、セキュリティ対策の現状と将来的な方向性について議論するきっかけとなります。"
     ],
     "check_items": [
-      "自社で利用しているSaaSアプリケーションにおけるOAuth設定およびゲストアクセス設定の適切性を確認してください。",
-      "macOSデバイスの利用状況を確認し、セキュリティ設定が適切に構成されているか、また情報窃取マルウェア対策について従業員への注意喚起を検討してください。",
-      "従業員が業務で使用しているブラウザ拡張機能について、利用の必要性とセキュリティリスクを再評価し、組織内で許可されているリストを見直してください。",
-      "クラウド環境における認証情報の管理状況、特に公開リポジトリへの誤公開リスクについて確認し、委託先におけるセキュリティ管理体制も再確認してください。"
+      "自社および委託先でAIコーディングプラットフォーム「Cursor IDE」やLinux UEFI Shimを使用しているシステムがないか棚卸しし、該当する場合はベンダーからの修正情報や緩和策を確認する。",
+      "自社および委託先におけるSaaSベースアプリケーションのOAuth認証設定とゲストアクセス設定の状況を確認し、音声フィッシング（vishing）に対する従業員への注意喚起と教育を強化する。",
+      "Microsoft Entra IDの利用有無と、今回の認証方法変更が自社の認証ポリシーや運用に与える影響を確認し、パスキー導入およびSMS/音声認証の新モデルへの移行計画を評価する。",
+      "自社および委託先におけるPythonパッケージの利用状況と、その入手経路・管理体制を確認し、サプライチェーンリスク評価を実施する。"
     ],
     "error_type": null
   },
   "items": [
+    {
+      "id": "sha256:2a4f7428d669a1d934cfd9b2b0af2d4272f22475f1ca768df6ce0ecf77adf779",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/application-security/cursor-ide-malicious-code-poisoned-repos",
+      "canonical_url": "https://www.darkreading.com/application-security/cursor-ide-malicious-code-poisoned-repos",
+      "published_at": "2026-07-14T22:00:00+09:00",
+      "fetched_at": "2026-07-14T23:01:34.179655+09:00",
+      "title": "Cursor IDE、汚染されたリポジトリで悪意のあるコードを自動実行する脆弱性",
+      "raw_title": "Cursor IDE Auto-Executes Malicious Code in Poisoned Repos",
+      "raw_excerpt": "Researchers reported the vulnerability to Cursor in December, but it still remains in the popular AI coding platform and can be exploited in poisoned repository attacks.",
+      "content_hash": "sha256:64d2d7f77d572c00ae0237bf1b4d5e15de1fb4c100828429cc29fe9bbbbef3ec",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v5",
+        "generated_at": "2026-07-14T23:01:36.403058+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIコーディングプラットフォームの脆弱性が主題であるため。",
+        "tags": [
+          "AI",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "AIコーディングプラットフォーム「Cursor IDE」に、汚染されたリポジトリから悪意のあるコードを自動実行する脆弱性が報告されました。この脆弱性は昨年12月に報告されましたが、依然として修正されていません。",
+        "financial_impact": "金融機関でCursor IDEを利用している場合に、サプライチェーンリスクとして関係します。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Cursor IDEの利用有無と、利用している場合は影響バージョンの確認を行う",
+          "ベンダーからの修正情報や緩和策の有無を確認する"
+        ],
+        "reason": "重要度は、AIコーディングプラットフォームの脆弱性であり、利用状況によってはサプライチェーンリスクとなるため「中」です。確認目安は、悪用が確認されているものの、緊急の対応を要する時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6f88e63f0b0c7123c6e054816b40119dbc58c2b800c75d40bb7bbb9a5a99a012",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/11-old-microsoft-signed-linux-uefi.html",
+      "canonical_url": "https://thehackernews.com/2026/07/11-old-microsoft-signed-linux-uefi.html",
+      "published_at": "2026-07-14T21:46:18+09:00",
+      "fetched_at": "2026-07-14T23:01:34.179655+09:00",
+      "title": "Microsoft署名済みLinux UEFI Shimの脆弱性によりセキュアブートが迂回される可能性",
+      "raw_title": "11 Old Microsoft-Signed Linux UEFI Shims Could Let Attackers Bypass Secure Boot",
+      "raw_excerpt": "Cybersecurity researchers have discovered 11 old, Microsoft-signed, Unified Extensible Firmware Interface (UEFI) applications that could be abused to bypass Secure Boot on most systems using the moder",
+      "content_hash": "sha256:f695d4c38478d31aeef6049416a80f9966f887e65c6966e72b6309afc7025b0f",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v5",
+        "generated_at": "2026-07-14T23:01:53.800390+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Microsoft署名済みLinux UEFI Shimの脆弱性が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、Microsoft署名済みの古いLinux UEFIアプリケーション11件に脆弱性を発見しました。これにより、最新のファームウェア標準を使用するほとんどのシステムでセキュアブートが迂回される可能性があります。",
+        "financial_impact": "金融機関でLinux UEFI Shimを使用しているシステムがある場合に関係します。攻撃者がこれらの脆弱なアプリケーションを悪用すると、システム起動時に信頼されていないコードが実行され、悪意のあるUEFIブートキットなどが展開される可能性があります。",
+        "recommended_actions": [
+          "自社および委託先でLinux UEFI Shimを使用しているシステムがないか棚卸しする",
+          "該当するシステムがある場合、ベンダーからの一次情報を確認し、修正版や緩和策の有無を評価する"
+        ],
+        "reason": "重要度は、対象製品の利用可能性が限定的であり、金融機関への直接的な影響が不確実なため「中」です。確認目安は、記事に実悪用や短期的な期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:8e8ede61baa764ea5e35dd7935d2641ca844aae6fa9e7034755d9d5aaa2b98ac",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/study-of-85-crypto-wallet-extensions.html",
+      "canonical_url": "https://thehackernews.com/2026/07/study-of-85-crypto-wallet-extensions.html",
+      "published_at": "2026-07-14T20:55:00+09:00",
+      "fetched_at": "2026-07-14T23:01:34.179655+09:00",
+      "title": "85種類の仮想通貨ウォレット拡張機能に関する調査でアドレス漏洩とクロスサイト追跡のリスクが判明",
+      "raw_title": "Study of 85 Crypto Wallet Extensions Finds Address Leaks and Cross-Site Tracking Risks",
+      "raw_excerpt": "Researchers at KU Leuven tested 85 of the most popular crypto wallets that run as browser extensions and found that the wallets themselves leak enough to link and track the people using them.\n\nThe way",
+      "content_hash": "sha256:20df9a590a4a18649aab874f9bd9f1c3983aa78f4fbebbd13cbf7b7e98188beb",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v5",
+        "generated_at": "2026-07-14T23:02:11.407830+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "仮想通貨ウォレットの脆弱性とその悪用による追跡リスクに関する調査結果が主題であるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "KU Leuvenの研究者らが85種類の人気仮想通貨ウォレットブラウザ拡張機能を調査した結果、ウォレット自体がユーザーを紐付け、追跡するのに十分な情報を漏洩していることが判明しました。ウォレットとウェブサイト・ブロックチェーンサーバー間の通信により、個人の複数のアドレスが関連付けられ、外部からサイトを横断して追跡される可能性があります。",
+        "financial_impact": "金融機関が仮想通貨関連サービスを提供している場合、または従業員が業務で仮想通貨ウォレット拡張機能を利用している場合に、情報漏洩や追跡のリスクに関係します。直接的な影響は限定的ですが、顧客資産の保護や情報セキュリティポリシーの観点から確認が必要です。",
+        "recommended_actions": [
+          "仮想通貨ウォレット拡張機能の利用状況を棚卸しし、業務での利用が許可されているか確認する",
+          "仮想通貨ウォレット拡張機能を利用している場合、プライバシー設定やセキュリティ対策についてベンダーの情報を確認する"
+        ],
+        "reason": "重要度は、仮想通貨ウォレットの利用が限定的である可能性があり、金融機関への直接的な影響が不確実なため「中」です。確認目安は、特定の脆弱性や緊急のパッチ情報ではなく、調査結果の報告であり即時対応の根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:8267c1579a3e324746656cd7cf1b77f17ecc0b3638aee349a499921c11bfcf83",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/how-pentera-turns-ai-security-workflows.html",
+      "canonical_url": "https://thehackernews.com/2026/07/how-pentera-turns-ai-security-workflows.html",
+      "published_at": "2026-07-14T20:30:00+09:00",
+      "fetched_at": "2026-07-14T23:01:34.179655+09:00",
+      "title": "PenteraがAIセキュリティワークフローを検証エンジンに変える方法",
+      "raw_title": "How Pentera Turns AI Security Workflows into Validation Engines",
+      "raw_excerpt": "AI security agents are starting to influence real security decisions. They summarize findings, prioritize remediation, recommend next steps, and help teams move faster. But most still rely on fragment",
+      "content_hash": "sha256:80c6d2d2d599f3a846419e5ad1b6cd542f5ba96c49545d910253c550b87a3d5a",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v5",
+        "generated_at": "2026-07-14T23:02:28.282332+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIセキュリティエージェントとAIを活用したセキュリティワークフローであるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AIセキュリティエージェントがセキュリティの意思決定に影響を与え始めており、発見の要約、修復の優先順位付け、次のステップの推奨、チームの迅速化に貢献しています。しかし、ほとんどはスキャナー出力、脅威インテリジェンス、設定情報などの断片的なリスクシグナルに依存しています。",
+        "financial_impact": "金融機関におけるAIセキュリティエージェントの導入や活用を検討する際の参考情報となります。直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIセキュリティエージェントの活用に関する一般的な情報であり、特定の脆弱性やインシデントではないため「中」です。確認目安は、具体的な脅威や期限、緊急対応の必要性が記事にないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f7cc6b4bc84e7f587aa28f5940b9c3e09a2da6cdc89207766bcd97881219b565",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/video-where-protection-starts-cisco-talos-intelligence-integrations/",
+      "canonical_url": "https://blog.talosintelligence.com/video-where-protection-starts-cisco-talos-intelligence-integrations/",
+      "published_at": "2026-07-14T19:47:18+09:00",
+      "fetched_at": "2026-07-14T23:01:34.179655+09:00",
+      "title": "保護の出発点: Cisco Talos Intelligence Integrations",
+      "raw_title": "[Video] Where protection starts: Cisco Talos Intelligence Integrations",
+      "raw_excerpt": "Every day, defenders make high-consequence decisions with incomplete information. Learn how Cisco Talos Intelligence Integrations help reduce uncertainty by turning the latest threat intelligence into",
+      "content_hash": "sha256:18990b0ed187d6d6c8f151349e82e13e366f3d5afa439570c13c6e077bd0473f",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v5",
+        "generated_at": "2026-07-14T23:02:45.376035+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性や攻撃、規制に関する情報ではなく、脅威インテリジェンスの活用方法に関する一般的な情報提供が主題のため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Cisco Talos Intelligence Integrationsが、最新の脅威インテリジェンスをCiscoテクノロジー全体にわたるプロアクティブな保護に変換し、不確実性を低減する方法について解説しています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。Cisco製品を利用している場合に、脅威インテリジェンス活用の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や脆弱性に関する情報ではなく、一般的な製品紹介と脅威インテリジェンスの活用に関する情報のため「低」です。確認目安は、具体的な対応を求める内容ではなく、情報提供が主目的のため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:be10695c739865d2393077de24caf0c2d270d34df14f7edc8d86181b7f5e0b1c",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/the-serpents-tongue-luring-the-python-out-of-its-den/",
+      "canonical_url": "https://blog.talosintelligence.com/the-serpents-tongue-luring-the-python-out-of-its-den/",
+      "published_at": "2026-07-14T19:00:06+09:00",
+      "fetched_at": "2026-07-14T23:01:34.179655+09:00",
+      "title": "Pythonパッケージのライフサイクルとサプライチェーンリスク",
+      "raw_title": "The serpent’s tongue: Luring the Python out of its den",
+      "raw_excerpt": "This blog examines the full lifecycle of a Python package, from hosting on repositories such as PyPI or custom web servers, through source and wheel distribution formats, to the final installation int",
+      "content_hash": "sha256:af1fdeca151ed896bcd9d5d1918b3b65a2155b9b793029c1e05602ca11dd60a6",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v5",
+        "generated_at": "2026-07-14T23:03:02.736918+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Pythonパッケージの配布からインストールまでのサプライチェーンにおける潜在的な脅威と攻撃手法について解説しているため。",
+        "tags": [
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "本ブログ記事は、PyPIなどのリポジトリからカスタムWebサーバーでのホスティング、ソースおよびwheel形式での配布、そして仮想環境またはシステム全体のPython環境への最終的なインストールに至るまで、Pythonパッケージの完全なライフサイクルを分析しています。",
+        "financial_impact": "金融機関がPythonを利用したシステム開発や運用を行っている場合、サプライチェーンリスクとして関係します。特に、外部のPythonパッケージを利用している場合は、その信頼性を確認する必要があります。",
+        "recommended_actions": [
+          "自社および委託先におけるPythonパッケージの利用状況と、その入手経路・管理体制を確認する",
+          "利用しているPythonパッケージのサプライチェーンリスク評価を実施し、潜在的な脅威がないか確認する"
+        ],
+        "reason": "重要度は、Pythonパッケージのサプライチェーンリスクに関する一般的な解説であり、特定の脆弱性や緊急の脅威が示されていないため「中」です。確認目安は、具体的な攻撃や期限の記述がなく、中長期的なリスク評価の参考となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
     {
       "id": "sha256:8650d963e6905b13f85890563865a9d087a1e838fd9d5c25cab3606a1e6111cc",
       "source_id": "microsoft_security",
@@ -77,8 +332,8 @@
       "url": "https://www.microsoft.com/en-us/security/blog/2026/07/13/defending-saas-based-applications-against-shinyhunters-oauth-abuse/",
       "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/07/13/defending-saas-based-applications-against-shinyhunters-oauth-abuse/",
       "published_at": "2026-07-14T07:02:41+09:00",
-      "fetched_at": "2026-07-14T07:54:07.925720+09:00",
-      "title": "ShinyHunters OAuth 悪用から SaaS ベースのアプリケーションを防御する",
+      "fetched_at": "2026-07-14T23:01:34.179655+09:00",
+      "title": "ShinyHuntersによるSaaSベースアプリケーションへのOAuth悪用に対する防御",
       "raw_title": "Defending SaaS-based applications against ShinyHunters OAuth abuse",
       "raw_excerpt": "Microsoft Threat Intelligence identified threat actor activity with overlapping tradecraft commonly associated with ShinyHunters, including voice phishing (vishing), supply-chain compromise, and misco",
       "content_hash": "sha256:600cec2f92772c2b71f27fb18ca097107fb87b870fdeebd3a02a2668101b23ae",
@@ -86,28 +341,27 @@
       "analysis": {
         "status": "success",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-14T07:54:10.485207+09:00",
+        "prompt_version": "article-analysis-v5",
+        "generated_at": "2026-07-14T23:03:20.430804+09:00",
         "category": "攻撃・脅威動向",
         "category_version": "v1",
-        "category_reason": "ShinyHuntersによるSaaSアプリケーションへの攻撃手法と脅威動向が主題であるため。",
+        "category_reason": "ShinyHuntersによる攻撃手法と脅威動向が主題であるため。",
         "tags": [
           "SaaS",
-          "サプライチェーン",
           "フィッシング",
-          "委託先管理",
-          "IAM"
+          "サプライチェーン",
+          "認証"
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "Microsoft Threat Intelligenceは、ShinyHuntersに関連する脅威アクターが、ボイスフィッシング、サプライチェーン侵害、ゲストアクセス設定ミスを利用してSaaSベースのアプリケーションを標的としていることを確認しました。",
-        "financial_impact": "金融機関でもSaaSアプリケーションの利用は広範にわたっており、同様の攻撃手法が適用される可能性があります。特に、委託先管理やサプライチェーンリスクの観点から、SaaS利用におけるセキュリティ対策の再確認が重要です。",
+        "summary": "Microsoft Threat Intelligenceは、ShinyHuntersに関連する音声フィッシング（vishing）、サプライチェーン侵害、SaaSベースアプリケーションを標的としたゲストアクセス設定不備を含む脅威アクターの活動を特定しました。",
+        "financial_impact": "金融機関がSaaSベースのアプリケーションを利用し、OAuth認証やゲストアクセス設定を行っている場合に、攻撃の対象となる可能性があります。",
         "recommended_actions": [
-          "自社で利用しているSaaSアプリケーションにおけるOAuth設定およびゲストアクセス設定の適切性を確認してください。",
-          "委託先が利用するSaaSアプリケーションのセキュリティ対策状況について、契約内容と実態の確認を推奨します。",
-          "従業員に対し、ボイスフィッシング（vishing）の手口に関する注意喚起と教育を実施してください。"
+          "自社および委託先におけるSaaSベースアプリケーションのOAuth認証設定とゲストアクセス設定の状況を確認する",
+          "音声フィッシング（vishing）に対する従業員への注意喚起と教育を強化する",
+          "サプライチェーンにおけるセキュリティリスク評価と管理体制を再確認する"
         ],
-        "reason": "ShinyHuntersによるSaaSアプリケーションへの攻撃は、金融機関でも利用される可能性のあるサービスを標的としており、サプライチェーン侵害や設定ミスといった汎用的な手法が用いられているため、今週中に自社のSaaS利用状況と対策を確認する価値があります。",
+        "reason": "重要度は、SaaSアプリケーションの利用状況により影響が異なるため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、一般的な脅威動向に関する情報であるため「今週確認」です。",
         "error_type": null,
         "http_status": null
       },
@@ -126,29 +380,30 @@
       "url": "https://www.darkreading.com/endpoint-security/weak-security-fuel-russian-cyberattacks",
       "canonical_url": "https://www.darkreading.com/endpoint-security/weak-security-fuel-russian-cyberattacks",
       "published_at": "2026-07-14T06:24:59+09:00",
-      "fetched_at": "2026-07-14T07:54:07.925720+09:00",
-      "title": "脆弱なセキュリティがロシアのサイバー攻撃を助長し続ける",
+      "fetched_at": "2026-07-14T23:01:34.179655+09:00",
+      "title": "英国とEUがロシアのサイバー攻撃と偽情報キャンペーンに対し初の共同制裁",
       "raw_title": "Weak Security Continues to Fuel Russian Cyberattacks",
-      "raw_excerpt": "In a first, the UK and the EU jointly impose sanctions on Russian individuals and entities for cyberattacks and disinformation campaigns in the region.",
-      "content_hash": "sha256:1c0c9456f704245d979161d0ad545f9df76342beff2d93585cfabf211e6e5e63",
+      "raw_excerpt": "In a first, the UK and the EU jointly imposed sanctions on Russian individuals and entities for cyberattacks and disinformation campaigns in the region.",
+      "content_hash": "sha256:96886f039b499f1f28c84cf54ffdc310d8efa00cc06204b7eac1a586cea3a57f",
       "rule_flags": [],
       "analysis": {
         "status": "success",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-14T07:54:27.199892+09:00",
+        "prompt_version": "article-analysis-v5",
+        "generated_at": "2026-07-14T23:03:39.154522+09:00",
         "category": "攻撃・脅威動向",
         "category_version": "v1",
-        "category_reason": "ロシアによるサイバー攻撃と偽情報キャンペーンに関する記事であり、攻撃者と脅威動向が主題であるため。",
+        "category_reason": "記事の主題がロシアのサイバー攻撃と偽情報キャンペーン、およびそれに対する制裁であるため。",
         "tags": [
-          "APT"
+          "APT",
+          "規制"
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "英国とEUは、ロシアのサイバー攻撃および偽情報キャンペーンに関与した個人と団体に対し、初めて共同で制裁を課しました。",
-        "financial_impact": "金融機関への直接的な影響は限定的ですが、国家支援型攻撃者によるサイバー攻撃の動向は、金融機関の脅威インテリジェンスとして参考になります。",
+        "summary": "英国とEUは、ロシアの個人および団体に対し、サイバー攻撃と偽情報キャンペーンを理由に初の共同制裁を課しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的ですが、ロシア関連のサイバー脅威動向を把握する上で参考になります。制裁対象となる個人・団体との取引有無を確認する必要がある場合があります。",
         "recommended_actions": [],
-        "reason": "ロシアによるサイバー攻撃と偽情報キャンペーンに対する制裁は、国家支援型攻撃者の動向を示す重要な情報ですが、金融機関への直接的な脅威や具体的な対応期限が記事からは確認できないため、今週中に状況を把握する対象とします。",
+        "reason": "重要度は、ロシアによるサイバー攻撃と制裁に関する情報であり、脅威動向の把握に資するため「中」です。確認目安は、具体的な脆弱性や緊急対応を要する情報ではないため「今週確認」です。",
         "error_type": null,
         "http_status": null
       },
@@ -167,8 +422,8 @@
       "url": "https://www.darkreading.com/cybersecurity-operations/yellow-teams-defining-future-ai-security",
       "canonical_url": "https://www.darkreading.com/cybersecurity-operations/yellow-teams-defining-future-ai-security",
       "published_at": "2026-07-14T03:18:30+09:00",
-      "fetched_at": "2026-07-14T07:54:07.925720+09:00",
-      "title": "AI セキュリティの未来を定義する「イエロー チーム」",
+      "fetched_at": "2026-07-14T23:01:34.179655+09:00",
+      "title": "「イエローチーム」がAIセキュリティの未来を定義する",
       "raw_title": "'Yellow Teams' Are Defining the Future of AI Security",
       "raw_excerpt": "In some companies, engineers are building defense and attack tools to test the potential of artificial intelligence for cybersecurity — and its threat.",
       "content_hash": "sha256:ca7c6cae69d8b8bb554c731f05df342b16f9f713418194919b5052618c5d945b",
@@ -176,109 +431,20 @@
       "analysis": {
         "status": "success",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-14T07:54:43.784983+09:00",
+        "prompt_version": "article-analysis-v5",
+        "generated_at": "2026-07-14T23:03:56.047242+09:00",
         "category": "AI・新技術リスク",
         "category_version": "v1",
-        "category_reason": "記事の主題がAIのセキュリティにおける「Yellow Teams」の役割とAIの脅威・防御ツール開発についてであるため。",
+        "category_reason": "記事の主題がAIのセキュリティにおける防御・攻撃ツールの開発と、その脅威に関するものであるため。",
         "tags": [
           "AI"
         ],
-        "importance": "低",
+        "importance": "中",
         "urgency": "参考",
-        "summary": "一部の企業では、AIのサイバーセキュリティにおける可能性と脅威をテストするため、防御・攻撃ツールを構築する「Yellow Teams」が活動しており、AIセキュリティの未来を定義している。",
-        "financial_impact": "現時点の記事情報だけでは、金融機関への具体的な影響は確認できません。AIセキュリティの動向に関する一般的な参考情報として位置付けられます。",
+        "summary": "一部の企業では、エンジニアがサイバーセキュリティにおける人工知能の可能性と脅威をテストするために、防御および攻撃ツールを構築しています。これは「イエローチーム」と呼ばれ、AIのセキュリティを定義する新たな動きです。",
+        "financial_impact": "金融機関がAI技術を導入・活用する際に、そのセキュリティリスク評価や防御策検討の参考情報となります。直接的な影響は限定的です。",
         "recommended_actions": [],
-        "reason": "AIセキュリティに関する概念的な動向を示す記事であり、金融機関への直接的な影響や具体的な対応を要する情報、期限が示されていないため、参考情報としての位置付けです。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:eca7de3409a455c02e7eeedc4e9b787a1be378b552ab29dddc41c60bfa8f9d6e",
-      "source_id": "the_hacker_news",
-      "source_name": "The Hacker News",
-      "source_type": "報道・メディア",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "https://thehackernews.com/2026/07/crashstealer-macos-malware-uses.html",
-      "canonical_url": "https://thehackernews.com/2026/07/crashstealer-macos-malware-uses.html",
-      "published_at": "2026-07-14T02:36:12+09:00",
-      "fetched_at": "2026-07-14T07:54:07.925720+09:00",
-      "title": "CrashStealer macOS マルウェアは公証されたドロッパーを使用してゲートキーパーのチェックを通過",
-      "raw_title": "CrashStealer macOS Malware Uses Notarized Dropper to Pass Gatekeeper Checks",
-      "raw_excerpt": "Cybersecurity researchers have flagged a new macOS information stealer called CrashStealer that's capable of harvesting sensitive data from compromised systems.\n\nUnlike other information stealers that",
-      "content_hash": "sha256:aacbd8ff49e7f02cabec51b033a4172913dd1288c37975652e0ffe5efd226e52",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-14T07:55:01.850483+09:00",
-        "category": "攻撃・脅威動向",
-        "category_version": "v1",
-        "category_reason": "macOSを標的とした新しい情報窃取マルウェアの出現と、その技術的な特徴が主題であるため。",
-        "tags": [
-          "情報漏えい",
-          "フィッシング"
-        ],
-        "importance": "中",
-        "urgency": "今週確認",
-        "summary": "macOSを標的とした新しい情報窃取マルウェア「CrashStealer」が確認されました。このマルウェアは公証済みのドロッパーを使用し、Gatekeeperのチェックを回避して機密情報を窃取する能力があります。",
-        "financial_impact": "金融機関でmacOSデバイスが利用されている場合、従業員の認証情報や機密情報が窃取されるリスクがあります。特に、公証済みのドロッパーを使用しているため、通常のセキュリティ対策をすり抜ける可能性があります。",
-        "recommended_actions": [
-          "macOSデバイスの利用状況を確認し、セキュリティ設定（Gatekeeperなど）が適切に構成されているか確認してください。",
-          "macOSデバイスにおける情報窃取マルウェア対策について、最新の脅威情報に基づいた従業員への注意喚起と教育を検討してください。"
-        ],
-        "reason": "macOSを標的とした新しい情報窃取マルウェアであり、公証済みのドロッパーを使用しているため、通常のセキュリティチェックを回避する可能性があります。金融機関でmacOSデバイスが利用されている場合、情報窃取のリスクがあるため、今週中に適用性を確認する価値があります。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:9951731d1c253c3dc0e36dd81a0980d2851c2e1ff33c33045fc0703c3b7ac165",
-      "source_id": "the_hacker_news",
-      "source_name": "The Hacker News",
-      "source_type": "報道・メディア",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "https://thehackernews.com/2026/07/google-and-microsoft-pull-modheader.html",
-      "canonical_url": "https://thehackernews.com/2026/07/google-and-microsoft-pull-modheader.html",
-      "published_at": "2026-07-14T02:17:24+09:00",
-      "fetched_at": "2026-07-14T07:54:07.925720+09:00",
-      "title": "GoogleとMicrosoft、休止中のコレクター発見後、160万インストールのModHeaderをプル",
-      "raw_title": "Google and Microsoft Pull ModHeader With 1.6 Million Installs After Dormant Collector Found",
-      "raw_excerpt": "Google and Microsoft have pulled ModHeader, a popular header-editing extension with roughly 1.6 million installs across Chrome and Edge, after researchers found a hidden browsing-history collector bui",
-      "content_hash": "sha256:bb32a52d17c17fbc07437c025a2fec8b3a9fa573f05ea557cae2477afda8534e",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-14T07:55:19.324936+09:00",
-        "category": "攻撃・脅威動向",
-        "category_version": "v1",
-        "category_reason": "ブラウザ拡張機能に潜む情報収集機能の発見と、それに対するGoogleおよびMicrosoftの対応が主題であるため。",
-        "tags": [
-          "情報漏えい"
-        ],
-        "importance": "中",
-        "urgency": "今週確認",
-        "summary": "GoogleとMicrosoftは、ChromeとEdgeで約160万回インストールされた人気ヘッダー編集拡張機能「ModHeader」をストアから削除しました。研究者が公式ストア版に隠された休眠状態の閲覧履歴収集機能を発見したためです。",
-        "financial_impact": "金融機関の従業員が業務で当該ブラウザ拡張機能を利用していた場合、機密情報を含む閲覧履歴が収集されるリスクがあった可能性があります。ただし、収集機能は休眠状態であり、実際にデータが収集・送信された証拠はないとされています。",
-        "recommended_actions": [
-          "従業員が業務で使用しているブラウザ拡張機能について、利用の必要性とセキュリティリスクを再評価してください",
-          "組織内で許可されているブラウザ拡張機能のリストを見直し、不要なものやリスクのあるものを削除するよう推奨してください"
-        ],
-        "reason": "人気のあるブラウザ拡張機能に情報収集機能が発見された事例であり、従業員が業務で利用する可能性を考慮し、ブラウザ拡張機能の管理に関する注意喚起として中程度の重要度と判断しました。ただし、機能は休眠状態であり、具体的な情報漏えいの証拠がないため、緊急性は「今週確認」としました。",
+        "reason": "重要度は、AIセキュリティの新たな動向に関する情報であり、中長期的なリスク評価の参考となるため「中」です。確認目安は、具体的な脅威や期限が示されておらず、短期的な対応を要する情報ではないため「参考」です。",
         "error_type": null,
         "http_status": null
       },
@@ -297,8 +463,8 @@
       "url": "https://www.microsoft.com/en-us/security/blog/2026/07/13/microsoft-entra-id-security-updates-passkeys-are-the-default-authentication-method-in-entra-id/",
       "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/07/13/microsoft-entra-id-security-updates-passkeys-are-the-default-authentication-method-in-entra-id/",
       "published_at": "2026-07-14T02:00:00+09:00",
-      "fetched_at": "2026-07-14T07:54:07.925720+09:00",
-      "title": "Microsoft Entra ID のセキュリティ更新: パスキーは Entra ID のデフォルトの認証方法です",
+      "fetched_at": "2026-07-14T23:01:34.179655+09:00",
+      "title": "Microsoft Entra IDのセキュリティ更新: パスキーがデフォルトの認証方法に",
       "raw_title": "Microsoft Entra ID security updates: Passkeys are the default authentication method in Entra ID",
       "raw_excerpt": "Microsoft Entra ID makes passkeys the default sign-in experience and introduces a new model for SMS and voice authentication. Read about how to prepare.\nThe post Microsoft Entra ID security updates: P",
       "content_hash": "sha256:424435fe70f063599864b1e32bd3d8bc6d2e7ca9b0d0c587a6f4d9aa73fd766d",
@@ -306,11 +472,11 @@
       "analysis": {
         "status": "success",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-14T07:55:36.522473+09:00",
+        "prompt_version": "article-analysis-v5",
+        "generated_at": "2026-07-14T23:04:13.246538+09:00",
         "category": "クラウド・サプライチェーン",
         "category_version": "v1",
-        "category_reason": "Microsoft Entra IDの認証方法の変更に関する記事であり、クラウドサービスにおける認証基盤の更新が主題であるため。",
+        "category_reason": "Microsoft Entra IDというクラウドサービスにおける認証方法の変更が主題であるため。",
         "tags": [
           "クラウド",
           "認証",
@@ -318,97 +484,13 @@
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "Microsoft Entra IDがパスキーをデフォルトのサインイン方法とし、SMSおよび音声認証の新しいモデルを導入することを発表しました。",
-        "financial_impact": "多くの金融機関がMicrosoft Entra IDを認証基盤として利用している可能性があり、認証方法の変更はセキュリティ運用やユーザーエクスペリエンスに影響を与える可能性があります。",
+        "summary": "Microsoft Entra IDにおいて、パスキーがデフォルトのサインインエクスペリエンスとなり、SMSおよび音声認証の新しいモデルが導入されました。この変更への準備について説明されています。",
+        "financial_impact": "Microsoft Entra IDを利用している金融機関は、認証方法の変更がユーザーエクスペリエンスやセキュリティポリシーに影響を与える可能性があるため、確認が必要です。",
         "recommended_actions": [
-          "Microsoft Entra IDの利用状況を確認し、パスキーのデフォルト化およびSMS/音声認証の変更が自社の認証ポリシーや運用に与える影響を評価してください。",
-          "Microsoftが提供する準備ガイドやドキュメントを参照し、必要な設定変更やユーザーへの周知計画を策定してください。"
+          "Microsoft Entra IDの利用有無と、今回の認証方法変更が自社の認証ポリシーや運用に与える影響を確認する",
+          "Microsoftが提供する情報に基づき、パスキーの導入およびSMS/音声認証の新モデルへの移行計画を評価する"
         ],
-        "reason": "Microsoft Entra IDは多くの金融機関で利用されている可能性のある認証基盤であり、その認証方法の変更はセキュリティ運用に影響を与えるため重要度は「中」と判断しました。ただし、即時対応を要する脆弱性やインシデントではなく、準備期間が設けられているため、緊急度は「今週確認」としました。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:8a5ca621ec1d2c54effa7e18ef969b0d1fc67c898f679f7c290e25fd6d848aa8",
-      "source_id": "dark_reading",
-      "source_name": "Dark Reading",
-      "source_type": "報道・メディア",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "https://www.darkreading.com/cyberattacks-data-breaches/gigawiper-threat-actors-choose-their-own-destructive-attack",
-      "canonical_url": "https://www.darkreading.com/cyberattacks-data-breaches/gigawiper-threat-actors-choose-their-own-destructive-attack",
-      "published_at": "2026-07-14T01:50:54+09:00",
-      "fetched_at": "2026-07-14T07:54:07.925720+09:00",
-      "title": "GigaWiper により、脅威アクターは独自の破壊的な攻撃を選択できます",
-      "raw_title": "GigaWiper Lets Threat Actors Choose Their Own Destructive Attack",
-      "raw_excerpt": "A modular implant borrows from various malware families to combine both backdoor and wiper activities to maximize impact and minimize operational output.",
-      "content_hash": "sha256:083d7c0d51d1d731b2c986e66b89a6ae91b170bd4c8b35e5a6e8c4554c9f1aa0",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-14T07:55:53.846468+09:00",
-        "category": "攻撃・脅威動向",
-        "category_version": "v1",
-        "category_reason": "GigaWiperという新しいマルウェアの機能と攻撃手法に関する記事であり、脅威動向が主題であるため。",
-        "tags": [
-          "ランサムウェア"
-        ],
-        "importance": "中",
-        "urgency": "今週確認",
-        "summary": "GigaWiperは、バックドア機能とワイパー機能を組み合わせたモジュール式のマルウェアで、攻撃者が破壊的な攻撃をカスタマイズして実行できる点が特徴です。",
-        "financial_impact": "金融機関への直接的な影響は記事からは確認できませんが、ワイパー型マルウェアは業務停止やデータ破壊を引き起こす可能性があり、一般的な脅威動向として警戒が必要です。",
-        "recommended_actions": [],
-        "reason": "GigaWiperは破壊的な攻撃を可能にする新しいマルウェアであり、その動向を把握することは重要ですが、現時点で金融機関への具体的な標的化や広範な利用は確認できないため、今週中に脅威動向として確認する対象とします。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:ad3e33cb35b505dabdee6cb5d7e007dd00188c0ed9cf4719106562197b596614",
-      "source_id": "the_hacker_news",
-      "source_name": "The Hacker News",
-      "source_type": "報道・メディア",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "https://thehackernews.com/2026/07/weekly-recap-sharefile-threat-citrix.html",
-      "canonical_url": "https://thehackernews.com/2026/07/weekly-recap-sharefile-threat-citrix.html",
-      "published_at": "2026-07-14T00:05:57+09:00",
-      "fetched_at": "2026-07-14T07:54:07.925720+09:00",
-      "title": "⚡ 毎週の要約: ShareFile 脅威、Citrix Bleed 2 ランサムウェア、AI コーディング攻撃など",
-      "raw_title": "⚡ Weekly Recap: ShareFile Threat, Citrix Bleed 2 Ransomware, AI Coding Attacks, and More",
-      "raw_excerpt": "Somewhere right now, a security tool is quietly finding bugs faster than any human can fix them. That's supposed to be the good news. The catch is that the attackers have the same tools, pointed the o",
-      "content_hash": "sha256:966201a7d65bb3a8c73ea69f137068aa6a8e447567b8c5abb59ab7f294c4c595",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-14T07:56:10.889059+09:00",
-        "category": "攻撃・脅威動向",
-        "category_version": "v1",
-        "category_reason": "記事はShareFileの脅威、Citrix Bleed 2ランサムウェア、AIコーディング攻撃など、複数の攻撃や脅威の動向をまとめており、攻撃・脅威動向が主題です。",
-        "tags": [
-          "ランサムウェア",
-          "サプライチェーン",
-          "AI"
-        ],
-        "importance": "中",
-        "urgency": "今週確認",
-        "summary": "今週のサイバーセキュリティ動向として、ShareFileの脅威、Citrix Bleed 2ランサムウェア、AIコーディング攻撃などが取り上げられており、セキュリティツールによる脆弱性発見と攻撃者による悪用の加速が指摘されています。",
-        "financial_impact": "記事は特定の金融機関への直接的な影響を述べていませんが、ランサムウェアやサプライチェーン攻撃は金融機関の業務停止や情報漏えいにつながる可能性があり、一般的な脅威動向として参考になります。",
-        "recommended_actions": [],
-        "reason": "複数の脅威動向をまとめた週次レポートであり、個別の緊急対応を要する具体的な情報や期限は含まれていません。金融機関への直接的な影響も記事からは確認できないため、一般的な脅威情報として今週中に確認する対象とします。",
+        "reason": "重要度は、Microsoft Entra IDの認証方法変更であり、利用している金融機関にとっては影響があるため「中」です。確認目安は、即時対応を要する脆弱性やインシデントではなく、計画的な対応が求められるため「今週確認」です。",
         "error_type": null,
         "http_status": null
       },
@@ -427,8 +509,8 @@
       "url": "https://krebsonsecurity.com/2026/07/lessons-learned-from-cisas-recent-github-leak/",
       "canonical_url": "https://krebsonsecurity.com/2026/07/lessons-learned-from-cisas-recent-github-leak/",
       "published_at": "2026-07-14T00:03:28+09:00",
-      "fetched_at": "2026-07-14T07:54:07.925720+09:00",
-      "title": "CISA による最近の GitHub 漏洩から学んだ教訓",
+      "fetched_at": "2026-07-14T23:01:34.179655+09:00",
+      "title": "CISAのGitHub情報漏えいから学ぶべき教訓",
       "raw_title": "Lessons Learned from CISA’s Recent GitHub Leak",
       "raw_excerpt": "The Cybersecurity and Infrastructure Security Agency (CISA) has issued a postmortem on a data leak in which a contractor published dozens of internal CISA credentials -- including AWS Govcloud keys --",
       "content_hash": "sha256:0d9bd2e6c81778909e2abfd8c79f1ed6cc13a58938ebf983498d7d126190717f",
@@ -436,153 +518,31 @@
       "analysis": {
         "status": "success",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-14T07:56:28.294997+09:00",
+        "prompt_version": "article-analysis-v5",
+        "generated_at": "2026-07-14T23:04:30.456328+09:00",
         "category": "インシデント",
         "category_version": "v1",
-        "category_reason": "CISAのデータ漏洩という実際の侵害事例が主題であるため。",
+        "category_reason": "CISAの内部情報がGitHubに漏えいした実際の事例が主題であるため。",
         "tags": [
           "インシデント",
           "情報漏えい",
           "クラウド",
-          "サプライチェーン",
           "委託先管理"
         ],
         "importance": "中",
-        "urgency": "今週確認",
-        "summary": "CISAの請負業者がAWS Govcloudの鍵を含む多数の内部認証情報を約6ヶ月間GitHubの公開リポジトリに誤って公開していたデータ漏洩インシデントが発生し、KrebsOnSecurityからの通知で発覚しました。",
-        "financial_impact": "金融機関への直接的な影響は限定的ですが、クラウド環境における認証情報管理の不備やサプライチェーンリスクの事例として参考になります。",
+        "urgency": "参考",
+        "summary": "CISAは、契約業者がAWS Govcloudキーを含む数十の内部認証情報を約6ヶ月間パブリックなGitHubリポジトリに公開していたデータ漏えいについて事後分析を公表しました。この事案は、セキュリティチームが学ぶべき重要な教訓を提供しています。",
+        "financial_impact": "金融機関への直接的な影響は限定的ですが、クラウド環境における認証情報管理や委託先管理の重要性について参考となる事例です。",
         "recommended_actions": [
-          "クラウド環境における認証情報の管理状況、特に公開リポジトリへの誤公開リスクについて確認してください。",
-          "委託先におけるセキュリティ管理体制、特に認証情報や機密情報の取り扱いに関する契約内容と実態を確認してください。",
-          "インシデント発生時の検知・対応プロセスについて、本事例の教訓を踏まえて見直しを検討してください。"
+          "自社および委託先におけるクラウド環境の認証情報管理状況を確認する",
+          "委託先が利用するコードリポジトリのセキュリティ設定と監視体制を評価する"
         ],
-        "reason": "CISAという公的機関のインシデントであり、クラウド環境での認証情報管理の不備とサプライチェーンリスクという点で金融機関にも共通する教訓が含まれるため、今週中に内容を確認する価値があります。ただし、金融機関への直接的な影響は確認できないため、重要度は「中」と判断しました。",
+        "reason": "重要度は、金融機関への直接的な影響は限定的であるものの、クラウド環境の認証情報管理と委託先管理の教訓として価値があるため「中」です。確認目安は、具体的な緊急対応や期限の記述がなく、中長期的な対策検討の参考情報であるため「参考」です。",
         "error_type": null,
         "http_status": null
       },
       "facts": {
         "cves": []
-      }
-    },
-    {
-      "id": "sha256:75714a411122eeeba0ad3f5c93736ec6adbc325a2685c5a7edacda927c806d77",
-      "source_id": "ncsc",
-      "source_name": "NCSC",
-      "source_type": "CERT・注意喚起",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "https://www.ncsc.gov.uk/news/uk-and-allies-urge-critical-sectors-to-improve-defences-against-russian-intelligence-targeting",
-      "canonical_url": "https://www.ncsc.gov.uk/news/uk-and-allies-urge-critical-sectors-to-improve-defences-against-russian-intelligence-targeting",
-      "published_at": "2026-07-13T21:00:00+09:00",
-      "fetched_at": "2026-07-14T07:54:07.925720+09:00",
-      "title": "英国と同盟国は重要部門に対し、ロシア諜報機関の標的に対する防御を強化するよう要請",
-      "raw_title": "UK and Allies urge critical sectors to improve defences against Russian intelligence targeting",
-      "raw_excerpt": "New advisory highlights Russian state cyber actors’ global exploitation of poorly configured routers",
-      "content_hash": "sha256:446df172160263feb5252d1368e6ffe9375a133c3a7fb99d3b953681d718e63d",
-      "rule_flags": [],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-14T07:56:45.480814+09:00",
-        "category": "攻撃・脅威動向",
-        "category_version": "v1",
-        "category_reason": "ロシアの国家支援型サイバー攻撃者が、設定が不十分なルーターを悪用しているという脅威動向が主題であるため。",
-        "tags": [
-          "APT",
-          "NIST"
-        ],
-        "importance": "中",
-        "urgency": "今週確認",
-        "summary": "英国および同盟国は、ロシアの国家支援型サイバー攻撃者が設定が不十分なルーターを悪用し、重要インフラを含むセクターを標的にしていると警告し、防御強化を呼びかけました。",
-        "financial_impact": "金融機関も重要インフラの一部として標的となる可能性があり、設定が不十分なルーターは攻撃経路となるため、自社のネットワーク機器の設定状況を確認する必要があります。",
-        "recommended_actions": [
-          "自社および委託先が利用するルーターの設定が適切であるか、セキュリティガイドラインに沿って確認してください",
-          "ロシアの国家支援型攻撃者による最新の攻撃手法やIOCに関する情報を継続的に収集し、防御策を強化してください"
-        ],
-        "reason": "ロシアの国家支援型攻撃者による重要インフラへの脅威は重大ですが、記事は一般的な注意喚起であり、特定の脆弱性や緊急の対応期限が示されていないため、今週中に自社の防御態勢を確認する対象とします。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:db0bb61afd4e3fd781bb022a7692de860c4e1da9e9b721e744a18344b37a35eb",
-      "source_id": "cisa_kev",
-      "source_name": "CISA KEV",
-      "source_type": "CERT・注意喚起",
-      "source_tier": "Tier 1",
-      "collection_method": "cisa_kev_json",
-      "language": "en",
-      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
-      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
-      "published_at": null,
-      "fetched_at": "2026-07-14T07:54:07.925720+09:00",
-      "title": "CVE-2008-4128 — Cisco IOS クロスサイト リクエスト フォージェリの脆弱性",
-      "raw_title": "CVE-2008-4128 — Cisco IOS Cross-Site Request Forgery Vulnerability",
-      "raw_excerpt": "Cisco IOS 12.4 contains multiple cross-site forgery vulnerabilities that allows remote attackers to execute arbitrary commands via (1) a certain \"show privilege\" command to the /level/15/exec/- URI, a",
-      "content_hash": "sha256:ec993c9a886f1f364fc87c683d8102b23345f9bdbb3b4a536e4b03ae9150b803",
-      "rule_flags": [
-        "kev_entry"
-      ],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v4",
-        "generated_at": "2026-07-14T07:57:02.293355+09:00",
-        "category": "脆弱性・パッチ",
-        "category_version": "v1",
-        "category_reason": "Cisco IOSのクロスサイトリクエストフォージェリ脆弱性が主題であるため。",
-        "tags": [
-          "CVE",
-          "KEV",
-          "悪用確認済み"
-        ],
-        "importance": "中",
-        "urgency": "今週確認",
-        "summary": "Cisco IOS 12.4には複数のクロスサイトリクエストフォージェリ脆弱性があり、リモート攻撃者が特定のコマンドを介して任意のコマンドを実行できる可能性があります。",
-        "financial_impact": "金融機関でCisco IOS 12.4を利用している場合に限り、適用性確認の対象となります。記事からは金融機関での利用状況や影響範囲は確認できません。",
-        "recommended_actions": [
-          "CVE-2008-4128を基に、自社および委託先でCisco IOS 12.4の利用有無を確認してください。",
-          "該当製品を利用している場合、ベンダーの一次情報で修正版や緩和策を確認してください。"
-        ],
-        "reason": "CISA KEVに掲載され、CVSS v2.0で9.3と評価されている脆弱性ですが、対象製品の利用状況や金融機関での普及度、外部公開の有無が記事から不明なため、まず今週中に適用性を確認する対象とします。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": [
-          {
-            "cve_id": "CVE-2008-4128",
-            "nvd": {
-              "status": "found",
-              "retrieval": "live",
-              "fetched_at": "2026-07-13T22:54:07Z",
-              "url": "https://nvd.nist.gov/vuln/detail/CVE-2008-4128",
-              "vuln_status": "Analyzed",
-              "published_at": "2008-09-18T20:00:00Z",
-              "last_modified_at": "2026-07-13T19:12:50Z",
-              "cvss": {
-                "version": "2.0",
-                "base_score": 9.3,
-                "base_severity": "HIGH",
-                "vector": "AV:N/AC:M/Au:N/C:C/I:C/A:C",
-                "source": "nvd@nist.gov",
-                "type": "Primary"
-              }
-            },
-            "kev": {
-              "status": "listed",
-              "retrieval": "live",
-              "fetched_at": "2026-07-13T22:54:07Z",
-              "date_added": "2026-07-13"
-            }
-          }
-        ]
       }
     }
   ]

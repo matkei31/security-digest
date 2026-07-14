@@ -105,7 +105,7 @@
   <header>
     <h1>Security Digest</h1>
     <div class="sub">日次ダイジェスト：2026年07月14日</div>
-    <div class="sub">最終更新: 2026年07月14日 07:57</div>
+    <div class="sub">最終更新: 2026年07月14日 23:05</div>
     <div class="count">11 件</div>
     <nav class="archive-nav"><a class="archive-link" href="../index.html">最新のダイジェストへ戻る</a><a class="archive-link" href="index.html">過去のダイジェスト一覧へ戻る</a></nav>
   </header>
@@ -114,13 +114,13 @@
       <h2>Today's Brief</h2>
       <div class="brief-section">
       <h3 class="brief-section-title">本日の概況</h3>
-      <p class="brief-overview">本日は、SaaSアプリケーションのOAuth悪用、macOS向け情報窃取マルウェア、ブラウザ拡張機能による情報収集機能の発見など、多様な攻撃手法に関する情報が確認されました。特に、サプライチェーンリスクや設定不備を悪用する手口が目立ち、金融機関においてもSaaS利用や認証基盤、従業員デバイスの管理におけるセキュリティ対策の再確認が求められます。国家支援型攻撃者による重要インフラへの継続的な脅威も指摘されており、広範な警戒が必要です。</p>
+      <p class="brief-overview">本日は、AIコーディングプラットフォームの脆弱性やLinux UEFI Shimの脆弱性など、サプライチェーンに関連する技術的リスク情報が複数報告されました。また、仮想通貨ウォレットのプライバシーリスクやSaaSアプリケーションを標的とした攻撃動向、Microsoft Entra IDの認証方法変更など、クラウドサービスや認証に関する確認事項も含まれています。全体として、特定の緊急性の高い脅威は少ないものの、中長期的な視点でのリスク評価や設定確認が求められる情報が中心です。</p>
     </div><div class="brief-section">
       <h3 class="brief-section-title">本日の注目論点</h3>
-      <ul class="brief-list"><li>SaaSアプリケーションやクラウド環境における設定不備、特にOAuth設定やゲストアクセス設定、認証情報管理の適切性が、サプライチェーン攻撃や情報漏えいの主要な経路となっている現状について、組織全体でのリスク評価と対策強化が喫緊の課題です。</li><li>従業員が利用するデバイス（macOSなど）やブラウザ拡張機能が、情報窃取マルウェアや意図しない情報収集機能の標的となるリスクが高まっています。これらのエンドポイントにおけるセキュリティ対策と、従業員への継続的なセキュリティ意識向上教育の重要性について議論が必要です。</li><li>国家支援型攻撃者による重要インフラへのサイバー攻撃は継続しており、設定が不十分なネットワーク機器が悪用される事例も報告されています。自社のネットワーク機器の設定状況だけでなく、委託先を含めたサプライチェーン全体の防御態勢をどのように強化していくべきか、戦略的な検討が求められます。</li></ul>
+      <ul class="brief-list"><li>AI技術の導入が進む中で、AIコーディングプラットフォームの脆弱性やAIセキュリティエージェントの活用に関する情報が示されており、金融機関におけるAI利用時のセキュリティリスク評価と管理態勢について議論が必要です。</li><li>Pythonパッケージのライフサイクル分析やSaaSアプリケーションを標的とした攻撃動向、CISAのGitHub情報漏えい事例など、サプライチェーンおよびクラウド環境における認証情報管理や委託先管理の重要性が改めて浮き彫りになっています。これらのリスクに対する統制強化について検討すべきです。</li><li>仮想通貨ウォレット拡張機能のプライバシーリスクやMicrosoft Entra IDの認証方法変更は、金融機関における認証基盤や従業員のIT利用ポリシー、顧客資産保護の観点から、セキュリティ対策の現状と将来的な方向性について議論するきっかけとなります。</li></ul>
     </div><div class="brief-section">
       <h3 class="brief-section-title">本日の確認事項</h3>
-      <ul class="brief-list"><li>自社で利用しているSaaSアプリケーションにおけるOAuth設定およびゲストアクセス設定の適切性を確認してください。</li><li>macOSデバイスの利用状況を確認し、セキュリティ設定が適切に構成されているか、また情報窃取マルウェア対策について従業員への注意喚起を検討してください。</li><li>従業員が業務で使用しているブラウザ拡張機能について、利用の必要性とセキュリティリスクを再評価し、組織内で許可されているリストを見直してください。</li><li>クラウド環境における認証情報の管理状況、特に公開リポジトリへの誤公開リスクについて確認し、委託先におけるセキュリティ管理体制も再確認してください。</li></ul>
+      <ul class="brief-list"><li>自社および委託先でAIコーディングプラットフォーム「Cursor IDE」やLinux UEFI Shimを使用しているシステムがないか棚卸しし、該当する場合はベンダーからの修正情報や緩和策を確認する。</li><li>自社および委託先におけるSaaSベースアプリケーションのOAuth認証設定とゲストアクセス設定の状況を確認し、音声フィッシング（vishing）に対する従業員への注意喚起と教育を強化する。</li><li>Microsoft Entra IDの利用有無と、今回の認証方法変更が自社の認証ポリシーや運用に与える影響を確認し、パスキー導入およびSMS/音声認証の新モデルへの移行計画を評価する。</li><li>自社および委託先におけるPythonパッケージの利用状況と、その入手経路・管理体制を確認し、サプライチェーンリスク評価を実施する。</li></ul>
     </div>
     </div>
   </div>
@@ -144,11 +144,11 @@
       </section>
       <section class="dashboard-group">
         <h3>確認目安</h3>
-        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>本日確認</span><strong>0</strong></li><li class="dashboard-count-item"><span>今週確認</span><strong>10</strong></li><li class="dashboard-count-item"><span>参考</span><strong>1</strong></li></ul>
+        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>本日確認</span><strong>0</strong></li><li class="dashboard-count-item"><span>今週確認</span><strong>7</strong></li><li class="dashboard-count-item"><span>参考</span><strong>4</strong></li></ul>
       </section>
       <section class="dashboard-group dashboard-category-group">
         <h3>カテゴリ</h3>
-        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>脆弱性・パッチ</span><strong>1</strong></li><li class="dashboard-count-item"><span>攻撃・脅威動向</span><strong>7</strong></li><li class="dashboard-count-item"><span>インシデント</span><strong>1</strong></li><li class="dashboard-count-item"><span>クラウド・サプライチェーン</span><strong>1</strong></li><li class="dashboard-count-item"><span>AI・新技術リスク</span><strong>1</strong></li></ul>
+        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>脆弱性・パッチ</span><strong>1</strong></li><li class="dashboard-count-item"><span>攻撃・脅威動向</span><strong>4</strong></li><li class="dashboard-count-item"><span>インシデント</span><strong>1</strong></li><li class="dashboard-count-item"><span>クラウド・サプライチェーン</span><strong>1</strong></li><li class="dashboard-count-item"><span>AI・新技術リスク</span><strong>3</strong></li><li class="dashboard-count-item"><span>その他</span><strong>1</strong></li></ul>
       </section>
     </div>
   </section>
@@ -159,265 +159,261 @@
   <div class="cards">
     <article class="card" id="article-1">
       <div class="card-meta">
-        <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">07/14 07:02</span>
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">07/14 22:00</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/13/defending-saas-based-applications-against-shinyhunters-oauth-abuse/" target="_blank" rel="noopener noreferrer" lang="en">Defending SaaS-based applications against ShinyHunters OAuth abuse</a><span class="article-title-translation" lang="ja">ShinyHunters OAuth 悪用から SaaS ベースのアプリケーションを防御する</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/application-security/cursor-ide-malicious-code-poisoned-repos" target="_blank" rel="noopener noreferrer" lang="en">Cursor IDE Auto-Executes Malicious Code in Poisoned Repos</a><span class="article-title-translation" lang="ja">Cursor IDE、汚染されたリポジトリで悪意のあるコードを自動実行する脆弱性</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">SaaS</span><span class="article-tag">サプライチェーン</span><span class="article-tag">フィッシング</span><span class="article-tag">委託先管理</span><span class="article-tag">IAM</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">サプライチェーン</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Microsoft Threat Intelligenceは、ShinyHuntersに関連する脅威アクターが、ボイスフィッシング、サプライチェーン侵害、ゲストアクセス設定ミスを利用してSaaSベースのアプリケーションを標的としていることを確認しました。</p>
+          <p>AIコーディングプラットフォーム「Cursor IDE」に、汚染されたリポジトリから悪意のあるコードを自動実行する脆弱性が報告されました。この脆弱性は昨年12月に報告されましたが、依然として修正されていません。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関でもSaaSアプリケーションの利用は広範にわたっており、同様の攻撃手法が適用される可能性があります。特に、委託先管理やサプライチェーンリスクの観点から、SaaS利用におけるセキュリティ対策の再確認が重要です。</p>
+          <p>金融機関でCursor IDEを利用している場合に、サプライチェーンリスクとして関係します。利用有無は記事から確認できないため断定はできません。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社で利用しているSaaSアプリケーションにおけるOAuth設定およびゲストアクセス設定の適切性を確認してください。</li><li>委託先が利用するSaaSアプリケーションのセキュリティ対策状況について、契約内容と実態の確認を推奨します。</li><li>従業員に対し、ボイスフィッシング（vishing）の手口に関する注意喚起と教育を実施してください。</li></ul>
+          <ul class="action-list"><li>Cursor IDEの利用有無と、利用している場合は影響バージョンの確認を行う</li><li>ベンダーからの修正情報や緩和策の有無を確認する</li></ul>
         </section>
       </div>
-      <a class="article-source-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/13/defending-saas-based-applications-against-shinyhunters-oauth-abuse/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://www.darkreading.com/application-security/cursor-ide-malicious-code-poisoned-repos" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-2">
       <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/14 06:24</span>
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">07/14 21:46</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/endpoint-security/weak-security-fuel-russian-cyberattacks" target="_blank" rel="noopener noreferrer" lang="en">Weak Security Continues to Fuel Russian Cyberattacks</a><span class="article-title-translation" lang="ja">脆弱なセキュリティがロシアのサイバー攻撃を助長し続ける</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/11-old-microsoft-signed-linux-uefi.html" target="_blank" rel="noopener noreferrer" lang="en">11 Old Microsoft-Signed Linux UEFI Shims Could Let Attackers Bypass Secure Boot</a><span class="article-title-translation" lang="ja">Microsoft署名済みLinux UEFI Shimの脆弱性によりセキュアブートが迂回される可能性</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">APT</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">パッチ</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>英国とEUは、ロシアのサイバー攻撃および偽情報キャンペーンに関与した個人と団体に対し、初めて共同で制裁を課しました。</p>
+          <p>サイバーセキュリティ研究者が、Microsoft署名済みの古いLinux UEFIアプリケーション11件に脆弱性を発見しました。これにより、最新のファームウェア標準を使用するほとんどのシステムでセキュアブートが迂回される可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関への直接的な影響は限定的ですが、国家支援型攻撃者によるサイバー攻撃の動向は、金融機関の脅威インテリジェンスとして参考になります。</p>
+          <p>金融機関でLinux UEFI Shimを使用しているシステムがある場合に関係します。攻撃者がこれらの脆弱なアプリケーションを悪用すると、システム起動時に信頼されていないコードが実行され、悪意のあるUEFIブートキットなどが展開される可能性があります。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先でLinux UEFI Shimを使用しているシステムがないか棚卸しする</li><li>該当するシステムがある場合、ベンダーからの一次情報を確認し、修正版や緩和策の有無を評価する</li></ul>
         </section>
       </div>
-      <a class="article-source-link" href="https://www.darkreading.com/endpoint-security/weak-security-fuel-russian-cyberattacks" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://thehackernews.com/2026/07/11-old-microsoft-signed-linux-uefi.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-3">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/14 02:36</span>
+        <span class="date">07/14 20:55</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/crashstealer-macos-malware-uses.html" target="_blank" rel="noopener noreferrer" lang="en">CrashStealer macOS Malware Uses Notarized Dropper to Pass Gatekeeper Checks</a><span class="article-title-translation" lang="ja">CrashStealer macOS マルウェアは公証されたドロッパーを使用してゲートキーパーのチェックを通過</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/study-of-85-crypto-wallet-extensions.html" target="_blank" rel="noopener noreferrer" lang="en">Study of 85 Crypto Wallet Extensions Finds Address Leaks and Cross-Site Tracking Risks</a><span class="article-title-translation" lang="ja">85種類の仮想通貨ウォレット拡張機能に関する調査でアドレス漏洩とクロスサイト追跡のリスクが判明</span></span></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">情報漏えい</span><span class="article-tag">フィッシング</span></div>
+        
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>macOSを標的とした新しい情報窃取マルウェア「CrashStealer」が確認されました。このマルウェアは公証済みのドロッパーを使用し、Gatekeeperのチェックを回避して機密情報を窃取する能力があります。</p>
+          <p>KU Leuvenの研究者らが85種類の人気仮想通貨ウォレットブラウザ拡張機能を調査した結果、ウォレット自体がユーザーを紐付け、追跡するのに十分な情報を漏洩していることが判明しました。ウォレットとウェブサイト・ブロックチェーンサーバー間の通信により、個人の複数のアドレスが関連付けられ、外部からサイトを横断して追跡される可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関でmacOSデバイスが利用されている場合、従業員の認証情報や機密情報が窃取されるリスクがあります。特に、公証済みのドロッパーを使用しているため、通常のセキュリティ対策をすり抜ける可能性があります。</p>
+          <p>金融機関が仮想通貨関連サービスを提供している場合、または従業員が業務で仮想通貨ウォレット拡張機能を利用している場合に、情報漏洩や追跡のリスクに関係します。直接的な影響は限定的ですが、顧客資産の保護や情報セキュリティポリシーの観点から確認が必要です。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>macOSデバイスの利用状況を確認し、セキュリティ設定（Gatekeeperなど）が適切に構成されているか確認してください。</li><li>macOSデバイスにおける情報窃取マルウェア対策について、最新の脅威情報に基づいた従業員への注意喚起と教育を検討してください。</li></ul>
+          <ul class="action-list"><li>仮想通貨ウォレット拡張機能の利用状況を棚卸しし、業務での利用が許可されているか確認する</li><li>仮想通貨ウォレット拡張機能を利用している場合、プライバシー設定やセキュリティ対策についてベンダーの情報を確認する</li></ul>
         </section>
       </div>
-      <a class="article-source-link" href="https://thehackernews.com/2026/07/crashstealer-macos-malware-uses.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://thehackernews.com/2026/07/study-of-85-crypto-wallet-extensions.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-4">
       <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/14 02:17</span>
+        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
+        <span class="date">07/14 19:00</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/google-and-microsoft-pull-modheader.html" target="_blank" rel="noopener noreferrer" lang="en">Google and Microsoft Pull ModHeader With 1.6 Million Installs After Dormant Collector Found</a><span class="article-title-translation" lang="ja">GoogleとMicrosoft、休止中のコレクター発見後、160万インストールのModHeaderをプル</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://blog.talosintelligence.com/the-serpents-tongue-luring-the-python-out-of-its-den/" target="_blank" rel="noopener noreferrer" lang="en">The serpent’s tongue: Luring the Python out of its den</a><span class="article-title-translation" lang="ja">Pythonパッケージのライフサイクルとサプライチェーンリスク</span></span></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">情報漏えい</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">サプライチェーン</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>GoogleとMicrosoftは、ChromeとEdgeで約160万回インストールされた人気ヘッダー編集拡張機能「ModHeader」をストアから削除しました。研究者が公式ストア版に隠された休眠状態の閲覧履歴収集機能を発見したためです。</p>
+          <p>本ブログ記事は、PyPIなどのリポジトリからカスタムWebサーバーでのホスティング、ソースおよびwheel形式での配布、そして仮想環境またはシステム全体のPython環境への最終的なインストールに至るまで、Pythonパッケージの完全なライフサイクルを分析しています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関の従業員が業務で当該ブラウザ拡張機能を利用していた場合、機密情報を含む閲覧履歴が収集されるリスクがあった可能性があります。ただし、収集機能は休眠状態であり、実際にデータが収集・送信された証拠はないとされています。</p>
+          <p>金融機関がPythonを利用したシステム開発や運用を行っている場合、サプライチェーンリスクとして関係します。特に、外部のPythonパッケージを利用している場合は、その信頼性を確認する必要があります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>従業員が業務で使用しているブラウザ拡張機能について、利用の必要性とセキュリティリスクを再評価してください</li><li>組織内で許可されているブラウザ拡張機能のリストを見直し、不要なものやリスクのあるものを削除するよう推奨してください</li></ul>
+          <ul class="action-list"><li>自社および委託先におけるPythonパッケージの利用状況と、その入手経路・管理体制を確認する</li><li>利用しているPythonパッケージのサプライチェーンリスク評価を実施し、潜在的な脅威がないか確認する</li></ul>
         </section>
       </div>
-      <a class="article-source-link" href="https://thehackernews.com/2026/07/google-and-microsoft-pull-modheader.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://blog.talosintelligence.com/the-serpents-tongue-luring-the-python-out-of-its-den/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-5">
       <div class="card-meta">
         <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">07/14 02:00</span>
+        <span class="date">07/14 07:02</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/13/microsoft-entra-id-security-updates-passkeys-are-the-default-authentication-method-in-entra-id/" target="_blank" rel="noopener noreferrer" lang="en">Microsoft Entra ID security updates: Passkeys are the default authentication method in Entra ID</a><span class="article-title-translation" lang="ja">Microsoft Entra ID のセキュリティ更新: パスキーは Entra ID のデフォルトの認証方法です</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/13/defending-saas-based-applications-against-shinyhunters-oauth-abuse/" target="_blank" rel="noopener noreferrer" lang="en">Defending SaaS-based applications against ShinyHunters OAuth abuse</a><span class="article-title-translation" lang="ja">ShinyHuntersによるSaaSベースアプリケーションへのOAuth悪用に対する防御</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：クラウド・サプライチェーン</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">クラウド</span><span class="article-tag">認証</span><span class="article-tag">IAM</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">SaaS</span><span class="article-tag">フィッシング</span><span class="article-tag">サプライチェーン</span><span class="article-tag">認証</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Microsoft Entra IDがパスキーをデフォルトのサインイン方法とし、SMSおよび音声認証の新しいモデルを導入することを発表しました。</p>
+          <p>Microsoft Threat Intelligenceは、ShinyHuntersに関連する音声フィッシング（vishing）、サプライチェーン侵害、SaaSベースアプリケーションを標的としたゲストアクセス設定不備を含む脅威アクターの活動を特定しました。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>多くの金融機関がMicrosoft Entra IDを認証基盤として利用している可能性があり、認証方法の変更はセキュリティ運用やユーザーエクスペリエンスに影響を与える可能性があります。</p>
+          <p>金融機関がSaaSベースのアプリケーションを利用し、OAuth認証やゲストアクセス設定を行っている場合に、攻撃の対象となる可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>Microsoft Entra IDの利用状況を確認し、パスキーのデフォルト化およびSMS/音声認証の変更が自社の認証ポリシーや運用に与える影響を評価してください。</li><li>Microsoftが提供する準備ガイドやドキュメントを参照し、必要な設定変更やユーザーへの周知計画を策定してください。</li></ul>
+          <ul class="action-list"><li>自社および委託先におけるSaaSベースアプリケーションのOAuth認証設定とゲストアクセス設定の状況を確認する</li><li>音声フィッシング（vishing）に対する従業員への注意喚起と教育を強化する</li><li>サプライチェーンにおけるセキュリティリスク評価と管理体制を再確認する</li></ul>
         </section>
       </div>
-      <a class="article-source-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/13/microsoft-entra-id-security-updates-passkeys-are-the-default-authentication-method-in-entra-id/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/13/defending-saas-based-applications-against-shinyhunters-oauth-abuse/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-6">
       <div class="card-meta">
         <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/14 01:50</span>
+        <span class="date">07/14 06:24</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/cyberattacks-data-breaches/gigawiper-threat-actors-choose-their-own-destructive-attack" target="_blank" rel="noopener noreferrer" lang="en">GigaWiper Lets Threat Actors Choose Their Own Destructive Attack</a><span class="article-title-translation" lang="ja">GigaWiper により、脅威アクターは独自の破壊的な攻撃を選択できます</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/endpoint-security/weak-security-fuel-russian-cyberattacks" target="_blank" rel="noopener noreferrer" lang="en">Weak Security Continues to Fuel Russian Cyberattacks</a><span class="article-title-translation" lang="ja">英国とEUがロシアのサイバー攻撃と偽情報キャンペーンに対し初の共同制裁</span></span></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">ランサムウェア</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">APT</span><span class="article-tag">規制</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>GigaWiperは、バックドア機能とワイパー機能を組み合わせたモジュール式のマルウェアで、攻撃者が破壊的な攻撃をカスタマイズして実行できる点が特徴です。</p>
+          <p>英国とEUは、ロシアの個人および団体に対し、サイバー攻撃と偽情報キャンペーンを理由に初の共同制裁を課しました。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関への直接的な影響は記事からは確認できませんが、ワイパー型マルウェアは業務停止やデータ破壊を引き起こす可能性があり、一般的な脅威動向として警戒が必要です。</p>
+          <p>金融機関への直接的な影響は限定的ですが、ロシア関連のサイバー脅威動向を把握する上で参考になります。制裁対象となる個人・団体との取引有無を確認する必要がある場合があります。</p>
         </section>
       </div>
-      <a class="article-source-link" href="https://www.darkreading.com/cyberattacks-data-breaches/gigawiper-threat-actors-choose-their-own-destructive-attack" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://www.darkreading.com/endpoint-security/weak-security-fuel-russian-cyberattacks" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-7">
       <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/14 00:05</span>
+        <span class="tag" style="background:#0078d4">Microsoft Security</span>
+        <span class="date">07/14 02:00</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/weekly-recap-sharefile-threat-citrix.html" target="_blank" rel="noopener noreferrer" lang="en">⚡ Weekly Recap: ShareFile Threat, Citrix Bleed 2 Ransomware, AI Coding Attacks, and More</a><span class="article-title-translation" lang="ja">⚡ 毎週の要約: ShareFile 脅威、Citrix Bleed 2 ランサムウェア、AI コーディング攻撃など</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/13/microsoft-entra-id-security-updates-passkeys-are-the-default-authentication-method-in-entra-id/" target="_blank" rel="noopener noreferrer" lang="en">Microsoft Entra ID security updates: Passkeys are the default authentication method in Entra ID</a><span class="article-title-translation" lang="ja">Microsoft Entra IDのセキュリティ更新: パスキーがデフォルトの認証方法に</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">ランサムウェア</span><span class="article-tag">サプライチェーン</span><span class="article-tag">AI</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：クラウド・サプライチェーン</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">クラウド</span><span class="article-tag">認証</span><span class="article-tag">IAM</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>今週のサイバーセキュリティ動向として、ShareFileの脅威、Citrix Bleed 2ランサムウェア、AIコーディング攻撃などが取り上げられており、セキュリティツールによる脆弱性発見と攻撃者による悪用の加速が指摘されています。</p>
+          <p>Microsoft Entra IDにおいて、パスキーがデフォルトのサインインエクスペリエンスとなり、SMSおよび音声認証の新しいモデルが導入されました。この変更への準備について説明されています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>記事は特定の金融機関への直接的な影響を述べていませんが、ランサムウェアやサプライチェーン攻撃は金融機関の業務停止や情報漏えいにつながる可能性があり、一般的な脅威動向として参考になります。</p>
+          <p>Microsoft Entra IDを利用している金融機関は、認証方法の変更がユーザーエクスペリエンスやセキュリティポリシーに影響を与える可能性があるため、確認が必要です。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>Microsoft Entra IDの利用有無と、今回の認証方法変更が自社の認証ポリシーや運用に与える影響を確認する</li><li>Microsoftが提供する情報に基づき、パスキーの導入およびSMS/音声認証の新モデルへの移行計画を評価する</li></ul>
         </section>
       </div>
-      <a class="article-source-link" href="https://thehackernews.com/2026/07/weekly-recap-sharefile-threat-citrix.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/13/microsoft-entra-id-security-updates-passkeys-are-the-default-authentication-method-in-entra-id/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-8">
       <div class="card-meta">
-        <span class="tag" style="background:#555">Krebs on Security</span>
-        <span class="date">07/14 00:03</span>
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">07/14 20:30</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">8.</span><span class="article-title-stack"><a class="article-title-link" href="https://krebsonsecurity.com/2026/07/lessons-learned-from-cisas-recent-github-leak/" target="_blank" rel="noopener noreferrer" lang="en">Lessons Learned from CISA’s Recent GitHub Leak</a><span class="article-title-translation" lang="ja">CISA による最近の GitHub 漏洩から学んだ教訓</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">8.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/how-pentera-turns-ai-security-workflows.html" target="_blank" rel="noopener noreferrer" lang="en">How Pentera Turns AI Security Workflows into Validation Engines</a><span class="article-title-translation" lang="ja">PenteraがAIセキュリティワークフローを検証エンジンに変える方法</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：インシデント</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">インシデント</span><span class="article-tag">情報漏えい</span><span class="article-tag">クラウド</span><span class="article-tag">サプライチェーン</span><span class="article-tag">委託先管理</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>CISAの請負業者がAWS Govcloudの鍵を含む多数の内部認証情報を約6ヶ月間GitHubの公開リポジトリに誤って公開していたデータ漏洩インシデントが発生し、KrebsOnSecurityからの通知で発覚しました。</p>
+          <p>AIセキュリティエージェントがセキュリティの意思決定に影響を与え始めており、発見の要約、修復の優先順位付け、次のステップの推奨、チームの迅速化に貢献しています。しかし、ほとんどはスキャナー出力、脅威インテリジェンス、設定情報などの断片的なリスクシグナルに依存しています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関への直接的な影響は限定的ですが、クラウド環境における認証情報管理の不備やサプライチェーンリスクの事例として参考になります。</p>
+          <p>金融機関におけるAIセキュリティエージェントの導入や活用を検討する際の参考情報となります。直接的な影響は限定的です。</p>
+        </section>
+      </div>
+      <a class="article-source-link" href="https://thehackernews.com/2026/07/how-pentera-turns-ai-security-workflows.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article>
+
+    <article class="card" id="article-9">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">07/14 03:18</span>
+      </div>
+      <h2 class="article-heading"><span class="article-index">9.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/cybersecurity-operations/yellow-teams-defining-future-ai-security" target="_blank" rel="noopener noreferrer" lang="en">&#39;Yellow Teams&#39; Are Defining the Future of AI Security</a><span class="article-title-translation" lang="ja">「イエローチーム」がAIセキュリティの未来を定義する</span></span></h2>
+      <div class="ai-analysis">
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span></div>
+        <section class="article-section">
+          <h3>何が起きた</h3>
+          <p>一部の企業では、エンジニアがサイバーセキュリティにおける人工知能の可能性と脅威をテストするために、防御および攻撃ツールを構築しています。これは「イエローチーム」と呼ばれ、AIのセキュリティを定義する新たな動きです。</p>
+        </section>
+        <section class="article-section">
+          <h3>なぜ金融機関に関係する</h3>
+          <p>金融機関がAI技術を導入・活用する際に、そのセキュリティリスク評価や防御策検討の参考情報となります。直接的な影響は限定的です。</p>
+        </section>
+      </div>
+      <a class="article-source-link" href="https://www.darkreading.com/cybersecurity-operations/yellow-teams-defining-future-ai-security" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article>
+
+    <article class="card" id="article-10">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Krebs on Security</span>
+        <span class="date">07/14 00:03</span>
+      </div>
+      <h2 class="article-heading"><span class="article-index">10.</span><span class="article-title-stack"><a class="article-title-link" href="https://krebsonsecurity.com/2026/07/lessons-learned-from-cisas-recent-github-leak/" target="_blank" rel="noopener noreferrer" lang="en">Lessons Learned from CISA’s Recent GitHub Leak</a><span class="article-title-translation" lang="ja">CISAのGitHub情報漏えいから学ぶべき教訓</span></span></h2>
+      <div class="ai-analysis">
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：インシデント</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">インシデント</span><span class="article-tag">情報漏えい</span><span class="article-tag">クラウド</span><span class="article-tag">委託先管理</span></div>
+        <section class="article-section">
+          <h3>何が起きた</h3>
+          <p>CISAは、契約業者がAWS Govcloudキーを含む数十の内部認証情報を約6ヶ月間パブリックなGitHubリポジトリに公開していたデータ漏えいについて事後分析を公表しました。この事案は、セキュリティチームが学ぶべき重要な教訓を提供しています。</p>
+        </section>
+        <section class="article-section">
+          <h3>なぜ金融機関に関係する</h3>
+          <p>金融機関への直接的な影響は限定的ですが、クラウド環境における認証情報管理や委託先管理の重要性について参考となる事例です。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>クラウド環境における認証情報の管理状況、特に公開リポジトリへの誤公開リスクについて確認してください。</li><li>委託先におけるセキュリティ管理体制、特に認証情報や機密情報の取り扱いに関する契約内容と実態を確認してください。</li><li>インシデント発生時の検知・対応プロセスについて、本事例の教訓を踏まえて見直しを検討してください。</li></ul>
+          <ul class="action-list"><li>自社および委託先におけるクラウド環境の認証情報管理状況を確認する</li><li>委託先が利用するコードリポジトリのセキュリティ設定と監視体制を評価する</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://krebsonsecurity.com/2026/07/lessons-learned-from-cisas-recent-github-leak/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
-    <article class="card" id="article-9">
-      <div class="card-meta">
-        <span class="tag" style="background:#005eb8">NCSC</span>
-        <span class="date">07/13 21:00</span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">9.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.ncsc.gov.uk/news/uk-and-allies-urge-critical-sectors-to-improve-defences-against-russian-intelligence-targeting" target="_blank" rel="noopener noreferrer" lang="en">UK and Allies urge critical sectors to improve defences against Russian intelligence targeting</a><span class="article-title-translation" lang="ja">英国と同盟国は重要部門に対し、ロシア諜報機関の標的に対する防御を強化するよう要請</span></span></h2>
-      <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">APT</span><span class="article-tag">NIST</span></div>
-        <section class="article-section">
-          <h3>何が起きた</h3>
-          <p>英国および同盟国は、ロシアの国家支援型サイバー攻撃者が設定が不十分なルーターを悪用し、重要インフラを含むセクターを標的にしていると警告し、防御強化を呼びかけました。</p>
-        </section>
-        <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関も重要インフラの一部として標的となる可能性があり、設定が不十分なルーターは攻撃経路となるため、自社のネットワーク機器の設定状況を確認する必要があります。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社および委託先が利用するルーターの設定が適切であるか、セキュリティガイドラインに沿って確認してください</li><li>ロシアの国家支援型攻撃者による最新の攻撃手法やIOCに関する情報を継続的に収集し、防御策を強化してください</li></ul>
-        </section>
-      </div>
-      <a class="article-source-link" href="https://www.ncsc.gov.uk/news/uk-and-allies-urge-critical-sectors-to-improve-defences-against-russian-intelligence-targeting" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </article>
-
-    <article class="card" id="article-10">
-      <div class="card-meta">
-        <span class="tag" style="background:#e74c3c">CISA KEV</span>
-        <span class="date"></span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">10.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer" lang="en">CVE-2008-4128 — Cisco IOS Cross-Site Request Forgery Vulnerability</a><span class="article-title-translation" lang="ja">CVE-2008-4128 — Cisco IOS クロスサイト リクエスト フォージェリの脆弱性</span></span></h2>
-      <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">CVE</span><span class="article-tag">KEV</span><span class="article-tag">悪用確認済み</span></div>
-        <section class="article-section">
-          <h3>何が起きた</h3>
-          <p>Cisco IOS 12.4には複数のクロスサイトリクエストフォージェリ脆弱性があり、リモート攻撃者が特定のコマンドを介して任意のコマンドを実行できる可能性があります。</p>
-        </section>
-        <section class="vulnerability-facts">
-        <h3 class="vulnerability-facts-title">脆弱性情報</h3>
-        <ul class="vulnerability-list"><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2008-4128" target="_blank" rel="noopener noreferrer">CVE-2008-4128</a><span class="vulnerability-cvss">CVSS 9.3 / High（v2.0・NVD）</span><span class="kev-badge">CISA KEV掲載</span></li></ul>
-      </section>
-        <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関でCisco IOS 12.4を利用している場合に限り、適用性確認の対象となります。記事からは金融機関での利用状況や影響範囲は確認できません。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>CVE-2008-4128を基に、自社および委託先でCisco IOS 12.4の利用有無を確認してください。</li><li>該当製品を利用している場合、ベンダーの一次情報で修正版や緩和策を確認してください。</li></ul>
-        </section>
-      </div>
-      <a class="article-source-link" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </article>
-
     <article class="card" id="article-11">
       <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/14 03:18</span>
+        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
+        <span class="date">07/14 19:47</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">11.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/cybersecurity-operations/yellow-teams-defining-future-ai-security" target="_blank" rel="noopener noreferrer" lang="en">&#39;Yellow Teams&#39; Are Defining the Future of AI Security</a><span class="article-title-translation" lang="ja">AI セキュリティの未来を定義する「イエロー チーム」</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">11.</span><span class="article-title-stack"><a class="article-title-link" href="https://blog.talosintelligence.com/video-where-protection-starts-cisco-talos-intelligence-integrations/" target="_blank" rel="noopener noreferrer" lang="en">[Video] Where protection starts: Cisco Talos Intelligence Integrations</a><span class="article-title-translation" lang="ja">保護の出発点: Cisco Talos Intelligence Integrations</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
+        
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>一部の企業では、AIのサイバーセキュリティにおける可能性と脅威をテストするため、防御・攻撃ツールを構築する「Yellow Teams」が活動しており、AIセキュリティの未来を定義している。</p>
+          <p>Cisco Talos Intelligence Integrationsが、最新の脅威インテリジェンスをCiscoテクノロジー全体にわたるプロアクティブな保護に変換し、不確実性を低減する方法について解説しています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>現時点の記事情報だけでは、金融機関への具体的な影響は確認できません。AIセキュリティの動向に関する一般的な参考情報として位置付けられます。</p>
+          <p>金融機関への直接的な影響は限定的です。Cisco製品を利用している場合に、脅威インテリジェンス活用の参考情報となります。</p>
         </section>
       </div>
-      <a class="article-source-link" href="https://www.darkreading.com/cybersecurity-operations/yellow-teams-defining-future-ai-security" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://blog.talosintelligence.com/video-where-protection-starts-cisco-talos-intelligence-integrations/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article></div>
   <div class="sources">
     <details>
