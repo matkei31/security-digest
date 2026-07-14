@@ -453,11 +453,11 @@ class BriefTest(unittest.TestCase):
         self.assertEqual(brief["discussion_points"], SUCCESS_BRIEF_RESULT["discussion_points"])
         self.assertEqual(brief["check_items"], SUCCESS_BRIEF_RESULT["check_items"])
 
-    def test_prompt_version_is_today_brief_v2(self):
+    def test_prompt_version_is_today_brief_v3(self):
         digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
-        self.assertEqual(digest["brief"]["prompt_version"], "today-brief-v2")
-        self.assertEqual(digest["generator"]["brief_prompt_version"], "today-brief-v2")
-        self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-v2")
+        self.assertEqual(digest["brief"]["prompt_version"], "today-brief-v3")
+        self.assertEqual(digest["generator"]["brief_prompt_version"], "today-brief-v3")
+        self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-v3")
 
     def test_schema_version_stays_1(self):
         digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)

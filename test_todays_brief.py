@@ -5,6 +5,7 @@ Today's Brief (Ticket 8) の生成・正規化・保存の回帰テスト。
 (urllib.request.urlopenをモックに差し替える)。
 """
 
+import datetime
 import json
 import os
 import unittest
@@ -79,10 +80,43 @@ def make_brief_item(title="記事1", source="CISA", status="success", **analysis
     }
 
 
-def call_gemini_todays_brief(brief_items=None, *, response_body=None, side_effect=None, capture_requests=None):
-    """GEMINI_API_KEYを一時設定し、urllib.request.urlopenをモックしてgemini_todays_brief()を呼ぶ。"""
+def make_unclassified_item(title="未判定記事", status="failed"):
+    """importance/urgencyを確定できない記事(failed/not_attempted/片軸欠落)を作る。"""
+    return {
+        "title": title, "source": "CISA", "ai_analysis": None,
+        "ai_analysis_meta": {
+            "status": status, "error_type": "api_error" if status == "failed" else None,
+            "http_status": 500 if status == "failed" else None,
+            "generated_at": "2026-07-11T07:00:00+09:00",
+        },
+    }
+
+
+def build_items_from_spec(evaluated_specs, unclassified_count=0):
+    """evaluated_specs: [(importance, urgency), ...] のリストから判定済み記事群を作り、
+    unclassified_countぶんの未判定記事を追加した掲載記事全体を返す。
+    """
+    items = [
+        make_brief_item(f"item-{i}", importance=importance, urgency=urgency)
+        for i, (importance, urgency) in enumerate(evaluated_specs)
+    ]
+    items += [make_unclassified_item(f"unclassified-{i}") for i in range(unclassified_count)]
+    return items
+
+
+def call_gemini_todays_brief(
+    brief_items=None, *, trusted_context=None, response_body=None,
+    side_effect=None, capture_requests=None,
+):
+    """GEMINI_API_KEYを一時設定し、urllib.request.urlopenをモックしてgemini_todays_brief()を呼ぶ。
+    trusted_contextを渡さない場合、brief_itemsそのものから
+    compute_brief_trusted_context()で算出する(デフォルトのbrief_itemsは
+    全件判定済み・未判定0件・urgency=本日確認のため、state Aのcontextになる)。
+    """
     if brief_items is None:
         brief_items = [make_brief_item()]
+    if trusted_context is None:
+        trusted_context = fetch.compute_brief_trusted_context(brief_items)
     if capture_requests is None:
         capture_requests = []
 
@@ -95,14 +129,15 @@ def call_gemini_todays_brief(brief_items=None, *, response_body=None, side_effec
     with patch.dict(os.environ, {"GEMINI_API_KEY": "test-key-not-real"}):
         with patch("fetch.urllib.request.urlopen", side_effect=fake_urlopen):
             with patch("fetch.time.sleep"):  # リトライ待機をスキップして高速化
-                return fetch.gemini_todays_brief(brief_items)
+                return fetch.gemini_todays_brief(brief_items, trusted_context)
 
 
-def get_request_body_json(brief_items=None, *, response_body=None):
+def get_request_body_json(brief_items=None, *, trusted_context=None, response_body=None):
     """gemini_todays_brief()が送信するリクエストボディ(JSON)を取得する。"""
     captured = []
     call_gemini_todays_brief(
         brief_items,
+        trusted_context=trusted_context,
         response_body=response_body or make_brief_body(VALID_BRIEF_RESPONSE),
         capture_requests=captured,
     )
@@ -279,7 +314,7 @@ class NormalizeBriefResponseTest(unittest.TestCase):
         value["check_items"] = ["確認1", "確認2", "確認3", "確認4", "確認5"]
         result = fetch.normalize_brief_response(value)
         self.assertEqual(len(result["check_items"]), dj.BRIEF_MAX_CHECK_ITEMS)
-        self.assertEqual(result["check_items"], ["確認1", "確認2", "確認3", "確認4"])
+        self.assertEqual(result["check_items"], ["確認1", "確認2"])
 
 
 # ── status: success / failed / not_attempted ────────────────────────────
@@ -292,8 +327,10 @@ class BriefStatusTest(unittest.TestCase):
         self.assertIsNone(result["error_type"])
 
     def test_no_api_key_is_not_attempted(self):
+        items = [make_brief_item()]
+        ctx = fetch.compute_brief_trusted_context(items)
         with patch.dict(os.environ, {}, clear=True):
-            result = fetch.gemini_todays_brief([make_brief_item()])
+            result = fetch.gemini_todays_brief(items, ctx)
         self.assertEqual(result["status"], "not_attempted")
         self.assertIsNone(result["overview"])
         self.assertEqual(result["important_highlights"], [])
@@ -374,6 +411,617 @@ class BriefStatusTest(unittest.TestCase):
         )
         self.assertNotEqual(first["overview"], second["overview"])
         self.assertEqual(second["overview"], second_response["overview"])
+
+
+# ── 判定済みpredicate (Ticket 15b) ────────────────────────────────────────
+
+class IsArticleEvaluatedTest(unittest.TestCase):
+    def test_success_with_valid_importance_and_urgency_is_evaluated(self):
+        item = make_brief_item(status="success", importance="高", urgency="本日確認")
+        self.assertTrue(fetch.is_article_evaluated(item))
+
+    def test_fallback_with_both_axes_valid_is_evaluated(self):
+        item = make_brief_item(status="fallback", importance="中", urgency="今週確認")
+        self.assertTrue(fetch.is_article_evaluated(item))
+
+    def test_fallback_missing_importance_is_unclassified(self):
+        item = make_brief_item(status="fallback", importance=None, urgency="今週確認")
+        self.assertFalse(fetch.is_article_evaluated(item))
+
+    def test_fallback_invalid_urgency_is_unclassified(self):
+        item = make_brief_item(status="fallback", importance="高", urgency="不正な値")
+        self.assertFalse(fetch.is_article_evaluated(item))
+
+    def test_failed_is_unclassified(self):
+        item = make_unclassified_item(status="failed")
+        self.assertFalse(fetch.is_article_evaluated(item))
+
+    def test_not_attempted_is_unclassified(self):
+        item = {"title": "x", "source": "CISA", "ai_analysis": None, "ai_analysis_meta": None}
+        self.assertFalse(fetch.is_article_evaluated(item))
+
+
+# ── temporal_state / coverage helper (Ticket 15b) ─────────────────────────
+
+class TemporalStateHelperTest(unittest.TestCase):
+    def test_urgency_today_positive_is_a(self):
+        self.assertEqual(fetch.compute_brief_temporal_state(1, 0), "A")
+        self.assertEqual(fetch.compute_brief_temporal_state(3, 5), "A")
+
+    def test_today_zero_week_positive_is_b(self):
+        self.assertEqual(fetch.compute_brief_temporal_state(0, 1), "B")
+
+    def test_today_and_week_zero_is_c(self):
+        self.assertEqual(fetch.compute_brief_temporal_state(0, 0), "C")
+
+
+class CoverageHelperTest(unittest.TestCase):
+    def test_zero_unclassified_is_complete(self):
+        self.assertTrue(fetch.compute_brief_coverage_complete(0))
+
+    def test_positive_unclassified_is_incomplete(self):
+        self.assertFalse(fetch.compute_brief_coverage_complete(1))
+
+
+# ── trusted context (Ticket 15b) ──────────────────────────────────────────
+
+class TrustedContextTest(unittest.TestCase):
+    def test_published_equals_evaluated_plus_unclassified(self):
+        items = build_items_from_spec(
+            [("中", "今週確認")] * 7 + [("中", "参考")] * 4, unclassified_count=0,
+        )
+        ctx = fetch.compute_brief_trusted_context(items)
+        self.assertEqual(ctx["published_total"], ctx["evaluated_total"] + ctx["unclassified"])
+
+    def test_case1_week_dominant_no_unclassified(self):
+        # 掲載11、高0、本日0、今週7、参考4、未判定0 → B, coverage_complete
+        items = build_items_from_spec(
+            [("中", "今週確認")] * 7 + [("中", "参考")] * 4, unclassified_count=0,
+        )
+        ctx = fetch.compute_brief_trusted_context(items)
+        self.assertEqual(ctx["published_total"], 11)
+        self.assertEqual(ctx["importance_high"], 0)
+        self.assertEqual(ctx["urgency_today"], 0)
+        self.assertEqual(ctx["urgency_week"], 7)
+        self.assertEqual(ctx["unclassified"], 0)
+        self.assertEqual(ctx["temporal_state"], "B")
+        self.assertTrue(ctx["coverage_complete"])
+
+    def test_case2_small_week_dominant(self):
+        # 掲載3、高0、本日0、今週1、参考2、未判定0 → B, coverage_complete
+        items = build_items_from_spec([("中", "今週確認")] + [("中", "参考")] * 2)
+        ctx = fetch.compute_brief_trusted_context(items)
+        self.assertEqual(ctx["published_total"], 3)
+        self.assertEqual(ctx["urgency_week"], 1)
+        self.assertEqual(ctx["unclassified"], 0)
+        self.assertEqual(ctx["temporal_state"], "B")
+        self.assertTrue(ctx["coverage_complete"])
+
+    def test_case3_today_present_is_a(self):
+        # 掲載8、高2、本日1、今週3、参考4、未判定0 → A, coverage_complete
+        items = build_items_from_spec([
+            ("高", "本日確認"),
+            ("中", "今週確認"),
+            ("中", "今週確認"),
+            ("高", "今週確認"),
+            ("中", "参考"),
+            ("中", "参考"),
+            ("中", "参考"),
+            ("中", "参考"),
+        ])
+        ctx = fetch.compute_brief_trusted_context(items)
+        self.assertEqual(ctx["published_total"], 8)
+        self.assertEqual(ctx["importance_high"], 2)
+        self.assertEqual(ctx["urgency_today"], 1)
+        self.assertEqual(ctx["urgency_week"], 3)
+        self.assertEqual(ctx["unclassified"], 0)
+        self.assertEqual(ctx["temporal_state"], "A")
+        self.assertTrue(ctx["coverage_complete"])
+
+    def test_case4_high_importance_but_no_urgent_is_c(self):
+        # 掲載4、高2、本日0、今週0、参考4、未判定0 → C, coverage_complete
+        # 高があっても即時確認状態にしない
+        items = build_items_from_spec([
+            ("高", "参考"), ("高", "参考"), ("中", "参考"), ("中", "参考"),
+        ])
+        ctx = fetch.compute_brief_trusted_context(items)
+        self.assertEqual(ctx["published_total"], 4)
+        self.assertEqual(ctx["importance_high"], 2)
+        self.assertEqual(ctx["urgency_today"], 0)
+        self.assertEqual(ctx["urgency_week"], 0)
+        self.assertEqual(ctx["unclassified"], 0)
+        self.assertEqual(ctx["temporal_state"], "C")
+        self.assertTrue(ctx["coverage_complete"])
+
+    def test_case5_unclassified_present_is_incomplete(self):
+        # 掲載6、高0、本日0、今週1、参考3、未判定2 → B, coverage incomplete
+        items = build_items_from_spec(
+            [("中", "今週確認")] + [("中", "参考")] * 3, unclassified_count=2,
+        )
+        ctx = fetch.compute_brief_trusted_context(items)
+        self.assertEqual(ctx["published_total"], 6)
+        self.assertEqual(ctx["urgency_week"], 1)
+        self.assertEqual(ctx["unclassified"], 2)
+        self.assertEqual(ctx["temporal_state"], "B")
+        self.assertFalse(ctx["coverage_complete"])
+
+    def test_extra_case_reference_only_complete(self):
+        # 掲載4、高0、本日0、今週0、参考4、未判定0 → C, coverage_complete
+        items = build_items_from_spec([("中", "参考")] * 4)
+        ctx = fetch.compute_brief_trusted_context(items)
+        self.assertEqual(ctx["temporal_state"], "C")
+        self.assertTrue(ctx["coverage_complete"])
+
+    def test_extra_case_today_present_with_unclassified_is_incomplete(self):
+        # 掲載5、高1、本日1、今週1、参考1、未判定2 → A, coverage incomplete
+        items = build_items_from_spec(
+            [("高", "本日確認"), ("中", "今週確認"), ("中", "参考")], unclassified_count=2,
+        )
+        ctx = fetch.compute_brief_trusted_context(items)
+        self.assertEqual(ctx["published_total"], 5)
+        self.assertEqual(ctx["importance_high"], 1)
+        self.assertEqual(ctx["urgency_today"], 1)
+        self.assertEqual(ctx["unclassified"], 2)
+        self.assertEqual(ctx["temporal_state"], "A")
+        self.assertFalse(ctx["coverage_complete"])
+
+    def test_importance_variation_does_not_change_temporal_state_or_coverage(self):
+        """importanceだけを変えてもurgencyと未判定数が同じならtemporal_state/coverageは不変。"""
+        items_a = build_items_from_spec(
+            [("中", "今週確認")] + [("中", "参考")] * 2, unclassified_count=1,
+        )
+        items_b = build_items_from_spec(
+            [("高", "今週確認")] + [("低", "参考")] * 2, unclassified_count=1,
+        )
+        ctx_a = fetch.compute_brief_trusted_context(items_a)
+        ctx_b = fetch.compute_brief_trusted_context(items_b)
+        self.assertEqual(ctx_a["temporal_state"], ctx_b["temporal_state"])
+        self.assertEqual(ctx_a["coverage_complete"], ctx_b["coverage_complete"])
+
+    def test_high_two_today_zero_week_zero_is_c(self):
+        items = build_items_from_spec([("高", "参考"), ("高", "参考")])
+        ctx = fetch.compute_brief_trusted_context(items)
+        self.assertEqual(ctx["temporal_state"], "C")
+
+    def test_failed_and_not_attempted_items_count_as_unclassified(self):
+        items = [
+            make_unclassified_item("failed-item", status="failed"),
+            {"title": "not-attempted", "source": "CISA", "ai_analysis": None, "ai_analysis_meta": None},
+        ]
+        ctx = fetch.compute_brief_trusted_context(items)
+        self.assertEqual(ctx["evaluated_total"], 0)
+        self.assertEqual(ctx["unclassified"], 2)
+
+
+# ── 状態行 (Ticket 15b) ────────────────────────────────────────────────────
+
+class StatusLineTest(unittest.TestCase):
+    def test_omits_unclassified_segment_when_zero(self):
+        items = build_items_from_spec([("中", "今週確認")] * 7 + [("中", "参考")] * 4)
+        ctx = fetch.compute_brief_trusted_context(items)
+        line = fetch.format_brief_status_line(ctx)
+        self.assertNotIn("未判定", line)
+        self.assertIn("掲載11件", line)
+        self.assertIn("重要度「高」0件", line)
+        self.assertIn("確認目安「本日確認」0件", line)
+        self.assertIn("確認目安「今週確認」7件", line)
+
+    def test_includes_unclassified_segment_when_positive(self):
+        items = build_items_from_spec(
+            [("中", "今週確認")] + [("中", "参考")] * 3, unclassified_count=2,
+        )
+        ctx = fetch.compute_brief_trusted_context(items)
+        line = fetch.format_brief_status_line(ctx)
+        self.assertIn("未判定2件", line)
+
+    def test_status_line_has_no_newline(self):
+        items = build_items_from_spec([("中", "参考")] * 4)
+        ctx = fetch.compute_brief_trusted_context(items)
+        line = fetch.format_brief_status_line(ctx)
+        self.assertNotIn("\n", line)
+
+
+# ── 状態・coverage説明 (Ticket 15b) ────────────────────────────────────────
+
+class StateExplanationTest(unittest.TestCase):
+    def test_a_complete_does_not_underestimate_today_count(self):
+        items = build_items_from_spec([
+            ("高", "本日確認"), ("中", "今週確認"), ("中", "今週確認"),
+            ("高", "今週確認"), ("中", "参考"), ("中", "参考"), ("中", "参考"), ("中", "参考"),
+        ])
+        ctx = fetch.compute_brief_trusted_context(items)
+        text = fetch.format_brief_state_explanation(ctx)
+        self.assertIn("1件", text)
+        # urgency_today > 0 の場合、重要度「高」の別軸文は付加されない
+        self.assertNotIn("重要度の高い情報", text)
+
+    def test_b_complete_asserts_no_urgent_target_and_full_week_count(self):
+        items = build_items_from_spec([("中", "今週確認")] * 7 + [("中", "参考")] * 4)
+        ctx = fetch.compute_brief_trusted_context(items)
+        text = fetch.format_brief_state_explanation(ctx)
+        self.assertIn("緊急の確認対象はありません", text)
+        self.assertIn("7件", text)
+
+    def test_b_incomplete_does_not_assert_no_urgent_target(self):
+        items = build_items_from_spec(
+            [("中", "今週確認")] + [("中", "参考")] * 3, unclassified_count=2,
+        )
+        ctx = fetch.compute_brief_trusted_context(items)
+        text = fetch.format_brief_state_explanation(ctx)
+        self.assertNotIn("緊急の確認対象はありません", text)
+        self.assertIn("未判定の記事2件", text)
+        self.assertIn("1件", text)
+
+    def test_c_complete_allows_no_urgent_target_phrase(self):
+        items = build_items_from_spec([("中", "参考")] * 4)
+        ctx = fetch.compute_brief_trusted_context(items)
+        text = fetch.format_brief_state_explanation(ctx)
+        self.assertIn("緊急の確認対象はありません", text)
+
+    def test_c_includes_high_importance_axis_sentence(self):
+        # 高があっても即時確認状態にしない。別軸文が入る。
+        items = build_items_from_spec([
+            ("高", "参考"), ("高", "参考"), ("中", "参考"), ("中", "参考"),
+        ])
+        ctx = fetch.compute_brief_trusted_context(items)
+        text = fetch.format_brief_state_explanation(ctx)
+        self.assertIn("重要度の高い情報が2件", text)
+
+    def test_never_uses_provisional_disclaimer_text(self):
+        for items in (
+            build_items_from_spec([("中", "参考")] * 4),
+            build_items_from_spec([("中", "今週確認")] + [("中", "参考")] * 3, unclassified_count=2),
+        ):
+            ctx = fetch.compute_brief_trusted_context(items)
+            text = fetch.format_brief_state_explanation(ctx)
+            self.assertNotIn("確認結果は暫定です", text)
+
+
+# ── 配列上書き (Ticket 15b) ────────────────────────────────────────────────
+
+class ArrayOverrideTest(unittest.TestCase):
+    def test_important_highlights_forced_empty_when_no_high_and_no_today(self):
+        items = build_items_from_spec([("中", "参考")] * 4)
+        ctx = fetch.compute_brief_trusted_context(items)
+        result = dict(VALID_BRIEF_RESPONSE)
+        result.update({"status": "success", "error_type": None, "http_status": None})
+        applied = fetch.apply_deterministic_brief_context(result, ctx)
+        self.assertEqual(applied["important_highlights"], [])
+
+    def test_important_highlights_kept_when_high_present(self):
+        items = build_items_from_spec([("高", "参考")] * 2 + [("中", "参考")] * 2)
+        ctx = fetch.compute_brief_trusted_context(items)
+        result = dict(VALID_BRIEF_RESPONSE)
+        result.update({"status": "success", "error_type": None, "http_status": None})
+        applied = fetch.apply_deterministic_brief_context(result, ctx)
+        self.assertEqual(applied["important_highlights"], VALID_BRIEF_RESPONSE["important_highlights"])
+
+    def test_check_items_forced_empty_for_state_c(self):
+        items = build_items_from_spec([("中", "参考")] * 4)
+        ctx = fetch.compute_brief_trusted_context(items)
+        self.assertEqual(ctx["temporal_state"], "C")
+        result = dict(VALID_BRIEF_RESPONSE)
+        result.update({"status": "success", "error_type": None, "http_status": None})
+        applied = fetch.apply_deterministic_brief_context(result, ctx)
+        self.assertEqual(applied["check_items"], [])
+
+    def test_check_items_kept_for_state_a(self):
+        items = build_items_from_spec([("中", "本日確認")])
+        ctx = fetch.compute_brief_trusted_context(items)
+        self.assertEqual(ctx["temporal_state"], "A")
+        result = dict(VALID_BRIEF_RESPONSE)
+        result.update({"status": "success", "error_type": None, "http_status": None})
+        applied = fetch.apply_deterministic_brief_context(result, ctx)
+        self.assertEqual(applied["check_items"], VALID_BRIEF_RESPONSE["check_items"])
+
+    def test_overview_is_prefixed_with_status_line_and_explanation_without_discarding_gemini_body(self):
+        items = build_items_from_spec([("中", "本日確認")])
+        ctx = fetch.compute_brief_trusted_context(items)
+        result = dict(VALID_BRIEF_RESPONSE)
+        result.update({"status": "success", "error_type": None, "http_status": None})
+        applied = fetch.apply_deterministic_brief_context(result, ctx)
+        expected_prefix = fetch.format_brief_status_line(ctx) + fetch.format_brief_state_explanation(ctx)
+        self.assertTrue(applied["overview"].startswith(expected_prefix))
+        self.assertIn(VALID_BRIEF_RESPONSE["overview"], applied["overview"])
+
+
+# ── build_todays_brief 統合 (Ticket 15b) ───────────────────────────────────
+
+def call_build_todays_brief(items, *, response_body=None, side_effect=None):
+    def fake_urlopen(req, timeout=None):
+        if side_effect is not None:
+            raise side_effect
+        return FakeHTTPResponse(response_body)
+
+    with patch.dict(os.environ, {"GEMINI_API_KEY": "test-key-not-real"}):
+        with patch("fetch.urllib.request.urlopen", side_effect=fake_urlopen):
+            with patch("fetch.time.sleep"):
+                return fetch.build_todays_brief(items)
+
+
+class BuildTodaysBriefIntegrationTest(unittest.TestCase):
+    def test_success_overview_starts_with_deterministic_prefix(self):
+        items = build_items_from_spec(
+            [("中", "今週確認")] + [("中", "参考")] * 3, unclassified_count=2,
+        )
+        result = call_build_todays_brief(items, response_body=make_brief_body(VALID_BRIEF_RESPONSE))
+        self.assertEqual(result["status"], "success")
+        self.assertIn("未判定2件", result["overview"])
+        self.assertIn(VALID_BRIEF_RESPONSE["overview"], result["overview"])
+
+    def test_zero_evaluated_stays_not_attempted_without_calling_gemini(self):
+        items = [make_unclassified_item("failed-item", status="failed")]
+        captured = []
+
+        def fake_urlopen(req, timeout=None):
+            captured.append(req)
+            return FakeHTTPResponse(make_brief_body(VALID_BRIEF_RESPONSE))
+
+        with patch.dict(os.environ, {"GEMINI_API_KEY": "test-key-not-real"}):
+            with patch("fetch.urllib.request.urlopen", side_effect=fake_urlopen):
+                result = fetch.build_todays_brief(items)
+
+        self.assertEqual(result["status"], "not_attempted")
+        self.assertIsNone(result["overview"])
+        self.assertEqual(result["important_highlights"], [])
+        self.assertEqual(result["check_items"], [])
+        self.assertEqual(captured, [])
+
+    def test_zero_published_stays_not_attempted(self):
+        result = call_build_todays_brief([], response_body=make_brief_body(VALID_BRIEF_RESPONSE))
+        self.assertEqual(result["status"], "not_attempted")
+        self.assertIsNone(result["overview"])
+
+
+# ── prompt: 復唱禁止指示 (Ticket 15b) ──────────────────────────────────────
+
+class PromptNoRecitationInstructionTest(unittest.TestCase):
+    def test_prompt_instructs_not_to_recite_counts_and_state(self):
+        body = get_request_body_json()
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        self.assertIn("復唱", prompt_text)
+        self.assertIn("掲載件数", prompt_text)
+        self.assertIn("時間的な状態区分", prompt_text)
+        self.assertIn("カバレッジ", prompt_text)
+        self.assertIn("緊急の確認対象があるかないか", prompt_text)
+
+    def test_prompt_discussion_points_says_zero_to_two(self):
+        body = get_request_body_json()
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        self.assertIn("0〜2件", prompt_text)
+
+    def test_prompt_check_items_max_is_two(self):
+        body = get_request_body_json()
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        self.assertIn("最大2件", prompt_text)
+
+
+# ── trusted_context伝播 (PR#7 merge-blocker fix) ───────────────────────────
+
+def request_body_for(items, *, response_body=None):
+    """掲載記事全体(items)から、実際にgemini_todays_brief()へ渡すbrief_itemsと
+    trusted_contextを組み立て、送信されるrequest bodyを返す
+    (build_todays_brief()と同じ組み立て方をテスト側で再現する)。
+    """
+    brief_items = fetch.select_brief_input_items(items)
+    ctx = fetch.compute_brief_trusted_context(items)
+    return get_request_body_json(
+        brief_items, trusted_context=ctx,
+        response_body=response_body or make_brief_body(VALID_BRIEF_RESPONSE),
+    )
+
+
+class TrustedContextPropagationTest(unittest.TestCase):
+    def _trusted_context_block(self, prompt_text):
+        start = prompt_text.index("<trusted_context>") + len("<trusted_context>")
+        end = prompt_text.index("</trusted_context>")
+        return prompt_text[start:end].strip()
+
+    def test_all_nine_keys_are_present_in_request_body(self):
+        items = build_items_from_spec([("中", "今週確認")] * 7 + [("中", "参考")] * 4)
+        body = request_body_for(items)
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        block = json.loads(self._trusted_context_block(prompt_text))
+        expected_keys = {
+            "published_total", "evaluated_total", "importance_high",
+            "urgency_today", "urgency_week", "urgency_reference",
+            "unclassified", "temporal_state", "coverage_complete",
+        }
+        self.assertEqual(set(block.keys()), expected_keys)
+
+    def test_trusted_context_is_a_separate_boundary_outside_article_analysis_data(self):
+        items = build_items_from_spec([("中", "今週確認")] * 7 + [("中", "参考")] * 4)
+        body = request_body_for(items)
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        self.assertIn("<trusted_context>", prompt_text)
+        self.assertIn("</trusted_context>", prompt_text)
+        trusted_start = prompt_text.index("<trusted_context>")
+        trusted_end = prompt_text.index("</trusted_context>") + len("</trusted_context>")
+        article_start = prompt_text.index("<article_analysis_data>")
+        article_end = prompt_text.index("</article_analysis_data>") + len("</article_analysis_data>")
+        # 2つの境界が重ならないこと(独立した区切りタグであること)
+        self.assertTrue(trusted_end <= article_start or article_end <= trusted_start)
+
+    def test_state_b_request_body_has_correct_context_values(self):
+        items = build_items_from_spec([("中", "今週確認")] * 7 + [("中", "参考")] * 4)
+        body = request_body_for(items)
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        block = json.loads(self._trusted_context_block(prompt_text))
+        self.assertEqual(block["temporal_state"], "B")
+        self.assertEqual(block["published_total"], 11)
+        self.assertEqual(block["evaluated_total"], 11)
+        self.assertEqual(block["importance_high"], 0)
+        self.assertEqual(block["urgency_today"], 0)
+        self.assertEqual(block["urgency_week"], 7)
+        self.assertEqual(block["urgency_reference"], 4)
+        self.assertEqual(block["unclassified"], 0)
+
+    def test_incomplete_coverage_reports_correct_unclassified_count(self):
+        items = build_items_from_spec(
+            [("中", "今週確認")] + [("中", "参考")] * 3, unclassified_count=2,
+        )
+        body = request_body_for(items)
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        block = json.loads(self._trusted_context_block(prompt_text))
+        self.assertFalse(block["coverage_complete"])
+        self.assertEqual(block["unclassified"], 2)
+        self.assertEqual(block["published_total"], 6)
+        self.assertEqual(block["evaluated_total"], 4)
+
+    def test_state_a_overview_guidance_is_present(self):
+        items = build_items_from_spec([("中", "本日確認")])
+        body = request_body_for(items)
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        self.assertIn("1〜2文、120〜220文字程度", prompt_text)
+        self.assertEqual(
+            body["generationConfig"]["response_schema"]["properties"]["overview"]["description"],
+            "本日の概況の補足本文（1〜2文、120〜220文字程度）",
+        )
+
+    def test_state_b_overview_guidance_is_present(self):
+        items = build_items_from_spec([("中", "今週確認")])
+        body = request_body_for(items)
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        self.assertIn("1文、60〜140文字程度", prompt_text)
+        self.assertEqual(
+            body["generationConfig"]["response_schema"]["properties"]["overview"]["description"],
+            "本日の概況の補足本文（1文、60〜140文字程度）",
+        )
+
+    def test_state_c_overview_guidance_is_present(self):
+        items = build_items_from_spec([("中", "参考")])
+        body = request_body_for(items)
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        self.assertIn("1文、60〜120文字程度", prompt_text)
+        self.assertEqual(
+            body["generationConfig"]["response_schema"]["properties"]["overview"]["description"],
+            "本日の概況の補足本文（1文、60〜120文字程度）",
+        )
+
+    def test_no_state_ever_uses_the_old_common_fixed_length_instruction(self):
+        for items in (
+            build_items_from_spec([("中", "本日確認")]),
+            build_items_from_spec([("中", "今週確認")]),
+            build_items_from_spec([("中", "参考")]),
+        ):
+            body = request_body_for(items)
+            prompt_text = body["contents"][0]["parts"][0]["text"]
+            self.assertNotIn("2〜4文", prompt_text)
+            self.assertNotIn("200〜350文字程度", prompt_text)
+            self.assertNotIn(
+                "2〜4文、200〜350文字程度",
+                body["generationConfig"]["response_schema"]["properties"]["overview"]["description"],
+            )
+
+    def test_unclassified_item_title_and_analysis_are_not_sent_to_gemini(self):
+        items = build_items_from_spec(
+            [("中", "今週確認")], unclassified_count=1,
+        )
+        items[-1]["title"] = "未判定記事タイトルは漏洩してはいけない"
+        # status=failedのままimportance/urgencyを有効値にしても、is_article_evaluated()は
+        # statusをまず見るためFalseのまま(未判定)。この状態でai_analysisに固有マーカーを
+        # 設定し、「分析内容」自体が実際に送信されないことを検証する。
+        items[-1]["ai_analysis"] = {
+            "category": "脆弱性・パッチ", "importance": "高", "urgency": "本日確認",
+            "summary": "未判定ai分析内容は漏洩してはいけないマーカー",
+            "financial_impact": "影響", "recommended_actions": ["対応1"],
+            "reason": "理由", "tags": ["KEV"],
+        }
+        self.assertEqual(items[-1]["ai_analysis_meta"]["status"], "failed")
+        self.assertFalse(fetch.is_article_evaluated(items[-1]))
+
+        body = request_body_for(items)
+        prompt_text = body["contents"][0]["parts"][0]["text"]
+        self.assertNotIn("未判定記事タイトルは漏洩してはいけない", prompt_text)
+        self.assertNotIn("未判定ai分析内容は漏洩してはいけないマーカー", prompt_text)
+
+    def test_evaluated_total_equals_sum_of_urgency_buckets(self):
+        for items in (
+            build_items_from_spec([("中", "今週確認")] * 7 + [("中", "参考")] * 4),
+            build_items_from_spec(
+                [("高", "本日確認"), ("中", "今週確認"), ("中", "参考")], unclassified_count=2,
+            ),
+            build_items_from_spec([("高", "参考"), ("高", "参考")]),
+        ):
+            ctx = fetch.compute_brief_trusted_context(items)
+            self.assertEqual(
+                ctx["evaluated_total"],
+                ctx["urgency_today"] + ctx["urgency_week"] + ctx["urgency_reference"],
+            )
+
+
+# ── check_items上限2の一致 (Ticket 15b) ────────────────────────────────────
+
+class CheckItemsMaxConsistencyTest(unittest.TestCase):
+    def test_constant_is_two(self):
+        self.assertEqual(dj.BRIEF_MAX_CHECK_ITEMS, 2)
+
+    def test_response_schema_max_items_is_two(self):
+        body = get_request_body_json()
+        schema = body["generationConfig"]["response_schema"]
+        self.assertEqual(schema["properties"]["check_items"]["maxItems"], 2)
+
+    def test_normalize_truncates_to_two(self):
+        value = dict(VALID_BRIEF_RESPONSE)
+        value["check_items"] = ["a", "b", "c"]
+        result = fetch.normalize_brief_response(value)
+        self.assertEqual(len(result["check_items"]), 2)
+
+    def test_daily_json_validation_rejects_three_check_items(self):
+        digest = dj.build_daily_digest(
+            [], {
+                "overview": "本日の概況です。金融機関に影響し得る内容が確認されました。",
+                "important_highlights": [], "discussion_points": [],
+                "check_items": ["確認1", "確認2", "確認3"],
+                "status": "success", "error_type": None, "http_status": None,
+            },
+            [], "gemini-2.5-flash",
+            datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
+            datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
+        )
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_daily_json_validation_accepts_two_check_items(self):
+        digest = dj.build_daily_digest(
+            [], {
+                "overview": "本日の概況です。金融機関に影響し得る内容が確認されました。",
+                "important_highlights": [], "discussion_points": [],
+                "check_items": ["確認1", "確認2"],
+                "status": "success", "error_type": None, "http_status": None,
+            },
+            [], "gemini-2.5-flash",
+            datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
+            datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
+        )
+        dj.validate_daily_digest(digest)  # 例外が出なければOK
+
+
+# ── discussion_points: prompt 0〜2件 / schema・validation上限3の維持 ────────
+
+class DiscussionPointsMaxUnchangedTest(unittest.TestCase):
+    def test_constant_is_still_three(self):
+        self.assertEqual(dj.BRIEF_MAX_DISCUSSION_POINTS, 3)
+
+    def test_response_schema_max_items_is_still_three(self):
+        body = get_request_body_json()
+        schema = body["generationConfig"]["response_schema"]
+        self.assertEqual(schema["properties"]["discussion_points"]["maxItems"], 3)
+
+    def test_daily_json_validation_accepts_three_discussion_points(self):
+        digest = dj.build_daily_digest(
+            [], {
+                "overview": "本日の概況です。金融機関に影響し得る内容が確認されました。",
+                "important_highlights": [],
+                "discussion_points": ["論点1", "論点2", "論点3"],
+                "check_items": [],
+                "status": "success", "error_type": None, "http_status": None,
+            },
+            [], "gemini-2.5-flash",
+            datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
+            datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
+        )
+        dj.validate_daily_digest(digest)  # 例外が出なければOK
 
 
 if __name__ == "__main__":

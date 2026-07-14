@@ -66,10 +66,14 @@ class RepairedDailyJsonTest(unittest.TestCase):
         self.assertEqual(d["brief"]["discussion_points"], [])
         self.assertEqual(d["brief"]["check_items"], [])
 
-    def test_brief_prompt_version_unchanged(self):
+    def test_historical_brief_prompt_version_preserved(self):
+        # 履歴修復(Ticket 14a-4)はこれらの日付のbrief.prompt_versionを書き換えて
+        # いないことを確認する。生成時点のリテラル("today-brief-v2")と比較する
+        # (daily_json.BRIEF_PROMPT_VERSIONは以後のTicketで更新されうる現行定数であり、
+        # 過去に生成済みのJSONの値は現行定数へ追随しない)。
         for date in ("2026-07-11", "2026-07-12"):
             d = _load(date)
-            self.assertEqual(d["brief"]["prompt_version"], daily_json.BRIEF_PROMPT_VERSION)
+            self.assertEqual(d["brief"]["prompt_version"], "today-brief-v2")
             self.assertEqual(d["brief"]["status"], "success")
 
     def test_loadable_and_archive_renderable(self):
