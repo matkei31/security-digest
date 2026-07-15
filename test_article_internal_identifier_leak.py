@@ -214,6 +214,112 @@ class AllowlistProjectionDoesNotFailOnUnknownFieldsTest(unittest.TestCase):
         self.assertNotIn("CVSSスコア", entry)
 
 
+class UnknownStatusValueOmittedTest(unittest.TestCase):
+    """PR#8独立レビュー再検出分: _project_vulnerability_fact_entry()が
+    _project_entry_fields(entry, _VULNERABILITY_FACT_FIELD_LABELS)へ
+    kev_status/nvd_statusを含めたまま生値でgeneric projectionしていたため、
+    値allowlist(listed/not_listed/unknown・found/not_found/unavailable)に
+    一致しない未知値(pending_review・rate_limited等)が上書きされずGemini入力へ
+    残っていた。kev_status/nvd_statusをgeneric projectionから分離し、既知value
+    allowlistに一致した場合だけ「KEV掲載状態」「NVD取得状態」を追加する(未知値
+    は項目自体を省略し、「不明」等へ推測変換もしない)ことを検証する。
+
+    serialize_vulnerability_facts_for_prompt()自体は既知3値(listed/not_listed/
+    unknown・found/not_found/unavailable)しか返さない設計だが、将来の変更や
+    想定外の実データでこの関数の戻り値が変わってもprompt入力を汚染しないことを
+    確認するため、直接モックして未知値を注入する。
+    """
+
+    AD = datetime.date(2026, 7, 14)
+
+    def _fake_raw(self, kev_status="listed", nvd_status="found"):
+        return {
+            "cves": [{
+                "cve_id": "CVE-2026-0001", "nvd_status": nvd_status, "cvss_score": 5.0,
+                "cvss_version": "3.1", "cvss_severity": "MEDIUM", "kev_status": kev_status,
+                "kev_date_added": "2026-07-10",
+            }],
+            "omitted_cve_count": 0,
+        }
+
+    # 1・3. kev_status未知値: 例外なし・「KEV掲載状態」自体が省略される
+    def test_unknown_kev_status_does_not_raise_and_field_omitted(self):
+        with patch("fetch.serialize_vulnerability_facts_for_prompt",
+                   return_value=self._fake_raw(kev_status="pending_review")):
+            result = fetch.build_verified_context_for_prompt({}, self.AD, [])
+        entry = result["脆弱性情報"]["CVE一覧"][0]
+        self.assertNotIn("KEV掲載状態", entry)
+        self.assertNotIn("pending_review", str(result))
+
+    # 2. actual Gemini request bodyにpending_reviewが残らない
+    def test_unknown_kev_status_not_in_actual_request_body(self):
+        item = {"source": "CISA", "link": "https://example.com/a", "title": "t", "summary": "s",
+                "facts": {"cves": [cve_entry("CVE-2026-0001")]}}
+        with patch("fetch.serialize_vulnerability_facts_for_prompt",
+                   return_value=self._fake_raw(kev_status="pending_review")):
+            text = _send_and_capture(item, analysis_date=self.AD)
+        self.assertNotIn("pending_review", text)
+        verified, _ = tvp._extract_verified_and_untrusted(text)
+        self.assertNotIn("KEV掲載状態", verified["脆弱性情報"]["CVE一覧"][0])
+
+    # 4・6. nvd_status未知値: 例外なし・「NVD取得状態」自体が省略される
+    def test_unknown_nvd_status_does_not_raise_and_field_omitted(self):
+        with patch("fetch.serialize_vulnerability_facts_for_prompt",
+                   return_value=self._fake_raw(nvd_status="rate_limited")):
+            result = fetch.build_verified_context_for_prompt({}, self.AD, [])
+        entry = result["脆弱性情報"]["CVE一覧"][0]
+        self.assertNotIn("NVD取得状態", entry)
+        self.assertNotIn("rate_limited", str(result))
+
+    # 5. actual Gemini request bodyにrate_limitedが残らない
+    def test_unknown_nvd_status_not_in_actual_request_body(self):
+        item = {"source": "CISA", "link": "https://example.com/a", "title": "t", "summary": "s",
+                "facts": {"cves": [cve_entry("CVE-2026-0001")]}}
+        with patch("fetch.serialize_vulnerability_facts_for_prompt",
+                   return_value=self._fake_raw(nvd_status="rate_limited")):
+            text = _send_and_capture(item, analysis_date=self.AD)
+        self.assertNotIn("rate_limited", text)
+        verified, _ = tvp._extract_verified_and_untrusted(text)
+        self.assertNotIn("NVD取得状態", verified["脆弱性情報"]["CVE一覧"][0])
+
+    # 未知kev_status・未知nvd_statusが同時に発生しても両方とも例外なく省略される
+    def test_both_unknown_statuses_together_do_not_raise(self):
+        with patch("fetch.serialize_vulnerability_facts_for_prompt",
+                   return_value=self._fake_raw(kev_status="pending_review",
+                                                nvd_status="rate_limited")):
+            result = fetch.build_verified_context_for_prompt({}, self.AD, [])
+        entry = result["脆弱性情報"]["CVE一覧"][0]
+        self.assertNotIn("KEV掲載状態", entry)
+        self.assertNotIn("NVD取得状態", entry)
+        self.assertNotIn("pending_review", str(result))
+        self.assertNotIn("rate_limited", str(result))
+        # 8. CVE ID・CVSS等の正当な技術情報は引き続き保持される
+        self.assertEqual(entry["CVE ID"], "CVE-2026-0001")
+        self.assertEqual(entry["CVSSスコア"], 5.0)
+        self.assertEqual(entry["CVSSバージョン"], "3.1")
+        self.assertEqual(entry["CVSS深刻度"], "MEDIUM")
+        self.assertEqual(entry["KEV追加日"], "2026-07-10")
+
+    # 7. 既知6値の日本語変換は維持(未知値を省略対象にしただけで既知経路は不変)
+    def test_known_status_values_still_translated(self):
+        cases = [
+            ("kev_status", "listed", "KEV掲載状態", "掲載あり"),
+            ("kev_status", "not_listed", "KEV掲載状態", "掲載なし"),
+            ("kev_status", "unknown", "KEV掲載状態", "不明"),
+            ("nvd_status", "found", "NVD取得状態", "取得済み"),
+            ("nvd_status", "not_found", "NVD取得状態", "情報なし"),
+            ("nvd_status", "unavailable", "NVD取得状態", "取得不能"),
+        ]
+        for field, raw_value, label, expected in cases:
+            with self.subTest(field=field, raw_value=raw_value):
+                kwargs = {field: raw_value}
+                with patch("fetch.serialize_vulnerability_facts_for_prompt",
+                           return_value=self._fake_raw(**kwargs)):
+                    result = fetch.build_verified_context_for_prompt({}, self.AD, [])
+                entry = result["脆弱性情報"]["CVE一覧"][0]
+                self.assertEqual(entry[label], expected)
+
+
 class RuleFlagAllowlistProjectionTest(unittest.TestCase):
     """rule_flagsの内部フラグ値はfetch側のallowlistで自然文ラベルへ変換し、
     未知/将来のフラグ値は(daily JSON側のcompute_rule_flags()を変更しなくても)

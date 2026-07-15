@@ -2085,13 +2085,18 @@ _KEV_RECENT_ADDITION_FIELD_LABELS = {
 # 脆弱性情報(CVE)1件のフィールド名投影(serialize_vulnerability_facts_for_prompt()の
 # 内部キー→prompt入力用の日本語ラベル)。serialize_vulnerability_facts_for_prompt()
 # 自体の戻り値契約(内部実装での再利用・既存テスト)は変更しない。
+# kev_status/nvd_statusはここに含めない(下のvalue allowlistでのみ扱う)。
+# 含めてしまうと、既知値だけを日本語へ上書きする前に生の機械値(例:
+# pending_review・rate_limited等の未知値)が一度そのままprojectedへ入り、
+# 値allowlistに一致しない場合はその生値が上書きされずGemini入力へ残ってしまう
+# (別issueとして報告された再発)。kev_status/nvd_statusは
+# _project_vulnerability_fact_entry()側で、既知value allowlistに一致した
+# 場合だけ追加する(未知値なら項目自体を省略する)。
 _VULNERABILITY_FACT_FIELD_LABELS = {
     "cve_id": "CVE ID",
-    "nvd_status": "NVD取得状態",
     "cvss_score": "CVSSスコア",
     "cvss_version": "CVSSバージョン",
     "cvss_severity": "CVSS深刻度",
-    "kev_status": "KEV掲載状態",
     "kev_date_added": "KEV追加日",
 }
 
