@@ -7,6 +7,7 @@ import sys, json, datetime, time, re, os, tempfile, unicodedata, math
 import urllib.request, urllib.parse
 import urllib.error
 import xml.etree.ElementTree as ET
+import html.parser
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Optional
@@ -33,6 +34,7 @@ NAMESPACES = {
     "atom": "http://www.w3.org/2005/Atom",
     "dc":   "http://purl.org/dc/elements/1.1/",
     "rss1": "http://purl.org/rss/1.0/",
+    "content": "http://purl.org/rss/1.0/modules/content/",
 }
 
 CACHE_PATH = Path(__file__).parent / "docs" / "translate_cache.json"
@@ -345,6 +347,217 @@ def _local_tag_name(tag):
     return tag.rsplit("}", 1)[-1] if "}" in tag else tag
 
 
+# ── feed-native rich content (RSS content:encoded / Atom content) の
+#    抽出・決定論的サニタイズ・選択 (Ticket 16a) ───────────────────────────────
+#
+# 追加のHTTP取得は一切行わない。既に1回取得済みのRSS/Atomレスポンス内の
+# フィールド(content:encoded・description・Atom content・summary)だけを対象にする。
+
+ARTICLE_BODY_MAX_CHARS = 4000
+
+# 上限超過時の決定論的bounded excerpt(Ticket 16a 独立レビュー指摘対応)。
+#
+# 単純な「正規化後テキストの先頭ARTICLE_BODY_MAX_CHARS文字」は、実feed
+# (/private/tmp/microsoft-security-feed.xml のShinyHunters OAuth abuse記事、
+# 正規化後17,311文字)で実測すると、直近侵害("June 2026")の記述が位置4,361に
+# あり境界文字数のわずか手前で欠落する。位置4,361は文書全体の約25.2%地点であり、
+# 「先頭からの連続した4,000文字」をどう配分しても(先頭起点のhead+文書末尾起点の
+# tailという2分割では、tailがdocの末尾から12,950文字以上を占めない限り届かない
+# ため)この位置には原理的に届かない。
+#
+# 本実装は、要素名・キーワード・source名に一切依存しない機械的な位置指定として、
+# 「正規化後テキスト全体の長さに対する一定の割合(_ARTICLE_BODY_TAIL_START_FRACTION)」
+# の地点から後方セグメントを取る。ブログ記事は要点が冒頭(概要段落)に集中し、
+# 記事末尾側は関連リンク・著者クレジット等の相対的に付随的な内容になりやすいという
+# 一般的な文書構造を踏まえ、先頭から25%の地点を後方セグメントの開始位置とする。
+# 前方セグメント(_ARTICLE_BODY_HEAD_CHARS)と合わせても、後方開始位置が前方の
+# 終端より手前になる場合(=文書が上限に対してさほど長くない場合)は連続扱いとし、
+# 中略マーカーを挿入しない(重複なし・中略なしをそのまま維持する)。
+_ARTICLE_BODY_EXCERPT_MARKER = "\n…(中略)…\n"
+_ARTICLE_BODY_TAIL_START_FRACTION = 0.25
+_ARTICLE_BODY_CONTENT_BUDGET = ARTICLE_BODY_MAX_CHARS - len(_ARTICLE_BODY_EXCERPT_MARKER)
+_ARTICLE_BODY_HEAD_CHARS = _ARTICLE_BODY_CONTENT_BUDGET // 2
+_ARTICLE_BODY_TAIL_CHARS = _ARTICLE_BODY_CONTENT_BUDGET - _ARTICLE_BODY_HEAD_CHARS
+
+# rich content採用の機械条件(Ticket 16a)。ローカル実feed計測では、rich content
+# (content:encoded)はdescriptionの概ね10〜40倍の長さ(Microsoft Security中央値
+# 9,184文字 対 description 376文字等)であり、閾値は「description とほぼ同じ長さの
+# 重複」を除外できれば十分小さい値でよい。Fableが提案した1.5倍をそのまま採用はせず、
+# 上記実測・既存挙動を踏まえて次の3条件をすべて満たす場合のみrichを採用する
+# (意味解析はしない、文字数・比率・正規化後の一致/包含のみの機械判定):
+#   1) rich自体が_RICH_CONTENT_MIN_LENGTH文字以上(短すぎる候補を除外)
+#   2) rich長 >= description長 × _RICH_CONTENT_MIN_RATIO
+#   3) rich長 - description長 >= _RICH_CONTENT_MIN_ABSOLUTE_GAIN(絶対的な増分)
+_RICH_CONTENT_MIN_LENGTH = 200
+_RICH_CONTENT_MIN_RATIO = 1.5
+_RICH_CONTENT_MIN_ABSOLUTE_GAIN = 200
+
+# 本文とみなさない要素(中身のテキストごと除外する)。
+_ARTICLE_BODY_SKIP_TAGS = frozenset({"script", "style", "noscript", "template"})
+# feedのboilerplateとして安全に除外できる一般的なHTML要素(中身のテキストごと除外)。
+_ARTICLE_BODY_BOILERPLATE_TAGS = frozenset({"nav", "footer", "aside"})
+_ARTICLE_BODY_EXCLUDED_TAGS = _ARTICLE_BODY_SKIP_TAGS | _ARTICLE_BODY_BOILERPLATE_TAGS
+
+
+class _ArticleBodyHTMLTextExtractor(html.parser.HTMLParser):
+    """HTML断片(content:encoded等)からプレーンテキストのみを決定論的に取り出す。
+    script/style/noscript/template・nav/footer/asideの中身は本文とみなさず除外する。
+    convert_charrefs(既定True)により、HTMLエンティティはhandle_data到達時点で
+    復号済みになる。"""
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self._skip_stack = []
+        self._parts = []
+
+    def handle_starttag(self, tag, attrs):
+        if tag in _ARTICLE_BODY_EXCLUDED_TAGS:
+            self._skip_stack.append(tag)
+
+    def handle_endtag(self, tag):
+        # 不整合なネスト(閉じタグ抜け等)でも致命的にならないよう、一致する
+        # 直近の要素だけを閉じる。
+        for i in range(len(self._skip_stack) - 1, -1, -1):
+            if self._skip_stack[i] == tag:
+                del self._skip_stack[i]
+                break
+
+    def handle_data(self, data):
+        if not self._skip_stack:
+            self._parts.append(data)
+
+    def get_text(self):
+        return "".join(self._parts)
+
+
+def _html_fragment_to_plain_text(raw_html):
+    """CDATA由来か否かに関わらず、HTML文字列(タグがリテラル文字として含まれる
+    文字列)からプレーンテキストを取り出す。untrusted(feedレスポンス)由来の入力を
+    扱う境界のため、万一の解析例外はNoneを返す。generic regexによる部分的な
+    タグ除去等の代替処理は行わない(script/style等の中身が漏れる経路を作らないため)。
+    呼び出し元のnormalize_feed_body_text()がNoneを検知し、当該候補を解析不能=空文字
+    として扱う(rich contentであればdescriptionへfallbackする)。"""
+    if not raw_html:
+        return ""
+    parser = _ArticleBodyHTMLTextExtractor()
+    try:
+        parser.feed(raw_html)
+        parser.close()
+    except Exception:
+        return None
+    return parser.get_text()
+
+
+def _xml_element_inner_text(elem):
+    """AtomのContent(type="xhtml"等)のように、実際の子要素として入れ子HTMLを
+    持つ場合にテキストを再帰的に集める。ElementTreeで既にparse済みのため、
+    HTMLエンティティは要素のtext/tail時点で復号済み。script/style/noscript/
+    template・nav/footer/aside配下は本文とみなさない。"""
+    parts = []
+    if elem.text:
+        parts.append(elem.text)
+    for child in elem:
+        tag = _local_tag_name(child.tag).lower()
+        if tag not in _ARTICLE_BODY_EXCLUDED_TAGS:
+            parts.append(_xml_element_inner_text(child))
+        if child.tail:
+            parts.append(child.tail)
+    return "".join(parts)
+
+
+def _extract_atom_entry_content_text(entry):
+    """Atom entryのcontent要素からrich content候補を取り出す。type="xhtml"等で
+    実際の子要素(入れ子XML)を持つ場合は子要素のテキストを再帰的に集め、それ以外は
+    content要素の.textをそのまま返す(HTML文字列としての除去・正規化は
+    normalize_feed_body_text()側で行う)。"""
+    content_elem = entry.find("atom:content", namespaces=NAMESPACES)
+    if content_elem is None:
+        return ""
+    if list(content_elem):
+        return _xml_element_inner_text(content_elem)
+    return content_elem.text or ""
+
+
+_ARTICLE_BODY_CONTROL_CHARS_RE = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]")
+
+
+def normalize_feed_body_text(raw_text):
+    """description・rich content双方が通る共通の決定論的プレーンテキスト正規化
+    (Ticket 16a)。HTMLタグ除去(script/style/noscript/template・nav/footer/aside
+    配下は本文除外)・HTMLエンティティ復号・制御文字除去・空白/改行の単一スペースへの
+    圧縮を行う。文字数上限はここでは適用しない(選択後にapply_article_body_char_limit()
+    で行う)。解析に失敗した場合(_html_fragment_to_plain_textがNoneを返す場合)は
+    空文字を返す(部分的な結果を再サニタイズして使うことはしない)。
+    """
+    if not raw_text:
+        return ""
+    plain = _html_fragment_to_plain_text(raw_text)
+    if plain is None:
+        return ""
+    plain = _ARTICLE_BODY_CONTROL_CHARS_RE.sub(" ", plain)
+    plain = re.sub(r"\s+", " ", plain).strip()
+    return plain
+
+
+def select_article_body_text(description_text, rich_text):
+    """正規化済みのdescription・rich contentから、どちらか一方だけを機械的な条件で
+    選ぶ(Ticket 16a)。連結はしない。両方とも既にnormalize_feed_body_text()を
+    通した値を渡すこと。閾値の根拠は_RICH_CONTENT_MIN_*の定義コメントを参照。
+    """
+    if not rich_text:
+        return description_text
+    if len(rich_text) < _RICH_CONTENT_MIN_LENGTH:
+        return description_text
+    desc_cf = description_text.casefold()
+    rich_cf = rich_text.casefold()
+    if rich_cf == desc_cf:
+        return description_text
+    if desc_cf and rich_cf in desc_cf:
+        # richがdescriptionの部分文字列でしかなく、情報量を増やさない。
+        return description_text
+    if len(rich_text) < len(description_text) * _RICH_CONTENT_MIN_RATIO:
+        return description_text
+    if len(rich_text) - len(description_text) < _RICH_CONTENT_MIN_ABSOLUTE_GAIN:
+        return description_text
+    return rich_text
+
+
+def apply_article_body_char_limit(text):
+    """正規化後のUnicodeコードポイント数で最大ARTICLE_BODY_MAX_CHARS文字に収める
+    (Ticket 16a)。単純な先頭切断ではなく、前方セグメント(_ARTICLE_BODY_HEAD_CHARS)
+    と、文書全体の長さに対する一定割合の地点から取る後方セグメント
+    (_ARTICLE_BODY_TAIL_CHARS)を、境界マーカーで明示して結合する(重複なし)。
+    後方開始位置が前方セグメント終端以前になる場合(=上限に対して文書がさほど
+    長くない場合)は連続する1本のテキストとして扱い、マーカーは挿入しない。
+    切断は例外にせず、常に成功する。
+    """
+    if not text:
+        return ""
+    if len(text) <= ARTICLE_BODY_MAX_CHARS:
+        return text
+
+    head = text[:_ARTICLE_BODY_HEAD_CHARS]
+    tail_start = max(
+        _ARTICLE_BODY_HEAD_CHARS,
+        int(len(text) * _ARTICLE_BODY_TAIL_START_FRACTION),
+    )
+    tail = text[tail_start:tail_start + _ARTICLE_BODY_TAIL_CHARS]
+    if not tail:
+        return head
+    if tail_start <= _ARTICLE_BODY_HEAD_CHARS:
+        return head + tail
+    return head + _ARTICLE_BODY_EXCERPT_MARKER + tail
+
+
+def build_article_body_text(description_raw, rich_content_raw):
+    """description・rich content(feed-native本文)から、ARTICLE評価入力用の本文を
+    決定論的に1つ選び、共通上限まで切り詰めて返す(Ticket 16a)。連結はしない。"""
+    description_normalized = normalize_feed_body_text(description_raw)
+    rich_normalized = normalize_feed_body_text(rich_content_raw)
+    selected = select_article_body_text(description_normalized, rich_normalized)
+    return apply_article_body_char_limit(selected)
+
+
 def _select_atom_article_url(entry):
     """Atom entryから記事本文用のURLを選ぶ(Ticket 14a)。
 
@@ -403,6 +616,9 @@ def _parse_feed_items(root, name, lang):
                 "title":   (item.findtext("title") or "").strip(),
                 "link":    (item.findtext("link")  or "").strip(),
                 "summary": (item.findtext("description") or "").strip(),
+                # feed-native本文(RSS content:encoded)。追加HTTP取得は行わず、
+                # 既に取得済みのこのXML内のフィールドのみを対象にする(Ticket 16a)。
+                "rich_content": (item.findtext("content:encoded", namespaces=NAMESPACES) or "").strip(),
                 "date":    parse_date(pub_date_raw),
                 "published_at_jst": daily_json.parse_date_to_jst(pub_date_raw),
                 "source": name,
@@ -436,6 +652,9 @@ def _parse_feed_items(root, name, lang):
                 "title":   (entry.findtext("atom:title",   namespaces=NAMESPACES) or "").strip(),
                 "link":    article_url,
                 "summary": (entry.findtext("atom:summary", namespaces=NAMESPACES) or "").strip(),
+                # feed-native本文(Atom content)。追加HTTP取得は行わず、既に取得済みの
+                # このXML内のフィールドのみを対象にする(Ticket 16a)。
+                "rich_content": _extract_atom_entry_content_text(entry),
                 "date":    parse_date(date_raw),
                 "published_at_jst": daily_json.parse_date_to_jst(date_raw),
                 "source": name,
@@ -2666,7 +2885,12 @@ def enrich_with_ai(items, analysis_date=None):
             "collection_method": source_meta["collection_method"] if source_meta else "不明",
             "title": raw_title,
             "raw_title": raw_title,
-            "summary": strip_html(item.get("summary", "")),
+            # Ticket 16a: descriptionのみだったsummaryを、feed-native rich content
+            # (RSS content:encoded / Atom content)がdescriptionを機械的な条件で
+            # 上回る場合はそちらへ差し替える(連結はしない)。追加HTTP取得は行わず、
+            # item["rich_content"](_parse_feed_itemsが取得済みfeedレスポンスから
+            # 設定)のみを参照する。
+            "summary": build_article_body_text(item.get("summary", ""), item.get("rich_content", "")),
             "published_at": published_at_str,
             "url": item.get("link", ""),
         }

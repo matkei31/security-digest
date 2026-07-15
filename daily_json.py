@@ -22,7 +22,7 @@ DATA_DIR = REPOSITORY_ROOT / "data"
 
 # ── バージョン・スキーマ定数(一元管理) ───────────────────────────────────────
 SCHEMA_VERSION = 1
-ARTICLE_PROMPT_VERSION = "article-analysis-v6"
+ARTICLE_PROMPT_VERSION = "article-analysis-v7"
 BRIEF_PROMPT_VERSION = "today-brief-v3"
 CATEGORY_VERSION = "v1"
 

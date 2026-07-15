@@ -36,7 +36,7 @@ def _prompt_text():
 
 class VersionAndSchemaTest(unittest.TestCase):
     def test_article_prompt_version_is_v6(self):
-        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v6")
+        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v7")
 
     def test_brief_prompt_version_and_schema_version_unchanged(self):
         self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-v3")
