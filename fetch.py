@@ -355,29 +355,56 @@ def _local_tag_name(tag):
 
 ARTICLE_BODY_MAX_CHARS = 4000
 
-# 上限超過時の決定論的bounded excerpt(Ticket 16a 独立レビュー指摘対応)。
+# 上限超過時の決定論的bounded excerpt(Ticket 16a 独立レビュー指摘対応 第3版)。
 #
 # 単純な「正規化後テキストの先頭ARTICLE_BODY_MAX_CHARS文字」は、実feed
 # (/private/tmp/microsoft-security-feed.xml のShinyHunters OAuth abuse記事、
-# 正規化後17,311文字)で実測すると、直近侵害("June 2026")の記述が位置4,361に
-# あり境界文字数のわずか手前で欠落する。位置4,361は文書全体の約25.2%地点であり、
-# 「先頭からの連続した4,000文字」をどう配分しても(先頭起点のhead+文書末尾起点の
-# tailという2分割では、tailがdocの末尾から12,950文字以上を占めない限り届かない
-# ため)この位置には原理的に届かない。
+# 正規化後17,000文字超)で実測すると、直近侵害("June 2026")の記述が位置4,000
+# 文字境界のわずか後方にあり欠落する。第1版(文書全体の長さの一定割合(25%)の
+# 地点から後方セグメントを1つ取る方式)は単一の固定窓への過適合になり得るとの
+# 指摘を受け、第2版で「文書全体を複数の固定割合地点(0%・25%・50%・75%)で
+# 均等にセグメント化する」方式へ変更した。しかし第2版は最終(75%)セグメントも
+# 前方セグメントと同様に「その地点から前方へ固定予算だけ抜き出す」方式だった
+# ため、文書長がARTICLE_BODY_MAX_CHARSよりわずかに大きいだけの場合
+# (例: 4,001文字)、全セグメントが連続してしまい、最終セグメントの終端が
+# 文書の実際の末尾に届かず、末尾のごく一部が中略マーカーなしで無言のまま
+# 欠落するという不具合が生じた(独立レビュー3回目)。
 #
-# 本実装は、要素名・キーワード・source名に一切依存しない機械的な位置指定として、
-# 「正規化後テキスト全体の長さに対する一定の割合(_ARTICLE_BODY_TAIL_START_FRACTION)」
-# の地点から後方セグメントを取る。ブログ記事は要点が冒頭(概要段落)に集中し、
-# 記事末尾側は関連リンク・著者クレジット等の相対的に付随的な内容になりやすいという
-# 一般的な文書構造を踏まえ、先頭から25%の地点を後方セグメントの開始位置とする。
-# 前方セグメント(_ARTICLE_BODY_HEAD_CHARS)と合わせても、後方開始位置が前方の
-# 終端より手前になる場合(=文書が上限に対してさほど長くない場合)は連続扱いとし、
-# 中略マーカーを挿入しない(重複なし・中略なしをそのまま維持する)。
+# 第3版は、前方セグメント(fraction=0.0)と中盤セグメント(_ARTICLE_BODY_
+# MIDDLE_FRACTIONS: 25%・50%地点)は第2版のまま「その地点から前方へ抜き出す」
+# 方式を維持しつつ、最終セグメントだけを「文書の実際の末尾から
+# _ARTICLE_BODY_FINAL_BUDGET文字分を取る」方式(start = 文書長 -
+# _ARTICLE_BODY_FINAL_BUDGET、ただし直前セグメントの終端未満にはならないよう
+# clamp)へ変更する。これにより最終セグメントは常に文書の末尾を含み、文書長が
+# 上限に対してわずかに大きいだけの場合でも、末尾との間に隙間があれば必ず
+# 中略マーカーで明示される。ブログ記事は要点が冒頭段落に集中しやすいという
+# 一般的な文書構造を踏まえ、先頭セグメントには全体予算の半分
+# (_ARTICLE_BODY_FRONT_SHARE)を、残り(中盤2つ+末尾1つ)には残り半分を均等に
+# 割り当てる。特定のsource名・記事タイトル・脅威アクター名・キーワード・
+# importance/urgencyのいずれにも依存しない、文字数・位置(文書全体の長さに対する
+# 割合、および文書の実際の末尾)のみに基づく機械的な配分であり、意味解析は
+# 行わない。
+#
+# 前方・中盤セグメントの開始位置は「直前セグメントの終端」未満にはならないよう
+# clampする(文書が上限に対してさほど長くない場合、複数セグメントが連続して
+# 1つの塊に融合する)。連続しないセグメント間(末尾セグメントとの間を含む)には
+# 境界マーカーを明示し、削除された箇所を無言では扱わない。
 _ARTICLE_BODY_EXCERPT_MARKER = "\n…(中略)…\n"
-_ARTICLE_BODY_TAIL_START_FRACTION = 0.25
-_ARTICLE_BODY_CONTENT_BUDGET = ARTICLE_BODY_MAX_CHARS - len(_ARTICLE_BODY_EXCERPT_MARKER)
-_ARTICLE_BODY_HEAD_CHARS = _ARTICLE_BODY_CONTENT_BUDGET // 2
-_ARTICLE_BODY_TAIL_CHARS = _ARTICLE_BODY_CONTENT_BUDGET - _ARTICLE_BODY_HEAD_CHARS
+_ARTICLE_BODY_MIDDLE_FRACTIONS = (0.25, 0.50)
+_ARTICLE_BODY_FRONT_SHARE = 0.5
+
+# セグメント総数 = 前方1 + 中盤(_ARTICLE_BODY_MIDDLE_FRACTIONS) + 末尾1。
+_ARTICLE_BODY_SEGMENT_COUNT = len(_ARTICLE_BODY_MIDDLE_FRACTIONS) + 2
+_ARTICLE_BODY_CONTENT_BUDGET = ARTICLE_BODY_MAX_CHARS - (
+    (_ARTICLE_BODY_SEGMENT_COUNT - 1) * len(_ARTICLE_BODY_EXCERPT_MARKER)
+)
+_ARTICLE_BODY_FRONT_BUDGET = int(_ARTICLE_BODY_CONTENT_BUDGET * _ARTICLE_BODY_FRONT_SHARE)
+# 前方以外(中盤+末尾)のセグメント数で残り予算を均等に割る。
+_ARTICLE_BODY_REST_SEGMENT_COUNT = _ARTICLE_BODY_SEGMENT_COUNT - 1
+_ARTICLE_BODY_REST_BUDGET_EACH = (
+    (_ARTICLE_BODY_CONTENT_BUDGET - _ARTICLE_BODY_FRONT_BUDGET) // _ARTICLE_BODY_REST_SEGMENT_COUNT
+)
+_ARTICLE_BODY_FINAL_BUDGET = _ARTICLE_BODY_REST_BUDGET_EACH
 
 # rich content採用の機械条件(Ticket 16a)。ローカル実feed計測では、rich content
 # (content:encoded)はdescriptionの概ね10〜40倍の長さ(Microsoft Security中央値
@@ -398,12 +425,28 @@ _ARTICLE_BODY_SKIP_TAGS = frozenset({"script", "style", "noscript", "template"})
 _ARTICLE_BODY_BOILERPLATE_TAGS = frozenset({"nav", "footer", "aside"})
 _ARTICLE_BODY_EXCLUDED_TAGS = _ARTICLE_BODY_SKIP_TAGS | _ARTICLE_BODY_BOILERPLATE_TAGS
 
+# ブロックレベル要素の境界を空白として保持する(Ticket 16a 独立レビュー指摘対応)。
+# handle_data()の断片をそのまま連結すると、改行を挟まない隣接する<p>/<li>等の
+# テキストが文の境界なく結合してしまう(例: "First sentence.Second
+# sentence."のような誤結合)。strong/em/a等のinline要素はここに含めず、
+# "OAuth-<strong>based</strong>"のような語中の強調が"OAuth- based"のように
+# 分断されないようにする。
+_ARTICLE_BODY_BLOCK_TAGS = frozenset({
+    "p", "div", "section", "article",
+    "h1", "h2", "h3", "h4", "h5", "h6",
+    "li", "ul", "ol",
+    "table", "tr", "td", "th",
+    "blockquote", "pre", "br",
+})
+
 
 class _ArticleBodyHTMLTextExtractor(html.parser.HTMLParser):
     """HTML断片(content:encoded等)からプレーンテキストのみを決定論的に取り出す。
     script/style/noscript/template・nav/footer/asideの中身は本文とみなさず除外する。
     convert_charrefs(既定True)により、HTMLエンティティはhandle_data到達時点で
-    復号済みになる。"""
+    復号済みになる。ブロック要素の開始・終了では境界として空白を1つ挿入する
+    (inline要素では挿入しない)。連続する空白は後段のnormalize_feed_body_text()の
+    whitespace正規化で1つへ圧縮されるため、境界ごとに単純に挿入してよい。"""
 
     def __init__(self):
         super().__init__(convert_charrefs=True)
@@ -413,14 +456,21 @@ class _ArticleBodyHTMLTextExtractor(html.parser.HTMLParser):
     def handle_starttag(self, tag, attrs):
         if tag in _ARTICLE_BODY_EXCLUDED_TAGS:
             self._skip_stack.append(tag)
+            return
+        if tag in _ARTICLE_BODY_BLOCK_TAGS and not self._skip_stack:
+            self._parts.append(" ")
 
     def handle_endtag(self, tag):
-        # 不整合なネスト(閉じタグ抜け等)でも致命的にならないよう、一致する
-        # 直近の要素だけを閉じる。
-        for i in range(len(self._skip_stack) - 1, -1, -1):
-            if self._skip_stack[i] == tag:
-                del self._skip_stack[i]
-                break
+        if tag in _ARTICLE_BODY_EXCLUDED_TAGS:
+            # 不整合なネスト(閉じタグ抜け等)でも致命的にならないよう、一致する
+            # 直近の要素だけを閉じる。
+            for i in range(len(self._skip_stack) - 1, -1, -1):
+                if self._skip_stack[i] == tag:
+                    del self._skip_stack[i]
+                    break
+            return
+        if tag in _ARTICLE_BODY_BLOCK_TAGS and not self._skip_stack:
+            self._parts.append(" ")
 
     def handle_data(self, data):
         if not self._skip_stack:
@@ -452,14 +502,25 @@ def _xml_element_inner_text(elem):
     """AtomのContent(type="xhtml"等)のように、実際の子要素として入れ子HTMLを
     持つ場合にテキストを再帰的に集める。ElementTreeで既にparse済みのため、
     HTMLエンティティは要素のtext/tail時点で復号済み。script/style/noscript/
-    template・nav/footer/aside配下は本文とみなさない。"""
+    template・nav/footer/aside配下は本文とみなさない。_ArticleBodyHTMLTextExtractor
+    と同様、ブロックレベル要素(_ARTICLE_BODY_BLOCK_TAGS)の前後には境界として
+    空白を挿入し、隣接するp/li等が結合しないようにする(strong/em/a等のinline
+    要素には挿入しない)。"""
     parts = []
     if elem.text:
         parts.append(elem.text)
     for child in elem:
         tag = _local_tag_name(child.tag).lower()
-        if tag not in _ARTICLE_BODY_EXCLUDED_TAGS:
-            parts.append(_xml_element_inner_text(child))
+        if tag in _ARTICLE_BODY_EXCLUDED_TAGS:
+            if child.tail:
+                parts.append(child.tail)
+            continue
+        is_block = tag in _ARTICLE_BODY_BLOCK_TAGS
+        if is_block:
+            parts.append(" ")
+        parts.append(_xml_element_inner_text(child))
+        if is_block:
+            parts.append(" ")
         if child.tail:
             parts.append(child.tail)
     return "".join(parts)
@@ -524,29 +585,54 @@ def select_article_body_text(description_text, rich_text):
 
 def apply_article_body_char_limit(text):
     """正規化後のUnicodeコードポイント数で最大ARTICLE_BODY_MAX_CHARS文字に収める
-    (Ticket 16a)。単純な先頭切断ではなく、前方セグメント(_ARTICLE_BODY_HEAD_CHARS)
-    と、文書全体の長さに対する一定割合の地点から取る後方セグメント
-    (_ARTICLE_BODY_TAIL_CHARS)を、境界マーカーで明示して結合する(重複なし)。
-    後方開始位置が前方セグメント終端以前になる場合(=上限に対して文書がさほど
-    長くない場合)は連続する1本のテキストとして扱い、マーカーは挿入しない。
-    切断は例外にせず、常に成功する。
+    (Ticket 16a 独立レビュー指摘対応 第3版)。単純な先頭切断ではなく、前方
+    セグメント(fraction=0.0)・中盤セグメント(_ARTICLE_BODY_MIDDLE_FRACTIONS:
+    文書全体の長さに対する割合の地点から前方へ抜き出す)・末尾セグメント
+    (文書の実際の末尾から_ARTICLE_BODY_FINAL_BUDGET文字分を取り、必ず文書末尾を
+    含む)を、境界マーカーで明示しながら結合する。各セグメントの開始位置は直前
+    セグメントの終端未満にはならないようclampされ、重複は発生しない。clampの
+    結果、直前セグメントへ連続する場合はマーカーを挿入しない(削除が実際に
+    発生した箇所にのみマーカーを付与する)。切断は例外にせず、常に成功する。
     """
     if not text:
         return ""
-    if len(text) <= ARTICLE_BODY_MAX_CHARS:
+    length = len(text)
+    if length <= ARTICLE_BODY_MAX_CHARS:
         return text
 
-    head = text[:_ARTICLE_BODY_HEAD_CHARS]
-    tail_start = max(
-        _ARTICLE_BODY_HEAD_CHARS,
-        int(len(text) * _ARTICLE_BODY_TAIL_START_FRACTION),
-    )
-    tail = text[tail_start:tail_start + _ARTICLE_BODY_TAIL_CHARS]
-    if not tail:
-        return head
-    if tail_start <= _ARTICLE_BODY_HEAD_CHARS:
-        return head + tail
-    return head + _ARTICLE_BODY_EXCERPT_MARKER + tail
+    parts = []
+    prev_end = None
+
+    def append_segment(start, end):
+        nonlocal prev_end
+        if end <= start:
+            return
+        if prev_end is not None and start > prev_end:
+            parts.append(_ARTICLE_BODY_EXCERPT_MARKER)
+        parts.append(text[start:end])
+        prev_end = end
+
+    # 前方セグメント。
+    append_segment(0, min(length, _ARTICLE_BODY_FRONT_BUDGET))
+
+    # 中盤セグメント(文書全体の長さに対する割合の地点から前方へ抜き出す)。
+    for fraction in _ARTICLE_BODY_MIDDLE_FRACTIONS:
+        start = int(length * fraction)
+        if prev_end is not None:
+            start = max(start, prev_end)
+        if start >= length:
+            continue
+        append_segment(start, min(length, start + _ARTICLE_BODY_REST_BUDGET_EACH))
+
+    # 末尾セグメント。文書の実際の末尾から_ARTICLE_BODY_FINAL_BUDGET文字分を
+    # 取ることで、文書長が上限に対してわずかに大きいだけの場合でも末尾が
+    # 無言で欠落しないようにする(直前セグメントの終端未満にはならないようclamp)。
+    final_start = length - _ARTICLE_BODY_FINAL_BUDGET
+    if prev_end is not None:
+        final_start = max(final_start, prev_end)
+    append_segment(max(final_start, 0), length)
+
+    return "".join(parts)
 
 
 def build_article_body_text(description_raw, rich_content_raw):

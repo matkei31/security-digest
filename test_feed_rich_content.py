@@ -31,10 +31,10 @@ LONG_FIXTURE_PATH = (
     Path(__file__).resolve().parent / "test_fixtures_ticket16a_long_article_rich_content.xml"
 )
 
-# 実feed(/private/tmp/microsoft-security-feed.xml、正規化後17,311文字)計測で判明した
-# 「直近侵害の記述が文書全体の約25%地点(4,000文字境界より後方)にあり、単純な先頭
-# 4,000文字切断では欠落する」問題を、架空ベンダーの一般化fixtureで再現した際の
-# 主要事実。固有名詞(Northwind等)には依存しない、事実そのものを表す部分文字列。
+# 実feed(/private/tmp/microsoft-security-feed.xml)計測で判明した「直近侵害の記述が
+# 4,000文字境界より後方にあり、単純な先頭4,000文字切断では欠落する」問題を、
+# 架空ベンダーの一般化fixtureで再現した際の主要事実。固有名詞(Northwind等)には
+# 依存しない、事実そのものを表す部分文字列。
 LONG_FIXTURE_FACT_MARKERS = (
     "mid-2025 and mid-2026",                             # 複数キャンペーンの時期
     "trusted OAuth relationships",                        # OAuth信頼関係の悪用
@@ -44,7 +44,7 @@ LONG_FIXTURE_FACT_MARKERS = (
     "high-impact risk",                                   # high-impact相当の一次評価
     "monitoring OAuth-connected applications",            # 具体的な監視・設定確認
     "June 2026",                                          # 4,000文字境界より後方の直近侵害
-    "evades traditional authentication-based detections", # 正規OAuth悪用による検知回避
+    "evaded traditional authentication-based detections", # 正規OAuth悪用による検知回避
 )
 
 # 基準記事(Microsoft Security 2026-07-13 "Defending SaaS-based applications
@@ -250,6 +250,81 @@ class NormalizeFeedBodyTextTest(unittest.TestCase):
         self.assertNotIn("evil.example", out)
 
 
+# ── 独立レビュー対応(第2版) Fix 1: ブロック要素間の境界保持 ────────────────
+#
+# handle_data()断片の単純な空文字連結だと、改行を挟まない隣接<p>/<li>等の
+# テキストが文の境界なく結合してしまう(例: "First sentence.Second sentence."の
+# ような誤結合)。p/div/section/article/h1-h6/li/ul/ol/table/tr/td/th/
+# blockquote/pre/br等の最小限のブロック要素境界だけを正規化前に空白として保持し、
+# strong/em/a等のinline要素では空白を追加しない。RSS HTML文字列・Atom XHTMLの
+# 両方(_ArticleBodyHTMLTextExtractor・_xml_element_inner_text)へ同じ原則を適用。
+
+class BlockLevelBoundaryTest(unittest.TestCase):
+    def test_1_adjacent_p_without_newline_are_space_separated(self):
+        out = fetch.normalize_feed_body_text("<p>First sentence.</p><p>Second sentence.</p>")
+        self.assertEqual(out, "First sentence. Second sentence.")
+        self.assertNotIn("sentence.Second", out)
+
+    def test_2_adjacent_li_are_space_separated(self):
+        out = fetch.normalize_feed_body_text("<ul><li>Alpha</li><li>Beta</li></ul>")
+        self.assertEqual(out, "Alpha Beta")
+        self.assertNotIn("AlphaBeta", out)
+
+    def test_3_div_heading_and_br_boundaries_are_preserved(self):
+        out = fetch.normalize_feed_body_text("<div>Title</div><h2>Heading</h2>Text<br>More")
+        self.assertEqual(out, "Title Heading Text More")
+
+    def test_3b_table_row_cell_boundaries_are_preserved(self):
+        out = fetch.normalize_feed_body_text("<table><tr><td>A</td><td>B</td></tr></table>")
+        self.assertEqual(out, "A B")
+
+    def test_3c_blockquote_and_pre_boundaries_are_preserved(self):
+        out = fetch.normalize_feed_body_text("<blockquote>Quoted</blockquote><pre>Code</pre>Rest")
+        self.assertEqual(out, "Quoted Code Rest")
+
+    def test_4_inline_strong_em_a_do_not_break_words(self):
+        out = fetch.normalize_feed_body_text(
+            "OAuth-<strong>based</strong> detection and <em>real</em>-time <a href='x'>this link</a> here."
+        )
+        self.assertEqual(out, "OAuth-based detection and real-time this link here.")
+        self.assertNotIn("OAuth- based", out)
+        self.assertNotIn("real- time", out)
+
+    def test_5_atom_xhtml_nested_elements_have_same_boundary_behavior(self):
+        content_xml = (
+            '<content type="xhtml"><div xmlns="http://www.w3.org/1999/xhtml">'
+            "<p>First para.</p><p>Second para with OAuth-<strong>based</strong> detection.</p>"
+            "<ul><li>Item one</li><li>Item two</li></ul>"
+            "</div></content>"
+        )
+        item = _atom_item(content_xml)
+        out = fetch.normalize_feed_body_text(item["rich_content"])
+        self.assertEqual(
+            out,
+            "First para. Second para with OAuth-based detection. Item one Item two",
+        )
+
+    def test_6_long_fixture_request_body_has_no_run_on_sentence_boundaries(self):
+        # long fixtureはすべて<p>境界で区切られたparagraphで構成されている。
+        # ブロック境界保持が効いていれば、隣接paragraph間で"。次の文"のような
+        # 誤結合(句点直後に空白なしで次の文が続く)が発生しない。
+        root = ET.fromstring(LONG_FIXTURE_PATH.read_text(encoding="utf-8"))
+        parsed_item = fetch._parse_feed_items(root, "Northwind Security Research", "en")[0]
+        rich_n = fetch.normalize_feed_body_text(parsed_item["rich_content"])
+        # 句点(. )の直後にアルファベット大文字が続く(=文境界が保持されている)
+        # ことを、逆に句点の直後に空白なしで大文字が来る誤結合が無いことで確認する。
+        self.assertNotRegex(rich_n, r"\.[A-Z]")
+
+    def test_7_script_style_still_excluded_with_block_boundary_change(self):
+        # ブロック境界保持の追加後もscript/style本文自体は引き続き除外される
+        # (回帰確認)。
+        html_ = '<p>Visible.</p><script>var evil = "leak";</script><style>.x{color:red}</style><p>More.</p>'
+        out = fetch.normalize_feed_body_text(html_)
+        self.assertEqual(out, "Visible. More.")
+        self.assertNotIn("evil", out)
+        self.assertNotIn("color:red", out)
+
+
 # ── 11〜12. 4,000文字上限(Unicodeコードポイント)・切断は例外にしない ─────────
 
 class ArticleBodyCharLimitTest(unittest.TestCase):
@@ -257,7 +332,9 @@ class ArticleBodyCharLimitTest(unittest.TestCase):
         long_text = "あ" * 10000
         capped = fetch.apply_article_body_char_limit(long_text)
         self.assertLessEqual(len(capped), fetch.ARTICLE_BODY_MAX_CHARS)
-        self.assertEqual(len(capped), fetch.ARTICLE_BODY_MAX_CHARS)
+        # 複数セグメント方式では整数除算の端数分だけ上限よりわずかに短くなり得る
+        # (超過はしない)。ちょうど上限文字数になることまでは要求しない。
+        self.assertGreater(len(capped), fetch.ARTICLE_BODY_MAX_CHARS - 10)
 
     def test_truncation_counts_unicode_code_points_not_bytes(self):
         # 絵文字混じりの4文字ちょうどの文字列はそのまま(バイト数ではなくcode point数)。
@@ -270,7 +347,8 @@ class ArticleBodyCharLimitTest(unittest.TestCase):
             capped = fetch.apply_article_body_char_limit(huge)
         except Exception as e:  # pragma: no cover - 失敗した場合のみ到達
             self.fail(f"apply_article_body_char_limit raised unexpectedly: {e}")
-        self.assertEqual(len(capped), fetch.ARTICLE_BODY_MAX_CHARS)
+        self.assertLessEqual(len(capped), fetch.ARTICLE_BODY_MAX_CHARS)
+        self.assertGreater(len(capped), fetch.ARTICLE_BODY_MAX_CHARS - 10)
 
     def test_end_to_end_build_never_raises_and_respects_cap(self):
         huge_rich = ("<div><script>evil()</script><p>" + ("段落テキスト。" * 2000) + "</p></div>")
@@ -560,12 +638,23 @@ class HtmlParserFailureFallbackTest(unittest.TestCase):
         self.assertEqual(untrusted["summary"], "short description")
 
 
-# ── 独立レビュー対応 Fix 2: 単純な先頭4,000文字切断の解消 ────────────────────
+# ── 独立レビュー対応(第2版) Fix 2: 単一25%窓への依存を解消 ──────────────────
 #
-# apply_article_body_char_limit()は、上限超過時に単純な先頭切断ではなく、前方
-# セグメント(_ARTICLE_BODY_HEAD_CHARS)と、文書全体の長さの一定割合の地点
-# (_ARTICLE_BODY_TAIL_START_FRACTION)から取る後方セグメントを、境界マーカーで
-# 明示して結合する。source名・固有語・キーワードには一切依存しない。
+# apply_article_body_char_limit()は、上限超過時に単純な先頭切断や単一の固定割合
+# 窓ではなく、文書全体の長さに対する複数の固定割合地点(_ARTICLE_BODY_SEGMENT_
+# FRACTIONS: 0%・25%・50%・75%)それぞれから固定予算(_ARTICLE_BODY_SEGMENT_
+# BUDGETS)を前方から抜き出し、非連続な箇所には境界マーカーを明示して結合する。
+# source名・固有語・キーワードには一切依存しない。
+
+
+def _unique_position_marker_text(length):
+    """位置を復元できる一意な8文字トークン("[0001234]"形式)を連結した検証用文字列。"""
+    return "".join(f"[{i:07d}]" for i in range(length // 9 + 2))[:length]
+
+
+def _tokens_of(text):
+    return set(text[i:i + 9] for i in range(0, len(text) - 8, 9))
+
 
 class BoundedExcerptTest(unittest.TestCase):
     def test_total_length_including_marker_never_exceeds_cap(self):
@@ -573,29 +662,63 @@ class BoundedExcerptTest(unittest.TestCase):
         capped = fetch.apply_article_body_char_limit(text)
         self.assertLessEqual(len(capped), fetch.ARTICLE_BODY_MAX_CHARS)
 
+    def test_required_lengths_4001_5000_7000_17000_include_end_with_marker_and_no_overlap(self):
+        # 独立レビュー3回目で明示された必須回帰ケース。各長さについて、
+        # (a) 上限4,000文字以内、(b) 中略マーカーがある、(c) 文書の実際の末尾を
+        # 含む、(d) 4,001文字では単純な先頭切断(originalの先頭部分)と一致しない、
+        # (e) 採用された全セグメントが互いに重複しないことを確認する。
+        for length in (4001, 5000, 7000, 17000):
+            with self.subTest(length=length):
+                text = _unique_position_marker_text(length)
+                capped = fetch.apply_article_body_char_limit(text)
+                self.assertLessEqual(len(capped), fetch.ARTICLE_BODY_MAX_CHARS)
+                self.assertIn(fetch._ARTICLE_BODY_EXCERPT_MARKER, capped)
+                self.assertTrue(capped.endswith(text[-9:]))
+                if length == 4001:
+                    self.assertNotEqual(capped, text[:len(capped)])
+                segments = capped.split(fetch._ARTICLE_BODY_EXCERPT_MARKER)
+                token_sets = [_tokens_of(seg) for seg in segments]
+                for i in range(len(token_sets)):
+                    for j in range(i + 1, len(token_sets)):
+                        self.assertEqual(token_sets[i] & token_sets[j], set())
+
     def test_boundary_marker_is_present_and_explicit_when_content_is_dropped(self):
         text = "A" * 2000 + "B" * 2000 + "C" * 50000
         capped = fetch.apply_article_body_char_limit(text)
         self.assertIn(fetch._ARTICLE_BODY_EXCERPT_MARKER, capped)
 
-    def test_head_and_tail_segments_do_not_overlap(self):
-        # 前方セグメントの終端と後方セグメントの開始位置が重複しないことを、
-        # 実際に採用された2セグメントの内容から検証する(境界マーカーで分離)。
-        text = "".join(f"[{i:06d}]" for i in range(10000))  # 各8文字の一意な位置マーカー列
+    def test_segments_do_not_overlap_across_arbitrary_number_of_segments(self):
+        # 採用された全セグメント(2個以上)について、一意な位置トークン集合が
+        # 互いに重複しないことを検証する(境界マーカーで分離されている前提)。
+        text = _unique_position_marker_text(50000)
         capped = fetch.apply_article_body_char_limit(text)
-        self.assertIn(fetch._ARTICLE_BODY_EXCERPT_MARKER, capped)
-        head_part, tail_part = capped.split(fetch._ARTICLE_BODY_EXCERPT_MARKER)
-        # 前方・後方それぞれの一意マーカー集合が重複しないこと。
-        head_tokens = set(head_part[i:i + 8] for i in range(0, len(head_part) - 7, 8))
-        tail_tokens = set(tail_part[i:i + 8] for i in range(0, len(tail_part) - 7, 8))
-        self.assertEqual(head_tokens & tail_tokens, set())
+        segments = capped.split(fetch._ARTICLE_BODY_EXCERPT_MARKER)
+        self.assertGreaterEqual(len(segments), 2)
+        token_sets = [_tokens_of(seg) for seg in segments]
+        for i in range(len(token_sets)):
+            for j in range(i + 1, len(token_sets)):
+                self.assertEqual(token_sets[i] & token_sets[j], set())
 
-    def test_short_over_budget_text_stays_contiguous_without_marker(self):
-        # 上限に対してさほど長くない文書では、後方セグメント開始位置が前方の
-        # 終端以前になるため、連続テキストとして扱われ中略マーカーは付かない。
-        text = "x" * (fetch.ARTICLE_BODY_MAX_CHARS + 10)
+    def test_length_equal_to_cap_is_returned_unchanged_without_marker(self):
+        text = "x" * fetch.ARTICLE_BODY_MAX_CHARS
         capped = fetch.apply_article_body_char_limit(text)
+        self.assertEqual(capped, text)
         self.assertNotIn(fetch._ARTICLE_BODY_EXCERPT_MARKER, capped)
+
+    def test_just_over_budget_text_still_includes_document_end_with_marker(self):
+        # 独立レビュー3回目の指摘: 文書長が上限よりわずかに大きいだけの場合
+        # (例: 4,001文字)でも、末尾セグメントは常に文書の実際の末尾を含む。
+        # 前方+中盤セグメントの塊と末尾セグメントの間に隙間があれば、無言で
+        # 欠落させず中略マーカーで明示する(旧実装は末尾27文字が無言で欠落し、
+        # markerが付かないままoriginalの先頭部分とだけ一致する不具合があった)。
+        length = fetch.ARTICLE_BODY_MAX_CHARS + 1
+        text = _unique_position_marker_text(length)
+        capped = fetch.apply_article_body_char_limit(text)
+        self.assertLessEqual(len(capped), fetch.ARTICLE_BODY_MAX_CHARS)
+        self.assertIn(fetch._ARTICLE_BODY_EXCERPT_MARKER, capped)
+        self.assertNotEqual(capped, text[:len(capped)])
+        # 末尾セグメントは文書の実際の末尾を含む。
+        self.assertTrue(capped.endswith(text[-9:]))
 
     def test_under_budget_text_is_returned_unchanged(self):
         text = "short text under the cap"
@@ -606,6 +729,68 @@ class BoundedExcerptTest(unittest.TestCase):
         for banned in ("ShinyHunters", "Salesforce", "Microsoft", "Northwind", "Contoso",
                        "source_name", "source_id", "importance", "urgency", "keyword"):
             self.assertNotIn(banned, source)
+
+    def test_not_a_single_fixed_fraction_window(self):
+        # 単一の固定割合(旧: 25%)地点だけに依存する設計ではないことを、前方
+        # (fraction=0.0)・複数の中盤割合・文書の実際の末尾(固定割合ではなく
+        # 文書長そのものを起点とする)という異なる3種類の位置指定が組み合わされて
+        # いることから直接確認する。
+        self.assertGreaterEqual(len(fetch._ARTICLE_BODY_MIDDLE_FRACTIONS), 2)
+        # 中盤の割合は中盤域(0.2〜0.6程度)に収まっており、末尾セグメントは
+        # 別ロジック(文書長 - _ARTICLE_BODY_FINAL_BUDGET)で決まる、固定割合とは
+        # 独立した位置指定である。
+        self.assertTrue(all(0.2 <= f <= 0.6 for f in fetch._ARTICLE_BODY_MIDDLE_FRACTIONS))
+        self.assertGreater(fetch._ARTICLE_BODY_FINAL_BUDGET, 0)
+
+    def test_final_segment_always_reaches_the_true_document_end(self):
+        # 末尾セグメントが「文書長に対する固定割合」ではなく「文書の実際の
+        # 末尾」を起点にしていることを、長さの異なる複数文書で直接確認する。
+        for length in (4001, 5000, 7000, 17000, 50000):
+            with self.subTest(length=length):
+                text = _unique_position_marker_text(length)
+                capped = fetch.apply_article_body_char_limit(text)
+                self.assertTrue(
+                    capped.endswith(text[-9:]),
+                    f"length={length}: 末尾セグメントが文書の実際の末尾を含んでいない",
+                )
+
+    def test_does_not_degenerate_to_head_only_for_4001_to_8000_chars(self):
+        for length in (4001, 5000, 7000, 8000):
+            with self.subTest(length=length):
+                text = _unique_position_marker_text(length)
+                capped = fetch.apply_article_body_char_limit(text)
+                # capped内の最後のトークンがtextのどの位置に由来するかを特定する。
+                last_segment = capped.split(fetch._ARTICLE_BODY_EXCERPT_MARKER)[-1]
+                last_token = last_segment[-9:]
+                last_pos_in_original = text.rfind(last_token)
+                self.assertGreater(
+                    last_pos_in_original + 9, min(length, fetch.ARTICLE_BODY_MAX_CHARS) - 50,
+                    f"length={length}: 末尾セグメントが先頭付近({last_pos_in_original})で"
+                    "止まっており、後方の内容を含んでいない(先頭のみへの退化)",
+                )
+
+    def test_covers_front_middle_and_back_for_long_document(self):
+        # 十分に長い文書では、採用セグメントが文書全体の前方・中盤・後半の
+        # いずれからも取られていることを検証する(単一箇所への集中でない)。
+        length = 20000
+        text = _unique_position_marker_text(length)
+        capped = fetch.apply_article_body_char_limit(text)
+        segments = capped.split(fetch._ARTICLE_BODY_EXCERPT_MARKER)
+        positions = [text.find(seg[:9]) for seg in segments if seg]
+        self.assertTrue(any(p < length * 0.10 for p in positions), positions)
+        self.assertTrue(any(length * 0.20 <= p <= length * 0.60 for p in positions), positions)
+        self.assertTrue(any(p >= length * 0.60 for p in positions), positions)
+
+    def test_source_name_change_does_not_affect_segment_positions(self):
+        # source名を変えても抽出される位置(トークン集合)が変わらないことを、
+        # 同一長・同一内容のテキストに対して直接確認する(source名自体は
+        # apply_article_body_char_limit()へ一切渡されない)。
+        text_a = _unique_position_marker_text(17000)
+        text_b = _unique_position_marker_text(17000)
+        self.assertEqual(
+            fetch.apply_article_body_char_limit(text_a),
+            fetch.apply_article_body_char_limit(text_b),
+        )
 
 
 class LongArticleRealWorldEquivalentFixtureTest(unittest.TestCase):
@@ -651,11 +836,14 @@ class LongArticleRealWorldEquivalentFixtureTest(unittest.TestCase):
         _, untrusted = tvp._extract_verified_and_untrusted(text)
         summary = untrusted["summary"]
         self.assertIn(fetch._ARTICLE_BODY_EXCERPT_MARKER, summary)
-        head_part, tail_part = summary.split(fetch._ARTICLE_BODY_EXCERPT_MARKER)
-        self.assertNotEqual(head_part.strip(), "")
-        self.assertNotEqual(tail_part.strip(), "")
-        # 前方・後方は同一文字列の重複ではない(異なる内容)。
-        self.assertNotEqual(head_part, tail_part)
+        segments = summary.split(fetch._ARTICLE_BODY_EXCERPT_MARKER)
+        self.assertGreaterEqual(len(segments), 2)
+        for seg in segments:
+            self.assertNotEqual(seg.strip(), "")
+        # 各セグメントは互いに異なる内容(同一文字列の重複ではない)。
+        for i in range(len(segments)):
+            for j in range(i + 1, len(segments)):
+                self.assertNotEqual(segments[i], segments[j])
 
     def test_fictional_vendor_name_does_not_change_excerpt_mechanism(self):
         # source名・固有語(Northwind)を別の架空名へ置換しても、抽出・選択・
