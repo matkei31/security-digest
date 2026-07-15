@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+Ticket 16a: RSS content:encoded による feed-native rich content の一般化fixture。
+特定記事の再現ではなく、短いdescriptionでは欠落しがちな9つの評価材料
+(複数キャンペーンの時期・OAuth信頼関係の悪用・多数テナント/複数業界・
+CRMデータの大規模流出・永続アクセス・直近侵害の時期・high-impact相当の一次評価・
+正規OAuthアプリ悪用による検知回避・具体的な監視/設定/第三者統合確認)を
+一般化した文面で含む。固有名詞("Contoso"等)は架空のベンダー名であり、
+production側に固有名条件は一切実装しない(test側で実名版へ差し替えて同一の
+抽出・選択結果になることを確認する)。
+
+content:encoded内はCDATAで、決定論的なboilerplate除外(script/style/nav/footer/aside)
+が効かない場合、末尾寄りの重要事実(直近侵害の時期)が単純な先頭4,000文字では
+欠落し得る長さになるよう、意図的にboilerplateを本文の前後へ配置している。
+-->
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Contoso Security Blog</title>
+    <link>https://example.com/security/blog/</link>
+    <item>
+      <title>Defending SaaS-based applications against OAuth abuse campaigns</title>
+      <link>https://example.com/security/blog/2026/07/13/oauth-abuse-saas/</link>
+      <description>Contoso has observed a threat actor abusing OAuth applications to access SaaS platforms.</description>
+      <pubDate>Mon, 13 Jul 2026 09:00:00 +0000</pubDate>
+      <content:encoded><![CDATA[
+<script type="text/javascript">
+var _analytics = _analytics || [];
+(function(){
+  var scripts = ["nav-tracker.js","consent-banner.js","recommendation-widget.js"];
+  for (var i = 0; i < scripts.length; i++) {
+    _analytics.push({event: "script_load", name: scripts[i], ts: i * 137, category: "telemetry-noise-" + i});
+  }
+  window.__contosoTelemetryBuffer = _analytics.map(function(entry){ return entry.name + ":" + entry.ts; }).join(",");
+})();
+</script>
+<style>
+.article-hero { background: #0b0f19; color: #ffffff; padding: 48px 0; }
+.article-hero h1 { font-size: 32px; line-height: 1.2; }
+.related-cards .card { border: 1px solid #e1e1e1; border-radius: 8px; padding: 16px; }
+</style>
+<nav class="site-nav">
+  <ul>
+    <li><a href="https://example.com/security/blog/category/threat-intelligence/">Threat Intelligence</a></li>
+    <li><a href="https://example.com/security/blog/category/identity/">Identity</a></li>
+    <li><a href="https://example.com/security/blog/category/cloud/">Cloud Security</a></li>
+    <li><a href="https://example.com/security/blog/category/ransomware/">Ransomware</a></li>
+    <li><a href="https://example.com/security/blog/category/incident-response/">Incident Response</a></li>
+    <li><a href="https://example.com/security/blog/category/compliance/">Compliance</a></li>
+    <li><a href="https://example.com/security/blog/category/research/">Research</a></li>
+    <li><a href="https://example.com/security/blog/category/vulnerabilities/">Vulnerabilities</a></li>
+  </ul>
+</nav>
+<div class="article-body">
+<p>Contoso Threat Intelligence has tracked several distinct OAuth-abuse campaigns between mid-2025 and mid-2026, all sharing a common technique: abusing legitimate OAuth trust relationships between third-party applications and an organization's identity provider rather than relying on stolen passwords.</p>
+<p>The activity has affected several hundred tenants spanning multiple industries, including financial services, healthcare, retail, and manufacturing. In each case, the attacker social-engineered an administrator or end user into approving a malicious or over-permissioned OAuth application, then used the resulting access token to reach connected SaaS platforms directly.</p>
+<p>Once inside, the actor systematically queried and exported customer relationship management (CRM) records, resulting in large-scale exfiltration of customer, contact, and case data across the affected tenants. In several incidents, the actor also created secondary application registrations and refresh tokens, establishing persistent access that survived password resets, MFA re-enrollment, and other typical account-remediation steps.</p>
+<p>The most recent confirmed compromise in this campaign occurred in June 2026, when a newly registered OAuth application obtained broad CRM read/export scopes and exfiltrated data from a subset of tenants before being revoked.</p>
+<p>Because this activity relies on legitimate OAuth application consent grants rather than stolen credentials or brute-force sign-in attempts, it evades traditional authentication-based detections such as failed-login monitoring, password-spray alerting, or impossible-travel rules. Contoso assesses this activity as high-impact risk given the combination of scale, persistence, and the sensitivity of the exfiltrated CRM data.</p>
+<p>Administrators should review their connected-application inventories, audit existing OAuth consent grants for CRM-scoped permissions broader than necessary, and verify third-party integrations against an approved allowlist. Conditional Access policies that restrict app consent to verified publishers, combined with periodic review of application sign-in logs, materially reduce exposure to this technique. See the <a href="https://example.com/whitepaper/oauth-abuse" onclick="trackOutboundClick('whitepaper')" data-analytics-id="wp-oauth-abuse">detailed technical write-up</a> for indicators of compromise.</p>
+</div>
+<aside class="related-reading">
+  <h3>Related reading</h3>
+  <ul>
+    <li><a href="https://example.com/security/blog/2026/05/identity-threat-trends/">Identity threat trends, May 2026</a></li>
+    <li><a href="https://example.com/security/blog/2026/03/conditional-access-baseline/">Conditional Access baseline recommendations</a></li>
+  </ul>
+</aside>
+<footer class="article-footer">
+  <p>&copy; 2026 Contoso Corporation. All rights reserved. Follow us on social media and subscribe to our newsletter for weekly threat intelligence digests, product updates, and security advisories.</p>
+</footer>
+<noscript>Please enable JavaScript to view embedded charts and interactive timeline widgets on this page.</noscript>
+]]></content:encoded>
+    </item>
+  </channel>
+</rss>
