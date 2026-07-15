@@ -323,7 +323,8 @@ class EvaluationFixtureStructureTest(unittest.TestCase):
         self.assertIn("CVE-2026-9115", cve_ids)
         self.assertNotIn("CVE-2099-0001", cve_ids)
         real_entry = next(c for c in vf["CVE一覧"] if c["CVE ID"] == "CVE-2026-9115")
-        self.assertEqual(real_entry["KEV掲載状態"], "not_listed")
+        # KEV掲載状態は機械値"not_listed"ではなく人間可読な意味値"掲載なし"で送信される。
+        self.assertEqual(real_entry["KEV掲載状態"], "掲載なし")
 
     def test_fixture_16_injection_instruction_is_only_in_summary(self):
         fixtures_by_id = {f["id"]: f for f in get_evaluation_fixtures()}

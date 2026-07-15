@@ -155,6 +155,65 @@ class KevFactsInternalKeyNotSentTest(unittest.TestCase):
         self.assertNotIn("xyz", text)
 
 
+class AllowlistProjectionDoesNotFailOnUnknownFieldsTest(unittest.TestCase):
+    """阻害事項2: entry.items()を走査してLABELS[key]を直接参照する実装は、
+    serialize_vulnerability_facts_for_prompt()やcompute_recent_kev_additions()の
+    戻り値に将来フィールドが追加されるとKeyErrorになる。allowlist(LABELS)側を
+    基準に走査する実装へ変更したことで、未知フィールドは例外を出さず単に無視
+    (非送信)されることを、両方の関数を直接モックして確認する。"""
+
+    AD = datetime.date(2026, 7, 14)
+
+    def test_unknown_field_in_serialize_vulnerability_facts_for_prompt_return_value(self):
+        fake_raw = {
+            "cves": [{
+                "cve_id": "CVE-2026-0001", "nvd_status": "found", "cvss_score": 5.0,
+                "cvss_version": "3.1", "cvss_severity": "MEDIUM", "kev_status": "listed",
+                "kev_date_added": "2026-07-10",
+                # 将来追加されうる未知フィールド。
+                "future_internal_field": "should-not-leak",
+            }],
+            "omitted_cve_count": 0,
+        }
+        with patch("fetch.serialize_vulnerability_facts_for_prompt", return_value=fake_raw):
+            # 例外を出さずに完了すること自体もこのwithブロックの実行で検証される。
+            result = fetch.build_verified_context_for_prompt({}, self.AD, [])
+        entry = result["脆弱性情報"]["CVE一覧"][0]
+        self.assertNotIn("future_internal_field", entry)
+        self.assertNotIn("should-not-leak", str(result))
+        # allowlistに列挙済みの正当なフィールドは引き続き送信される。
+        self.assertEqual(entry["CVE ID"], "CVE-2026-0001")
+        self.assertEqual(entry["KEV掲載状態"], "掲載あり")
+
+    def test_unknown_field_in_compute_recent_kev_additions_return_value(self):
+        fake_kev = [{
+            "cve_id": "CVE-2026-0002", "kev_date_added": "2026-07-13", "days_since_added": 1,
+            "future_kev_field": "secret-value",
+        }]
+        with patch("fetch.compute_recent_kev_additions", return_value=fake_kev):
+            result = fetch.build_verified_context_for_prompt({}, self.AD, [])
+        entry = result["直近3暦日以内にKEVへ追加されたCVE"][0]
+        self.assertNotIn("future_kev_field", entry)
+        self.assertNotIn("secret-value", str(result))
+        self.assertEqual(entry["CVE ID"], "CVE-2026-0002")
+        self.assertEqual(entry["追加からの日数"], 1)
+
+    def test_missing_expected_field_does_not_raise(self):
+        # LABELS側に列挙されたキーがentryに存在しない場合も例外にせず、
+        # そのラベルを単に省略する。
+        fake_raw = {
+            "cves": [{"cve_id": "CVE-2026-0003", "kev_status": "not_listed"}],
+            "omitted_cve_count": 0,
+        }
+        with patch("fetch.serialize_vulnerability_facts_for_prompt", return_value=fake_raw):
+            result = fetch.build_verified_context_for_prompt({}, self.AD, [])
+        entry = result["脆弱性情報"]["CVE一覧"][0]
+        self.assertEqual(entry["CVE ID"], "CVE-2026-0003")
+        self.assertEqual(entry["KEV掲載状態"], "掲載なし")
+        self.assertNotIn("NVD取得状態", entry)
+        self.assertNotIn("CVSSスコア", entry)
+
+
 class RuleFlagAllowlistProjectionTest(unittest.TestCase):
     """rule_flagsの内部フラグ値はfetch側のallowlistで自然文ラベルへ変換し、
     未知/将来のフラグ値は(daily JSON側のcompute_rule_flags()を変更しなくても)
@@ -232,8 +291,10 @@ class LegitimateTechnicalIdentifiersPreservedTest(unittest.TestCase):
         verified, _ = tvp._extract_verified_and_untrusted(text)
         entry = verified[self.VULN_FACTS_LABEL]["CVE一覧"][0]
         self.assertEqual(entry["CVE ID"], "CVE-2026-1234")
-        self.assertEqual(entry["KEV掲載状態"], "listed")
-        self.assertEqual(entry["NVD取得状態"], "found")
+        # status projection修正: KEV掲載状態・NVD取得状態は機械値(listed/found等)
+        # ではなく人間可読な意味値(掲載あり/取得済み)で送信される。
+        self.assertEqual(entry["KEV掲載状態"], "掲載あり")
+        self.assertEqual(entry["NVD取得状態"], "取得済み")
         self.assertIn("CVSSスコア", entry)
         self.assertIn("CVSSバージョン", entry)
         self.assertIn("CVSS深刻度", entry)
@@ -256,18 +317,94 @@ class LegitimateTechnicalIdentifiersPreservedTest(unittest.TestCase):
         self.assertEqual(untrusted["url"], "https://example.com/a?x=1")
 
     def test_vulnerability_facts_values_are_not_stripped_by_generic_regex(self):
-        # allowlistは「未列挙のキーを転記しない」設計であり、実データの技術的な
-        # 意味値(CVE ID・KEV/NVDステータス・CVSSスコア等)を汎用正規表現等で
-        # 書き換え・除去していないことを確認する。
+        # allowlistは「未列挙のキーを転記しない」設計であり、実データの正当な
+        # 技術的意味値(CVE ID・CVSSスコア/バージョン/深刻度・日付)を汎用正規表現等で
+        # 書き換え・除去していないことを確認する。KEV掲載状態・NVD取得状態の機械値
+        # (listed/found)自体は日本語の意味値へ意図的に変換されるため、ここでは
+        # 変換後のCVSS等の意味値のみを対象にする(status値の検査は別テストで行う)。
         item = {
             "source": "CISA", "link": "https://example.com/a", "title": "t", "summary": "s",
             "facts": {"cves": [cve_entry("CVE-2026-1234", nvd_dict=nvd(cvss=cvss()),
                                           kev_dict=kev(status="listed", date_added="2026-07-13"))]},
         }
         text = _send_and_capture(item)
-        for legit_value in ("CVE-2026-1234", "listed", "found", "9.8", "3.1", "CRITICAL",
-                             "2026-07-13"):
+        for legit_value in ("CVE-2026-1234", "9.8", "3.1", "CRITICAL", "2026-07-13"):
             self.assertIn(legit_value, text)
+
+
+# ── 内部statusの機械値(listed/not_listed/unknown・found/not_found/unavailable)を
+#    人間可読な意味値へ投影する(阻害事項1) ─────────────────────────────────
+
+MACHINE_STATUS_VALUES = ("listed", "not_listed", "unknown", "found", "not_found", "unavailable")
+
+
+class StatusValueProjectionTest(unittest.TestCase):
+    """KEV掲載状態・NVD取得状態の機械値を、verified context・固定prompt・実際の
+    Gemini request bodyのいずれからも除去し、日本語の意味値だけを使うことを検証する。
+    """
+
+    def _verified_entry(self, kev_status=None, nvd_status="found"):
+        nvd_dict = nvd(status=nvd_status, cvss=cvss()) if nvd_status == "found" else nvd(status=nvd_status)
+        kev_dict = kev(status=kev_status, date_added="2026-07-13") if kev_status == "listed" else kev(status=kev_status)
+        item = {
+            "source": "CISA", "link": "https://example.com/a", "title": "t", "summary": "s",
+            "facts": {"cves": [cve_entry("CVE-2026-0001", nvd_dict=nvd_dict, kev_dict=kev_dict)]},
+        }
+        text = _send_and_capture(item)
+        verified, _ = tvp._extract_verified_and_untrusted(text)
+        return verified["脆弱性情報"]["CVE一覧"][0], text
+
+    def test_kev_status_listed_maps_to_kakisai_ari(self):
+        entry, _ = self._verified_entry(kev_status="listed")
+        self.assertEqual(entry["KEV掲載状態"], "掲載あり")
+
+    def test_kev_status_not_listed_maps_to_kakisai_nashi(self):
+        entry, _ = self._verified_entry(kev_status="not_listed")
+        self.assertEqual(entry["KEV掲載状態"], "掲載なし")
+
+    def test_kev_status_unknown_maps_to_fumei(self):
+        entry, _ = self._verified_entry(kev_status="unknown")
+        self.assertEqual(entry["KEV掲載状態"], "不明")
+
+    def test_nvd_status_found_maps_to_shutokuzumi(self):
+        entry, _ = self._verified_entry(nvd_status="found")
+        self.assertEqual(entry["NVD取得状態"], "取得済み")
+
+    def test_nvd_status_not_found_maps_to_joho_nashi(self):
+        entry, _ = self._verified_entry(nvd_status="not_found")
+        self.assertEqual(entry["NVD取得状態"], "情報なし")
+
+    def test_nvd_status_unavailable_maps_to_shutoku_funo(self):
+        entry, _ = self._verified_entry(nvd_status="unavailable")
+        self.assertEqual(entry["NVD取得状態"], "取得不能")
+
+    def test_fixed_prompt_template_has_no_machine_status_values(self):
+        # 固定prompt(few-shot・指示文を含む)に6つの英語機械値が一切残らない。
+        text = _prompt_text()
+        for machine_value in MACHINE_STATUS_VALUES:
+            self.assertNotIn(machine_value, text, f"machine status value leaked: {machine_value}")
+
+    def test_actual_request_body_has_no_machine_status_values(self):
+        # KEV/NVDのすべての機械値を混在させた実データでも、実際にGeminiへ送信される
+        # request body(verified_context_json + untrusted_article_json)へ内部status
+        # 値が一切残らないことを確認する。
+        item = {
+            "source": "CISA", "link": "https://example.com/a", "title": "t", "summary": "s",
+            "facts": {"cves": [
+                cve_entry("CVE-2026-0001", nvd_dict=nvd(status="found", cvss=cvss()),
+                          kev_dict=kev(status="listed", date_added="2026-07-13")),
+                cve_entry("CVE-2026-0002", nvd_dict=nvd(status="not_found"),
+                          kev_dict=kev(status="not_listed")),
+                cve_entry("CVE-2026-0003", nvd_dict=nvd(status="unavailable"),
+                          kev_dict=kev(status="unknown")),
+            ]},
+        }
+        text = _send_and_capture(item, analysis_date=datetime.date(2026, 7, 14))
+        for machine_value in MACHINE_STATUS_VALUES:
+            self.assertNotIn(machine_value, text, f"machine status value leaked: {machine_value}")
+        # 人間可読な意味値はすべて存在する
+        for label_value in ("掲載あり", "掲載なし", "不明", "取得済み", "情報なし", "取得不能"):
+            self.assertIn(label_value, text)
 
 
 # ── 10. verified context / untrusted articleのprompt injection境界(新ラベルでも不変) ──

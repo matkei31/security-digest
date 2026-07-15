@@ -2095,6 +2095,21 @@ _VULNERABILITY_FACT_FIELD_LABELS = {
     "kev_date_added": "KEV追加日",
 }
 
+# KEV掲載状態・NVD取得状態の機械値(listed/not_listed/unknown・found/not_found/
+# unavailable)を、Geminiへ渡す際だけ日本語の意味値へ決定論的に変換するallowlist。
+# 英語の機械値をpromptへそのまま渡すと、reason等の自然文へGeminiがその値を
+# 内部識別子的にコピーする再発経路になるため、キー名だけでなく値も投影する。
+_KEV_STATUS_VALUE_LABELS = {
+    "listed": "掲載あり",
+    "not_listed": "掲載なし",
+    "unknown": "不明",
+}
+_NVD_STATUS_VALUE_LABELS = {
+    "found": "取得済み",
+    "not_found": "情報なし",
+    "unavailable": "取得不能",
+}
+
 # daily_json.compute_rule_flags()が返す内部フラグ値を、promptへ渡す際だけ自然文へ
 # 変換するallowlist。ここに列挙していないフラグ値は(将来追加されても)promptへ
 # 渡さない。daily JSON側(daily_json.build_article_entry())が保存するrule_flagsの
@@ -2104,18 +2119,42 @@ _PROMPT_RULE_FLAG_LABELS = {
 }
 
 
+def _project_entry_fields(entry, field_labels):
+    """entryの生キー・値をそのまま転記せず、field_labels(内部キー→公開ラベル)を
+    基準に走査して人間可読ラベルだけを組み立てる(allowlist projection)。
+
+    entry.items()ではなくfield_labels.items()を基準に走査するため、entryへ
+    field_labelsに列挙していない未知フィールドが追加されても、それは単に無視
+    される(promptへ伝播しない)だけで、KeyErrorにはならない。逆にfield_labels
+    が期待するキーがentryに無い場合もスキップする(欠損に対して例外を出さない)。
+    """
+    return {
+        public_label: entry[internal_key]
+        for internal_key, public_label in field_labels.items()
+        if internal_key in entry
+    }
+
+
+def _project_vulnerability_fact_entry(entry):
+    projected = _project_entry_fields(entry, _VULNERABILITY_FACT_FIELD_LABELS)
+    kev_status = entry.get("kev_status")
+    if kev_status in _KEV_STATUS_VALUE_LABELS:
+        projected["KEV掲載状態"] = _KEV_STATUS_VALUE_LABELS[kev_status]
+    nvd_status = entry.get("nvd_status")
+    if nvd_status in _NVD_STATUS_VALUE_LABELS:
+        projected["NVD取得状態"] = _NVD_STATUS_VALUE_LABELS[nvd_status]
+    return projected
+
+
 def _project_vulnerability_facts_for_prompt(item):
     """serialize_vulnerability_facts_for_prompt()が返す内部実装名のフィルタ済み
-    構造(cve_id・kev_status等)を、Gemini入力用の人間可読ラベルへ投影する。
+    構造(cve_id・kev_status等)を、Gemini入力用の人間可読ラベル・意味値へ投影する。
     """
     raw = serialize_vulnerability_facts_for_prompt(item)
     if raw == "none":
         return "なし"
     return {
-        "CVE一覧": [
-            {_VULNERABILITY_FACT_FIELD_LABELS[key]: value for key, value in entry.items()}
-            for entry in raw["cves"]
-        ],
+        "CVE一覧": [_project_vulnerability_fact_entry(entry) for entry in raw["cves"]],
         "省略件数": raw["omitted_cve_count"],
     }
 
@@ -2124,15 +2163,15 @@ def build_verified_context_for_prompt(item, analysis_date, rule_flags):
     """ARTICLE promptのverified_context_jsonを構築する唯一の入口。
 
     item["facts"]やcompute_rule_flags()が持つ内部実装のキー名・値をそのまま
-    転記するのではなく、ここで明示的に許可した人間可読な日本語ラベルだけを
-    組み立てる(allowlist projection)。将来item["facts"]やrule_flagsへ新しい
-    内部キー・フラグ値が追加されても、ここへ明示的に追加しない限り自動的には
-    prompt入力へ流れない。CVE ID・日付・CVSS等の技術情報の意味値は保持し、
-    それを運ぶ内部実装のフィールド名・コンテナ名・フラグ名だけを日本語ラベルへ
-    変換する。
+    転記するのではなく、ここで明示的に許可した人間可読な日本語ラベル・意味値
+    だけを組み立てる(allowlist projection)。将来item["facts"]やrule_flagsへ
+    新しい内部キー・フラグ値が追加されても、ここへ明示的に追加しない限り自動的
+    にはprompt入力へ流れない。CVE ID・日付・CVSS等の技術情報の意味値は保持し、
+    それを運ぶ内部実装のフィールド名・コンテナ名・フラグ名・status機械値だけを
+    日本語ラベル・日本語の意味値へ変換する。
     """
     kev_new_additions = [
-        {_KEV_RECENT_ADDITION_FIELD_LABELS[key]: value for key, value in entry.items()}
+        _project_entry_fields(entry, _KEV_RECENT_ADDITION_FIELD_LABELS)
         for entry in compute_recent_kev_additions(item, analysis_date)
     ]
     projected_rule_flags = [
@@ -2208,7 +2247,7 @@ KEV
 ただし「古いから低い」「修正済みだから必ず参考」の単純化はしない—CISA KEVへの新規追加は
 未対応資産を疑う根拠であり、対応完了の記述があっても利用有無・対応状況の確認価値は残る。
 攻撃成立条件が限定的な場合はその成立条件を主要根拠とし、KEV非掲載を低評価の理由にしない。
-KEV掲載状態のnot_listed/unknown、NVD取得状態のnot_found/unavailable、CVSSスコアのnull、
+KEV掲載状態が「掲載なし」「不明」、NVD取得状態が「情報なし」「取得不能」、CVSSスコアがnull、
 脆弱性情報が「なし」(CVEなし)は、いずれも低リスクを意味せず機械的に下げない(重大インシデント
 等はCVEを伴わない)。これらの中立値は不確実性の説明が必要な場合だけreasonへ書き、importanceを
 低・urgencyを参考へ下げる補強材料には使わない。

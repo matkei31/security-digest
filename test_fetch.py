@@ -1326,11 +1326,18 @@ class VulnerabilityFactsIntegrationTest(unittest.TestCase):
 
         self.assertEqual(len(captured), 1)
         sent_body = captured[0].data.decode("utf-8")
+        # sent_bodyはjson.dumps()のensure_ascii既定(True)でエンコードされており、
+        # 日本語は\uXXXXエスケープされる。日本語の意味値を素の文字列として
+        # 検証するため、一度JSONとしてdecodeしたprompt本文を使う。
+        prompt_text = json.loads(sent_body)["contents"][0]["parts"][0]["text"]
 
         # Ticket 12c: フィルタ済みfacts(CVE ID・スコア・severity・KEV状態・
-        # KEV追加日)は意図的に送信される。
-        for included_value in ("CVE-2026-1234", "9.8", "CRITICAL", "listed", "2026-07-11"):
+        # KEV追加日)は意図的に送信される。内部識別子漏出修正: KEV掲載状態は
+        # 機械値"listed"ではなく人間可読な意味値"掲載あり"で送信される。
+        for included_value in ("CVE-2026-1234", "9.8", "CRITICAL", "2026-07-11"):
             self.assertIn(included_value, sent_body, f"{included_value!r} was expected in Gemini request body")
+        self.assertIn("掲載あり", prompt_text)
+        self.assertNotIn("listed", prompt_text)
 
         # Ticket 12aの運用情報・生フィールドは一切送信しない。last_modified_at/
         # published_at/fetched_atはフルタイムスタンプ(T00:00:00Z等)で判定し、
