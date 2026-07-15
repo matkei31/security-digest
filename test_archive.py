@@ -144,7 +144,9 @@ class ArchiveGenerationTest(unittest.TestCase):
         self.assertIn("Security Digest", html)
         self.assertIn("日次ダイジェスト：2026年07月11日", html)
         self.assertIn("最終更新: 2026年07月11日 07:30", html)
-        self.assertIn("Today's Brief", html)
+        self.assertIn("本日の要点", html)
+        self.assertNotIn("Today's Brief", html)
+        self.assertNotIn("Today’s Brief", html)
         self.assertIn("本日のダッシュボード", html)
         self.assertIn("優先確認", html)
         self.assertNotIn("本日の重要情報", html)
@@ -255,6 +257,36 @@ class ArchiveGenerationTest(unittest.TestCase):
         self.assertIn("重要度の高い脆弱性", archive_important)
         self.assertEqual(archive_important, top_important)
 
+    def test_brief_status_line_and_heading_match_between_top_and_archive(self):
+        digest = make_digest(total_items=1, high_count=1)
+        ctx = {
+            "published_total": 5, "importance_high": 2,
+            "urgency_today": 1, "urgency_week": 1, "unclassified": 0,
+        }
+        status_line = fetch.format_brief_status_line(ctx)
+        digest["brief"]["overview"] = status_line + "Geminiによる本文です。"
+
+        archive_html = fetch.build_daily_archive_html(digest)
+        top_html = fetch.build_html(
+            fetch.digest_items_for_html(digest), fetch.brief_for_html_from_digest(digest)
+        )
+
+        for html in (archive_html, top_html):
+            self.assertIn("本日の要点", html)
+            self.assertNotIn("Today's Brief", html)
+            self.assertNotIn("Today’s Brief", html)
+            self.assertIn(f'<p class="brief-status-line">{status_line}</p>', html)
+            self.assertIn('<p class="brief-overview">Geminiによる本文です。</p>', html)
+
+    def test_unrecognized_legacy_overview_from_json_is_shown_in_full_in_archive(self):
+        digest = make_digest(digest_date="2026-07-05")
+        digest["brief"]["overview"] = "2026-07-05の概況"
+
+        html = fetch.build_daily_archive_html(digest)
+
+        self.assertIn('<p class="brief-overview">2026-07-05の概況</p>', html)
+        self.assertNotIn('<p class="brief-status-line">', html)
+
 
 class ArchiveIndexAndPathTest(unittest.TestCase):
     def test_generate_archive_outputs_writes_daily_list_and_archive_paths(self):
@@ -277,7 +309,9 @@ class ArchiveIndexAndPathTest(unittest.TestCase):
             self.assertIn('href="2026-07-11.html"', index_html)
             self.assertIn("記事2件", index_html)
             self.assertIn("確認優先度 高1件", index_html)
-            self.assertIn("Today’s Briefあり", index_html)
+            self.assertIn("本日の要点あり", index_html)
+            self.assertNotIn("Today's Brief", index_html)
+            self.assertNotIn("Today’s Brief", index_html)
             self.assertNotIn("missing.html", index_html)
 
             index_json = json.loads((data_dir / "index.json").read_text(encoding="utf-8"))
@@ -287,6 +321,23 @@ class ArchiveIndexAndPathTest(unittest.TestCase):
             self.assertEqual(index_json["digests"][0]["total_items"], 2)
             self.assertEqual(index_json["digests"][0]["high_count"], 1)
             self.assertEqual(index_json["digests"][0]["archive_path"], "docs/archive/2026-07-11.html")
+
+    def test_brief_status_label_is_absent_when_brief_is_empty(self):
+        digest = make_digest("2026-07-12", title="none", total_items=1, high_count=0)
+        digest["brief"] = {
+            "status": "not_attempted",
+            "model": None,
+            "prompt_version": None,
+            "overview": None,
+            "important_highlights": [],
+            "discussion_points": [],
+            "check_items": [],
+            "error_type": None,
+        }
+        summary = fetch.archive_summary_from_digest(digest)
+        self.assertEqual(summary["brief_status"], "本日の要点なし")
+        self.assertNotIn("Today's Brief", summary["brief_status"])
+        self.assertNotIn("Today’s Brief", summary["brief_status"])
 
     def test_data_index_json_is_not_treated_as_daily_digest(self):
         with tempfile.TemporaryDirectory() as tmp:

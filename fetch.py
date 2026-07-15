@@ -2801,6 +2801,36 @@ def format_brief_status_line(ctx):
     return line + "。"
 
 
+_BRIEF_STATUS_LINE_RE = re.compile(
+    re.escape("本日の状態（掲載") + r"[0-9]+" + re.escape("件）：重要度「高」") + r"[0-9]+"
+    + re.escape("件、確認目安「本日確認」") + r"[0-9]+"
+    + re.escape("件、確認目安「今週確認」") + r"[0-9]+"
+    + re.escape("件")
+    + "(?:" + re.escape("、未判定") + r"[0-9]+" + re.escape("件") + ")?"
+    + re.escape("。")
+)
+
+
+def split_brief_overview_status_line(overview):
+    """Ticket 15c: format_brief_status_line()が生成した決定論的な状態行を、
+    overview先頭から分離するHTML表示用のpure helper。
+
+    自由文は解析しない。最初の「。」までを候補とし、現在の状態行の完全形式と
+    厳密に一致する場合のみ (status_line, rest) を返す。一致しない場合・
+    overviewが空の場合はNoneを返し、呼び出し側はoverview全体を従来通り1つの
+    要素として表示する(fail-open。欠落・例外を発生させない)。
+    """
+    if not overview:
+        return None
+    index = overview.find("。")
+    if index == -1:
+        return None
+    candidate = overview[:index + 1]
+    if not _BRIEF_STATUS_LINE_RE.fullmatch(candidate):
+        return None
+    return candidate, overview[index + 1:]
+
+
 def format_brief_state_explanation(ctx):
     """Ticket 15b: 状態行に続けて合成する、temporal_state×coverage_completeに
     基づく決定論的な説明文。重要度「高」はtemporal_state/coverage判定には使わず、
@@ -3586,9 +3616,17 @@ def build_html(
         brief_sections = []
         overview = clean_display_text(brief.get("overview"))
         if overview:
+            split = split_brief_overview_status_line(overview)
+            if split:
+                status_line, rest = split
+                status_line_html = f'<p class="brief-status-line">{esc(status_line)}</p>'
+                rest_html = f'\n      <p class="brief-overview">{esc(rest)}</p>' if rest else ""
+                overview_body_html = status_line_html + rest_html
+            else:
+                overview_body_html = f'<p class="brief-overview">{esc(overview)}</p>'
             brief_sections.append(f"""<div class="brief-section">
       <h3 class="brief-section-title">本日の概況</h3>
-      <p class="brief-overview">{esc(overview)}</p>
+      {overview_body_html}
     </div>"""
             )
 
@@ -3612,7 +3650,7 @@ def build_html(
 
         brief_html = f"""<div class="todays-brief">
     <div class="brief-box">
-      <h2>Today's Brief</h2>
+      <h2>本日の要点</h2>
       {''.join(brief_sections)}
     </div>
   </div>""" if brief_sections else ""
@@ -3693,7 +3731,8 @@ def build_html(
     .brief-box{{background:#161b22;border:1px solid #9e6a03;border-radius:10px;padding:14px 16px;display:grid;gap:12px}}
     .brief-box h2{{font-size:13px;font-weight:700;color:#f0b429}}
     .brief-section-title{{font-size:12px;font-weight:700;color:#8b949e;margin-bottom:6px}}
-    .brief-overview{{font-size:13px;color:#e6edf3;line-height:1.6}}
+    .brief-status-line{{font-size:13px;color:#e6edf3;line-height:1.6;background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:8px 10px;margin-bottom:8px;overflow-wrap:break-word}}
+    .brief-overview{{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word}}
     .brief-list{{list-style:none;display:grid;gap:6px}}
     .brief-list li{{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}}
     .brief-list li::before{{content:"・";position:absolute;left:0}}
@@ -3788,7 +3827,7 @@ def archive_summary_from_digest(digest):
         "generated_at": digest.get("generated_at"),
         "total_items": int(run.get("total_items") or len(digest.get("items") or [])),
         "high_count": int((counts.get("importance") or {}).get("高", 0) or 0),
-        "brief_status": "Today’s Briefあり" if brief else "Today’s Briefなし",
+        "brief_status": "本日の要点あり" if brief else "本日の要点なし",
     }
 
 
