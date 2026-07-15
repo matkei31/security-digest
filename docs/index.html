@@ -66,7 +66,8 @@
     .brief-box{background:#161b22;border:1px solid #9e6a03;border-radius:10px;padding:14px 16px;display:grid;gap:12px}
     .brief-box h2{font-size:13px;font-weight:700;color:#f0b429}
     .brief-section-title{font-size:12px;font-weight:700;color:#8b949e;margin-bottom:6px}
-    .brief-overview{font-size:13px;color:#e6edf3;line-height:1.6}
+    .brief-status-line{font-size:13px;color:#e6edf3;line-height:1.6;background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:8px 10px;margin-bottom:8px;overflow-wrap:break-word}
+    .brief-overview{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word}
     .brief-list{list-style:none;display:grid;gap:6px}
     .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
     .brief-list li::before{content:"・";position:absolute;left:0}
@@ -104,22 +105,23 @@
 <body>
   <header>
     <h1>🔐 Security Digest</h1>
-    <div class="sub">最終更新: 2026年07月15日 20:33</div>
+    <div class="sub">最終更新: 2026年07月15日 22:21</div>
     <div class="count">11 件</div>
     <nav class="archive-nav"><a class="archive-link" href="archive/index.html">過去のダイジェストを見る</a></nav>
   </header>
   <div class="todays-brief">
     <div class="brief-box">
-      <h2>Today's Brief</h2>
+      <h2>本日の要点</h2>
       <div class="brief-section">
       <h3 class="brief-section-title">本日の概況</h3>
-      <p class="brief-overview">本日の状態（掲載11件）：重要度「高」2件、確認目安「本日確認」2件、確認目安「今週確認」7件。本日中に適用性または初動要否を確認する記事が2件あります。本日は、Microsoft製品の月例パッチに関する多数の報告に加え、SonicWall SMA 1000シリーズのゼロデイ脆弱性が実悪用されているとの情報が確認されました。開発環境で利用される特定のツールやnpmパッケージの脆弱性も報告されており、サプライチェーン全体でのセキュリティ対策の重要性が改めて浮き彫りになっています。</p>
+      <p class="brief-status-line">本日の状態（掲載11件）：重要度「高」2件、確認目安「本日確認」2件、確認目安「今週確認」4件。</p>
+      <p class="brief-overview">本日中に適用性または初動要否を確認する記事が2件あります。本日は、Microsoft製品の脆弱性に関する情報が多数報告されており、特に実悪用が確認されたゼロデイ脆弱性も含まれるため、広範な影響が懸念されます。また、開発環境を狙った新たな攻撃手法や、AI時代のセキュリティモデルにおける課題提起も注目されます。</p>
     </div><div class="brief-section">
       <h3 class="brief-section-title">本日の注目論点</h3>
-      <ul class="brief-list"><li>Microsoft製品の月例パッチで多数の脆弱性が修正され、その中には実悪用が確認されたものも含まれています。金融機関として、これらの広範な脆弱性に対して、どのように効率的かつ効果的にパッチ適用計画を策定し、実施していくべきか、また、サプライチェーン全体での脆弱性管理をどう強化していくべきかが論点となります。</li><li>開発環境で利用される特定のツール（Cursor）やnpmパッケージの脆弱性が報告されており、これらが悪用された場合、ソースコードや認証情報が危険に晒される可能性があります。開発プロセスにおけるサードパーティ製コンポーネントのセキュリティ評価と、開発環境自体のセキュリティ強化について議論が必要です。</li></ul>
+      <ul class="brief-list"><li>AIの進化に伴い、SASEモデルのセキュリティギャップや広告技術における「承認ギャップ」など、新たな技術リスクが指摘されています。金融機関は、AI活用におけるセキュリティ戦略やデータ保護のあり方を再評価する必要があるでしょう。</li><li>Microsoft製品の脆弱性が多数報告される中で、パッチ適用だけでなく、ゼロデイ脆弱性や実悪用が確認された脅威に対する迅速な検知・対応能力の強化が、より一層重要になっています。</li><li>サプライチェーン全体のセキュリティ強化が求められる中、中小企業向けのサイバーセキュリティ支援の動きは、間接的に金融機関のサプライチェーンリスク低減に寄与する可能性があります。</li></ul>
     </div><div class="brief-section">
       <h3 class="brief-section-title">本日の確認事項</h3>
-      <ul class="brief-list"><li>SonicWall SMA 1000シリーズアプライアンスの利用有無、影響バージョン、外部露出状況を確認し、SonicWallからの公式アナウンスに基づきパッチ適用や緩和策の実施、侵害兆候の監視・確認を実施してください。</li><li>自社および委託先で利用しているMicrosoft製品について、CVE-2026-56155を含む2026年7月のセキュリティ更新プログラムの適用状況を確認し、Microsoftが提供するセキュリティアドバイザリを参照して影響を受ける製品とバージョン、推奨される緩和策を確認してください。また、悪用が確認されている脆弱性について、自社環境での侵害兆候の有無を監視・確認してください。</li></ul>
+      <ul class="brief-list"><li>Windows User Profile Serviceのゼロデイ脆弱性「LegacyHive」および実悪用が確認されたMicrosoft製品の脆弱性CVE-2026-56155について、自社環境での影響有無と適用バージョンを確認し、Microsoftからの公式ガイダンスに基づき、速やかにパッチ適用や緩和策の検討を実施してください。</li><li>自社の開発環境で利用しているツールに、カーソル関連の脆弱性が存在しないか確認し、開発環境における機密情報やソースコードへのアクセス制御について改めて評価してください。</li></ul>
     </div>
     </div>
   </div>
@@ -128,13 +130,13 @@
     <p class="important-items-note">確認優先度が高い、または確認目安が本日確認の記事です。</p>
     <div class="important-items-list">
       <article class="priority-item">
-        <h3 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-1" lang="en">Two SonicWall SMA 1000 Zero-Days Exploited, One Could Enable Admin Commands</a><span class="article-title-translation" lang="ja">SonicWall SMA 1000シリーズのゼロデイ脆弱性2件が悪用され、うち1件は管理者コマンド実行を可能に</span></span></h3>
-        <p class="important-item-reason">重要度は、ゼロデイ脆弱性が実悪用されており、外部公開される可能性のあるアプライアンスに影響するため「高」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたCVEが含まれるため「本日確認」です。</p>
+        <h3 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-1" lang="en">Researcher Drops New Windows Zero-Day PoC Hours After Microsoft Patch Tuesday</a><span class="article-title-translation" lang="ja">Microsoft Patch Tuesday後にWindowsゼロデイPoCが公開</span></span></h3>
+        <p class="important-item-reason">重要度は、Windowsのコアコンポーネントにおけるゼロデイ脆弱性のPoCが公開され、広範な影響の可能性があるため「高」です。確認目安は、PoCが公開されたばかりであり、悪用リスクが高まっているため「本日確認」です。</p>
         <a class="priority-item-link" href="#article-1">本文を見る</a>
       </article>
       <article class="priority-item">
-        <h3 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-2" lang="en">Microsoft Patch Tuesday for July 2026 — Snort rules and prominent vulnerabilities</a><span class="article-title-translation" lang="ja">2026年7月Microsoft月例パッチ、Snortルールと注目すべき脆弱性</span></span></h3>
-        <p class="important-item-reason">重要度は、Microsoft製品に影響する多数の脆弱性が含まれ、そのうち1件は実悪用が確認されKEVに新規追加されたため「高」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたCVE-2026-56155が含まれるため「本日確認」です。</p>
+        <h3 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-2" lang="en">Microsoft Patch Tuesday for July 2026 — Snort rules and prominent vulnerabilities</a><span class="article-title-translation" lang="ja">2026年7月Microsoft Patch Tuesday、実悪用が確認された脆弱性CVE-2026-56155を含む</span></span></h3>
+        <p class="important-item-reason">重要度は、実悪用が確認され、多くの金融機関で利用されるMicrosoft製品の脆弱性であるため「高」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。</p>
         <a class="priority-item-link" href="#article-2">本文を見る</a>
       </article>
     </div>
@@ -152,11 +154,11 @@
       </section>
       <section class="dashboard-group">
         <h3>確認目安</h3>
-        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>本日確認</span><strong>2</strong></li><li class="dashboard-count-item"><span>今週確認</span><strong>7</strong></li><li class="dashboard-count-item"><span>参考</span><strong>2</strong></li></ul>
+        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>本日確認</span><strong>2</strong></li><li class="dashboard-count-item"><span>今週確認</span><strong>4</strong></li><li class="dashboard-count-item"><span>参考</span><strong>5</strong></li></ul>
       </section>
       <section class="dashboard-group dashboard-category-group">
         <h3>カテゴリ</h3>
-        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>脆弱性・パッチ</span><strong>8</strong></li><li class="dashboard-count-item"><span>攻撃・脅威動向</span><strong>1</strong></li><li class="dashboard-count-item"><span>規制・ガバナンス</span><strong>1</strong></li><li class="dashboard-count-item"><span>その他</span><strong>1</strong></li></ul>
+        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>脆弱性・パッチ</span><strong>5</strong></li><li class="dashboard-count-item"><span>攻撃・脅威動向</span><strong>1</strong></li><li class="dashboard-count-item"><span>規制・ガバナンス</span><strong>1</strong></li><li class="dashboard-count-item"><span>AI・新技術リスク</span><strong>2</strong></li><li class="dashboard-count-item"><span>その他</span><strong>2</strong></li></ul>
       </section>
     </div>
   </section>
@@ -168,30 +170,26 @@
     <article class="card" id="article-1">
       <div class="card-meta">
         <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/15 05:30</span>
+        <span class="date">07/15 11:07</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/two-sonicwall-sma-1000-zero-days.html" target="_blank" rel="noopener noreferrer" lang="en">Two SonicWall SMA 1000 Zero-Days Exploited, One Could Enable Admin Commands</a><span class="article-title-translation" lang="ja">SonicWall SMA 1000シリーズのゼロデイ脆弱性2件が悪用され、うち1件は管理者コマンド実行を可能に</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/researcher-drops-new-windows-zero-day.html" target="_blank" rel="noopener noreferrer" lang="en">Researcher Drops New Windows Zero-Day PoC Hours After Microsoft Patch Tuesday</a><span class="article-title-translation" lang="ja">Microsoft Patch Tuesday後にWindowsゼロデイPoCが公開</span></span></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-high">確認優先度 高</span><span class="urgency-badge urgency-today">確認目安 本日確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">CVE</span><span class="article-tag">KEV</span><span class="article-tag">ゼロデイ</span><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">ゼロデイ</span><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>CISAは2026年7月14日、実悪用が確認されたとしてCVE-2026-15409をKEVカタログへ追加しました。SonicWall Secure Mobile Access (SMA) 1000シリーズアプライアンスに影響する2件のゼロデイ脆弱性が悪用されており、そのうち1件(CVE-2026-15409)は認証されていないリモート攻撃者による任意のコマンド実行を可能にする可能性があります。</p>
+          <p>セキュリティ研究者がMicrosoft Patch Tuesdayの数時間後に「LegacyHive」と呼ばれるWindows User Profile Serviceの権限昇格ゼロデイ脆弱性のPoCエクスプロイトを公開しました。</p>
         </section>
-        <section class="vulnerability-facts">
-        <h3 class="vulnerability-facts-title">脆弱性情報</h3>
-        <ul class="vulnerability-list"><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15409" target="_blank" rel="noopener noreferrer">CVE-2026-15409</a><span class="vulnerability-cvss">CVSS未評価</span><span class="kev-badge">CISA KEV掲載</span></li></ul>
-      </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関でSonicWall SMA 1000シリーズアプライアンスを利用している場合に関係します。特に外部公開されている場合は、早急な確認が必要です。</p>
+          <p>Windows User Profile ServiceはWindows OSのコアコンポーネントであり、多くの金融機関で利用されているWindows環境に影響する可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>SonicWall SMA 1000シリーズアプライアンスの利用有無、影響バージョン、外部露出状況を確認する</li><li>SonicWallからの公式アナウンスを確認し、パッチ適用や緩和策の実施を検討する</li><li>侵害の兆候がないか、ログやシステムを監視・確認する</li></ul>
+          <ul class="action-list"><li>自社環境におけるWindows User Profile Serviceの利用状況と影響範囲を確認する</li><li>Microsoftからの公式なガイダンスやパッチ情報を継続的に監視する</li><li>公開されたPoCの悪用可能性について評価し、必要に応じて緩和策を検討する</li></ul>
         </section>
       </div>
-      <a class="article-source-link" href="https://thehackernews.com/2026/07/two-sonicwall-sma-1000-zero-days.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://thehackernews.com/2026/07/researcher-drops-new-windows-zero-day.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-2">
@@ -199,13 +197,13 @@
         <span class="tag" style="background:#6f42c1">Cisco Talos</span>
         <span class="date">07/14 20:27</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://blog.talosintelligence.com/microsoft-patch-tuesday-july-2026/" target="_blank" rel="noopener noreferrer" lang="en">Microsoft Patch Tuesday for July 2026 — Snort rules and prominent vulnerabilities</a><span class="article-title-translation" lang="ja">2026年7月Microsoft月例パッチ、Snortルールと注目すべき脆弱性</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://blog.talosintelligence.com/microsoft-patch-tuesday-july-2026/" target="_blank" rel="noopener noreferrer" lang="en">Microsoft Patch Tuesday for July 2026 — Snort rules and prominent vulnerabilities</a><span class="article-title-translation" lang="ja">2026年7月Microsoft Patch Tuesday、実悪用が確認された脆弱性CVE-2026-56155を含む</span></span></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-high">確認優先度 高</span><span class="urgency-badge urgency-today">確認目安 本日確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">CVE</span><span class="article-tag">KEV</span><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>CISAは2026年7月14日、実悪用が確認されたとしてCVE-2026-56155をKEVカタログへ追加しました。Microsoftは2026年7月の月例セキュリティ更新プログラムを公開し、57件の「緊急」を含む622件の脆弱性に対応しています。このうち2件は既に悪用が確認されています。</p>
+          <p>CISAは2026年7月14日、実悪用が確認されたとして本脆弱性CVE-2026-56155をKEVカタログへ追加しました。Microsoftが2026年7月の月例セキュリティ更新プログラムで公開した622件の脆弱性のうちの1つで、57件は「緊急」と評価されています。</p>
         </section>
         <section class="vulnerability-facts">
         <h3 class="vulnerability-facts-title">脆弱性情報</h3>
@@ -213,11 +211,11 @@
       </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>Microsoft製品は多くの金融機関で基盤システムや業務システムに広く利用されているため、関連する脆弱性は直接的な影響を及ぼす可能性があります。</p>
+          <p>Microsoft製品は多くの金融機関で基盤システムや業務システムとして広く利用されているため、本脆弱性の影響を受ける可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社および委託先で利用しているMicrosoft製品について、CVE-2026-56155を含む今月のセキュリティ更新プログラムの適用状況を確認する</li><li>Microsoftが提供するセキュリティアドバイザリを参照し、影響を受ける製品とバージョン、推奨される緩和策を確認する</li><li>悪用が確認されている脆弱性について、自社環境での侵害兆候の有無を監視・確認する</li></ul>
+          <ul class="action-list"><li>CVE-2026-56155の影響を受けるMicrosoft製品の利用有無と影響バージョンを確認する</li><li>Microsoftのセキュリティ更新プログラムを適用し、緩和策の要否を評価する</li><li>実悪用の有無について、関連するログやシステムを監視・確認する</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://blog.talosintelligence.com/microsoft-patch-tuesday-july-2026/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -225,60 +223,35 @@
 
     <article class="card" id="article-3">
       <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/15 10:55</span>
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">07/15 13:00</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/cursor-flaw-lets-malicious-cloned.html" target="_blank" rel="noopener noreferrer" lang="en">Cursor Flaw Lets Malicious Cloned Repositories Trigger Windows Code Execution</a><span class="article-title-translation" lang="ja">Cursorの脆弱性により悪意のあるクローンリポジトリがWindowsでコード実行を誘発</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/application-security/2-click-cursor-exploit-dev-environment-takeover" target="_blank" rel="noopener noreferrer" lang="en">2-Click Cursor Exploit Enables Dev Environment Takeover</a><span class="article-title-translation" lang="ja">2クリックカーソルエクスプロイトによる開発環境乗っ取り</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">パッチ</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
+        
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Windows版のCursorでリポジトリを開くと、プロジェクトルートにgit.exeというファイルが存在する場合、ユーザーの承認なしにそのファイルが実行される脆弱性が発見されました。これにより、悪意のあるバイナリがユーザーの権限で実行され、ソースコード、SSHキー、クラウドトークンなどが危険に晒される可能性があります。</p>
+          <p>開発環境を標的とした、2クリックで悪用可能なカーソル関連の脆弱性が報告されました。これにより、攻撃者は開発者の機密情報やソースコードにアクセスできる可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関で開発業務にCursorをWindows環境で利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。</p>
+          <p>金融機関の開発環境や、開発プロセスで利用されるツールに影響する可能性があります。直接的な関係は記事からは確認できません。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>CursorをWindows環境で利用している開発部門に対し、本脆弱性の影響有無と利用状況を確認するよう連携する</li><li>Cursorのベンダーから提供される修正パッチや緩和策の情報を確認し、対応要否を評価する</li></ul>
+          <ul class="action-list"><li>自社の開発環境や開発プロセスで利用しているツールに、本記事で言及されているようなカーソル関連の脆弱性が存在しないか確認する</li><li>開発環境における機密情報やソースコードへのアクセス制御について、改めて評価する</li></ul>
         </section>
       </div>
-      <a class="article-source-link" href="https://thehackernews.com/2026/07/cursor-flaw-lets-malicious-cloned.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://www.darkreading.com/application-security/2-click-cursor-exploit-dev-environment-takeover" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-4">
       <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/15 09:16</span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/compromised-asyncapi-npm-packages.html" target="_blank" rel="noopener noreferrer" lang="en">Compromised AsyncAPI npm Packages Deliver Multi-Stage Botnet Malware</a><span class="article-title-translation" lang="ja">AsyncAPI npmパッケージの侵害により多段階ボットネットマルウェアが拡散</span></span></h2>
-      <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">サプライチェーン</span><span class="article-tag">悪用確認済み</span></div>
-        <section class="article-section">
-          <h3>何が起きた</h3>
-          <p>AsyncAPI名前空間の4つのnpmパッケージが侵害され、多段階ボットネットローダーを配布していることが確認されました。影響を受けるパッケージは、@asyncapi/generator-helpers@1.1.1、@asyncapi/generator-components@0.7.1、@asyncapi/generator@3.3.1、および@asyncapi/specs(v6.11.2, v6.11.2-alpha.1)です。</p>
-        </section>
-        <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関がAsyncAPIのnpmパッケージを開発プロセスやシステムで利用している場合に影響する可能性があります。利用有無は記事から確認できないため断定はできません。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社および委託先におけるAsyncAPI npmパッケージの利用有無と影響バージョンを確認する</li><li>影響を受けるパッケージを利用している場合、ベンダーの一次情報を確認し、安全なバージョンへの更新または代替策を検討する</li></ul>
-        </section>
-      </div>
-      <a class="article-source-link" href="https://thehackernews.com/2026/07/compromised-asyncapi-npm-packages.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </article>
-
-    <article class="card" id="article-5">
-      <div class="card-meta">
         <span class="tag" style="background:#2471a3">JPCERT/CC</span>
         <span class="date">07/15 04:25</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.jpcert.or.jp/at/2026/at260020.html" target="_blank" rel="noopener noreferrer" lang="ja">注意喚起: 2026年7月マイクロソフトセキュリティ更新プログラムに関する注意喚起  (公開)</a></span></h2>
+      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.jpcert.or.jp/at/2026/at260020.html" target="_blank" rel="noopener noreferrer" lang="ja">注意喚起: 2026年7月マイクロソフトセキュリティ更新プログラムに関する注意喚起  (公開)</a></span></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">パッチ</span></div>
@@ -288,78 +261,28 @@
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関でマイクロソフト製品を利用している場合に、これらのセキュリティ更新プログラムの適用性確認が必要となります。</p>
+          <p>多くの金融機関でマイクロソフト製品が利用されているため、適用性確認の対象になります。具体的な影響は、各脆弱性の内容と利用状況によって異なります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社および委託先で利用しているマイクロソフト製品の棚卸しと、影響を受ける可能性のある製品バージョンの確認を行う</li><li>マイクロソフトが公開するセキュリティ更新プログラムの詳細を確認し、自社環境への適用要否を評価する</li></ul>
+          <ul class="action-list"><li>自社および委託先で利用しているマイクロソフト製品の棚卸しを行い、影響を受ける可能性のある製品を特定する</li><li>マイクロソフトが公開するセキュリティ更新プログラムの詳細を確認し、対応計画を策定する</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://www.jpcert.or.jp/at/2026/at260020.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
-    <article class="card" id="article-6">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/14 21:50</span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/vulnerabilities-threats/records-broken-patch-tuesday-raises-triage-stakes" target="_blank" rel="noopener noreferrer" lang="en">Records Are Made to Be Broken: Patch Tuesday Raises Triage Stakes</a><span class="article-title-translation" lang="ja">パッチチューズデーで600件超の脆弱性が修正、ゼロデイ3件と60件超のクリティカルな脆弱性</span></span></h2>
-      <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">パッチ</span><span class="article-tag">ゼロデイ</span><span class="article-tag">CVE</span></div>
-        <section class="article-section">
-          <h3>何が起きた</h3>
-          <p>Microsoftは今週の月例パッチで622件のCVEを修正しました。その中には3件のゼロデイ脆弱性と60件以上のクリティカルな脆弱性が含まれています。</p>
-        </section>
-        <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関でMicrosoft製品を広く利用している場合に関係します。多数の脆弱性が修正されており、自社環境への影響を確認する必要があります。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社で利用しているMicrosoft製品の脆弱性情報を確認し、影響を受ける製品・バージョンを特定する</li><li>Microsoftが公開したパッチ情報を参照し、対応計画を策定・実施する</li></ul>
-        </section>
-      </div>
-      <a class="article-source-link" href="https://www.darkreading.com/vulnerabilities-threats/records-broken-patch-tuesday-raises-triage-stakes" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </article>
-
-    <article class="card" id="article-7">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/14 19:58</span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/perimeter/6-ghz-wi-fi-flaws-disrupt-critical-systems" target="_blank" rel="noopener noreferrer" lang="en">6 GHz Wi-Fi Flaws Could Disrupt Critical Systems</a><span class="article-title-translation" lang="ja">6GHz Wi-Fiの脆弱性が重要システムを停止させる可能性</span></span></h2>
-      <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
-        
-        <section class="article-section">
-          <h3>何が起きた</h3>
-          <p>6GHz Wi-Fiの自動周波数調整(AFC)システムがクライアント側のデータをデフォルトで信頼するため、位置情報の偽装やトラフィックを妨害する攻撃につながる可能性があると報じられています。</p>
-        </section>
-        <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関で6GHz Wi-Fiおよび関連するAFCシステムを業務で利用している場合に、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社および委託先における6GHz Wi-FiおよびAFCシステムの利用有無を確認する</li><li>ベンダーからの情報提供や緩和策の有無を確認し、対応要否を評価する</li></ul>
-        </section>
-      </div>
-      <a class="article-source-link" href="https://www.darkreading.com/perimeter/6-ghz-wi-fi-flaws-disrupt-critical-systems" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </article>
-
-    <article class="card" id="article-8">
+    <article class="card" id="article-5">
       <div class="card-meta">
         <span class="tag" style="background:#555">Krebs on Security</span>
         <span class="date">07/14 19:22</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">8.</span><span class="article-title-stack"><a class="article-title-link" href="https://krebsonsecurity.com/2026/07/microsoft-patches-a-record-570-security-flaws/" target="_blank" rel="noopener noreferrer" lang="en">Microsoft Patches a Record 570 Security Flaws</a><span class="article-title-translation" lang="ja">Microsoftが過去最多となる570件のセキュリティ脆弱性を修正</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://krebsonsecurity.com/2026/07/microsoft-patches-a-record-570-security-flaws/" target="_blank" rel="noopener noreferrer" lang="en">Microsoft Patches a Record 570 Security Flaws</a><span class="article-title-translation" lang="ja">Microsoftが過去最多となる570件のセキュリティ脆弱性を修正</span></span></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">パッチ</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Microsoftは、Windowsオペレーティングシステムおよびその他のソフトウェアにおける過去最多となる570件のセキュリティ脆弱性に対するソフトウェアアップデートをリリースしました。この脆弱性発見数の増加は、AIによる支援が寄与しているとされています。</p>
+          <p>Microsoftは、Windowsオペレーティングシステムやその他のソフトウェアにおける過去最多となる570件のセキュリティ脆弱性に対するソフトウェアアップデートをリリースしました。この脆弱性発見数の増加は、AIによる支援が要因であるとMicrosoftは説明しています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
@@ -367,35 +290,98 @@
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社で利用しているMicrosoft製品について、今回のパッチ適用状況を確認する</li><li>Microsoftが公開しているセキュリティ情報を参照し、個々の脆弱性の詳細と影響を評価する</li></ul>
+          <ul class="action-list"><li>自社で利用しているMicrosoft製品の脆弱性情報を確認し、影響を受ける製品・バージョンを特定する</li><li>Microsoftが公開するパッチ適用ガイドラインに基づき、対応計画を策定・実施する</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://krebsonsecurity.com/2026/07/microsoft-patches-a-record-570-security-flaws/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
-    <article class="card" id="article-9">
+    <article class="card" id="article-6">
       <div class="card-meta">
         <span class="tag" style="background:#555">IPA</span>
         <span class="date">07/14 15:00</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">9.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.ipa.go.jp/security/security-alert/2026/0715-ms.html" target="_blank" rel="noopener noreferrer" lang="ja">Microsoft 製品の脆弱性対策について(2026年7月)</a></span></h2>
+      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.ipa.go.jp/security/security-alert/2026/0715-ms.html" target="_blank" rel="noopener noreferrer" lang="ja">Microsoft 製品の脆弱性対策について(2026年7月)</a></span></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">パッチ</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>IPAがMicrosoft製品の2026年7月分の脆弱性対策情報を公開しました。この情報には、複数の製品におけるセキュリティ更新プログラムに関する詳細が含まれています。</p>
+          <p>IPAは、Microsoftが公開した複数の製品に関する脆弱性対策情報を発表しました。これには、悪用されると情報漏えいや権限昇格などの影響を及ぼす可能性のある脆弱性が含まれています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関でMicrosoft製品を広く利用している場合に関係します。具体的な脆弱性の内容や影響範囲は記事からは確認できません。</p>
+          <p>金融機関でMicrosoft製品を広く利用している場合、これらの脆弱性が業務システムや情報資産に影響を及ぼす可能性があります。利用製品の適用性確認が必要です。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>IPAが公開した情報を確認し、自社で利用しているMicrosoft製品の脆弱性有無と影響範囲を特定する</li><li>ベンダーの一次情報を参照し、必要なセキュリティ更新プログラムの適用を検討する</li></ul>
+          <ul class="action-list"><li>自社および委託先で利用しているMicrosoft製品の脆弱性有無と影響バージョンを確認する</li><li>Microsoftが提供するセキュリティ更新プログラムや緩和策の適用を検討する</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://www.ipa.go.jp/security/security-alert/2026/0715-ms.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article>
+
+    <article class="card" id="article-7">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">07/15 11:50</span>
+      </div>
+      <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/sase-has-ai-blind-spot-inspecting.html" target="_blank" rel="noopener noreferrer" lang="en">SASE Has An AI Blind Spot. Inspecting Packets Is No Longer Enough.</a><span class="article-title-translation" lang="ja">SASEにAIの死角、パケット検査だけでは不十分</span></span></h2>
+      <div class="ai-analysis">
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">クラウド</span><span class="article-tag">SaaS</span></div>
+        <section class="article-section">
+          <h3>何が起きた</h3>
+          <p>SASE（Secure Access Service Edge）のセキュリティモデルが、SaaSアプリケーション、ブラウザ、生成AIツール、未承認のブラウザ拡張機能、自律型エージェントといった現代の企業ワークフローに対応しきれていないと指摘されています。従来のクラウドプロキシによるパケット検査だけでは、AIを活用した新しい脅威やデータ漏洩のリスクを検出できない可能性があります。</p>
+        </section>
+        <section class="article-section">
+          <h3>なぜ金融機関に関係する</h3>
+          <p>金融機関がSASEソリューションを導入している場合、または今後導入を検討している場合に、AI利用に伴う新たなセキュリティリスク評価の参考になります。特に、機密情報がAIツールやブラウザ拡張機能を通じて外部に漏洩するリスクは考慮すべきです。</p>
+        </section>
+      </div>
+      <a class="article-source-link" href="https://thehackernews.com/2026/07/sase-has-ai-blind-spot-inspecting.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article>
+
+    <article class="card" id="article-8">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">The Hacker News</span>
+        <span class="date">07/15 11:06</span>
+      </div>
+      <h2 class="article-heading"><span class="article-index">8.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/new-webinar-closing-approval-gap-in-ai.html" target="_blank" rel="noopener noreferrer" lang="en">New Webinar: Closing the Approval Gap in AI-Era Ad Tech</a><span class="article-title-translation" lang="ja">AI時代の広告技術における承認ギャップを解消するウェビナー</span></span></h2>
+      <div class="ai-analysis">
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span></div>
+        <section class="article-section">
+          <h3>何が起きた</h3>
+          <p>本ウェビナーは、承認された単一のマーケティングタグが、セキュリティチームが認識していない第四者コードを密かにロードし、フォーム、顧客データ、チェックアウトページへの完全なアクセスを許可する「承認ギャップ」について解説します。</p>
+        </section>
+        <section class="article-section">
+          <h3>なぜ金融機関に関係する</h3>
+          <p>金融機関が広告技術（Ad Tech）を利用し、顧客データや決済情報を取り扱う場合に関係します。特に、AIを活用した広告技術の導入を検討している場合は、潜在的なリスク評価の参考になります。</p>
+        </section>
+      </div>
+      <a class="article-source-link" href="https://thehackernews.com/2026/07/new-webinar-closing-approval-gap-in-ai.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article>
+
+    <article class="card" id="article-9">
+      <div class="card-meta">
+        <span class="tag" style="background:#555">Dark Reading</span>
+        <span class="date">07/15 08:00</span>
+      </div>
+      <h2 class="article-heading"><span class="article-index">9.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/cyber-risk/nigeria-cybersecurity-efforts-cybercriminals-profits" target="_blank" rel="noopener noreferrer" lang="en">Nigeria Deepens Cybersecurity Efforts as Cybercriminals See More Profits</a><span class="article-title-translation" lang="ja">ナイジェリアがサイバーセキュリティ対策を強化、サイバー犯罪の収益増加に対応</span></span></h2>
+      <div class="ai-analysis">
+        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：規制・ガバナンス</span></div>
+        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">規制</span><span class="article-tag">ガイドライン</span></div>
+        <section class="article-section">
+          <h3>何が起きた</h3>
+          <p>ナイジェリアがサイバー攻撃の開示を組織に義務付ける規則を強化し、透明性を義務付ける他国の動きに追随しています。これはサイバー犯罪の収益増加に対応するための取り組みの一環です。</p>
+        </section>
+        <section class="article-section">
+          <h3>なぜ金融機関に関係する</h3>
+          <p>ナイジェリア国内に拠点を持つ、またはナイジェリアの規制対象となる金融機関に関係します。それ以外の金融機関への直接的な影響は限定的です。</p>
+        </section>
+      </div>
+      <a class="article-source-link" href="https://www.darkreading.com/cyber-risk/nigeria-cybersecurity-efforts-cybercriminals-profits" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-10">
@@ -403,7 +389,7 @@
         <span class="tag" style="background:#005eb8">NCSC</span>
         <span class="date">07/15 12:00</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">10.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.ncsc.gov.uk/blogs/helping-small-businesses-with-free-hands-on-cyber-consultancy" target="_blank" rel="noopener noreferrer" lang="en">Helping small businesses with free, hands-on cyber consultancy</a><span class="article-title-translation" lang="ja">中小企業向け無料サイバーセキュリティコンサルティングの提供</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">10.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.ncsc.gov.uk/blogs/helping-small-businesses-with-free-hands-on-cyber-consultancy" target="_blank" rel="noopener noreferrer" lang="en">Helping small businesses with free, hands-on cyber consultancy</a><span class="article-title-translation" lang="ja">NCSC、中小企業向けに無料のサイバーセキュリティコンサルティングを提供</span></span></h2>
       <div class="ai-analysis">
         <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
         
@@ -413,7 +399,7 @@
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関への直接的な影響は限定的です。中小企業のサイバーセキュリティ強化はサプライチェーン全体のレジリエンス向上に寄与する可能性がありますが、本記事は一般的な情報提供にとどまります。</p>
+          <p>金融機関への直接的な影響は限定的です。中小企業のサイバーセキュリティ強化はサプライチェーンリスク低減に間接的に寄与する可能性があります。</p>
         </section>
       </div>
       <a class="article-source-link" href="https://www.ncsc.gov.uk/blogs/helping-small-businesses-with-free-hands-on-cyber-consultancy" target="_blank" rel="noopener noreferrer">元記事を読む</a>
@@ -422,22 +408,22 @@
     <article class="card" id="article-11">
       <div class="card-meta">
         <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/15 08:00</span>
+        <span class="date">07/15 00:05</span>
       </div>
-      <h2 class="article-heading"><span class="article-index">11.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/cyber-risk/nigeria-cybersecurity-efforts-cybercriminals-profits" target="_blank" rel="noopener noreferrer" lang="en">Nigeria Deepens Cybersecurity Efforts as Cybercriminals See More Profits</a><span class="article-title-translation" lang="ja">ナイジェリアがサイバー犯罪の増加を受けサイバーセキュリティ対策を強化</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">11.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/cybersecurity-operations/cribl-adds-agentic-detection-engineering-boosts-secops-with-cardinalops-deal" target="_blank" rel="noopener noreferrer" lang="en">Cribl Adds Agentic Detection Engineering &amp;amp; Boosts SecOps With CardinalOps Deal</a><span class="article-title-translation" lang="ja">CriblがCardinalOps買収でエージェント型検知エンジニアリングとSecOpsを強化</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：規制・ガバナンス</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">規制</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
+        
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>ナイジェリアがサイバー攻撃の開示を組織に義務付ける規則を強化し、サイバーセキュリティ対策を深化させています。これは、サイバー犯罪による利益が増加している状況に対応するものです。</p>
+          <p>CriblはCardinalOpsを買収し、その技術をCribl製品に統合することで、顧客がMITRE ATT&amp;CKフレームワークに検知ルールとセキュリティ制御をマッピングし、カバレッジギャップを特定し、脅威インテリジェンスを運用できるようにします。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>ナイジェリアの規制強化に関する情報であり、日本の金融機関への直接的な影響は限定的です。国際的な規制動向の参考情報となります。</p>
+          <p>金融機関への直接的な影響は限定的です。CriblまたはCardinalOps製品を利用している場合に限り、機能強化の参考情報となります。</p>
         </section>
       </div>
-      <a class="article-source-link" href="https://www.darkreading.com/cyber-risk/nigeria-cybersecurity-efforts-cybercriminals-profits" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://www.darkreading.com/cybersecurity-operations/cribl-adds-agentic-detection-engineering-boosts-secops-with-cardinalops-deal" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article></div>
   <div class="sources">
     <details>

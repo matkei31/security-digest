@@ -1,11 +1,11 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-15T20:33:06.581285+09:00",
+  "updated_at": "2026-07-15T22:21:07.778013+09:00",
   "digests": [
     {
       "digest_date": "2026-07-15",
       "path": "data/2026-07-15.json",
-      "generated_at": "2026-07-15T20:33:06.581285+09:00",
+      "generated_at": "2026-07-15T22:21:07.778013+09:00",
       "total_items": 11,
       "high_count": 2,
       "ai_run_status": "success",
