@@ -140,7 +140,7 @@ class ResponseSchemaTest(unittest.TestCase):
 
 class PromptVersionPropagationTest(unittest.TestCase):
     def test_article_prompt_version_is_v5(self):
-        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v5")
+        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v6")
 
     def test_brief_prompt_version_is_unchanged(self):
         self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-v3")
@@ -153,7 +153,7 @@ class PromptVersionPropagationTest(unittest.TestCase):
             datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
             datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
         )
-        self.assertEqual(digest["generator"]["article_prompt_version"], "article-analysis-v5")
+        self.assertEqual(digest["generator"]["article_prompt_version"], "article-analysis-v6")
         self.assertEqual(digest["generator"]["brief_prompt_version"], "today-brief-v3")
 
     def test_each_article_analysis_reflects_new_prompt_version(self):
@@ -170,7 +170,7 @@ class PromptVersionPropagationTest(unittest.TestCase):
                         "source_tier": "Tier 1", "collection_method": "rss", "language": "en"}]
         entry = dj.build_article_entry(item, source_defs, "gemini-2.5-flash",
                                         datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST))
-        self.assertEqual(entry["analysis"]["prompt_version"], "article-analysis-v5")
+        self.assertEqual(entry["analysis"]["prompt_version"], "article-analysis-v6")
 
 
 # ── 正常分析 ──────────────────────────────────────────────────────────────
@@ -216,7 +216,7 @@ class NormalAnalysisTest(unittest.TestCase):
         self.assertEqual(counts["urgency"]["本日確認"], 1)
 
     def test_prompt_version_is_v5(self):
-        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v5")
+        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v6")
 
     def test_recommended_actions_is_html_compatible_array(self):
         result = call_gemini_analyze(response_body=make_candidate_body(VALID_ANALYSIS_RESPONSE))
@@ -714,8 +714,12 @@ class JudgmentExampleTest(unittest.TestCase):
         self.assertIn("# 例3: 中 × 今週確認", prompt_text)
         self.assertIn("KEVのみで適用性不明の境界", prompt_text)
         # 例4: 中×参考(CVSS満点でもニッチ消費者向け製品。アンカリング防止)
-        self.assertIn("cvss_score=10.0のニッチ消費者向け製品", prompt_text)
-        self.assertIn("kev_status=not_listed自体は根拠にしない", prompt_text)
+        # 内部識別子漏出修正: cvss_score=/kev_status=という内部field=value表記
+        # ではなく、人間可読な表現(CVSS10.0・KEV非掲載)を使う。
+        self.assertIn("CVSS10.0のニッチ消費者向け製品", prompt_text)
+        self.assertIn("KEV非掲載自体は根拠にしない", prompt_text)
+        self.assertNotIn("cvss_score=", prompt_text)
+        self.assertNotIn("kev_status=", prompt_text)
         self.assertNotIn("KEVにも未掲載のため", prompt_text)
         # 例5: 低×参考(他業界のサービス事業者への攻撃)
         self.assertIn("他業界(医療)事業者への攻撃", prompt_text)

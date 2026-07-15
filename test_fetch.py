@@ -1253,14 +1253,27 @@ class VulnerabilityFactsIntegrationTest(unittest.TestCase):
         # 経由でのみフィルタ済みのvulnerability_facts行をプロンプト入力へ渡す
         # (Ticket 12aでは一切facts/cvssを参照しなかったが、Ticket 12cで
         # 意図的にserializer経由の参照のみを追加した)。
+        # 内部識別子漏出修正: verified_context_jsonの組み立ては
+        # build_verified_context_for_prompt()のallowlist projectionへ一元化した
+        # ため、enrich_with_ai()はそちらを呼ぶだけで、serializer参照自体は
+        # build_verified_context_for_prompt()側にある。
         import inspect
-        source = inspect.getsource(fetch.enrich_with_ai)
-        self.assertIn("serialize_vulnerability_facts_for_prompt(item)", source)
-        self.assertIn("vulnerability_facts:", source)
-        # 生フィールド名を直接参照していないこと(すべて
-        # serialize_vulnerability_facts_for_prompt()側に閉じ込める)。
-        self.assertNotIn("cvss", source.lower())
-        self.assertNotIn("retrieval", source.lower())
+        enrich_source = inspect.getsource(fetch.enrich_with_ai)
+        self.assertIn("build_verified_context_for_prompt(item, analysis_date, rule_flags)", enrich_source)
+        # enrich_with_ai()自体はfacts生フィールド名を直接参照しない。
+        self.assertNotIn("cvss", enrich_source.lower())
+        self.assertNotIn("retrieval", enrich_source.lower())
+
+        # 脆弱性情報の人間可読ラベルへの投影は_project_vulnerability_facts_for_prompt()
+        # が担い、そちらがserialize_vulnerability_facts_for_prompt()を呼ぶ。
+        projection_source = inspect.getsource(fetch.build_verified_context_for_prompt)
+        vuln_projection_source = inspect.getsource(fetch._project_vulnerability_facts_for_prompt)
+        self.assertIn("_project_vulnerability_facts_for_prompt(item)", projection_source)
+        self.assertIn("serialize_vulnerability_facts_for_prompt(item)", vuln_projection_source)
+        # allowlist projection自体もfactsの生フィールドを直接読み書きしない
+        # (すべてserialize_vulnerability_facts_for_prompt()側に閉じ込める)。
+        self.assertNotIn("retrieval", projection_source.lower())
+        self.assertNotIn("retrieval", vuln_projection_source.lower())
 
     def test_collect_recent_no_longer_calls_gemini_enrichment_internally(self):
         # Ticket 12a: enrich_with_ai()はcollect_recent()から分離され、main()側で
@@ -1313,11 +1326,18 @@ class VulnerabilityFactsIntegrationTest(unittest.TestCase):
 
         self.assertEqual(len(captured), 1)
         sent_body = captured[0].data.decode("utf-8")
+        # sent_bodyはjson.dumps()のensure_ascii既定(True)でエンコードされており、
+        # 日本語は\uXXXXエスケープされる。日本語の意味値を素の文字列として
+        # 検証するため、一度JSONとしてdecodeしたprompt本文を使う。
+        prompt_text = json.loads(sent_body)["contents"][0]["parts"][0]["text"]
 
         # Ticket 12c: フィルタ済みfacts(CVE ID・スコア・severity・KEV状態・
-        # KEV追加日)は意図的に送信される。
-        for included_value in ("CVE-2026-1234", "9.8", "CRITICAL", "listed", "2026-07-11"):
+        # KEV追加日)は意図的に送信される。内部識別子漏出修正: KEV掲載状態は
+        # 機械値"listed"ではなく人間可読な意味値"掲載あり"で送信される。
+        for included_value in ("CVE-2026-1234", "9.8", "CRITICAL", "2026-07-11"):
             self.assertIn(included_value, sent_body, f"{included_value!r} was expected in Gemini request body")
+        self.assertIn("掲載あり", prompt_text)
+        self.assertNotIn("listed", prompt_text)
 
         # Ticket 12aの運用情報・生フィールドは一切送信しない。last_modified_at/
         # published_at/fetched_atはフルタイムスタンプ(T00:00:00Z等)で判定し、
