@@ -524,9 +524,11 @@ class TodaysBriefHtmlTest(unittest.TestCase):
             "lang": "ja",
         }
 
-    def test_heading_todays_brief_is_shown(self):
+    def test_heading_honjitsu_no_youten_is_shown(self):
         html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
-        self.assertIn("Today's Brief", brief_segment(html))
+        self.assertIn("本日の要点", brief_segment(html))
+        self.assertNotIn("Today's Brief", html)
+        self.assertNotIn("Today’s Brief", html)
 
     def test_overview_heading_and_paragraph_are_shown(self):
         html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
@@ -565,6 +567,38 @@ class TodaysBriefHtmlTest(unittest.TestCase):
         overview = segment[segment.index("本日の概況"):segment.index("本日の確認事項")]
         self.assertNotIn("<ul", overview)  # overviewセクションにulがないこと
 
+    def test_check_items_empty_section_is_not_rendered(self):
+        brief = dict(SAMPLE_BRIEF, check_items=[])
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertNotIn("本日の確認事項", segment)
+        self.assertIn("本日の注目論点", segment)
+
+    def test_both_discussion_points_and_check_items_empty(self):
+        brief = dict(SAMPLE_BRIEF, discussion_points=[], check_items=[])
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertNotIn("本日の注目論点", segment)
+        self.assertNotIn("本日の確認事項", segment)
+        self.assertNotIn("<ul", segment)
+        self.assertNotIn('<ul class="brief-list"></ul>', segment)
+
+    def test_only_discussion_points_present_check_items_section_absent(self):
+        brief = dict(SAMPLE_BRIEF, check_items=[])
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertIn("本日の注目論点", segment)
+        self.assertNotIn("本日の確認事項", segment)
+        self.assertEqual(segment.count("<ul"), 1)
+
+    def test_only_check_items_present_discussion_points_section_absent(self):
+        brief = dict(SAMPLE_BRIEF, discussion_points=[])
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertNotIn("本日の注目論点", segment)
+        self.assertIn("本日の確認事項", segment)
+        self.assertEqual(segment.count("<ul"), 1)
+
     def test_success_with_all_arrays_empty_still_shows_overview(self):
         brief = {
             "overview": "本日は特筆すべき高重要度の情報はありませんでした。通常運用を継続してください。",
@@ -581,6 +615,8 @@ class TodaysBriefHtmlTest(unittest.TestCase):
         html = fetch.build_html([self._make_item()], None)
         self.assertNotIn('<div class="todays-brief">', html)
         self.assertNotIn("Today's Brief", html)
+        self.assertNotIn("Today’s Brief", html)
+        self.assertNotIn("本日の要点", html)
 
     def test_brief_omitted_defaults_to_hidden(self):
         html = fetch.build_html([self._make_item()])
@@ -642,6 +678,281 @@ class TodaysBriefHtmlTest(unittest.TestCase):
         html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
         segment = brief_segment(html)
         self.assertNotIn("category_reason", segment)
+
+
+class BriefStatusLineHtmlTest(unittest.TestCase):
+    """Ticket 15c: overview先頭の決定論的状態行を専用要素へ分離する表示のテスト。"""
+
+    def _make_item(self, title="記事"):
+        return {
+            "title": title,
+            "link": f"https://example.com/{title}",
+            "summary": f"{title}の概要",
+            "date": datetime.datetime(2026, 7, 11, 6, 0),
+            "source": "CISA",
+            "lang": "ja",
+        }
+
+    def _brief_item(self, title, importance, urgency):
+        return {
+            "title": title,
+            "source": "CISA",
+            "ai_analysis": {
+                "category": "脆弱性・パッチ",
+                "importance": importance,
+                "urgency": urgency,
+                "summary": "要約",
+                "financial_impact": "影響",
+                "recommended_actions": ["対応1"],
+                "reason": "理由",
+                "tags": ["KEV"],
+            },
+            "ai_analysis_meta": {"status": "success", "error_type": None, "http_status": None},
+        }
+
+    def _unclassified_item(self, title):
+        return {
+            "title": title,
+            "source": "CISA",
+            "ai_analysis": None,
+            "ai_analysis_meta": {"status": "failed", "error_type": "api_error", "http_status": 500},
+        }
+
+    def _brief_with_generated_overview(
+        self, evaluated_specs, unclassified_count=0, gemini_overview="Geminiによる補足本文です。",
+    ):
+        """実際のcompute_brief_trusted_context/apply_deterministic_brief_contextを
+        通して、状態行合成後のoverviewを持つbrief dictを組み立てる。
+        """
+        eval_items = [
+            self._brief_item(f"item-{i}", importance, urgency)
+            for i, (importance, urgency) in enumerate(evaluated_specs)
+        ]
+        unclassified_items = [
+            self._unclassified_item(f"unclassified-{i}") for i in range(unclassified_count)
+        ]
+        items = eval_items + unclassified_items
+        ctx = fetch.compute_brief_trusted_context(items)
+        result = {
+            "overview": gemini_overview,
+            "important_highlights": [],
+            "discussion_points": [],
+            "check_items": [],
+        }
+        applied = fetch.apply_deterministic_brief_context(result, ctx)
+        status_line = fetch.format_brief_status_line(ctx)
+        return applied, status_line, ctx
+
+    def test_state_a_status_line_is_in_dedicated_element(self):
+        brief, status_line, ctx = self._brief_with_generated_overview(
+            [("高", "本日確認"), ("中", "今週確認")]
+        )
+        self.assertEqual(ctx["temporal_state"], "A")
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertIn(f'<p class="brief-status-line">{status_line}</p>', segment)
+        self.assertEqual(segment.count(status_line), 1)
+
+    def test_state_b_status_line_is_in_dedicated_element(self):
+        brief, status_line, ctx = self._brief_with_generated_overview(
+            [("中", "今週確認")] * 3
+        )
+        self.assertEqual(ctx["temporal_state"], "B")
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertIn(f'<p class="brief-status-line">{status_line}</p>', segment)
+        self.assertEqual(segment.count(status_line), 1)
+
+    def test_state_c_status_line_is_in_dedicated_element(self):
+        brief, status_line, ctx = self._brief_with_generated_overview(
+            [("中", "参考")] * 3
+        )
+        self.assertEqual(ctx["temporal_state"], "C")
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertIn(f'<p class="brief-status-line">{status_line}</p>', segment)
+        self.assertEqual(segment.count(status_line), 1)
+
+    def test_incomplete_coverage_status_line_includes_unclassified_and_is_split(self):
+        brief, status_line, ctx = self._brief_with_generated_overview(
+            [("中", "今週確認")], unclassified_count=2
+        )
+        self.assertFalse(ctx["coverage_complete"])
+        self.assertIn("未判定2件", status_line)
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertIn(f'<p class="brief-status-line">{status_line}</p>', segment)
+
+    def test_rest_of_overview_is_in_separate_element_with_unchanged_wording(self):
+        brief, status_line, ctx = self._brief_with_generated_overview(
+            [("高", "本日確認")], gemini_overview="Geminiが生成した補足本文そのもの。"
+        )
+        expected_explanation = fetch.format_brief_state_explanation(ctx)
+        expected_rest = expected_explanation + "Geminiが生成した補足本文そのもの。"
+        # 分離しても、状態行+残り本文を連結すれば元のoverviewと一字一句一致すること
+        self.assertEqual(brief["overview"], status_line + expected_rest)
+
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertIn(f'<p class="brief-overview">{expected_rest}</p>', segment)
+        overview_start = segment.index('<p class="brief-overview">')
+        self.assertNotIn(status_line, segment[overview_start:])
+
+    def test_split_overview_rest_is_html_escaped(self):
+        brief, status_line, ctx = self._brief_with_generated_overview(
+            [("高", "本日確認")], gemini_overview="<script>alert(1)</script>"
+        )
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertNotIn("<script>alert(1)</script>", segment)
+        self.assertIn("&lt;script&gt;", segment)
+
+    def test_unrecognized_legacy_overview_is_shown_in_full_without_split(self):
+        legacy_brief = dict(
+            SAMPLE_BRIEF,
+            overview="2026-07-11の概況：記事が少数のため通常運用を継続してください。",
+        )
+        html = fetch.build_html([self._make_item()], legacy_brief)
+        segment = brief_segment(html)
+        self.assertNotIn("brief-status-line", segment)
+        self.assertIn(f'<p class="brief-overview">{legacy_brief["overview"]}</p>', segment)
+
+    def test_fullwidth_digit_lookalike_overview_is_shown_in_full_without_split(self):
+        # 全角数字を含む酷似状態行はsplitされず、全文が従来通りbrief-overviewへ
+        # fail-openされ、brief-status-lineは生成されないことをbuild_html経由で確認する
+        lookalike_brief = dict(
+            SAMPLE_BRIEF,
+            overview=(
+                "本日の状態（掲載３件）：重要度「高」１件、確認目安「本日確認」０件、"
+                "確認目安「今週確認」１件。続く説明文です。"
+            ),
+        )
+        html = fetch.build_html([self._make_item()], lookalike_brief)
+        segment = brief_segment(html)
+        self.assertNotIn("brief-status-line", segment)
+        self.assertIn(
+            f'<p class="brief-overview">{lookalike_brief["overview"]}</p>', segment
+        )
+
+    def test_empty_overview_produces_no_overview_section_without_exception(self):
+        brief = dict(SAMPLE_BRIEF, overview="")
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertNotIn("本日の概況", segment)
+        self.assertNotIn("brief-status-line", segment)
+
+    def test_none_overview_produces_no_overview_section_without_exception(self):
+        brief = dict(SAMPLE_BRIEF, overview=None)
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertNotIn("本日の概況", segment)
+        self.assertNotIn("brief-status-line", segment)
+
+
+class SplitBriefOverviewStatusLineTest(unittest.TestCase):
+    """Ticket 15c: split_brief_overview_status_line()単体のpure helperテスト。"""
+
+    def test_returns_none_for_unrecognized_free_text(self):
+        self.assertIsNone(
+            fetch.split_brief_overview_status_line("見慣れない形式の概況文です。")
+        )
+
+    def test_returns_none_for_empty_string(self):
+        self.assertIsNone(fetch.split_brief_overview_status_line(""))
+
+    def test_returns_none_for_none(self):
+        self.assertIsNone(fetch.split_brief_overview_status_line(None))
+
+    def test_returns_none_when_no_period_present(self):
+        self.assertIsNone(fetch.split_brief_overview_status_line("句点のない文字列"))
+
+    def test_matches_current_deterministic_format_exactly(self):
+        ctx = {
+            "published_total": 12, "importance_high": 3,
+            "urgency_today": 2, "urgency_week": 4, "unclassified": 0,
+        }
+        status_line = fetch.format_brief_status_line(ctx)
+        overview = status_line + "続く説明文。"
+        split = fetch.split_brief_overview_status_line(overview)
+        self.assertEqual(split, (status_line, "続く説明文。"))
+
+    def test_matches_with_unclassified_segment(self):
+        ctx = {
+            "published_total": 12, "importance_high": 3,
+            "urgency_today": 2, "urgency_week": 4, "unclassified": 5,
+        }
+        status_line = fetch.format_brief_status_line(ctx)
+        overview = status_line + "続く説明文。"
+        split = fetch.split_brief_overview_status_line(overview)
+        self.assertEqual(split, (status_line, "続く説明文。"))
+
+    def test_status_line_only_with_no_trailing_text_splits_to_empty_rest(self):
+        ctx = {
+            "published_total": 1, "importance_high": 0,
+            "urgency_today": 0, "urgency_week": 0, "unclassified": 0,
+        }
+        status_line = fetch.format_brief_status_line(ctx)
+        split = fetch.split_brief_overview_status_line(status_line)
+        self.assertEqual(split, (status_line, ""))
+
+    def test_similar_but_not_exact_format_is_not_split(self):
+        # 件数の桁や句読点が微妙に異なる、酷似した非決定論的文字列は誤って分離しない
+        almost = "本日の状態（掲載3件）:重要度「高」1件、確認目安「本日確認」0件、確認目安「今週確認」1件。"
+        self.assertIsNone(fetch.split_brief_overview_status_line(almost))
+
+    def test_fullwidth_digit_counts_are_not_split(self):
+        # format_brief_status_line()はintからASCII数字のみを生成するため、
+        # 全角数字を含む酷似文字列はPythonの\dがUnicode数字も受理する
+        # 副作用で誤って厳密一致しないことを確認する
+        fullwidth = "本日の状態（掲載３件）：重要度「高」１件、確認目安「本日確認」０件、確認目安「今週確認」１件。"
+        self.assertIsNone(fetch.split_brief_overview_status_line(fullwidth))
+
+    def test_fullwidth_digit_in_unclassified_segment_is_not_split(self):
+        mixed = (
+            "本日の状態（掲載5件）：重要度「高」1件、確認目安「本日確認」0件、"
+            "確認目安「今週確認」1件、未判定２件。"
+        )
+        self.assertIsNone(fetch.split_brief_overview_status_line(mixed))
+
+
+class BriefStatusLineCssTest(unittest.TestCase):
+    """Ticket 15c: 状態行専用要素のCSSが控えめで、警告色/状態別色分け/JSを
+    追加していないこと、既存モバイル対応が変更されていないことの回帰テスト。
+    """
+
+    def _make_item(self, title="記事"):
+        return {
+            "title": title,
+            "link": f"https://example.com/{title}",
+            "summary": f"{title}の概要",
+            "date": datetime.datetime(2026, 7, 11, 6, 0),
+            "source": "CISA",
+            "lang": "ja",
+        }
+
+    def test_todays_brief_container_max_width_and_mobile_media_query_unchanged(self):
+        html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
+        self.assertIn(".todays-brief{max-width:680px", html)
+        self.assertIn("@media (max-width:600px)", html)
+
+    def test_brief_status_line_css_exists_and_has_no_inline_js_or_color_coding(self):
+        html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
+        style_start = html.index("<style>")
+        style_end = html.index("</style>")
+        style = html[style_start:style_end]
+        self.assertIn(".brief-status-line{", style)
+        rule_start = style.index(".brief-status-line{")
+        rule_end = style.index("}", rule_start)
+        rule = style[rule_start:rule_end]
+        # 警告色(赤・オレンジ系)を使わず、既存の控えめなグレー系配色に馴染ませる
+        self.assertNotIn("#da3633", rule)
+        self.assertNotIn("#9e6a03", rule)
+        self.assertNotIn("#f0b429", rule)
+
+    def test_no_javascript_is_emitted_anywhere_in_the_page(self):
+        html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
+        self.assertNotIn("<script", html)
+        self.assertNotIn("onclick", html)
 
 
 class DashboardTest(unittest.TestCase):
