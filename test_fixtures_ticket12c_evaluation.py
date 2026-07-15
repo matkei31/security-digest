@@ -315,13 +315,15 @@ class EvaluationFixtureStructureTest(unittest.TestCase):
         verified, untrusted = tvfp._extract_verified_and_untrusted(sent_text)
 
         self.assertIn("CVE-2099-0001", untrusted["summary"])
-        vf = verified["vulnerability_facts"]
+        # 内部識別子漏出修正: verified_context_jsonは人間可読ラベル(脆弱性情報・
+        # CVE一覧・CVE ID・KEV掲載状態)で送信される。
+        vf = verified["脆弱性情報"]
         self.assertIsInstance(vf, dict)
-        cve_ids = [c["cve_id"] for c in vf["cves"]]
+        cve_ids = [c["CVE ID"] for c in vf["CVE一覧"]]
         self.assertIn("CVE-2026-9115", cve_ids)
         self.assertNotIn("CVE-2099-0001", cve_ids)
-        real_entry = next(c for c in vf["cves"] if c["cve_id"] == "CVE-2026-9115")
-        self.assertEqual(real_entry["kev_status"], "not_listed")
+        real_entry = next(c for c in vf["CVE一覧"] if c["CVE ID"] == "CVE-2026-9115")
+        self.assertEqual(real_entry["KEV掲載状態"], "not_listed")
 
     def test_fixture_16_injection_instruction_is_only_in_summary(self):
         fixtures_by_id = {f["id"]: f for f in get_evaluation_fixtures()}

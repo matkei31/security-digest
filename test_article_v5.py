@@ -35,8 +35,8 @@ def _prompt_text():
 # ── バージョン・スキーマ ────────────────────────────────────────────────────
 
 class VersionAndSchemaTest(unittest.TestCase):
-    def test_article_prompt_version_is_v5(self):
-        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v5")
+    def test_article_prompt_version_is_v6(self):
+        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v6")
 
     def test_brief_prompt_version_and_schema_version_unchanged(self):
         self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-v3")
@@ -330,9 +330,15 @@ class PromptContentTest(unittest.TestCase):
         self.flat = _re.sub(r"\n[ \t]*", "", self.text)
 
     def test_recent_kev_additions_contract(self):
-        self.assertIn("recent_kev_additions", self.text)
-        self.assertIn("cve_id・kev_date_added", self.flat)
-        self.assertIn("days_since_added", self.text)
+        # 内部識別子漏出修正: verified_context_jsonの実際のキー・フィールド名は
+        # 内部実装識別子(recent_kev_additions/kev_new_additions/cve_id/
+        # kev_date_added/days_since_added)ではなく、人間可読な日本語ラベルへ
+        # 投影する。
+        self.assertIn("「直近3暦日以内にKEVへ追加されたCVE」", self.text)
+        self.assertIn("「CVE ID」\n「KEV追加日」「追加からの日数」".replace("\n", ""), self.flat)
+        for internal in ("recent_kev_additions", "kev_new_additions", "cve_id",
+                          "kev_date_added", "days_since_added"):
+            self.assertNotIn(internal, self.text)
         self.assertIn("日付差は計算済みで自分では計算しない", self.flat)
 
     def test_no_nonexistent_facts_kev_dateadded_reference(self):
@@ -341,7 +347,7 @@ class PromptContentTest(unittest.TestCase):
         self.assertNotIn("facts.kev", self.text)
 
     def test_kev_new_add_strong_today_basis(self):
-        self.assertIn("recent_kev_additionsに含まれるCVE", self.flat)
+        self.assertIn("KEV新規追加に含まれるCVE", self.flat)
         self.assertIn("本日確認の強い根拠", self.flat)
         self.assertIn("今週確認へ下げない", self.flat)
         self.assertIn("適用範囲の狭さはimportanceを下げる要因でありurgencyは下げない", self.flat)
@@ -351,11 +357,11 @@ class PromptContentTest(unittest.TestCase):
         self.assertIn("全環境への即時パッチ適用を一律には命じない", self.flat)
 
     def test_recent_kev_is_the_only_exception(self):
-        # Ticket 15a第2版-1: recent_kev_additionsだけが例外(本日確認の強い根拠)であり、
+        # Ticket 15a第2版-1: KEV新規追加だけが例外(本日確認の強い根拠)であり、
         # 「既存/新規追加でないKEV掲載」だけが掲載単独では不十分であることを全文で統一。
-        self.assertIn("recent_kev_additionsに含まれるCVEは例外で本日確認の強い根拠", self.flat)
-        self.assertIn("recent_kev_additionsに含まれない既存の掲載では", self.flat)
-        self.assertIn("recent_kev_additionsに含まれない既存KEVでは", self.flat)
+        self.assertIn("KEV新規追加に含まれるCVEは例外で本日確認の強い根拠", self.flat)
+        self.assertIn("KEV新規追加に含まれない既存の掲載では", self.flat)
+        self.assertIn("KEV新規追加に含まれない既存KEVでは", self.flat)
         # 例3(KEV単独境界)は「新規追加ではない」ことを明示する
         self.assertIn("新規追加ではないため掲載だけで本日確認にしない", self.flat)
 
@@ -377,7 +383,7 @@ class PromptContentTest(unittest.TestCase):
 
     def test_recent_kev_today_needs_no_additional_basis(self):
         # recent KEVのurgency=本日確認には追加根拠を課さない。
-        self.assertIn("recent_kev_additionsのCVEは直近追加自体が時間的根拠", self.flat)
+        self.assertIn("KEV新規追加のCVEは直近追加自体が時間的根拠", self.flat)
         self.assertIn("urgency=本日確認に追加根拠を要さない", self.flat)
         # 「高・本日確認」を一括して追加根拠必須とする文を残さない。
         self.assertNotIn("高・本日確認には記事本文から確認できる追加根拠", self.flat)
@@ -389,14 +395,16 @@ class PromptContentTest(unittest.TestCase):
         e3 = text[text.index("# 例3"):text.index("# 例4")]
         e7 = text[text.index("# 例7"):text.index("# ニュース")]
         # 例1: recent非該当だが「実悪用が進行中」の時間的根拠で本日確認(KEV掲載単独でない)
-        self.assertIn("recent_kev_additions非該当", e1)
+        self.assertIn("KEV新規追加には非該当", e1)
+        self.assertNotIn("recent_kev_additions", e1)
         self.assertIn("進行中", e1)
         self.assertIn('"urgency": "本日確認"', e1)
         # 例3: 新規追加でないKEVは掲載だけで本日確認にせず今週確認
         self.assertIn("新規追加ではないため掲載だけで本日確認にしない", e3)
         self.assertIn('"urgency": "今週確認"', e3)
-        # 例7: recent(days_since_added=1)で本日確認
-        self.assertIn("days_since_added=1", e7)
+        # 例7: recent(追加から1日)で本日確認
+        self.assertIn("追加から1日", e7)
+        self.assertNotIn("days_since_added", e7)
         self.assertIn('"urgency": "本日確認"', e7)
 
     def test_partial_example_note(self):
@@ -409,13 +417,15 @@ class PromptContentTest(unittest.TestCase):
         self.assertNotIn("title_jaは省略してよい", self.flat)
 
     def test_summary_why_now_conditioned_on_recent(self):
-        self.assertIn("recent_kev_additionsに含まれる", self.flat)
+        self.assertIn("KEV新規追加に含まれる", self.flat)
         self.assertIn("実悪用が確認されたとして本脆弱性をKEVカタログへ", self.flat)
 
     def test_summary_does_not_leak_field_name(self):
-        # Ticket 15a第2版-2: kev_date_addedを裸で出力させない。
+        # Ticket 15a第2版-2 / 内部識別子漏出修正: kev_date_added(内部識別子)を
+        # 裸で出力させず、YYYY-MM-DD表記のままの出力も禁止する。
         self.assertNotIn("CISAはkev_date_added", self.flat)  # 出力例に裸のフィールド名がない
-        self.assertIn("フィールド名kev_date_added自体は出力しない", self.flat)  # 明示指示
+        self.assertNotIn("kev_date_added", self.flat)
+        self.assertIn("YYYY-MM-DD表記のまま出力しない", self.flat)  # 明示指示
         self.assertIn("自然な日本語の日付に直し", self.flat)
         # positive few-shotに具体的な自然日本語日付がある
         self.assertIn("CISAは2026年7月13日、実悪用が確認されたとして", self.flat)
@@ -485,24 +495,32 @@ class VerifiedContextTest(unittest.TestCase):
         self.assertEqual(len(texts), 2)
         for t in texts:
             verified, _ = tvp._extract_verified_and_untrusted(t)
-            self.assertEqual(verified["analysis_date"], "2026-07-14")
+            # 内部識別子漏出修正: analysis_date(内部識別子)ではなく
+            # 人間可読ラベル「分析基準日」で送信する。
+            self.assertEqual(verified["分析基準日"], "2026-07-14")
 
     def test_recent_kev_additions_in_verified_context(self):
         item = {"source": "CISA", "link": "https://x/a", "title": "t", "summary": "s",
                 "facts": {"cves": [cve_entry("CVE-2026-0001", kev_dict=kev("listed", "2026-07-13"))]}}
         texts = self._capture([item], analysis_date=_dt.date(2026, 7, 14))
         verified, _ = tvp._extract_verified_and_untrusted(texts[0])
-        self.assertIn("recent_kev_additions", verified)
-        self.assertEqual(len(verified["recent_kev_additions"]), 1)
-        self.assertEqual(verified["recent_kev_additions"][0]["cve_id"], "CVE-2026-0001")
-        self.assertEqual(verified["recent_kev_additions"][0]["days_since_added"], 1)
+        # 内部識別子漏出修正: 内部キー名recent_kev_additions/kev_new_additionsは
+        # 送信リクエストへ出さず、人間可読ラベル「直近3暦日以内にKEVへ追加された
+        # CVE」を使い、要素も「CVE ID」「KEV追加日」「追加からの日数」で表す。
+        for internal in ("recent_kev_additions", "kev_new_additions"):
+            self.assertNotIn(internal, verified)
+        key = "直近3暦日以内にKEVへ追加されたCVE"
+        self.assertIn(key, verified)
+        self.assertEqual(len(verified[key]), 1)
+        self.assertEqual(verified[key][0]["CVE ID"], "CVE-2026-0001")
+        self.assertEqual(verified[key][0]["追加からの日数"], 1)
 
     def test_no_recent_kev_gives_empty_array(self):
         item = {"source": "CISA", "link": "https://x/a", "title": "t", "summary": "s",
                 "facts": {"cves": [cve_entry("CVE-2026-0001", kev_dict=kev("listed", "2026-01-01"))]}}
         texts = self._capture([item], analysis_date=_dt.date(2026, 7, 14))
         verified, _ = tvp._extract_verified_and_untrusted(texts[0])
-        self.assertEqual(verified["recent_kev_additions"], [])
+        self.assertEqual(verified["直近3暦日以内にKEVへ追加されたCVE"], [])
 
 
 # ── 表示タイトルフロー(translateを呼ばない・日本語記事はraw) ──────────────

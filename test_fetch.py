@@ -1253,14 +1253,27 @@ class VulnerabilityFactsIntegrationTest(unittest.TestCase):
         # 経由でのみフィルタ済みのvulnerability_facts行をプロンプト入力へ渡す
         # (Ticket 12aでは一切facts/cvssを参照しなかったが、Ticket 12cで
         # 意図的にserializer経由の参照のみを追加した)。
+        # 内部識別子漏出修正: verified_context_jsonの組み立ては
+        # build_verified_context_for_prompt()のallowlist projectionへ一元化した
+        # ため、enrich_with_ai()はそちらを呼ぶだけで、serializer参照自体は
+        # build_verified_context_for_prompt()側にある。
         import inspect
-        source = inspect.getsource(fetch.enrich_with_ai)
-        self.assertIn("serialize_vulnerability_facts_for_prompt(item)", source)
-        self.assertIn("vulnerability_facts:", source)
-        # 生フィールド名を直接参照していないこと(すべて
-        # serialize_vulnerability_facts_for_prompt()側に閉じ込める)。
-        self.assertNotIn("cvss", source.lower())
-        self.assertNotIn("retrieval", source.lower())
+        enrich_source = inspect.getsource(fetch.enrich_with_ai)
+        self.assertIn("build_verified_context_for_prompt(item, analysis_date, rule_flags)", enrich_source)
+        # enrich_with_ai()自体はfacts生フィールド名を直接参照しない。
+        self.assertNotIn("cvss", enrich_source.lower())
+        self.assertNotIn("retrieval", enrich_source.lower())
+
+        # 脆弱性情報の人間可読ラベルへの投影は_project_vulnerability_facts_for_prompt()
+        # が担い、そちらがserialize_vulnerability_facts_for_prompt()を呼ぶ。
+        projection_source = inspect.getsource(fetch.build_verified_context_for_prompt)
+        vuln_projection_source = inspect.getsource(fetch._project_vulnerability_facts_for_prompt)
+        self.assertIn("_project_vulnerability_facts_for_prompt(item)", projection_source)
+        self.assertIn("serialize_vulnerability_facts_for_prompt(item)", vuln_projection_source)
+        # allowlist projection自体もfactsの生フィールドを直接読み書きしない
+        # (すべてserialize_vulnerability_facts_for_prompt()側に閉じ込める)。
+        self.assertNotIn("retrieval", projection_source.lower())
+        self.assertNotIn("retrieval", vuln_projection_source.lower())
 
     def test_collect_recent_no_longer_calls_gemini_enrichment_internally(self):
         # Ticket 12a: enrich_with_ai()はcollect_recent()から分離され、main()側で
