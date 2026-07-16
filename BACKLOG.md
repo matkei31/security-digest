@@ -24,6 +24,7 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 
 - **Accepted:** The direction or decision is accepted; this does not mean implementation is complete.
 - **Not implemented:** No implementation satisfying the item exists yet.
+- **Not completed:** The recorded work or audit has not been completed.
 - **Parked until prerequisites:** Deferred until the recorded dependencies are satisfied.
 
 ## Completion rules
@@ -36,6 +37,13 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 6. When an item is split, merged, or marked `Superseded`, retain the original comment and old ID.
 7. Reopening a completed item requires new evidence.
 8. Do not replace a concrete comment with a broader generalization for implementation convenience.
+
+## Initial migration scope
+
+- BL-001 through BL-013 are the initial import into the canonical backlog.
+- They are not the result of a complete audit of past user comments.
+- BL-014 tracks the systematic migration audit and completeness review.
+- If additional past comments are found, add them with their original wording and provenance. Their discovery reflects an incomplete migration audit, not an error in preserving the initial backlog.
 
 ## Open backlog
 
@@ -130,14 +138,14 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **Title:** Monomi Digestへのブランド変更
 - **Priority:** P2
 - **Status:** Accepted / Not implemented
-- **Source type:** Recovered paraphrase (recovered project decision)
+- **Source type:** User-confirmed summary
 - **Original user comment:** Original wording not recovered.
-- **User-confirmed summary:** Not recovered as a user-confirmed summary.
+- **User-confirmed summary:** 将来のサービス名は`Monomi Digest`とする。`Security Digest`と`Monomi Digest`のどちらにするかという未決定事項へ戻さない。
 - **Interpretation:** The decided future brand name is `Monomi Digest`. Do not reopen “Security Digest or Monomi Digest” as an undecided naming choice.
 - **Acceptance criteria:** Not defined. Implementation scope, migration timing, and treatment of the old name remain unspecified.
-- **Dependencies:** BL-007; About, SEO, public navigation, repository and publication naming decisions.
+- **Dependencies:** [SD-010](DECISIONS.md#sd-010--use-monomi-digest-as-the-future-public-brand), BL-007; About, SEO, public navigation, repository and publication naming decisions.
 - **Implementation evidence:** Not implemented. Current product and repository display remain `Security Digest`.
-- **User acceptance evidence:** The recovered project decision records the name as accepted; implementation acceptance is not recorded.
+- **User acceptance evidence:** Direction reconfirmed in the project conversation on 2026-07-17. Implementation acceptance is not recorded.
 - **Residual scope:** Inventory all brand surfaces, define migration and compatibility, implement, and obtain user acceptance.
 - **Notes:** This backlog introduction must not change the current displayed brand.
 
@@ -147,14 +155,14 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **Title:** monomidigest.comへの移行
 - **Priority:** P2
 - **Status:** Accepted / Not implemented
-- **Source type:** Recovered paraphrase (recovered project decision)
+- **Source type:** User-confirmed summary
 - **Original user comment:** Original wording not recovered.
-- **User-confirmed summary:** Not recovered as a user-confirmed summary.
+- **User-confirmed summary:** 主ドメインは`monomidigest.com`とし、`monomi.jp`は不要とする。
 - **Interpretation:** Use `monomidigest.com` as the primary domain. The recorded decision says `monomi.jp` is unnecessary.
 - **Acceptance criteria:** Not defined. Domain ownership and DNS state must be verified before implementation.
-- **Dependencies:** BL-006, About content, SEO, canonical URLs, and public navigation.
+- **Dependencies:** [SD-011](DECISIONS.md#sd-011--use-monomidigestcom-as-the-primary-domain), BL-006, About content, SEO, canonical URLs, and public navigation.
 - **Implementation evidence:** Not implemented. Domain acquisition and DNS configuration are not verified.
-- **User acceptance evidence:** Direction is recorded as accepted; implementation acceptance is not recorded.
+- **User acceptance evidence:** Direction reconfirmed in the project conversation on 2026-07-17. Domain acquisition, configuration, and implementation acceptance are not recorded.
 - **Residual scope:** Verify ownership, define DNS/Pages configuration and redirects, update public metadata, test, and obtain user acceptance.
 - **Notes:** Do not infer that the domain has been purchased or configured.
 
@@ -186,7 +194,7 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **User-confirmed summary:** Not recovered.
 - **Interpretation:** Later, review SEO and ways to increase readership, and surface the topic when prerequisites make the timing appropriate.
 - **Acceptance criteria:** Not defined.
-- **Dependencies:** Data quality, BL-006, BL-007, Japanese editorial specification, BL-002–BL-004, About content, metadata, and public navigation.
+- **Dependencies:** Ticket 14a-3 and Ticket 14a-4 are completed and are not prerequisites to reopen. At SEO start, confirm that no new P0/P1 data-quality issue is open. Also depends on BL-006, BL-007, the Japanese editorial specification, BL-002–BL-004, About content, metadata, and public navigation.
 - **Implementation evidence:** Not implemented.
 - **User acceptance evidence:** Not recorded.
 - **Residual scope:** Define audience and goals, audit technical/content SEO, prioritize measures, implement separately, and measure outcomes.
@@ -259,6 +267,23 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **User acceptance evidence:** Not applicable yet.
 - **Residual scope:** Verify urgency, select supported action versions if needed, test build/deploy behavior, and obtain workflow-change approval.
 - **Notes:** Parked because current builds succeed and no verified deadline is recorded here.
+
+## BL-014 — 過去ユーザーコメントの体系的棚卸し
+
+- **ID:** BL-014
+- **Title:** 過去ユーザーコメントの体系的棚卸し
+- **Priority:** P0
+- **Status:** Captured / Not completed
+- **Source type:** Verbatim user comment
+- **Original user comment:** 「うん。他に未対応と見られる私のコメントある？同じように汎化してるなら私自身のコメントに立ち返って確認して。本来、指摘コメントを勝手に書き換えて対応済み扱いするのありえないから。ちゃんとバックログ管理して」
+- **User-confirmed summary:** 過去のプロジェクト会話にある指摘・要望を原文へ立ち返って棚卸しし、実装済み、部分対応、未対応、受入待ち、Superseded、バックログ対象外のいずれかへ根拠付きで分類する。実装側が作った一般化表現で原コメントを置き換えない。
+- **Interpretation:** PR #16のBL-001〜BL-013は初期登録であり、過去のユーザーコメントを網羅的に監査した結果ではない。会話履歴、PRコメント、既存文書、完了記録を照合して、取りこぼしと誤完了を確認する。
+- **Acceptance criteria:** 棚卸し対象の会話範囲と期間を明示する。原文を取得できたコメントは原文のまま記録し、原文未回収は引用しない。各コメントを既存BL ID、新規BL ID、Done reference、Superseded、対象外のいずれかへ割り当てる。部分対応はresidual scopeを残す。完了判断にはPRだけでなく、必要に応じてユーザー受入を確認する。棚卸し結果をユーザーがレビューし、未分類コメントが残っていないかを明記する。
+- **Dependencies:** プロジェクト会話履歴、GitHub PR／コメント、README／STATUS／DECISIONS／BACKLOG、実装証跡へのアクセス。
+- **Implementation evidence:** PR #16は管理方式と初期項目を作成したが、過去コメントの体系的棚卸し自体は未実施。
+- **User acceptance evidence:** バックログ管理方式の導入には同意済み。過去コメント棚卸しの完了受入は未実施。
+- **Residual scope:** 棚卸し、分類、追加登録、完了状態の検証、ユーザーによる最終確認。
+- **Notes:** BL-014がDoneになるまで、BL-001〜BL-013を「過去要望の完全な一覧」と表現しない。
 
 ## Completed reference
 

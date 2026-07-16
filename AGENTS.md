@@ -49,6 +49,7 @@ Current prompt versions, schema version, source status, and known limitations ar
 - When backlog items are split, merged, or marked `Superseded`, retain the original comment and old ID.
 - Every ticket must identify its related BACKLOG ID when one exists.
 - At ticket completion, update the backlog status, implementation evidence, user acceptance evidence, and residual scope.
+- The initial backlog import is not a complete migration of past comments. Until BL-014 is `Done`, do not describe it as complete; when another past comment is found, add it while preserving the original wording and provenance.
 
 ## Approval boundaries
 
