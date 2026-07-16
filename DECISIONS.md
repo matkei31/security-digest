@@ -85,7 +85,40 @@ This file records stable project decisions in an ADR-lite format. Current versio
 - **Date:** 2026-07-16
 - **Status:** Accepted / Active
 - **Context:** The repository currently has no ordinary `pull_request` or `push` CI workflow, so a PR can legitimately report zero checks.
-- **Decision:** When no PR checks exist, use scope-appropriate local verification and an independent review record as merge evidence, and record the substitution on the PR or completion record. Implementation changes require the successful local full unittest suite and confirmation that the PR diff matches the approved final diff. Documentation-only changes may omit the full unittest suite when the reason is recorded; their substitute evidence must include Markdown-link verification, changed-file scope, `git diff --check`, and independent diff review.
+- **Decision:** When no PR checks exist, use scope-appropriate local verification and an independent review record as merge evidence, and record the substitution on the PR or completion record. Implementation changes require the successful local full unittest suite and confirmation that the PR diff matches the approved final diff. For documentation-only changes, first check whether any static test inspects each changed document. If a related static test exists, update it with the document and run at least the related tests. Only when no relevant static test exists may the full unittest suite be omitted with a recorded reason. Markdown-link verification, changed-file scope, `git diff --check`, and independent diff review remain required.
 - **Consequences:** Zero checks must not be described as successful CI. Merge remains subject to human approval, mergeability, conflict checks, and confirmation that no unexpected commits or files were added. If required PR CI is introduced later, its checks take precedence.
 - **Evidence:** [`.github/workflows/fetch.yml`](.github/workflows/fetch.yml), [PR #12 evidence comment](https://github.com/matkei31/security-digest/pull/12#issuecomment-4991807236)
+- **Supersedes:** None
+
+## SD-009 — Preserve original user feedback separately from implementation interpretation
+
+- **ID:** SD-009
+- **Date:** 2026-07-16
+- **Status:** Accepted / Active
+- **Context:** Replacing a concrete user comment with a broader implementation interpretation can hide residual scope and make a partially addressed request appear complete. Merged code is implementation evidence, but it is not automatically user acceptance of subjective UI, writing-quality, or brand outcomes.
+- **Decision:** Preserve recoverable original user wording without editing it. Store interpretation and acceptance criteria in separate fields. Do not quote reconstructed wording as a user statement, and do not present a user-confirmed summary as verbatim. Do not mark partially addressed items `Done`; subjective UI, writing-quality, and brand-expression items require explicit user acceptance. Use [BACKLOG.md](BACKLOG.md) as the canonical source for incomplete, partial, and acceptance-pending requirements and issues.
+- **Consequences:** Tickets identify related backlog IDs and update status, implementation evidence, user acceptance evidence, and residual scope. Splitting, merging, or superseding an item retains its old ID and original comment. This decision establishes the management contract but does not specify any individual backlog item's implementation.
+- **Evidence:** [BACKLOG.md](BACKLOG.md), [AGENTS.md](AGENTS.md)
+- **Supersedes:** None
+
+## SD-010 — Use Monomi Digest as the future public brand
+
+- **ID:** SD-010
+- **Date:** 2026-07-17
+- **Status:** Accepted / Not implemented
+- **Context:** The future public brand direction was reconfirmed, while the current site and repository still display `Security Digest` and the migration scope remains undefined.
+- **Decision:** Use `Monomi Digest` as the future public brand. Do not return the choice between `Security Digest` and `Monomi Digest` to an undecided state.
+- **Consequences:** Migrate current display in a separate ticket. [BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更) manages the scope for README, site, metadata, repository name, About, domain, old-name treatment, and user acceptance. This PR does not change the displayed brand.
+- **Evidence:** [BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更)
+- **Supersedes:** None
+
+## SD-011 — Use monomidigest.com as the primary domain
+
+- **ID:** SD-011
+- **Date:** 2026-07-17
+- **Status:** Accepted / Not implemented
+- **Context:** The primary-domain direction was reconfirmed, but ownership, DNS, GitHub Pages configuration, canonical metadata, and redirects have not been verified or implemented.
+- **Decision:** Use `monomidigest.com` as the primary domain. `monomi.jp` is not required.
+- **Consequences:** Verify ownership, DNS, GitHub Pages, canonical URLs, and redirects before implementation; [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行) manages that work and acceptance. Do not infer that the domain has been acquired.
+- **Evidence:** [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行)
 - **Supersedes:** None

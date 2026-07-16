@@ -2,9 +2,9 @@
 
 ## 1. As of
 
-2026-07-16
+2026-07-17
 
-This file records the current, changeable project state. Stable design and operating decisions are recorded in [DECISIONS.md](DECISIONS.md).
+This file records the current, changeable project state. Incomplete, partially addressed, and acceptance-pending items are recorded in [BACKLOG.md](BACKLOG.md). Stable design and operating decisions are recorded in [DECISIONS.md](DECISIONS.md).
 
 ## 2. Current versions
 
@@ -51,16 +51,21 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 6. Known issues and limitations
 
-- Pull requests have no ordinary GitHub Actions checks; scope-appropriate local verification and independent diff review are currently used as merge evidence.
+- [BL-001](BACKLOG.md#bl-001--pull-request-ci): Pull requests have no ordinary GitHub Actions checks; scope-appropriate local verification and independent diff review are currently used as merge evidence.
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
-- The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
+- [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
+- [BL-014](BACKLOG.md#bl-014--過去ユーザーコメントの体系的棚卸し): The initial canonical-backlog import is not a complete audit of past user comments; the migration audit remains incomplete.
 - Ticket 16a's standalone real-Gemini diagnostic for the Microsoft reference article remains unverified; this did not block its production acceptance.
 
 ## 7. Next candidates
 
-- Define Security Digest's own `editorial-style-v1` and partially introduce it to BRIEF through `today-brief-v4`.
-- Keep ARTICLE outside `editorial-style-v1` initially.
-- Consider adding an ordinary `pull_request` CI workflow.
+1. [BL-001](BACKLOG.md#bl-001--pull-request-ci) — Add ordinary pull request CI.
+2. [BL-002〜BL-004](BACKLOG.md#bl-002--記事カードの楕円バッジ多用を見直す) — Specify the UI/badge redesign and obtain Fable 5 review.
+3. [BL-005](BACKLOG.md#bl-005--editorial-style-v1とtoday-brief-v4) — Design `editorial-style-v1` and `today-brief-v4`.
+
+See [BACKLOG.md](BACKLOG.md) for BL-006 and later items; they remain recorded and are not removed by this short priority list.
+
+The initial backlog import is not a complete historical-comment audit; [BL-014](BACKLOG.md#bl-014--過去ユーザーコメントの体系的棚卸し) tracks that migration work. Stable brand and domain directions are recorded in [SD-010](DECISIONS.md#sd-010--use-monomi-digest-as-the-future-public-brand) and [SD-011](DECISIONS.md#sd-011--use-monomidigestcom-as-the-primary-domain), with implementation scope in BL-006 and BL-007.
 
 ## 8. Sources of truth
 
@@ -72,5 +77,6 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 | Daily workflow triggers and permissions | `.github/workflows/fetch.yml` |
 | Generated daily data | `data/` |
 | Published static output | `docs/` |
+| Incomplete, partial, and acceptance-pending items | `BACKLOG.md` |
 | Stable decisions | `DECISIONS.md` |
 | Implementation-agent constraints | `AGENTS.md` |

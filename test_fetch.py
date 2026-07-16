@@ -2408,6 +2408,10 @@ class AgentsFileTest(unittest.TestCase):
             "## Approval boundaries",
             "## Gemini and production safety",
             "## Testing and review",
+            "BACKLOG.md",
+            "BL-014",
+            "original user comment",
+            "user acceptance",
             'python3 -m unittest discover -p "test_*.py"',
         ):
             with self.subTest(required_text=required_text):
@@ -2434,6 +2438,96 @@ class AgentsFileTest(unittest.TestCase):
             "`docs/`",
             "explicitly",
         )
+
+    def test_backlog_file_contains_required_structure(self):
+        backlog_path = Path(__file__).resolve().parent / "BACKLOG.md"
+        self.assertTrue(backlog_path.is_file())
+        text = backlog_path.read_text(encoding="utf-8")
+
+        for required_text in (
+            "## Status definitions",
+            "BL-001",
+            "BL-002",
+            "BL-005",
+            "BL-006",
+            "BL-009",
+            "BL-014",
+            "## Completed reference",
+            "Ticket 14a-3",
+            "Ticket 14a-4",
+        ):
+            with self.subTest(required_text=required_text):
+                self.assertIn(required_text, text)
+
+        required_fields = (
+            "**ID:**",
+            "**Title:**",
+            "**Priority:**",
+            "**Status:**",
+            "**Source type:**",
+            "**Original user comment:**",
+            "**User-confirmed summary:**",
+            "**Interpretation:**",
+            "**Acceptance criteria:**",
+            "**Dependencies:**",
+            "**Implementation evidence:**",
+            "**User acceptance evidence:**",
+            "**Residual scope:**",
+            "**Notes:**",
+        )
+        item_ids = [f"BL-{number:03d}" for number in range(1, 15)]
+        for index, item_id in enumerate(item_ids):
+            start = text.index(f"## {item_id}")
+            if index + 1 < len(item_ids):
+                end = text.index(f"## {item_ids[index + 1]}", start)
+            else:
+                end = text.index("## Completed reference", start)
+            item_text = text[start:end]
+            for field in required_fields:
+                with self.subTest(item_id=item_id, field=field):
+                    self.assertIn(field, item_text)
+
+    def test_backlog_follow_up_provenance_and_decisions(self):
+        root = Path(__file__).resolve().parent
+        backlog_text = (root / "BACKLOG.md").read_text(encoding="utf-8")
+        decisions_text = (root / "DECISIONS.md").read_text(encoding="utf-8")
+
+        def section(text, heading, next_heading):
+            start = text.index(heading)
+            end = text.index(next_heading, start)
+            return text[start:end]
+
+        bl006 = section(backlog_text, "## BL-006", "## BL-007")
+        bl007 = section(backlog_text, "## BL-007", "## BL-008")
+        bl014 = section(backlog_text, "## BL-014", "## Completed reference")
+        sd008 = section(decisions_text, "## SD-008", "## SD-009")
+
+        verbatim = (
+            "「うん。他に未対応と見られる私のコメントある？同じように汎化してるなら私自身のコメントに立ち返って確認して。"
+            "本来、指摘コメントを勝手に書き換えて対応済み扱いするのありえないから。ちゃんとバックログ管理して」"
+        )
+        self.assertIn(f"- **Original user comment:** {verbatim}", bl014)
+
+        for block, decision_id in ((bl006, "SD-010"), (bl007, "SD-011")):
+            with self.subTest(decision_id=decision_id):
+                self.assertIn("- **Source type:** User-confirmed summary", block)
+                self.assertIn("- **Original user comment:** Original wording not recovered.", block)
+                self.assertIn(decision_id, block)
+
+        self.assertIn("## SD-010", decisions_text)
+        self.assertIn("## SD-011", decisions_text)
+        for required_text in (
+            "documentation-only changes",
+            "static test",
+            "related tests",
+            "no relevant static test exists",
+            "Markdown-link verification",
+            "changed-file scope",
+            "git diff --check",
+            "independent diff review",
+        ):
+            with self.subTest(required_text=required_text):
+                self.assertIn(required_text, sd008)
 
 
 if __name__ == "__main__":
