@@ -46,11 +46,11 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 - ARTICLE internal-identifier exposure hotfix — completed
 - Ticket 15b: state-aware BRIEF v3 — completed
 - Ticket 15c: BRIEF display hierarchy — completed
-- README / AGENTS / STATUS / DECISIONS alignment — in progress
+- Project documentation alignment — completed in [PR #13](https://github.com/matkei31/security-digest/pull/13)
 
 ## 6. Known issues and limitations
 
-- Pull requests have no ordinary GitHub Actions checks; local tests and independent diff review are currently used as merge evidence.
+- Pull requests have no ordinary GitHub Actions checks; scope-appropriate local verification and independent diff review are currently used as merge evidence.
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
 - Ticket 16a's standalone real-Gemini diagnostic for the Microsoft reference article remains unverified; this did not block its production acceptance.

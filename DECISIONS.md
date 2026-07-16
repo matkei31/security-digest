@@ -51,7 +51,7 @@ This file records stable project decisions in an ADR-lite format. Current versio
 - **ID:** SD-005
 - **Date:** 2026-07-16
 - **Status:** Accepted / Implemented
-- **Context:** The recommended-actions lint treated advisory wording such as “脅威検知サービスの導入を検討する” as if it directly ordered a state change, causing a valid Mandiant ARTICLE response to fall back.
+- **Context:** The recommended-actions lint treated advisory wording such as “脅威検知サービスの導入を検討する” as if it directly ordered a state change. This false positive was identified in the Mandiant fallback diagnosis and was capable of moving otherwise usable analysis to fallback. The stored diagnostic evidence did not establish the complete path of the unsaved production response.
 - **Decision:** Treat “導入を検討する” and equivalent consideration wording for the covered state-change verbs as advisory evaluation, not as an unconditional state-change command. Continue rejecting explicit execution forms such as “導入する”.
 - **Consequences:** Consideration and explicit execution remain distinguishable. If a sentence also contains an explicit covered execution form, the explicit command is still rejected.
 - **Evidence:** [`fetch.py`](fetch.py), [`test_article_v5.py`](test_article_v5.py), [PR #12](https://github.com/matkei31/security-digest/pull/12)
@@ -62,11 +62,11 @@ This file records stable project decisions in an ADR-lite format. Current versio
 - **ID:** SD-006
 - **Date:** 2026-07-16
 - **Status:** Accepted / Implemented
-- **Context:** Attempting to infer that a later “実施する” inherits the object of an earlier consideration phrase introduced false positives for evaluation, confirmation, negative, and conditional wording. Reliable inference would require semantic Japanese parsing beyond this lint's intended scope.
+- **Context:** A temporary object-omission inference was considered during Ticket 17a review to treat a later “実施する” as inheriting the object of an earlier consideration phrase. It introduced false positives for evaluation, confirmation, negative, and conditional wording and was rejected. Reliable inference would require semantic Japanese parsing beyond this lint's intended scope.
 - **Decision:** Do not infer an omitted object for “実施する” in action lint. Detect explicit covered state-change forms and defined conditions only.
 - **Consequences:** Some semantically implied commands may remain outside the lint. Avoiding broad false positives and unexpected fallback is preferred to speculative inference. Any future expansion requires a separately approved specification and examples.
 - **Evidence:** [`fetch.py`](fetch.py), [`test_article_v5.py`](test_article_v5.py), [PR #12](https://github.com/matkei31/security-digest/pull/12)
-- **Supersedes:** The temporary object-omission inference added during Ticket 17a review
+- **Supersedes:** None
 
 ## SD-007 — Create Security Digest editorial-style-v1 and introduce it to BRIEF first
 
@@ -85,7 +85,7 @@ This file records stable project decisions in an ADR-lite format. Current versio
 - **Date:** 2026-07-16
 - **Status:** Accepted / Active
 - **Context:** The repository currently has no ordinary `pull_request` or `push` CI workflow, so a PR can legitimately report zero checks.
-- **Decision:** When no PR checks exist, use the successful local full unittest suite, confirmation that the PR diff matches the approved final diff, and an independent review record as the merge evidence. Record that substitution on the PR or completion record.
+- **Decision:** When no PR checks exist, use scope-appropriate local verification and an independent review record as merge evidence, and record the substitution on the PR or completion record. Implementation changes require the successful local full unittest suite and confirmation that the PR diff matches the approved final diff. Documentation-only changes may omit the full unittest suite when the reason is recorded; their substitute evidence must include Markdown-link verification, changed-file scope, `git diff --check`, and independent diff review.
 - **Consequences:** Zero checks must not be described as successful CI. Merge remains subject to human approval, mergeability, conflict checks, and confirmation that no unexpected commits or files were added. If required PR CI is introduced later, its checks take precedence.
 - **Evidence:** [`.github/workflows/fetch.yml`](.github/workflows/fetch.yml), [PR #12 evidence comment](https://github.com/matkei31/security-digest/pull/12#issuecomment-4991807236)
 - **Supersedes:** None

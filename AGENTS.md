@@ -111,9 +111,10 @@ python3 -m unittest discover -p "test_*.py"
 
 Prompt or request-boundary changes also require actual request-body inspection using mocked transport. Fallback/validation changes require success, fallback, failed, and not-attempted regression coverage where relevant.
 
-For documentation-only changes, the full unittest suite may be skipped when the reason is recorded. Markdown links, changed-file scope, and `git diff --check` must still be verified.
+This repository currently has no ordinary `pull_request` or `push` CI workflow. When no PR checks exist, use scope-appropriate local verification and independent review as merge evidence. Do not describe absent checks as successful CI:
 
-This repository currently has no ordinary `pull_request` or `push` CI workflow. When no PR checks exist, record the successful local full test result, final approved diff match, and independent diff review as merge evidence. Do not describe absent checks as successful CI.
+- For implementation changes, record the successful local full unittest result, confirmation that the PR diff matches the approved final diff, and an independent diff review.
+- For documentation-only changes, the full unittest suite may be skipped when the reason is recorded. Record Markdown-link verification, changed-file scope, `git diff --check`, and an independent diff review instead.
 
 ## Git and generated output
 
