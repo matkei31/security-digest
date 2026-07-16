@@ -184,9 +184,11 @@ class ReasonTwoAxisTest(unittest.TestCase):
 
 class RecommendedActionsLintTest(unittest.TestCase):
     def test_ticket_reject_cases(self):
+        # Ticket 17a: 「更新を検討する。」は検討行為であり許容へ変更した(旧Ticket 15aの
+        # 拒否判定を意図的に上書き)。ここには実際に状態を変える命令のみを残す。
         for bad in ("設定を変更し、結果を確認する。", "対象製品を停止して影響を評価する。",
                     "CISA対象製品を直ちに無効化する。", "ベンダー製品を停止する。",
-                    "対象ソフトウェアを更新する。", "更新を検討する。",
+                    "対象ソフトウェアを更新する。",
                     "多要素認証を導入する", "全環境にパッチを適用する",
                     "該当サービスの利用を禁止する"):
             with self.subTest(a=bad):
@@ -198,7 +200,9 @@ class RecommendedActionsLintTest(unittest.TestCase):
                    "CISAは緩和策を推奨しており、対象環境では対応要否を評価する。",
                    "パッチ適用状況を確認する。", "更新の有無を確認する。",
                    "該当製品の利用有無を確認する", "資産を棚卸しする",
-                   "対応要否を判断する"):
+                   "対応要否を判断する",
+                   # Ticket 17a: 帰属・条件なしの単独の検討行為も許容する。
+                   "更新を検討する。"):
             with self.subTest(a=ok):
                 self.assertFalse(fetch.action_has_unconditional_state_change(ok))
 
@@ -246,6 +250,125 @@ class RecommendedActionsLintTest(unittest.TestCase):
         good = {**VALID_ANALYSIS_RESPONSE,
                 "recommended_actions": ["該当する場合はベンダーの指針に基づき更新を検討する"]}
         self.assertIsNotNone(fetch.normalize_article_analysis(good))
+
+
+# ── Ticket 17a: 検討・評価・確認のadvisory actionを状態変更命令と誤検知しない ──
+
+class Ticket17aActionLintSofteningTest(unittest.TestCase):
+    # 2026-07-16 Mandiant記事でfallback降格を招いた実actionを含む。
+    MANDIANT_ACTION = (
+        "Mandiantが推奨するS-SDLC、継続的なセキュリティスキャン、"
+        "脅威検知サービスの導入を検討する"
+    )
+
+    def test_advisory_wording_allowed(self):
+        # 検討・評価・確認は状態変更命令ではないため許容(False)。
+        for ok in (self.MANDIANT_ACTION,
+                   "脅威検知サービスの導入を検討する",
+                   "脅威検知サービス導入の必要性を評価する",
+                   "脅威検知サービスの導入状況を確認する"):
+            with self.subTest(a=ok):
+                self.assertFalse(fetch.action_has_unconditional_state_change(ok))
+
+    # 各状態変更動詞の「〜を検討する」(検討行為=許容)と、対応する強い実行形
+    # (=拒否)の対。「を検討」除外が各動詞群に効いていること、および対応する実行形の
+    # 拒否が各動詞群で確認されていることを table-driven で担保する。
+    CONSIDERATION_ALLOWED = (
+        "脅威検知サービスの導入を検討する",
+        "対象アカウントの停止を検討する",
+        "該当機能の無効化を検討する",
+        "不審なアカウントの削除を検討する",
+        "対象通信の遮断を検討する",
+        "感染端末の隔離を検討する",
+        "ソフトウェアの更新を検討する",
+        "パッチの適用を検討する",
+        "設定の変更を検討する",
+    )
+    STRONG_EXECUTION_REJECTED = (
+        "脅威検知サービスを導入する",
+        "対象アカウントを停止する",
+        "該当機能を無効化する",
+        "不審なアカウントを削除する",
+        "対象通信を遮断する",
+        "感染端末を隔離する",
+        "ソフトウェアを更新する",
+        "全環境へパッチを適用する",
+        "対象設定を変更する",
+    )
+    ADVISORY_SUFFIXES_ALLOWED = (
+        "導入を検討し、全環境で実施するか検討する",
+        "導入を検討し、全環境で実施する必要性を評価する",
+        "導入を検討し、全環境で実施してよいか確認する",
+        "導入を検討し、全環境で実施しない",
+        "導入を検討し、全環境で実施する予定はない",
+        "導入を検討し、全環境で実施する場合の影響を評価する",
+    )
+
+    def test_consideration_wording_allowed_per_verb(self):
+        # 「を検討」を除外した9動詞群それぞれで「〜を検討する」が許容(False)。
+        for ok in self.CONSIDERATION_ALLOWED:
+            with self.subTest(a=ok):
+                self.assertFalse(fetch.action_has_unconditional_state_change(ok))
+
+    def test_strong_execution_form_rejected_per_verb(self):
+        # 対応する強い実行形は各動詞群で拒否(True)が維持される(遮断/隔離を含む)。
+        for bad in self.STRONG_EXECUTION_REJECTED:
+            with self.subTest(a=bad):
+                self.assertTrue(fetch.action_has_unconditional_state_change(bad))
+
+    def test_deploy_share_wording_allowed(self):
+        # Ticket 17aレビュー: 「展開する」は情報共有・周知にも使われるため、汎用的な
+        # 状態変更検出には加えない。これらは許容(False)であること。
+        for ok in ("注意喚起を関係部署へ展開する",
+                   "分析結果を経営層へ展開する",
+                   "インシデント情報をグループ各社へ展開する"):
+            with self.subTest(a=ok):
+                self.assertFalse(fetch.action_has_unconditional_state_change(ok))
+
+    def test_strong_state_change_still_rejected(self):
+        # 実際に状態を変える命令は従来どおり拒否(True)。混在文は前半の検討で後半の
+        # 実際の状態変更命令(既存動詞「導入する」)を見逃さないこと。末尾の例は
+        # 「ベンダーが推奨する」帰属が強い状態変更を無条件に許容する回避条件にならないこと。
+        for bad in ("脅威検知サービスを導入する",
+                    "直ちに脅威検知サービスを導入する",
+                    "全環境へ脅威検知サービスを導入する",
+                    "脅威検知サービスの導入を検討し、全環境へ同サービスを導入する",
+                    "ベンダーが推奨しているため、全環境へ直ちに導入する"):
+            with self.subTest(a=bad):
+                self.assertTrue(fetch.action_has_unconditional_state_change(bad))
+
+    def test_full_json_with_advisory_action_is_accepted(self):
+        # 対象advisory actionを含み他フィールドが有効な完全JSONが、本番相当のstrict
+        # parser(parse_article_analysis)/normalize_article_analysisでACCEPTされる。
+        value = {**VALID_ANALYSIS_RESPONSE,
+                 "recommended_actions": [self.MANDIANT_ACTION]}
+        self.assertIsNotNone(fetch.normalize_article_analysis(value))
+        parsed = fetch.parse_article_analysis(json.dumps(value, ensure_ascii=False))
+        self.assertIsNotNone(parsed)
+        self.assertEqual(parsed["recommended_actions"], [self.MANDIANT_ACTION])
+
+    def test_full_json_with_strong_state_change_is_rejected_to_fallback(self):
+        # 強い状態変更を含むactionは従来どおりstrictで拒否され、fallback経路へ。
+        value = {**VALID_ANALYSIS_RESPONSE,
+                 "recommended_actions": ["脅威検知サービスの導入を検討し、全環境へ同サービスを導入する"]}
+        self.assertIsNone(fetch.normalize_article_analysis(value))
+        self.assertIsNone(fetch.parse_article_analysis(json.dumps(value, ensure_ascii=False)))
+
+    def test_consider_then_execute_advisory_suffixes_allowed(self):
+        # Ticket 17aは明示的な状態変更命令だけを拒否する。検討・評価・確認・否定・
+        # 条件表現を、目的語省略の推測だけで実行命令として扱わない。
+        for ok in self.ADVISORY_SUFFIXES_ALLOWED:
+            with self.subTest(a=ok):
+                self.assertFalse(fetch.action_has_unconditional_state_change(ok))
+
+    def test_consider_then_execute_advisory_suffixes_strict_parser_accepted(self):
+        for ok in self.ADVISORY_SUFFIXES_ALLOWED:
+            with self.subTest(a=ok):
+                value = {**VALID_ANALYSIS_RESPONSE, "recommended_actions": [ok]}
+                self.assertIsNotNone(fetch.normalize_article_analysis(value))
+                parsed = fetch.parse_article_analysis(json.dumps(value, ensure_ascii=False))
+                self.assertIsNotNone(parsed)
+                self.assertEqual(parsed["recommended_actions"], [ok])
 
 
 # ── KEV新規追加のコード側決定論判定(実データ型fixture) ────────────────────
