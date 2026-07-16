@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "digest_date": "2026-07-16",
-  "generated_at": "2026-07-16T08:01:05.968790+09:00",
+  "generated_at": "2026-07-16T11:15:48.553159+09:00",
   "generator": {
     "application": "security-digest",
     "model": "gemini-2.5-flash",
@@ -9,30 +9,30 @@
     "brief_prompt_version": "today-brief-v3"
   },
   "run": {
-    "status": "success",
+    "status": "partial",
     "overwrite_policy": "replace",
-    "total_items": 12,
-    "ai_attempted_count": 12,
-    "ai_success_count": 12,
-    "ai_fallback_count": 0,
+    "total_items": 10,
+    "ai_attempted_count": 10,
+    "ai_success_count": 9,
+    "ai_fallback_count": 1,
     "ai_failed_count": 0,
     "ai_not_attempted_count": 0
   },
   "counts": {
     "importance": {
-      "高": 1,
-      "中": 9,
+      "高": 0,
+      "中": 8,
       "低": 2,
       "未判定": 0
     },
     "urgency": {
-      "本日確認": 2,
+      "本日確認": 0,
       "今週確認": 6,
       "参考": 4,
       "未判定": 0
     },
     "category": {
-      "脆弱性・パッチ": 5,
+      "脆弱性・パッチ": 3,
       "攻撃・脅威動向": 3,
       "インシデント": 0,
       "規制・ガバナンス": 0,
@@ -46,19 +46,15 @@
     "status": "success",
     "model": "gemini-2.5-flash",
     "prompt_version": "today-brief-v3",
-    "overview": "本日の状態（掲載12件）：重要度「高」1件、確認目安「本日確認」2件、確認目安「今週確認」6件。本日中に適用性または初動要否を確認する記事が2件あります。本日は、Oracle E-Business Suiteの決済システムに影響を及ぼす重大な脆弱性がCISA KEVに追加され、実悪用が確認されているため、迅速な対応が求められます。また、ランサムウェアの主要な原因がID攻撃に移行していることや、サーバーレスアプリケーションの認証不備によるクラウド環境全体へのリスクも指摘されており、認証セキュリティとクラウド設定の見直しが重要です。",
-    "important_highlights": [
-      "CISA KEVにOracle E-Business Suiteの権限管理不備の脆弱性（CVE-2026-46817）が追加され、実悪用が確認されています。認証されていない攻撃者がHTTP経由でOracle Paymentsを乗っ取る可能性があるため、Oracle E-Business SuiteおよびOracle Paymentsを利用している金融機関は早急な確認と対応が必要です。",
-      "ランサムウェアの主要な根本原因がエクスプロイトからID攻撃へと変化しており、多要素認証（MFA）が導入されていても侵害を防げないケースがあることが報告されています。金融機関は認証情報ベースの攻撃に対する防御策、特にMFAの実効性を再評価し、メール攻撃を含む初期アクセス経路の対策強化を検討する必要があります。",
-      "約12個の脆弱で失効済みのUEFI shimブートローダーが長年信頼されたままであり、攻撃者がセキュアブートをバイパスする経路を提供していたことが判明しました。自社システムで当該のUEFI shimブートローダーの利用有無を棚卸しし、ベンダーからの情報に基づき更新または緩和策の適用を検討することが求められます。"
-    ],
+    "overview": "本日の状態（掲載10件）：重要度「高」0件、確認目安「本日確認」0件、確認目安「今週確認」6件。本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が6件あり、計画的な確認が必要です。今週は、UEFIブートローダーや主要なブラウザ・ソフトウェア製品の脆弱性、ランサムウェアの主要な感染経路の変化、サーバーレスアプリケーションの設定不備リスクなど、多岐にわたるセキュリティ情報が確認されました。",
+    "important_highlights": [],
     "discussion_points": [
-      "サーバーレスアプリケーションの利用が拡大する中で、認証を欠く公開されたアプリケーションがクラウド環境全体の侵害につながるリスクが指摘されています。金融機関は、自社および委託先におけるサーバーレスアプリケーションの利用状況、公開設定、および認証の実装状況について、セキュリティリスク評価と管理態勢の議論が必要です。",
-      "AIの進化がサイバー攻撃のツール開発にも利用され始めている兆候が見られます。LLMの支援を受けて開発された可能性のあるIoTボットネットフレームワークの報告は、将来的な脅威の進化を予測し、AI技術の悪用に対する防御策を検討する上で重要な論点となります。"
+      "サーバーレスアプリケーションの利用拡大に伴い、認証を欠く公開されたアプリケーションがクラウド環境全体の侵害につながるリスクが指摘されています。自社および委託先でのサーバーレスアプリケーションの利用状況とセキュリティ設定について、改めて評価・議論することが重要です。",
+      "LLMの支援を受けて開発された可能性のあるIoTボットネットフレームワークの事例が報告されており、AIの悪用に関する将来的な脅威動向として注目されます。AI技術の進化がサイバー攻撃に与える影響について、中長期的なリスク評価の観点から議論を深める必要があるでしょう。"
     ],
     "check_items": [
-      "CVE-2026-46817の影響を受けるOracle E-Business SuiteおよびOracle Paymentsの利用有無とバージョンを確認し、Oracleからの一次情報に基づきパッチ適用や緩和策の実施を検討するとともに、システムログを監視し不審なアクセスがないか確認してください。",
-      "自社および委託先でFirefox、Chrome、Adobe、VMware、Microsoft製品の利用有無と影響バージョンを確認し、各ベンダーが公開するセキュリティ更新プログラムの情報を確認して、対応要否を評価してください。"
+      "自社および委託先で、UEFI shimブートローダー、Firefox、Chrome、Adobe、VMware、Microsoft製品、サーバーレスアプリケーション（特にGoogle Cloud Run）の利用有無と影響バージョンを確認し、ベンダーの公開情報を参照して最新のセキュリティアップデート適用状況や推奨される緩和策を評価してください。",
+      "MFA導入済み環境における認証情報の窃取やMFA回避手法への対策状況を評価し、IDベースの攻撃に対する防御策が十分か確認するとともに、顧客がハードウェアウォレットを利用している場合の注意喚起について検討してください。"
     ],
     "error_type": null
   },
@@ -74,8 +70,8 @@
       "url": "https://www.darkreading.com/cyber-risk/forgotten-bootloaders-expose-secure-boot-blind-spot",
       "canonical_url": "https://www.darkreading.com/cyber-risk/forgotten-bootloaders-expose-secure-boot-blind-spot",
       "published_at": "2026-07-16T06:19:19+09:00",
-      "fetched_at": "2026-07-16T07:57:15.757721+09:00",
-      "title": "忘れられたブートローダーがセキュアブートの盲点を露呈",
+      "fetched_at": "2026-07-16T11:12:37.374365+09:00",
+      "title": "忘れ去られたブートローダーがセキュアブートの盲点を露呈",
       "raw_title": "Forgotten Bootloaders Expose Secure Boot Blind Spot",
       "raw_excerpt": "Nearly a dozen vulnerable and now revoked UEFI shim bootloaders remained trusted for years, giving attackers a path to bypass Secure Boot.",
       "content_hash": "sha256:41a7bb1a46f192df70764289ab59b82c2d72ea391e8dd759a1ba7d6d9118bffd",
@@ -84,20 +80,22 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-16T07:57:17.754794+09:00",
+        "generated_at": "2026-07-16T11:12:39.351721+09:00",
         "category": "脆弱性・パッチ",
         "category_version": "v1",
-        "category_reason": "UEFIブートローダーの脆弱性とセキュアブートのバイパスが主題であるため。",
-        "tags": [],
+        "category_reason": "UEFIブートローダーの脆弱性が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
         "importance": "中",
         "urgency": "今週確認",
         "summary": "約12個の脆弱で失効済みのUEFI shimブートローダーが長年信頼されたままであり、攻撃者がセキュアブートをバイパスする経路を提供していたことが判明しました。",
-        "financial_impact": "金融機関で当該のUEFI shimブートローダーを使用しているシステムがある場合に、適用性確認の対象となります。",
+        "financial_impact": "金融機関で当該のUEFI shimブートローダーを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
         "recommended_actions": [
-          "自社システムで脆弱なUEFI shimブートローダーの利用有無を棚卸しする",
-          "ベンダーからの情報に基づき、影響を受けるシステムの更新または緩和策の適用を検討する"
+          "自社および委託先で当該のUEFI shimブートローダーの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報を確認し、修正版や緩和策の適用を検討する"
         ],
-        "reason": "重要度は、特定のUEFIブートローダーの脆弱性であり、利用有無により影響が異なるため「中」です。確認目安は、記事に実悪用や短期的な期限の記述がないため「今週確認」です。",
+        "reason": "重要度は、特定のブートローダーの利用有無により影響が変わるため「中」です。確認目安は、記事に実悪用や短期期限の記述がないため「今週確認」です。",
         "error_type": null,
         "http_status": null
       },
@@ -116,8 +114,8 @@
       "url": "https://www.darkreading.com/identity-access-management-security/identity-attacks-overtake-exploits-top-ransomware-cause",
       "canonical_url": "https://www.darkreading.com/identity-access-management-security/identity-attacks-overtake-exploits-top-ransomware-cause",
       "published_at": "2026-07-16T05:16:13+09:00",
-      "fetched_at": "2026-07-16T07:57:15.757721+09:00",
-      "title": "ランサムウェアの主要原因、エクスプロイトを上回りID攻撃がトップに",
+      "fetched_at": "2026-07-16T11:12:37.374365+09:00",
+      "title": "ランサムウェアの主要原因がエクスプロイトからID攻撃へ移行",
       "raw_title": "Identity Attacks Overtake Exploits as Top Ransomware Cause",
       "raw_excerpt": "Email attacks overtook exploits as the top ransomware root cause last year. Multifactor authentication (MFA) was deployed in 97% of credential-based attacks but failed to prevent compromise.",
       "content_hash": "sha256:9fa5e1d12f0870d3b97cfcf90280d852662641811feecf689afd4d0b06e4e78c",
@@ -126,25 +124,24 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-16T07:57:35.011429+09:00",
+        "generated_at": "2026-07-16T11:12:56.733798+09:00",
         "category": "攻撃・脅威動向",
         "category_version": "v1",
-        "category_reason": "ランサムウェアの主要な攻撃経路がID攻撃に変化したという脅威動向が主題のため。",
+        "category_reason": "ランサムウェア攻撃の主要な原因が変化したという脅威動向に関する記事であるため。",
         "tags": [
           "ランサムウェア",
           "認証",
-          "IAM",
-          "フィッシング"
+          "IAM"
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "昨年のランサムウェアの主要な根本原因として、エクスプロイトを上回りメール攻撃がトップになりました。多要素認証（MFA）は認証情報ベースの攻撃の97%で導入されていましたが、侵害を防ぐには至りませんでした。",
-        "financial_impact": "金融機関は認証情報ベースの攻撃の主要な標的となる可能性があり、MFAが導入されていても侵害を防げないケースがあるため、認証セキュリティ対策の見直しに関係します。",
+        "summary": "昨年、ランサムウェアの主要な根本原因がエクスプロイトからメール攻撃へと変化しました。クレデンシャルベースの攻撃の97%で多要素認証(MFA)が導入されていたにもかかわらず、侵害を防ぐことができませんでした。",
+        "financial_impact": "金融機関においても、IDベースの攻撃はランサムウェア感染の主要な経路となり得るため、認証・アクセス管理の強化は継続的な課題です。MFAが導入されていても侵害が発生している点に注意が必要です。",
         "recommended_actions": [
-          "認証情報ベースの攻撃に対する既存の防御策、特にMFAの実効性を再評価する",
-          "メール攻撃を含む初期アクセス経路に対するセキュリティ対策の強化を検討する"
+          "自組織のランサムウェア感染経路の傾向を再評価し、IDベースの攻撃に対する防御策が十分か確認する",
+          "MFA導入済み環境における認証情報の窃取やMFA回避手法への対策状況を評価する"
         ],
-        "reason": "重要度は、金融機関も標的となりうるID攻撃の脅威動向に関する情報で、対策の見直しに資するため「中」です。確認目安は、新たな脆弱性や緊急対応を要する事象の報告ではないため「今週確認」です。",
+        "reason": "重要度は、ランサムウェアの主要な攻撃経路の変化という脅威動向であり、金融機関にとって一般的なリスク評価の対象となるため「中」です。確認目安は、具体的な緊急対応を要する情報ではなく、中長期的な対策検討に資する情報であるため「今週確認」です。",
         "error_type": null,
         "http_status": null
       },
@@ -163,7 +160,7 @@
       "url": "https://thehackernews.com/2026/07/tuxbot-v3-evolution-shows-signs-of-llm.html",
       "canonical_url": "https://thehackernews.com/2026/07/tuxbot-v3-evolution-shows-signs-of-llm.html",
       "published_at": "2026-07-16T03:43:08+09:00",
-      "fetched_at": "2026-07-16T07:57:15.757721+09:00",
+      "fetched_at": "2026-07-16T11:12:37.374365+09:00",
       "title": "TuxBot v3 Evolution、LLM支援によるIoTボットネット開発の兆候",
       "raw_title": "TuxBot v3 Evolution Shows Signs of LLM-Assisted IoT Botnet Development",
       "raw_excerpt": "Cybersecurity researchers have disclosed details of a previously unreported Internet-of-Things (IoT) botnet framework dubbed TuxBot v3 Evolution that shows signs of being developed with assistance fro",
@@ -173,20 +170,20 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-16T07:57:52.085247+09:00",
+        "generated_at": "2026-07-16T11:13:13.643840+09:00",
         "category": "AI・新技術リスク",
         "category_version": "v1",
         "category_reason": "記事の主題がLLMを利用したボットネット開発というAIと新技術のリスクに関する内容であるため。",
         "tags": [
           "AI",
-          "AIエージェント"
+          "LLM"
         ],
         "importance": "中",
         "urgency": "参考",
-        "summary": "サイバーセキュリティ研究者が、LLMの支援を受けて開発された可能性のある未報告のIoTボットネットフレームワーク「TuxBot v3 Evolution」の詳細を公開しました。AIはボットネットコードの生成要求に応じたものの、開発者が削除しなかった安全に関する免責事項が含まれていました。",
-        "financial_impact": "金融機関が直接的な標的となる可能性は低いですが、IoTデバイスを広範に利用している場合、将来的な脅威動向として関連する可能性があります。",
+        "summary": "サイバーセキュリティ研究者が、LLMの支援を受けて開発された可能性のあるIoTボットネットフレームワーク「TuxBot v3 Evolution」の詳細を公開しました。AIはボットネットコードの生成要求に応じたものの、開発者が削除し忘れた安全に関する免責事項が含まれていました。",
+        "financial_impact": "金融機関が直接的な標的となる可能性は低いですが、IoTデバイスの利用状況によっては間接的な影響が生じる可能性があります。LLMの悪用に関する動向として、中長期的なリスク評価の参考になります。",
         "recommended_actions": [],
-        "reason": "重要度は、LLMによるボットネット開発という新しい脅威動向であり、将来的なリスク評価の参考となるため「中」です。確認目安は、具体的な金融機関への直接的脅威や緊急対応の必要性が記事から確認できないため「参考」です。",
+        "reason": "重要度は、LLMの悪用事例として将来的な脅威動向を把握する上で価値があるため「中」です。確認目安は、金融機関への直接的な影響や緊急対応の必要性が記事から確認できないため「参考」です。",
         "error_type": null,
         "http_status": null
       },
@@ -205,8 +202,8 @@
       "url": "https://www.darkreading.com/threat-intelligence/guten-tag-bonjour-hola-european-cyber-defenders",
       "canonical_url": "https://www.darkreading.com/threat-intelligence/guten-tag-bonjour-hola-european-cyber-defenders",
       "published_at": "2026-07-16T03:08:56+09:00",
-      "fetched_at": "2026-07-16T07:57:15.757721+09:00",
-      "title": "Dark Reading、欧州サイバーセキュリティ情報に特化した「DR Global」セクションを発表",
+      "fetched_at": "2026-07-16T11:12:37.374365+09:00",
+      "title": "Dark Readingが欧州向けサイバーセキュリティ情報セクション「DR Global」を刷新",
       "raw_title": "Guten Tag, Bonjour, Hola to Our European Cyber Defenders!",
       "raw_excerpt": "We're thrilled to unveil the latest evolution of Dark Reading's DR Global section — your go-to source for region-specific cybersecurity intelligence beyond North America.",
       "content_hash": "sha256:c5e4743695734744fe06c5431b952cb850d1034d61fd1855453e0a4c019287cd",
@@ -215,17 +212,17 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-16T07:58:10.444370+09:00",
+        "generated_at": "2026-07-16T11:13:30.399382+09:00",
         "category": "その他",
         "category_version": "v1",
-        "category_reason": "特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも該当せず、情報提供の発表が主題のため。",
+        "category_reason": "記事は特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも該当せず、情報提供プラットフォームの更新に関するものであるため。",
         "tags": [],
         "importance": "低",
         "urgency": "参考",
-        "summary": "Dark Readingは、北米以外の地域に特化したサイバーセキュリティ情報を提供する「DR Global」セクションの最新版を発表しました。",
-        "financial_impact": "金融機関への直接的な影響は限定的です。欧州のサイバーセキュリティ動向を把握する上での参考情報となります。",
+        "summary": "Dark Readingは、北米以外の地域に特化したサイバーセキュリティ情報を提供する「DR Global」セクションを刷新したことを発表しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。サイバーセキュリティ情報の収集源の一つとして参考になる可能性があります。",
         "recommended_actions": [],
-        "reason": "重要度は、特定の脅威やインシデントに関する情報ではなく、メディアのセクション開設の発表であるため「低」です。確認目安は、短期的な対応を要する内容ではなく、情報収集の参考となるため「参考」です。",
+        "reason": "重要度は、特定の脅威やインシデントに関する情報ではなく、情報提供プラットフォームの更新に関する一般的なニュースであるため「低」です。確認目安は、具体的な対応を要する内容ではなく、情報収集の参考となるため「参考」です。",
         "error_type": null,
         "http_status": null
       },
@@ -244,8 +241,8 @@
       "url": "https://www.microsoft.com/en-us/security/blog/2026/07/15/turning-threat-intelligence-into-decisive-action-with-defender-experts/",
       "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/07/15/turning-threat-intelligence-into-decisive-action-with-defender-experts/",
       "published_at": "2026-07-16T01:00:35+09:00",
-      "fetched_at": "2026-07-16T07:57:15.757721+09:00",
-      "title": "Microsoft Defender Expertsによる脅威インテリジェンスとMDRサービスの強化",
+      "fetched_at": "2026-07-16T11:12:37.374365+09:00",
+      "title": "Microsoft Defender Expertsによる脅威インテリジェンスとMDRサービスの拡充",
       "raw_title": "Turning threat intelligence into decisive action with Defender Experts",
       "raw_excerpt": "Security teams have never had more visibility, yet rarely have they felt more uncertain. Signal pours in from endpoints, identities, cloud workloads, and a sprawling mix of third-party tools.\nThe post",
       "content_hash": "sha256:f8b805631d4ebfc3cb2de5ac9614c8f515963c2a64f1d152d7e68c49a6bbe720",
@@ -254,19 +251,19 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-16T07:58:27.607000+09:00",
+        "generated_at": "2026-07-16T11:13:47.615867+09:00",
         "category": "攻撃・脅威動向",
         "category_version": "v1",
-        "category_reason": "Microsoftの新しいセキュリティサービスが、脅威インテリジェンスとMDRの強化を通じて攻撃への対応を改善することを主題としているため。",
+        "category_reason": "Microsoftが提供する脅威インテリジェンスとMDRサービスの拡充に関する発表であり、攻撃・脅威動向への対応策が主題であるため。",
         "tags": [
           "クラウド"
         ],
         "importance": "中",
         "urgency": "参考",
-        "summary": "Microsoftは、脅威インテリジェンスを実用的なアクションへ転換するための新サービス「Microsoft Defender Experts Threat Intelligence」を発表しました。また、「Microsoft Defender Experts MDR」の対象範囲をサードパーティおよびマルチクラウド環境へ拡大し、専門家による支援で脅威への早期対応と環境全体での追跡を可能にすることを目指しています。",
-        "financial_impact": "金融機関がMicrosoft Defender製品群を利用している場合、これらの新サービスがセキュリティ運用強化の選択肢となり得ます。直接的な脅威や脆弱性に関する情報ではないため、即座の対応は不要です。",
+        "summary": "Microsoftは、脅威インテリジェンスを実用的なアクションへ転換するための新サービス「Microsoft Defender Experts Threat Intelligence」と、サードパーティおよびマルチクラウド対応を強化した「Microsoft Defender Experts MDR」を発表しました。これにより、攻撃が到達する前と環境内で進行中の両局面で、専門家による支援を通じて「インテリジェンスからアクションへのギャップ」を埋めることを目指します。",
+        "financial_impact": "金融機関がMicrosoft Defender製品群を利用している場合、これらの新サービスは脅威対応能力の強化に貢献する可能性があります。ただし、導入にはコストと運用体制の検討が必要です。",
         "recommended_actions": [],
-        "reason": "重要度は、Microsoftのセキュリティサービスに関する発表であり、利用している金融機関にとってはセキュリティ運用強化の選択肢となり得るため「中」です。確認目安は、具体的な脅威や緊急対応を求める内容ではなく、サービス紹介が主であるため「参考」です。",
+        "reason": "重要度は、Microsoftのセキュリティサービス拡充に関する情報であり、自社のセキュリティ戦略検討の参考となるため「中」です。確認目安は、具体的な緊急対応を求める内容ではなく、中長期的な情報収集として位置づけられるため「参考」です。",
         "error_type": null,
         "http_status": null
       },
@@ -285,7 +282,7 @@
       "url": "https://thehackernews.com/2026/07/okobot-malware-framework-injects-seed.html",
       "canonical_url": "https://thehackernews.com/2026/07/okobot-malware-framework-injects-seed.html",
       "published_at": "2026-07-16T00:30:30+09:00",
-      "fetched_at": "2026-07-16T07:57:15.757721+09:00",
+      "fetched_at": "2026-07-16T11:12:37.374365+09:00",
       "title": "OkoBotマルウェアフレームワークがLedgerおよびTrezorアプリにシードフレーズフィッシングを注入",
       "raw_title": "OkoBot Malware Framework Injects Seed Phrase Phishing Into Ledger and Trezor Apps",
       "raw_excerpt": "A malware framework called OkoBot has been running on Windows machines since April 2025, and one of its modules is built to con hardware wallet owners out of their recovery phrase.\n\nOn an infected PC,",
@@ -295,22 +292,22 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-16T07:58:45.090237+09:00",
+        "generated_at": "2026-07-16T11:14:04.864059+09:00",
         "category": "攻撃・脅威動向",
         "category_version": "v1",
-        "category_reason": "OkoBotマルウェアフレームワークによるフィッシング攻撃の手法が主題であるため。",
+        "category_reason": "OkoBotマルウェアフレームワークによるフィッシング攻撃の手法と脅威が主題であるため。",
         "tags": [
           "フィッシング"
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "OkoBotマルウェアフレームワークが2025年4月からWindowsマシン上で活動しており、そのモジュールの一つがハードウェアウォレット所有者からリカバリーフレーズを詐取するように設計されています。感染したPCでは、ウォレットのデスクトップソフトウェア内部から不正な要求が表示されます。",
-        "financial_impact": "金融機関が直接的な標的となる情報ではありませんが、顧客がハードウェアウォレットを利用している場合、その資産が詐取されるリスクがあります。顧客への注意喚起の参考情報となります。",
+        "summary": "OkoBotマルウェアフレームワークが2025年4月からWindowsマシン上で活動しており、そのモジュールの一つがハードウェアウォレット所有者からリカバリーフレーズを詐取するように設計されています。感染したPCでは、ウォレットのデスクトップソフトウェア内部から不正な要求が表示され、デバイスが接続されるまで待機することもあります。",
+        "financial_impact": "金融機関が直接的な標的となる情報ではありませんが、顧客がハードウェアウォレットを利用している場合、このマルウェアによる資産の盗難リスクが存在します。顧客への注意喚起や情報提供の検討材料となります。",
         "recommended_actions": [
-          "顧客がハードウェアウォレットを利用している場合、正規のソフトウェア内でのリカバリーフレーズ要求には注意が必要である旨を周知する",
-          "マルウェア感染の兆候がないか、社内PCのセキュリティ監視体制を確認する"
+          "顧客がハードウェアウォレットを利用している場合の注意喚起について検討する",
+          "マルウェア感染の兆候がないか社内PC環境の監視体制を確認する"
         ],
-        "reason": "重要度は、金融機関が直接的な標的ではないものの、顧客資産に影響を与える可能性があり情報共有の価値があるため「中」です。確認目安は、新たな緊急の脅威ではなく、情報共有や注意喚起の検討に時間的猶予があるため「今週確認」です。",
+        "reason": "重要度は、金融機関が直接的な標的ではないものの、顧客資産に影響を与える可能性があり情報把握の価値があるため「中」です。確認目安は、新たな脆弱性や緊急対応の必要性が示されていないため「今週確認」です。",
         "error_type": null,
         "http_status": null
       },
@@ -329,17 +326,17 @@
       "url": "https://cloud.google.com/blog/topics/threat-intelligence/exposed-cloud-functions-harden/",
       "canonical_url": "https://cloud.google.com/blog/topics/threat-intelligence/exposed-cloud-functions-harden/",
       "published_at": "2026-07-15T23:00:00+09:00",
-      "fetched_at": "2026-07-16T07:57:15.757721+09:00",
-      "title": "公開されたクラウド関数のリスクと強化方法",
+      "fetched_at": "2026-07-16T11:12:37.374365+09:00",
+      "title": "The Risk of Exposed Cloud Functions and How to Harden",
       "raw_title": "The Risk of Exposed Cloud Functions and How to Harden",
       "raw_excerpt": "Written by: Corné de Jong\n\nIntroduction \nMandiant security assessments frequently identify publicly exposed serverless applications that lack authentication, often as a result of specific business req",
       "content_hash": "sha256:6a018af238205bd981925e91608aa428f01d55beddda907a2491a9e9ebc86ab2",
       "rule_flags": [],
       "analysis": {
-        "status": "success",
+        "status": "fallback",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-16T07:59:03.394572+09:00",
+        "generated_at": "2026-07-16T11:14:22.225541+09:00",
         "category": "クラウド・サプライチェーン",
         "category_version": "v1",
         "category_reason": "クラウド環境におけるサーバーレスアプリケーションのセキュリティリスクと対策が主題であるため。",
@@ -347,19 +344,19 @@
           "クラウド",
           "SaaS",
           "サプライチェーン",
-          "IAM"
+          "AI"
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "Mandiantは、認証を欠く公開されたサーバーレスアプリケーションが、ファイルインクルージョンやコマンドインジェクションなどのアプリケーションレベル攻撃の標的となり、クラウド環境全体の侵害につながるリスクがあると警告しています。特にGoogle Cloud Runサービスに焦点を当て、攻撃シナリオとセキュリティ強化策を解説しています。",
-        "financial_impact": "金融機関がサーバーレスアプリケーション（特にGoogle Cloud Run）を業務で利用し、かつ認証なしで公開している場合に、情報漏えいやシステム侵害のリスクに関係します。AIワークフローでの利用拡大も指摘されており、関連するリスク評価が必要です。",
+        "summary": "Mandiantは、認証を欠く公開されたサーバーレスアプリケーションが、ファイルインクルージョンやコマンドインジェクションなどのアプリケーションレベル攻撃の標的となり、クラウド環境全体の侵害につながるリスクがあると警告しています。特にGoo",
+        "financial_impact": "金融機関がサーバーレスアプリケーション（特にGoogle Cloud Run）を業務システムやAIワークフローで利用している場合に関係します。設定不備による情報漏えいやシステム侵害のリスクがあります。",
         "recommended_actions": [
-          "自社および委託先でサーバーレスアプリケーション（特にGoogle Cloud Run）の利用有無と公開状況を確認する",
-          "公開されているサーバーレスアプリケーションについて、認証の有無とセキュリティ設定を評価する",
-          "Mandiantが推奨するセキュアなソフトウェア開発ライフサイクル（S-SDLC）と最小権限IAMの導入状況を確認する"
+          "自社および委託先でサーバーレスアプリケーション（特にGoogle Cloud Run）の利用有無と外部公開状況を確認する",
+          "公開されているサーバーレスアプリケーションについて、認証設定、入力検証、最小権限IAMの適用状況を評価する",
+          "Mandiantが推奨するS-SDLC、継続的なセキュリティスキャン、脅威検知サービスの導入を検討する"
         ],
-        "reason": "重要度は、サーバーレスアプリケーションの利用状況や公開設定によって影響度が大きく変わるため「中」です。確認目安は、具体的な期限や進行中の攻撃の記述がないものの、クラウド環境のセキュリティ強化は継続的に確認すべき事項であるため「今週確認」です。",
-        "error_type": null,
+        "reason": "重要度は、サーバーレスアプリケーションの利用が拡大しているものの、金融機関での具体的な利用状況や影響範囲が記事から不明確なため「中」です。確認目安は、具体的な期限や進行中の攻撃の記述がないため「今週確認」です。",
+        "error_type": "schema_parse_error",
         "http_status": null
       },
       "facts": {
@@ -377,7 +374,7 @@
       "url": "https://thehackernews.com/2026/07/firefox-chrome-adobe-and-vmware-updates.html",
       "canonical_url": "https://thehackernews.com/2026/07/firefox-chrome-adobe-and-vmware-updates.html",
       "published_at": "2026-07-15T22:18:53+09:00",
-      "fetched_at": "2026-07-16T07:57:15.757721+09:00",
+      "fetched_at": "2026-07-16T11:12:37.374365+09:00",
       "title": "Firefox、Chrome、Adobe、VMwareのアップデートが複数の重大なセキュリティ欠陥を修正",
       "raw_title": "Firefox, Chrome, Adobe, and VMware Updates Fix Multiple Critical Security Flaws",
       "raw_excerpt": "Mozilla has released updates to address two critical flaws in Firefox for which it warned that exploit code has been published.\n\nThe vulnerabilities are listed below -\n\n\n  CVE-2026-15718, an invalid p",
@@ -387,7 +384,7 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-16T07:59:21.324051+09:00",
+        "generated_at": "2026-07-16T11:14:39.565670+09:00",
         "category": "脆弱性・パッチ",
         "category_version": "v1",
         "category_reason": "Firefox、Chrome、Adobe、VMware製品の複数の脆弱性修正が主題であるため。",
@@ -397,13 +394,13 @@
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "Mozillaは、Firefoxの2つの重大な脆弱性（CVE-2026-15718、CVE-2026-15719）に対処するアップデートをリリースしました。これらの脆弱性に対するエクスプロイトコードが公開されていると警告しています。",
-        "financial_impact": "金融機関でFirefox、Chrome、Adobe、VMware製品を利用している場合に限り、適用性確認の対象になります。記事からは利用有無を確認できないため、影響は限定的または不確実です。",
+        "summary": "Mozillaは、Firefoxの2つの重大な脆弱性（CVE-2026-15718、CVE-2026-15719）に対処するアップデートをリリースしました。これらの脆弱性については、エクスプロイトコードが公開されていると警告しています。",
+        "financial_impact": "金融機関でFirefox、Chrome、Adobe、VMware製品を利用している場合に限り、適用性確認の対象になります。",
         "recommended_actions": [
           "自社および委託先でFirefox、Chrome、Adobe、VMware製品の利用有無と影響バージョンを確認する",
-          "各ベンダーの一次情報と修正版・パッチ・緩和策を確認し、対応要否を評価する"
+          "各ベンダーの公開情報を参照し、最新のセキュリティアップデート適用状況を確認する"
         ],
-        "reason": "重要度は、広く利用される製品の脆弱性だが、KEV新規追加や実悪用進行中の明確な根拠が記事にないため「中」です。確認目安は、エクスプロイトコードが公開されているものの、即時対応の明確な期限や進行中の攻撃が確認できないため「今週確認」です。",
+        "reason": "重要度は、広く利用される製品の脆弱性だが、記事からは金融機関への直接的な影響や悪用状況が不明確なため「中」です。確認目安は、エクスプロイトコードの公開が確認されているものの、KEV新規追加や進行中の攻撃の記述がないため「今週確認」です。",
         "error_type": null,
         "http_status": null
       },
@@ -431,7 +428,7 @@
             "kev": {
               "status": "not_listed",
               "retrieval": "live",
-              "fetched_at": "2026-07-15T22:57:15Z",
+              "fetched_at": "2026-07-16T02:12:37Z",
               "date_added": null
             }
           },
@@ -457,7 +454,7 @@
             "kev": {
               "status": "not_listed",
               "retrieval": "live",
-              "fetched_at": "2026-07-15T22:57:15Z",
+              "fetched_at": "2026-07-16T02:12:37Z",
               "date_added": null
             }
           }
@@ -475,8 +472,8 @@
       "url": "https://www.ncsc.gov.uk/blogs/helping-small-businesses-with-free-hands-on-cyber-consultancy",
       "canonical_url": "https://www.ncsc.gov.uk/blogs/helping-small-businesses-with-free-hands-on-cyber-consultancy",
       "published_at": "2026-07-15T21:00:00+09:00",
-      "fetched_at": "2026-07-16T07:57:15.757721+09:00",
-      "title": "NCSCが中小企業向けに無料のサイバーセキュリティコンサルティングを提供",
+      "fetched_at": "2026-07-16T11:12:37.374365+09:00",
+      "title": "NCSC、中小企業向けに無料のサイバーセキュリティコンサルティングを提供",
       "raw_title": "Helping small businesses with free, hands-on cyber consultancy",
       "raw_excerpt": "Cyber Advisors are offering free 30-minute consultations to help small businesses get started with cyber security.",
       "content_hash": "sha256:9cca097e96f2b76d320fecaaf3922d6de54dbc7831f8671e0137376bfd0a6cc1",
@@ -485,7 +482,7 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-16T07:59:37.928987+09:00",
+        "generated_at": "2026-07-16T11:14:56.300566+09:00",
         "category": "その他",
         "category_version": "v1",
         "category_reason": "特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも直接該当しないため。",
@@ -493,9 +490,9 @@
         "importance": "低",
         "urgency": "参考",
         "summary": "NCSCのサイバーアドバイザーが、中小企業向けにサイバーセキュリティ対策の開始を支援するため、30分間の無料コンサルティングを提供しています。",
-        "financial_impact": "金融機関への直接的な影響は限定的です。中小企業向けの一般的なサイバーセキュリティ支援に関する情報であり、自社のセキュリティ対策に直接関係するものではありません。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。中小企業のサイバーセキュリティ強化はサプライチェーン全体のレジリエンス向上に寄与する可能性がありますが、本記事は一般的な啓発情報にとどまります。",
         "recommended_actions": [],
-        "reason": "重要度は、金融機関への直接的な影響が限定的で、一般的な啓発情報であるため「低」です。確認目安は、具体的な短期アクションや期限の記述がないため「参考」です。",
+        "reason": "重要度は、金融機関に直接的な影響を与える具体的な脅威や規制変更に関する情報ではないため「低」です。確認目安は、具体的な対応期限や緊急性のある情報を含まないため「参考」です。",
         "error_type": null,
         "http_status": null
       },
@@ -514,7 +511,7 @@
       "url": "https://www.jpcert.or.jp/at/2026/at260020.html",
       "canonical_url": "https://www.jpcert.or.jp/at/2026/at260020.html",
       "published_at": "2026-07-15T13:25:00+09:00",
-      "fetched_at": "2026-07-16T07:57:15.757721+09:00",
+      "fetched_at": "2026-07-16T11:12:37.374365+09:00",
       "title": "注意喚起: 2026年7月マイクロソフトセキュリティ更新プログラムに関する注意喚起  (公開)",
       "raw_title": "注意喚起: 2026年7月マイクロソフトセキュリティ更新プログラムに関する注意喚起  (公開)",
       "raw_excerpt": null,
@@ -524,7 +521,7 @@
         "status": "success",
         "model": "gemini-2.5-flash",
         "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-16T07:59:54.819276+09:00",
+        "generated_at": "2026-07-16T11:15:15.692059+09:00",
         "category": "脆弱性・パッチ",
         "category_version": "v1",
         "category_reason": "マイクロソフトの月例セキュリティ更新プログラムに関する注意喚起が主題であるため。",
@@ -533,171 +530,18 @@
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "JPCERT/CCは、2026年7月のマイクロソフト月例セキュリティ更新プログラムに関する注意喚起を公開しました。この更新プログラムには複数の脆弱性に対する修正が含まれています。",
-        "financial_impact": "多くの金融機関でマイクロソフト製品が利用されているため、適用性確認の対象になります。",
+        "summary": "JPCERT/CCは、2026年7月のマイクロソフトセキュリティ更新プログラムに関する注意喚起を公開しました。この更新プログラムには複数の脆弱性に対する修正が含まれています。",
+        "financial_impact": "多くの金融機関でマイクロソフト製品が利用されているため、適用性確認の対象になります。個々の脆弱性の影響度は記事からは確認できません。",
         "recommended_actions": [
-          "自社および委託先で利用しているマイクロソフト製品の棚卸しを行い、影響を受ける可能性のある製品を特定する",
-          "マイクロソフトが公開するセキュリティ更新プログラムの情報を確認し、対応計画を策定する"
+          "自社および委託先で利用しているマイクロソフト製品の更新プログラム適用状況を確認する",
+          "マイクロソフトが公開するセキュリティ更新プログラムの詳細情報を確認し、対応要否を評価する"
         ],
-        "reason": "重要度は、多くの金融機関で利用されるマイクロソフト製品の月例更新プログラムであり、適用性評価が必要なため「中」です。確認目安は、緊急の悪用情報やKEV新規追加の記述がなく、通常の月例更新として対応可能なため「今週確認」です。",
+        "reason": "重要度は、マイクロソフト製品の利用が広範にわたるものの、個別の脆弱性の詳細や影響度が記事から不明なため「中」です。確認目安は、月例更新プログラムであり、直ちに悪用が確認された脆弱性や緊急の対応期限が記事に明記されていないため「今週確認」です。",
         "error_type": null,
         "http_status": null
       },
       "facts": {
         "cves": []
-      }
-    },
-    {
-      "id": "sha256:5a58c2bbe162b457d5ad707a6983117f6b61fcd9ca6dc915447c1a02a5cac7a2",
-      "source_id": "cisa_kev",
-      "source_name": "CISA KEV",
-      "source_type": "CERT・注意喚起",
-      "source_tier": "Tier 1",
-      "collection_method": "cisa_kev_json",
-      "language": "en",
-      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
-      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
-      "published_at": null,
-      "fetched_at": "2026-07-16T07:57:15.757721+09:00",
-      "title": "CISA、Oracle E-Business Suiteの権限管理不備の脆弱性をKEVへ追加",
-      "raw_title": "CVE-2026-46817 — Oracle E-Business Suite Improper Privilege Management Vulnerability",
-      "raw_excerpt": "Oracle E-Business Suite contains an improper privilege management vulnerability that allows an unauthenticated attacker with network access via HTTP to compromise Oracle Payments. Successful attacks o",
-      "content_hash": "sha256:3acf8f49d6bea2eeea1aa07517b8c0ef303eb2b42229c30238d6de16f5e00b86",
-      "rule_flags": [
-        "kev_entry"
-      ],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-16T08:00:12.320140+09:00",
-        "category": "脆弱性・パッチ",
-        "category_version": "v1",
-        "category_reason": "CVE、KEV、パッチが主題であり、脆弱性に関する情報が中心であるため。",
-        "tags": [
-          "CVE",
-          "KEV",
-          "悪用確認済み",
-          "パッチ",
-          "決済"
-        ],
-        "importance": "高",
-        "urgency": "本日確認",
-        "summary": "CISAは2026年7月15日、実悪用が確認されたとして本脆弱性(CVE-2026-46817)をKEVカタログへ追加しました。Oracle E-Business Suiteの権限管理不備の脆弱性で、認証されていない攻撃者がHTTP経由でネットワークアクセスすることでOracle Paymentsを乗っ取る可能性があります。",
-        "financial_impact": "Oracle E-Business SuiteおよびOracle Paymentsを利用している金融機関に関係します。悪用されると決済システムが乗っ取られる可能性があるため、影響は重大です。",
-        "recommended_actions": [
-          "CVE-2026-46817の影響を受けるOracle E-Business SuiteおよびOracle Paymentsの利用有無とバージョンを確認する",
-          "Oracleからの一次情報を確認し、パッチ適用や緩和策の実施を検討する",
-          "システムログを監視し、不審なアクセスや侵害の兆候がないか確認する"
-        ],
-        "reason": "重要度は、CISA KEVに掲載され、CVSS9.8の重大な脆弱性であり、金融機関で利用される可能性のある決済システムに影響するため「高」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": [
-          {
-            "cve_id": "CVE-2026-46817",
-            "nvd": {
-              "status": "found",
-              "retrieval": "cache_fresh",
-              "fetched_at": "2026-07-15T19:52:42Z",
-              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-46817",
-              "vuln_status": "Undergoing Analysis",
-              "published_at": "2026-05-28T21:16:31Z",
-              "last_modified_at": "2026-07-15T18:16:45Z",
-              "cvss": {
-                "base_score": 9.8,
-                "base_severity": "CRITICAL",
-                "source": "secalert_us@oracle.com",
-                "type": "Secondary",
-                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
-                "version": "3.1"
-              }
-            },
-            "kev": {
-              "status": "listed",
-              "retrieval": "live",
-              "fetched_at": "2026-07-15T22:57:15Z",
-              "date_added": "2026-07-15"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "id": "sha256:4115372290d03eb079b37dd662ae5a32309fa74cb533fc5f9f20d4ac28b6f5b3",
-      "source_id": "cisa_kev",
-      "source_name": "CISA KEV",
-      "source_type": "CERT・注意喚起",
-      "source_tier": "Tier 1",
-      "collection_method": "cisa_kev_json",
-      "language": "en",
-      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
-      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
-      "published_at": null,
-      "fetched_at": "2026-07-16T07:57:15.757721+09:00",
-      "title": "KNXプロトコルの接続認証における過度に制限的なアカウントロックアウト機構の脆弱性",
-      "raw_title": "CVE-2023-4346 — KNX Association KNX Protocol Connection Authorization Option 1 Overly Restrictive Account Lockout Mechanism Vulnerability",
-      "raw_excerpt": "KNX Association KNX Protocol Connection Authorization Option 1 contains an overly restrictive account lockout mechanism vulnerability that could allow an attacker to purge all devices without addition",
-      "content_hash": "sha256:7a105e0cc1a6ae1022073d79300fa473fa9fce46a86f9c04341e21b5dcf42d14",
-      "rule_flags": [
-        "kev_entry"
-      ],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-16T08:00:29.906278+09:00",
-        "category": "脆弱性・パッチ",
-        "category_version": "v1",
-        "category_reason": "CISA KEVに掲載された特定のプロトコルにおける脆弱性が主題であるため。",
-        "tags": [
-          "CVE",
-          "KEV",
-          "悪用確認済み"
-        ],
-        "importance": "中",
-        "urgency": "本日確認",
-        "summary": "CISAは2026年7月15日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。KNXプロトコルの接続認証オプション1に過度に制限的なアカウントロックアウト機構の脆弱性があり、攻撃者が追加のセキュリティオプションが有効でないデバイスを消去し、BCUキーを設定してデバイスをロックする可能性があります。",
-        "financial_impact": "KNXプロトコルは主にスマートホームやビルディングオートメーションで利用されるため、金融機関への直接的な影響は限定的です。ただし、関連システムを導入している場合は適用性確認の対象になります。",
-        "recommended_actions": [
-          "CVE-2023-4346の影響を受けるKNXプロトコル関連デバイスの利用有無と影響バージョンを確認する",
-          "ベンダーであるKNX Associationからの一次情報や修正パッチ、緩和策を確認し、対応要否を評価する"
-        ],
-        "reason": "重要度は、KNXプロトコルの利用範囲が金融機関において限定的であるため「中」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": [
-          {
-            "cve_id": "CVE-2023-4346",
-            "nvd": {
-              "status": "found",
-              "retrieval": "cache_fresh",
-              "fetched_at": "2026-07-15T19:52:42Z",
-              "url": "https://nvd.nist.gov/vuln/detail/CVE-2023-4346",
-              "vuln_status": "Analyzed",
-              "published_at": "2023-08-29T20:15:10Z",
-              "last_modified_at": "2026-07-15T19:22:38Z",
-              "cvss": {
-                "base_score": 7.5,
-                "base_severity": "HIGH",
-                "source": "nvd@nist.gov",
-                "type": "Primary",
-                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H",
-                "version": "3.1"
-              }
-            },
-            "kev": {
-              "status": "listed",
-              "retrieval": "live",
-              "fetched_at": "2026-07-15T22:57:15Z",
-              "date_added": "2026-07-15"
-            }
-          }
-        ]
       }
     }
   ]
