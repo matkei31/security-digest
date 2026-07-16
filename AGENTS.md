@@ -114,7 +114,7 @@ Prompt or request-boundary changes also require actual request-body inspection u
 This repository currently has no ordinary `pull_request` or `push` CI workflow. When no PR checks exist, use scope-appropriate local verification and independent review as merge evidence. Do not describe absent checks as successful CI:
 
 - For implementation changes, record the successful local full unittest result, confirmation that the PR diff matches the approved final diff, and an independent diff review.
-- For documentation-only changes, the full unittest suite may be skipped when the reason is recorded. Record Markdown-link verification, changed-file scope, `git diff --check`, and an independent diff review instead.
+- For documentation-only changes, first check whether any static test inspects the documents being changed. If such a test exists, update it with the document and run at least the related tests. If no relevant static test exists, the full unittest suite may be skipped when the reason is recorded. In either case, record Markdown-link verification, changed-file scope, `git diff --check`, and an independent diff review.
 
 ## Git and generated output
 

@@ -2401,14 +2401,39 @@ class WorkflowStaticCheckTest(unittest.TestCase):
 
 
 class AgentsFileTest(unittest.TestCase):
-    def test_agents_file_contains_required_handoff_notes(self):
+    def test_agents_file_contains_current_safety_guardrails(self):
         text = (Path(__file__).resolve().parent / "AGENTS.md").read_text(encoding="utf-8")
 
-        self.assertIn('python3 -m unittest discover -p "test_*.py"', text)
-        self.assertIn("Do not merge into `main` without review.", text)
-        self.assertIn("digest", text)
-        self.assertIn("rebase", text)
-        self.assertIn("Never commit API keys", text)
+        for required_text in (
+            "## Approval boundaries",
+            "## Gemini and production safety",
+            "## Testing and review",
+            'python3 -m unittest discover -p "test_*.py"',
+        ):
+            with self.subTest(required_text=required_text):
+                self.assertIn(required_text, text)
+
+        lines = text.splitlines()
+
+        def assert_policy_line(*terms):
+            self.assertTrue(
+                any(all(term in line for term in terms) for line in lines),
+                f"AGENTS.md must keep one policy line containing: {terms}",
+            )
+
+        assert_policy_line("real Gemini API", "explicit approval")
+        assert_policy_line("Never force-push", "shared history", "explicit approval")
+        assert_policy_line(
+            "workflow_dispatch",
+            "production generation",
+            "separate explicit authorization",
+        )
+        assert_policy_line(
+            "Do not modify or regenerate",
+            "`data/`",
+            "`docs/`",
+            "explicitly",
+        )
 
 
 if __name__ == "__main__":
