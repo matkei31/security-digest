@@ -89,3 +89,14 @@ This file records stable project decisions in an ADR-lite format. Current versio
 - **Consequences:** Zero checks must not be described as successful CI. Merge remains subject to human approval, mergeability, conflict checks, and confirmation that no unexpected commits or files were added. If required PR CI is introduced later, its checks take precedence.
 - **Evidence:** [`.github/workflows/fetch.yml`](.github/workflows/fetch.yml), [PR #12 evidence comment](https://github.com/matkei31/security-digest/pull/12#issuecomment-4991807236)
 - **Supersedes:** None
+
+## SD-009 — Preserve original user feedback separately from implementation interpretation
+
+- **ID:** SD-009
+- **Date:** 2026-07-16
+- **Status:** Accepted / Active
+- **Context:** Replacing a concrete user comment with a broader implementation interpretation can hide residual scope and make a partially addressed request appear complete. Merged code is implementation evidence, but it is not automatically user acceptance of subjective UI, writing-quality, or brand outcomes.
+- **Decision:** Preserve recoverable original user wording without editing it. Store interpretation and acceptance criteria in separate fields. Do not quote reconstructed wording as a user statement, and do not present a user-confirmed summary as verbatim. Do not mark partially addressed items `Done`; subjective UI, writing-quality, and brand-expression items require explicit user acceptance. Use [BACKLOG.md](BACKLOG.md) as the canonical source for incomplete, partial, and acceptance-pending requirements and issues.
+- **Consequences:** Tickets identify related backlog IDs and update status, implementation evidence, user acceptance evidence, and residual scope. Splitting, merging, or superseding an item retains its old ID and original comment. This decision establishes the management contract but does not specify any individual backlog item's implementation.
+- **Evidence:** [BACKLOG.md](BACKLOG.md), [AGENTS.md](AGENTS.md)
+- **Supersedes:** None

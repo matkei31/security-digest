@@ -16,7 +16,7 @@ Security Digestは、金融機関のサイバーセキュリティ担当者・�
 4. daily JSON、トップページ、日別アーカイブを生成する
 5. GitHub Actionsが生成物をcommitし、GitHub Pagesから公開する
 
-現在のprompt version、schema version、取得元の有効状態、既知問題は[STATUS.md](STATUS.md)を参照してください。恒久的な設計・運用判断は[DECISIONS.md](DECISIONS.md)に記録します。
+現在のprompt version、schema version、取得元の有効状態は[STATUS.md](STATUS.md)を参照してください。未完了・部分対応・受入待ちの要求と課題は[BACKLOG.md](BACKLOG.md)、恒久的な設計・運用判断は[DECISIONS.md](DECISIONS.md)に記録します。STATUSは変化する現在状態、BACKLOGは個別の未完了項目を扱い、役割を混同しません。
 
 ## 主要ファイルとディレクトリ
 
@@ -31,6 +31,9 @@ Security Digestは、金融機関のサイバーセキュリティ担当者・�
 | `docs/` | GitHub Pagesへ公開する生成済みHTML等 |
 | `test_*.py` | unittestによる回帰テスト |
 | `AGENTS.md` | 実装エージェントが守る開発・安全上の制約 |
+| `BACKLOG.md` | 未完了・部分対応・受入待ちの要求と課題の正本 |
+| `STATUS.md` | version、取得元、運用等の変化する現在状態 |
+| `DECISIONS.md` | 安定した設計・運用判断 |
 
 取得元を追加・変更・無効化する場合は、`fetch.py`内の互換変数を直接編集せず、[source_definitions.json](source_definitions.json)を変更してください。
 

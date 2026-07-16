@@ -38,6 +38,18 @@ Current prompt versions, schema version, source status, and known limitations ar
 - Each ticket must identify its purpose, allowed files, prohibited files, acceptance criteria, and required tests.
 - Preserve unrelated user changes and generated data.
 
+## Backlog provenance and completion
+
+- [BACKLOG.md](BACKLOG.md) is the canonical source for incomplete, partially addressed, and acceptance-pending requirements and issues.
+- Keep each original user comment separate from implementation interpretation and acceptance criteria. Do not rewrite the original wording.
+- If original wording cannot be recovered, do not quote a reconstructed paraphrase as a user statement.
+- Do not present a user-confirmed summary as a verbatim user comment.
+- Do not treat a partial implementation as completion of the whole request; record the residual scope.
+- UI, writing-quality, and brand-expression items remain open after merge until explicit user acceptance is recorded.
+- When backlog items are split, merged, or marked `Superseded`, retain the original comment and old ID.
+- Every ticket must identify its related BACKLOG ID when one exists.
+- At ticket completion, update the backlog status, implementation evidence, user acceptance evidence, and residual scope.
+
 ## Approval boundaries
 
 - Use a dedicated feature branch or worktree for each ticket. Do not change `main` directly.

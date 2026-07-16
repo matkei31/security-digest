@@ -2408,6 +2408,9 @@ class AgentsFileTest(unittest.TestCase):
             "## Approval boundaries",
             "## Gemini and production safety",
             "## Testing and review",
+            "BACKLOG.md",
+            "original user comment",
+            "user acceptance",
             'python3 -m unittest discover -p "test_*.py"',
         ):
             with self.subTest(required_text=required_text):
@@ -2434,6 +2437,53 @@ class AgentsFileTest(unittest.TestCase):
             "`docs/`",
             "explicitly",
         )
+
+    def test_backlog_file_contains_required_structure(self):
+        backlog_path = Path(__file__).resolve().parent / "BACKLOG.md"
+        self.assertTrue(backlog_path.is_file())
+        text = backlog_path.read_text(encoding="utf-8")
+
+        for required_text in (
+            "## Status definitions",
+            "BL-001",
+            "BL-002",
+            "BL-005",
+            "BL-006",
+            "BL-009",
+            "## Completed reference",
+            "Ticket 14a-3",
+            "Ticket 14a-4",
+        ):
+            with self.subTest(required_text=required_text):
+                self.assertIn(required_text, text)
+
+        required_fields = (
+            "**ID:**",
+            "**Title:**",
+            "**Priority:**",
+            "**Status:**",
+            "**Source type:**",
+            "**Original user comment:**",
+            "**User-confirmed summary:**",
+            "**Interpretation:**",
+            "**Acceptance criteria:**",
+            "**Dependencies:**",
+            "**Implementation evidence:**",
+            "**User acceptance evidence:**",
+            "**Residual scope:**",
+            "**Notes:**",
+        )
+        item_ids = [f"BL-{number:03d}" for number in range(1, 14)]
+        for index, item_id in enumerate(item_ids):
+            start = text.index(f"## {item_id}")
+            if index + 1 < len(item_ids):
+                end = text.index(f"## {item_ids[index + 1]}", start)
+            else:
+                end = text.index("## Completed reference", start)
+            item_text = text[start:end]
+            for field in required_fields:
+                with self.subTest(item_id=item_id, field=field):
+                    self.assertIn(field, item_text)
 
 
 if __name__ == "__main__":
