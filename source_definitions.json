@@ -56,13 +56,13 @@
       "language": "en",
       "source_type": "CERT・注意喚起",
       "source_tier": "Tier 1",
-      "enabled": true,
-      "planned_phase": "Phase 1",
-      "activation_condition": "",
+      "enabled": false,
+      "planned_phase": "保留",
+      "activation_condition": "再有効化には次のすべてを満たす取得経路が必要: (1) CISA公式の機械可読な広範アドバイザリー取得経路である、(2) GitHub Actionsから直接・安定して取得できる、(3) 第三者プロキシ・検索エンジン・HTMLスクレイピングを必要としない、(4) 2025年5月以降のCISA配信方針(通常のサイバー関連更新はメール・SNS中心、Cybersecurity Alerts & Advisoriesページは緊急情報・重大な活動へ重点化)に照らして収集範囲が確認できる。",
       "collection_frequency": "daily",
       "color": "#1e8449",
       "trusted_cyber_source": true,
-      "notes": ""
+      "notes": "Ticket 13c以降の本番run(29227335674・29291354486・29374504304・29446141504)すべてでHTTP 403。保存済み2026-07-11〜16のdaily JSONに通常のCISA RSS由来記事は0件。User-Agent変更(SecurityDigest/1.0・Mozilla/5.0・一般的なSafari形式)のみでは解消しないことを確認済みのため、User-Agent変更だけを対策として採用しない。CISA KEVはcisa_kev(別の構造化JSON経路)で引き続き取得する。"
     },
     {
       "id": "nist",
@@ -243,7 +243,7 @@
     {
       "id": "cisa_kev",
       "name": "CISA KEV",
-      "url": "https://www.cisa.gov/sites/default/files/feeds/known_exploited_vulnerabilities.json",
+      "url": "https://raw.githubusercontent.com/cisagov/kev-data/develop/known_exploited_vulnerabilities.json",
       "display_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
       "collection_method": "cisa_kev_json",
       "language": "en",
@@ -255,7 +255,7 @@
       "collection_frequency": "daily",
       "color": "#e74c3c",
       "trusted_cyber_source": false,
-      "notes": "urlは取得元JSON API。display_urlは記事表示用の固定リンク(全件共通、fetch_cisa_kev()に引数として渡される)。"
+      "notes": "urlは取得元JSON API。display_urlは記事表示用の固定リンク(全件共通、fetch_cisa_kev()に引数として渡される)。urlはCISA公式GitHub Organization(cisagov)のkev-dataリポジトリである。公式READMEには、canonicalなCISA KEV更新後、通常数分以内に同期される旨が記載されている。GitHub上で運用するコードから利用しやすい公式経路として採用した。GitHub Actions本番での取得可否はmerge後の受入確認事項。"
     },
     {
       "id": "nist_nvd",

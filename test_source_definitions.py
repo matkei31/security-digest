@@ -15,7 +15,9 @@ import fetch
 
 
 # Ticket 2 着手前 (source_definitions.json 導入前) の fetch.py にハードコードされて
-# いた値そのもの。互換レイヤーがこれと一致し続けることを保証するための基準値。
+# いた値そのもの。Ticket 2当時の履歴的baselineであり、以後のチケットによる
+# 意図的な取得対象変更のためにこの値自体は改変しない(fetch.RSS_FEEDSとの直接比較
+# には使わず、EXPECTED_ACTIVE_RSS_FEEDSとの差分検証にのみ用いる)。
 BASELINE_RSS_FEEDS = [
     ("金融庁",             "https://www.fsa.go.jp/fsaNewsListAll_rss2.xml",              "ja"),
     ("JPCERT/CC",          "https://www.jpcert.or.jp/rss/jpcert.rdf",                   "ja"),
@@ -32,6 +34,16 @@ BASELINE_RSS_FEEDS = [
     ("The Hacker News",    "https://feeds.feedburner.com/TheHackersNews",               "en"),
     ("Cisco Talos",        "https://blog.talosintelligence.com/rss/",                    "en"),
     ("Cloudflare",         "https://blog.cloudflare.com/rss/",                            "en"),
+]
+
+# 「CISA取得経路の整理」チケットにより、CISA(id="cisa")は意図的に無効化
+# (enabled=false)され、現在のactive RSS一覧から除外されている。これは
+# BASELINE_RSS_FEEDS(Ticket 2当時の履歴的baseline、上記)からの意図的な差分で
+# あり、単なるテストのバイパスではない(CisaDeliberatelyExcludedFromActiveRssTest
+# 参照)。CISA自体のsource定義はsource_definitions.json上に削除されず残り、
+# trusted_cyber_source・色等の履歴的メタデータも維持される。
+EXPECTED_ACTIVE_RSS_FEEDS = [
+    entry for entry in BASELINE_RSS_FEEDS if entry[0] != "CISA"
 ]
 
 BASELINE_SOURCE_COLORS = {
@@ -247,13 +259,16 @@ class CompatLayerTest(unittest.TestCase):
         self.assertIn("A", names)
         self.assertNotIn("B", names)
 
-    def test_rss_feeds_names_and_order_match_baseline(self):
-        baseline_names = [name for name, _, _ in BASELINE_RSS_FEEDS]
+    def test_rss_feeds_names_and_order_match_expected_active(self):
+        # 「CISA取得経路の整理」チケット以降、有効なactive RSS一覧は
+        # BASELINE_RSS_FEEDS(Ticket 2当時の履歴的baseline)そのものではなく、
+        # CISAを意図的に除いたEXPECTED_ACTIVE_RSS_FEEDSと一致する。
+        expected_names = [name for name, _, _ in EXPECTED_ACTIVE_RSS_FEEDS]
         current_names = [name for name, _, _ in fetch.RSS_FEEDS]
-        self.assertEqual(current_names, baseline_names)
+        self.assertEqual(current_names, expected_names)
 
-    def test_rss_feeds_fully_match_baseline(self):
-        self.assertEqual(fetch.RSS_FEEDS, BASELINE_RSS_FEEDS)
+    def test_rss_feeds_fully_match_expected_active(self):
+        self.assertEqual(fetch.RSS_FEEDS, EXPECTED_ACTIVE_RSS_FEEDS)
 
     def test_trusted_cyber_sources_match_baseline(self):
         self.assertEqual(fetch.TRUSTED_CYBER_SOURCES, BASELINE_TRUSTED_CYBER_SOURCES)
@@ -270,6 +285,121 @@ class CompatLayerTest(unittest.TestCase):
                     BASELINE_SOURCE_COLORS.get(name, "#555"),
                     fetch.SOURCE_COLORS.get(name, "#555"),
                 )
+
+
+class CisaDeliberatelyExcludedFromActiveRssTest(unittest.TestCase):
+    """「CISA取得経路の整理」チケット: CISA RSS(id="cisa")はTicket 13c以降の
+    本番runで継続してHTTP 403となっており、有効な取得元として扱い続けることを
+    やめるため、意図的にenabled=falseへ変更した。BASELINE_RSS_FEEDSの単なる
+    ドリフトではなく、CISAだけが意図的にactive RSS一覧から除外されたことを
+    ここで明示的に検証する。CISA自体のsource定義・trusted_cyber_source・色等の
+    履歴的メタデータは削除せず維持する。
+    """
+
+    def _cisa_def(self):
+        return fetch.get_source_definition(fetch.SOURCE_DEFINITIONS, "cisa")
+
+    def test_1_cisa_is_disabled(self):
+        self.assertFalse(self._cisa_def()["enabled"])
+
+    def test_2_cisa_planned_phase_is_hold(self):
+        self.assertEqual(self._cisa_def()["planned_phase"], "保留")
+
+    def test_3_cisa_activation_condition_is_documented(self):
+        condition = self._cisa_def()["activation_condition"]
+        self.assertTrue(condition.strip())
+        # 再有効化条件に必須の4要素が明記されていること。
+        for required_phrase in (
+            "機械可読な広範アドバイザリー取得経路",
+            "GitHub Actions",
+            "第三者プロキシ",
+            "2025年5月",
+        ):
+            self.assertIn(required_phrase, condition)
+
+    def test_4_disabled_cisa_is_not_in_active_rss_feeds(self):
+        names = [name for name, _, _ in fetch.RSS_FEEDS]
+        self.assertNotIn("CISA", names)
+        # 現在のactive RSS一覧は、CISAを意図的に除いたEXPECTED_ACTIVE_RSS_FEEDS
+        # と一致する(他ソースの順序・内容は不変)。
+        expected_names = [name for name, _, _ in EXPECTED_ACTIVE_RSS_FEEDS]
+        self.assertEqual(names, expected_names)
+
+    def test_diff_between_ticket2_baseline_and_current_active_rss_is_cisa_only(self):
+        # Ticket 2当時の履歴的baseline(BASELINE_RSS_FEEDS、CISAを含む)と、
+        # 現在のfetch.RSS_FEEDSとの差分が、CISAの除外だけであることを明示的に
+        # 検証する(他ソースが意図せず増減・変更されていないことの保証)。
+        baseline_names = [name for name, _, _ in BASELINE_RSS_FEEDS]
+        current_names = [name for name, _, _ in fetch.RSS_FEEDS]
+        removed = set(baseline_names) - set(current_names)
+        added = set(current_names) - set(baseline_names)
+        self.assertEqual(removed, {"CISA"})
+        self.assertEqual(added, set())
+        # CISAを除けば、残りのソースの順序・内容も完全一致する。
+        self.assertEqual(
+            [name for name in baseline_names if name != "CISA"],
+            current_names,
+        )
+
+    def test_5_cisa_definition_remains_in_source_definitions(self):
+        # source定義自体は削除されず、SOURCE_DEFINITIONSに残り続ける。
+        self.assertIsNotNone(self._cisa_def())
+        ids = [s["id"] for s in fetch.SOURCE_DEFINITIONS]
+        self.assertIn("cisa", ids)
+
+    def test_cisa_historical_metadata_is_preserved(self):
+        cisa_def = self._cisa_def()
+        self.assertEqual(cisa_def["source_tier"], "Tier 1")
+        self.assertTrue(cisa_def["trusted_cyber_source"])
+        self.assertEqual(cisa_def["color"], "#1e8449")
+        self.assertEqual(cisa_def["url"], "https://www.cisa.gov/cybersecurity-advisories/all.xml")
+
+    def test_cisa_notes_record_the_403_history(self):
+        notes = self._cisa_def()["notes"]
+        for required_phrase in (
+            "403",
+            "2026-07-11",
+            "User-Agent",
+            "cisa_kev",
+        ):
+            self.assertIn(required_phrase, notes)
+
+    def test_cisa_still_counted_as_trusted_cyber_source_despite_being_disabled(self):
+        # trusted_cyber_sourceは維持されるため、enabled有無に関わらずCISAは
+        # TRUSTED_CYBER_SOURCESへ残り続ける(build_trusted_cyber_sourcesは
+        # enabled状態を見ない設計のため)。
+        self.assertIn("CISA", fetch.TRUSTED_CYBER_SOURCES)
+
+
+class CisaKevGitHubMirrorTest(unittest.TestCase):
+    """「CISA取得経路の整理」チケット: CISA KEVの取得元をCISA公式GitHub
+    Organization(cisagov/kev-data)のミラーJSONへ変更したことの回帰テスト。"""
+
+    NEW_KEV_URL = (
+        "https://raw.githubusercontent.com/cisagov/kev-data/develop/"
+        "known_exploited_vulnerabilities.json"
+    )
+
+    def _cisa_kev_def(self):
+        return fetch.get_source_definition(fetch.SOURCE_DEFINITIONS, "cisa_kev")
+
+    def test_6_cisa_kev_remains_enabled(self):
+        self.assertTrue(self._cisa_kev_def()["enabled"])
+
+    def test_7_cisa_kev_url_is_the_official_github_json(self):
+        self.assertEqual(self._cisa_kev_def()["url"], self.NEW_KEV_URL)
+
+    def test_8_display_url_is_unchanged(self):
+        self.assertEqual(
+            self._cisa_kev_def()["display_url"],
+            "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+        )
+
+    def test_cisa_kev_collection_method_and_tier_unchanged(self):
+        cisa_kev_def = self._cisa_kev_def()
+        self.assertEqual(cisa_kev_def["collection_method"], "cisa_kev_json")
+        self.assertEqual(cisa_kev_def["source_tier"], "Tier 1")
+        self.assertEqual(cisa_kev_def["color"], "#e74c3c")
 
 
 class NonRssSourceDispatchTest(unittest.TestCase):
@@ -357,15 +487,25 @@ class NoDuplicateUrlInSourceCodeTest(unittest.TestCase):
     ハードコードされたまま残っていない(source_definitions.jsonのみに存在する)
     ことを確認する。"""
 
+    NEW_CISA_KEV_URL = (
+        "https://raw.githubusercontent.com/cisagov/kev-data/develop/"
+        "known_exploited_vulnerabilities.json"
+    )
+    OLD_CISA_KEV_URL = (
+        "https://www.cisa.gov/sites/default/files/feeds/"
+        "known_exploited_vulnerabilities.json"
+    )
+
     def setUp(self):
         self.fetch_source_text = Path(fetch.__file__).read_text(encoding="utf-8")
 
     def test_cisa_kev_json_url_not_hardcoded_in_fetch_py(self):
-        cisa_kev_url = (
-            "https://www.cisa.gov/sites/default/files/feeds/"
-            "known_exploited_vulnerabilities.json"
-        )
-        self.assertNotIn(cisa_kev_url, self.fetch_source_text)
+        # 「CISA取得経路の整理」チケットで採用したCISA公式GitHubミラーURL。
+        self.assertNotIn(self.NEW_CISA_KEV_URL, self.fetch_source_text)
+
+    def test_old_cisa_kev_json_url_not_hardcoded_in_fetch_py(self):
+        # 旧urlも(元々hardcodeされていなかったが)引き続き含まれないことを確認する。
+        self.assertNotIn(self.OLD_CISA_KEV_URL, self.fetch_source_text)
 
     def test_cisa_kev_display_url_not_hardcoded_in_fetch_py(self):
         display_url = "https://www.cisa.gov/known-exploited-vulnerabilities-catalog"
@@ -375,16 +515,23 @@ class NoDuplicateUrlInSourceCodeTest(unittest.TestCase):
         nvd_base_url = "https://services.nvd.nist.gov/rest/json/cves/2.0"
         self.assertNotIn(nvd_base_url, self.fetch_source_text)
 
-    def test_urls_are_defined_exactly_once_in_source_definitions_json(self):
+    def test_9_new_cisa_kev_url_is_defined_exactly_once_in_source_definitions_json(self):
         definitions_text = (Path(fetch.__file__).parent / "source_definitions.json").read_text(
             encoding="utf-8"
         )
-        cisa_kev_url = (
-            "https://www.cisa.gov/sites/default/files/feeds/"
-            "known_exploited_vulnerabilities.json"
+        self.assertEqual(definitions_text.count(self.NEW_CISA_KEV_URL), 1)
+
+    def test_old_cisa_kev_url_no_longer_present_in_source_definitions_json(self):
+        definitions_text = (Path(fetch.__file__).parent / "source_definitions.json").read_text(
+            encoding="utf-8"
+        )
+        self.assertEqual(definitions_text.count(self.OLD_CISA_KEV_URL), 0)
+
+    def test_nvd_base_url_is_defined_exactly_once_in_source_definitions_json(self):
+        definitions_text = (Path(fetch.__file__).parent / "source_definitions.json").read_text(
+            encoding="utf-8"
         )
         nvd_base_url = "https://services.nvd.nist.gov/rest/json/cves/2.0"
-        self.assertEqual(definitions_text.count(cisa_kev_url), 1)
         self.assertEqual(definitions_text.count(nvd_base_url), 1)
 
 
