@@ -47,6 +47,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 - Ticket 15b: state-aware BRIEF v3 — completed
 - Ticket 15c: BRIEF display hierarchy — completed
 - Project documentation alignment — completed in [PR #13](https://github.com/matkei31/security-digest/pull/13)
+- Legacy local operation scripts — removed
 
 ## 6. Known issues and limitations
 
@@ -54,14 +55,12 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
 - Ticket 16a's standalone real-Gemini diagnostic for the Microsoft reference article remains unverified; this did not block its production acceptance.
-- `schedule.sh`, `setup.sh`, and `deploy.sh` describe legacy local operation and are not the current production runbook.
 
 ## 7. Next candidates
 
 - Define Security Digest's own `editorial-style-v1` and partially introduce it to BRIEF through `today-brief-v4`.
 - Keep ARTICLE outside `editorial-style-v1` initially.
 - Consider adding an ordinary `pull_request` CI workflow.
-- Decide whether to remove or explicitly deprecate the legacy local operation scripts.
 
 ## 8. Sources of truth
 
