@@ -336,6 +336,42 @@ class ArticleCardDisplayTest(unittest.TestCase):
 
         self.assertNotIn("確認優先度", html)
 
+    # ── article-metaの区切り文字(レビュー指摘対応) ─────────────────────────
+
+    def test_meta_shows_source_and_date_joined_when_both_present(self):
+        html = fetch.build_html([self._make_item()])
+        card = cards_segment(html)
+
+        self.assertIn('<p class="article-meta">CISA ・ 07/11 06:00</p>', card)
+
+    def test_meta_shows_source_only_when_date_missing(self):
+        html = fetch.build_html([self._make_item(date=None)])
+        card = cards_segment(html)
+
+        self.assertIn('<p class="article-meta">CISA</p>', card)
+        self.assertNotIn("CISA ・", card)
+        self.assertNotIn("・</p>", card)
+
+    def test_meta_shows_date_only_when_source_missing(self):
+        html = fetch.build_html([self._make_item(source="")])
+        card = cards_segment(html)
+
+        self.assertIn('<p class="article-meta">07/11 06:00</p>', card)
+        self.assertNotIn("・ 07/11", card)
+
+    def test_meta_area_absent_when_source_and_date_both_missing(self):
+        html = fetch.build_html([self._make_item(source="", date=None)])
+        card = cards_segment(html)
+
+        self.assertNotIn('class="article-meta"', card)
+
+    def test_meta_escapes_source_html(self):
+        html = fetch.build_html([self._make_item(source="<b>source</b>", date=None)])
+        card = cards_segment(html)
+
+        self.assertIn('<p class="article-meta">&lt;b&gt;source&lt;/b&gt;</p>', card)
+        self.assertNotIn("<b>source</b>", card)
+
     def test_missing_optional_analysis_fields_do_not_stop_html_generation(self):
         html = fetch.build_html([
             self._make_item(ai_analysis=self._analysis(

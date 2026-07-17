@@ -3877,7 +3877,14 @@ def build_html(
         anchor_id = article_anchor_id(display_index)
         facts_html = render_vulnerability_facts_html(item.get("facts"))
 
-        meta_html = f'\n      <p class="article-meta">{esc(item["source"])} ・ {esc(date_label)}</p>'
+        # sourceが上流で必須であっても、date_labelが欠ける場合(date未設定)に
+        # 「source ・」のような不自然な末尾区切りを生成しないよう、空でない値
+        # だけを「 ・ 」で連結する。両方空ならarticle-meta自体を表示しない。
+        meta_parts = [esc(value) for value in (item["source"], date_label) if value]
+        meta_html = (
+            f'\n      <p class="article-meta">{" ・ ".join(meta_parts)}</p>'
+            if meta_parts else ""
+        )
 
         if analysis:
             # 通常記事カードB案(Ticket 18): 重要度／確認目安はプレーンテキスト表示とし、
