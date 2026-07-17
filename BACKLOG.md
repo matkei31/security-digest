@@ -190,16 +190,18 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **Title:** SEOと閲覧者増加策
 - **Priority:** P2
 - **Status:** Captured / Parked until prerequisites
-- **Source type:** Recovered paraphrase (recorded user request)
-- **Original user comment:** Original wording not recovered.
-- **User-confirmed summary:** Not recovered.
+- **Source type:** Verbatim user comment
+- **Original user comment:** 「あとでSEO対策や見てもらうための工夫について相談」
+- **Additional original user comment:** 「そういう話をするタイミングになったら教えて」
+- **Provenance:** 2026-07-13 project conversation.
+- **User-confirmed summary:** Not applicable — original wording recovered above.
 - **Interpretation:** Later, review SEO and ways to increase readership, and surface the topic when prerequisites make the timing appropriate.
 - **Acceptance criteria:** Not defined.
 - **Dependencies:** Ticket 14a-3 and Ticket 14a-4 are completed and are not prerequisites to reopen. At SEO start, confirm that no new P0/P1 data-quality issue is open. Also depends on BL-006, BL-007, the Japanese editorial specification, BL-002–BL-004, About content, metadata, and public navigation.
 - **Implementation evidence:** Not implemented.
 - **User acceptance evidence:** Not recorded.
 - **Residual scope:** Define audience and goals, audit technical/content SEO, prioritize measures, implement separately, and measure outcomes.
-- **Notes:** Parked until prerequisites; the recovered summary is not a verbatim quotation.
+- **Notes:** Parked until prerequisites. Original wording recovered during BL-014's final completion pass (2026-07-18); see [BACKLOG_AUDIT.md](BACKLOG_AUDIT.md).
 
 ## BL-010 — 多言語対応の意義判断
 
@@ -207,16 +209,17 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **Title:** 多言語対応の意義判断
 - **Priority:** P3
 - **Status:** Captured / Parked until prerequisites
-- **Source type:** Recovered paraphrase (recorded user request)
-- **Original user comment:** Original wording not recovered.
-- **User-confirmed summary:** Not recovered.
+- **Source type:** Verbatim user comment
+- **Original user comment:** 「このサイトを多言語対応する意味はあるか相談しよう。そのうち」
+- **Provenance:** 2026-07-13 project conversation.
+- **User-confirmed summary:** Not applicable — original wording recovered above.
 - **Interpretation:** After the Japanese edition is stable, decide whether multilingual support provides sufficient value relative to cost.
 - **Acceptance criteria:** Not defined. This is initially a decision exercise, not an implementation ticket.
 - **Dependencies:** Stable Japanese edition, BL-009, target-audience definition, and regulatory-mapping needs.
 - **Implementation evidence:** Not implemented.
 - **User acceptance evidence:** Not recorded.
 - **Residual scope:** Define candidate languages, audience value, editorial/translation cost, regulatory impact, SEO impact, and decision criteria.
-- **Notes:** Do not begin implementation before the prerequisite decision.
+- **Notes:** Do not begin implementation before the prerequisite decision. Original wording recovered during BL-014's final completion pass (2026-07-18); see [BACKLOG_AUDIT.md](BACKLOG_AUDIT.md).
 
 ## BL-011 — standalone NIST NVD記事取得の保留理由・再開条件
 
@@ -274,17 +277,17 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **ID:** BL-014
 - **Title:** 過去ユーザーコメントの体系的棚卸し
 - **Priority:** P0
-- **Status:** In progress / Not completed
+- **Status:** Done
 - **Source type:** Verbatim user comment
 - **Original user comment:** 「うん。他に未対応と見られる私のコメントある？同じように汎化してるなら私自身のコメントに立ち返って確認して。本来、指摘コメントを勝手に書き換えて対応済み扱いするのありえないから。ちゃんとバックログ管理して」
 - **User-confirmed summary:** 過去のプロジェクト会話にある指摘・要望を原文へ立ち返って棚卸しし、実装済み、部分対応、未対応、受入待ち、Superseded、バックログ対象外のいずれかへ根拠付きで分類する。実装側が作った一般化表現で原コメントを置き換えない。
 - **Interpretation:** PR #16のBL-001〜BL-013は初期登録であり、過去のユーザーコメントを網羅的に監査した結果ではない。会話履歴、PRコメント、既存文書、完了記録を照合して、取りこぼしと誤完了を確認する。
 - **Acceptance criteria:** 棚卸し対象の会話範囲と期間を明示する。原文を取得できたコメントは原文のまま記録し、原文未回収は引用しない。各コメントを既存BL ID、新規BL ID、Done reference、Superseded、対象外のいずれかへ割り当てる。部分対応はresidual scopeを残す。完了判断にはPRだけでなく、必要に応じてユーザー受入を確認する。棚卸し結果をユーザーがレビューし、未分類コメントが残っていないかを明記する。
 - **Dependencies:** プロジェクト会話履歴、GitHub PR／コメント、README／STATUS／DECISIONS／BACKLOG、実装証跡へのアクセス。
-- **Implementation evidence:** PR #16は管理方式と初期項目を作成した。2026-07-17、第1バッチ（Candidate A〜F）の監査を実施し、A→BL-007更新、B→SD-014、C→BL-015、D→Completed reference、E→対応不要（新規BLなし）、F→BL-015スコープ内で評価対象として記録、へそれぞれ分類した。2026-07-18、第2バッチを実施し、PR化以前のdirect push 149 commitsを21機能グループ（PRE-00〜PRE-20）へ分類し、BL-005／BL-008／BL-009／BL-010をGitHub上で確認できる証跡の範囲に限定して監査し、いずれも既存記録（原文未回収）を維持することを確認した。PR #1／#2／#3／#8をCompleted referenceへ追加し、PR #6（Ticket 15a）をHistorical / Superseded referenceとして記録し、Ticket 5／7／11bをSuperseded referenceとして記録した。PR #8の内部識別子漏洩修正を一般化してSD-015として記録し、PR #9（Ticket 15c）の目視受入未確認をBL-016として記録した。監査範囲・手法・各分類の根拠は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)に記録。過去コメントの体系的棚卸しは第1・第2バッチの範囲で実施済みであり、全体としては未完了。
-- **User acceptance evidence:** バックログ管理方式の導入には同意済み。第1・第2バッチの分類記録自体は実施済みとするが、過去コメント棚卸し全体（BL-014全体）の完了についてユーザーが明示的に承認した記録はない。
-- **Residual scope:** conversation-side original wording（特にBL-005／SD-007、BL-008、BL-009、BL-010）の追加回収、第1・第2バッチ以外の未分類コメントの確認、BL-016（本日の要点の表示階層）の目視受入、最終的なユーザーレビューと、未分類コメントが残っていないことの明記。
-- **Notes:** BL-014がDoneになるまで、BL-001〜BL-013を「過去要望の完全な一覧」と表現しない。第1・第2バッチの実施はBL-014全体の完了を意味しない。
+- **Implementation evidence:** PR #16は管理方式と初期項目を作成した。2026-07-17、第1バッチ（Candidate A〜F）の監査を実施し、A→BL-007更新、B→SD-014、C→BL-015、D→Completed reference、E→対応不要（新規BLなし）、F→BL-015スコープ内で評価対象として記録、へそれぞれ分類した。2026-07-18、第2バッチを実施し、PR化以前のdirect push 149 commitsを21機能グループ（PRE-00〜PRE-20）へ分類し、BL-005／BL-008／BL-009／BL-010をGitHub上で確認できる証跡の範囲に限定して監査した。PR #1／#2／#3／#8をCompleted referenceへ追加し、PR #6（Ticket 15a）をHistorical / Superseded referenceとして記録し、Ticket 5／7／11bをSuperseded referenceとして記録した。PR #8の内部識別子漏洩修正を一般化してSD-015として記録し、PR #9（Ticket 15c）の目視受入未確認をBL-016として記録した。2026-07-18、最終完了パスを実施し、BL-009へ原文2件、BL-010へ原文1件をそれぞれ別フィールドで追記した。BL-005・BL-008は原文未回収のまま確定した（今後の追加回収を前提としない最終状態として記録）。現時点で把握している未分類の過去コメントはない。PR #11〜#16／PR #19を最終確認し、新規の管理項目（BL／Completed reference／Superseded reference）は不要と判断した。About content／metadata／public navigationは、既存の[BL-006](#bl-006--monomi-digestへのブランド変更)／[BL-007](#bl-007--monomidigestcomへの移行)／[BL-009](#bl-009--seoと閲覧者増加策)の範囲で管理する。監査範囲・手法・各分類の根拠は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)に記録。
+- **User acceptance evidence:** バックログ管理方式の導入には同意済み。第1・第2バッチの分類記録は実施済み。2026-07-18、ユーザーはBL-014全体の完了について次のとおり明示的に承認した（verbatim）：「BL-014は拾えるだけ拾ったから完了にするってことね。まあいいよ」
+- **Residual scope:** BL-014（過去ユーザーコメントの体系的棚卸しという工程）自体の残作業はない。BL-005・BL-008の原文は未回収のまま確定した恒久的な記録であり、今後の再回収を前提としない。個別の未完了項目（[BL-001](#bl-001--pull-request-ci)、[BL-004](#bl-004--fable-5によるuiレビューとui設計書)、[BL-006](#bl-006--monomi-digestへのブランド変更)、[BL-007](#bl-007--monomidigestcomへの移行)、[BL-015](#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する)、[BL-016](#bl-016--本日の要点の表示階層を目視受入する)等）は、BL-014の完了と独立してそれぞれ継続する。
+- **Notes:** BL-014の完了は、現時点で把握している範囲での棚卸し完了を意味する。今後、新たに過去コメントの存在が判明した場合は、原文とともに追記する（[Initial migration scope](#initial-migration-scope)の原則を維持）。第1・第2バッチおよび最終完了パスの実施内容は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)に記録されている。
 
 ## BL-015 — 公開サイトと生成基盤のセキュリティ要件を定義する
 
