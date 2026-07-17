@@ -154,6 +154,8 @@ daily JSONの公開範囲について、本監査依頼で提供された発言�
 
 ## Remaining audit scope
 
+（この節はBatch 2完了時点、2026-07-18のhistorical snapshotである。以下の各項目が「## Final completion」でどのように解消または既存BLへ移管されたかは、同節を参照。）
+
 - BL-005／BL-008／BL-009／BL-010のconversation-side original wording回収（GitHub証跡は本バッチで探索を尽くしたが、会話側記録へのアクセスが必要）。
 - SD-007の`Accepted`Statusの独立した同意記録についての、会話側記録に基づく確認。
 - [BL-016](BACKLOG.md#bl-016--本日の要点の表示階層を目視受入する)の目視受入（PC／390px本番確認）。
@@ -172,4 +174,8 @@ daily JSONの公開範囲について、本監査依頼で提供された発言�
 - **BL-005・BL-008の原文:** `Original wording not recovered`のまま確定した。これはBL-014の最終的な受入状態として記録するものであり、将来バッチへ持ち越す未解決事項ではない。仮に今後いずれかの原文が判明した場合は、[Initial migration scope](BACKLOG.md#initial-migration-scope)の原則（原文と出所を添えて追記する）に従って個別に追記するが、それはBL-014自体の完了条件ではない。
 - **未分類コメント:** 本完了時点で、関係者が把握している未分類の過去コメントはない。これは現時点で把握している範囲についての記録であり、将来的に別の過去コメントが判明しないことを保証するものではない。判明した場合は[Initial migration scope](BACKLOG.md#initial-migration-scope)の原則どおり、この完了記録への違反としてではなく、原文と出所を添えた追記として扱う。
 - **BL-014の完了と独立して継続する項目:** [BL-001](BACKLOG.md#bl-001--pull-request-ci)、[BL-004](BACKLOG.md#bl-004--fable-5によるuiレビューとui設計書)、[BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更)、[BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行)、[BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する)、[BL-016](BACKLOG.md#bl-016--本日の要点の表示階層を目視受入する)は、それぞれの内容に基づき引き続きopenのままである。BL-014の`Done`は過去ユーザーコメントの体系的棚卸しという工程自体の完了を意味し、これら個別項目の完了・受入・変更を意味しない。
-- **上記「Remaining audit scope」との関係:** 同リストのうち、BL-005／BL-008／BL-009／BL-010の原文回収、その他未分類コメントの確認、最終的なユーザーレビューの3項目は本節により解消済みである。PR #11〜#16／PR #19自身のcommit単位の履歴確認、および「About content, metadata, public navigation」への専用BL項目要否の検討は、引き続き未着手のまま残るが、以後はBL-014の完了を妨げるものではなく、通常の独立した将来課題として扱う。
+- **SD-007の`Accepted`Status:** project conversation recordを根拠として維持する。原文はGitHub上で回収できていないが、これはBL-014の残作業ではない。[SD-007](DECISIONS.md#sd-007--create-security-digest-editorial-style-v1-and-introduce-it-to-brief-first)自体のStatus・Decision本文は本パスで変更しない。
+- **BL-016の目視受入:** 独立した[BL-016](BACKLOG.md#bl-016--本日の要点の表示階層を目視受入する)へ既に移管済みであり、BL-014の残作業ではない。
+- **PR #11〜#16／PR #19:** 本最終完了パスで確認済み。新規BL、Completed reference、Superseded referenceの追加は不要と判断した。
+- **About content／metadata／public navigation:** 専用BL項目を新設する必要はない。[BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更)／[BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行)／[BL-009](BACKLOG.md#bl-009--seoと閲覧者増加策)の依存・残作業の範囲で扱う。
+- **上記「Remaining audit scope」との関係:** 同リストの全項目は、本節により解消済み、または既存BL（[BL-016](BACKLOG.md#bl-016--本日の要点の表示階層を目視受入する)等）へ移管済みである。BL-014自体に残作業はない。
