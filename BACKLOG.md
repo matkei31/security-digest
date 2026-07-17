@@ -155,8 +155,9 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **Title:** monomidigest.comへの移行
 - **Priority:** P2
 - **Status:** Accepted / Not implemented
-- **Source type:** User-confirmed summary
-- **Original user comment:** Original wording not recovered.
+- **Source type:** Verbatim user comment / User-confirmed summary
+- **Original user comment:** 「URLがgithubのユーザー名なのが気になる」
+- **Provenance:** 2026-07-09 project conversation.
 - **User-confirmed summary:** 主ドメインは`monomidigest.com`とし、`monomi.jp`は不要とする。
 - **Interpretation:** Use `monomidigest.com` as the primary domain. The recorded decision says `monomi.jp` is unnecessary.
 - **Acceptance criteria:** Not defined. Domain ownership and DNS state must be verified before implementation.
@@ -273,17 +274,35 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **ID:** BL-014
 - **Title:** 過去ユーザーコメントの体系的棚卸し
 - **Priority:** P0
-- **Status:** Captured / Not completed
+- **Status:** In progress / Not completed
 - **Source type:** Verbatim user comment
 - **Original user comment:** 「うん。他に未対応と見られる私のコメントある？同じように汎化してるなら私自身のコメントに立ち返って確認して。本来、指摘コメントを勝手に書き換えて対応済み扱いするのありえないから。ちゃんとバックログ管理して」
 - **User-confirmed summary:** 過去のプロジェクト会話にある指摘・要望を原文へ立ち返って棚卸しし、実装済み、部分対応、未対応、受入待ち、Superseded、バックログ対象外のいずれかへ根拠付きで分類する。実装側が作った一般化表現で原コメントを置き換えない。
 - **Interpretation:** PR #16のBL-001〜BL-013は初期登録であり、過去のユーザーコメントを網羅的に監査した結果ではない。会話履歴、PRコメント、既存文書、完了記録を照合して、取りこぼしと誤完了を確認する。
 - **Acceptance criteria:** 棚卸し対象の会話範囲と期間を明示する。原文を取得できたコメントは原文のまま記録し、原文未回収は引用しない。各コメントを既存BL ID、新規BL ID、Done reference、Superseded、対象外のいずれかへ割り当てる。部分対応はresidual scopeを残す。完了判断にはPRだけでなく、必要に応じてユーザー受入を確認する。棚卸し結果をユーザーがレビューし、未分類コメントが残っていないかを明記する。
 - **Dependencies:** プロジェクト会話履歴、GitHub PR／コメント、README／STATUS／DECISIONS／BACKLOG、実装証跡へのアクセス。
-- **Implementation evidence:** PR #16は管理方式と初期項目を作成したが、過去コメントの体系的棚卸し自体は未実施。
-- **User acceptance evidence:** バックログ管理方式の導入には同意済み。過去コメント棚卸しの完了受入は未実施。
-- **Residual scope:** 棚卸し、分類、追加登録、完了状態の検証、ユーザーによる最終確認。
-- **Notes:** BL-014がDoneになるまで、BL-001〜BL-013を「過去要望の完全な一覧」と表現しない。
+- **Implementation evidence:** PR #16は管理方式と初期項目を作成した。2026-07-17、第1バッチ（Candidate A〜F）の監査を実施し、A→BL-007更新、B→SD-014、C→BL-015、D→Completed reference、E→対応不要（新規BLなし）、F→BL-015スコープ内で評価対象として記録、へそれぞれ分類した。監査範囲・手法・各分類の根拠は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)に記録。過去コメントの体系的棚卸しは第1バッチの範囲でのみ実施済みであり、全体としては未完了。
+- **User acceptance evidence:** バックログ管理方式の導入には同意済み。第1バッチの分類記録自体は実施済みとするが、過去コメント棚卸し全体（残バッチを含む）の完了についてユーザーが明示的に承認した記録はない。
+- **Residual scope:** BL-005／BL-008／BL-009／BL-010の原文回収、PR以前の会話・direct push履歴の棚卸し、その他未分類コメントの発見・分類、追加バッチの実施、最終的なユーザーレビューと、未分類コメントが残っていないことの明記。
+- **Notes:** BL-014がDoneになるまで、BL-001〜BL-013を「過去要望の完全な一覧」と表現しない。第1バッチの実施はBL-014全体の完了を意味しない。
+
+## BL-015 — 公開サイトと生成基盤のセキュリティ要件を定義する
+
+- **ID:** BL-015
+- **Title:** 公開サイトと生成基盤のセキュリティ要件を定義する
+- **Priority:** P2
+- **Status:** Captured / Not completed
+- **Source type:** Verbatim user comment
+- **Original user comment:** 「セキュリティ要件みたいなのも後で決めよう」
+- **Additional original user comment:** 「OK.ここはfable5にもレビューしてもらおう。公開情報を扱うものだから厳しいセキュリティ対策をする必要はないと思うが、必要なものは網羅しつつ過剰じゃないように整理して、fable5にレビューさせられる形にして。」
+- **User-confirmed summary:** Not recorded.
+- **Interpretation:** For the static public site, GitHub Actions, external fetching, Gemini, stored data, secrets, and future custom-domain use, define a security requirements set proportionate to the current architecture, as a dedicated document (candidate name `SECURITY_REQUIREMENTS.md`, distinct from GitHub's vulnerability-reporting `SECURITY.md`). Do not uniformly introduce excessive controls; state necessity and reevaluation conditions for each item explicitly.
+- **Acceptance criteria:** The document defines: target systems and data flow; the trusted/untrusted boundary; what may and may not be stored; external URL handling, HTML escaping, and `safe_url`; secrets management; GitHub Actions permissions; logs/artifacts handling; dependency and GitHub Actions supply-chain management (including an explicit necessity evaluation of full commit SHA pinning and of Dependabot for GitHub Actions); the current state of least privilege; reevaluation triggers for adopting a custom domain; reevaluation triggers for adding forms, authentication, a database, or persistent storage; a clear separation of current measures, identified gaps, and reasons for not adopting a given measure; a Fable 5 review pass; and final user approval. Full commit SHA pinning, Dependabot, and similar concrete measures are not decided as required at this stage — they become separate tickets only if the evaluation above approves a specific gap response.
+- **Dependencies:** Current architecture; coordinate with [BL-001](#bl-001--pull-request-ci) (Pull request CI); coordinate with [BL-007](#bl-007--monomidigestcomへの移行) (monomidigest.comへの移行); existing security rules already recorded in `AGENTS.md` (「Security requirements」節) and in `DECISIONS.md`.
+- **Implementation evidence:** Individual rules already exist (`AGENTS.md`: HTML escaping, `http`/`https`-only links, `rel="noopener noreferrer"`, no forms/auth/database/new external dependencies/persistent storage without approval, standard-library/existing-dependency-only policy, static GitHub Pages compatibility), but no comprehensive, dedicated requirements document exists. `.github/workflows/fetch.yml` currently references `actions/checkout@v4` and `actions/setup-python@v5` by version tag (not full commit SHA), and no `.github/dependabot.yml` exists — recorded here as an evaluation item (see BL014-F in [BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)), not as a decided requirement.
+- **User acceptance evidence:** Not recorded. Direction ("decide this later", "have Fable 5 review it") is captured from the original comments; no requirements draft has been reviewed or approved by the user yet.
+- **Residual scope:** Requirements draft, evidence mapping, proportionality review, Fable 5 review, gap-ticket decision for any approved concrete measure, user acceptance.
+- **Notes:** Do not decide SHA pinning, Dependabot, or other individual Actions supply-chain measures as required before this ticket's evaluation is complete. See [BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 1 (BL014-C, BL014-F) for the audit trail that produced this item.
 
 ## Completed reference
 
@@ -302,3 +321,12 @@ These references exist only to prevent completed work from being accidentally re
 - **Evidence:** [PR #5](https://github.com/matkei31/security-digest/pull/5), merge commit `0e7a5d26dafaca6a8f7d65bb07144d5da31369c0`
 - **Completed scope:** Repair of stale history for 2026-07-11 through 2026-07-13 after the Atom date fix.
 - **Reopen rule:** Do not return this completed ticket to open backlog without new evidence.
+
+### 取得時証跡と内部日付別アーカイブ
+
+- **Status:** Done
+- **Original wording:** Original wording not recovered.
+- **Source type:** Recovered paraphrase / user-accepted approach
+- **Evidence:** `daily_json.py` (`build_raw_excerpt()` — bounded to 200 characters from the fetched feed description, no article-page scraping; `compute_content_hash()` — SHA-256 of `canonical_url`+`raw_title`+`raw_excerpt`); `fetch.py` (`build_daily_archive_html()`, `generate_archive_outputs()` — internal date-based archive built from daily JSON); `test_daily_json.py`, `test_archive.py`; commit `1c65be67eaaa223d65ca1056313fb933d31f1ec4` ("feat: add daily JSON schema and storage (Ticket 3)"), commit `b51de673b3ea15347413d905f32d473e6f92712e` ("feat: add daily archive pages", Ticket 9, merged at `fbba0b8e57a68adafa0bcabe69a621a3f0c08e54`)
+- **Completed scope:** Store, per article, `url`/`canonical_url`, `title`, `published_at`, `fetched_at`, a bounded `raw_excerpt`, and `content_hash` as minimal provenance against future link rot. Build an internal date-based archive (`docs/archive/YYYY-MM-DD.html`) from daily JSON. Do not store full article text or rich content (consistent with SD-002). Do not submit fetched URLs to an external archive service (no Wayback/archive.org integration exists in the codebase).
+- **Reopen rule:** Do not return this completed scope to open backlog without new evidence. Reopen/reevaluate if any of the following is proposed: expanding the `raw_excerpt` length or source beyond the current bounded, description-based contract; storing full article text; storing rich content; automatically submitting fetched URLs to an external archive service; supporting private/authenticated feeds; or providing stored data to an external party.
