@@ -61,7 +61,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 ## 7. Next candidates
 
 1. [BL-001](BACKLOG.md#bl-001--pull-request-ci) — Add ordinary pull request CI.
-2. [BL-002〜BL-004](BACKLOG.md#bl-002--記事カードの楕円バッジ多用を見直す) — Dashboard and 優先確認 are done and user-approved (partial scope, 2026-07-17); Fable 5 review is complete (including ordinary article cards). Outstanding: user adjudication of the full set of Fable 5 proposals, the ordinary article-card specification, its explicit user approval, a dedicated UI design document, and the article-card implementation itself.
+2. [BL-002〜BL-004](BACKLOG.md#bl-002--記事カードの楕円バッジ多用を見直す) — Dashboard and 優先確認 are done and user-approved (2026-07-17). Fable 5 review is complete (including ordinary article cards), and the user has explicitly chosen variant B for ordinary article cards from a reviewed mock (2026-07-17); its implementation is on branch `feature/article-card-variant-b`, pending the user's visual PC/390px review. Outstanding: that visual acceptance, user adjudication of any remaining Fable 5 proposals, and a dedicated repo-resident UI design specification document.
 3. [BL-005](BACKLOG.md#bl-005--editorial-style-v1とtoday-brief-v4) — Design `editorial-style-v1` and `today-brief-v4`.
 
 See [BACKLOG.md](BACKLOG.md) for BL-006 and later items; they remain recorded and are not removed by this short priority list.
