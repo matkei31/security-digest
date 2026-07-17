@@ -227,7 +227,7 @@ class ArchiveGenerationTest(unittest.TestCase):
         archive_cards = archive_html[archive_html.index('<div class="cards">'):archive_html.index('<div class="sources">')]
         top_cards = top_html[top_html.index('<div class="cards">'):top_html.index('<div class="sources">')]
 
-        self.assertIn("確認目安、確認優先度、元の収集順で表示しています。", archive_html)
+        self.assertIn("確認目安、重要度、元の収集順で表示しています。", archive_html)
         self.assertLess(archive_cards.index("today-low"), archive_cards.index("week-high"))
         self.assertLess(archive_cards.index("week-high"), archive_cards.index("reference-high"))
         self.assertIn('<span class="article-index">1.</span>', archive_cards)
@@ -251,8 +251,8 @@ class ArchiveGenerationTest(unittest.TestCase):
             top_html.index('<section class="important-items">'):top_html.index('<section class="dashboard">')
         ]
 
-        self.assertIn("確認優先度は高い", archive_important)
-        self.assertNotIn("重要度は高い", archive_important)
+        self.assertIn("重要度は高い", archive_important)
+        self.assertNotIn("確認優先度", archive_important)
         self.assertIn("脆弱性の重要度", archive_important)
         self.assertIn("重要度の高い脆弱性", archive_important)
         self.assertEqual(archive_important, top_important)
@@ -308,7 +308,7 @@ class ArchiveIndexAndPathTest(unittest.TestCase):
             self.assertLess(index_html.index("2026年07月11日"), index_html.index("2026年07月10日"))
             self.assertIn('href="2026-07-11.html"', index_html)
             self.assertIn("記事2件", index_html)
-            self.assertIn("確認優先度 高1件", index_html)
+            self.assertIn("重要度 高1件", index_html)
             self.assertIn("本日の要点あり", index_html)
             self.assertNotIn("Today's Brief", index_html)
             self.assertNotIn("Today’s Brief", index_html)

@@ -140,7 +140,7 @@ class ResponseSchemaTest(unittest.TestCase):
 
 class PromptVersionPropagationTest(unittest.TestCase):
     def test_article_prompt_version_is_v5(self):
-        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v7")
+        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v8")
 
     def test_brief_prompt_version_is_unchanged(self):
         self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-v3")
@@ -153,7 +153,7 @@ class PromptVersionPropagationTest(unittest.TestCase):
             datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
             datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
         )
-        self.assertEqual(digest["generator"]["article_prompt_version"], "article-analysis-v7")
+        self.assertEqual(digest["generator"]["article_prompt_version"], "article-analysis-v8")
         self.assertEqual(digest["generator"]["brief_prompt_version"], "today-brief-v3")
 
     def test_each_article_analysis_reflects_new_prompt_version(self):
@@ -170,7 +170,7 @@ class PromptVersionPropagationTest(unittest.TestCase):
                         "source_tier": "Tier 1", "collection_method": "rss", "language": "en"}]
         entry = dj.build_article_entry(item, source_defs, "gemini-2.5-flash",
                                         datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST))
-        self.assertEqual(entry["analysis"]["prompt_version"], "article-analysis-v7")
+        self.assertEqual(entry["analysis"]["prompt_version"], "article-analysis-v8")
 
 
 # ── 正常分析 ──────────────────────────────────────────────────────────────
@@ -216,7 +216,7 @@ class NormalAnalysisTest(unittest.TestCase):
         self.assertEqual(counts["urgency"]["本日確認"], 1)
 
     def test_prompt_version_is_v5(self):
-        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v7")
+        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v8")
 
     def test_recommended_actions_is_html_compatible_array(self):
         result = call_gemini_analyze(response_body=make_candidate_body(VALID_ANALYSIS_RESPONSE))
