@@ -23,9 +23,6 @@
     .card{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;scroll-margin-top:var(--anchor-offset)}
     .card:active{background:#1c2128;border-color:#388bfd}
     .card:target{border-color:#388bfd;box-shadow:0 0 0 1px #388bfd}
-    .card-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-    .tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;color:#fff;white-space:nowrap}
-    .date{font-size:11px;color:#8b949e;margin-left:auto}
     h2{font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3}
     .article-heading{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:6px;align-items:start;font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3;overflow-wrap:anywhere}
     .article-index{color:#8b949e;font-weight:700;white-space:nowrap}
@@ -34,20 +31,14 @@
     .article-title-link,.priority-title-link{color:inherit;text-decoration:none}
     .article-title-link:hover,.article-source-link:hover,.priority-title-link:hover{text-decoration:underline}
     .summary{font-size:12px;color:#8b949e;line-height:1.5;margin-top:6px}
+    .article-meta{margin-top:4px;font-size:12px;color:#8b949e;line-height:1.5}
+    .article-assessment{margin-top:8px;font-size:12px;color:#8b949e;line-height:1.6}
+    .assessment-item strong{color:#e6edf3;font-weight:700}
+    .assessment-item.is-accent{display:inline-block;color:#f85149;font-weight:700;padding-left:7px;border-left:2px solid #f85149}
     .ai-analysis{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:grid;gap:10px}
-    .analysis-badges,.article-tags{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-    .importance-badge,.urgency-badge,.category-badge,.article-tag{font-size:11px;font-weight:700;line-height:1;padding:4px 9px;border-radius:100px}
-    .importance-high{background:#da3633;color:#fff}
-    .importance-medium{background:#9e6a03;color:#fff}
-    .importance-low{background:#238636;color:#fff}
-    .importance-unknown{background:#30363d;color:#c9d1d9}
-    .urgency-today{background:#f85149;color:#fff}
-    .urgency-week{background:#6e7681;color:#fff}
-    .urgency-reference{background:#30363d;color:#c9d1d9}
-    .urgency-unknown{background:#30363d;color:#c9d1d9}
-    .category-badge{border:1px solid #388bfd;color:#79c0ff;background:#0d1117}
-    .article-tags-label{font-size:11px;color:#8b949e;font-weight:500}
-    .article-tag{font-size:10px;font-weight:600;border:1px solid #30363d;color:#8b949e;background:#0d1117}
+    .article-tags{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
+    .article-tags-label{padding-top:3px;font-size:10px;color:#768496;white-space:nowrap}
+    .article-tag{font-size:10px;font-weight:600;line-height:1.2;padding:3px 9px;border-radius:100px;border:1px solid #30363d;color:#8b949e;background:#0d1117}
     .article-section h3{font-size:11px;font-weight:600;color:#8b949e}
     .article-section p,.article-section li{font-size:12px;color:#c9d1d9;line-height:1.6}
     .article-section p,.article-section ul{margin-top:3px}
@@ -119,8 +110,8 @@
 <body>
   <header>
     <h1>🔐 Security Digest</h1>
-    <div class="sub">最終更新: 2026年07月17日 15:54</div>
-    <div class="count">12 件</div>
+    <div class="sub">最終更新: 2026年07月17日 21:42</div>
+    <div class="count">10 件</div>
     <nav class="archive-nav"><a class="archive-link" href="archive/index.html">過去のダイジェストを見る</a></nav>
   </header>
   <div class="todays-brief">
@@ -128,14 +119,14 @@
       <h2>本日の要点</h2>
       <div class="brief-section">
       <h3 class="brief-section-title">本日の概況</h3>
-      <p class="brief-status-line">本日の状態（掲載12件）：重要度「高」2件、確認目安「本日確認」0件、確認目安「今週確認」8件。</p>
-      <p class="brief-overview">本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が8件あり、計画的な確認が必要です。一方、重要度の高い情報が2件あるため、内容は優先的に把握する必要があります。今週は、情報窃取マルウェアの活動活発化やAIエージェントのセキュリティリスクに関する重要な情報が確認されました。特に、AI技術の進化に伴う新たな攻撃手法や管理上の課題への対応が求められています。</p>
+      <p class="brief-status-line">本日の状態（掲載10件）：重要度「高」3件、確認目安「本日確認」0件、確認目安「今週確認」5件。</p>
+      <p class="brief-overview">本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が5件あり、計画的な確認が必要です。一方、重要度の高い情報が3件あるため、内容は優先的に把握する必要があります。今週はAI技術の急速な進化とそれに伴うセキュリティリスク、特にAIエージェントのID管理やアクセス制御に関する課題が主要な論点となっています。</p>
     </div><div class="brief-section">
       <h3 class="brief-section-title">本日の注目論点</h3>
-      <ul class="brief-list"><li>AI技術の急速な進化は、セキュリティ対策の新たな課題を生み出しています。AIエージェントの安全な導入と運用、AI/LLMベースのセキュリティソリューションの限界を理解し、多層的な防御策を検討することが重要です。</li><li>情報窃取マルウェアや金銭目的の攻撃グループによる脅威は継続しており、従業員を標的としたソーシャルエンジニアリングやトロイの木馬化されたソフトウェアへの警戒が必要です。組織全体のセキュリティ意識向上と、最新の脅威動向に基づいた対策の見直しが求められます。</li></ul>
+      <ul class="brief-list"><li>AIエージェントの導入が進む中で、そのID管理、アクセス制御、およびツール利用における最小特権の原則適用が、機密情報保護とシステム整合性維持の鍵となります。AIエージェントのライフサイクル全体を通じたセキュリティガバナンスの確立が急務です。</li><li>AI/LLMを活用したセキュリティフィルターが、隠しテキストを用いるフィッシングメールに対して効果を発揮しない事例が確認されており、AIベースの防御策の限界と、多層的なセキュリティ対策の重要性が改めて浮き彫りになっています。</li></ul>
     </div><div class="brief-section">
       <h3 class="brief-section-title">本日の確認事項</h3>
-      <ul class="brief-list"><li>AIエージェントの利用状況を棚卸しし、それぞれに割り当てられているIDと権限が適切か、過剰な権限が付与されていないかを確認してください。また、AIエージェントのライフサイクル管理、ツール利用ポリシー、監査ログの取得・監視体制を評価し、必要な改善策を検討してください。</li><li>AI/LLMベースのメールセキュリティソリューションを導入している場合、ベンダーからテキストサルティング攻撃手法への対策状況や推奨される設定変更について情報を収集してください。また、Microsoft製品の脆弱性情報を確認し、悪用が確認されているゼロデイ脆弱性を含むパッチ適用計画を評価・策定してください。</li></ul>
+      <ul class="brief-list"><li>ACR Stealerによる認証情報窃取のリスクを軽減するため、ClickFix型の誘い込み、不審なWebDAV活動、難読化されたPowerShell実行、ブラウザ認証情報ストアへのアクセス試行を監視し、ユーザーへの注意喚起を実施してください。</li><li>AIエージェントを業務に導入している、または導入を検討している場合、AIエージェントの利用状況を棚卸しし、ライフサイクル管理されたIDと最小特権の原則に基づいた権限が付与されているか、エンドツーエンドの監査ログが取得されているかを確認してください。</li></ul>
     </div>
     </div>
   </div>
@@ -144,37 +135,43 @@
     <p class="important-items-note">重要度が高い、または確認目安が本日確認の記事です。</p>
     <div class="important-items-list">
       <article class="priority-item">
-        <h3 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-1" lang="en">ACR Stealer: Two observed intrusion chains amid increased threat activity</a><span class="article-title-translation" lang="ja">ACR Stealer: 活発化する脅威活動の中で観測された2つの侵入経路</span></span></h3>
+        <h3 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-1" lang="en">ACR Stealer: Two observed intrusion chains amid increased threat activity</a><span class="article-title-translation" lang="ja">ACR Stealer: 観測された2つの侵入経路と脅威活動の増加</span></span></h3>
         <p class="priority-item-meta">重要度 高 ・ 確認目安 今週確認</p>
-        <p class="important-item-reason">重要度は、情報窃取マルウェアによる認証情報窃取は金融機関にとって重大な脅威であり、広範な影響が懸念されるため「高」です。確認目安は、進行中の攻撃キャンペーンであり、自社環境への影響有無を評価する必要があるため「今週確認」です。</p>
+        <p class="important-item-reason">重要度は、情報窃取マルウェアによる認証情報窃取がアカウント侵害やクラウド資源への不正アクセスにつながる重大な脅威であるため「高」です。確認目安は、進行中の脅威活動に関する情報であり、即時対応を要する具体的な期限の記述がないため「今週確認」です。</p>
         <a class="priority-item-link" href="#article-1">本文を見る</a>
       </article>
       <article class="priority-item">
         <h3 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-2" lang="en">Least privilege for AI agents: Identity, access, and tool binding</a><span class="article-title-translation" lang="ja">AIエージェントの最小特権: ID、アクセス、ツールバインディング</span></span></h3>
         <p class="priority-item-meta">重要度 高 ・ 確認目安 今週確認</p>
-        <p class="important-item-reason">重要度は、AIエージェントの不適切な利用が金融機関の機密情報漏えいやシステム停止に直結するリスクがあるため「高」です。確認目安は、AIエージェントの導入・利用における一般的なリスクと対策に関する情報であり、即時対応を要する具体的な脅威や期限の記述がないため「今週確認」です。</p>
+        <p class="important-item-reason">重要度は、AIエージェントの利用拡大に伴うID・アクセス管理の課題が、金融機関のセキュリティとガバナンスに重大な影響を及ぼす可能性があるため「高」です。確認目安は、AIエージェントの導入・運用におけるリスク評価と対策が中長期的な課題であり、直ちに緊急対応を要する事象ではないため「今週確認」です。</p>
         <a class="priority-item-link" href="#article-2">本文を見る</a>
+      </article>
+      <article class="priority-item">
+        <h3 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-6" lang="en">E.U. Orders Google to Open Android Mic, Camera and Screen to Rival AI Assistants</a><span class="article-title-translation" lang="ja">EU、Googleに対しAndroidのマイク・カメラ・画面への競合AIアシスタントのアクセス開放を命令</span></span></h3>
+        <p class="priority-item-meta">重要度 高 ・ 確認目安 参考</p>
+        <p class="important-item-reason">重要度は、金融機関の業務で広く利用されるAndroidデバイスの機能開放に関する規制命令であり、中長期的な影響が大きいため「高」です。確認目安は、対応期限が2027年8月1日であり、現時点で緊急の対応を要する情報ではないため「参考」です。</p>
+        <a class="priority-item-link" href="#article-6">本文を見る</a>
       </article>
     </div>
   </section>
   <section class="dashboard">
     <div class="dashboard-head">
       <h2>本日のダッシュボード</h2>
-      <p class="dashboard-count"><span>掲載</span><strong>12</strong>件</p>
+      <p class="dashboard-count"><span>掲載</span><strong>10</strong>件</p>
     </div>
     <div class="dashboard-axes">
       <div class="dashboard-axis">
         <h3>重要度</h3>
-        <ul class="dashboard-axis-list"><li class="dashboard-axis-item is-accent"><span>高</span><strong>2</strong></li><li class="dashboard-axis-item"><span>中</span><strong>9</strong></li><li class="dashboard-axis-item"><span>低</span><strong>1</strong></li></ul>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item is-accent"><span>高</span><strong>3</strong></li><li class="dashboard-axis-item"><span>中</span><strong>7</strong></li><li class="dashboard-axis-item"><span>低</span><strong>0</strong></li></ul>
       </div>
       <div class="dashboard-axis">
         <h3>確認目安</h3>
-        <ul class="dashboard-axis-list"><li class="dashboard-axis-item"><span>本日確認</span><strong>0</strong></li><li class="dashboard-axis-item"><span>今週確認</span><strong>8</strong></li><li class="dashboard-axis-item"><span>参考</span><strong>4</strong></li></ul>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item"><span>本日確認</span><strong>0</strong></li><li class="dashboard-axis-item"><span>今週確認</span><strong>5</strong></li><li class="dashboard-axis-item"><span>参考</span><strong>5</strong></li></ul>
       </div>
     </div>
     <div class="dashboard-categories">
       <h3>主なカテゴリ</h3>
-      <ul class="dashboard-category-list"><li class="dashboard-category-item"><span>脆弱性・パッチ</span><strong>1</strong></li><li class="dashboard-category-item"><span>攻撃・脅威動向</span><strong>4</strong></li><li class="dashboard-category-item"><span>インシデント</span><strong>1</strong></li><li class="dashboard-category-item"><span>AI・新技術リスク</span><strong>5</strong></li><li class="dashboard-category-item"><span>その他</span><strong>1</strong></li></ul>
+      <ul class="dashboard-category-list"><li class="dashboard-category-item"><span>攻撃・脅威動向</span><strong>3</strong></li><li class="dashboard-category-item"><span>規制・ガバナンス</span><strong>1</strong></li><li class="dashboard-category-item"><span>AI・新技術リスク</span><strong>6</strong></li></ul>
     </div>
   </section>
   <section class="article-list-header">
@@ -183,287 +180,203 @@
   </section>
   <div class="cards">
     <article class="card" id="article-1">
-      <div class="card-meta">
-        <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">07/16 23:12</span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/16/acr-stealer-two-observed-intrusion-chains-amid-increased-threat-activity/" target="_blank" rel="noopener noreferrer" lang="en">ACR Stealer: Two observed intrusion chains amid increased threat activity</a><span class="article-title-translation" lang="ja">ACR Stealer: 活発化する脅威活動の中で観測された2つの侵入経路</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/16/acr-stealer-two-observed-intrusion-chains-amid-increased-threat-activity/" target="_blank" rel="noopener noreferrer" lang="en">ACR Stealer: Two observed intrusion chains amid increased threat activity</a><span class="article-title-translation" lang="ja">ACR Stealer: 観測された2つの侵入経路と脅威活動の増加</span></span></h2>
+      <p class="article-meta">Microsoft Security ・ 07/16 23:12</p>
+      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-high">重要度 高</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">APT</span><span class="article-tag">フィッシング</span><span class="article-tag">情報漏えい</span><span class="article-tag">認証</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Microsoft Defender Expertsは、2026年4月下旬から6月中旬にかけて、顧客環境でACR Stealerの活動が活発化していることを観測しました。これらのキャンペーンはClickFixというソーシャルエンジニアリング手法を悪用し、ブラウザの認証情報、認証トークン、機密文書を窃取しています。</p>
+          <p>Microsoft Defender Expertsは、2026年4月下旬から6月中旬にかけてACR Stealerの活動増加を観測しました。このマルウェアはClickFixというソーシャルエンジニアリング手法を用いて、ブラウザの認証情報、認証トークン、機密文書を窃取します。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関で当該マルウェアの標的となる環境やシステムを利用している場合、認証情報の窃取やクラウド資源への不正アクセス、その後の侵入活動につながる可能性があります。</p>
+          <p>金融機関で当該マルウェアの標的となるブラウザ認証情報や機密文書が窃取された場合、アカウント侵害やクラウド資源への不正アクセス、さらなる侵入活動につながる可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>ClickFix型の誘い込み、偽の検証チェック、およびコマンド実行指示を認識するようユーザー教育を強化する</li><li>ClickFixの誘い込み、不審なWebDAV活動、難読化されたPowerShell実行、ブラウザ認証情報ストアへのアクセス試行を監視する</li><li>Microsoftが推奨する緩和策（マルバタイジングへの露出低減、PowerShellのログ記録強化など）を評価し、適用を検討する</li></ul>
+          <ul class="action-list"><li>ClickFix型の誘い込み、不審なWebDAV活動、難読化されたPowerShell実行、ブラウザ認証情報ストアへのアクセス試行を監視する</li><li>ユーザーに対し、ClickFix型のプロンプトや偽の検証チェック、コマンド実行を促す指示が不正であると認識させる教育を実施する</li><li>Microsoftが推奨する緩和策（マルバタイジングへの露出低減、SEOポイズニング対策など）を評価し、適用を検討する</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/16/acr-stealer-two-observed-intrusion-chains-amid-increased-threat-activity/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">APT</span><span class="article-tag">フィッシング</span><span class="article-tag">認証</span><span class="article-tag">クラウド</span><span class="article-tag">情報漏えい</span></div>
     </article>
 
     <article class="card" id="article-2">
-      <div class="card-meta">
-        <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">07/16 16:00</span>
-      </div>
       <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/16/least-privilege-for-ai-agents-identity-access-and-tool-binding/" target="_blank" rel="noopener noreferrer" lang="en">Least privilege for AI agents: Identity, access, and tool binding</a><span class="article-title-translation" lang="ja">AIエージェントの最小特権: ID、アクセス、ツールバインディング</span></span></h2>
+      <p class="article-meta">Microsoft Security ・ 07/16 16:00</p>
+      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-high">重要度 高</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">IAM</span><span class="article-tag">認証</span><span class="article-tag">ガイドライン</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>AIエージェントが複数のシステムを横断して自律的に動作する際、不適切なID管理や最小特権の欠如が、意図しないデータアクセス、改変、権限昇格、監査性の低下といった重大なリスクを引き起こす可能性について解説されています。</p>
+          <p>AIエージェントが複数のシステム間で自律的に動作する際、不適切なID管理や最小特権の欠如が、意図しないデータアクセス、改変、権限昇格、監査性の問題を引き起こすリスクがあるとMicrosoftが指摘しています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関がAIエージェントを業務に導入・利用している場合、不適切なアクセス制御やID管理は、機密情報の漏えい、不正な取引、システム停止、規制違反につながる可能性があります。特に、顧客データや決済システムに関わるAIエージェントの利用においては、厳格な管理が求められます。</p>
+          <p>金融機関がAIエージェントを業務に導入する際、不適切なアクセス制御は機密情報の漏えいやシステム改変、業務停止につながる可能性があります。監査性の欠如はインシデント対応や規制当局への報告を複雑にするリスクがあります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>AIエージェントの利用状況を棚卸しし、それぞれに割り当てられているIDと権限を特定する</li><li>AIエージェントの役割ベースアクセス制御(RBAC)がタスクスコープで適切に設定されているか、過剰な権限が付与されていないかを確認する</li><li>AIエージェントのライフサイクル管理、ツール利用ポリシー、監査ログの取得・監視体制を評価し、必要な改善策を検討する</li></ul>
+          <ul class="action-list"><li>AIエージェントの利用状況を棚卸しし、ライフサイクル管理されたIDと明示的なロールが割り当てられているか確認する</li><li>AIエージェントに付与されている権限が最小特権の原則に基づき、タスクスコープで設計されているか評価する</li><li>AIエージェントのツール利用が事前設定されたマニフェストや構成に限定されているか、エンドツーエンドの監査ログが取得されているか確認する</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/16/least-privilege-for-ai-agents-identity-access-and-tool-binding/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">IAM</span><span class="article-tag">ガイドライン</span></div>
     </article>
 
     <article class="card" id="article-3">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/16 19:41</span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/threat-intelligence/1m-emails-hidden-text-dupe-ai-security-filters" target="_blank" rel="noopener noreferrer" lang="en">1M+ Emails Use Hidden Text to Dupe AI Security Filters</a></span></h2>
+      <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/threat-intelligence/1m-emails-hidden-text-dupe-ai-security-filters" target="_blank" rel="noopener noreferrer" lang="en">1M+ Emails Use Hidden Text to Dupe AI Security Filters</a><span class="article-title-translation" lang="ja">100万件以上のメールが隠しテキストでAIセキュリティフィルターを欺く</span></span></h2>
+      <p class="article-meta">Dark Reading ・ 07/16 19:41</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">フィッシング</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>AIやLLMを活用したセキュリティフィルターが、テキストサルティングと呼ばれる隠しテキストの手法に対して効果を発揮せず、100万件以上のフィッシングメールが受信箱に届いていることが報告されました。</p>
+          <p>AIやLLMを活用したセキュリティフィルターが、テキストサルティングと呼ばれる隠しテキストの手法に対して効果を発揮せず、100万件以上のフィッシングメールが受信トレイに届いていることが判明しました。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関においてもAI/LLMベースのメールセキュリティソリューションを導入している場合、本攻撃手法によるフィッシングメールが従業員の受信箱に届く可能性があります。</p>
+          <p>金融機関がAI/LLMベースのメールセキュリティフィルターを利用している場合、フィッシングメールの検知漏れにつながる可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>AI/LLMベースのメールセキュリティソリューションの導入状況を確認する</li><li>導入している場合、ベンダーから本攻撃手法への対策状況や推奨される設定変更について情報を収集する</li></ul>
+          <ul class="action-list"><li>利用中のメールセキュリティソリューションがAI/LLMベースのフィルターを使用しているか確認する</li><li>AI/LLMベースのフィルターにおけるテキストサルティングへの対策状況をベンダーに確認する</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://www.darkreading.com/threat-intelligence/1m-emails-hidden-text-dupe-ai-security-filters" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">フィッシング</span></div>
     </article>
 
     <article class="card" id="article-4">
-      <div class="card-meta">
-        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
-        <span class="date">07/16 18:00</span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://blog.talosintelligence.com/begun-the-patch-wars-have/" target="_blank" rel="noopener noreferrer" lang="en">Begun, the Patch Wars have</a><span class="article-title-translation" lang="ja">AIによる脆弱性発見加速でパッチ適用が課題に、Microsoftが過去最多の622件を公開</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://blog.talosintelligence.com/begun-the-patch-wars-have/" target="_blank" rel="noopener noreferrer" lang="en">Begun, the Patch Wars have</a><span class="article-title-translation" lang="ja">AI活用による脆弱性発見の加速と記録的なパッチ公開、RabbitMQのOAuth秘密漏えい脆弱性</span></span></h2>
+      <p class="article-meta">Cisco Talos ・ 07/16 18:00</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">パッチ</span><span class="article-tag">悪用確認済み</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>AIを活用した脆弱性研究の加速により、Microsoftが7月の月例パッチで過去最多となる622件の脆弱性を修正しました。この中には、悪用が確認されているゼロデイ脆弱性が2件含まれています。これにより、企業はパッチ適用への対応能力が問われると指摘されています。</p>
+          <p>AIフロンティアモデルの活用により脆弱性発見が加速し、7月のパッチチューズデーではMicrosoftが過去最多となる622件の脆弱性（うち62件が緊急、3件がゼロデイで2件は実悪用中）を修正しました。また、オープンソースのメッセージブローカーであるRabbitMQに、認証なしでOAuth秘密を漏えいする脆弱性が存在します。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関はMicrosoft製品を広く利用しているため、大量のパッチ適用が必要となる可能性があり、IT運用への影響が懸念されます。また、悪用が確認されたゼロデイ脆弱性への対応は喫緊の課題となり得ます。</p>
+          <p>Microsoft製品は多くの金融機関で利用されており、パッチ適用状況の確認は重要です。RabbitMQはアプリケーション間の非同期通信に広く利用されるため、利用している場合はOAuth秘密の漏えいリスクを確認する必要があります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社で利用しているMicrosoft製品の脆弱性情報を確認し、影響を受ける資産を特定する</li><li>Microsoftが公開したパッチ情報に基づき、自社環境への適用計画を評価・策定する</li><li>悪用が確認されているゼロデイ脆弱性について、関連する製品の利用有無と対応状況を確認する</li></ul>
+          <ul class="action-list"><li>自社および委託先におけるMicrosoft製品のパッチ適用状況を確認する</li><li>RabbitMQの利用有無と影響バージョンを確認し、ベンダーの一次情報に基づき対応を検討する</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://blog.talosintelligence.com/begun-the-patch-wars-have/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">パッチ</span><span class="article-tag">ゼロデイ</span><span class="article-tag">悪用確認済み</span><span class="article-tag">サプライチェーン</span></div>
     </article>
 
     <article class="card" id="article-5">
-      <div class="card-meta">
-        <span class="tag" style="background:#e67e22">Mandiant</span>
-        <span class="date">07/16 14:00</span>
-      </div>
       <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://cloud.google.com/blog/topics/threat-intelligence/ai-assisted-vulnerability-management/" target="_blank" rel="noopener noreferrer" lang="en">Demystifying AI Exploits: A Blueprint for AI-Assisted Vulnerability Management</a></span></h2>
+      <p class="article-meta">Mandiant ・ 07/16 14:00</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">LLM</span><span class="article-tag">ガイドライン</span><span class="article-tag">NIST</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>Mandiantは、AIエージェントを脆弱性管理ワークフローに安全に統合するための実践的なガイダンスを提供しています。脆弱性発見と修正の自動化にLLMエージェントを導入する際の新たなアーキテクチャリスクを指摘し、NIST AI RMFやOW</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関がAIエージェントを脆弱性管理や開発プロセスに導入する際に、新たなリスクを特定し、安全な統合のための対策を検討する上で関係します。</p>
+          <p>金融機関がAIエージェントを脆弱性管理や製品セキュリティに導入する際に、新たなリスクを回避し、安全な運用体制を構築するための参考情報となります。直接的なインシデントや規制変更に関する情報ではありません。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>AIエージェントを脆弱性管理ワークフローに導入する際のアーキテクチャリスクを評価する</li><li>NIST AIリスク管理フレームワークやOWASP Top 10 for LLMsなどの業界標準に基づき、AIエージェントの運用上のガードレール確立を検討する</li><li>GoogleのSecure AI Framework (SAIF)などのフレームワークを参考に、既存の決定論的制御をAI実行環境へ拡張する方法を評価する</li></ul>
+          <ul class="action-list"><li>AIエージェントを脆弱性管理ワークフローに導入する際のアーキテクチャリスクと運用上のガードレールについて、Mandiantのガイダンスを確認する</li><li>NIST AI Risk Management FrameworkやOWASP Top 10 for LLMsなどの既存の業界標準に基づき、AI導入におけるリスク管理体制を評価する</li></ul>
         </section>
       </div>
       <a class="article-source-link" href="https://cloud.google.com/blog/topics/threat-intelligence/ai-assisted-vulnerability-management/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">LLM</span><span class="article-tag">NIST</span><span class="article-tag">ガイドライン</span></div>
     </article>
 
     <article class="card" id="article-6">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/16 13:33</span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/n8n-token-exchange-flaw-could-let.html" target="_blank" rel="noopener noreferrer" lang="en">n8n Token Exchange Flaw Could Let Attackers Log In as Users From Another Issuer</a><span class="article-title-translation" lang="ja">ワークフロー自動化プラットフォームn8nのトークン交換の欠陥により、攻撃者が他の発行元ユーザーとしてログインする可能性</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/eu-orders-google-to-open-android-mic.html" target="_blank" rel="noopener noreferrer" lang="en">E.U. Orders Google to Open Android Mic, Camera and Screen to Rival AI Assistants</a><span class="article-title-translation" lang="ja">EU、Googleに対しAndroidのマイク・カメラ・画面への競合AIアシスタントのアクセス開放を命令</span></span></h2>
+      <p class="article-meta">The Hacker News ・ 07/17 11:44</p>
+      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">認証</span><span class="article-tag">IAM</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>ワークフロー自動化プラットフォームn8nのEnterprise版において、複数の外部トークン発行元を信頼するよう設定されている場合、JWTのsubクレームのみでローカルユーザーと照合し、issクレームを無視する欠陥が発見されました。これにより、攻撃者が別の発行元のユーザーとしてログインできる可能性があります。</p>
+          <p>欧州委員会はGoogleに対し、競合するAIアシスタントがGoogle Geminiと同様にAndroidのマイク、カメラ、画面コンテンツ、バックグラウンドでのアプリ操作にアクセスできるよう、Android 18で機能開放することを命令しました。Googleは2027年8月1日までにこれに対応する必要があります。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>n8nのEnterprise版を利用し、かつ複数の外部トークン発行元を信頼するよう設定している金融機関において、適用性確認の対象となります。記事からは金融機関での利用状況は確認できません。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>n8n Enterprise版の利用有無と、複数の外部トークン発行元を信頼する設定になっているかを確認する</li><li>n8nベンダーからの一次情報や修正パッチ、緩和策を確認し、対応要否を評価する</li></ul>
+          <p>金融機関がAndroidデバイスを業務で利用している場合、将来的にAIアシスタントの利用ポリシーやセキュリティ設定の見直しが必要となる可能性があります。直接的な影響は現時点では限定的ですが、中長期的な動向として注視が必要です。</p>
         </section>
       </div>
-      <a class="article-source-link" href="https://thehackernews.com/2026/07/n8n-token-exchange-flaw-could-let.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://thehackernews.com/2026/07/eu-orders-google-to-open-android-mic.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">規制</span><span class="article-tag">AI</span><span class="article-tag">ガイドライン</span></div>
     </article>
 
     <article class="card" id="article-7">
-      <div class="card-meta">
-        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
-        <span class="date">07/16 10:00</span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="https://blog.talosintelligence.com/uat-11795-deploys-novel-starland-rat-and-bespoke-wldr-c2-implant-in-financially-motivated-campaign/" target="_blank" rel="noopener noreferrer" lang="en">UAT-11795 deploys novel Starland RAT and bespoke WLDR C2 implant in financially motivated campaign</a><span class="article-title-translation" lang="ja">UAT-11795がStarland RATとWLDR C2インプラントを展開、金銭目的のキャンペーンで</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/cloud-security/google-bets-agentic-defense-strategy-outpace-attackers" target="_blank" rel="noopener noreferrer" lang="en">Google Bets &#39;Agentic Defense&#39; Strategy Can Outpace Attackers</a><span class="article-title-translation" lang="ja">Google、AI攻撃に対抗する「エージェント型防御」戦略に注力</span></span></h2>
+      <p class="article-meta">Dark Reading ・ 07/17 11:50</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">APT</span><span class="article-tag">フィッシング</span><span class="article-tag">インシデント</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>Cisco Talosは、2025年6月以降、米国と欧州のユーザーを標的としているロシア語を話す金銭目的の攻撃グループUAT-11795について報告しました。この攻撃者は、Starland RATとWLDR C2インプラントを展開し、認証情報や仮想通貨ウォレット資産を狙っています。</p>
+          <p>Google Cloudは、AI攻撃に対する脅威検知と修復を自動化するため、Wizの主要機能をエージェント型防御プラットフォームに統合しました。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関の従業員が標的となるソフトウェアのトロイの木馬化されたインストーラーをダウンロードした場合、認証情報や仮想通貨ウォレット資産が窃取される可能性があります。特に開発ツールやIT管理ユーティリティ、企業コラボレーションプラットフォームが標的とされているため、関連部署は注意が必要です。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>記事に記載されたトロイの木馬化されたソフトウェア（MobaXterm、WebEx、Zoom、DBeaver、FACEIT）の利用状況を確認し、正規のチャネルからダウンロードされているか検証する</li><li>Cisco Talosが提供するClamAVシグネチャおよびSnortルールをセキュリティ製品に適用し、関連する脅威の検出・ブロック状況を監視する</li><li>Cisco TalosのGitHubリポジトリで公開されているIOCsと自社ログを照合し、侵害の痕跡がないか確認する</li></ul>
+          <p>金融機関がGoogle Cloudを利用しており、AI関連のセキュリティ対策に関心がある場合に関係します。直接的な影響は限定的です。</p>
         </section>
       </div>
-      <a class="article-source-link" href="https://blog.talosintelligence.com/uat-11795-deploys-novel-starland-rat-and-bespoke-wldr-c2-implant-in-financially-motivated-campaign/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://www.darkreading.com/cloud-security/google-bets-agentic-defense-strategy-outpace-attackers" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">クラウド</span></div>
     </article>
 
     <article class="card" id="article-8">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/16 07:00</span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">8.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/threat-intelligence/police-disrupt-140m-euro-cyber-fraud-ring-spain" target="_blank" rel="noopener noreferrer" lang="en">Police Disrupt a €140M Cyber Fraud Ring in Spain</a><span class="article-title-translation" lang="ja">スペイン警察、1億4,000万ユーロ規模のサイバー詐欺組織を摘発</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">8.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/the-race-to-field-military-autonomy-is.html" target="_blank" rel="noopener noreferrer" lang="en">The Race to Field Military Autonomy Is On, Can Trusted Information Infrastructure Keep Pace?</a><span class="article-title-translation" lang="ja">軍事自律システムの導入競争と信頼できる情報インフラの課題</span></span></h2>
+      <p class="article-meta">The Hacker News ・ 07/17 11:30</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">インシデント</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>スペイン警察は、1億4,000万ユーロ（約230億円）規模のサイバー詐欺組織を摘発しました。この組織は様々なサイバー攻撃を実行し、複雑な金融ネットワークを通じて不正に得た資金を洗浄していました。</p>
+          <p>軍事組織は自律システムの導入を加速しており、米国、英国、NATO全体で新たな投資、防衛戦略の進化、迅速な調達経路が能力提供を変革しています。これにより、コンセプトから運用展開までを商業的なスピードで進めるプログラムが評価されています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関は、このようなサイバー詐欺組織による資金洗浄の経路として利用されるリスクがあるため、不正送金やマネーロンダリング対策の観点から関係します。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>不正送金やマネーロンダリングに関する最新の脅威動向と対策を再確認する</li><li>自社の不正検知システムや監視体制が、新たな手口に対応可能か評価する</li></ul>
+          <p>金融機関への直接的な影響は限定的です。軍事分野における自律システムの導入動向と、それに伴う情報インフラの課題に関する参考情報として位置付けられます。</p>
         </section>
       </div>
-      <a class="article-source-link" href="https://www.darkreading.com/threat-intelligence/police-disrupt-140m-euro-cyber-fraud-ring-spain" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://thehackernews.com/2026/07/the-race-to-field-military-autonomy-is.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span></div>
     </article>
 
     <article class="card" id="article-9">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/16 20:57</span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">9.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/cybersecurity-operations/agentic-ai-untamable-ask-the-right-security-questions" target="_blank" rel="noopener noreferrer" lang="en">Agentic AI Is Untamable: Ask the Right Security Questions</a><span class="article-title-translation" lang="ja">エージェントAIは制御不能：適切なセキュリティ質問を</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">9.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/armenia-detains-russian-tourist-on-us.html" target="_blank" rel="noopener noreferrer" lang="en">Armenia Detains Russian Tourist on U.S. Warrant for REvil Hacker, Lawyers Say Wrong Man</a><span class="article-title-translation" lang="ja">アルメニアがREvilハッカーの米国令状でロシア人観光客を拘束、弁護士は人違いと主張</span></span></h2>
+      <p class="article-meta">The Hacker News ・ 07/17 10:53</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">AIエージェント</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>エージェントAIは組織にとって十分なリスクを生み出しており、攻撃者への対策だけでなく、セキュリティの再構築が求められています。</p>
+          <p>アルメニアがREvilランサムウェアの容疑者として米国からの身柄引き渡し要請に基づき、ロシア人観光客アレクサンドル・エルマコフ氏を拘束しました。しかし、弁護士は人違いであると主張しています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関がエージェントAIの導入を検討している場合、そのセキュリティリスク評価と対策の検討に関係します。現時点での直接的な影響は限定的です。</p>
+          <p>金融機関への直接的な影響は限定的です。ランサムウェアグループREvilの動向に関する情報として、脅威インテリジェンスの参考になります。</p>
         </section>
       </div>
-      <a class="article-source-link" href="https://www.darkreading.com/cybersecurity-operations/agentic-ai-untamable-ask-the-right-security-questions" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://thehackernews.com/2026/07/armenia-detains-russian-tourist-on-us.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">ランサムウェア</span></div>
     </article>
 
     <article class="card" id="article-10">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/16 17:09</span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">10.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/two-scattered-spider-hackers-get-55.html" target="_blank" rel="noopener noreferrer" lang="en">Two Scattered Spider Hackers Get 5.5 Years Each for £29 Million TfL Hack</a><span class="article-title-translation" lang="ja">Scattered Spiderのハッカー2名、ロンドン交通局への攻撃でそれぞれ5年半の判決</span></span></h2>
+      <h2 class="article-heading"><span class="article-index">10.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/cybersecurity-operations/agentic-ai-untamable-ask-the-right-security-questions" target="_blank" rel="noopener noreferrer" lang="en">Agentic AI: Taming the Unpredictable</a><span class="article-title-translation" lang="ja">エージェントAI: 予測不能なものを飼いならす</span></span></h2>
+      <p class="article-meta">Dark Reading ・ 07/16 20:57</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：インシデント</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">インシデント</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
-          <p>2024年にロンドン交通局（TfL）をハッキングし、148のシステムを停止させ、27,000人の従業員にパスワードの対面リセットを強いたOwen Flowers（18歳）とThalha Jubair（20歳）の2名が、それぞれ5年半の懲役刑を言い渡されました。</p>
+          <p>エージェントAIは組織にとって十分なリスクを生み出しており、セキュリティの再構築が求められています。</p>
         </section>
         <section class="article-section">
           <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関への直接的な影響は限定的です。他業界のインシデント事例として、攻撃手法や被害からの復旧対応について参考になります。</p>
+          <p>金融機関におけるエージェントAIの導入状況や利用方法によって関係しますが、現時点では具体的なリスクや影響は記事からは確認できません。</p>
         </section>
       </div>
-      <a class="article-source-link" href="https://thehackernews.com/2026/07/two-scattered-spider-hackers-get-55.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </article>
-
-    <article class="card" id="article-11">
-      <div class="card-meta">
-        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
-        <span class="date">07/16 10:00</span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">11.</span><span class="article-title-stack"><a class="article-title-link" href="https://blog.talosintelligence.com/the-hunters-paradox-is-it-time-to-embrace-automated-threat-hunting/" target="_blank" rel="noopener noreferrer" lang="en">The Hunter&#39;s Paradox: Is it time to embrace automated threat hunting?</a><span class="article-title-translation" lang="ja">脅威ハンティングにおけるAI活用: 「ハンターのパラドックス」への対応</span></span></h2>
-      <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span></div>
-        <section class="article-section">
-          <h3>何が起きた</h3>
-          <p>Cisco Talosは、脅威ハンティングにおけるAI活用の是非について議論し、人間だけではセキュリティデータの量と速度に対応できない「ハンターのパラドックス」を提示しました。AIの推論能力は向上しているものの、攻撃者の「嘘」に対応できないという課題を指摘し、AIに狭い焦点と厳格なガイドラインを与え、人間が戦略と新規性を担当するアプローチを提案しています。</p>
-        </section>
-        <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関においても、増大するセキュリティデータへの対応は喫緊の課題であり、AIを活用した脅威ハンティングは効率化の可能性を秘めています。しかし、AIの信頼性に関する課題は、導入を検討する上で考慮すべき重要なリスク要因となります。</p>
-        </section>
-      </div>
-      <a class="article-source-link" href="https://blog.talosintelligence.com/the-hunters-paradox-is-it-time-to-embrace-automated-threat-hunting/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </article>
-
-    <article class="card" id="article-12">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/16 15:41</span>
-      </div>
-      <h2 class="article-heading"><span class="article-index">12.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/threatsday-game-cheat-spyware-24-hour.html" target="_blank" rel="noopener noreferrer" lang="en">ThreatsDay: Game Cheat Spyware, 24-Hour Ransomware, Chrome Sync Stalking + 12 More Stories</a><span class="article-title-translation" lang="ja">ThreatsDay: ゲームチートスパイウェア、24時間ランサムウェア、Chrome同期ストーキングなど12の脅威</span></span></h2>
-      <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-low">重要度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
-        
-        <section class="article-section">
-          <h3>何が起きた</h3>
-          <p>今週の脅威は、見慣れたリポジトリやインストーラー、無害な同期設定など、一見安全に見えるものから始まることが多いと指摘されています。古い脆弱性の再燃、デフォルト設定の弱点、単純な攻撃経路などが挙げられています。</p>
-        </section>
-        <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
-          <p>金融機関への直接的な影響は限定的であり、一般的な脅威動向の参考情報として位置付けられます。</p>
-        </section>
-      </div>
-      <a class="article-source-link" href="https://thehackernews.com/2026/07/threatsday-game-cheat-spyware-24-hour.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://www.darkreading.com/cybersecurity-operations/agentic-ai-untamable-ask-the-right-security-questions" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">AIエージェント</span></div>
     </article></div>
   <div class="sources">
     <details>

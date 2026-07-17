@@ -23,9 +23,6 @@
     .card{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;scroll-margin-top:var(--anchor-offset)}
     .card:active{background:#1c2128;border-color:#388bfd}
     .card:target{border-color:#388bfd;box-shadow:0 0 0 1px #388bfd}
-    .card-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px}
-    .tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;color:#fff;white-space:nowrap}
-    .date{font-size:11px;color:#8b949e;margin-left:auto}
     h2{font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3}
     .article-heading{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:6px;align-items:start;font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3;overflow-wrap:anywhere}
     .article-index{color:#8b949e;font-weight:700;white-space:nowrap}
@@ -34,20 +31,14 @@
     .article-title-link,.priority-title-link{color:inherit;text-decoration:none}
     .article-title-link:hover,.article-source-link:hover,.priority-title-link:hover{text-decoration:underline}
     .summary{font-size:12px;color:#8b949e;line-height:1.5;margin-top:6px}
+    .article-meta{margin-top:4px;font-size:12px;color:#8b949e;line-height:1.5}
+    .article-assessment{margin-top:8px;font-size:12px;color:#8b949e;line-height:1.6}
+    .assessment-item strong{color:#e6edf3;font-weight:700}
+    .assessment-item.is-accent{display:inline-block;color:#f85149;font-weight:700;padding-left:7px;border-left:2px solid #f85149}
     .ai-analysis{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:grid;gap:10px}
-    .analysis-badges,.article-tags{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-    .importance-badge,.urgency-badge,.category-badge,.article-tag{font-size:11px;font-weight:700;line-height:1;padding:4px 9px;border-radius:100px}
-    .importance-high{background:#da3633;color:#fff}
-    .importance-medium{background:#9e6a03;color:#fff}
-    .importance-low{background:#238636;color:#fff}
-    .importance-unknown{background:#30363d;color:#c9d1d9}
-    .urgency-today{background:#f85149;color:#fff}
-    .urgency-week{background:#6e7681;color:#fff}
-    .urgency-reference{background:#30363d;color:#c9d1d9}
-    .urgency-unknown{background:#30363d;color:#c9d1d9}
-    .category-badge{border:1px solid #388bfd;color:#79c0ff;background:#0d1117}
-    .article-tags-label{font-size:11px;color:#8b949e;font-weight:500}
-    .article-tag{font-size:10px;font-weight:600;border:1px solid #30363d;color:#8b949e;background:#0d1117}
+    .article-tags{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
+    .article-tags-label{padding-top:3px;font-size:10px;color:#768496;white-space:nowrap}
+    .article-tag{font-size:10px;font-weight:600;line-height:1.2;padding:3px 9px;border-radius:100px;border:1px solid #30363d;color:#8b949e;background:#0d1117}
     .article-section h3{font-size:11px;font-weight:600;color:#8b949e}
     .article-section p,.article-section li{font-size:12px;color:#c9d1d9;line-height:1.6}
     .article-section p,.article-section ul{margin-top:3px}
@@ -171,14 +162,10 @@
   </section>
   <div class="cards">
     <article class="card" id="article-1">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/14 22:00</span>
-      </div>
       <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/application-security/cursor-ide-malicious-code-poisoned-repos" target="_blank" rel="noopener noreferrer" lang="en">Cursor IDE Auto-Executes Malicious Code in Poisoned Repos</a><span class="article-title-translation" lang="ja">Cursor IDE、汚染されたリポジトリで悪意のあるコードを自動実行する脆弱性</span></span></h2>
+      <p class="article-meta">Dark Reading ・ 07/14 22:00</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">サプライチェーン</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>AIコーディングプラットフォーム「Cursor IDE」に、汚染されたリポジトリから悪意のあるコードを自動実行する脆弱性が報告されました。この脆弱性は昨年12月に報告されましたが、依然として修正されていません。</p>
@@ -193,17 +180,14 @@
         </section>
       </div>
       <a class="article-source-link" href="https://www.darkreading.com/application-security/cursor-ide-malicious-code-poisoned-repos" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">サプライチェーン</span></div>
     </article>
 
     <article class="card" id="article-2">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/14 21:46</span>
-      </div>
       <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/11-old-microsoft-signed-linux-uefi.html" target="_blank" rel="noopener noreferrer" lang="en">11 Old Microsoft-Signed Linux UEFI Shims Could Let Attackers Bypass Secure Boot</a><span class="article-title-translation" lang="ja">Microsoft署名済みLinux UEFI Shimの脆弱性によりセキュアブートが迂回される可能性</span></span></h2>
+      <p class="article-meta">The Hacker News ・ 07/14 21:46</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">パッチ</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>サイバーセキュリティ研究者が、Microsoft署名済みの古いLinux UEFIアプリケーション11件に脆弱性を発見しました。これにより、最新のファームウェア標準を使用するほとんどのシステムでセキュアブートが迂回される可能性があります。</p>
@@ -218,17 +202,14 @@
         </section>
       </div>
       <a class="article-source-link" href="https://thehackernews.com/2026/07/11-old-microsoft-signed-linux-uefi.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">パッチ</span></div>
     </article>
 
     <article class="card" id="article-3">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/14 20:55</span>
-      </div>
       <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/study-of-85-crypto-wallet-extensions.html" target="_blank" rel="noopener noreferrer" lang="en">Study of 85 Crypto Wallet Extensions Finds Address Leaks and Cross-Site Tracking Risks</a><span class="article-title-translation" lang="ja">85種類の仮想通貨ウォレット拡張機能に関する調査でアドレス漏洩とクロスサイト追跡のリスクが判明</span></span></h2>
+      <p class="article-meta">The Hacker News ・ 07/14 20:55</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>KU Leuvenの研究者らが85種類の人気仮想通貨ウォレットブラウザ拡張機能を調査した結果、ウォレット自体がユーザーを紐付け、追跡するのに十分な情報を漏洩していることが判明しました。ウォレットとウェブサイト・ブロックチェーンサーバー間の通信により、個人の複数のアドレスが関連付けられ、外部からサイトを横断して追跡される可能性があります。</p>
@@ -246,14 +227,10 @@
     </article>
 
     <article class="card" id="article-4">
-      <div class="card-meta">
-        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
-        <span class="date">07/14 19:00</span>
-      </div>
       <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://blog.talosintelligence.com/the-serpents-tongue-luring-the-python-out-of-its-den/" target="_blank" rel="noopener noreferrer" lang="en">The serpent’s tongue: Luring the Python out of its den</a><span class="article-title-translation" lang="ja">Pythonパッケージのライフサイクルとサプライチェーンリスク</span></span></h2>
+      <p class="article-meta">Cisco Talos ・ 07/14 19:00</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">サプライチェーン</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>本ブログ記事は、PyPIなどのリポジトリからカスタムWebサーバーでのホスティング、ソースおよびwheel形式での配布、そして仮想環境またはシステム全体のPython環境への最終的なインストールに至るまで、Pythonパッケージの完全なライフサイクルを分析しています。</p>
@@ -268,17 +245,14 @@
         </section>
       </div>
       <a class="article-source-link" href="https://blog.talosintelligence.com/the-serpents-tongue-luring-the-python-out-of-its-den/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">サプライチェーン</span></div>
     </article>
 
     <article class="card" id="article-5">
-      <div class="card-meta">
-        <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">07/14 07:02</span>
-      </div>
       <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/13/defending-saas-based-applications-against-shinyhunters-oauth-abuse/" target="_blank" rel="noopener noreferrer" lang="en">Defending SaaS-based applications against ShinyHunters OAuth abuse</a><span class="article-title-translation" lang="ja">ShinyHuntersによるSaaSベースアプリケーションへのOAuth悪用に対する防御</span></span></h2>
+      <p class="article-meta">Microsoft Security ・ 07/14 07:02</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">SaaS</span><span class="article-tag">フィッシング</span><span class="article-tag">サプライチェーン</span><span class="article-tag">認証</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>Microsoft Threat Intelligenceは、ShinyHuntersに関連する音声フィッシング（vishing）、サプライチェーン侵害、SaaSベースアプリケーションを標的としたゲストアクセス設定不備を含む脅威アクターの活動を特定しました。</p>
@@ -293,17 +267,14 @@
         </section>
       </div>
       <a class="article-source-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/13/defending-saas-based-applications-against-shinyhunters-oauth-abuse/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">SaaS</span><span class="article-tag">フィッシング</span><span class="article-tag">サプライチェーン</span><span class="article-tag">認証</span></div>
     </article>
 
     <article class="card" id="article-6">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/14 06:24</span>
-      </div>
       <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/endpoint-security/weak-security-fuel-russian-cyberattacks" target="_blank" rel="noopener noreferrer" lang="en">Weak Security Continues to Fuel Russian Cyberattacks</a><span class="article-title-translation" lang="ja">英国とEUがロシアのサイバー攻撃と偽情報キャンペーンに対し初の共同制裁</span></span></h2>
+      <p class="article-meta">Dark Reading ・ 07/14 06:24</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">APT</span><span class="article-tag">規制</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>英国とEUは、ロシアの個人および団体に対し、サイバー攻撃と偽情報キャンペーンを理由に初の共同制裁を課しました。</p>
@@ -314,17 +285,14 @@
         </section>
       </div>
       <a class="article-source-link" href="https://www.darkreading.com/endpoint-security/weak-security-fuel-russian-cyberattacks" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">APT</span><span class="article-tag">規制</span></div>
     </article>
 
     <article class="card" id="article-7">
-      <div class="card-meta">
-        <span class="tag" style="background:#0078d4">Microsoft Security</span>
-        <span class="date">07/14 02:00</span>
-      </div>
       <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/13/microsoft-entra-id-security-updates-passkeys-are-the-default-authentication-method-in-entra-id/" target="_blank" rel="noopener noreferrer" lang="en">Microsoft Entra ID security updates: Passkeys are the default authentication method in Entra ID</a><span class="article-title-translation" lang="ja">Microsoft Entra IDのセキュリティ更新: パスキーがデフォルトの認証方法に</span></span></h2>
+      <p class="article-meta">Microsoft Security ・ 07/14 02:00</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：クラウド・サプライチェーン</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">クラウド</span><span class="article-tag">認証</span><span class="article-tag">IAM</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>Microsoft Entra IDにおいて、パスキーがデフォルトのサインインエクスペリエンスとなり、SMSおよび音声認証の新しいモデルが導入されました。この変更への準備について説明されています。</p>
@@ -339,17 +307,14 @@
         </section>
       </div>
       <a class="article-source-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/13/microsoft-entra-id-security-updates-passkeys-are-the-default-authentication-method-in-entra-id/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">クラウド</span><span class="article-tag">認証</span><span class="article-tag">IAM</span></div>
     </article>
 
     <article class="card" id="article-8">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">The Hacker News</span>
-        <span class="date">07/14 20:30</span>
-      </div>
       <h2 class="article-heading"><span class="article-index">8.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/how-pentera-turns-ai-security-workflows.html" target="_blank" rel="noopener noreferrer" lang="en">How Pentera Turns AI Security Workflows into Validation Engines</a><span class="article-title-translation" lang="ja">PenteraがAIセキュリティワークフローを検証エンジンに変える方法</span></span></h2>
+      <p class="article-meta">The Hacker News ・ 07/14 20:30</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>AIセキュリティエージェントがセキュリティの意思決定に影響を与え始めており、発見の要約、修復の優先順位付け、次のステップの推奨、チームの迅速化に貢献しています。しかし、ほとんどはスキャナー出力、脅威インテリジェンス、設定情報などの断片的なリスクシグナルに依存しています。</p>
@@ -360,17 +325,14 @@
         </section>
       </div>
       <a class="article-source-link" href="https://thehackernews.com/2026/07/how-pentera-turns-ai-security-workflows.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span></div>
     </article>
 
     <article class="card" id="article-9">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Dark Reading</span>
-        <span class="date">07/14 03:18</span>
-      </div>
       <h2 class="article-heading"><span class="article-index">9.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/cybersecurity-operations/yellow-teams-defining-future-ai-security" target="_blank" rel="noopener noreferrer" lang="en">&#39;Yellow Teams&#39; Are Defining the Future of AI Security</a><span class="article-title-translation" lang="ja">「イエローチーム」がAIセキュリティの未来を定義する</span></span></h2>
+      <p class="article-meta">Dark Reading ・ 07/14 03:18</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>一部の企業では、エンジニアがサイバーセキュリティにおける人工知能の可能性と脅威をテストするために、防御および攻撃ツールを構築しています。これは「イエローチーム」と呼ばれ、AIのセキュリティを定義する新たな動きです。</p>
@@ -381,17 +343,14 @@
         </section>
       </div>
       <a class="article-source-link" href="https://www.darkreading.com/cybersecurity-operations/yellow-teams-defining-future-ai-security" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span></div>
     </article>
 
     <article class="card" id="article-10">
-      <div class="card-meta">
-        <span class="tag" style="background:#555">Krebs on Security</span>
-        <span class="date">07/14 00:03</span>
-      </div>
       <h2 class="article-heading"><span class="article-index">10.</span><span class="article-title-stack"><a class="article-title-link" href="https://krebsonsecurity.com/2026/07/lessons-learned-from-cisas-recent-github-leak/" target="_blank" rel="noopener noreferrer" lang="en">Lessons Learned from CISA’s Recent GitHub Leak</a><span class="article-title-translation" lang="ja">CISAのGitHub情報漏えいから学ぶべき教訓</span></span></h2>
+      <p class="article-meta">Krebs on Security ・ 07/14 00:03</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：インシデント</span></div>
-        <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">インシデント</span><span class="article-tag">情報漏えい</span><span class="article-tag">クラウド</span><span class="article-tag">委託先管理</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>CISAは、契約業者がAWS Govcloudキーを含む数十の内部認証情報を約6ヶ月間パブリックなGitHubリポジトリに公開していたデータ漏えいについて事後分析を公表しました。この事案は、セキュリティチームが学ぶべき重要な教訓を提供しています。</p>
@@ -406,17 +365,14 @@
         </section>
       </div>
       <a class="article-source-link" href="https://krebsonsecurity.com/2026/07/lessons-learned-from-cisas-recent-github-leak/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">インシデント</span><span class="article-tag">情報漏えい</span><span class="article-tag">クラウド</span><span class="article-tag">委託先管理</span></div>
     </article>
 
     <article class="card" id="article-11">
-      <div class="card-meta">
-        <span class="tag" style="background:#6f42c1">Cisco Talos</span>
-        <span class="date">07/14 19:47</span>
-      </div>
       <h2 class="article-heading"><span class="article-index">11.</span><span class="article-title-stack"><a class="article-title-link" href="https://blog.talosintelligence.com/video-where-protection-starts-cisco-talos-intelligence-integrations/" target="_blank" rel="noopener noreferrer" lang="en">[Video] Where protection starts: Cisco Talos Intelligence Integrations</a><span class="article-title-translation" lang="ja">保護の出発点: Cisco Talos Intelligence Integrations</span></span></h2>
+      <p class="article-meta">Cisco Talos ・ 07/14 19:47</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-low">重要度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
-        
         <section class="article-section">
           <h3>何が起きた</h3>
           <p>Cisco Talos Intelligence Integrationsが、最新の脅威インテリジェンスをCiscoテクノロジー全体にわたるプロアクティブな保護に変換し、不確実性を低減する方法について解説しています。</p>
