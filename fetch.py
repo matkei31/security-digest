@@ -1855,22 +1855,29 @@ def action_has_unconditional_state_change(text):
 
 
 # reasonが評価根拠の説明にとどまり、読者への直接的な命令・依頼表現にならないよう
-# 拒否する狭いlint。「てください」「でください」の依頼形、「すべきです/すべきだ/すべき」
-# の義務形のみを検出する(大規模な自然言語解析は行わない)。「確認が必要となり得る」
+# 拒否する狭いlint。「てください」「でください」の依頼形は語形自体が読者への
+# 依頼であるため文中のどこにあっても検出する。「すべき」の義務形は文末の
+# 義務付け(「〜すべきです。」「〜すべきだ。」「〜すべき。」「〜すべき」で文字列が
+# 終わる場合)のみを検出し、句点・感嘆符・疑問符・文字列末尾の直前でなければ
+# 検出しない(大規模な自然言語解析は行わない)。これにより「すべきかを検討する」
+# 「すべきと説明しています」「すべきかは異なります」「すべき範囲が論点」のような
+# 非命令の引用・説明・疑問表現は誤検知しない。「確認が必要となり得る」
 # 「検討対象となる」「確認の優先度が高い」等のヘッジ・条件表現、否定表現、
 # recommended_actions固有の「導入を検討する」等の検討表現はこれらのパターンに
 # 一致しないため誤検知しない。Ticket 17aの状態変更動詞lintとは独立した別チェックで、
 # recommended_actionsの許容表現(「確認してください」等の依頼形)には適用しない。
 _REASON_IMPERATIVE_RES = tuple(re.compile(p) for p in (
     r"[てで]ください",
-    r"すべき(です|だ)?",
+    r"すべき(?:です|だ)?(?=[。！？!?]|$)",
 ))
 
 
 def reason_has_reader_directed_imperative(text):
-    """reasonに読者への直接的な命令・依頼表現(「〜してください」「〜すべきです」等)が
+    """reasonに読者への直接的な命令・依頼表現(「〜してください」「文末の〜すべきです」等)が
     含まれるかを判定する。Trueなら strict validation を失敗させ、既存のfallback経路
-    (success/fallback/failed契約は不変)へ委ねる。
+    (success/fallback/failed契約は不変)へ委ねる。「すべき」は文末の義務付けのみを
+    検出し、「すべきかを検討する」「すべきと説明しています」のような非命令表現は
+    対象外(誤検知しない)。
     """
     if not isinstance(text, str):
         return False
@@ -2133,6 +2140,12 @@ def fallback_ai_analysis(response_text, source_text):
         urgency = None
 
     reason = extract_partial_field(response_text, "reason").strip()[:150] or None
+    # strict path (normalize_article_analysis)と同じ命令・依頼表現lintを適用する。
+    # 該当する場合はreasonだけをNoneにし、fallback分析全体は維持する
+    # (代わりの一般文は生成しない。優先確認は既存仕様によりreason領域自体を
+    # 表示しない)。
+    if reason_has_reader_directed_imperative(reason):
+        reason = None
 
     tags = sanitize_tags_lenient(extract_partial_array(response_text, "tags"))
 

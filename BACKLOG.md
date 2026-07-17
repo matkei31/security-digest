@@ -77,7 +77,7 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **Acceptance criteria:** Not defined. Define after Fable 5 review and explicit user confirmation.
 - **Dependencies:** BL-004; coordinate with BL-003.
 - **Implementation evidence:** Partially implemented. The dashboard was redesigned from three heavy badge-like cards into a single lightweight block, and the new 優先確認 (priority index) section shows 重要度/確認目安 as plain text rather than ellipse badges. Ordinary article-card badges (`.importance-badge`, `.urgency-badge`, `.category-badge`) remain unchanged in shape and layout — only their label text was aligned to the 重要度/確認目安 terminology decision. See the “feat: dashboard v2 + priority index + reason contract” ticket.
-- **User acceptance evidence:** Not recorded.
+- **User acceptance evidence:** Partial scope accepted by the user in the project conversation on 2026-07-17 (dashboard v2 and the 優先確認 reasoned index); ordinary article-card redesign remains unaccepted and incomplete.
 - **Residual scope:** Ordinary article-card ellipse badges (source color badge, importance/urgency/category badges), their shape/color/placement/duplication, and the overall article-card information hierarchy remain unchanged and unresolved. A dedicated follow-on ticket is required for the article-card redesign itself.
 - **Notes:** Do not mark this item `Done` based on the dashboard/priority-index work alone — the ordinary article-card ellipse badges this item is named for still exist unchanged.
 
@@ -94,7 +94,7 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **Acceptance criteria:** Not defined. Requires design criteria and explicit user acceptance.
 - **Dependencies:** BL-002 and BL-004.
 - **Implementation evidence:** Partially implemented. The dashboard's dense, repeated 3-card structure was replaced by one lightweight block with a clearer information hierarchy (重要度/確認目安 as primary axes, category as a visually de-emphasized supplementary row), and the 優先確認 section was reframed as a short reasoned index instead of a dense repeated recap of full article metadata. Ordinary article cards (which still show `.importance-badge`/`.urgency-badge`/`.category-badge`/`.article-tag` pills) are unchanged.
-- **User acceptance evidence:** Not recorded.
+- **User acceptance evidence:** Partial scope accepted by the user in the project conversation on 2026-07-17 (dashboard v2 and the 優先確認 reasoned index); ordinary article-card redesign remains unaccepted and incomplete.
 - **Residual scope:** Define which remaining visual patterns on ordinary article cards create the unwanted impression, and validate a full-card redesign with the user.
 - **Notes:** Related to BL-002 but must remain a separate user-quality requirement.
 
@@ -110,10 +110,10 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **Interpretation:** Produce a dedicated UI design specification for labels, article cards, and visual hierarchy; README, AGENTS, STATUS, and DECISIONS are not that specification.
 - **Acceptance criteria:** Fable 5 reviews the current UI; the proposed specification covers name, color, shape, placement, duplication, navigation, and acceptance examples; the user explicitly approves the specification.
 - **Dependencies:** Current-page review material; prerequisite for implementation of BL-002 and BL-003.
-- **Implementation evidence:** Not implemented as a dedicated specification document. A reviewed mock for the dashboard specifically (`/Users/keijim/Desktop/dashboard-v2-review-2026-07-17/`) informed the dashboard v2 implementation, and the resulting terminology decision (重要度/確認目安, not 確認優先度) is recorded in [DECISIONS.md](DECISIONS.md). This covered the dashboard only, not article cards, and no standalone UI design document (name/color/shape/placement/duplication/navigation contract) exists.
-- **User acceptance evidence:** Not recorded.
-- **Residual scope:** A dedicated UI design specification document covering article cards (not just the dashboard), its user approval, and the full-card implementation ticket remain outstanding.
-- **Notes:** Answered fact: README, AGENTS, STATUS, and DECISIONS exist, but a dedicated UI design document defining labels, article cards, and visual hierarchy has not been created. A mock review and approval for the dashboard scope alone does not satisfy this item's full acceptance criteria (article cards remain unreviewed and unspecified).
+- **Implementation evidence:** Not implemented as a dedicated specification document. Fable 5 review of the current UI, including ordinary article cards, has been completed. A dashboard mock generated outside the repository was reviewed and explicitly approved by the user in the project conversation on 2026-07-17; that approval informed the dashboard v2 implementation, and the resulting terminology decision (重要度/確認目安, not 確認優先度) is recorded in [DECISIONS.md](DECISIONS.md). User adjudication of the full set of Fable 5 proposals, and a dedicated UI design specification document (name/color/shape/placement/duplication/navigation contract) covering article cards, do not yet exist.
+- **User acceptance evidence:** Partial scope accepted by the user in the project conversation on 2026-07-17; ordinary article-card redesign remains unaccepted and incomplete.
+- **Residual scope:** User adjudication of the full set of Fable 5 proposals, a dedicated UI design specification document covering article cards (not just the dashboard), its user approval, and the full-card implementation ticket remain outstanding.
+- **Notes:** Answered fact: README, AGENTS, STATUS, and DECISIONS exist, but a dedicated UI design document defining labels, article cards, and visual hierarchy has not been created. Fable 5 review itself is complete (including article cards); what remains is user adjudication of its proposals, the article-card specification, its approval, and implementation.
 
 ## BL-005 — editorial-style-v1とtoday-brief-v4
 

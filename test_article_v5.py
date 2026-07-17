@@ -209,6 +209,34 @@ class ReasonImperativeLintTest(unittest.TestCase):
             "パッチを適用してください。"
         ))
 
+    def test_helper_detects_subeki_da_sentence_final(self):
+        self.assertTrue(fetch.reason_has_reader_directed_imperative(
+            "パッチを適用すべきだ。"
+        ))
+
+    def test_helper_detects_subeki_bare_sentence_final(self):
+        self.assertTrue(fetch.reason_has_reader_directed_imperative(
+            "直ちに確認すべき。"
+        ))
+
+    def test_helper_detects_subeki_bare_at_string_end(self):
+        self.assertTrue(fetch.reason_has_reader_directed_imperative(
+            "直ちに確認すべき"
+        ))
+
+    def test_helper_accepts_subeki_non_sentence_final_forms(self):
+        # 「すべきか」「すべきと」「すべき範囲」等、文末の義務付けではない用法は
+        # 拒否しない(文中の引用・説明・疑問表現を誤検知しないため)。
+        for ok in (
+            "対応すべきかを検討する材料となります。",
+            "ベンダーは適用すべきと説明しています。",
+            "どの対策を優先すべきかは環境によって異なります。",
+            "適用すべき範囲が論点となっています。",
+            "何を確認すべきかは個社環境によります。",
+        ):
+            with self.subTest(reason=ok):
+                self.assertFalse(fetch.reason_has_reader_directed_imperative(ok))
+
     def test_helper_accepts_hedge_expressions(self):
         for ok in (
             "確認が必要となり得るため「高」です。",
@@ -247,10 +275,15 @@ class ReasonImperativeLintTest(unittest.TestCase):
                "確認目安は、利用有無を今週中に確認してくださいため「本日確認」です。")
         self.assertIsNone(fetch.normalize_article_analysis(self._mock(bad)))
 
-    def test_normalize_rejects_reason_with_subeki_desu(self):
-        bad = ("重要度は、実悪用が確認されたため「高」です。"
-               "確認目安は、本日中に対応すべきですため「本日確認」です。")
-        self.assertIsNone(fetch.normalize_article_analysis(self._mock(bad)))
+    def test_normalize_accepts_reason_with_non_final_subeki_desu(self):
+        # 「すべきです」が文末の義務付けではなく、「ため」に続く理由節の一部
+        # (=非命令の説明表現)である場合は拒否しない。狭いregexへの変更前は
+        # このケースを誤って拒否していた回帰テスト。
+        good = ("重要度は、実悪用が確認されたため「高」です。"
+                "確認目安は、本日中に対応すべきですため「本日確認」です。")
+        result = fetch.normalize_article_analysis(self._mock(good))
+        self.assertIsNotNone(result)
+        self.assertEqual(result["reason"], good)
 
     def test_normalize_accepts_reason_with_hedge_phrase(self):
         good = ("重要度は、確認の優先度が高いため「高」です。"
@@ -280,6 +313,72 @@ class ReasonImperativeLintTest(unittest.TestCase):
             response_body=make_candidate_body(self._mock(good_reason))
         )
         self.assertEqual(result["status"], "success")
+
+    # ── fallback_ai_analysis()にも同じlintを適用する(本チケット新規) ─────────
+    # strict validation(normalize_article_analysis)がreasonの指示表現を拒否
+    # しても、fallback_ai_analysis()が同じ応答テキストから再度reasonを抽出して
+    # そのまま保存すると、指示文が優先確認に表示されてしまう。fallback分析
+    # 全体は維持したまま、reasonだけをNoneにする(代わりの一般文は生成しない)。
+
+    def test_fallback_sanitizes_imperative_reason_to_none_but_keeps_other_fields(self):
+        bad = {**VALID_ANALYSIS_RESPONSE, "reason": "利用有無を確認してください。"}
+        result = call_gemini_analyze(response_body=make_candidate_body(bad))
+
+        self.assertEqual(result["status"], "fallback")
+        analysis = result["analysis"]
+        self.assertIsNotNone(analysis)
+        self.assertIsNone(analysis["reason"])
+        self.assertEqual(analysis["importance"], VALID_ANALYSIS_RESPONSE["importance"])
+        self.assertEqual(analysis["summary"], VALID_ANALYSIS_RESPONSE["summary"])
+        self.assertEqual(
+            analysis["financial_impact"], VALID_ANALYSIS_RESPONSE["financial_impact"]
+        )
+        self.assertEqual(
+            analysis["recommended_actions"], VALID_ANALYSIS_RESPONSE["recommended_actions"]
+        )
+
+    def test_fallback_sanitizes_sentence_final_subeki_reason_to_none(self):
+        # 文末義務形はfallbackの自由形式reasonでは実際に起こりうる
+        # (strict pathの2文構造テンプレートでは構造上発生しない)。
+        bad = {**VALID_ANALYSIS_RESPONSE, "reason": "直ちに確認すべきです。"}
+        result = call_gemini_analyze(response_body=make_candidate_body(bad))
+
+        self.assertEqual(result["status"], "fallback")
+        self.assertIsNone(result["analysis"]["reason"])
+
+    def test_fallback_reason_sanitized_to_none_is_not_rendered(self):
+        bad = {**VALID_ANALYSIS_RESPONSE, "reason": "利用有無を確認してください。"}
+        result = call_gemini_analyze(response_body=make_candidate_body(bad))
+        analysis = result["analysis"]
+        self.assertIsNone(analysis["reason"])
+
+        item = {
+            "id": "id-fallback-reason-sanitized",
+            "title": "fallback-reason-sanitized",
+            "link": "https://example.com/fallback-reason-sanitized",
+            "summary": "summary",
+            "date": _dt.datetime(2026, 7, 11, 6, 0),
+            "source": "CISA",
+            "lang": "ja",
+            "ai_analysis": analysis,
+        }
+        html = fetch.build_html([item])
+        self.assertNotIn("利用有無を確認してください", html)
+        # important-item-reasonクラス自体はCSSに常時存在するため、実際に
+        # 段落要素として出力されていないことを開始タグで確認する。
+        self.assertNotIn('<p class="important-item-reason">', html)
+
+    def test_fallback_preserves_safe_reason(self):
+        safe_reason = ("重要度は、実悪用が確認され広く利用される製品に影響するため「高」です。"
+                       "確認目安は、短期的な適用性確認が必要となり得るため「本日確認」です。")
+        truncated = (
+            '{"importance": "高", "summary": "テスト要約です。", '
+            '"financial_impact": "影響があります。", "recommended_actions": ["対応1"], '
+            f'"reason": "{safe_reason}"'
+        )
+        fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
+        self.assertIsNotNone(fb)
+        self.assertEqual(fb["reason"], safe_reason)
 
     # ── prompt本文の契約確認 ──────────────────────────────────────────
 
