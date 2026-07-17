@@ -7,6 +7,7 @@ HTMLエスケープ・URL検証の回帰テスト (Ticket 1)
 import datetime
 import json
 import os
+import re
 import tempfile
 from html.parser import HTMLParser
 from pathlib import Path
@@ -2672,6 +2673,7 @@ class AgentsFileTest(unittest.TestCase):
             "BL-009",
             "BL-014",
             "BL-015",
+            "BL-016",
             "## Completed reference",
             "Ticket 14a-3",
             "Ticket 14a-4",
@@ -2695,7 +2697,7 @@ class AgentsFileTest(unittest.TestCase):
             "**Residual scope:**",
             "**Notes:**",
         )
-        item_ids = [f"BL-{number:03d}" for number in range(1, 16)]
+        item_ids = [f"BL-{number:03d}" for number in range(1, 17)]
         for index, item_id in enumerate(item_ids):
             start = text.index(f"## {item_id}")
             if index + 1 < len(item_ids):
@@ -2809,6 +2811,139 @@ class AgentsFileTest(unittest.TestCase):
         ):
             with self.subTest(required_text=required_text):
                 self.assertIn(required_text, sd008)
+
+
+class Batch2DocumentationConsistencyTest(unittest.TestCase):
+    """BL-014 Batch 2 (docs/bl014-batch2-classification): static consistency
+    checks over BACKLOG.md / DECISIONS.md / STATUS.md / BACKLOG_AUDIT.md.
+    Documentation-only; does not exercise fetch.py/daily_json.py behavior.
+    """
+
+    ROOT = Path(__file__).resolve().parent
+
+    def _read(self, name):
+        return (self.ROOT / name).read_text(encoding="utf-8")
+
+    @staticmethod
+    def _headings(text):
+        headings = []
+        for line in text.splitlines():
+            match = re.match(r"^(#{1,6})\s+(.*)$", line)
+            if match:
+                headings.append(match.group(2).strip())
+        return headings
+
+    @staticmethod
+    def _slugify(heading_text):
+        # Mirrors GitHub's heading-anchor algorithm closely enough for this
+        # repository's headings: lowercase, drop characters that are not
+        # alphanumeric (any script)/space/hyphen/underscore, then turn each
+        # remaining space into a hyphen (adjacent removed punctuation can
+        # therefore produce a double hyphen, matching existing anchors like
+        # "#bl-002--記事カードの楕円バッジ多用を見直す").
+        lowered = heading_text.strip().lower()
+        kept = [ch for ch in lowered if ch.isalnum() or ch in (" ", "-", "_")]
+        return "".join(kept).replace(" ", "-")
+
+    def test_bl_ids_are_unique_and_cover_bl001_to_bl016(self):
+        text = self._read("BACKLOG.md")
+        bl_headings = [h for h in self._headings(text) if re.match(r"^BL-\d{3}\b", h)]
+        ids = [re.match(r"^(BL-\d{3})", h).group(1) for h in bl_headings]
+        self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
+        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 17)})
+
+    def test_sd_ids_are_unique_and_cover_sd001_to_sd015(self):
+        text = self._read("DECISIONS.md")
+        sd_headings = [h for h in self._headings(text) if re.match(r"^SD-\d{3}\b", h)]
+        ids = [re.match(r"^(SD-\d{3})", h).group(1) for h in sd_headings]
+        self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
+        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 16)})
+
+    def test_bl_016_status_and_evidence(self):
+        text = self._read("BACKLOG.md")
+        start = text.index("## BL-016")
+        end = text.index("## Completed reference", start)
+        bl016_text = text[start:end]
+        self.assertIn("- **Status:** Implemented / Awaiting user acceptance", bl016_text)
+        self.assertIn("[PR #9](https://github.com/matkei31/security-digest/pull/9)", bl016_text)
+        self.assertIn("82b23c720b5871c5f46d068813defc12af164e4a", bl016_text)
+
+    def test_sd_015_records_trusted_context_allowlist_decision(self):
+        text = self._read("DECISIONS.md")
+        start = text.index("## SD-015")
+        sd015_text = text[start:]
+        self.assertIn("- **Status:** Accepted / Implemented", sd015_text)
+        self.assertIn("recent_kev_additions", sd015_text)
+        self.assertIn("allowlist", sd015_text)
+        self.assertIn("[PR #8](https://github.com/matkei31/security-digest/pull/8)", sd015_text)
+        self.assertIn("d1518910cd1a685cffc5d526ec65f6e708a4d535", sd015_text)
+
+    def test_bl_005_original_wording_still_not_recovered(self):
+        text = self._read("BACKLOG.md")
+        start = text.index("## BL-005")
+        end = text.index("## BL-006", start)
+        bl005_text = text[start:end]
+        self.assertIn("- **Status:** Specified / Not implemented", bl005_text)
+        self.assertIn("- **Original user comment:** Original wording not recovered.", bl005_text)
+
+    def test_completed_reference_covers_batch2_prs(self):
+        text = self._read("BACKLOG.md")
+        start = text.index("## Completed reference")
+        completed_text = text[start:]
+        for merge_sha in (
+            "d1518910cd1a685cffc5d526ec65f6e708a4d535",  # PR #8
+            "8f6c5dfdcfc2113cba410a7059d230026d6d1a7a",  # PR #1
+            "a8b551818443f2ca9deb2df160fc661aab8faf77",  # PR #2
+            "d90fa3986a541aafbdf76bc6e6b4d8f0130ed19c",  # PR #3
+        ):
+            with self.subTest(merge_sha=merge_sha):
+                self.assertIn(merge_sha, completed_text)
+        # PR #6 (Ticket 15a) is intentionally not a Completed reference entry
+        # (recorded instead as Historical/Superseded in BACKLOG_AUDIT.md).
+        self.assertNotIn("4daab96b6e78a3fcf9bfb30c1d3dc0a2d7c424c3", completed_text)
+
+    def test_backlog_audit_batch2_section_present(self):
+        text = self._read("BACKLOG_AUDIT.md")
+        for required_text in (
+            "## Batch 2 — 2026-07-18",
+            "149",
+            "PRE-00",
+            "PRE-20",
+            "Ticket 15a / PR #6",
+            "Ticket 5 / Ticket 7 / Ticket 11b",
+        ):
+            with self.subTest(required_text=required_text):
+                self.assertIn(required_text, text)
+
+    def test_no_local_absolute_paths_leaked(self):
+        for doc_name in ("BACKLOG.md", "STATUS.md", "DECISIONS.md", "BACKLOG_AUDIT.md", "AGENTS.md"):
+            text = self._read(doc_name)
+            with self.subTest(doc=doc_name):
+                self.assertNotIn("/Users/", text)
+                self.assertNotIn("bl014-audit-batch2", text)
+                self.assertNotIn("Desktop", text)
+
+    def test_internal_markdown_anchors_resolve(self):
+        doc_names = ("BACKLOG.md", "STATUS.md", "DECISIONS.md", "BACKLOG_AUDIT.md")
+        docs = {name: self._read(name) for name in doc_names}
+        anchor_sets = {
+            name: {self._slugify(h) for h in self._headings(text)}
+            for name, text in docs.items()
+        }
+        link_pattern = re.compile(r"\]\((?:([A-Za-z0-9_.\-]+\.md))?#([^)\s]+)\)")
+        for name, text in docs.items():
+            for match in link_pattern.finditer(text):
+                target_file = match.group(1) or name
+                anchor = match.group(2)
+                with self.subTest(doc=name, link=f"{target_file}#{anchor}"):
+                    self.assertIn(
+                        target_file, anchor_sets,
+                        f"{name} links to unknown file {target_file}",
+                    )
+                    self.assertIn(
+                        anchor, anchor_sets[target_file],
+                        f"{name} links to #{anchor} in {target_file}, which has no matching heading",
+                    )
 
 
 if __name__ == "__main__":

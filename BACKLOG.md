@@ -130,7 +130,7 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **Implementation evidence:** Not implemented. The accepted direction is recorded in SD-007.
 - **User acceptance evidence:** Direction accepted; implementation acceptance not applicable until an implementation exists.
 - **Residual scope:** Editorial rules, prompt-size assessment, version update, fixtures, tests, comparative review, and production acceptance.
-- **Notes:** Gemini remains the production BRIEF generator. ARTICLE is outside the initial scope.
+- **Notes:** Gemini remains the production BRIEF generator. ARTICLE is outside the initial scope. This item's only GitHub-traceable origin is [PR #13](https://github.com/matkei31/security-digest/pull/13)'s documentation sync, where BL-005 and [SD-007](DECISIONS.md#sd-007--create-security-digest-editorial-style-v1-and-introduce-it-to-brief-first) were introduced together; the project conversation record is this direction's actual basis, and PR #13 alone is not treated as the origin of user acceptance (see [BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 2, Audit B). Original wording remains unrecovered.
 
 ## BL-006 — Monomi Digestへのブランド変更
 
@@ -281,10 +281,10 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **Interpretation:** PR #16のBL-001〜BL-013は初期登録であり、過去のユーザーコメントを網羅的に監査した結果ではない。会話履歴、PRコメント、既存文書、完了記録を照合して、取りこぼしと誤完了を確認する。
 - **Acceptance criteria:** 棚卸し対象の会話範囲と期間を明示する。原文を取得できたコメントは原文のまま記録し、原文未回収は引用しない。各コメントを既存BL ID、新規BL ID、Done reference、Superseded、対象外のいずれかへ割り当てる。部分対応はresidual scopeを残す。完了判断にはPRだけでなく、必要に応じてユーザー受入を確認する。棚卸し結果をユーザーがレビューし、未分類コメントが残っていないかを明記する。
 - **Dependencies:** プロジェクト会話履歴、GitHub PR／コメント、README／STATUS／DECISIONS／BACKLOG、実装証跡へのアクセス。
-- **Implementation evidence:** PR #16は管理方式と初期項目を作成した。2026-07-17、第1バッチ（Candidate A〜F）の監査を実施し、A→BL-007更新、B→SD-014、C→BL-015、D→Completed reference、E→対応不要（新規BLなし）、F→BL-015スコープ内で評価対象として記録、へそれぞれ分類した。監査範囲・手法・各分類の根拠は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)に記録。過去コメントの体系的棚卸しは第1バッチの範囲でのみ実施済みであり、全体としては未完了。
-- **User acceptance evidence:** バックログ管理方式の導入には同意済み。第1バッチの分類記録自体は実施済みとするが、過去コメント棚卸し全体（残バッチを含む）の完了についてユーザーが明示的に承認した記録はない。
-- **Residual scope:** BL-005／BL-008／BL-009／BL-010の原文回収、PR以前の会話・direct push履歴の棚卸し、その他未分類コメントの発見・分類、追加バッチの実施、最終的なユーザーレビューと、未分類コメントが残っていないことの明記。
-- **Notes:** BL-014がDoneになるまで、BL-001〜BL-013を「過去要望の完全な一覧」と表現しない。第1バッチの実施はBL-014全体の完了を意味しない。
+- **Implementation evidence:** PR #16は管理方式と初期項目を作成した。2026-07-17、第1バッチ（Candidate A〜F）の監査を実施し、A→BL-007更新、B→SD-014、C→BL-015、D→Completed reference、E→対応不要（新規BLなし）、F→BL-015スコープ内で評価対象として記録、へそれぞれ分類した。2026-07-18、第2バッチを実施し、PR化以前のdirect push 149 commitsを21機能グループ（PRE-00〜PRE-20）へ分類し、BL-005／BL-008／BL-009／BL-010をGitHub上で確認できる証跡の範囲に限定して監査し、いずれも既存記録（原文未回収）を維持することを確認した。PR #1／#2／#3／#8をCompleted referenceへ追加し、PR #6（Ticket 15a）をHistorical / Superseded referenceとして記録し、Ticket 5／7／11bをSuperseded referenceとして記録した。PR #8の内部識別子漏洩修正を一般化してSD-015として記録し、PR #9（Ticket 15c）の目視受入未確認をBL-016として記録した。監査範囲・手法・各分類の根拠は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)に記録。過去コメントの体系的棚卸しは第1・第2バッチの範囲で実施済みであり、全体としては未完了。
+- **User acceptance evidence:** バックログ管理方式の導入には同意済み。第1・第2バッチの分類記録自体は実施済みとするが、過去コメント棚卸し全体（BL-014全体）の完了についてユーザーが明示的に承認した記録はない。
+- **Residual scope:** conversation-side original wording（特にBL-005／SD-007、BL-008、BL-009、BL-010）の追加回収、第1・第2バッチ以外の未分類コメントの確認、BL-016（本日の要点の表示階層）の目視受入、最終的なユーザーレビューと、未分類コメントが残っていないことの明記。
+- **Notes:** BL-014がDoneになるまで、BL-001〜BL-013を「過去要望の完全な一覧」と表現しない。第1・第2バッチの実施はBL-014全体の完了を意味しない。
 
 ## BL-015 — 公開サイトと生成基盤のセキュリティ要件を定義する
 
@@ -304,6 +304,23 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **Residual scope:** Requirements draft, evidence mapping, proportionality review, Fable 5 review, gap-ticket decision for any approved concrete measure, user acceptance.
 - **Notes:** Do not decide SHA pinning, Dependabot, or other individual Actions supply-chain measures as required before this ticket's evaluation is complete. See [BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 1 (BL014-C, BL014-F) for the audit trail that produced this item.
 
+## BL-016 — 本日の要点の表示階層を目視受入する
+
+- **ID:** BL-016
+- **Title:** 本日の要点の表示階層を目視受入する
+- **Priority:** P2
+- **Status:** Implemented / Awaiting user acceptance
+- **Source type:** Engineering finding / historical acceptance gap
+- **Original user comment:** Not applicable — engineering finding.
+- **User-confirmed summary:** Not applicable — engineering finding.
+- **Interpretation:** Ticket 15c ([PR #9](https://github.com/matkei31/security-digest/pull/9)) implemented the current "本日の要点" display: the parent-heading rename on the top page and daily archive, the deterministic status-line separation from the rest of `overview`, and the empty-section-hiding behavior for `discussion_points`/`check_items`. Code and tests for this display exist, but PR #9's body explicitly states production acceptance had not been performed at merge time, and this audit found no later, explicit user-acceptance record for this specific display change anywhere in GitHub history.
+- **Acceptance criteria:** Visually confirm on current production: the PC display; the 390px display; the "本日の要点" heading; the deterministic status line's background, border, and spacing; the visual hierarchy between the status line and the overview body text; that `discussion_points`/`check_items` are hidden when empty; wrapping behavior for long text and item counts; consistency with the archive rendering; and explicit user acceptance.
+- **Dependencies:** Current production render; [PR #9](https://github.com/matkei31/security-digest/pull/9); current `fetch.py`; archive render.
+- **Implementation evidence:** [PR #9](https://github.com/matkei31/security-digest/pull/9), merge commit `82b23c720b5871c5f46d068813defc12af164e4a`; current implementation (`split_brief_overview_status_line()` and the "本日の要点" heading in `fetch.py`); regression tests in `test_fetch.py`/`test_archive.py`.
+- **User acceptance evidence:** Not recovered. PR #9's body explicitly states production acceptance was not performed ("本番受入は未実施です"), and no later GitHub-visible artifact records explicit user acceptance of this specific display change.
+- **Residual scope:** PC / 390px screenshot or current-production review; explicit user acceptance; status update.
+- **Notes:** No new UI implementation is proposed by this item; it records an existing acceptance gap identified during [BL-014](#bl-014--過去ユーザーコメントの体系的棚卸し) Batch 2. See [BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 2 for the audit trail.
+
 ## Completed reference
 
 These references exist only to prevent completed work from being accidentally reopened as unfinished backlog.
@@ -320,6 +337,42 @@ These references exist only to prevent completed work from being accidentally re
 - **Status:** Done
 - **Evidence:** [PR #5](https://github.com/matkei31/security-digest/pull/5), merge commit `0e7a5d26dafaca6a8f7d65bb07144d5da31369c0`
 - **Completed scope:** Repair of stale history for 2026-07-11 through 2026-07-13 after the Atom date fix.
+- **Reopen rule:** Do not return this completed ticket to open backlog without new evidence.
+
+### ARTICLE内部識別子漏洩の修正
+
+- **Status:** Done
+- **Source type:** Engineering finding / production incident
+- **Evidence:** [PR #8](https://github.com/matkei31/security-digest/pull/8), merge commit `d1518910cd1a685cffc5d526ec65f6e708a4d535`; current `build_verified_context_for_prompt` in `fetch.py`; related regression tests in `test_fetch.py`/`test_article_v5.py`.
+- **Completed scope:** Removed the internal key `recent_kev_additions` and other internal identifiers from ARTICLE's Gemini input; introduced an explicit allowlist projection that converts internal container/field names, flag values, and status values to human-readable labels; stopped unknown facts keys, CVE fields, and rule flags from auto-propagating into the prompt; updated the ARTICLE prompt version for this input-contract change; closed the `reason`/daily-JSON/top-page/daily-archive re-exposure path the PR reproduced against real production runs.
+- **Evidence for the underlying incident:** PR #8's body records reproduction against two production run IDs (`29367843566`, `29374504304`) and their generated commits, for four articles in the vulnerability/patch category, with the leak appearing in `analysis.reason`, daily JSON, the top page, and the current-day archive.
+- **Reopen rule:** Reopen if a new trusted-context input bypasses the allowlist projection, an internal key/status/flag value is exposed to end users, a raw AI response is newly stored or displayed, or a similar input-contract leak is confirmed. See [SD-015](DECISIONS.md#sd-015--project-trusted-context-through-an-explicit-allowlist-and-do-not-expose-internal-identifiers) for the generalized boundary rule this incident established.
+
+### Ticket 12c — Use vulnerability facts in article analysis
+
+- **Status:** Done
+- **Evidence:** [PR #1](https://github.com/matkei31/security-digest/pull/1), merge commit `8f6c5dfdcfc2113cba410a7059d230026d6d1a7a`
+- **Completed scope (per PR body):** Passed verified CVE/CVSS/KEV facts into Gemini ARTICLE analysis; separated verified context from untrusted article content; used CVSS as a soft signal and KEV as a strong but non-deterministic signal; preserved the existing response schema, Brief prompt, HTML, and facts-acquisition behavior; added prompt-injection and decision-boundary tests.
+- **Present in current implementation:** The vulnerability-facts acquisition and CVSS/KEV-as-signal logic this PR introduced remains foundational to the current ARTICLE pipeline.
+- **Replaced by later work:** The specific verified-context construction this PR introduced was replaced by the allowlist-projection approach recorded in [SD-015](DECISIONS.md#sd-015--project-trusted-context-through-an-explicit-allowlist-and-do-not-expose-internal-identifiers) ([PR #8](https://github.com/matkei31/security-digest/pull/8)).
+- **Reopen rule:** Do not return this completed ticket to open backlog without new evidence.
+
+### Ticket 13c — Distinguish feed failures from zero results
+
+- **Status:** Done
+- **Evidence:** [PR #2](https://github.com/matkei31/security-digest/pull/2), merge commit `a8b551818443f2ca9deb2df160fc661aab8faf77`
+- **Completed scope (per PR body):** Distinguished successful zero-result feeds from HTTP/XML failures; retried RSS requests once, only for HTTP 429 and selected 5xx responses; preserved `fetch_feed()`'s list-returning compatibility; reported successful zero-result CISA KEV collection as OK; sanitized error messages to prevent internal file-path exposure; recorded the actual HTTP response status.
+- **Present in current implementation:** Yes — `RSS_RETRYABLE_HTTP_STATUSES = {429, 500, 502, 503, 504}` and its associated retry logic remain in `fetch.py`, tagged "Ticket 13c" in code comments.
+- **Replaced by later work:** None identified.
+- **Reopen rule:** Do not return this completed ticket to open backlog without new evidence.
+
+### Ticket 14a — Fix Atom article link selection
+
+- **Status:** Done
+- **Evidence:** [PR #3](https://github.com/matkei31/security-digest/pull/3), merge commit `d90fa3986a541aafbdf76bc6e6b4d8f0130ed19c`
+- **Completed scope (per PR body):** Fixed Atom `rel=alternate` article-link selection being ignored due to Element truthiness evaluation, which had fallen back to `rel=replies` comment-feed URLs; selected only unspecified-`rel`-or-`alternate` safe http/https article URLs; excluded comment feeds, feed/XML-type links, and non-HTTP URLs; skipped entries with no safe URL; applied `MAX_PER_FEED` to valid entries only. This was a fix-forward change; already-affected existing articles were separately repaired by Ticket 14a-3/14a-4.
+- **Present in current implementation:** Yes — this link-selection fix remains active in `fetch.py`, tagged "Ticket 14a" in code comments.
+- **Replaced by later work:** None; extended (not replaced) by Ticket 14a-3 (date parsing) and Ticket 14a-4 (2026-07-11–13 history repair), both already recorded below as their own Completed reference entries.
 - **Reopen rule:** Do not return this completed ticket to open backlog without new evidence.
 
 ### 取得時証跡と内部日付別アーカイブ
