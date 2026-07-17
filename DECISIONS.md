@@ -153,7 +153,11 @@ This file records stable project decisions in an ADR-lite format. Current versio
 - **Context:** The user questioned whether daily JSON needs to be exposed to site visitors. It is needed for generation history and for rebuilding the internal date-based archive, but does not need to be part of the GitHub Pages publication tree. The user accepted that the file remaining readable inside the public GitHub repository is acceptable.
 - **Decision:** Store daily JSON under `data/`, not `docs/`; it is not served as GitHub Pages site content. Being readable inside the public repository is acceptable. Do not store secrets, credentials, raw Gemini/AI responses, full article text, or rich content in daily JSON. `raw_excerpt` keeps its existing bounded, description-based contract — currently a 200-character cap built from the already-fetched feed description, with no article-page scraping (`daily_json.build_raw_excerpt()`). Expanding what is stored requires separate approval.
 
-  Accepted wording, recorded verbatim: 「daily JSONはサイト利用者へ公開する必要はない。GitHub Pagesの公開対象であるdocs/には置かず、生成・履歴管理用としてdata/に保存する。public repository内で閲覧可能であることは許容するが、秘密情報、raw AI response、記事全文など公開不適切な情報を保存しない。」
+  Accepted wording, recorded verbatim (original line breaks preserved):
+
+  > 「daily JSONはサイト利用者へ公開する必要はない。
+  > GitHub Pagesの公開対象であるdocs/には置かず、生成・履歴管理用としてdata/に保存する。
+  > public repository内で閲覧可能であることは許容するが、秘密情報、raw AI response、記事全文など公開不適切な情報を保存しない。」
 
 - **Consequences:** `daily_json.py`'s `DATA_DIR` remains under `data/`; `fetch.py`'s `DOCS_DIR` remains the separate GitHub Pages output tree. This decision does not assert that daily JSON was ever previously stored elsewhere; the earliest daily-JSON introduction found in this repository's history (commit `1c65be6`, "feat: add daily JSON schema and storage (Ticket 3)") already wrote to `data/`. This is consistent with [SD-002](#sd-002--use-feed-native-rich-content-without-additional-article-http-requests) (rich content is not stored). Any future proposal to store additional content types in daily JSON, or to publish it through `docs/`, requires a new decision record.
 - **Evidence:** [`daily_json.py`](daily_json.py) (`DATA_DIR`, `build_raw_excerpt()`, `compute_content_hash()`), [`fetch.py`](fetch.py) (`DOCS_DIR`), [`.github/workflows/fetch.yml`](.github/workflows/fetch.yml) (`git add docs/ data/`), [SD-002](#sd-002--use-feed-native-rich-content-without-additional-article-http-requests), [`test_daily_json.py`](test_daily_json.py), commit `1c65be67eaaa223d65ca1056313fb933d31f1ec4`

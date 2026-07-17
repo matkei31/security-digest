@@ -156,7 +156,8 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **Priority:** P2
 - **Status:** Accepted / Not implemented
 - **Source type:** Verbatim user comment / User-confirmed summary
-- **Original user comment:** 「URLがgithubのユーザー名なのが気になる」（2026-07-09 project conversation）
+- **Original user comment:** 「URLがgithubのユーザー名なのが気になる」
+- **Provenance:** 2026-07-09 project conversation.
 - **User-confirmed summary:** 主ドメインは`monomidigest.com`とし、`monomi.jp`は不要とする。
 - **Interpretation:** Use `monomidigest.com` as the primary domain. The recorded decision says `monomi.jp` is unnecessary.
 - **Acceptance criteria:** Not defined. Domain ownership and DNS state must be verified before implementation.
@@ -292,8 +293,9 @@ Statuses may be combined, for example `Implemented / Awaiting user acceptance`. 
 - **Priority:** P2
 - **Status:** Captured / Not completed
 - **Source type:** Verbatim user comment
-- **Original user comment:** Two separate original comments are preserved as recovered, without merging them into one paraphrase: (1) 「セキュリティ要件みたいなのも後で決めよう」 (2) 「OK.ここはfable5にもレビューしてもらおう。公開情報を扱うものだから厳しいセキュリティ対策をする必要はないと思うが、必要なものは網羅しつつ過剰じゃないように整理して、fable5にレビューさせられる形にして。」
-- **User-confirmed summary:** Not recorded. The two original comments above are kept separate and are not merged into a single summary.
+- **Original user comment:** 「セキュリティ要件みたいなのも後で決めよう」
+- **Additional original user comment:** 「OK.ここはfable5にもレビューしてもらおう。公開情報を扱うものだから厳しいセキュリティ対策をする必要はないと思うが、必要なものは網羅しつつ過剰じゃないように整理して、fable5にレビューさせられる形にして。」
+- **User-confirmed summary:** Not recorded.
 - **Interpretation:** For the static public site, GitHub Actions, external fetching, Gemini, stored data, secrets, and future custom-domain use, define a security requirements set proportionate to the current architecture, as a dedicated document (candidate name `SECURITY_REQUIREMENTS.md`, distinct from GitHub's vulnerability-reporting `SECURITY.md`). Do not uniformly introduce excessive controls; state necessity and reevaluation conditions for each item explicitly.
 - **Acceptance criteria:** The document defines: target systems and data flow; the trusted/untrusted boundary; what may and may not be stored; external URL handling, HTML escaping, and `safe_url`; secrets management; GitHub Actions permissions; logs/artifacts handling; dependency and GitHub Actions supply-chain management (including an explicit necessity evaluation of full commit SHA pinning and of Dependabot for GitHub Actions); the current state of least privilege; reevaluation triggers for adopting a custom domain; reevaluation triggers for adding forms, authentication, a database, or persistent storage; a clear separation of current measures, identified gaps, and reasons for not adopting a given measure; a Fable 5 review pass; and final user approval. Full commit SHA pinning, Dependabot, and similar concrete measures are not decided as required at this stage — they become separate tickets only if the evaluation above approves a specific gap response.
 - **Dependencies:** Current architecture; coordinate with [BL-001](#bl-001--pull-request-ci) (Pull request CI); coordinate with [BL-007](#bl-007--monomidigestcomへの移行) (monomidigest.comへの移行); existing security rules already recorded in `AGENTS.md` (「Security requirements」節) and in `DECISIONS.md`.

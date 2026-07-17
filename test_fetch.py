@@ -2735,21 +2735,31 @@ class AgentsFileTest(unittest.TestCase):
 
         # BL-014 batch 1 (BL014-A) added the verbatim original comment recovered
         # for BL-007; BL-006 (a distinct, still-unrecovered request) is unaffected.
+        # The quote and its provenance (date) are kept in separate fields — the
+        # date is not appended inline to the Original user comment quote.
         self.assertIn(
             "- **Source type:** Verbatim user comment / User-confirmed summary", bl007
         )
         self.assertIn(
-            "- **Original user comment:** 「URLがgithubのユーザー名なのが気になる」"
-            "（2026-07-09 project conversation）",
+            "- **Original user comment:** 「URLがgithubのユーザー名なのが気になる」",
             bl007,
         )
+        self.assertNotIn(
+            "「URLがgithubのユーザー名なのが気になる」（2026-07-09", bl007
+        )
+        self.assertIn("- **Provenance:** 2026-07-09 project conversation.", bl007)
         self.assertIn("SD-011", bl007)
 
         # BL-014 batch 1 (BL014-C) added BL-015 with two separate verbatim
-        # comments, kept distinct rather than merged into one paraphrase.
+        # comments in separate fields, kept distinct rather than merged into
+        # one paraphrase or mixed with English management commentary.
         self.assertIn("- **Source type:** Verbatim user comment", bl015)
-        self.assertIn("「セキュリティ要件みたいなのも後で決めよう」", bl015)
         self.assertIn(
+            "- **Original user comment:** 「セキュリティ要件みたいなのも後で決めよう」",
+            bl015,
+        )
+        self.assertIn(
+            "- **Additional original user comment:** "
             "「OK.ここはfable5にもレビューしてもらおう。"
             "公開情報を扱うものだから厳しいセキュリティ対策をする必要はないと思うが、"
             "必要なものは網羅しつつ過剰じゃないように整理して、fable5にレビューさせられる形にして。」",
@@ -2759,6 +2769,34 @@ class AgentsFileTest(unittest.TestCase):
         self.assertIn("## SD-010", decisions_text)
         self.assertIn("## SD-011", decisions_text)
         self.assertIn("## SD-014", decisions_text)
+
+        # SD-014's Accepted wording preserves its original 3-line structure
+        # (recorded as a Markdown blockquote) rather than being collapsed
+        # into one paraphrased line.
+        sd014_start = decisions_text.index("## SD-014")
+        sd014_text = decisions_text[sd014_start:sd014_start + 3000]
+        self.assertIn("> 「daily JSONはサイト利用者へ公開する必要はない。", sd014_text)
+        self.assertIn(
+            "> GitHub Pagesの公開対象であるdocs/には置かず、生成・履歴管理用としてdata/に保存する。",
+            sd014_text,
+        )
+        self.assertIn(
+            "> public repository内で閲覧可能であることは許容するが、"
+            "秘密情報、raw AI response、記事全文など公開不適切な情報を保存しない。」",
+            sd014_text,
+        )
+
+        # A local, user-specific absolute path used only during out-of-repo
+        # audit research must not be recorded as a permanent repository
+        # artifact.
+        for doc_name, doc_text in (
+            ("BACKLOG_AUDIT.md", (root / "BACKLOG_AUDIT.md").read_text(encoding="utf-8")),
+            ("BACKLOG.md", backlog_text),
+            ("DECISIONS.md", decisions_text),
+            ("STATUS.md", (root / "STATUS.md").read_text(encoding="utf-8")),
+        ):
+            with self.subTest(doc=doc_name):
+                self.assertNotIn("/Users/", doc_text)
         for required_text in (
             "documentation-only changes",
             "static test",
