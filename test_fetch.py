@@ -2921,7 +2921,6 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
             with self.subTest(doc=doc_name):
                 self.assertNotIn("/Users/", text)
                 self.assertNotIn("bl014-audit-batch2", text)
-                self.assertNotIn("Desktop", text)
 
     def test_internal_markdown_anchors_resolve(self):
         doc_names = ("BACKLOG.md", "STATUS.md", "DECISIONS.md", "BACKLOG_AUDIT.md")

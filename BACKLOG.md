@@ -372,7 +372,7 @@ These references exist only to prevent completed work from being accidentally re
 - **Evidence:** [PR #3](https://github.com/matkei31/security-digest/pull/3), merge commit `d90fa3986a541aafbdf76bc6e6b4d8f0130ed19c`
 - **Completed scope (per PR body):** Fixed Atom `rel=alternate` article-link selection being ignored due to Element truthiness evaluation, which had fallen back to `rel=replies` comment-feed URLs; selected only unspecified-`rel`-or-`alternate` safe http/https article URLs; excluded comment feeds, feed/XML-type links, and non-HTTP URLs; skipped entries with no safe URL; applied `MAX_PER_FEED` to valid entries only. This was a fix-forward change; already-affected existing articles were separately repaired by Ticket 14a-3/14a-4.
 - **Present in current implementation:** Yes — this link-selection fix remains active in `fetch.py`, tagged "Ticket 14a" in code comments.
-- **Replaced by later work:** None; extended (not replaced) by Ticket 14a-3 (date parsing) and Ticket 14a-4 (2026-07-11–13 history repair), both already recorded below as their own Completed reference entries.
+- **Replaced by later work:** None; extended (not replaced) by Ticket 14a-3 (date parsing) and Ticket 14a-4 (2026-07-11–13 history repair), both already recorded above as their own Completed reference entries.
 - **Reopen rule:** Do not return this completed ticket to open backlog without new evidence.
 
 ### 取得時証跡と内部日付別アーカイブ
