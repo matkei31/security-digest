@@ -3871,41 +3871,57 @@ def build_html(
 
     cards = []
     for display_index, item in enumerate(display_items, start=1):
-        color      = SOURCE_COLORS.get(item["source"], "#555")
         date_label = item["date"].strftime("%m/%d %H:%M") if item["date"] else ""
         raw_summary = strip_html(item["summary"])
         analysis = normalize_display_analysis(item.get("ai_analysis"))
         anchor_id = article_anchor_id(display_index)
         facts_html = render_vulnerability_facts_html(item.get("facts"))
 
+        # sourceが上流で必須であっても、date_labelが欠ける場合(date未設定)に
+        # 「source ・」のような不自然な末尾区切りを生成しないよう、空でない値
+        # だけを「 ・ 」で連結する。両方空ならarticle-meta自体を表示しない。
+        meta_parts = [esc(value) for value in (item["source"], date_label) if value]
+        meta_html = (
+            f'\n      <p class="article-meta">{" ・ ".join(meta_parts)}</p>'
+            if meta_parts else ""
+        )
+
         if analysis:
-            importance_class = {
-                "高": "importance-high",
-                "中": "importance-medium",
-                "低": "importance-low",
-            }.get(analysis["importance"], "importance-unknown")
-            urgency_class = {
-                "本日確認": "urgency-today",
-                "今週確認": "urgency-week",
-                "参考": "urgency-reference",
-            }.get(analysis["urgency"], "urgency-unknown")
-
-            badges = []
+            # 通常記事カードB案(Ticket 18): 重要度／確認目安はプレーンテキスト表示とし、
+            # 楕円バッジは使わない。「高」「本日確認」だけは文字色・枠線による軽い強調
+            # (is-accent)を付けるが、タグと同じ丸い見た目にはしない(中/低・今週確認/参考
+            # は強調しない)。カテゴリはカードから外す(daily JSON・ダッシュボード集計は
+            # 別途維持、Ticket 18スコープ外)。
+            assessment_parts = []
             if analysis["importance"]:
-                badges.append(
-                    f'<span class="importance-badge {importance_class}">'
-                    f'重要度 {esc(analysis["importance"])}</span>'
-                )
+                if analysis["importance"] == "高":
+                    assessment_parts.append(
+                        f'<span class="assessment-item is-accent">'
+                        f'重要度 {esc(analysis["importance"])}</span>'
+                    )
+                else:
+                    assessment_parts.append(
+                        f'<span class="assessment-item">'
+                        f'重要度 <strong>{esc(analysis["importance"])}</strong></span>'
+                    )
             if analysis["urgency"]:
-                badges.append(
-                    f'<span class="urgency-badge {urgency_class}">'
-                    f'確認目安 {esc(analysis["urgency"])}</span>'
-                )
-            if analysis["category"]:
-                badges.append(
-                    f'<span class="category-badge">カテゴリ：{esc(analysis["category"])}</span>'
-                )
+                if analysis["urgency"] == "本日確認":
+                    assessment_parts.append(
+                        f'<span class="assessment-item is-accent">'
+                        f'確認目安 {esc(analysis["urgency"])}</span>'
+                    )
+                else:
+                    assessment_parts.append(
+                        f'<span class="assessment-item">'
+                        f'確認目安 <strong>{esc(analysis["urgency"])}</strong></span>'
+                    )
+            assessment_html = (
+                f'\n      <p class="article-assessment">{" ・ ".join(assessment_parts)}</p>'
+                if assessment_parts else ""
+            )
 
+            # 関連タグはB案として維持する。カード下部の補助情報であり、非クリック
+            # (spanのまま、リンク化・click handler・role=button・cursor:pointerは付けない)。
             tags_html = ""
             if analysis["tags"]:
                 tag_items = "".join(
@@ -3913,8 +3929,8 @@ def build_html(
                     for tag in analysis["tags"]
                 )
                 tags_html = (
-                    '<div class="article-tags">'
-                    '<span class="article-tags-label">関連タグ：</span>'
+                    '\n      <div class="article-tags">'
+                    '<span class="article-tags-label">関連タグ</span>'
                     f'{tag_items}</div>'
                 )
 
@@ -3944,17 +3960,14 @@ def build_html(
           <ul class="action-list">{actions_html}</ul>
         </section>""")
 
-            badge_row = (
-                f'<div class="analysis-badges">{"".join(badges)}</div>'
-                if badges else ""
-            )
             sections_html = "\n        ".join(sections)
-            summary_html = f"""<div class="ai-analysis">
-        {badge_row}
-        {tags_html}
-        {sections_html}
-      </div>"""
+            content_html = (
+                f'\n      <div class="ai-analysis">\n        {sections_html}\n      </div>'
+                if sections else ""
+            )
         else:
+            assessment_html = ""
+            tags_html = ""
             max_len = 120
             summary = raw_summary[:max_len]
             raw_summary_html = (
@@ -3963,8 +3976,8 @@ def build_html(
                 if summary else ""
             )
             # AI分析が無い場合も、概要の後に脆弱性情報を表示する(Ticket 12b #4)。
-            summary_html = raw_summary_html + facts_html
-        summary_block = f"\n      {summary_html}" if summary_html else ""
+            body_html = raw_summary_html + facts_html
+            content_html = f"\n      {body_html}" if body_html else ""
 
         safe_link = safe_url(item['link'])
         if safe_link:
@@ -3988,11 +4001,7 @@ def build_html(
 
         cards.append(f"""
     <article class="card" id="{esc(anchor_id)}">
-      <div class="card-meta">
-        <span class="tag" style="background:{color}">{esc(item['source'])}</span>
-        <span class="date">{esc(date_label)}</span>
-      </div>
-      {title_html}{summary_block}{source_link_html}
+      {title_html}{meta_html}{assessment_html}{content_html}{source_link_html}{tags_html}
     </article>""")
 
     cards_html = "\n".join(cards) if cards else '<p class="empty">本日の新着はありません。</p>'
@@ -4078,9 +4087,6 @@ def build_html(
     .card{{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;scroll-margin-top:var(--anchor-offset)}}
     .card:active{{background:#1c2128;border-color:#388bfd}}
     .card:target{{border-color:#388bfd;box-shadow:0 0 0 1px #388bfd}}
-    .card-meta{{display:flex;align-items:center;gap:8px;margin-bottom:8px}}
-    .tag{{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;color:#fff;white-space:nowrap}}
-    .date{{font-size:11px;color:#8b949e;margin-left:auto}}
     h2{{font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3}}
     .article-heading{{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:6px;align-items:start;font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3;overflow-wrap:anywhere}}
     .article-index{{color:#8b949e;font-weight:700;white-space:nowrap}}
@@ -4089,20 +4095,14 @@ def build_html(
     .article-title-link,.priority-title-link{{color:inherit;text-decoration:none}}
     .article-title-link:hover,.article-source-link:hover,.priority-title-link:hover{{text-decoration:underline}}
     .summary{{font-size:12px;color:#8b949e;line-height:1.5;margin-top:6px}}
+    .article-meta{{margin-top:4px;font-size:12px;color:#8b949e;line-height:1.5}}
+    .article-assessment{{margin-top:8px;font-size:12px;color:#8b949e;line-height:1.6}}
+    .assessment-item strong{{color:#e6edf3;font-weight:700}}
+    .assessment-item.is-accent{{display:inline-block;color:#f85149;font-weight:700;padding-left:7px;border-left:2px solid #f85149}}
     .ai-analysis{{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:grid;gap:10px}}
-    .analysis-badges,.article-tags{{display:flex;align-items:center;gap:6px;flex-wrap:wrap}}
-    .importance-badge,.urgency-badge,.category-badge,.article-tag{{font-size:11px;font-weight:700;line-height:1;padding:4px 9px;border-radius:100px}}
-    .importance-high{{background:#da3633;color:#fff}}
-    .importance-medium{{background:#9e6a03;color:#fff}}
-    .importance-low{{background:#238636;color:#fff}}
-    .importance-unknown{{background:#30363d;color:#c9d1d9}}
-    .urgency-today{{background:#f85149;color:#fff}}
-    .urgency-week{{background:#6e7681;color:#fff}}
-    .urgency-reference{{background:#30363d;color:#c9d1d9}}
-    .urgency-unknown{{background:#30363d;color:#c9d1d9}}
-    .category-badge{{border:1px solid #388bfd;color:#79c0ff;background:#0d1117}}
-    .article-tags-label{{font-size:11px;color:#8b949e;font-weight:500}}
-    .article-tag{{font-size:10px;font-weight:600;border:1px solid #30363d;color:#8b949e;background:#0d1117}}
+    .article-tags{{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}}
+    .article-tags-label{{padding-top:3px;font-size:10px;color:#768496;white-space:nowrap}}
+    .article-tag{{font-size:10px;font-weight:600;line-height:1.2;padding:3px 9px;border-radius:100px;border:1px solid #30363d;color:#8b949e;background:#0d1117}}
     .article-section h3{{font-size:11px;font-weight:600;color:#8b949e}}
     .article-section p,.article-section li{{font-size:12px;color:#c9d1d9;line-height:1.6}}
     .article-section p,.article-section ul{{margin-top:3px}}

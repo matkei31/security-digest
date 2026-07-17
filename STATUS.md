@@ -41,6 +41,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 5. Recently completed work
 
+- Ordinary article card, variant B (removes source/importance/urgency/category ellipse badges, keeps 関連タグ round and non-clickable) — completed and user-accepted (2026-07-17, verbatim: 「見られたけど、いいと思うよ」); see [SD-013](DECISIONS.md#sd-013--ordinary-article-card-variant-b-remove-classification-label-badges-keep-関連タグ-round), [BL-002](BACKLOG.md#bl-002--記事カードの楕円バッジ多用を見直す), [BL-003](BACKLOG.md#bl-003--aiで機械処理された印象を弱める), [PR #18](https://github.com/matkei31/security-digest/pull/18)
 - Dashboard v2 (single lightweight block), 優先確認 as a reasoned index, and the ARTICLE `reason` no-imperative prompt contract (`article-analysis-v8`) — completed; see [SD-012](DECISIONS.md#sd-012--dashboard-v2-priority-index-and-the-article-reason-no-imperative-contract)
 - Ticket 16a: feed-native rich content for ARTICLE input — completed
 - Ticket 17a: advisory action wording lint false-positive fix — completed
@@ -61,7 +62,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 ## 7. Next candidates
 
 1. [BL-001](BACKLOG.md#bl-001--pull-request-ci) — Add ordinary pull request CI.
-2. [BL-002〜BL-004](BACKLOG.md#bl-002--記事カードの楕円バッジ多用を見直す) — Dashboard and 優先確認 are done and user-approved (partial scope, 2026-07-17); Fable 5 review is complete (including ordinary article cards). Outstanding: user adjudication of the full set of Fable 5 proposals, the ordinary article-card specification, its explicit user approval, a dedicated UI design document, and the article-card implementation itself.
+2. [BL-004](BACKLOG.md#bl-004--fable-5によるuiレビューとui設計書) — [BL-002](BACKLOG.md#bl-002--記事カードの楕円バッジ多用を見直す) and [BL-003](BACKLOG.md#bl-003--aiで機械処理された印象を弱める) are `Done` (dashboard v2, 優先確認, and the ordinary article-card B案 are all implemented and user-accepted, 2026-07-17). Fable 5 review itself is complete. Still outstanding: a dedicated repo-resident UI design specification document (name/color/shape/placement/duplication/navigation/acceptance examples), and user adjudication of any remaining Fable 5 proposals beyond the dashboard and article-card decisions already made.
 3. [BL-005](BACKLOG.md#bl-005--editorial-style-v1とtoday-brief-v4) — Design `editorial-style-v1` and `today-brief-v4`.
 
 See [BACKLOG.md](BACKLOG.md) for BL-006 and later items; they remain recorded and are not removed by this short priority list.

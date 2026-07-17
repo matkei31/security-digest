@@ -222,9 +222,9 @@ class ArticleCardDisplayTest(unittest.TestCase):
 
         self.assertIn("重要度 高", html)
         self.assertIn("確認目安 本日確認", html)
-        self.assertIn("カテゴリ：脆弱性・パッチ", html)
+        self.assertNotIn("カテゴリ：脆弱性・パッチ", html)
         self.assertIn(
-            '<div class="article-tags"><span class="article-tags-label">関連タグ：</span>'
+            '<div class="article-tags"><span class="article-tags-label">関連タグ</span>'
             '<span class="article-tag">KEV</span>'
             '<span class="article-tag">悪用確認済み</span>'
             '<span class="article-tag">パッチ</span></div>',
@@ -240,22 +240,137 @@ class ArticleCardDisplayTest(unittest.TestCase):
         self.assertNotIn("HTMLには表示しない判定理由", cards_segment(html))
         self.assertNotIn("HTMLには表示しないカテゴリ理由", html)
 
-    def test_ticket5_badge_and_section_classes_are_rendered(self):
+    def test_ticket18_variant_b_classes_are_rendered_without_ellipse_badges(self):
         html = fetch.build_html([self._make_item(ai_analysis=self._analysis())])
+        card = cards_segment(html)
 
-        self.assertIn("importance-badge importance-high", html)
-        self.assertIn("urgency-badge urgency-today", html)
-        self.assertIn("category-badge", html)
-        self.assertIn("article-tags", html)
+        # 旧・楕円バッジclassは通常カードから完全に消える。
+        self.assertNotIn("importance-badge", card)
+        self.assertNotIn("urgency-badge", card)
+        self.assertNotIn("category-badge", card)
+        # 重要度／確認目安はプレーンテキスト中心の新classへ置き換わる。
+        self.assertIn('<p class="article-assessment">', card)
+        self.assertIn('class="assessment-item is-accent">重要度 高</span>', card)
+        self.assertIn('class="assessment-item is-accent">確認目安 本日確認</span>', card)
+        # 取得元・日時はプレーンテキストのメタ行。
+        self.assertIn('<p class="article-meta">CISA ・ 07/11 06:00</p>', card)
+        self.assertNotIn('class="card-meta"', card)
+        self.assertNotIn('class="tag" style="background:', card)
+        # 関連タグだけは丸い表示のまま維持する(B案)。
+        self.assertIn('<div class="article-tags">', card)
+        self.assertIn('class="article-tag">', card)
         self.assertIn("article-section", html)
         self.assertIn("action-list", html)
         self.assertIn('<meta name="viewport"', html)
+
+    def test_ticket18_variant_b_non_accent_values_use_plain_strong_text(self):
+        html = fetch.build_html([
+            self._make_item(ai_analysis=self._analysis(importance="中", urgency="今週確認"))
+        ])
+        card = cards_segment(html)
+
+        self.assertIn('<span class="assessment-item">重要度 <strong>中</strong></span>', card)
+        self.assertIn('<span class="assessment-item">確認目安 <strong>今週確認</strong></span>', card)
+        self.assertNotIn("is-accent", card)
+
+    def test_ticket18_variant_b_tags_are_non_clickable_spans(self):
+        html = fetch.build_html([self._make_item(ai_analysis=self._analysis())])
+        card = cards_segment(html)
+        style_block = html[html.index("<style>"):html.index("</style>")]
+        tag_style = style_block[style_block.index(".article-tag{"):]
+        tag_style = tag_style[:tag_style.index("}") + 1]
+
+        self.assertNotIn("<a class=\"article-tag", card)
+        self.assertNotIn("<button", card)
+        self.assertNotIn("role=\"button\"", card)
+        self.assertNotIn("onclick", card)
+        self.assertNotIn("cursor", tag_style)
+
+    def test_ticket18_variant_b_card_information_order(self):
+        html = fetch.build_html([self._make_item(ai_analysis=self._analysis())])
+        card = cards_segment(html)
+
+        self.assertLess(card.index("article-heading"), card.index('class="article-meta"'))
+        self.assertLess(card.index('class="article-meta"'), card.index('class="article-assessment"'))
+        self.assertLess(card.index('class="article-assessment"'), card.index("何が起きた"))
+        self.assertLess(card.index("何が起きた"), card.index("なぜ金融機関に関係する"))
+        self.assertLess(card.index("なぜ金融機関に関係する"), card.index("確認すべきこと"))
+        self.assertLess(card.index("確認すべきこと"), card.index('class="article-tags"'))
 
     def test_empty_tags_do_not_render_tag_area(self):
         html = fetch.build_html([self._make_item(ai_analysis=self._analysis(tags=[]))])
 
         self.assertNotIn('<div class="article-tags">', html)
         self.assertIn("重要度 高", html)
+
+    def test_ticket18_variant_b_up_to_five_tags_all_render(self):
+        five_tags = ["tag1", "tag2", "tag3", "tag4", "tag5"]
+        html = fetch.build_html([self._make_item(ai_analysis=self._analysis(tags=five_tags))])
+        card = cards_segment(html)
+
+        for tag in five_tags:
+            self.assertIn(f'<span class="article-tag">{tag}</span>', card)
+        self.assertEqual(card.count('class="article-tag"'), 5)
+
+    def test_ticket18_variant_b_category_text_never_leaks_into_card(self):
+        html = fetch.build_html([
+            self._make_item(ai_analysis=self._analysis(category="珍しいカテゴリ名"))
+        ])
+        card = cards_segment(html)
+
+        self.assertNotIn("珍しいカテゴリ名", card)
+        self.assertNotIn("カテゴリ", card)
+
+    def test_ticket18_variant_b_missing_importance_and_urgency_omits_assessment(self):
+        html = fetch.build_html([
+            self._make_item(ai_analysis=self._analysis(importance=None, urgency=None))
+        ])
+        card = cards_segment(html)
+
+        self.assertNotIn('class="article-assessment"', card)
+        self.assertNotIn("None", card)
+        self.assertNotIn(">null<", card)
+
+    def test_ticket18_variant_b_legacy_priority_label_absent(self):
+        html = fetch.build_html([self._make_item(ai_analysis=self._analysis())])
+
+        self.assertNotIn("確認優先度", html)
+
+    # ── article-metaの区切り文字(レビュー指摘対応) ─────────────────────────
+
+    def test_meta_shows_source_and_date_joined_when_both_present(self):
+        html = fetch.build_html([self._make_item()])
+        card = cards_segment(html)
+
+        self.assertIn('<p class="article-meta">CISA ・ 07/11 06:00</p>', card)
+
+    def test_meta_shows_source_only_when_date_missing(self):
+        html = fetch.build_html([self._make_item(date=None)])
+        card = cards_segment(html)
+
+        self.assertIn('<p class="article-meta">CISA</p>', card)
+        self.assertNotIn("CISA ・", card)
+        self.assertNotIn("・</p>", card)
+
+    def test_meta_shows_date_only_when_source_missing(self):
+        html = fetch.build_html([self._make_item(source="")])
+        card = cards_segment(html)
+
+        self.assertIn('<p class="article-meta">07/11 06:00</p>', card)
+        self.assertNotIn("・ 07/11", card)
+
+    def test_meta_area_absent_when_source_and_date_both_missing(self):
+        html = fetch.build_html([self._make_item(source="", date=None)])
+        card = cards_segment(html)
+
+        self.assertNotIn('class="article-meta"', card)
+
+    def test_meta_escapes_source_html(self):
+        html = fetch.build_html([self._make_item(source="<b>source</b>", date=None)])
+        card = cards_segment(html)
+
+        self.assertIn('<p class="article-meta">&lt;b&gt;source&lt;/b&gt;</p>', card)
+        self.assertNotIn("<b>source</b>", card)
 
     def test_missing_optional_analysis_fields_do_not_stop_html_generation(self):
         html = fetch.build_html([
@@ -319,7 +434,10 @@ class ArticleCardDisplayTest(unittest.TestCase):
 
         self.assertIn("&lt;b&gt;title&lt;/b&gt;", html)
         self.assertIn("&lt;b&gt;source&lt;/b&gt;", html)
-        self.assertIn("&lt;b&gt;category&lt;/b&gt;", html)
+        # categoryは通常記事カードから外れたため、ここでは表示されない
+        # (daily JSON/dashboardのcategory契約はTicket18のスコープ外で別途維持)。
+        self.assertNotIn("<b>category</b>", html)
+        self.assertNotIn("&lt;b&gt;category&lt;/b&gt;", html)
         self.assertIn("&lt;b&gt;urgency&lt;/b&gt;", html)
         self.assertIn("&lt;b&gt;summary&lt;/b&gt;", html)
         self.assertIn("&lt;b&gt;impact&lt;/b&gt;", html)
