@@ -36,7 +36,7 @@ def _prompt_text():
 
 class VersionAndSchemaTest(unittest.TestCase):
     def test_article_prompt_version_is_v6(self):
-        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v7")
+        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v8")
 
     def test_brief_prompt_version_and_schema_version_unchanged(self):
         self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-v3")
@@ -178,6 +178,239 @@ class ReasonTwoAxisTest(unittest.TestCase):
     def test_reject_cases_via_strict_normalize(self):
         bad = self._mock("中", "今週確認", "重要度は、対象が限定的なため「中」です。確認目安は今週確認。")
         self.assertIsNone(fetch.normalize_article_analysis(bad))
+
+
+# ── reasonが読者への命令・依頼表現にならないことのlint(本チケット新規) ────────
+
+class ReasonImperativeLintTest(unittest.TestCase):
+    """reasonは評価根拠の説明であり読者への対応指示ではないという契約の回帰テスト。
+    Ticket 17a(recommended_actionsの検討表現許容)とは独立した別のlintであり、
+    Ticket 17aの契約(「を検討」等の除外)は変更しない。
+    """
+
+    def _mock(self, reason, importance="高", urgency="本日確認"):
+        return {**VALID_ANALYSIS_RESPONSE, "importance": importance,
+                "urgency": urgency, "reason": reason}
+
+    # ── 低レベル関数の直接検証 ──────────────────────────────────────────
+
+    def test_helper_detects_te_kudasai_form(self):
+        self.assertTrue(fetch.reason_has_reader_directed_imperative(
+            "利用有無を今週中に確認してください。"
+        ))
+
+    def test_helper_detects_subeki_desu_form(self):
+        self.assertTrue(fetch.reason_has_reader_directed_imperative(
+            "本日中に対応すべきです。"
+        ))
+
+    def test_helper_detects_patch_apply_kudasai(self):
+        self.assertTrue(fetch.reason_has_reader_directed_imperative(
+            "パッチを適用してください。"
+        ))
+
+    def test_helper_detects_subeki_da_sentence_final(self):
+        self.assertTrue(fetch.reason_has_reader_directed_imperative(
+            "パッチを適用すべきだ。"
+        ))
+
+    def test_helper_detects_subeki_bare_sentence_final(self):
+        self.assertTrue(fetch.reason_has_reader_directed_imperative(
+            "直ちに確認すべき。"
+        ))
+
+    def test_helper_detects_subeki_bare_at_string_end(self):
+        self.assertTrue(fetch.reason_has_reader_directed_imperative(
+            "直ちに確認すべき"
+        ))
+
+    def test_helper_accepts_subeki_non_sentence_final_forms(self):
+        # 「すべきか」「すべきと」「すべき範囲」等、文末の義務付けではない用法は
+        # 拒否しない(文中の引用・説明・疑問表現を誤検知しないため)。
+        for ok in (
+            "対応すべきかを検討する材料となります。",
+            "ベンダーは適用すべきと説明しています。",
+            "どの対策を優先すべきかは環境によって異なります。",
+            "適用すべき範囲が論点となっています。",
+            "何を確認すべきかは個社環境によります。",
+        ):
+            with self.subTest(reason=ok):
+                self.assertFalse(fetch.reason_has_reader_directed_imperative(ok))
+
+    def test_helper_accepts_hedge_expressions(self):
+        for ok in (
+            "確認が必要となり得るため「高」です。",
+            "検討対象となるため「中」です。",
+            "確認の優先度が高いため「高」です。",
+            "重要度は、実悪用が確認されたため「高」です。確認目安は、本日中の確認が必要なため「本日確認」です。",
+        ):
+            with self.subTest(reason=ok):
+                self.assertFalse(fetch.reason_has_reader_directed_imperative(ok))
+
+    def test_helper_accepts_conditional_expressions(self):
+        self.assertFalse(fetch.reason_has_reader_directed_imperative(
+            "該当する場合は影響を受けるため「高」です。"
+        ))
+
+    def test_helper_accepts_negation(self):
+        self.assertFalse(fetch.reason_has_reader_directed_imperative(
+            "現時点で実悪用は確認されていないため「低」です。"
+        ))
+
+    def test_helper_none_and_non_str_are_false(self):
+        self.assertFalse(fetch.reason_has_reader_directed_imperative(None))
+        self.assertFalse(fetch.reason_has_reader_directed_imperative(123))
+
+    # ── strict normalize(success判定)への統合 ──────────────────────────
+
+    def test_normalize_accepts_correct_reason_without_imperative(self):
+        good = ("重要度は、実悪用が確認され広く利用される製品に影響するため「高」です。"
+                "確認目安は、短期的な適用性確認が必要となり得るため「本日確認」です。")
+        result = fetch.normalize_article_analysis(self._mock(good))
+        self.assertIsNotNone(result)
+        self.assertEqual(result["reason"], good)
+
+    def test_normalize_rejects_reason_with_te_kudasai(self):
+        bad = ("重要度は、実悪用が確認されたため「高」です。"
+               "確認目安は、利用有無を今週中に確認してくださいため「本日確認」です。")
+        self.assertIsNone(fetch.normalize_article_analysis(self._mock(bad)))
+
+    def test_normalize_accepts_reason_with_non_final_subeki_desu(self):
+        # 「すべきです」が文末の義務付けではなく、「ため」に続く理由節の一部
+        # (=非命令の説明表現)である場合は拒否しない。狭いregexへの変更前は
+        # このケースを誤って拒否していた回帰テスト。
+        good = ("重要度は、実悪用が確認されたため「高」です。"
+                "確認目安は、本日中に対応すべきですため「本日確認」です。")
+        result = fetch.normalize_article_analysis(self._mock(good))
+        self.assertIsNotNone(result)
+        self.assertEqual(result["reason"], good)
+
+    def test_normalize_accepts_reason_with_hedge_phrase(self):
+        good = ("重要度は、確認の優先度が高いため「高」です。"
+                "確認目安は、検討対象となるため「本日確認」です。")
+        self.assertIsNotNone(fetch.normalize_article_analysis(self._mock(good)))
+
+    def test_normalize_accepts_reason_with_conditional_clause(self):
+        good = ("重要度は、該当する場合に影響が大きいため「高」です。"
+                "確認目安は、実悪用が確認が必要となり得るため「本日確認」です。")
+        self.assertIsNotNone(fetch.normalize_article_analysis(self._mock(good)))
+
+    # ── success/fallback/failed契約: strict失敗時はfallbackへ委ねる(SD-004) ──
+
+    def test_full_json_with_imperative_reason_falls_back_not_fails(self):
+        bad_reason = ("重要度は、実悪用が確認されたため「高」です。"
+                      "確認目安は、パッチを適用してくださいため「本日確認」です。")
+        result = call_gemini_analyze(
+            response_body=make_candidate_body(self._mock(bad_reason))
+        )
+        self.assertEqual(result["status"], "fallback")
+        self.assertIsNotNone(result["analysis"])
+
+    def test_full_json_with_explanatory_reason_is_success(self):
+        good_reason = ("重要度は、実悪用が確認され広く利用される製品に影響するため「高」です。"
+                       "確認目安は、短期的な適用性確認が必要となり得るため「本日確認」です。")
+        result = call_gemini_analyze(
+            response_body=make_candidate_body(self._mock(good_reason))
+        )
+        self.assertEqual(result["status"], "success")
+
+    # ── fallback_ai_analysis()にも同じlintを適用する(本チケット新規) ─────────
+    # strict validation(normalize_article_analysis)がreasonの指示表現を拒否
+    # しても、fallback_ai_analysis()が同じ応答テキストから再度reasonを抽出して
+    # そのまま保存すると、指示文が優先確認に表示されてしまう。fallback分析
+    # 全体は維持したまま、reasonだけをNoneにする(代わりの一般文は生成しない)。
+
+    def test_fallback_sanitizes_imperative_reason_to_none_but_keeps_other_fields(self):
+        bad = {**VALID_ANALYSIS_RESPONSE, "reason": "利用有無を確認してください。"}
+        result = call_gemini_analyze(response_body=make_candidate_body(bad))
+
+        self.assertEqual(result["status"], "fallback")
+        analysis = result["analysis"]
+        self.assertIsNotNone(analysis)
+        self.assertIsNone(analysis["reason"])
+        self.assertEqual(analysis["importance"], VALID_ANALYSIS_RESPONSE["importance"])
+        self.assertEqual(analysis["summary"], VALID_ANALYSIS_RESPONSE["summary"])
+        self.assertEqual(
+            analysis["financial_impact"], VALID_ANALYSIS_RESPONSE["financial_impact"]
+        )
+        self.assertEqual(
+            analysis["recommended_actions"], VALID_ANALYSIS_RESPONSE["recommended_actions"]
+        )
+
+    def test_fallback_sanitizes_sentence_final_subeki_reason_to_none(self):
+        # 文末義務形はfallbackの自由形式reasonでは実際に起こりうる
+        # (strict pathの2文構造テンプレートでは構造上発生しない)。
+        bad = {**VALID_ANALYSIS_RESPONSE, "reason": "直ちに確認すべきです。"}
+        result = call_gemini_analyze(response_body=make_candidate_body(bad))
+
+        self.assertEqual(result["status"], "fallback")
+        self.assertIsNone(result["analysis"]["reason"])
+
+    def test_fallback_reason_sanitized_to_none_is_not_rendered(self):
+        bad = {**VALID_ANALYSIS_RESPONSE, "reason": "利用有無を確認してください。"}
+        result = call_gemini_analyze(response_body=make_candidate_body(bad))
+        analysis = result["analysis"]
+        self.assertIsNone(analysis["reason"])
+
+        item = {
+            "id": "id-fallback-reason-sanitized",
+            "title": "fallback-reason-sanitized",
+            "link": "https://example.com/fallback-reason-sanitized",
+            "summary": "summary",
+            "date": _dt.datetime(2026, 7, 11, 6, 0),
+            "source": "CISA",
+            "lang": "ja",
+            "ai_analysis": analysis,
+        }
+        html = fetch.build_html([item])
+        self.assertNotIn("利用有無を確認してください", html)
+        # important-item-reasonクラス自体はCSSに常時存在するため、実際に
+        # 段落要素として出力されていないことを開始タグで確認する。
+        self.assertNotIn('<p class="important-item-reason">', html)
+
+    def test_fallback_preserves_safe_reason(self):
+        safe_reason = ("重要度は、実悪用が確認され広く利用される製品に影響するため「高」です。"
+                       "確認目安は、短期的な適用性確認が必要となり得るため「本日確認」です。")
+        truncated = (
+            '{"importance": "高", "summary": "テスト要約です。", '
+            '"financial_impact": "影響があります。", "recommended_actions": ["対応1"], '
+            f'"reason": "{safe_reason}"'
+        )
+        fb = fetch.fallback_ai_analysis(truncated, "source_name: CISA\ntitle: test\n")
+        self.assertIsNotNone(fb)
+        self.assertEqual(fb["reason"], safe_reason)
+
+    # ── prompt本文の契約確認 ──────────────────────────────────────────
+
+    def test_prompt_states_reason_is_explanation_not_instruction(self):
+        text = _prompt_text()
+        self.assertIn("reasonは評価根拠の説明であり、読者への対応指示ではない", text)
+
+    def test_prompt_lists_forbidden_imperative_examples(self):
+        text = _prompt_text()
+        for phrase in (
+            "「〜してください」",
+            "「〜すべきです」",
+            "利用有無を確認してください",
+            "本日中に対応してください",
+            "パッチを適用してください",
+        ):
+            self.assertIn(phrase, text)
+
+    def test_prompt_allows_hedge_and_conditional_expressions(self):
+        text = _prompt_text()
+        for phrase in ("確認が必要となり得る", "検討対象となる", "確認の優先度が高い"):
+            self.assertIn(phrase, text)
+
+    def test_prompt_states_recommended_actions_is_separate_responsibility(self):
+        text = _prompt_text()
+        self.assertIn("推奨アクションはrecommended_actionsの責務であり、", text)
+
+    def test_prompt_still_allows_confirmation_request_form_in_recommended_actions(self):
+        # Ticket 17a由来のrecommended_actions固有の許容(「確認してください」等の
+        # 依頼形は禁止しない)は、reasonの新lintとは独立して維持されている。
+        text = _prompt_text()
+        self.assertIn("「確認してください」等の依頼形は禁止しない", text)
 
 
 # ── recommended_actions lint(状態変更動詞の指示用法) ──────────────────────

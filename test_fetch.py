@@ -220,7 +220,7 @@ class ArticleCardDisplayTest(unittest.TestCase):
     def test_article_card_displays_ticket5_analysis_fields(self):
         html = fetch.build_html([self._make_item(ai_analysis=self._analysis())])
 
-        self.assertIn("確認優先度 高", html)
+        self.assertIn("重要度 高", html)
         self.assertIn("確認目安 本日確認", html)
         self.assertIn("カテゴリ：脆弱性・パッチ", html)
         self.assertIn(
@@ -255,7 +255,7 @@ class ArticleCardDisplayTest(unittest.TestCase):
         html = fetch.build_html([self._make_item(ai_analysis=self._analysis(tags=[]))])
 
         self.assertNotIn('<div class="article-tags">', html)
-        self.assertIn("確認優先度 高", html)
+        self.assertIn("重要度 高", html)
 
     def test_missing_optional_analysis_fields_do_not_stop_html_generation(self):
         html = fetch.build_html([
@@ -268,7 +268,7 @@ class ArticleCardDisplayTest(unittest.TestCase):
         ])
 
         self.assertIn("テスト記事", html)
-        self.assertIn("確認優先度 高", html)
+        self.assertIn("重要度 高", html)
         self.assertNotIn("None", html)
         self.assertNotIn(">null<", html)
         self.assertNotIn("確認すべきこと", html)
@@ -279,7 +279,7 @@ class ArticleCardDisplayTest(unittest.TestCase):
 
         self.assertIn("テスト記事", html)
         self.assertIn("取得時の概要文", html)
-        self.assertNotIn("確認優先度 中", html)
+        self.assertNotIn("重要度 中", html)
         self.assertNotIn("金融機関への影響は不明", html)
         self.assertNotIn("原文を確認してください", html)
 
@@ -299,7 +299,7 @@ class ArticleCardDisplayTest(unittest.TestCase):
         self.assertIn("テスト記事", html)
         self.assertNotIn("None", html)
         self.assertNotIn(">null<", html)
-        self.assertNotIn("確認優先度 中", html)
+        self.assertNotIn("重要度 中", html)
 
     def test_ai_generated_ticket5_fields_are_escaped(self):
         html = fetch.build_html([
@@ -370,7 +370,7 @@ class ArticleCardDisplayTest(unittest.TestCase):
         self.assertNotIn('<a class="article-source-link"', html)
         self.assertNotIn("元記事を読む", html)
         self.assertIn("テスト記事", html)
-        self.assertIn("確認優先度 高", html)
+        self.assertIn("重要度 高", html)
         self.assertFalse(parser.nested_anchor)
 
 
@@ -481,7 +481,7 @@ class AllItemsDisplayOrderTest(unittest.TestCase):
 
         self.assertIn("本日の情報", html)
         self.assertNotIn("全記事一覧", html)
-        self.assertIn("確認目安、確認優先度、元の収集順で表示しています。", html)
+        self.assertIn("確認目安、重要度、元の収集順で表示しています。", html)
         self.assertLess(cards.index("today-low"), cards.index("week-high"))
         self.assertLess(cards.index("week-high"), cards.index("reference-high"))
         self.assertIn('<span class="article-index">1.</span>', cards)
@@ -506,7 +506,7 @@ class AllItemsDisplayOrderTest(unittest.TestCase):
             important_segment(html).index("important-today-low"),
             important_segment(html).index("important-high-week"),
         )
-        self.assertIn("<strong>3件</strong>", dashboard_segment(html))
+        self.assertIn("<strong>3</strong>件", dashboard_segment(html))
         self.assertLess(
             cards_segment(html).index("important-today-low"),
             cards_segment(html).index("important-high-week"),
@@ -1068,11 +1068,11 @@ class DashboardTest(unittest.TestCase):
         dashboard = dashboard_segment(html)
 
         self.assertIn("本日のダッシュボード", dashboard)
-        self.assertIn("本日の収集", dashboard)
-        self.assertIn("<strong>2件</strong>", dashboard)
-        self.assertIn("<h3>確認優先度</h3>", dashboard)
+        self.assertIn("掲載", dashboard)
+        self.assertIn("<strong>2</strong>件", dashboard)
+        self.assertIn("<h3>重要度</h3>", dashboard)
         self.assertIn("<h3>確認目安</h3>", dashboard)
-        self.assertIn("<h3>カテゴリ</h3>", dashboard)
+        self.assertIn("<h3>主なカテゴリ</h3>", dashboard)
         self.assertLess(html.index('<div class="todays-brief">'), html.index('<section class="important-items">'))
         self.assertLess(html.index('<section class="important-items">'), html.index('<section class="dashboard">'))
         self.assertLess(html.index('<section class="dashboard">'), html.index('<div class="cards">'))
@@ -1101,7 +1101,7 @@ class DashboardTest(unittest.TestCase):
             self._make_item("unknown", category="不正カテゴリ", importance="不正", urgency="不正"),
         ]
         dashboard = dashboard_segment(fetch.build_html(items))
-        category_part = dashboard[dashboard.index("<h3>カテゴリ</h3>"):]
+        category_part = dashboard[dashboard.index("<h3>主なカテゴリ</h3>"):]
 
         self.assertIn("<span>未判定</span><strong>1</strong>", dashboard)
         self.assertLess(category_part.index("脆弱性・パッチ"), category_part.index("インシデント"))
@@ -1113,7 +1113,7 @@ class DashboardTest(unittest.TestCase):
         dashboard = dashboard_segment(html)
 
         self.assertIn("本日のダッシュボード", dashboard)
-        self.assertIn("<strong>0件</strong>", dashboard)
+        self.assertIn("<strong>0</strong>件", dashboard)
         self.assertIn("<span>高</span><strong>0</strong>", dashboard)
         self.assertIn("<span>中</span><strong>0</strong>", dashboard)
         self.assertIn("<span>低</span><strong>0</strong>", dashboard)
@@ -1165,6 +1165,49 @@ class DashboardTest(unittest.TestCase):
 
         self.assertNotIn("javascript:alert(1)", html)
         self.assertEqual(article_link_anchors(parse_anchors(html)), [])
+
+    def test_dashboard_axes_and_category_values_do_not_cross_leak(self):
+        # dashboard v2: 重要度・確認目安・カテゴリはそれぞれ独立したリストへ描画され、
+        # 一方の軸の値がもう一方のリスト側へ混ざらないことを確認する。
+        items = [
+            self._make_item("only-patch", importance="高", urgency="本日確認", category="脆弱性・パッチ"),
+        ]
+        dashboard = dashboard_segment(fetch.build_html(items))
+        importance_part = dashboard[
+            dashboard.index("<h3>重要度</h3>"):dashboard.index("<h3>確認目安</h3>")
+        ]
+        urgency_part = dashboard[
+            dashboard.index("<h3>確認目安</h3>"):dashboard.index("<h3>主なカテゴリ</h3>")
+        ]
+        category_part = dashboard[dashboard.index("<h3>主なカテゴリ</h3>"):]
+
+        self.assertNotIn("脆弱性・パッチ", importance_part)
+        self.assertNotIn("本日確認", importance_part)
+        self.assertNotIn("脆弱性・パッチ", urgency_part)
+        self.assertNotIn("高", urgency_part)
+        self.assertNotIn("<span>高</span>", category_part)
+        self.assertNotIn("<span>本日確認</span>", category_part)
+
+    def test_dashboard_never_shows_source_count_or_kev_count_or_multiple_cards(self):
+        html = fetch.build_html([self._make_item("solo")])
+        dashboard = dashboard_segment(html)
+
+        self.assertNotIn("ソース", dashboard)
+        self.assertNotIn("収集元", dashboard)
+        self.assertNotIn("CISA KEV", dashboard)
+        # dashboard v2は単一の<section class="dashboard">ブロックであり、
+        # 旧3カード構造(複数の<section class="dashboard-group">)を持たない。
+        self.assertEqual(dashboard.count('<section class="dashboard'), 1)
+        self.assertNotIn('class="dashboard-group', dashboard)
+
+    def test_confirmation_priority_wording_does_not_appear_in_generated_html(self):
+        # 「確認優先度」は用語統一により生成HTMLへ一切残らない
+        # (ARTICLE promptの評価定義文はfetch.py内に残るが、生成HTML出力には含めない)。
+        items = [
+            self._make_item("term-check", importance="高", urgency="本日確認", category="脆弱性・パッチ"),
+        ]
+        html = fetch.build_html(items, SAMPLE_BRIEF)
+        self.assertNotIn("確認優先度", html)
 
 
 class ImportantItemsTest(unittest.TestCase):
@@ -1340,8 +1383,12 @@ class ImportantItemsTest(unittest.TestCase):
         cards = cards_segment(html)
 
         self.assertIn("優先確認", important)
-        self.assertNotIn("確認優先度 高", important)
-        self.assertNotIn("確認目安 本日確認", important)
+        # 重要度・確認目安は優先確認の必須表示項目として簡潔なテキストで示す
+        # (通常カードのような楕円バッジ<span class="importance-badge">等は使わない)。
+        self.assertIn("重要度 高", important)
+        self.assertIn("確認目安 本日確認", important)
+        self.assertNotIn("importance-badge", important)
+        self.assertNotIn("urgency-badge", important)
         self.assertNotIn("カテゴリ：脆弱性・パッチ", important)
         self.assertIn("compact", important)
         self.assertIn("compactの判定理由", important)
@@ -1369,6 +1416,57 @@ class ImportantItemsTest(unittest.TestCase):
         self.assertIn("優先確認", important_segment(html))
         self.assertIn("本日の優先確認対象はありません。", important_segment(html))
         self.assertEqual(cards_segment(html).count('class="card"'), 1)
+
+    def test_empty_important_items_section_does_not_show_selection_condition_note(self):
+        # 選定条件の説明文は、優先確認対象がある場合だけ表示する。
+        item = self._make_item("ordinary", importance="中", urgency="今週確認")
+        important = important_segment(fetch.build_html([item]))
+
+        self.assertNotIn("important-items-note", important)
+        self.assertNotIn("重要度が高い、または確認目安が本日確認の記事です。", important)
+
+    def test_non_empty_important_items_section_shows_selection_condition_note(self):
+        item = self._make_item("selected", importance="高", urgency="本日確認")
+        important = important_segment(fetch.build_html([item]))
+
+        self.assertIn("important-items-note", important)
+        self.assertIn("重要度が高い、または確認目安が本日確認の記事です。", important)
+
+    def test_importance_only_item_shows_importance_meta_without_urgency(self):
+        item = self._make_item("importance-only", importance="高", urgency="参考")
+        important = important_segment(fetch.build_html([item]))
+
+        self.assertIn("重要度 高", important)
+        self.assertIn("確認目安 参考", important)
+
+    def test_urgency_only_item_shows_urgency_meta(self):
+        item = self._make_item("urgency-only", importance="低", urgency="本日確認")
+        important = important_segment(fetch.build_html([item]))
+
+        self.assertIn("重要度 低", important)
+        self.assertIn("確認目安 本日確認", important)
+
+    def test_high_and_today_combined_item_shows_both_meta_values(self):
+        item = self._make_item("combined", importance="高", urgency="本日確認")
+        important = important_segment(fetch.build_html([item]))
+
+        self.assertIn("重要度 高", important)
+        self.assertIn("確認目安 本日確認", important)
+
+    def test_multiple_priority_items_share_numbering_with_full_list(self):
+        first = self._make_item("first-priority", importance="高", urgency="本日確認")
+        second = self._make_item("second-priority", importance="高", urgency="本日確認")
+        html = fetch.build_html([first, second])
+        important = important_segment(html)
+
+        self.assertIn('href="#article-1"', important)
+        self.assertIn('href="#article-2"', important)
+        self.assertIn('id="article-1"', cards_segment(html))
+        self.assertIn('id="article-2"', cards_segment(html))
+
+    def test_card_target_css_rule_exists_with_accent_color(self):
+        html = fetch.build_html([self._make_item("target-check", importance="高", urgency="本日確認")])
+        self.assertIn(".card:target{", html)
 
     def test_important_item_links_use_safe_url_without_nested_anchors(self):
         item = self._make_item("linked", importance="高", urgency="本日確認")
@@ -1410,7 +1508,10 @@ class ImportantItemsTest(unittest.TestCase):
         self.assertIn("&lt;b&gt;reason&lt;/b&gt;", important)
         self.assertNotIn("<b>reason</b>", html)
 
-    def test_reason_display_rewrites_importance_label_with_ha(self):
+    def test_reason_display_keeps_importance_label_with_ha_unchanged(self):
+        # promptのreasonラベルは既に表示名「重要度」と一致しているため、
+        # normalize_reason_display_labels()は重要度側を書き換えない
+        # (確認優先度への変換は廃止した)。
         item = self._make_item(
             "label-high",
             importance="高",
@@ -1420,11 +1521,11 @@ class ImportantItemsTest(unittest.TestCase):
         html = fetch.build_html([item])
         important = important_segment(html)
 
-        self.assertIn("確認優先度は高い", important)
-        self.assertNotIn("重要度は高い", important)
+        self.assertIn("重要度は高い", important)
+        self.assertNotIn("確認優先度", important)
         self.assertEqual(item["ai_analysis"]["reason"], "被害が大きいため、重要度は高いと判断しました。")
 
-    def test_reason_display_rewrites_importance_label_with_colon(self):
+    def test_reason_display_keeps_importance_label_with_colon_unchanged(self):
         item = self._make_item(
             "label-medium",
             importance="高",
@@ -1433,8 +1534,8 @@ class ImportantItemsTest(unittest.TestCase):
         )
         html = fetch.build_html([item])
 
-        self.assertIn("確認優先度：中", important_segment(html))
-        self.assertNotIn("重要度：中", important_segment(html))
+        self.assertIn("重要度：中", important_segment(html))
+        self.assertNotIn("確認優先度", important_segment(html))
 
     def test_reason_display_rewrites_urgency_label_with_ha(self):
         item = self._make_item(
@@ -1460,7 +1561,7 @@ class ImportantItemsTest(unittest.TestCase):
 
         self.assertIn("脆弱性の重要度", important)
         self.assertIn("重要度の高い脆弱性", important)
-        self.assertNotIn("確認優先度の高い脆弱性", important)
+        self.assertNotIn("確認優先度", important)
 
     def test_reason_display_escaping_after_label_rewrite(self):
         item = self._make_item(
@@ -1472,7 +1573,7 @@ class ImportantItemsTest(unittest.TestCase):
         html = fetch.build_html([item])
         important = important_segment(html)
 
-        self.assertIn("確認優先度は高い &lt;script&gt;alert(1)&lt;/script&gt;", important)
+        self.assertIn("重要度は高い &lt;script&gt;alert(1)&lt;/script&gt;", important)
         self.assertNotIn("<script>alert(1)</script>", html)
 
     def test_anchor_structure_and_scroll_margin_are_preserved(self):

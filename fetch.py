@@ -1247,7 +1247,9 @@ IMPORTANCE_DISPLAY_ORDER = {
 }
 UNKNOWN_LABEL = "未判定"
 JAPANESE_TEXT_RE = re.compile(r"[\u3040-\u30ff\u3400-\u9fff]")
-IMPORTANCE_REASON_LABEL_RE = re.compile(r"重要度(\s*(?:は|[:：])\s*)(高い|高|中|低)")
+# 過去のprompt版では緊急度という表現だった名残を、現行の表示名「確認目安」へ
+# 表示時にだけ変換する(保存済みreason本文自体は書き換えない)。重要度は現行prompt
+# でも表示名と一致しているため、対応する変換regexは持たない。
 URGENCY_REASON_LABEL_RE = re.compile(r"緊急度(\s*(?:は|[:：])\s*)(本日確認|今週確認|参考)")
 
 
@@ -1364,11 +1366,12 @@ def render_title_stack(item, *, href=None, external=False, heading_level=2, disp
 
 
 def normalize_reason_display_labels(reason):
-    """reason内の評価ラベル表現だけを、HTML表示名に合わせる。"""
+    """reason内の評価ラベル表現だけを、HTML表示名に合わせる。promptのreasonラベルは
+    「重要度は」で既に表示名と一致しているため書き換えない。「緊急度は」は過去prompt版の
+    表現の名残であり、現行表示名「確認目安」へ変換する。"""
     text = clean_display_text(reason)
     if not text:
         return ""
-    text = IMPORTANCE_REASON_LABEL_RE.sub(r"確認優先度\1\2", text)
     text = URGENCY_REASON_LABEL_RE.sub(r"確認目安\1\2", text)
     return text
 
@@ -1423,61 +1426,68 @@ def compute_dashboard_counts(items):
 
 
 def render_dashboard_html(items):
+    """ダッシュボードを軽量な単一ブロックとして描画する(dashboard v2)。
+    情報量はcompute_dashboard_counts()の集計をそのまま使い、旧3カード構造
+    (合計・確認優先度・確認目安・カテゴリの4つの独立したカード)を廃止して
+    1つの<section>内へ統合する。収集元件数・CISA KEV件数・楕円バッジは表示しない。
+    重要度・確認目安は横に並ぶ主軸として明確に区別し、カテゴリは下側の補足行に
+    留めて視覚的な重みを弱くする。JavaScript・新規依存は使わない。
+    """
     counts = compute_dashboard_counts(items)
 
-    def count_list(axis_counts, values, include_zero=True):
+    def axis_rows(axis_counts, values, accent_label):
         labels = list(values)
         if axis_counts[UNKNOWN_LABEL] > 0:
             labels.append(UNKNOWN_LABEL)
         rows = []
         for label in labels:
             count = axis_counts[label]
-            if count == 0 and not include_zero:
-                continue
+            classes = "dashboard-axis-item"
+            if label == accent_label and count > 0:
+                classes += " is-accent"
             rows.append(
-                '<li class="dashboard-count-item">'
+                f'<li class="{classes}">'
                 f'<span>{esc(label)}</span><strong>{esc(str(int(count)))}</strong>'
                 '</li>'
             )
         return "".join(rows)
 
-    importance_items = count_list(
-        counts["importance"],
-        daily_json.IMPORTANCE_VALUES,
-        include_zero=True,
+    importance_rows = axis_rows(counts["importance"], daily_json.IMPORTANCE_VALUES, "高")
+    urgency_rows = axis_rows(counts["urgency"], daily_json.URGENCY_VALUES, "本日確認")
+
+    # カテゴリは1件以上のものだけ、既存のCATEGORY_VALUES順のまま表示する。
+    # 未判定は末尾に1件以上のときだけ追加する(従来のcount_list()と同じ扱い)。
+    category_labels = list(daily_json.CATEGORY_VALUES)
+    if counts["category"][UNKNOWN_LABEL] > 0:
+        category_labels.append(UNKNOWN_LABEL)
+    category_rows = "".join(
+        f'<li class="dashboard-category-item">'
+        f'<span>{esc(label)}</span><strong>{esc(str(int(counts["category"][label])))}</strong>'
+        '</li>'
+        for label in category_labels
+        if counts["category"][label] > 0
     )
-    urgency_items = count_list(
-        counts["urgency"],
-        daily_json.URGENCY_VALUES,
-        include_zero=True,
-    )
-    category_items = count_list(
-        counts["category"],
-        daily_json.CATEGORY_VALUES,
-        include_zero=False,
-    )
-    if not category_items:
-        category_items = '<li class="dashboard-empty">該当する記事はありません。</li>'
+    if not category_rows:
+        category_rows = '<li class="dashboard-empty">該当する記事はありません。</li>'
 
     return f"""<section class="dashboard">
-    <h2>本日のダッシュボード</h2>
-    <div class="dashboard-total">
-      <span>本日の収集</span>
-      <strong>{esc(str(counts["total"]))}件</strong>
+    <div class="dashboard-head">
+      <h2>本日のダッシュボード</h2>
+      <p class="dashboard-count"><span>掲載</span><strong>{esc(str(counts["total"]))}</strong>件</p>
     </div>
-    <div class="dashboard-groups">
-      <section class="dashboard-group">
-        <h3>確認優先度</h3>
-        <ul class="dashboard-count-list">{importance_items}</ul>
-      </section>
-      <section class="dashboard-group">
+    <div class="dashboard-axes">
+      <div class="dashboard-axis">
+        <h3>重要度</h3>
+        <ul class="dashboard-axis-list">{importance_rows}</ul>
+      </div>
+      <div class="dashboard-axis">
         <h3>確認目安</h3>
-        <ul class="dashboard-count-list">{urgency_items}</ul>
-      </section>
-      <section class="dashboard-group dashboard-category-group">
-        <h3>カテゴリ</h3>
-        <ul class="dashboard-count-list">{category_items}</ul>
-      </section>
+        <ul class="dashboard-axis-list">{urgency_rows}</ul>
+      </div>
+    </div>
+    <div class="dashboard-categories">
+      <h3>主なカテゴリ</h3>
+      <ul class="dashboard-category-list">{category_rows}</ul>
     </div>
   </section>"""
 
@@ -1844,6 +1854,36 @@ def action_has_unconditional_state_change(text):
     return True
 
 
+# reasonが評価根拠の説明にとどまり、読者への直接的な命令・依頼表現にならないよう
+# 拒否する狭いlint。「てください」「でください」の依頼形は語形自体が読者への
+# 依頼であるため文中のどこにあっても検出する。「すべき」の義務形は文末の
+# 義務付け(「〜すべきです。」「〜すべきだ。」「〜すべき。」「〜すべき」で文字列が
+# 終わる場合)のみを検出し、句点・感嘆符・疑問符・文字列末尾の直前でなければ
+# 検出しない(大規模な自然言語解析は行わない)。これにより「すべきかを検討する」
+# 「すべきと説明しています」「すべきかは異なります」「すべき範囲が論点」のような
+# 非命令の引用・説明・疑問表現は誤検知しない。「確認が必要となり得る」
+# 「検討対象となる」「確認の優先度が高い」等のヘッジ・条件表現、否定表現、
+# recommended_actions固有の「導入を検討する」等の検討表現はこれらのパターンに
+# 一致しないため誤検知しない。Ticket 17aの状態変更動詞lintとは独立した別チェックで、
+# recommended_actionsの許容表現(「確認してください」等の依頼形)には適用しない。
+_REASON_IMPERATIVE_RES = tuple(re.compile(p) for p in (
+    r"[てで]ください",
+    r"すべき(?:です|だ)?(?=[。！？!?]|$)",
+))
+
+
+def reason_has_reader_directed_imperative(text):
+    """reasonに読者への直接的な命令・依頼表現(「〜してください」「文末の〜すべきです」等)が
+    含まれるかを判定する。Trueなら strict validation を失敗させ、既存のfallback経路
+    (success/fallback/failed契約は不変)へ委ねる。「すべき」は文末の義務付けのみを
+    検出し、「すべきかを検討する」「すべきと説明しています」のような非命令表現は
+    対象外(誤検知しない)。
+    """
+    if not isinstance(text, str):
+        return False
+    return any(rgx.search(text) for rgx in _REASON_IMPERATIVE_RES)
+
+
 def normalize_article_analysis(value):
     """Ticket 4の新スキーマ(category/category_reason/urgency/reason/tagsを含む
     全項目)を厳密に検証する。1項目でも不正なら全体としてNoneを返す(success判定用)。
@@ -1878,6 +1918,8 @@ def normalize_article_analysis(value):
     if not reason:
         return None
     if not validate_reason_two_axis(reason, core["importance"], urgency):
+        return None
+    if reason_has_reader_directed_imperative(reason):
         return None
 
     # 状態変更動詞を条件・帰属なしで断定する過度に命令的なactionを拒否する。
@@ -2098,6 +2140,12 @@ def fallback_ai_analysis(response_text, source_text):
         urgency = None
 
     reason = extract_partial_field(response_text, "reason").strip()[:150] or None
+    # strict path (normalize_article_analysis)と同じ命令・依頼表現lintを適用する。
+    # 該当する場合はreasonだけをNoneにし、fallback分析全体は維持する
+    # (代わりの一般文は生成しない。優先確認は既存仕様によりreason領域自体を
+    # 表示しない)。
+    if reason_has_reader_directed_imperative(reason):
+        reason = None
 
     tags = sanitize_tags_lenient(extract_partial_array(response_text, "tags"))
 
@@ -2689,6 +2737,12 @@ importanceとurgencyは独立して判定する。特定の組み合わせを機
 KEV掲載は「CISA KEVに掲載」等と
 出所を明示し、CVSSは提供元が入力にないため「確認済みのCVSSは9.8」等と表現し
 「NVDのCVSSは9.8」と断定しない。
+reasonは評価根拠の説明であり、読者への対応指示ではない。「〜してください」「〜すべきです」
+「利用有無を確認してください」「本日中に対応してください」「パッチを適用してください」等、
+読者への直接的な命令・依頼表現をreasonに書かない。個社に特定の対応を命じたり、個社の
+利用状況・環境を推測したりしない。推奨アクションはrecommended_actionsの責務であり、
+reasonへ混在させない。「確認が必要となり得る」「検討対象となる」「確認の優先度が高い」等、
+評価根拠としての可能性・該当性の説明(ヘッジ表現・条件表現)は許容する。
 
 # category_reason（categoryの判定理由。1文、100文字以内目安）
 主題を根拠にする。単にカテゴリ名を言い換えるだけにしない。
@@ -3769,27 +3823,47 @@ def build_html(
             display_index=ref["index"],
         )
 
+        # 優先確認は「重要な記事の完全な再掲」ではなく理由付きの短い索引であるため、
+        # 重要度・確認目安はここでは判定値のみ簡潔なテキストとして示す
+        # (通常カードのような楕円バッジは使わない)。category/tags/source/
+        # recommended_actions/CVSS・KEV/外部リンクは表示しない(既存仕様のまま)。
+        meta_parts = []
+        if analysis["importance"]:
+            meta_parts.append(f'重要度 {esc(analysis["importance"])}')
+        if analysis["urgency"]:
+            meta_parts.append(f'確認目安 {esc(analysis["urgency"])}')
+        meta_html = (
+            f'\n        <p class="priority-item-meta">{" ・ ".join(meta_parts)}</p>'
+            if meta_parts else ""
+        )
+
         reason = normalize_reason_display_labels(analysis["reason"])
         reason_html = (
             f'\n        <p class="important-item-reason">{esc(reason)}</p>'
             if reason else ""
         )
         priority_items.append(f"""<article class="priority-item">
-        {title_html}{reason_html}
+        {title_html}{meta_html}{reason_html}
         <a class="priority-item-link" href="#{esc(ref["anchor_id"])}">本文を見る</a>
       </article>""")
 
     if priority_items:
         important_items_body = "\n      ".join(priority_items)
+        # 選定条件の説明文は、優先確認対象が実際にある場合だけ表示する。
+        important_items_note_html = (
+            '\n    <p class="important-items-note">'
+            '重要度が高い、または確認目安が本日確認の記事です。'
+            '</p>'
+        )
     else:
         important_items_body = (
             '<p class="important-items-empty">'
             '本日の優先確認対象はありません。'
             '</p>'
         )
+        important_items_note_html = ""
     important_items_html = f"""<section class="important-items">
-    <h2>優先確認</h2>
-    <p class="important-items-note">確認優先度が高い、または確認目安が本日確認の記事です。</p>
+    <h2>優先確認</h2>{important_items_note_html}
     <div class="important-items-list">
       {important_items_body}
     </div>
@@ -3820,7 +3894,7 @@ def build_html(
             if analysis["importance"]:
                 badges.append(
                     f'<span class="importance-badge {importance_class}">'
-                    f'確認優先度 {esc(analysis["importance"])}</span>'
+                    f'重要度 {esc(analysis["importance"])}</span>'
                 )
             if analysis["urgency"]:
                 badges.append(
@@ -4003,6 +4077,7 @@ def build_html(
     .cards{{padding:12px 12px 0;display:flex;flex-direction:column;gap:10px;max-width:680px;margin:0 auto}}
     .card{{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;scroll-margin-top:var(--anchor-offset)}}
     .card:active{{background:#1c2128;border-color:#388bfd}}
+    .card:target{{border-color:#388bfd;box-shadow:0 0 0 1px #388bfd}}
     .card-meta{{display:flex;align-items:center;gap:8px;margin-bottom:8px}}
     .tag{{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;color:#fff;white-space:nowrap}}
     .date{{font-size:11px;color:#8b949e;margin-left:auto}}
@@ -4053,17 +4128,29 @@ def build_html(
     .brief-list li{{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}}
     .brief-list li::before{{content:"・";position:absolute;left:0}}
     .dashboard{{max-width:680px;margin:12px auto 0;padding:0 12px}}
-    .dashboard h2{{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:8px}}
-    .dashboard-total{{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}}
-    .dashboard-total span{{font-size:12px;color:#8b949e}}
-    .dashboard-total strong{{font-size:20px;color:#e6edf3}}
-    .dashboard-groups{{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:8px}}
-    .dashboard-group{{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 14px}}
-    .dashboard-group h3{{font-size:12px;font-weight:700;color:#8b949e;margin-bottom:8px}}
-    .dashboard-count-list{{list-style:none;display:grid;gap:6px}}
-    .dashboard-count-item{{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#c9d1d9;line-height:1.4}}
-    .dashboard-count-item strong{{font-size:13px;color:#e6edf3}}
+    .dashboard-head{{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}}
+    .dashboard-head h2{{font-size:13px;font-weight:700;color:#e6edf3}}
+    .dashboard-count{{font-size:12px;color:#8b949e}}
+    .dashboard-count strong{{font-size:16px;font-weight:700;color:#e6edf3;margin:0 2px}}
+    .dashboard-axes{{background:#161b22;border-left:1px solid #21262d;border-right:1px solid #21262d;border-top:1px solid #21262d;display:grid;grid-template-columns:1fr 1fr}}
+    .dashboard-axis{{padding:10px 16px}}
+    .dashboard-axis+.dashboard-axis{{border-left:1px solid #21262d}}
+    .dashboard-axis h3{{font-size:11px;font-weight:700;color:#8b949e;margin-bottom:6px}}
+    .dashboard-axis-list{{list-style:none;display:grid;gap:4px}}
+    .dashboard-axis-item{{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:#c9d1d9;line-height:1.4;padding-left:8px;border-left:2px solid transparent}}
+    .dashboard-axis-item strong{{font-size:14px;font-weight:700;color:#e6edf3}}
+    .dashboard-axis-item.is-accent{{border-left-color:#f85149;color:#f85149}}
+    .dashboard-axis-item.is-accent strong{{color:#f85149}}
+    .dashboard-categories{{background:#161b22;border:1px solid #21262d;border-top:1px solid #21262d;border-radius:0 0 10px 10px;padding:10px 16px}}
+    .dashboard-categories h3{{font-size:11px;font-weight:700;color:#8b949e;margin-bottom:6px}}
+    .dashboard-category-list{{list-style:none;display:flex;flex-wrap:wrap;gap:4px 14px}}
+    .dashboard-category-item{{font-size:11px;color:#8b949e;display:flex;gap:4px}}
+    .dashboard-category-item strong{{color:#8b949e;font-weight:600}}
     .dashboard-empty{{list-style:none;font-size:12px;color:#8b949e;line-height:1.5}}
+    @media (max-width:600px){{
+      .dashboard-axes{{grid-template-columns:1fr}}
+      .dashboard-axis+.dashboard-axis{{border-left:none;border-top:1px solid #21262d}}
+    }}
     .important-items{{max-width:680px;margin:12px auto 0;padding:0 12px}}
     .important-items h2{{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}}
     .important-items-note{{font-size:12px;color:#8b949e;line-height:1.5;margin-bottom:8px}}
@@ -4073,6 +4160,7 @@ def build_html(
     .priority-item .article-heading{{font-size:13px;font-weight:600}}
     .priority-item-link{{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none;width:max-content;max-width:100%}}
     .priority-item-link:hover{{text-decoration:underline}}
+    .priority-item-meta{{font-size:11px;color:#8b949e}}
     .important-item-reason,.important-items-empty{{font-size:12px;color:#c9d1d9;line-height:1.6}}
     .sources{{max-width:680px;margin:20px auto 0;padding:0 12px}}
     .sources details{{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 16px}}
@@ -4095,7 +4183,7 @@ def build_html(
   {dashboard_html}
   <section class="article-list-header">
     <h2>本日の情報</h2>
-    <p class="article-list-note">確認目安、確認優先度、元の収集順で表示しています。</p>
+    <p class="article-list-note">確認目安、重要度、元の収集順で表示しています。</p>
   </section>
   <div class="cards">{cards_html}</div>
   <div class="sources">
@@ -4161,7 +4249,7 @@ def build_archive_index_html(summaries, generated_at=None):
         items_html.append(f"""<li class="archive-list-item">
         <a class="archive-link archive-date-link" href="{esc(summary['href'])}">{esc(summary['label'])}</a>
         <div class="archive-meta">記事{esc(str(summary['total_items']))}件</div>
-        <div class="archive-meta">確認優先度 高{esc(str(summary['high_count']))}件</div>
+        <div class="archive-meta">重要度 高{esc(str(summary['high_count']))}件</div>
         <div class="archive-meta">{esc(summary['brief_status'])}</div>
       </li>""")
 
