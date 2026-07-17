@@ -1,39 +1,39 @@
 {
   "schema_version": 1,
   "digest_date": "2026-07-17",
-  "generated_at": "2026-07-17T08:00:35.034385+09:00",
+  "generated_at": "2026-07-17T15:54:30.932597+09:00",
   "generator": {
     "application": "security-digest",
     "model": "gemini-2.5-flash",
-    "article_prompt_version": "article-analysis-v7",
+    "article_prompt_version": "article-analysis-v8",
     "brief_prompt_version": "today-brief-v3"
   },
   "run": {
     "status": "partial",
     "overwrite_policy": "replace",
-    "total_items": 15,
-    "ai_attempted_count": 15,
-    "ai_success_count": 12,
-    "ai_fallback_count": 3,
+    "total_items": 12,
+    "ai_attempted_count": 12,
+    "ai_success_count": 10,
+    "ai_fallback_count": 2,
     "ai_failed_count": 0,
     "ai_not_attempted_count": 0
   },
   "counts": {
     "importance": {
-      "高": 6,
-      "中": 8,
+      "高": 2,
+      "中": 9,
       "低": 1,
       "未判定": 0
     },
     "urgency": {
-      "本日確認": 5,
-      "今週確認": 5,
-      "参考": 5,
+      "本日確認": 0,
+      "今週確認": 8,
+      "参考": 4,
       "未判定": 0
     },
     "category": {
-      "脆弱性・パッチ": 5,
-      "攻撃・脅威動向": 3,
+      "脆弱性・パッチ": 1,
+      "攻撃・脅威動向": 4,
       "インシデント": 1,
       "規制・ガバナンス": 0,
       "クラウド・サプライチェーン": 0,
@@ -46,23 +46,71 @@
     "status": "success",
     "model": "gemini-2.5-flash",
     "prompt_version": "today-brief-v3",
-    "overview": "本日の状態（掲載15件）：重要度「高」6件、確認目安「本日確認」5件、確認目安「今週確認」5件。本日中に適用性または初動要否を確認する記事が5件あります。本日は、Microsoft製品の大量の脆弱性修正と、広く利用されるnpmパッケージのサプライチェーン侵害、そしてFortinet製品のゼロデイ脆弱性など、緊急性の高い脆弱性情報が複数報告されています。特に、悪用が確認されている脆弱性への迅速な対応が求められる状況です。",
+    "overview": "本日の状態（掲載12件）：重要度「高」2件、確認目安「本日確認」0件、確認目安「今週確認」8件。本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が8件あり、計画的な確認が必要です。一方、重要度の高い情報が2件あるため、内容は優先的に把握する必要があります。今週は、情報窃取マルウェアの活動活発化やAIエージェントのセキュリティリスクに関する重要な情報が確認されました。特に、AI技術の進化に伴う新たな攻撃手法や管理上の課題への対応が求められています。",
     "important_highlights": [
-      "Microsoftは7月の月例パッチで過去最多となる622件の脆弱性を修正し、その中には活発に悪用されている2件を含む3件のゼロデイ脆弱性が含まれており、早急な対応が不可欠です。",
-      "AsyncAPI npm組織に対するサプライチェーン侵害が特定され、悪意のあるローダーが注入されたパッケージバージョンが開発環境やCI/CDパイプラインを侵害する可能性があるため、利用状況の確認と該当バージョンの削除が急務です。",
-      "CISA KEVカタログにMicrosoft SharePointおよびFortinet FortiSandboxの認証不要なリモートコード実行脆弱性が追加され、これらも実悪用が確認されているため、利用有無と対応状況の緊急確認が必要です。"
+      "Microsoft Defender Expertsは、ACR Stealerの活動が活発化していることを観測しました。ClickFixというソーシャルエンジニアリング手法を悪用し、ブラウザの認証情報や認証トークン、機密文書を窃取しており、金融機関で当該マルウェアの標的となる環境を利用している場合は、認証情報の窃取やクラウド資源への不正アクセスにつながる可能性があります。",
+      "AIエージェントが複数のシステムを横断して自律的に動作する際、不適切なID管理や最小特権の欠如が、意図しないデータアクセス、改変、権限昇格、監査性の低下といった重大なリスクを引き起こす可能性が指摘されています。金融機関がAIエージェントを業務に導入・利用している場合、機密情報漏えいやシステム停止、規制違反につながるリスクがあります。",
+      "AIやLLMを活用したセキュリティフィルターが、テキストサルティングと呼ばれる隠しテキストの手法に対して効果を発揮せず、100万件以上のフィッシングメールが受信箱に届いていることが報告されました。AI/LLMベースのメールセキュリティソリューションを導入している金融機関では、本攻撃手法によるフィッシングメールが従業員の受信箱に届く可能性があります。"
     ],
     "discussion_points": [
-      "AIエージェントの利用拡大に伴い、不適切なID管理や最小特権の原則が守られない場合、意図しないデータアクセスや権限昇格などの重大なリスクが生じる可能性があり、導入におけるセキュリティ設計の議論が重要です。",
-      "AIベースのセキュリティフィルターが隠しテキストを利用したフィッシングメールを見逃すリスクが指摘されており、AIを活用した防御策の限界と、多層的なセキュリティ対策の必要性について再検討が必要です。"
+      "AI技術の急速な進化は、セキュリティ対策の新たな課題を生み出しています。AIエージェントの安全な導入と運用、AI/LLMベースのセキュリティソリューションの限界を理解し、多層的な防御策を検討することが重要です。",
+      "情報窃取マルウェアや金銭目的の攻撃グループによる脅威は継続しており、従業員を標的としたソーシャルエンジニアリングやトロイの木馬化されたソフトウェアへの警戒が必要です。組織全体のセキュリティ意識向上と、最新の脅威動向に基づいた対策の見直しが求められます。"
     ],
     "check_items": [
-      "自社で利用しているMicrosoft製品、AsyncAPI npmパッケージ、Microsoft SharePoint、Fortinet FortiSandbox製品について、影響を受けるバージョンや利用状況を確認し、速やかにパッチ適用や緩和策の実施を検討してください。",
-      "Cisco Talosが報告した金銭目的の攻撃キャンペーンUAT-11795で標的となっているソフトウェアの利用状況を確認し、関連するIOCsと自社ログを照合して侵害の痕跡がないか確認してください。"
+      "AIエージェントの利用状況を棚卸しし、それぞれに割り当てられているIDと権限が適切か、過剰な権限が付与されていないかを確認してください。また、AIエージェントのライフサイクル管理、ツール利用ポリシー、監査ログの取得・監視体制を評価し、必要な改善策を検討してください。",
+      "AI/LLMベースのメールセキュリティソリューションを導入している場合、ベンダーからテキストサルティング攻撃手法への対策状況や推奨される設定変更について情報を収集してください。また、Microsoft製品の脆弱性情報を確認し、悪用が確認されているゼロデイ脆弱性を含むパッチ適用計画を評価・策定してください。"
     ],
     "error_type": null
   },
   "items": [
+    {
+      "id": "sha256:88097730a6bfef16403c873f1e42b82ca9770ad83539d2c2536696bbd170388d",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/07/16/acr-stealer-two-observed-intrusion-chains-amid-increased-threat-activity/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/07/16/acr-stealer-two-observed-intrusion-chains-amid-increased-threat-activity/",
+      "published_at": "2026-07-17T08:12:02+09:00",
+      "fetched_at": "2026-07-17T15:50:41.279729+09:00",
+      "title": "ACR Stealer: 活発化する脅威活動の中で観測された2つの侵入経路",
+      "raw_title": "ACR Stealer: Two observed intrusion chains amid increased threat activity",
+      "raw_excerpt": "From late April 2026 to mid-June 2026, Microsoft Defender Experts observed increased ACR Stealer activity across customer environments. These campaigns are successfully using ClickFix lures to steal b",
+      "content_hash": "sha256:772e2fa54d7f09a4e4cde6f9183dfc20fba17914e6206f3597d3b1b98631485a",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-17T15:50:44.265945+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ACR Stealerという情報窃取マルウェアの攻撃キャンペーンと侵入経路が主題であるため。",
+        "tags": [
+          "APT",
+          "フィッシング",
+          "情報漏えい",
+          "認証"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Microsoft Defender Expertsは、2026年4月下旬から6月中旬にかけて、顧客環境でACR Stealerの活動が活発化していることを観測しました。これらのキャンペーンはClickFixというソーシャルエンジニアリング手法を悪用し、ブラウザの認証情報、認証トークン、機密文書を窃取しています。",
+        "financial_impact": "金融機関で当該マルウェアの標的となる環境やシステムを利用している場合、認証情報の窃取やクラウド資源への不正アクセス、その後の侵入活動につながる可能性があります。",
+        "recommended_actions": [
+          "ClickFix型の誘い込み、偽の検証チェック、およびコマンド実行指示を認識するようユーザー教育を強化する",
+          "ClickFixの誘い込み、不審なWebDAV活動、難読化されたPowerShell実行、ブラウザ認証情報ストアへのアクセス試行を監視する",
+          "Microsoftが推奨する緩和策（マルバタイジングへの露出低減、PowerShellのログ記録強化など）を評価し、適用を検討する"
+        ],
+        "reason": "重要度は、情報窃取マルウェアによる認証情報窃取は金融機関にとって重大な脅威であり、広範な影響が懸念されるため「高」です。確認目安は、進行中の攻撃キャンペーンであり、自社環境への影響有無を評価する必要があるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
     {
       "id": "sha256:35e1e10c2c53c7b64625552c3d7ef333bbde14d91a3ac62bf31569faefce417f",
       "source_id": "dark_reading",
@@ -74,7 +122,7 @@
       "url": "https://www.darkreading.com/cybersecurity-operations/agentic-ai-untamable-ask-the-right-security-questions",
       "canonical_url": "https://www.darkreading.com/cybersecurity-operations/agentic-ai-untamable-ask-the-right-security-questions",
       "published_at": "2026-07-17T05:57:47+09:00",
-      "fetched_at": "2026-07-17T07:55:39.532340+09:00",
+      "fetched_at": "2026-07-17T15:50:41.279729+09:00",
       "title": "エージェントAIは制御不能：適切なセキュリティ質問を",
       "raw_title": "Agentic AI Is Untamable: Ask the Right Security Questions",
       "raw_excerpt": "Forget about attackers. Agentic artificial intelligence is creating enough risks for organizations and demands a security reframe.",
@@ -83,19 +131,19 @@
       "analysis": {
         "status": "success",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-17T07:55:41.686825+09:00",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-17T15:51:01.044924+09:00",
         "category": "AI・新技術リスク",
         "category_version": "v1",
-        "category_reason": "エージェントAIが組織にもたらすリスクとセキュリティの再構築が主題であるため。",
+        "category_reason": "記事の主題がエージェントAIのリスクとセキュリティに関する問いかけであるため。",
         "tags": [
           "AI",
           "AIエージェント"
         ],
         "importance": "中",
         "urgency": "参考",
-        "summary": "エージェントAIは組織にとって十分なリスクを生み出しており、攻撃者への対策だけでなく、セキュリティの枠組みを再構築する必要があるという指摘です。",
-        "financial_impact": "金融機関がエージェントAIを導入・利用する際に、新たなセキュリティリスク評価や対策の検討が必要になる可能性があります。",
+        "summary": "エージェントAIは組織にとって十分なリスクを生み出しており、攻撃者への対策だけでなく、セキュリティの再構築が求められています。",
+        "financial_impact": "金融機関がエージェントAIの導入を検討している場合、そのセキュリティリスク評価と対策の検討に関係します。現時点での直接的な影響は限定的です。",
         "recommended_actions": [],
         "reason": "重要度は、エージェントAIのセキュリティリスクに関する一般的な議論であり、具体的な脅威や期限が示されていないため「中」です。確認目安は、短期的な対応を求める情報ではなく、中長期的な検討が必要なため「参考」です。",
         "error_type": null,
@@ -116,34 +164,34 @@
       "url": "https://www.darkreading.com/threat-intelligence/1m-emails-hidden-text-dupe-ai-security-filters",
       "canonical_url": "https://www.darkreading.com/threat-intelligence/1m-emails-hidden-text-dupe-ai-security-filters",
       "published_at": "2026-07-17T04:41:31+09:00",
-      "fetched_at": "2026-07-17T07:55:39.532340+09:00",
-      "title": "100万件超のメールが隠しテキストでAIセキュリティフィルターを欺く",
+      "fetched_at": "2026-07-17T15:50:41.279729+09:00",
+      "title": "1M+ Emails Use Hidden Text to Dupe AI Security Filters",
       "raw_title": "1M+ Emails Use Hidden Text to Dupe AI Security Filters",
       "raw_excerpt": "Artificial intelligence and LLMs can be surprisingly ineffective against text salting, allowing phishing emails to slide right into your inbox.",
       "content_hash": "sha256:cc4df6e4192bb71c958d91bcb25a4e7a36efd6b6ab6ddc0634ee5801a6dd1349",
       "rule_flags": [],
       "analysis": {
-        "status": "success",
+        "status": "fallback",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-17T07:55:58.918480+09:00",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-17T15:51:18.236213+09:00",
         "category": "AI・新技術リスク",
         "category_version": "v1",
-        "category_reason": "AIやLLMのセキュリティフィルターを回避する新しい攻撃手法が主題であるため。",
+        "category_reason": "AIおよびLLMのセキュリティフィルターを回避する攻撃手法が主題であるため。",
         "tags": [
           "AI",
           "フィッシング"
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "AIやLLMは、テキストサルティングと呼ばれる隠しテキストを利用した手法に対して驚くほど効果がなく、これにより100万件以上のフィッシングメールが受信トレイに直接届いていることが判明しました。",
-        "financial_impact": "金融機関でもAIベースのセキュリティフィルターやLLMを利用している場合、本手法によるフィッシングメールを見逃すリスクがあるため関係します。",
+        "summary": "AIやLLMを活用したセキュリティフィルターが、テキストサルティングと呼ばれる隠しテキストの手法に対して効果を発揮せず、100万件以上のフィッシングメールが受信箱に届いていることが報告されました。",
+        "financial_impact": "金融機関においてもAI/LLMベースのメールセキュリティソリューションを導入している場合、本攻撃手法によるフィッシングメールが従業員の受信箱に届く可能性があります。",
         "recommended_actions": [
-          "AIベースのメールセキュリティソリューションやLLMのフィッシング対策機能について、テキストサルティングへの耐性をベンダーに確認する",
-          "従業員向けに、AIフィルターをすり抜ける可能性のある高度なフィッシング攻撃に対する注意喚起と教育を強化する"
+          "AI/LLMベースのメールセキュリティソリューションの導入状況を確認する",
+          "導入している場合、ベンダーから本攻撃手法への対策状況や推奨される設定変更について情報を収集する"
         ],
-        "reason": "重要度は、AIセキュリティフィルターの回避手法に関する情報であり、金融機関でのAI利用状況により適用性が変わるため「中」です。確認目安は、新たな攻撃手法の動向把握と対策検討が必要ですが、即時対応の根拠がないため「今週確認」です。",
-        "error_type": null,
+        "reason": "重要度は、AI/LLMベースのセキュリティフィルターを利用している場合に影響する可能性があるため「中」です。確認目安は、新たな攻撃手法に関する情報であり、即時対応を要する具体的な期限や進行中の侵害の記述がないため「今週確認」です。",
+        "error_type": "schema_parse_error",
         "http_status": null
       },
       "facts": {
@@ -161,8 +209,8 @@
       "url": "https://blog.talosintelligence.com/begun-the-patch-wars-have/",
       "canonical_url": "https://blog.talosintelligence.com/begun-the-patch-wars-have/",
       "published_at": "2026-07-17T03:00:50+09:00",
-      "fetched_at": "2026-07-17T07:55:39.532340+09:00",
-      "title": "Microsoftが過去最多の622件の脆弱性をパッチ、うち2件はゼロデイで悪用確認済み",
+      "fetched_at": "2026-07-17T15:50:41.279729+09:00",
+      "title": "AIによる脆弱性発見加速でパッチ適用が課題に、Microsoftが過去最多の622件を公開",
       "raw_title": "Begun, the Patch Wars have",
       "raw_excerpt": "Long foretold, the Great Patching has begun and it’s a doozy. Buckle in as Joe takes you through the story.",
       "content_hash": "sha256:8f6360f974acf04df36ee0a593f49ea3abca13933184cf7ea994d855349feba7",
@@ -170,27 +218,26 @@
       "analysis": {
         "status": "success",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-17T07:56:16.649760+09:00",
-        "category": "脆弱性・パッチ",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-17T15:51:36.282739+09:00",
+        "category": "攻撃・脅威動向",
         "category_version": "v1",
-        "category_reason": "Microsoft製品の大量の脆弱性パッチとゼロデイ脆弱性が主題であるため。",
+        "category_reason": "AIによる脆弱性発見の加速と、それに伴うパッチ適用の課題という脅威動向が主題であるため。",
         "tags": [
+          "AI",
           "パッチ",
-          "ゼロデイ",
-          "悪用確認済み",
-          "CVE"
+          "悪用確認済み"
         ],
-        "importance": "高",
-        "urgency": "本日確認",
-        "summary": "Microsoftは7月の月例パッチで過去最多となる622件の脆弱性を修正しました。この中には、活発に悪用されている2件のゼロデイ脆弱性を含む3件のゼロデイ脆弱性が含まれています。記事は、AIによる脆弱性発見の加速が背景にある可能性を指摘し、企業がこのパッチ適用負荷に対応することの課題を強調しています。",
-        "financial_impact": "Microsoft製品は多くの金融機関で基盤システムとして広く利用されており、今回の大量の脆弱性、特に悪用が確認されているゼロデイ脆弱性は、情報漏えいや業務停止に繋がる可能性があるため、金融機関にとって高い関係性があります。",
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "AIを活用した脆弱性研究の加速により、Microsoftが7月の月例パッチで過去最多となる622件の脆弱性を修正しました。この中には、悪用が確認されているゼロデイ脆弱性が2件含まれています。これにより、企業はパッチ適用への対応能力が問われると指摘されています。",
+        "financial_impact": "金融機関はMicrosoft製品を広く利用しているため、大量のパッチ適用が必要となる可能性があり、IT運用への影響が懸念されます。また、悪用が確認されたゼロデイ脆弱性への対応は喫緊の課題となり得ます。",
         "recommended_actions": [
-          "自社で利用しているMicrosoft製品の脆弱性適用状況を確認し、影響を受ける製品がないか棚卸しする",
-          "Microsoftが公開しているパッチ情報および緩和策を確認し、速やかに対応計画を策定・実行する",
-          "悪用が確認されているゼロデイ脆弱性について、自社環境での侵害兆候がないかログ等を監視・確認する"
+          "自社で利用しているMicrosoft製品の脆弱性情報を確認し、影響を受ける資産を特定する",
+          "Microsoftが公開したパッチ情報に基づき、自社環境への適用計画を評価・策定する",
+          "悪用が確認されているゼロデイ脆弱性について、関連する製品の利用有無と対応状況を確認する"
         ],
-        "reason": "重要度は、Microsoft製品の過去最多の脆弱性修正であり、活発に悪用されているゼロデイ脆弱性が含まれるため「高」です。確認目安は、悪用が確認されているゼロデイ脆弱性が含まれており、即時対応の根拠があるため「本日確認」です。",
+        "reason": "重要度は、AIによる脆弱性発見の加速が今後の脅威動向に大きな影響を与える可能性があり、金融機関のIT運用に影響し得るため「中」です。確認目安は、Microsoftのパッチ適用は継続的な対応が必要であり、直ちに個別対応を要するKEV新規追加のCVEが記事にないため「今週確認」です。",
         "error_type": null,
         "http_status": null
       },
@@ -209,7 +256,7 @@
       "url": "https://thehackernews.com/2026/07/two-scattered-spider-hackers-get-55.html",
       "canonical_url": "https://thehackernews.com/2026/07/two-scattered-spider-hackers-get-55.html",
       "published_at": "2026-07-17T02:09:25+09:00",
-      "fetched_at": "2026-07-17T07:55:39.532340+09:00",
+      "fetched_at": "2026-07-17T15:50:41.279729+09:00",
       "title": "Scattered Spiderのハッカー2名、ロンドン交通局への攻撃でそれぞれ5年半の判決",
       "raw_title": "Two Scattered Spider Hackers Get 5.5 Years Each for £29 Million TfL Hack",
       "raw_excerpt": "Owen Flowers, 18, and Thalha Jubair, 20, were each sentenced to five and a half years at Woolwich Crown Court on Thursday, 16 July 2026, for the 2024 hack of Transport for London.\n\nThe attack left 148",
@@ -218,21 +265,20 @@
       "analysis": {
         "status": "success",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-17T07:56:33.743607+09:00",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-17T15:51:53.596778+09:00",
         "category": "インシデント",
         "category_version": "v1",
-        "category_reason": "ロンドン交通局への実際のサイバー攻撃とそれによるシステム障害、および犯人の判決が主題であるため。",
+        "category_reason": "実際の侵害事例とそれに対する司法判断が主題であるため。",
         "tags": [
-          "インシデント",
-          "認証"
+          "インシデント"
         ],
         "importance": "中",
         "urgency": "参考",
-        "summary": "2024年にロンドン交通局(TfL)をハッキングしたScattered Spiderのハッカー2名、Owen Flowers(18歳)とThalha Jubair(20歳)が、それぞれ5年半の懲役刑を言い渡されました。この攻撃によりTfLの148システムが機能停止し、全従業員27,000人がパスワードリセットのために出社を余儀なくされました。",
-        "financial_impact": "金融機関への直接的な影響は限定的です。他業界のインシデント事例として、サプライチェーン攻撃や認証情報管理の重要性を再認識する参考情報となります。",
+        "summary": "2024年にロンドン交通局（TfL）をハッキングし、148のシステムを停止させ、27,000人の従業員にパスワードの対面リセットを強いたOwen Flowers（18歳）とThalha Jubair（20歳）の2名が、それぞれ5年半の懲役刑を言い渡されました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。他業界のインシデント事例として、攻撃手法や被害からの復旧対応について参考になります。",
         "recommended_actions": [],
-        "reason": "重要度は、金融機関への直接的な影響は限定的であり、他業界のインシデント事例として参考となるため「中」です。確認目安は、過去のインシデントに対する判決に関する情報であり、短期的な対応を要するものではないため「参考」です。",
+        "reason": "重要度は、他業界のインシデント事例であり、金融機関への直接的な適用性が不明確なため「中」です。確認目安は、過去のインシデントに対する司法判断であり、短期的な対応を要する情報ではないため「参考」です。",
         "error_type": null,
         "http_status": null
       },
@@ -251,37 +297,37 @@
       "url": "https://www.microsoft.com/en-us/security/blog/2026/07/16/least-privilege-for-ai-agents-identity-access-and-tool-binding/",
       "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/07/16/least-privilege-for-ai-agents-identity-access-and-tool-binding/",
       "published_at": "2026-07-17T01:00:00+09:00",
-      "fetched_at": "2026-07-17T07:55:39.532340+09:00",
-      "title": "Least privilege for AI agents: Identity, access, and tool binding",
+      "fetched_at": "2026-07-17T15:50:41.279729+09:00",
+      "title": "AIエージェントの最小特権: ID、アクセス、ツールバインディング",
       "raw_title": "Least privilege for AI agents: Identity, access, and tool binding",
       "raw_excerpt": "As AI agents become more autonomous, strong identity, access, and auditing controls are critical to keeping them secure.\nThe post Least privilege for AI agents: Identity, access, and tool binding appe",
       "content_hash": "sha256:783e66b43f3535e645a210f60ca7ecb48eec342a2ab339f97ef6a0cbd28c7ec7",
       "rule_flags": [],
       "analysis": {
-        "status": "fallback",
+        "status": "success",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-17T07:56:51.073043+09:00",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-17T15:52:11.514063+09:00",
         "category": "AI・新技術リスク",
         "category_version": "v1",
-        "category_reason": "AIエージェントのID管理、アクセス制御、ツール利用におけるリスクと対策が主題であるため。",
+        "category_reason": "AIエージェントにおけるID管理、アクセス制御、ツール利用のリスクと対策が主題であるため。",
         "tags": [
           "AI",
           "IAM",
-          "クラウド",
+          "認証",
           "ガイドライン"
         ],
         "importance": "高",
         "urgency": "今週確認",
-        "summary": "AIエージェントが複数のシステムにまたがり自律的に動作する際、不適切なID管理や最小特権の原則が守られないと、意図しないデータアクセス、改変、権限昇格などのリスクが生じるとMicrosoftが指摘しています。",
-        "financial_impact": "金融機関がAIエージェントを業務に導入する際、不適切なID管理やアクセス制御は、機密情報の漏えい、不正な取引、システム停止、監査証跡の欠如など、重大なセキュリティインシデントにつながる可能性があります。",
+        "summary": "AIエージェントが複数のシステムを横断して自律的に動作する際、不適切なID管理や最小特権の欠如が、意図しないデータアクセス、改変、権限昇格、監査性の低下といった重大なリスクを引き起こす可能性について解説されています。",
+        "financial_impact": "金融機関がAIエージェントを業務に導入・利用している場合、不適切なアクセス制御やID管理は、機密情報の漏えい、不正な取引、システム停止、規制違反につながる可能性があります。特に、顧客データや決済システムに関わるAIエージェントの利用においては、厳格な管理が求められます。",
         "recommended_actions": [
-          "AIエージェントのIDを棚卸しし、広範なロールを削除し、タスクスコープのRBACを導入する",
-          "AIエージェントのツール利用を事前設定されたマニフェストまたは構成に限定する",
-          "AIエージェントの導入前に、エンドツーエンドの監査ログと監視体制を構築する"
+          "AIエージェントの利用状況を棚卸しし、それぞれに割り当てられているIDと権限を特定する",
+          "AIエージェントの役割ベースアクセス制御(RBAC)がタスクスコープで適切に設定されているか、過剰な権限が付与されていないかを確認する",
+          "AIエージェントのライフサイクル管理、ツール利用ポリシー、監査ログの取得・監視体制を評価し、必要な改善策を検討する"
         ],
-        "reason": "重要度は、AIエージェントの利用拡大に伴うID・アクセス管理の課題が金融機関のセキュリティに直接影響するため「高」です。確認目安は、記事が短期的な対応を推奨しているものの、緊急の脆弱性情報ではないため「今週確認」です。",
-        "error_type": "schema_parse_error",
+        "reason": "重要度は、AIエージェントの不適切な利用が金融機関の機密情報漏えいやシステム停止に直結するリスクがあるため「高」です。確認目安は、AIエージェントの導入・利用における一般的なリスクと対策に関する情報であり、即時対応を要する具体的な脅威や期限の記述がないため「今週確認」です。",
+        "error_type": null,
         "http_status": null
       },
       "facts": {
@@ -299,7 +345,7 @@
       "url": "https://thehackernews.com/2026/07/threatsday-game-cheat-spyware-24-hour.html",
       "canonical_url": "https://thehackernews.com/2026/07/threatsday-game-cheat-spyware-24-hour.html",
       "published_at": "2026-07-17T00:41:15+09:00",
-      "fetched_at": "2026-07-17T07:55:39.532340+09:00",
+      "fetched_at": "2026-07-17T15:50:41.279729+09:00",
       "title": "ThreatsDay: ゲームチートスパイウェア、24時間ランサムウェア、Chrome同期ストーキングなど12の脅威",
       "raw_title": "ThreatsDay: Game Cheat Spyware, 24-Hour Ransomware, Chrome Sync Stalking + 12 More Stories",
       "raw_excerpt": "A lot of this week’s trouble starts with something that looks close enough.\n\nA familiar repo. A useful installer. A harmless sync setting. Then the handoff goes bad, the box starts talking to someone ",
@@ -308,18 +354,18 @@
       "analysis": {
         "status": "success",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-17T07:57:07.796318+09:00",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-17T15:52:28.320518+09:00",
         "category": "その他",
         "category_version": "v1",
-        "category_reason": "複数の脅威動向をまとめた記事であり、特定のカテゴリに限定されないためです。",
+        "category_reason": "複数の脅威動向をまとめた週次記事であり、特定のカテゴリに分類できないため「その他」としました。",
         "tags": [],
         "importance": "低",
         "urgency": "参考",
-        "summary": "今週の脅威は、見慣れたリポジトリ、便利なインストーラー、無害な同期設定など、一見安全に見えるものから始まることが多いと報じられています。古いバグの再燃、脆弱なデフォルト設定、単純な攻撃経路などが挙げられています。",
-        "financial_impact": "金融機関への直接的な影響は限定的です。一般的な脅威動向のまとめ記事であり、個別の脅威に対する具体的な関係は確認できません。",
+        "summary": "今週の脅威は、見慣れたリポジトリやインストーラー、無害な同期設定など、一見安全に見えるものから始まることが多いと指摘されています。古い脆弱性の再燃、デフォルト設定の弱点、単純な攻撃経路などが挙げられています。",
+        "financial_impact": "金融機関への直接的な影響は限定的であり、一般的な脅威動向の参考情報として位置付けられます。",
         "recommended_actions": [],
-        "reason": "重要度は、複数の脅威をまとめた一般的な情報提供であり、個別の金融機関への適用性評価の優先度が低いため「低」です。確認目安は、新しい事実や緊急対応を要する具体的な期限の記述がないため「参考」です。",
+        "reason": "重要度は、新しい事実や具体的なアクションを伴わない週次まとめ記事のため「低」です。確認目安は、短期的な対応を要する具体的な脅威や期限の記述がないため「参考」です。",
         "error_type": null,
         "http_status": null
       },
@@ -338,32 +384,37 @@
       "url": "https://cloud.google.com/blog/topics/threat-intelligence/ai-assisted-vulnerability-management/",
       "canonical_url": "https://cloud.google.com/blog/topics/threat-intelligence/ai-assisted-vulnerability-management/",
       "published_at": "2026-07-16T23:00:00+09:00",
-      "fetched_at": "2026-07-17T07:55:39.532340+09:00",
-      "title": "AIを活用した脆弱性管理の設計図：AIエクスプロイトの解明",
+      "fetched_at": "2026-07-17T15:50:41.279729+09:00",
+      "title": "Demystifying AI Exploits: A Blueprint for AI-Assisted Vulnerability Management",
       "raw_title": "Demystifying AI Exploits: A Blueprint for AI-Assisted Vulnerability Management",
       "raw_excerpt": "Written by: Jules Czarniak\n\nIntroduction \nAs highlighted in the Mandiant M-Trends 2026 report, the mean time-to-exploit (TTE) has dropped to -7 days, meaning vulnerabilities are often exploited a week",
       "content_hash": "sha256:3def428279e55757c653417f9457269e559614b842c8f41b7df37027c1879540",
       "rule_flags": [],
       "analysis": {
-        "status": "success",
+        "status": "fallback",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-17T07:57:24.706087+09:00",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-17T15:52:46.171186+09:00",
         "category": "AI・新技術リスク",
         "category_version": "v1",
-        "category_reason": "AIエージェントを脆弱性管理に安全に統合するためのガイダンスが主題であるため。",
+        "category_reason": "記事の主題がAIを活用した脆弱性管理と、それに伴うリスクおよび対策に関するものであるため。",
         "tags": [
           "AI",
-          "AIエージェント",
+          "LLM",
+          "ガイドライン",
           "NIST"
         ],
         "importance": "中",
-        "urgency": "参考",
-        "summary": "Mandiantのレポートは、脆弱性がパッチ公開前に悪用される現状に対し、AIエージェントを脆弱性管理に統合する際の新たなアーキテクチャリスクと、その安全な導入のための運用上のガードレールについて解説しています。",
-        "financial_impact": "金融機関がAIエージェントを脆弱性管理プロセスに導入する際に、新たなリスクを理解し、安全な統合を検討するための参考情報となります。",
-        "recommended_actions": [],
-        "reason": "重要度は、AIエージェントの導入は中長期的な検討事項であり、現時点での直接的な影響が限定的であるため「中」です。確認目安は、具体的な脆弱性や緊急対応の期限に関する記述がないため「参考」です。",
-        "error_type": null,
+        "urgency": "今週確認",
+        "summary": "Mandiantは、AIエージェントを脆弱性管理ワークフローに安全に統合するための実践的なガイダンスを提供しています。脆弱性発見と修正の自動化にLLMエージェントを導入する際の新たなアーキテクチャリスクを指摘し、NIST AI RMFやOW",
+        "financial_impact": "金融機関がAIエージェントを脆弱性管理や開発プロセスに導入する際に、新たなリスクを特定し、安全な統合のための対策を検討する上で関係します。",
+        "recommended_actions": [
+          "AIエージェントを脆弱性管理ワークフローに導入する際のアーキテクチャリスクを評価する",
+          "NIST AIリスク管理フレームワークやOWASP Top 10 for LLMsなどの業界標準に基づき、AIエージェントの運用上のガードレール確立を検討する",
+          "GoogleのSecure AI Framework (SAIF)などのフレームワークを参考に、既存の決定論的制御をAI実行環境へ拡張する方法を評価する"
+        ],
+        "reason": "重要度は、AI技術の導入に伴う新たなリスク管理の必要性を示すが、具体的な脅威や期限が示されていないため「中」です。確認目安は、AI導入における中長期的なリスク管理の検討が必要となるため「今週確認」です。",
+        "error_type": "schema_parse_error",
         "http_status": null
       },
       "facts": {
@@ -381,8 +432,8 @@
       "url": "https://thehackernews.com/2026/07/n8n-token-exchange-flaw-could-let.html",
       "canonical_url": "https://thehackernews.com/2026/07/n8n-token-exchange-flaw-could-let.html",
       "published_at": "2026-07-16T22:33:25+09:00",
-      "fetched_at": "2026-07-17T07:55:39.532340+09:00",
-      "title": "n8nのトークン交換の欠陥により、攻撃者が別の発行元からユーザーとしてログインする可能性",
+      "fetched_at": "2026-07-17T15:50:41.279729+09:00",
+      "title": "ワークフロー自動化プラットフォームn8nのトークン交換の欠陥により、攻撃者が他の発行元ユーザーとしてログインする可能性",
       "raw_title": "n8n Token Exchange Flaw Could Let Attackers Log In as Users From Another Issuer",
       "raw_excerpt": "n8n, the workflow automation platform, handed out the wrong accounts at login. On Enterprise instances configured to trust more than one external token issuer, it matched an incoming JWT to a local us",
       "content_hash": "sha256:9fafc123647c587c504abc91cb08c8a596fa46297ecaa67c386df30d22c9e27d",
@@ -390,23 +441,24 @@
       "analysis": {
         "status": "success",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-17T07:57:41.919076+09:00",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-17T15:53:03.563143+09:00",
         "category": "脆弱性・パッチ",
         "category_version": "v1",
-        "category_reason": "ワークフロー自動化プラットフォームの認証における欠陥が主題であるため。",
+        "category_reason": "ワークフロー自動化プラットフォームn8nのトークン交換の欠陥が主題であるため。",
         "tags": [
-          "認証"
+          "認証",
+          "IAM"
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "ワークフロー自動化プラットフォームn8nのEnterprise版において、複数の外部トークン発行元を信頼するよう設定されている場合、JWTのsubクレームのみでローカルユーザーを照合し、issクレームを無視する欠陥が発見されました。これにより、攻撃者は別の発行元からの有効なトークンを使用して、既存ユーザーとしてログインできる可能性があります。",
-        "financial_impact": "金融機関でワークフロー自動化プラットフォームn8nのEnterprise版を利用し、複数の外部トークン発行元を設定している場合に影響する可能性があります。利用有無は記事から確認できないため、適用性確認の対象となります。",
+        "summary": "ワークフロー自動化プラットフォームn8nのEnterprise版において、複数の外部トークン発行元を信頼するよう設定されている場合、JWTのsubクレームのみでローカルユーザーと照合し、issクレームを無視する欠陥が発見されました。これにより、攻撃者が別の発行元のユーザーとしてログインできる可能性があります。",
+        "financial_impact": "n8nのEnterprise版を利用し、かつ複数の外部トークン発行元を信頼するよう設定している金融機関において、適用性確認の対象となります。記事からは金融機関での利用状況は確認できません。",
         "recommended_actions": [
-          "n8n Enterprise版の利用有無と、複数の外部トークン発行元を設定しているかを確認する",
+          "n8n Enterprise版の利用有無と、複数の外部トークン発行元を信頼する設定になっているかを確認する",
           "n8nベンダーからの一次情報や修正パッチ、緩和策を確認し、対応要否を評価する"
         ],
-        "reason": "重要度は、特定の構成下で利用されるワークフロー自動化プラットフォームの認証に関する脆弱性であり、適用範囲が限定的なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述が記事にないため「今週確認」です。",
+        "reason": "重要度は、n8n Enterprise版の特定の構成に限定される脆弱性であり、適用範囲が不確実なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
         "error_type": null,
         "http_status": null
       },
@@ -425,8 +477,8 @@
       "url": "https://blog.talosintelligence.com/the-hunters-paradox-is-it-time-to-embrace-automated-threat-hunting/",
       "canonical_url": "https://blog.talosintelligence.com/the-hunters-paradox-is-it-time-to-embrace-automated-threat-hunting/",
       "published_at": "2026-07-16T19:00:07+09:00",
-      "fetched_at": "2026-07-17T07:55:39.532340+09:00",
-      "title": "ハンターのパラドックス：脅威ハンティングにおけるAI活用の時機",
+      "fetched_at": "2026-07-17T15:50:41.279729+09:00",
+      "title": "脅威ハンティングにおけるAI活用: 「ハンターのパラドックス」への対応",
       "raw_title": "The Hunter's Paradox: Is it time to embrace automated threat hunting?",
       "raw_excerpt": "Humans can no longer keep up with the volume and velocity of security data on their own, but AI can't be fully trusted. David discusses the merits of both and muses on what the future might look like.",
       "content_hash": "sha256:bc4c19fb12cfa3ed7dfe8dc723e9e47a9bcabdf564ebcfc36379c879466a342a",
@@ -434,20 +486,20 @@
       "analysis": {
         "status": "success",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-17T07:57:58.658302+09:00",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-17T15:53:20.815847+09:00",
         "category": "AI・新技術リスク",
         "category_version": "v1",
-        "category_reason": "AIの脅威ハンティングへの応用とそれに伴う課題が主題であるため。",
+        "category_reason": "AIの脅威ハンティングへの適用と、それに伴う課題や解決策が主題であるため。",
         "tags": [
           "AI"
         ],
         "importance": "中",
         "urgency": "参考",
-        "summary": "Cisco Talosは、脅威ハンティングにおけるAIの役割について考察しています。セキュリティデータの量と速度に人間が追いつけない「ハンターのパラドックス」に直面しており、AIの活用は不可避であるものの、その信頼性には課題があることを指摘しています。",
-        "financial_impact": "金融機関のサイバーセキュリティ部門において、脅威ハンティングの効率化や高度化を検討する際の参考情報となります。AI導入における課題と対策を理解する上で関係します。",
+        "summary": "Cisco Talosは、脅威ハンティングにおけるAI活用の是非について議論し、人間だけではセキュリティデータの量と速度に対応できない「ハンターのパラドックス」を提示しました。AIの推論能力は向上しているものの、攻撃者の「嘘」に対応できないという課題を指摘し、AIに狭い焦点と厳格なガイドラインを与え、人間が戦略と新規性を担当するアプローチを提案しています。",
+        "financial_impact": "金融機関においても、増大するセキュリティデータへの対応は喫緊の課題であり、AIを活用した脅威ハンティングは効率化の可能性を秘めています。しかし、AIの信頼性に関する課題は、導入を検討する上で考慮すべき重要なリスク要因となります。",
         "recommended_actions": [],
-        "reason": "重要度は、AIを活用した脅威ハンティングの概念的な議論であり、具体的な製品や緊急の対応を求めるものではないため「中」です。確認目安は、短期的なアクションを促す内容ではなく、中長期的な戦略検討の参考となるため「参考」です。",
+        "reason": "重要度は、AIの脅威ハンティングへの活用は中長期的なセキュリティ戦略に関わるため「中」です。確認目安は、具体的な脅威や期限に関する情報がなく、中長期的な検討事項であるため「参考」です。",
         "error_type": null,
         "http_status": null
       },
@@ -466,8 +518,8 @@
       "url": "https://blog.talosintelligence.com/uat-11795-deploys-novel-starland-rat-and-bespoke-wldr-c2-implant-in-financially-motivated-campaign/",
       "canonical_url": "https://blog.talosintelligence.com/uat-11795-deploys-novel-starland-rat-and-bespoke-wldr-c2-implant-in-financially-motivated-campaign/",
       "published_at": "2026-07-16T19:00:01+09:00",
-      "fetched_at": "2026-07-17T07:55:39.532340+09:00",
-      "title": "UAT-11795がStarland RATとWLDR C2インプラントを展開し金銭目的のキャンペーンを実施",
+      "fetched_at": "2026-07-17T15:50:41.279729+09:00",
+      "title": "UAT-11795がStarland RATとWLDR C2インプラントを展開、金銭目的のキャンペーンで",
       "raw_title": "UAT-11795 deploys novel Starland RAT and bespoke WLDR C2 implant in financially motivated campaign",
       "raw_excerpt": "Cisco Talos is disclosing UAT-11795, a sophisticated, Russian-speaking, financially motivated adversary that has been conducting a malicious campaign targeting users in the U.S. and Europe since at le",
       "content_hash": "sha256:a257901d2c5854e11856bf03704654d33e67634c87025d45950d7d2c03359824",
@@ -475,27 +527,26 @@
       "analysis": {
         "status": "success",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-17T07:58:16.514824+09:00",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-17T15:53:38.865747+09:00",
         "category": "攻撃・脅威動向",
         "category_version": "v1",
-        "category_reason": "ロシア語圏の攻撃グループによる金銭目的のキャンペーンとマルウェアの展開が主題であるため。",
+        "category_reason": "ロシア語を話す金銭目的の攻撃グループUAT-11795による、新しいRATとC2インプラントを用いた攻撃キャンペーンが主題であるため。",
         "tags": [
           "APT",
           "フィッシング",
-          "ランサムウェア",
           "インシデント"
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "Cisco Talosは、ロシア語圏の金銭目的の攻撃グループUAT-11795が、少なくとも2025年6月から米国と欧州のユーザーを標的とした悪意のあるキャンペーンを展開していることを明らかにしました。このキャンペーンでは、PythonベースのStarland RATと、PowerShellベースのWLDR C2メモリインプラントが使用され、認証情報や仮想通貨ウォレット資産が狙われています。",
-        "financial_impact": "金融機関の従業員が標的となる可能性のあるトロイの木馬化されたインストーラーが使用されており、認証情報や仮想通貨資産の窃取を目的としているため、注意が必要です。特に、開発ツール、IT管理ユーティリティ、企業コラボレーションプラットフォームの利用者は影響を受ける可能性があります。",
+        "summary": "Cisco Talosは、2025年6月以降、米国と欧州のユーザーを標的としているロシア語を話す金銭目的の攻撃グループUAT-11795について報告しました。この攻撃者は、Starland RATとWLDR C2インプラントを展開し、認証情報や仮想通貨ウォレット資産を狙っています。",
+        "financial_impact": "金融機関の従業員が標的となるソフトウェアのトロイの木馬化されたインストーラーをダウンロードした場合、認証情報や仮想通貨ウォレット資産が窃取される可能性があります。特に開発ツールやIT管理ユーティリティ、企業コラボレーションプラットフォームが標的とされているため、関連部署は注意が必要です。",
         "recommended_actions": [
-          "記事に記載されたトロイの木馬化されたソフトウェア（MobaXterm、WebEx、Zoom、DBeaver、FACEIT）の利用状況を確認する",
-          "Cisco Talosが提供するClamAVシグネチャおよびSnortルールを用いて、関連する脅威の検出・ブロック状況を確認する",
+          "記事に記載されたトロイの木馬化されたソフトウェア（MobaXterm、WebEx、Zoom、DBeaver、FACEIT）の利用状況を確認し、正規のチャネルからダウンロードされているか検証する",
+          "Cisco Talosが提供するClamAVシグネチャおよびSnortルールをセキュリティ製品に適用し、関連する脅威の検出・ブロック状況を監視する",
           "Cisco TalosのGitHubリポジトリで公開されているIOCsと自社ログを照合し、侵害の痕跡がないか確認する"
         ],
-        "reason": "重要度は、金銭目的の攻撃キャンペーンであり、金融機関の従業員が利用する可能性のあるソフトウェアが標的となっているため「中」です。確認目安は、進行中の攻撃キャンペーンに関する情報であり、自社環境への影響有無を評価する必要があるため「今週確認」です。",
+        "reason": "重要度は、金銭目的の攻撃キャンペーンであり、金融機関の従業員が利用する可能性のあるソフトウェアが標的となっているため「中」です。確認目安は、新たな脆弱性や緊急のパッチ情報ではなく、脅威動向の把握が主であるため「今週確認」です。",
         "error_type": null,
         "http_status": null
       },
@@ -514,8 +565,8 @@
       "url": "https://www.darkreading.com/threat-intelligence/police-disrupt-140m-euro-cyber-fraud-ring-spain",
       "canonical_url": "https://www.darkreading.com/threat-intelligence/police-disrupt-140m-euro-cyber-fraud-ring-spain",
       "published_at": "2026-07-16T16:00:00+09:00",
-      "fetched_at": "2026-07-17T07:55:39.532340+09:00",
-      "title": "スペイン警察が1億4,000万ユーロのサイバー詐欺組織を摘発",
+      "fetched_at": "2026-07-17T15:50:41.279729+09:00",
+      "title": "スペイン警察、1億4,000万ユーロ規模のサイバー詐欺組織を摘発",
       "raw_title": "Police Disrupt a €140M Cyber Fraud Ring in Spain",
       "raw_excerpt": "Iberian hackers carried out a variety of cyberattacks and laundered the winnings through complex financial networks.",
       "content_hash": "sha256:7b19aebd8213282085ca3205451d64d673f44766ee23192df7fb88070910c20a",
@@ -523,305 +574,28 @@
       "analysis": {
         "status": "success",
         "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-17T07:58:33.365017+09:00",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-17T15:53:56.147858+09:00",
         "category": "攻撃・脅威動向",
         "category_version": "v1",
-        "category_reason": "記事はサイバー詐欺組織の活動と摘発を主題としており、攻撃手法や脅威動向に関する情報を提供しているため。",
+        "category_reason": "サイバー詐欺組織の活動と摘発が主題であるため。",
         "tags": [
-          "フィッシング",
           "インシデント"
         ],
         "importance": "中",
         "urgency": "今週確認",
-        "summary": "スペイン警察は、1億4,000万ユーロ（約238億円）相当のサイバー詐欺に関与した組織を摘発しました。この組織は多様なサイバー攻撃を実行し、複雑な金融ネットワークを通じて不正な利益を洗浄していました。",
-        "financial_impact": "金融機関は、不正送金やマネーロンダリング対策の強化、および顧客保護の観点から、このようなサイバー詐欺の手口や資金洗浄経路について把握しておく必要があります。",
-        "recommended_actions": [],
-        "reason": "重要度は、サイバー詐欺組織の摘発事例であり、金融機関の不正対策強化の参考となるため「中」です。確認目安は、新たな脅威や緊急対応を要する情報ではないため「今週確認」です。",
+        "summary": "スペイン警察は、1億4,000万ユーロ（約230億円）規模のサイバー詐欺組織を摘発しました。この組織は様々なサイバー攻撃を実行し、複雑な金融ネットワークを通じて不正に得た資金を洗浄していました。",
+        "financial_impact": "金融機関は、このようなサイバー詐欺組織による資金洗浄の経路として利用されるリスクがあるため、不正送金やマネーロンダリング対策の観点から関係します。",
+        "recommended_actions": [
+          "不正送金やマネーロンダリングに関する最新の脅威動向と対策を再確認する",
+          "自社の不正検知システムや監視体制が、新たな手口に対応可能か評価する"
+        ],
+        "reason": "重要度は、金融機関が資金洗浄の経路として利用されるリスクがあるため「中」です。確認目安は、摘発された組織に関する情報であり、即時対応を要する新たな脅威や期限の記述がないため「今週確認」です。",
         "error_type": null,
         "http_status": null
       },
       "facts": {
         "cves": []
-      }
-    },
-    {
-      "id": "sha256:f0dd9780aad4aa0ab72b10a365cf66f43abf0e0d9861a112c46bc1ef93fa16de",
-      "source_id": "microsoft_security",
-      "source_name": "Microsoft Security",
-      "source_type": "ベンダー情報",
-      "source_tier": "Tier 2",
-      "collection_method": "rss",
-      "language": "en",
-      "url": "https://www.microsoft.com/en-us/security/blog/2026/07/15/unpacking-asyncapi-npm-supply-chain-compromise-import-time-payload-delivery/",
-      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/07/15/unpacking-asyncapi-npm-supply-chain-compromise-import-time-payload-delivery/",
-      "published_at": "2026-07-16T10:36:21+09:00",
-      "fetched_at": "2026-07-17T07:55:39.532340+09:00",
-      "title": "Unpacking the AsyncAPI npm supply chain compromise and import-time payload delivery",
-      "raw_title": "Unpacking the AsyncAPI npm supply chain compromise and import-time payload delivery",
-      "raw_excerpt": "Threat actors compromised AsyncAPI packages and weaponized trusted CI/CD workflows to distribute malware through npm. This analysis breaks down the attack chain, payload delivery, and recommended defe",
-      "content_hash": "sha256:acf3fdd73c23a42726e00075cd615f99e51bf1a43259776b63e1ff60407ef264",
-      "rule_flags": [],
-      "analysis": {
-        "status": "fallback",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-17T07:58:51.130970+09:00",
-        "category": "攻撃・脅威動向",
-        "category_version": "v1",
-        "category_reason": "npmパッケージのサプライチェーン侵害と攻撃手法、およびその影響について詳細に解説しているため。",
-        "tags": [
-          "サプライチェーン",
-          "インシデント",
-          "情報漏えい",
-          "委託先管理",
-          "悪用確認済み"
-        ],
-        "importance": "高",
-        "urgency": "本日確認",
-        "summary": "Microsoft Threat Intelligenceは、AsyncAPI npm組織に対するサプライチェーン侵害を特定しました。5つのパッケージバージョンに悪意のあるローダーが注入され、モジュールロード時に実行されることで、開発ワーク",
-        "financial_impact": "金融機関がAsyncAPIのnpmパッケージを直接的または間接的に利用している場合、開発環境やCI/CDパイプライン、本番サービスが侵害される可能性があります。特に、認証情報窃取モジュールが有効化された場合、機密情報が漏洩するリスクがあります。",
-        "recommended_actions": [
-          "影響を受けるAsyncAPI npmパッケージのバージョン（@asyncapi/specs 6.11.2-alpha.1/6.11.2、@asyncapi/generator@3.3.1、@asyncapi/generator-components@0.7.1、@asyncapi/generator-helpers@1.1.1）の利用有無を確認する",
-          "該当するパッケージを利用している場合、直ちに影響を受けるバージョンを削除し、npmおよびYarnのキャッシュをパージする"
-        ],
-        "reason": "重要度は、広く利用されるnpmパッケージのサプライチェーン侵害であり、開発環境やCI/CDパイプラインへの影響が大きいため「高」です。確認目安は、攻撃が既に発生し、即座の対応が推奨されているため「本日確認」です。",
-        "error_type": "schema_parse_error",
-        "http_status": null
-      },
-      "facts": {
-        "cves": []
-      }
-    },
-    {
-      "id": "sha256:ed702d00591c10f49470fdee7b2981cca75ac681f5668707c46ef41237c188d1",
-      "source_id": "cisa_kev",
-      "source_name": "CISA KEV",
-      "source_type": "CERT・注意喚起",
-      "source_tier": "Tier 1",
-      "collection_method": "cisa_kev_json",
-      "language": "en",
-      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
-      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
-      "published_at": null,
-      "fetched_at": "2026-07-17T07:55:39.532340+09:00",
-      "title": "CISA、Microsoft SharePointの信頼できないデータ逆シリアル化の脆弱性をKEVへ追加",
-      "raw_title": "CVE-2026-58644 — Microsoft SharePoint Deserialization of Untrusted Data Vulnerability",
-      "raw_excerpt": "Microsoft SharePoint contains a deserialization of untrusted data vulnerability that allows an unauthorized attacker to execute code over a network.",
-      "content_hash": "sha256:4cdd7cc0f29240953b1a36761503294ee6885d2841aa8d7b9c010f74680469dc",
-      "rule_flags": [
-        "kev_entry"
-      ],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-17T07:59:08.493008+09:00",
-        "category": "脆弱性・パッチ",
-        "category_version": "v1",
-        "category_reason": "CVE、KEV、パッチが主題であるため、「脆弱性・パッチ」に分類します。",
-        "tags": [
-          "CVE",
-          "KEV",
-          "悪用確認済み",
-          "パッチ"
-        ],
-        "importance": "高",
-        "urgency": "本日確認",
-        "summary": "CISAは2026年7月16日、実悪用が確認されたとして本脆弱性（CVE-2026-58644）をKEVカタログへ追加しました。Microsoft SharePointの信頼できないデータ逆シリアル化の脆弱性で、認証されていない攻撃者がネットワーク経由でコードを実行できる可能性があります。",
-        "financial_impact": "金融機関でMicrosoft SharePointを利用している場合に関係します。特に、外部公開されているSharePoint環境では、認証不要でコード実行されるリスクがあるため、早急な確認が必要です。",
-        "recommended_actions": [
-          "CVE-2026-58644の影響を受けるMicrosoft SharePointの利用有無、バージョン、外部露出状況を確認する",
-          "Microsoftからの一次情報（パッチ、緩和策等）を確認し、対応要否を評価する",
-          "自社環境で本脆弱性の悪用を示す兆候がないかログ等を監視・確認する"
-        ],
-        "reason": "重要度は、広く利用されるMicrosoft SharePointの認証不要なリモートコード実行の脆弱性で、適用性評価の優先度が高いため「高」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": [
-          {
-            "cve_id": "CVE-2026-58644",
-            "nvd": {
-              "status": "found",
-              "retrieval": "live",
-              "fetched_at": "2026-07-16T22:55:39Z",
-              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-58644",
-              "vuln_status": "Analyzed",
-              "published_at": "2026-07-14T17:17:14Z",
-              "last_modified_at": "2026-07-16T19:05:51Z",
-              "cvss": {
-                "version": "3.1",
-                "base_score": 9.8,
-                "base_severity": "CRITICAL",
-                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
-                "source": "secure@microsoft.com",
-                "type": "Secondary"
-              }
-            },
-            "kev": {
-              "status": "listed",
-              "retrieval": "live",
-              "fetched_at": "2026-07-16T22:55:39Z",
-              "date_added": "2026-07-16"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "id": "sha256:cde7ac8233620b3f4a9ec27a37de87e16c1966b0ee1803f25b2f57ab4faf8230",
-      "source_id": "cisa_kev",
-      "source_name": "CISA KEV",
-      "source_type": "CERT・注意喚起",
-      "source_tier": "Tier 1",
-      "collection_method": "cisa_kev_json",
-      "language": "en",
-      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
-      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
-      "published_at": null,
-      "fetched_at": "2026-07-17T07:55:39.532340+09:00",
-      "title": "Fortinet FortiSandboxのOSコマンドインジェクション脆弱性「CVE-2026-25089」",
-      "raw_title": "CVE-2026-25089 — Fortinet FortiSandbox OS Command Injection Vulnerability",
-      "raw_excerpt": "Fortinet FortiSandbox, FortiSandbox Cloud, and FortiSandbox PaaS contain an OS command injection vulnerability that allows an unauthenticated attacker to execute unauthorized commands via specifically",
-      "content_hash": "sha256:f3f815fc0b98a391b27313c82e8db107a19f3e27dd4065ff12ad1c9a4046ade3",
-      "rule_flags": [
-        "kev_entry"
-      ],
-      "analysis": {
-        "status": "success",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-17T07:59:26.068164+09:00",
-        "category": "脆弱性・パッチ",
-        "category_version": "v1",
-        "category_reason": "Fortinet製品のOSコマンドインジェクション脆弱性が主題であるため。",
-        "tags": [
-          "CVE",
-          "KEV",
-          "悪用確認済み",
-          "パッチ"
-        ],
-        "importance": "高",
-        "urgency": "本日確認",
-        "summary": "CISAは2026年7月16日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Fortinet FortiSandbox、FortiSandbox Cloud、FortiSandbox PaaSには、認証されていない攻撃者が細工されたHTTPリクエストを介して不正なOSコマンドを実行できる脆弱性（CVE-2026-25089）が存在します。",
-        "financial_impact": "Fortinet FortiSandbox製品を導入している金融機関は、本脆弱性の影響を受ける可能性があります。特に、外部に公開されている環境で利用している場合は、認証なしで悪用されるリスクがあるため、早急な確認が必要です。",
-        "recommended_actions": [
-          "自社および委託先におけるFortinet FortiSandbox製品の利用有無、稼働状況、外部露出、影響バージョンを確認する",
-          "Fortinetからの一次情報（セキュリティアドバイザリ、パッチ、緩和策など）を確認し、対応要否を評価する",
-          "システムログやネットワークトラフィックを監視し、本脆弱性の悪用を示す兆候がないか確認する"
-        ],
-        "reason": "重要度は、認証なしで悪用可能であり、CISA KEVに掲載されたFortinet製品の重大な脆弱性で適用性評価の優先度が高いため「高」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
-        "error_type": null,
-        "http_status": null
-      },
-      "facts": {
-        "cves": [
-          {
-            "cve_id": "CVE-2026-25089",
-            "nvd": {
-              "status": "found",
-              "retrieval": "live",
-              "fetched_at": "2026-07-16T22:55:39Z",
-              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-25089",
-              "vuln_status": "Analyzed",
-              "published_at": "2026-06-09T16:16:39Z",
-              "last_modified_at": "2026-07-16T19:05:35Z",
-              "cvss": {
-                "version": "3.1",
-                "base_score": 9.8,
-                "base_severity": "CRITICAL",
-                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
-                "source": "psirt@fortinet.com",
-                "type": "Secondary"
-              }
-            },
-            "kev": {
-              "status": "listed",
-              "retrieval": "live",
-              "fetched_at": "2026-07-16T22:55:39Z",
-              "date_added": "2026-07-16"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "id": "sha256:5ec99e6c275ad06f9aea729d450acec3116be752d112cb10425bb5ca9d0e424c",
-      "source_id": "cisa_kev",
-      "source_name": "CISA KEV",
-      "source_type": "CERT・注意喚起",
-      "source_tier": "Tier 1",
-      "collection_method": "cisa_kev_json",
-      "language": "en",
-      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
-      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
-      "published_at": null,
-      "fetched_at": "2026-07-17T07:55:39.532340+09:00",
-      "title": "CVE-2026-39808 — Fortinet FortiSandbox OS Command Injection Vulnerability",
-      "raw_title": "CVE-2026-39808 — Fortinet FortiSandbox OS Command Injection Vulnerability",
-      "raw_excerpt": "Fortinet FortiSandbox contains an OS command injection vulnerability that could allow an unauthenticated attacker to execute unauthorized code or commands via crafted HTTP requests.",
-      "content_hash": "sha256:0a6da207166a802d169935846239c9b40d8ff6f63e705e2256b3ee48c491895b",
-      "rule_flags": [
-        "kev_entry"
-      ],
-      "analysis": {
-        "status": "fallback",
-        "model": "gemini-2.5-flash",
-        "prompt_version": "article-analysis-v7",
-        "generated_at": "2026-07-17T07:59:43.376072+09:00",
-        "category": "脆弱性・パッチ",
-        "category_version": "v1",
-        "category_reason": "記事の主題が特定の製品の脆弱性に関する情報であるため。",
-        "tags": [
-          "CVE",
-          "KEV",
-          "悪用確認済み",
-          "パッチ"
-        ],
-        "importance": "高",
-        "urgency": "本日確認",
-        "summary": "CISAは2026年7月16日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Fortinet FortiSandboxにはOSコマンドインジェクションの脆弱性「CVE-2026-39808」があり、認証されていない攻撃者",
-        "financial_impact": "Fortinet FortiSandboxを導入している金融機関において関係します。本製品はサンドボックスとして利用されることが多く、悪用された場合、システムへの不正アクセスや情報漏えい、業務停止につながる可能性があります。",
-        "recommended_actions": [
-          "Fortinet FortiSandboxの利用有無、稼働状況、外部露出、影響バージョンを確認する",
-          "Fortinetからの一次情報（セキュリティアドバイザリ、パッチ、緩和策）を確認し、対応要否を評価する",
-          "侵害の兆候がないか、ログ等の監視を強化する"
-        ],
-        "reason": "重要度は、CISA KEVに掲載され、認証不要で悪用可能なOSコマンドインジェクション脆弱性であり、金融機関での利用可能性も考慮し「高」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
-        "error_type": "schema_parse_error",
-        "http_status": null
-      },
-      "facts": {
-        "cves": [
-          {
-            "cve_id": "CVE-2026-39808",
-            "nvd": {
-              "status": "found",
-              "retrieval": "live",
-              "fetched_at": "2026-07-16T22:55:39Z",
-              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-39808",
-              "vuln_status": "Analyzed",
-              "published_at": "2026-04-14T16:16:44Z",
-              "last_modified_at": "2026-07-16T19:05:41Z",
-              "cvss": {
-                "version": "3.1",
-                "base_score": 9.8,
-                "base_severity": "CRITICAL",
-                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
-                "source": "psirt@fortinet.com",
-                "type": "Secondary"
-              }
-            },
-            "kev": {
-              "status": "listed",
-              "retrieval": "live",
-              "fetched_at": "2026-07-16T22:55:39Z",
-              "date_added": "2026-07-16"
-            }
-          }
-        ]
       }
     }
   ]

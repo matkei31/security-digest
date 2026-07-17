@@ -22,6 +22,7 @@
     .cards{padding:12px 12px 0;display:flex;flex-direction:column;gap:10px;max-width:680px;margin:0 auto}
     .card{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;scroll-margin-top:var(--anchor-offset)}
     .card:active{background:#1c2128;border-color:#388bfd}
+    .card:target{border-color:#388bfd;box-shadow:0 0 0 1px #388bfd}
     .card-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px}
     .tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;color:#fff;white-space:nowrap}
     .date{font-size:11px;color:#8b949e;margin-left:auto}
@@ -72,17 +73,29 @@
     .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
     .brief-list li::before{content:"・";position:absolute;left:0}
     .dashboard{max-width:680px;margin:12px auto 0;padding:0 12px}
-    .dashboard h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:8px}
-    .dashboard-total{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-    .dashboard-total span{font-size:12px;color:#8b949e}
-    .dashboard-total strong{font-size:20px;color:#e6edf3}
-    .dashboard-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:8px}
-    .dashboard-group{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 14px}
-    .dashboard-group h3{font-size:12px;font-weight:700;color:#8b949e;margin-bottom:8px}
-    .dashboard-count-list{list-style:none;display:grid;gap:6px}
-    .dashboard-count-item{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#c9d1d9;line-height:1.4}
-    .dashboard-count-item strong{font-size:13px;color:#e6edf3}
+    .dashboard-head{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+    .dashboard-head h2{font-size:13px;font-weight:700;color:#e6edf3}
+    .dashboard-count{font-size:12px;color:#8b949e}
+    .dashboard-count strong{font-size:16px;font-weight:700;color:#e6edf3;margin:0 2px}
+    .dashboard-axes{background:#161b22;border-left:1px solid #21262d;border-right:1px solid #21262d;border-top:1px solid #21262d;display:grid;grid-template-columns:1fr 1fr}
+    .dashboard-axis{padding:10px 16px}
+    .dashboard-axis+.dashboard-axis{border-left:1px solid #21262d}
+    .dashboard-axis h3{font-size:11px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .dashboard-axis-list{list-style:none;display:grid;gap:4px}
+    .dashboard-axis-item{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:#c9d1d9;line-height:1.4;padding-left:8px;border-left:2px solid transparent}
+    .dashboard-axis-item strong{font-size:14px;font-weight:700;color:#e6edf3}
+    .dashboard-axis-item.is-accent{border-left-color:#f85149;color:#f85149}
+    .dashboard-axis-item.is-accent strong{color:#f85149}
+    .dashboard-categories{background:#161b22;border:1px solid #21262d;border-top:1px solid #21262d;border-radius:0 0 10px 10px;padding:10px 16px}
+    .dashboard-categories h3{font-size:11px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .dashboard-category-list{list-style:none;display:flex;flex-wrap:wrap;gap:4px 14px}
+    .dashboard-category-item{font-size:11px;color:#8b949e;display:flex;gap:4px}
+    .dashboard-category-item strong{color:#8b949e;font-weight:600}
     .dashboard-empty{list-style:none;font-size:12px;color:#8b949e;line-height:1.5}
+    @media (max-width:600px){
+      .dashboard-axes{grid-template-columns:1fr}
+      .dashboard-axis+.dashboard-axis{border-left:none;border-top:1px solid #21262d}
+    }
     .important-items{max-width:680px;margin:12px auto 0;padding:0 12px}
     .important-items h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}
     .important-items-note{font-size:12px;color:#8b949e;line-height:1.5;margin-bottom:8px}
@@ -92,6 +105,7 @@
     .priority-item .article-heading{font-size:13px;font-weight:600}
     .priority-item-link{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none;width:max-content;max-width:100%}
     .priority-item-link:hover{text-decoration:underline}
+    .priority-item-meta{font-size:11px;color:#8b949e}
     .important-item-reason,.important-items-empty{font-size:12px;color:#c9d1d9;line-height:1.6}
     .sources{max-width:680px;margin:20px auto 0;padding:0 12px}
     .sources details{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 16px}
@@ -128,35 +142,33 @@
   </div>
   <section class="important-items">
     <h2>優先確認</h2>
-    <p class="important-items-note">確認優先度が高い、または確認目安が本日確認の記事です。</p>
     <div class="important-items-list">
       <p class="important-items-empty">本日の優先確認対象はありません。</p>
     </div>
   </section>
   <section class="dashboard">
-    <h2>本日のダッシュボード</h2>
-    <div class="dashboard-total">
-      <span>本日の収集</span>
-      <strong>10件</strong>
+    <div class="dashboard-head">
+      <h2>本日のダッシュボード</h2>
+      <p class="dashboard-count"><span>掲載</span><strong>10</strong>件</p>
     </div>
-    <div class="dashboard-groups">
-      <section class="dashboard-group">
-        <h3>確認優先度</h3>
-        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>高</span><strong>0</strong></li><li class="dashboard-count-item"><span>中</span><strong>8</strong></li><li class="dashboard-count-item"><span>低</span><strong>2</strong></li></ul>
-      </section>
-      <section class="dashboard-group">
+    <div class="dashboard-axes">
+      <div class="dashboard-axis">
+        <h3>重要度</h3>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item"><span>高</span><strong>0</strong></li><li class="dashboard-axis-item"><span>中</span><strong>8</strong></li><li class="dashboard-axis-item"><span>低</span><strong>2</strong></li></ul>
+      </div>
+      <div class="dashboard-axis">
         <h3>確認目安</h3>
-        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>本日確認</span><strong>0</strong></li><li class="dashboard-count-item"><span>今週確認</span><strong>6</strong></li><li class="dashboard-count-item"><span>参考</span><strong>4</strong></li></ul>
-      </section>
-      <section class="dashboard-group dashboard-category-group">
-        <h3>カテゴリ</h3>
-        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>脆弱性・パッチ</span><strong>3</strong></li><li class="dashboard-count-item"><span>攻撃・脅威動向</span><strong>3</strong></li><li class="dashboard-count-item"><span>クラウド・サプライチェーン</span><strong>1</strong></li><li class="dashboard-count-item"><span>AI・新技術リスク</span><strong>1</strong></li><li class="dashboard-count-item"><span>その他</span><strong>2</strong></li></ul>
-      </section>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item"><span>本日確認</span><strong>0</strong></li><li class="dashboard-axis-item"><span>今週確認</span><strong>6</strong></li><li class="dashboard-axis-item"><span>参考</span><strong>4</strong></li></ul>
+      </div>
+    </div>
+    <div class="dashboard-categories">
+      <h3>主なカテゴリ</h3>
+      <ul class="dashboard-category-list"><li class="dashboard-category-item"><span>脆弱性・パッチ</span><strong>3</strong></li><li class="dashboard-category-item"><span>攻撃・脅威動向</span><strong>3</strong></li><li class="dashboard-category-item"><span>クラウド・サプライチェーン</span><strong>1</strong></li><li class="dashboard-category-item"><span>AI・新技術リスク</span><strong>1</strong></li><li class="dashboard-category-item"><span>その他</span><strong>2</strong></li></ul>
     </div>
   </section>
   <section class="article-list-header">
     <h2>本日の情報</h2>
-    <p class="article-list-note">確認目安、確認優先度、元の収集順で表示しています。</p>
+    <p class="article-list-note">確認目安、重要度、元の収集順で表示しています。</p>
   </section>
   <div class="cards">
     <article class="card" id="article-1">
@@ -166,7 +178,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/cyber-risk/forgotten-bootloaders-expose-secure-boot-blind-spot" target="_blank" rel="noopener noreferrer" lang="en">Forgotten Bootloaders Expose Secure Boot Blind Spot</a><span class="article-title-translation" lang="ja">忘れ去られたブートローダーがセキュアブートの盲点を露呈</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">パッチ</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -191,7 +203,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/identity-access-management-security/identity-attacks-overtake-exploits-top-ransomware-cause" target="_blank" rel="noopener noreferrer" lang="en">Identity Attacks Overtake Exploits as Top Ransomware Cause</a><span class="article-title-translation" lang="ja">ランサムウェアの主要原因がエクスプロイトからID攻撃へ移行</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">ランサムウェア</span><span class="article-tag">認証</span><span class="article-tag">IAM</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -216,7 +228,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/okobot-malware-framework-injects-seed.html" target="_blank" rel="noopener noreferrer" lang="en">OkoBot Malware Framework Injects Seed Phrase Phishing Into Ledger and Trezor Apps</a><span class="article-title-translation" lang="ja">OkoBotマルウェアフレームワークがLedgerおよびTrezorアプリにシードフレーズフィッシングを注入</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">フィッシング</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -241,7 +253,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://cloud.google.com/blog/topics/threat-intelligence/exposed-cloud-functions-harden/" target="_blank" rel="noopener noreferrer" lang="en">The Risk of Exposed Cloud Functions and How to Harden</a></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：クラウド・サプライチェーン</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：クラウド・サプライチェーン</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">クラウド</span><span class="article-tag">SaaS</span><span class="article-tag">サプライチェーン</span><span class="article-tag">AI</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -266,7 +278,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/firefox-chrome-adobe-and-vmware-updates.html" target="_blank" rel="noopener noreferrer" lang="en">Firefox, Chrome, Adobe, and VMware Updates Fix Multiple Critical Security Flaws</a><span class="article-title-translation" lang="ja">Firefox、Chrome、Adobe、VMwareのアップデートが複数の重大なセキュリティ欠陥を修正</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">パッチ</span><span class="article-tag">CVE</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -295,7 +307,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.jpcert.or.jp/at/2026/at260020.html" target="_blank" rel="noopener noreferrer" lang="ja">注意喚起: 2026年7月マイクロソフトセキュリティ更新プログラムに関する注意喚起  (公開)</a></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">パッチ</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -320,7 +332,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/tuxbot-v3-evolution-shows-signs-of-llm.html" target="_blank" rel="noopener noreferrer" lang="en">TuxBot v3 Evolution Shows Signs of LLM-Assisted IoT Botnet Development</a><span class="article-title-translation" lang="ja">TuxBot v3 Evolution、LLM支援によるIoTボットネット開発の兆候</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">LLM</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -341,7 +353,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">8.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.microsoft.com/en-us/security/blog/2026/07/15/turning-threat-intelligence-into-decisive-action-with-defender-experts/" target="_blank" rel="noopener noreferrer" lang="en">Turning threat intelligence into decisive action with Defender Experts</a><span class="article-title-translation" lang="ja">Microsoft Defender Expertsによる脅威インテリジェンスとMDRサービスの拡充</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">クラウド</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -362,7 +374,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">9.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/threat-intelligence/guten-tag-bonjour-hola-european-cyber-defenders" target="_blank" rel="noopener noreferrer" lang="en">Guten Tag, Bonjour, Hola to Our European Cyber Defenders!</a><span class="article-title-translation" lang="ja">Dark Readingが欧州向けサイバーセキュリティ情報セクション「DR Global」を刷新</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-low">重要度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
         
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -383,7 +395,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">10.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.ncsc.gov.uk/blogs/helping-small-businesses-with-free-hands-on-cyber-consultancy" target="_blank" rel="noopener noreferrer" lang="en">Helping small businesses with free, hands-on cyber consultancy</a><span class="article-title-translation" lang="ja">NCSC、中小企業向けに無料のサイバーセキュリティコンサルティングを提供</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-low">重要度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
         
         <section class="article-section">
           <h3>何が起きた</h3>

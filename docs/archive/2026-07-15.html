@@ -22,6 +22,7 @@
     .cards{padding:12px 12px 0;display:flex;flex-direction:column;gap:10px;max-width:680px;margin:0 auto}
     .card{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;scroll-margin-top:var(--anchor-offset)}
     .card:active{background:#1c2128;border-color:#388bfd}
+    .card:target{border-color:#388bfd;box-shadow:0 0 0 1px #388bfd}
     .card-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px}
     .tag{font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;color:#fff;white-space:nowrap}
     .date{font-size:11px;color:#8b949e;margin-left:auto}
@@ -72,17 +73,29 @@
     .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
     .brief-list li::before{content:"・";position:absolute;left:0}
     .dashboard{max-width:680px;margin:12px auto 0;padding:0 12px}
-    .dashboard h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:8px}
-    .dashboard-total{background:#161b22;border:1px solid #30363d;border-radius:10px;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-    .dashboard-total span{font-size:12px;color:#8b949e}
-    .dashboard-total strong{font-size:20px;color:#e6edf3}
-    .dashboard-groups{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin-top:8px}
-    .dashboard-group{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 14px}
-    .dashboard-group h3{font-size:12px;font-weight:700;color:#8b949e;margin-bottom:8px}
-    .dashboard-count-list{list-style:none;display:grid;gap:6px}
-    .dashboard-count-item{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12px;color:#c9d1d9;line-height:1.4}
-    .dashboard-count-item strong{font-size:13px;color:#e6edf3}
+    .dashboard-head{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+    .dashboard-head h2{font-size:13px;font-weight:700;color:#e6edf3}
+    .dashboard-count{font-size:12px;color:#8b949e}
+    .dashboard-count strong{font-size:16px;font-weight:700;color:#e6edf3;margin:0 2px}
+    .dashboard-axes{background:#161b22;border-left:1px solid #21262d;border-right:1px solid #21262d;border-top:1px solid #21262d;display:grid;grid-template-columns:1fr 1fr}
+    .dashboard-axis{padding:10px 16px}
+    .dashboard-axis+.dashboard-axis{border-left:1px solid #21262d}
+    .dashboard-axis h3{font-size:11px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .dashboard-axis-list{list-style:none;display:grid;gap:4px}
+    .dashboard-axis-item{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:#c9d1d9;line-height:1.4;padding-left:8px;border-left:2px solid transparent}
+    .dashboard-axis-item strong{font-size:14px;font-weight:700;color:#e6edf3}
+    .dashboard-axis-item.is-accent{border-left-color:#f85149;color:#f85149}
+    .dashboard-axis-item.is-accent strong{color:#f85149}
+    .dashboard-categories{background:#161b22;border:1px solid #21262d;border-top:1px solid #21262d;border-radius:0 0 10px 10px;padding:10px 16px}
+    .dashboard-categories h3{font-size:11px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .dashboard-category-list{list-style:none;display:flex;flex-wrap:wrap;gap:4px 14px}
+    .dashboard-category-item{font-size:11px;color:#8b949e;display:flex;gap:4px}
+    .dashboard-category-item strong{color:#8b949e;font-weight:600}
     .dashboard-empty{list-style:none;font-size:12px;color:#8b949e;line-height:1.5}
+    @media (max-width:600px){
+      .dashboard-axes{grid-template-columns:1fr}
+      .dashboard-axis+.dashboard-axis{border-left:none;border-top:1px solid #21262d}
+    }
     .important-items{max-width:680px;margin:12px auto 0;padding:0 12px}
     .important-items h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}
     .important-items-note{font-size:12px;color:#8b949e;line-height:1.5;margin-bottom:8px}
@@ -92,6 +105,7 @@
     .priority-item .article-heading{font-size:13px;font-weight:600}
     .priority-item-link{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none;width:max-content;max-width:100%}
     .priority-item-link:hover{text-decoration:underline}
+    .priority-item-meta{font-size:11px;color:#8b949e}
     .important-item-reason,.important-items-empty{font-size:12px;color:#c9d1d9;line-height:1.6}
     .sources{max-width:680px;margin:20px auto 0;padding:0 12px}
     .sources details{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 16px}
@@ -128,44 +142,45 @@
   </div>
   <section class="important-items">
     <h2>優先確認</h2>
-    <p class="important-items-note">確認優先度が高い、または確認目安が本日確認の記事です。</p>
+    <p class="important-items-note">重要度が高い、または確認目安が本日確認の記事です。</p>
     <div class="important-items-list">
       <article class="priority-item">
         <h3 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-1" lang="en">Researcher Drops New Windows Zero-Day PoC Hours After Microsoft Patch Tuesday</a><span class="article-title-translation" lang="ja">Microsoft Patch Tuesday後にWindowsゼロデイPoCが公開</span></span></h3>
+        <p class="priority-item-meta">重要度 高 ・ 確認目安 本日確認</p>
         <p class="important-item-reason">重要度は、Windowsのコアコンポーネントにおけるゼロデイ脆弱性のPoCが公開され、広範な影響の可能性があるため「高」です。確認目安は、PoCが公開されたばかりであり、悪用リスクが高まっているため「本日確認」です。</p>
         <a class="priority-item-link" href="#article-1">本文を見る</a>
       </article>
       <article class="priority-item">
         <h3 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-2" lang="en">Microsoft Patch Tuesday for July 2026 — Snort rules and prominent vulnerabilities</a><span class="article-title-translation" lang="ja">2026年7月Microsoft Patch Tuesday、実悪用が確認された脆弱性CVE-2026-56155を含む</span></span></h3>
+        <p class="priority-item-meta">重要度 高 ・ 確認目安 本日確認</p>
         <p class="important-item-reason">重要度は、実悪用が確認され、多くの金融機関で利用されるMicrosoft製品の脆弱性であるため「高」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。</p>
         <a class="priority-item-link" href="#article-2">本文を見る</a>
       </article>
     </div>
   </section>
   <section class="dashboard">
-    <h2>本日のダッシュボード</h2>
-    <div class="dashboard-total">
-      <span>本日の収集</span>
-      <strong>11件</strong>
+    <div class="dashboard-head">
+      <h2>本日のダッシュボード</h2>
+      <p class="dashboard-count"><span>掲載</span><strong>11</strong>件</p>
     </div>
-    <div class="dashboard-groups">
-      <section class="dashboard-group">
-        <h3>確認優先度</h3>
-        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>高</span><strong>2</strong></li><li class="dashboard-count-item"><span>中</span><strong>7</strong></li><li class="dashboard-count-item"><span>低</span><strong>2</strong></li></ul>
-      </section>
-      <section class="dashboard-group">
+    <div class="dashboard-axes">
+      <div class="dashboard-axis">
+        <h3>重要度</h3>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item is-accent"><span>高</span><strong>2</strong></li><li class="dashboard-axis-item"><span>中</span><strong>7</strong></li><li class="dashboard-axis-item"><span>低</span><strong>2</strong></li></ul>
+      </div>
+      <div class="dashboard-axis">
         <h3>確認目安</h3>
-        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>本日確認</span><strong>2</strong></li><li class="dashboard-count-item"><span>今週確認</span><strong>4</strong></li><li class="dashboard-count-item"><span>参考</span><strong>5</strong></li></ul>
-      </section>
-      <section class="dashboard-group dashboard-category-group">
-        <h3>カテゴリ</h3>
-        <ul class="dashboard-count-list"><li class="dashboard-count-item"><span>脆弱性・パッチ</span><strong>5</strong></li><li class="dashboard-count-item"><span>攻撃・脅威動向</span><strong>1</strong></li><li class="dashboard-count-item"><span>規制・ガバナンス</span><strong>1</strong></li><li class="dashboard-count-item"><span>AI・新技術リスク</span><strong>2</strong></li><li class="dashboard-count-item"><span>その他</span><strong>2</strong></li></ul>
-      </section>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item is-accent"><span>本日確認</span><strong>2</strong></li><li class="dashboard-axis-item"><span>今週確認</span><strong>4</strong></li><li class="dashboard-axis-item"><span>参考</span><strong>5</strong></li></ul>
+      </div>
+    </div>
+    <div class="dashboard-categories">
+      <h3>主なカテゴリ</h3>
+      <ul class="dashboard-category-list"><li class="dashboard-category-item"><span>脆弱性・パッチ</span><strong>5</strong></li><li class="dashboard-category-item"><span>攻撃・脅威動向</span><strong>1</strong></li><li class="dashboard-category-item"><span>規制・ガバナンス</span><strong>1</strong></li><li class="dashboard-category-item"><span>AI・新技術リスク</span><strong>2</strong></li><li class="dashboard-category-item"><span>その他</span><strong>2</strong></li></ul>
     </div>
   </section>
   <section class="article-list-header">
     <h2>本日の情報</h2>
-    <p class="article-list-note">確認目安、確認優先度、元の収集順で表示しています。</p>
+    <p class="article-list-note">確認目安、重要度、元の収集順で表示しています。</p>
   </section>
   <div class="cards">
     <article class="card" id="article-1">
@@ -175,7 +190,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/researcher-drops-new-windows-zero-day.html" target="_blank" rel="noopener noreferrer" lang="en">Researcher Drops New Windows Zero-Day PoC Hours After Microsoft Patch Tuesday</a><span class="article-title-translation" lang="ja">Microsoft Patch Tuesday後にWindowsゼロデイPoCが公開</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-high">確認優先度 高</span><span class="urgency-badge urgency-today">確認目安 本日確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-high">重要度 高</span><span class="urgency-badge urgency-today">確認目安 本日確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">ゼロデイ</span><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -200,7 +215,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://blog.talosintelligence.com/microsoft-patch-tuesday-july-2026/" target="_blank" rel="noopener noreferrer" lang="en">Microsoft Patch Tuesday for July 2026 — Snort rules and prominent vulnerabilities</a><span class="article-title-translation" lang="ja">2026年7月Microsoft Patch Tuesday、実悪用が確認された脆弱性CVE-2026-56155を含む</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-high">確認優先度 高</span><span class="urgency-badge urgency-today">確認目安 本日確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-high">重要度 高</span><span class="urgency-badge urgency-today">確認目安 本日確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">CVE</span><span class="article-tag">KEV</span><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -229,7 +244,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/application-security/2-click-cursor-exploit-dev-environment-takeover" target="_blank" rel="noopener noreferrer" lang="en">2-Click Cursor Exploit Enables Dev Environment Takeover</a><span class="article-title-translation" lang="ja">2クリックカーソルエクスプロイトによる開発環境乗っ取り</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：攻撃・脅威動向</span></div>
         
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -254,7 +269,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.jpcert.or.jp/at/2026/at260020.html" target="_blank" rel="noopener noreferrer" lang="ja">注意喚起: 2026年7月マイクロソフトセキュリティ更新プログラムに関する注意喚起  (公開)</a></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">パッチ</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -279,7 +294,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://krebsonsecurity.com/2026/07/microsoft-patches-a-record-570-security-flaws/" target="_blank" rel="noopener noreferrer" lang="en">Microsoft Patches a Record 570 Security Flaws</a><span class="article-title-translation" lang="ja">Microsoftが過去最多となる570件のセキュリティ脆弱性を修正</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">パッチ</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -304,7 +319,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.ipa.go.jp/security/security-alert/2026/0715-ms.html" target="_blank" rel="noopener noreferrer" lang="ja">Microsoft 製品の脆弱性対策について(2026年7月)</a></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-week">確認目安 今週確認</span><span class="category-badge">カテゴリ：脆弱性・パッチ</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">パッチ</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -329,7 +344,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/sase-has-ai-blind-spot-inspecting.html" target="_blank" rel="noopener noreferrer" lang="en">SASE Has An AI Blind Spot. Inspecting Packets Is No Longer Enough.</a><span class="article-title-translation" lang="ja">SASEにAIの死角、パケット検査だけでは不十分</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span><span class="article-tag">クラウド</span><span class="article-tag">SaaS</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -350,7 +365,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">8.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/07/new-webinar-closing-approval-gap-in-ai.html" target="_blank" rel="noopener noreferrer" lang="en">New Webinar: Closing the Approval Gap in AI-Era Ad Tech</a><span class="article-title-translation" lang="ja">AI時代の広告技術における承認ギャップを解消するウェビナー</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：AI・新技術リスク</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">AI</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -371,7 +386,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">9.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/cyber-risk/nigeria-cybersecurity-efforts-cybercriminals-profits" target="_blank" rel="noopener noreferrer" lang="en">Nigeria Deepens Cybersecurity Efforts as Cybercriminals See More Profits</a><span class="article-title-translation" lang="ja">ナイジェリアがサイバーセキュリティ対策を強化、サイバー犯罪の収益増加に対応</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-medium">確認優先度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：規制・ガバナンス</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-medium">重要度 中</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：規制・ガバナンス</span></div>
         <div class="article-tags"><span class="article-tags-label">関連タグ：</span><span class="article-tag">規制</span><span class="article-tag">ガイドライン</span></div>
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -392,7 +407,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">10.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.ncsc.gov.uk/blogs/helping-small-businesses-with-free-hands-on-cyber-consultancy" target="_blank" rel="noopener noreferrer" lang="en">Helping small businesses with free, hands-on cyber consultancy</a><span class="article-title-translation" lang="ja">NCSC、中小企業向けに無料のサイバーセキュリティコンサルティングを提供</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-low">重要度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
         
         <section class="article-section">
           <h3>何が起きた</h3>
@@ -413,7 +428,7 @@
       </div>
       <h2 class="article-heading"><span class="article-index">11.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.darkreading.com/cybersecurity-operations/cribl-adds-agentic-detection-engineering-boosts-secops-with-cardinalops-deal" target="_blank" rel="noopener noreferrer" lang="en">Cribl Adds Agentic Detection Engineering &amp;amp; Boosts SecOps With CardinalOps Deal</a><span class="article-title-translation" lang="ja">CriblがCardinalOps買収でエージェント型検知エンジニアリングとSecOpsを強化</span></span></h2>
       <div class="ai-analysis">
-        <div class="analysis-badges"><span class="importance-badge importance-low">確認優先度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
+        <div class="analysis-badges"><span class="importance-badge importance-low">重要度 低</span><span class="urgency-badge urgency-reference">確認目安 参考</span><span class="category-badge">カテゴリ：その他</span></div>
         
         <section class="article-section">
           <h3>何が起きた</h3>
