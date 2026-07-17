@@ -1,0 +1,421 @@
+{
+  "schema_version": 1,
+  "digest_date": "2026-07-18",
+  "generated_at": "2026-07-18T07:51:18.242342+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-v3"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 8,
+    "ai_attempted_count": 8,
+    "ai_success_count": 7,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 6,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 1,
+      "今週確認": 4,
+      "参考": 3,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 2,
+      "攻撃・脅威動向": 4,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 2,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "gemini-2.5-flash",
+    "prompt_version": "today-brief-v3",
+    "overview": "本日の状態（掲載8件）：重要度「高」2件、確認目安「本日確認」1件、確認目安「今週確認」4件。本日中に適用性または初動要否を確認する記事が1件あります。本日は、WordPressコアの認証なしコード実行脆弱性や、進行中の認証情報窃取キャンペーンなど、即座の対応が求められる脅威が確認されました。また、OpenSSLのメモリ枯渇脆弱性や特定の開発ツールを狙うサプライチェーン攻撃も報告されており、広範なシステムへの影響が懸念されます。",
+    "important_highlights": [
+      "WordPressコアに「wp2shell」と呼ばれる認証なしでコード実行が可能な脆弱性が発見され、既に緊急パッチがリリースされています。WordPressを外部公開している金融機関は早急なアップデート適用が必要です。",
+      "ACR Stealerによる認証情報窃取キャンペーンが活発化しており、「ClickFix」というソーシャルエンジニアリング手法を用いてブラウザの認証情報やセッショントークンを狙っています。従業員への注意喚起と監視強化が求められます。",
+      "IncランサムウェアグループがSonicWall Secure Mobile Access (SMA) 製品のゼロデイ脆弱性を悪用し、root権限を取得していることが判明しました。当該製品を利用している場合は、速やかに対応状況を確認する必要があります。"
+    ],
+    "discussion_points": [
+      "AIモデルの業務導入において、セキュリティ上の監視が適切に行われているか、また盲目的な信頼が脅威とならないよう、設計・運用面でのリスク評価と対策について議論が必要です。",
+      "Viteフロントエンドツールエコシステムを標的とした悪意のあるnpmパッケージが発見されており、開発環境におけるサプライチェーンセキュリティ対策の現状と強化策について検討するべきです。"
+    ],
+    "check_items": [
+      "自社および委託先でWordPressを利用しているか、またWordPress 6.9.5または7.0.2へのアップデートが適用されているかを確認し、未適用であれば速やかにパッチを適用してください。",
+      "従業員に対し、ClickFix型のプロンプトや偽の検証チェック、ペースト＆実行指示が不正なものであることを教育するとともに、ACR Stealerに関連する疑わしい活動の監視を強化してください。"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:1f8fa8831f47fff50b11c062e4e9d4994e8c840adbb0060428b798b1f087e864",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/new-wp2shell-wordpress-core-flaw-lets.html",
+      "canonical_url": "https://thehackernews.com/2026/07/new-wp2shell-wordpress-core-flaw-lets.html",
+      "published_at": "2026-07-18T06:20:10+09:00",
+      "fetched_at": "2026-07-18T07:48:31.817905+09:00",
+      "title": "New wp2shell WordPress Core Flaw Lets Unauthenticated Attackers Run Code",
+      "raw_title": "New wp2shell WordPress Core Flaw Lets Unauthenticated Attackers Run Code",
+      "raw_excerpt": "An anonymous HTTP request can run code on a WordPress site. The bug is in core, so a bare install with zero plugins is exploitable.\n\nEvery 6.9 and 7.0 site was in range until Friday, when WordPress sh",
+      "content_hash": "sha256:6cc4d0709b13ebb47704c994b8286d41835fcc7087d864b90d73cb62a11eb39f",
+      "rule_flags": [],
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-18T07:48:34.533206+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "WordPressコアの脆弱性に関する記事であり、脆弱性・パッチが主題であるため。",
+        "tags": [
+          "パッチ",
+          "悪用確認済み"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "WordPressコアに「wp2shell」と呼ばれる新たな脆弱性が発見されました。この脆弱性は認証されていないHTTPリクエストを通じてコード実行を可能にし、プラグインが一切ないWordPressのクリーンインストール環境でも悪用可能です",
+        "financial_impact": "WordPressをウェブサイトやシステム基盤として利用している金融機関は、本脆弱性の影響を受ける可能性があります。特に外部公開されているWordPressサイトは、認証なしでコード実行されるリスクがあるため、早急な確認が必要です。",
+        "recommended_actions": [
+          "自社および委託先でWordPressを利用しているか、またそのバージョンを確認する",
+          "WordPress 6.9.5または7.0.2へのアップデートが適用されているかを確認する",
+          "アップデートが適用されていない場合は、速やかにベンダーの指示に従いパッチを適用するか、緩和策を検討する"
+        ],
+        "reason": "重要度は、広く利用されているWordPressのコア脆弱性であり、認証なしでコード実行が可能であるため「高」です。確認目安は、脆弱性が既に公開され、ベンダーが緊急パッチをリリースし強制アップデートを有効にしているため「本日確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d32c6279618330fc16bb2d7abdae62df2d96aad745a1164fb5dde0315b73ec77",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/openssl-hollowbyte-flaw-could-freeze.html",
+      "canonical_url": "https://thehackernews.com/2026/07/openssl-hollowbyte-flaw-could-freeze.html",
+      "published_at": "2026-07-18T05:20:53+09:00",
+      "fetched_at": "2026-07-18T07:48:31.817905+09:00",
+      "title": "OpenSSLの「HollowByte」脆弱性、11バイトのTLSリクエストでサーバーメモリをフリーズさせる可能性",
+      "raw_title": "OpenSSL HollowByte Flaw Could Freeze Server Memory with 11-Byte TLS Requests",
+      "raw_excerpt": "Eleven bytes will make an unpatched OpenSSL server set aside up to 131 KB of memory for a message that never arrives. On the glibc systems Okta tested, that memory is gone until the process restarts.\n",
+      "content_hash": "sha256:97c0bcb8699f3d38be6b7b0f279be443c3161f6bba3d1e457e099664a8614633",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-18T07:48:51.743882+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "OpenSSLの未パッチの脆弱性に関する記事であり、脆弱性とその影響が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "OpenSSLの「HollowByte」と呼ばれる脆弱性により、未パッチのOpenSSLサーバーは11バイトのTLSリクエストで最大131KBのメモリを確保し、そのメモリはプロセスが再起動するまで解放されない可能性があります。この問題はOktaのレッドチームが報告し、OpenSSLは6月にCVEなしで修正をリリースしました。",
+        "financial_impact": "OpenSSLは多くの金融機関のシステムで利用されている可能性があるため、当該製品を利用している場合に限り、適用性確認の対象になります。",
+        "recommended_actions": [
+          "OpenSSLの利用有無と影響を受ける可能性のあるバージョンを確認する",
+          "OpenSSLの修正が適用されているか、または適用可能かを確認する"
+        ],
+        "reason": "重要度は、OpenSSLが広く利用されているものの、記事にCVE IDや実悪用の情報がなく、影響範囲が不確実なため「中」です。確認目安は、記事に緊急対応を要する時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:61fdf19a9d229a88a07140f39d8df31a4e992c1e140dd4e479952b5328a3d152",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/vulnerabilities-threats/inc-ransomware-exploits-sonicwall-sma-zero-days",
+      "canonical_url": "https://www.darkreading.com/vulnerabilities-threats/inc-ransomware-exploits-sonicwall-sma-zero-days",
+      "published_at": "2026-07-18T05:01:13+09:00",
+      "fetched_at": "2026-07-18T07:48:31.817905+09:00",
+      "title": "IncランサムウェアがSonicWall SMAのゼロデイ脆弱性を悪用",
+      "raw_title": "Inc Ransomware Exploits SonicWall SMA Zero-Days",
+      "raw_excerpt": "When chained together, the two vulnerabilities allow threat actors to gain root-level capabilities on SonicWall's mobile access appliances.",
+      "content_hash": "sha256:635d449da842cce1aca5ff2e714c9c98458c17fec1ee1aa28e149ef0663c1e6b",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-18T07:49:09.121393+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Incランサムウェアによるゼロデイ脆弱性の悪用が主題であるため。",
+        "tags": [
+          "ランサムウェア",
+          "ゼロデイ",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "IncランサムウェアグループがSonicWall Secure Mobile Access (SMA) 製品の2つのゼロデイ脆弱性を悪用していることが判明しました。これらの脆弱性を組み合わせることで、攻撃者はSonicWallのモバイルアクセスアプライアンス上でroot権限を取得できるとされています。",
+        "financial_impact": "金融機関でSonicWall Secure Mobile Access (SMA) 製品を利用している場合に限り、適用性確認の対象になります。記事からは利用有無を確認できません。",
+        "recommended_actions": [
+          "SonicWall Secure Mobile Access (SMA) 製品の利用有無と影響バージョンを確認する",
+          "SonicWallからの公式情報やパッチ、緩和策の有無を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、特定の製品のゼロデイ脆弱性悪用であり、金融機関での利用状況が不明なため「中」です。確認目安は、ゼロデイ悪用が確認されているものの、CISA KEVへの新規追加や緊急の対応期限が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0c63b34da7a49315ab9a86b1c0939baec0a7591eb9c9a1349ad3fa56098bf5f7",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/seven-malicious-vite-npm-packages-use.html",
+      "canonical_url": "https://thehackernews.com/2026/07/seven-malicious-vite-npm-packages-use.html",
+      "published_at": "2026-07-18T03:54:51+09:00",
+      "fetched_at": "2026-07-18T07:48:31.817905+09:00",
+      "title": "悪意のあるVite npmパッケージがブロックチェーンC2を介してRATを配信",
+      "raw_title": "Seven Malicious Vite npm Packages Use Blockchain C2 to Deliver a RAT",
+      "raw_excerpt": "Cybersecurity researchers have discovered a cluster of seven malicious npm packages targeting the Vite frontend tooling ecosystem as part of a software supply chain attack.\n\nThe malicious package camp",
+      "content_hash": "sha256:3b6f0e741172604820a6ab84e55d0ea8650ebaa3129ec61b7c33a626ac93e37d",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-18T07:49:26.403795+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "悪意のあるnpmパッケージを用いたサプライチェーン攻撃の手法と脅威動向が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、Viteフロントエンドツールエコシステムを標的とした7つの悪意のあるnpmパッケージを発見しました。このキャンペーンは「ViteVenom」と名付けられ、Tronを含む4層のブロックチェーンベースのC2インフラを使用する「ChainVeil」の拡大と見られています。",
+        "financial_impact": "金融機関でViteフロントエンドツールおよび関連するnpmパッケージを開発・利用している場合に、サプライチェーン攻撃のリスクとして関係します。利用有無は記事から確認できません。",
+        "recommended_actions": [
+          "自社および委託先でViteフロントエンドツールおよび関連npmパッケージの利用有無と影響範囲を確認する",
+          "開発環境におけるnpmパッケージのサプライチェーンセキュリティ対策状況を評価する"
+        ],
+        "reason": "重要度は、特定の開発ツールエコシステムを標的とした攻撃であり、金融機関での利用有無により適用性が異なるため「中」です。確認目安は、具体的な期限や緊急対応の指示が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0a8de0a06c38cd417fe5e4db7f3387aa1f86ed29e6a36d468af14dc59f1f73da",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/application-security/real-ai-threat-blind-trust",
+      "canonical_url": "https://www.darkreading.com/application-security/real-ai-threat-blind-trust",
+      "published_at": "2026-07-18T01:43:13+09:00",
+      "fetched_at": "2026-07-18T07:48:31.817905+09:00",
+      "title": "AIの真の脅威は「盲目的な信頼」",
+      "raw_title": "The Real AI Threat Is Blind Trust",
+      "raw_excerpt": "AI models left to both interpret and execute commands eliminate critical cybersecurity oversight.",
+      "content_hash": "sha256:bf1d7fb75dde334b26a2d8fbaec7a5351a7cc361964ca0eb0c0bc28b27a9d61f",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-18T07:49:43.259396+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIモデルのセキュリティリスクと信頼に関するものであるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AIモデルがコマンドの解釈と実行の両方を担うことで、重要なサイバーセキュリティ上の監視が排除され、盲目的な信頼が真の脅威となるという指摘です。",
+        "financial_impact": "金融機関がAIモデルを業務に導入する際、その設計や運用においてセキュリティ上の監視が適切に行われているかを確認する必要があるため関係します。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI導入における一般的なリスクと注意喚起であり、特定の製品やインシデントに関するものではないため「中」です。確認目安は、具体的な対応期限や緊急性を示す情報がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b5cc18577058715fd32b59f8c24e5add0502fd00977a839dfca4d7d8cced661f",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/07/17/microsoft-at-black-hat-usa-2026-defending-trust-in-the-age-of-ai-and-supply-chain-attacks/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/07/17/microsoft-at-black-hat-usa-2026-defending-trust-in-the-age-of-ai-and-supply-chain-attacks/",
+      "published_at": "2026-07-18T01:00:00+09:00",
+      "fetched_at": "2026-07-18T07:48:31.817905+09:00",
+      "title": "MicrosoftがBlack Hat USA 2026でAIとサプライチェーン攻撃における信頼の防御について発表",
+      "raw_title": "Microsoft at Black Hat USA 2026: Defending trust in the age of AI and supply chain attacks",
+      "raw_excerpt": "Join Microsoft Security at Black Hat USA 2026 for supply chain research, hands-on security experiences, expert conversations, and our reception.\nThe post Microsoft at Black Hat USA 2026: Defending tru",
+      "content_hash": "sha256:5c35ac9362efe1e639113c884a0d8d0ea46386f4d285f4b5f39eda8e17eeb3b0",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-18T07:50:01.332942+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "記事はBlack Hat USA 2026でのMicrosoftの発表内容を説明しており、脅威アクターの動向やサプライチェーン攻撃、AIシステムのリスクといった攻撃・脅威動向が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "MicrosoftはBlack Hat USA 2026での発表内容を公開しました。脅威アクターが信頼されたシステム、サービス、ID、ツール、開発ワークフロー、AIシステムを標的としている現状と、サプライチェーン攻撃やAI関連のリスクへの防御策について議論されます。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。記事は一般的な脅威動向とMicrosoftの取り組みについて述べており、特定の製品や脆弱性に関する緊急の対応を求めるものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の製品や脆弱性に関する緊急の対応を求めるものではなく、一般的な脅威動向に関する情報であるため「中」です。確認目安は、Black Hatでの発表予告であり、具体的な対応期限や緊急性を示す情報がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1e88af52030715e89effc5fe8f6ede7d8ffbd93a1d236c620c8fe0c01216abca",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/vulnerabilities-threats/gold-eagle-clearinghouse-targets-security-gap",
+      "canonical_url": "https://www.darkreading.com/vulnerabilities-threats/gold-eagle-clearinghouse-targets-security-gap",
+      "published_at": "2026-07-17T22:00:00+09:00",
+      "fetched_at": "2026-07-18T07:48:31.817905+09:00",
+      "title": "ホワイトハウスの「Gold Eagle Clearinghouse」におけるAI時代の脆弱性対応調整に不透明さ",
+      "raw_title": "Gold Eagle Clearinghouse Targets Security Gap, but How Is Unclear",
+      "raw_excerpt": "The White House launched Gold Eagle to coordinate vulnerability response in a new AI world, but multiple questions linger over how it's being implemented.",
+      "content_hash": "sha256:45459742d0cb6fa23dd73529d161c7b7c68649b09b6aa9f11436b0036d1c8cbf",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-18T07:50:18.280331+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "ホワイトハウスがAI時代の脆弱性対応調整のために立ち上げた取り組みに関する記事であり、AIと新技術リスクが主題のため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "ホワイトハウスは、AI時代における脆弱性対応を調整するための「Gold Eagle Clearinghouse」を立ち上げましたが、その具体的な実装方法については多くの疑問が残っています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。AI技術の利用拡大に伴う脆弱性対応の動向として、中長期的な情報収集の参考となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI時代の脆弱性対応に関する政策動向であり、金融機関への直接的な影響は不明確なため「中」です。確認目安は、具体的なアクションや期限が示されておらず、情報収集が主となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:88097730a6bfef16403c873f1e42b82ca9770ad83539d2c2536696bbd170388d",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/07/16/acr-stealer-two-observed-intrusion-chains-amid-increased-threat-activity/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/07/16/acr-stealer-two-observed-intrusion-chains-amid-increased-threat-activity/",
+      "published_at": "2026-07-17T08:12:02+09:00",
+      "fetched_at": "2026-07-18T07:48:31.817905+09:00",
+      "title": "ACR Stealer: 観測された2つの侵入経路と脅威活動の増加",
+      "raw_title": "ACR Stealer: Two observed intrusion chains amid increased threat activity",
+      "raw_excerpt": "From late April 2026 to mid-June 2026, Microsoft Defender Experts observed increased ACR Stealer activity across customer environments. These campaigns are successfully using ClickFix lures to steal b",
+      "content_hash": "sha256:772e2fa54d7f09a4e4cde6f9183dfc20fba17914e6206f3597d3b1b98631485a",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-18T07:50:36.035334+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ACR Stealerという情報窃取マルウェアの攻撃手法と脅威動向が主題であるため。",
+        "tags": [
+          "APT",
+          "フィッシング",
+          "認証",
+          "情報漏えい",
+          "クラウド"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "2026年4月下旬から6月中旬にかけて、Microsoft Defender Expertsは顧客環境でACR Stealerの活動増加を観測しました。これらのキャンペーンは「ClickFix」というソーシャルエンジニアリング手法を用いて、ブラウザの認証情報、認証トークン、機密文書を窃取しています。",
+        "financial_impact": "金融機関でMicrosoft製品を利用している場合、従業員がClickFixの手法に騙されることで、ブラウザの認証情報やセッショントークンが窃取され、アカウント侵害やクラウド資源への不正アクセスにつながる可能性があります。",
+        "recommended_actions": [
+          "ClickFix型のプロンプトや偽の検証チェック、ペースト＆実行指示が不正なものであることをユーザーに教育する",
+          "WebDAV活動、難読化されたPowerShell実行、ブラウザ認証情報ストアへのアクセス試行など、ACR Stealerに関連する疑わしい活動を監視する",
+          "Microsoftが推奨する緩和策（マルバタイジングへの露出低減、SEOポイズニング対策など）を評価し、適用を検討する"
+        ],
+        "reason": "重要度は、金融機関の従業員が標的となる可能性があり、認証情報窃取によるアカウント侵害やクラウド資源への不正アクセスにつながるため「高」です。確認目安は、進行中の攻撃キャンペーンであり、速やかな注意喚起と監視体制の強化が推奨されるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
