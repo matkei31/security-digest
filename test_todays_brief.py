@@ -603,8 +603,8 @@ class StatusLineTest(unittest.TestCase):
         self.assertNotIn("未判定", line)
         self.assertIn("掲載11件", line)
         self.assertIn("重要度「高」0件", line)
-        self.assertIn("確認目安「本日確認」0件", line)
-        self.assertIn("確認目安「今週確認」7件", line)
+        self.assertIn("本日確認0件", line)
+        self.assertIn("今週確認7件", line)
 
     def test_includes_unclassified_segment_when_positive(self):
         items = build_items_from_spec(
@@ -720,7 +720,9 @@ class ArrayOverrideTest(unittest.TestCase):
         result = dict(VALID_BRIEF_RESPONSE)
         result.update({"status": "success", "error_type": None, "http_status": None})
         applied = fetch.apply_deterministic_brief_context(result, ctx)
-        expected_prefix = fetch.format_brief_status_line(ctx) + fetch.format_brief_state_explanation(ctx)
+        expected_prefix = (
+            fetch.format_brief_status_line(ctx) + "\n" + fetch.format_brief_state_explanation(ctx)
+        )
         self.assertTrue(applied["overview"].startswith(expected_prefix))
         self.assertIn(VALID_BRIEF_RESPONSE["overview"], applied["overview"])
 

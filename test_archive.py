@@ -264,7 +264,7 @@ class ArchiveGenerationTest(unittest.TestCase):
             "urgency_today": 1, "urgency_week": 1, "unclassified": 0,
         }
         status_line = fetch.format_brief_status_line(ctx)
-        digest["brief"]["overview"] = status_line + "Geminiによる本文です。"
+        digest["brief"]["overview"] = status_line + "\nGeminiによる本文です。"
 
         archive_html = fetch.build_daily_archive_html(digest)
         top_html = fetch.build_html(
@@ -277,15 +277,137 @@ class ArchiveGenerationTest(unittest.TestCase):
             self.assertNotIn("Today’s Brief", html)
             self.assertIn(f'<p class="brief-status-line">{status_line}</p>', html)
             self.assertIn('<p class="brief-overview">Geminiによる本文です。</p>', html)
+            # 改行自体は表示要素の外へ出ない(status lineとoverview本文の
+            # HTMLエスケープ後テキストに"\n"が残らない)
+            self.assertNotIn(f"{status_line}\n", html)
 
-    def test_unrecognized_legacy_overview_from_json_is_shown_in_full_in_archive(self):
+    def test_legacy_free_text_overview_is_filled_with_synthesized_status_line_in_archive(self):
+        # BL-016 Blocker1: 決定論的状態行を持たない旧BRIEF(Ticket 15b以前、
+        # 自由文のみのoverview)は、archive表示時に限り、保存済みitemsから
+        # 記事単位判定で算出した状態行が補完される。overview文字列自体は
+        # 変更しない。
+        digest = make_digest(digest_date="2026-07-05", total_items=1, high_count=1)
+        digest["brief"]["overview"] = "2026-07-05の概況"
+        original_overview = digest["brief"]["overview"]
+
+        html = fetch.build_daily_archive_html(digest)
+
+        self.assertIn('<p class="brief-overview">2026-07-05の概況</p>', html)
+        self.assertIn(
+            '<p class="brief-status-line">掲載1件｜重要度「高」1件｜本日確認1件｜今週確認0件</p>',
+            html,
+        )
+        # digest自体(overview文字列)は補完前後で変更されない
+        self.assertEqual(digest["brief"]["overview"], original_overview)
+
+    def test_unrecognized_overview_without_items_is_shown_in_full_without_status_line(self):
+        # BL-016: digest.itemsがlist以外(不正)の場合はfail-openし、旧来どおり
+        # 全文表示する。合成は記事単位の判定(digest.items由来)を前提とするため、
+        # countsフィールドの有無ではなくitems自体の妥当性で判断する。
         digest = make_digest(digest_date="2026-07-05")
         digest["brief"]["overview"] = "2026-07-05の概況"
+        digest["items"] = None
 
         html = fetch.build_daily_archive_html(digest)
 
         self.assertIn('<p class="brief-overview">2026-07-05の概況</p>', html)
         self.assertNotIn('<p class="brief-status-line">', html)
+
+    def test_legacy_status_line_overview_converts_identically_in_top_and_archive(self):
+        # BL-016: Ticket 15b/15c形式のoverviewを保持した過去archive再生成の
+        # 回帰テスト。data/JSON側の文字列(件数・記事内容)は変更せず、表示側
+        # だけが現行のラベルなし｜区切り形式へ変換され、トップページと
+        # archiveで一致することを確認する。
+        digest = make_digest(digest_date="2026-07-14", total_items=1, high_count=1)
+        legacy_overview = (
+            "本日の状態（掲載5件）：重要度「高」2件、確認目安「本日確認」1件、"
+            "確認目安「今週確認」1件。Geminiによる本文です。"
+        )
+        digest["brief"]["overview"] = legacy_overview
+
+        archive_html = fetch.build_daily_archive_html(digest)
+        top_html = fetch.build_html(
+            fetch.digest_items_for_html(digest), fetch.brief_for_html_from_digest(digest)
+        )
+
+        expected_status_line = "掲載5件｜重要度「高」2件｜本日確認1件｜今週確認1件"
+        for html in (archive_html, top_html):
+            self.assertNotIn("本日の状態", html)
+            self.assertIn(f'<p class="brief-status-line">{expected_status_line}</p>', html)
+            self.assertIn('<p class="brief-overview">Geminiによる本文です。</p>', html)
+        self.assertEqual(archive_html.count(expected_status_line), top_html.count(expected_status_line))
+        # digest自体(記事内容・件数・overview文字列)は変換前後で変更されない
+        self.assertEqual(digest["brief"]["overview"], legacy_overview)
+
+
+class LegacyStatusLineSynthesisTest(unittest.TestCase):
+    """BL-016: synthesize_legacy_brief_status_line_from_digest()の記事単位判定
+    テスト。is_article_evaluated()/compute_brief_trusted_context()と全く同じ
+    「analysis.statusがsuccess/fallback、かつimportance・urgencyの両方が
+    有効値の場合のみ判定済み。いずれか一方でも欠落・不正なら記事全体を
+    未判定として扱う」という定義から外れないことを確認する。
+    """
+
+    def test_valid_importance_with_invalid_urgency_is_unclassified_not_high(self):
+        digest = make_digest(total_items=1, high_count=1)
+        digest["items"][0]["analysis"]["urgency"] = "不正な値"
+        status_line = fetch.synthesize_legacy_brief_status_line_from_digest(digest)
+        self.assertIn("重要度「高」0件", status_line)
+        self.assertIn("未判定1件", status_line)
+
+    def test_valid_urgency_with_invalid_importance_is_unclassified_not_today(self):
+        digest = make_digest(total_items=1, high_count=0)
+        digest["items"][0]["analysis"]["importance"] = "不正な値"
+        digest["items"][0]["analysis"]["urgency"] = "本日確認"
+        status_line = fetch.synthesize_legacy_brief_status_line_from_digest(digest)
+        self.assertIn("本日確認0件", status_line)
+        self.assertIn("未判定1件", status_line)
+
+    def test_two_articles_each_invalid_on_different_axis_both_count_as_unclassified(self):
+        digest = make_digest(total_items=2, high_count=0)
+        digest["items"][0]["analysis"]["importance"] = "高"
+        digest["items"][0]["analysis"]["urgency"] = "不正な値"
+        digest["items"][1]["analysis"]["importance"] = "不正な値"
+        digest["items"][1]["analysis"]["urgency"] = "本日確認"
+        status_line = fetch.synthesize_legacy_brief_status_line_from_digest(digest)
+        self.assertIn("未判定2件", status_line)
+        self.assertIn("重要度「高」0件", status_line)
+        self.assertIn("本日確認0件", status_line)
+
+    def test_only_success_or_fallback_with_both_axes_valid_are_aggregated(self):
+        digest = make_digest(total_items=3, high_count=1)
+        # items[0]: success/高/本日確認(既定) → 集計対象
+        digest["items"][1]["analysis"]["status"] = "fallback"  # 両軸有効のまま → 集計対象
+        digest["items"][2]["analysis"]["status"] = "success"
+        digest["items"][2]["analysis"]["importance"] = "不正な値"  # 無効 → 未判定
+        status_line = fetch.synthesize_legacy_brief_status_line_from_digest(digest)
+        self.assertIn("掲載3件", status_line)
+        self.assertIn("未判定1件", status_line)
+
+    def test_failed_and_not_attempted_status_are_unclassified(self):
+        digest = make_digest(total_items=2, high_count=2)
+        digest["items"][0]["analysis"]["status"] = "failed"
+        digest["items"][1]["analysis"]["status"] = "not_attempted"
+        status_line = fetch.synthesize_legacy_brief_status_line_from_digest(digest)
+        self.assertIn("未判定2件", status_line)
+        self.assertIn("重要度「高」0件", status_line)
+
+    def test_existing_2026_07_archive_results_are_unchanged(self):
+        # 記事単位判定への変更後も、実データ(2026-07-11/07-12/07-14)の
+        # 合成結果が変わらないことを固定値で回帰確認する。
+        for digest_date, expected in (
+            ("2026-07-11", "掲載6件｜重要度「高」1件｜本日確認1件｜今週確認2件"),
+            ("2026-07-12", "掲載3件｜重要度「高」1件｜本日確認1件｜今週確認1件"),
+            ("2026-07-14", "掲載11件｜重要度「高」0件｜本日確認0件｜今週確認7件"),
+        ):
+            with self.subTest(digest_date=digest_date):
+                digest = fetch.load_daily_digest(
+                    Path(__file__).resolve().parent / "data" / f"{digest_date}.json"
+                )
+                self.assertEqual(
+                    fetch.synthesize_legacy_brief_status_line_from_digest(digest),
+                    expected,
+                )
 
 
 class ArchiveIndexAndPathTest(unittest.TestCase):
@@ -321,6 +443,42 @@ class ArchiveIndexAndPathTest(unittest.TestCase):
             self.assertEqual(index_json["digests"][0]["total_items"], 2)
             self.assertEqual(index_json["digests"][0]["high_count"], 1)
             self.assertEqual(index_json["digests"][0]["archive_path"], "docs/archive/2026-07-11.html")
+
+    def test_regenerating_archive_from_legacy_json_does_not_modify_source_json(self):
+        # BL-016: 既存archive再生成の回帰テスト。旧形式のoverviewを含む
+        # daily JSONファイルを再生成しても、ファイル自体のバイト列は
+        # 一切変更されない(表示側だけが現行形式へ変換される)ことを確認する。
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+            digest = make_digest("2026-07-14", title="legacy", total_items=1, high_count=1)
+            legacy_overview = (
+                "本日の状態（掲載9件）：重要度「高」1件、確認目安「本日確認」1件、"
+                "確認目安「今週確認」2件。Geminiによる本文。"
+            )
+            digest["brief"]["overview"] = legacy_overview
+            digest_path = write_digest(data_dir, digest)
+            dj.save_index(data_dir, datetime.datetime(2026, 7, 14, 8, 0, tzinfo=JST))
+            generated_at = datetime.datetime(2026, 7, 14, 8, 0, tzinfo=JST)
+            # 実リポジトリの状態(archive_pathが既に生成済みhtmlを指している)を
+            # 再現するため、まず一度生成してからbefore/afterを比較する。
+            fetch.generate_archive_outputs(data_dir, docs_dir, generated_at)
+            before_bytes = digest_path.read_bytes()
+            before_index_bytes = (data_dir / "index.json").read_bytes()
+
+            fetch.generate_archive_outputs(data_dir, docs_dir, generated_at)
+
+            self.assertEqual(digest_path.read_bytes(), before_bytes)
+            self.assertEqual((data_dir / "index.json").read_bytes(), before_index_bytes)
+
+            archive_html = (docs_dir / "archive" / "2026-07-14.html").read_text(encoding="utf-8")
+            self.assertNotIn("本日の状態", archive_html)
+            self.assertIn(
+                '<p class="brief-status-line">掲載9件｜重要度「高」1件｜本日確認1件｜今週確認2件</p>',
+                archive_html,
+            )
 
     def test_brief_status_label_is_absent_when_brief_is_empty(self):
         digest = make_digest("2026-07-12", title="none", total_items=1, high_count=0)

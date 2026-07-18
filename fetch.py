@@ -1587,6 +1587,7 @@ def digest_items_for_html(digest):
             or entry.get("published_at")
             or entry.get("date")
         )
+        analysis = entry.get("analysis") if isinstance(entry.get("analysis"), dict) else entry.get("ai_analysis")
         items.append({
             "id": entry.get("id"),
             "title": clean_archive_text(entry.get("title")) or clean_archive_text(entry.get("raw_title")) or "無題",
@@ -1596,7 +1597,12 @@ def digest_items_for_html(digest):
             "date": parse_archive_datetime(published),
             "source": clean_archive_text(entry.get("source_name")) or clean_archive_text(entry.get("source_id")) or clean_archive_text(entry.get("source")) or "不明",
             "lang": clean_archive_text(entry.get("language")) or clean_archive_text(entry.get("lang")),
-            "ai_analysis": entry.get("analysis") if isinstance(entry.get("analysis"), dict) else entry.get("ai_analysis"),
+            "ai_analysis": analysis,
+            # BL-016: is_article_evaluated()/compute_brief_trusted_context()が
+            # 判定済み/未判定の共通基準として参照するstatusのみを保持する
+            # (error_type/http_status/generated_atはarchive表示・状態行合成の
+            # いずれにも不要なため持たせない)。
+            "ai_analysis_meta": {"status": analysis.get("status")} if isinstance(analysis, dict) else None,
             # Ticket 12b: アーカイブページでも脆弱性情報を表示するため、保存済み
             # factsをそのまま引き継ぐ(型検証はrender_vulnerability_facts_html側で
             # 行う。factsキーの無い過去のdaily JSONではNoneのままでよい)。
@@ -3159,46 +3165,87 @@ def compute_brief_trusted_context(items):
 
 
 def format_brief_status_line(ctx):
-    """Ticket 15b: success時overview先頭に合成する決定論的な状態行(1行、改行なし)。"""
-    line = (
-        f"本日の状態（掲載{ctx['published_total']}件）："
-        f"重要度「高」{ctx['importance_high']}件、"
-        f"確認目安「本日確認」{ctx['urgency_today']}件、"
-        f"確認目安「今週確認」{ctx['urgency_week']}件"
-    )
+    """Ticket 15b/BL-016: success時overview先頭に合成する決定論的な状態行
+    (1行、改行なし)。ラベル・括弧・コロン・文末の句点を持たない、｜区切りの
+    プレーンな形式。件数の算出方法・未判定segmentの表示条件(unclassified>0
+    の場合のみ付加)はTicket 15b時点から変更しない。
+    """
+    parts = [
+        f"掲載{ctx['published_total']}件",
+        f"重要度「高」{ctx['importance_high']}件",
+        f"本日確認{ctx['urgency_today']}件",
+        f"今週確認{ctx['urgency_week']}件",
+    ]
     if ctx["unclassified"] > 0:
-        line += f"、未判定{ctx['unclassified']}件"
-    return line + "。"
+        parts.append(f"未判定{ctx['unclassified']}件")
+    return "｜".join(parts)
 
 
 _BRIEF_STATUS_LINE_RE = re.compile(
-    re.escape("本日の状態（掲載") + r"[0-9]+" + re.escape("件）：重要度「高」") + r"[0-9]+"
-    + re.escape("件、確認目安「本日確認」") + r"[0-9]+"
-    + re.escape("件、確認目安「今週確認」") + r"[0-9]+"
+    "("
+    + re.escape("掲載") + r"[0-9]+" + re.escape("件｜重要度「高」") + r"[0-9]+"
+    + re.escape("件｜本日確認") + r"[0-9]+"
+    + re.escape("件｜今週確認") + r"[0-9]+"
     + re.escape("件")
-    + "(?:" + re.escape("、未判定") + r"[0-9]+" + re.escape("件") + ")?"
+    + "(?:" + re.escape("｜未判定") + r"[0-9]+" + re.escape("件") + ")?"
+    + ")"
+    + r"(?:\n|\Z)"
+)
+
+# BL-016以前(Ticket 15b/15c)にformat_brief_status_line()が生成し、既存の
+# daily JSON(brief.overview)へそのまま保存されている旧形式。data/配下の
+# 過去JSONは書き換えないため、表示時に限り数値を抽出して現行形式へ変換する。
+_BRIEF_STATUS_LINE_LEGACY_RE = re.compile(
+    re.escape("本日の状態（掲載") + r"(?P<published>[0-9]+)" + re.escape("件）：重要度「高」") + r"(?P<high>[0-9]+)"
+    + re.escape("件、確認目安「本日確認」") + r"(?P<today>[0-9]+)"
+    + re.escape("件、確認目安「今週確認」") + r"(?P<week>[0-9]+)"
+    + re.escape("件")
+    + "(?:" + re.escape("、未判定") + r"(?P<unclassified>[0-9]+)" + re.escape("件") + ")?"
     + re.escape("。")
 )
 
 
+def _format_brief_status_line_from_legacy_match(match):
+    """_BRIEF_STATUS_LINE_LEGACY_REのmatchから、現行形式の状態行文字列を
+    組み立てる。数値はmatch groupから抽出するのみで、再計算はしない。
+    """
+    parts = [
+        f"掲載{match.group('published')}件",
+        f"重要度「高」{match.group('high')}件",
+        f"本日確認{match.group('today')}件",
+        f"今週確認{match.group('week')}件",
+    ]
+    unclassified = match.group("unclassified")
+    if unclassified is not None:
+        parts.append(f"未判定{unclassified}件")
+    return "｜".join(parts)
+
+
 def split_brief_overview_status_line(overview):
-    """Ticket 15c: format_brief_status_line()が生成した決定論的な状態行を、
+    """Ticket 15c/BL-016: format_brief_status_line()が生成した決定論的な状態行を、
     overview先頭から分離するHTML表示用のpure helper。
 
-    自由文は解析しない。最初の「。」までを候補とし、現在の状態行の完全形式と
-    厳密に一致する場合のみ (status_line, rest) を返す。一致しない場合・
-    overviewが空の場合はNoneを返し、呼び出し側はoverview全体を従来通り1つの
-    要素として表示する(fail-open。欠落・例外を発生させない)。
+    自由文は解析しない。現行形式は、状態行本体の直後が改行(apply_deterministic_
+    brief_context()が挿入する境界)または文字列末尾(状態行のみで後続テキストが
+    無い場合)である場合に限り一致する — 件数の桁が後続の自由文と地続きになり、
+    数字列の途中で誤ってprefix matchすることを避けるため。一致した場合、
+    状態行本体(改行は含まない)と、改行を除いた残り本文を返す。
+    旧形式(Ticket 15b/15c、句点終端)と厳密に一致する場合は、数値を保ったまま
+    現行形式へ変換したうえで (status_line, rest) を返す。
+    いずれにも一致しない場合・overviewが空の場合はNoneを返し、呼び出し側は
+    overview全体を従来通り1つの要素として表示する(fail-open。欠落・例外を
+    発生させない)。
     """
     if not overview:
         return None
-    index = overview.find("。")
-    if index == -1:
-        return None
-    candidate = overview[:index + 1]
-    if not _BRIEF_STATUS_LINE_RE.fullmatch(candidate):
-        return None
-    return candidate, overview[index + 1:]
+    match = _BRIEF_STATUS_LINE_RE.match(overview)
+    if match:
+        return match.group(1), overview[match.end():]
+    legacy_match = _BRIEF_STATUS_LINE_LEGACY_RE.match(overview)
+    if legacy_match:
+        status_line = _format_brief_status_line_from_legacy_match(legacy_match)
+        return status_line, overview[legacy_match.end():]
+    return None
 
 
 def format_brief_state_explanation(ctx):
@@ -3243,9 +3290,12 @@ def format_brief_state_explanation(ctx):
 
 
 def apply_deterministic_brief_context(result, ctx):
-    """Ticket 15b: success時のGemini結果へ、コード側算出のtrusted contextを合成する。
+    """Ticket 15b/BL-016: success時のGemini結果へ、コード側算出のtrusted contextを
+    合成する。
     - overview先頭に状態行+説明文を合成する(Gemini本文はそのまま維持し、破棄・
-      検閲しない)。
+      検閲しない)。状態行の直後には改行を1つ挿入し、daily JSON上で状態行と
+      説明文以降を区切る明示的な境界とする(HTML表示側では改行自体は見せず、
+      別要素への分離にのみ用いる)。
     - important_highlights: importance_high==0 かつ urgency_today==0 の場合は
       コード側で必ず空配列にする。
     - check_items: temporal_state==C の場合はコード側で必ず空配列にする。
@@ -3258,7 +3308,7 @@ def apply_deterministic_brief_context(result, ctx):
     if ctx["temporal_state"] == "C":
         check_items = []
 
-    prefix = format_brief_status_line(ctx) + format_brief_state_explanation(ctx)
+    prefix = format_brief_status_line(ctx) + "\n" + format_brief_state_explanation(ctx)
     return {
         **result,
         "overview": prefix + result["overview"],
@@ -3789,6 +3839,7 @@ def build_html(
     subtitle=None,
     generated_at=None,
     archive_nav_html=None,
+    legacy_status_line=None,
 ):
     now      = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     date_source = generated_at or now
@@ -4016,6 +4067,12 @@ def build_html(
         overview = clean_display_text(brief.get("overview"))
         if overview:
             split = split_brief_overview_status_line(overview)
+            if split is None and legacy_status_line:
+                # BL-016: archive表示専用。overview自体に決定論的状態行を
+                # 含まない旧BRIEF(Ticket 15b以前)のみ、呼び出し元が記事単位
+                # 判定で算出済みのlegacy_status_lineを表示専用で補う。overview
+                # 文字列自体(daily JSON上の値)は書き換えない。
+                split = (legacy_status_line, overview)
             if split:
                 status_line, rest = split
                 status_line_html = f'<p class="brief-status-line">{esc(status_line)}</p>'
@@ -4196,6 +4253,29 @@ def build_html(
 </html>"""
 
 
+def synthesize_legacy_brief_status_line_from_digest(digest):
+    """BL-016: Ticket 15b以前(決定論的状態行を持たない旧BRIEF)のarchive表示専用
+    fallback。digest_items_for_html()で復元したitemsに対し、
+    is_article_evaluated()/compute_brief_trusted_context()と全く同じ記事単位の
+    判定済み/未判定定義(analysis.statusがsuccess/fallback、かつimportance・
+    urgencyの両方が有効値の場合のみ判定済み。いずれか一方でも欠落・不正なら
+    記事全体を未判定として扱う)で件数を算出し、現行形式
+    (format_brief_status_line())の状態行を返す。daily JSON自体は変更しない、
+    表示専用のpure helper。counts軸別集計からunclassifiedを推定しない
+    (importance有効・urgency無効のような記事を誤ってimportance側の判定済みへ
+    数えてしまうため)。
+
+    digest.itemsが無い・list以外の場合はNoneを返す(fail-open)。トップページの
+    通常生成(build_todays_brief()経由)ではoverview自体に既に決定論的状態行が
+    埋め込まれているため、この関数の戻り値は使われない。
+    """
+    if not isinstance(digest.get("items"), list):
+        return None
+    items = digest_items_for_html(digest)
+    ctx = compute_brief_trusted_context(items)
+    return format_brief_status_line(ctx)
+
+
 def build_daily_archive_html(digest):
     digest_date = digest["digest_date"]
     items = digest_items_for_html(digest)
@@ -4215,6 +4295,7 @@ def build_daily_archive_html(digest):
         subtitle=subtitle,
         generated_at=generated_at or digest.get("generated_at"),
         archive_nav_html=nav,
+        legacy_status_line=synthesize_legacy_brief_status_line_from_digest(digest),
     )
 
 

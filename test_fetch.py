@@ -908,8 +908,8 @@ class BriefStatusLineHtmlTest(unittest.TestCase):
         )
         expected_explanation = fetch.format_brief_state_explanation(ctx)
         expected_rest = expected_explanation + "Geminiが生成した補足本文そのもの。"
-        # 分離しても、状態行+残り本文を連結すれば元のoverviewと一字一句一致すること
-        self.assertEqual(brief["overview"], status_line + expected_rest)
+        # 分離しても、状態行+改行境界+残り本文を連結すれば元のoverviewと一字一句一致すること
+        self.assertEqual(brief["overview"], status_line + "\n" + expected_rest)
 
         html = fetch.build_html([self._make_item()], brief)
         segment = brief_segment(html)
@@ -967,6 +967,29 @@ class BriefStatusLineHtmlTest(unittest.TestCase):
         self.assertNotIn("本日の概況", segment)
         self.assertNotIn("brief-status-line", segment)
 
+    def test_legacy_overview_from_json_is_converted_to_current_format_in_html(self):
+        # BL-016: 既存data/JSONに保存されている旧形式のoverviewからHTMLを
+        # 構築しても、生成されるHTMLに旧文言「本日の状態」が残らず、現行の
+        # ｜区切り形式で表示されること。
+        legacy_overview = (
+            "本日の状態（掲載3件）：重要度「高」1件、確認目安「本日確認」1件、"
+            "確認目安「今週確認」1件。続く説明文です。"
+        )
+        brief = dict(SAMPLE_BRIEF, overview=legacy_overview)
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertNotIn("本日の状態", segment)
+        self.assertIn(
+            '<p class="brief-status-line">掲載3件｜重要度「高」1件｜本日確認1件｜今週確認1件</p>',
+            segment,
+        )
+        self.assertIn('<p class="brief-overview">続く説明文です。</p>', segment)
+
+    def test_legacy_label_never_appears_in_generated_html(self):
+        brief, status_line, ctx = self._brief_with_generated_overview([("高", "本日確認")])
+        html = fetch.build_html([self._make_item()], brief)
+        self.assertNotIn("本日の状態", html)
+
 
 class SplitBriefOverviewStatusLineTest(unittest.TestCase):
     """Ticket 15c: split_brief_overview_status_line()単体のpure helperテスト。"""
@@ -991,7 +1014,7 @@ class SplitBriefOverviewStatusLineTest(unittest.TestCase):
             "urgency_today": 2, "urgency_week": 4, "unclassified": 0,
         }
         status_line = fetch.format_brief_status_line(ctx)
-        overview = status_line + "続く説明文。"
+        overview = status_line + "\n続く説明文。"
         split = fetch.split_brief_overview_status_line(overview)
         self.assertEqual(split, (status_line, "続く説明文。"))
 
@@ -1001,9 +1024,20 @@ class SplitBriefOverviewStatusLineTest(unittest.TestCase):
             "urgency_today": 2, "urgency_week": 4, "unclassified": 5,
         }
         status_line = fetch.format_brief_status_line(ctx)
-        overview = status_line + "続く説明文。"
+        overview = status_line + "\n続く説明文。"
         split = fetch.split_brief_overview_status_line(overview)
         self.assertEqual(split, (status_line, "続く説明文。"))
+
+    def test_current_format_without_newline_boundary_is_not_split(self):
+        # BL-016: 現行形式であっても、直後が改行または文字列末尾でない場合
+        # (数字列の途中など、自由文と地続きになっているケース)は分離しない。
+        ctx = {
+            "published_total": 12, "importance_high": 3,
+            "urgency_today": 2, "urgency_week": 4, "unclassified": 0,
+        }
+        status_line = fetch.format_brief_status_line(ctx)
+        overview = status_line + "続く説明文。"  # 改行を挟まない
+        self.assertIsNone(fetch.split_brief_overview_status_line(overview))
 
     def test_status_line_only_with_no_trailing_text_splits_to_empty_rest(self):
         ctx = {
@@ -1032,6 +1066,61 @@ class SplitBriefOverviewStatusLineTest(unittest.TestCase):
             "確認目安「今週確認」1件、未判定２件。"
         )
         self.assertIsNone(fetch.split_brief_overview_status_line(mixed))
+
+    def test_matches_legacy_deterministic_format_and_converts_to_current(self):
+        # BL-016: Ticket 15b/15c時点の旧形式(句点終端)は既存data/JSONへ
+        # そのまま保存されている。表示時に限り、数値を保ったまま現行の
+        # ｜区切り形式へ変換されることを確認する。
+        legacy = (
+            "本日の状態（掲載12件）：重要度「高」3件、確認目安「本日確認」2件、"
+            "確認目安「今週確認」4件。続く説明文。"
+        )
+        split = fetch.split_brief_overview_status_line(legacy)
+        self.assertEqual(
+            split,
+            ("掲載12件｜重要度「高」3件｜本日確認2件｜今週確認4件", "続く説明文。"),
+        )
+
+    def test_matches_legacy_format_with_unclassified_segment(self):
+        legacy = (
+            "本日の状態（掲載12件）：重要度「高」3件、確認目安「本日確認」2件、"
+            "確認目安「今週確認」4件、未判定5件。続く説明文。"
+        )
+        split = fetch.split_brief_overview_status_line(legacy)
+        self.assertEqual(
+            split,
+            ("掲載12件｜重要度「高」3件｜本日確認2件｜今週確認4件｜未判定5件", "続く説明文。"),
+        )
+
+    def test_legacy_format_only_with_no_trailing_text_splits_to_empty_rest(self):
+        legacy = (
+            "本日の状態（掲載1件）：重要度「高」0件、確認目安「本日確認」0件、"
+            "確認目安「今週確認」0件。"
+        )
+        split = fetch.split_brief_overview_status_line(legacy)
+        self.assertEqual(split, ("掲載1件｜重要度「高」0件｜本日確認0件｜今週確認0件", ""))
+
+    def test_legacy_format_fullwidth_digits_are_not_converted(self):
+        # 旧形式であっても全角数字を含む酷似文字列は誤って変換・分離しない
+        fullwidth = "本日の状態（掲載３件）：重要度「高」１件、確認目安「本日確認」０件、確認目安「今週確認」１件。"
+        self.assertIsNone(fetch.split_brief_overview_status_line(fullwidth))
+
+    def test_current_format_status_line_has_no_legacy_label_or_punctuation(self):
+        # BL-016: 「本日の状態」ラベル、括弧、コロン、文末の句点を含まない。
+        ctx = {
+            "published_total": 12, "importance_high": 3,
+            "urgency_today": 2, "urgency_week": 4, "unclassified": 5,
+        }
+        status_line = fetch.format_brief_status_line(ctx)
+        self.assertNotIn("本日の状態", status_line)
+        self.assertNotIn("（", status_line)
+        self.assertNotIn("）", status_line)
+        self.assertNotIn("：", status_line)
+        self.assertFalse(status_line.endswith("。"))
+        self.assertEqual(
+            status_line,
+            "掲載12件｜重要度「高」3件｜本日確認2件｜今週確認4件｜未判定5件",
+        )
 
 
 class BriefStatusLineCssTest(unittest.TestCase):
@@ -2674,6 +2763,8 @@ class AgentsFileTest(unittest.TestCase):
             "BL-014",
             "BL-015",
             "BL-016",
+            "BL-017",
+            "BL-018",
             "## 完了済み参照",
             "Ticket 14a-3",
             "Ticket 14a-4",
@@ -2697,7 +2788,7 @@ class AgentsFileTest(unittest.TestCase):
             "**残作業:**",
             "**注記:**",
         )
-        item_ids = [f"BL-{number:03d}" for number in range(1, 17)]
+        item_ids = [f"BL-{number:03d}" for number in range(1, 19)]
         for index, item_id in enumerate(item_ids):
             start = text.index(f"## {item_id}")
             if index + 1 < len(item_ids):
@@ -2845,12 +2936,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         kept = [ch for ch in lowered if ch.isalnum() or ch in (" ", "-", "_")]
         return "".join(kept).replace(" ", "-")
 
-    def test_bl_ids_are_unique_and_cover_bl001_to_bl016(self):
+    def test_bl_ids_are_unique_and_cover_bl001_to_bl018(self):
         text = self._read("BACKLOG.md")
         bl_headings = [h for h in self._headings(text) if re.match(r"^BL-\d{3}\b", h)]
         ids = [re.match(r"^(BL-\d{3})", h).group(1) for h in bl_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
-        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 17)})
+        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 19)})
 
     def test_sd_ids_are_unique_and_cover_sd001_to_sd015(self):
         text = self._read("DECISIONS.md")
@@ -2862,11 +2953,30 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
     def test_bl_016_status_and_evidence(self):
         text = self._read("BACKLOG.md")
         start = text.index("## BL-016")
-        end = text.index("## 完了済み参照", start)
+        end = text.index("## BL-017", start)
         bl016_text = text[start:end]
         self.assertIn("- **状態:** 実装済み / ユーザー受入待ち", bl016_text)
         self.assertIn("[PR #9](https://github.com/matkei31/security-digest/pull/9)", bl016_text)
         self.assertIn("82b23c720b5871c5f46d068813defc12af164e4a", bl016_text)
+
+    def test_bl_017_status_and_not_implemented_in_this_pr(self):
+        text = self._read("BACKLOG.md")
+        start = text.index("## BL-017")
+        end = text.index("## BL-018", start)
+        bl017_text = text[start:end]
+        self.assertIn("- **状態:** 仕様化済み / 未実装", bl017_text)
+        self.assertIn(
+            "- **ユーザー原文:** 「あと、過去のダイジェストについて、ワンクリックで前日分とかに行き来できる改修はこれから？」",
+            bl017_text,
+        )
+
+    def test_bl_018_status_and_not_implemented_in_this_pr(self):
+        text = self._read("BACKLOG.md")
+        start = text.index("## BL-018")
+        end = text.index("## 完了済み参照", start)
+        bl018_text = text[start:end]
+        self.assertIn("- **状態:** 記録済み / 未完了", bl018_text)
+        self.assertIn("- **出所種別:** 技術上の発見事項", bl018_text)
 
     def test_sd_015_records_trusted_context_allowlist_decision(self):
         text = self._read("DECISIONS.md")
