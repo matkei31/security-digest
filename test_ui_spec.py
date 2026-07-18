@@ -18,14 +18,15 @@ class UiSpecDocumentTest(unittest.TestCase):
         cls.spec_path = REPOSITORY_ROOT / "UI_SPEC.md"
         cls.spec = cls.spec_path.read_text(encoding="utf-8")
         cls.backlog = (REPOSITORY_ROOT / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.decisions = (REPOSITORY_ROOT / "DECISIONS.md").read_text(encoding="utf-8")
         cls.status = (REPOSITORY_ROOT / "STATUS.md").read_text(encoding="utf-8")
         cls.bl004 = backlog_section(cls.backlog, "BL-004")
 
-    def test_ui_spec_exists_with_draft_metadata(self):
+    def test_ui_spec_exists_with_approved_version_metadata(self):
         self.assertTrue(self.spec_path.is_file())
         self.assertIn("# Security Digest UI Specification", self.spec)
-        self.assertIn("- **バージョン:** Draft 0.1", self.spec)
-        self.assertIn("- **状態:** ユーザーレビュー待ち", self.spec)
+        self.assertIn("- **バージョン:** 1.0", self.spec)
+        self.assertIn("- **状態:** 承認済み", self.spec)
         self.assertIn("将来のMonomi Digestへの名称変更はBL-006の範囲", self.spec)
 
     def test_all_required_chapters_exist_in_order(self):
@@ -69,14 +70,31 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("カード最下部の低コントラストな補助情報", self.spec)
         self.assertIn("キーボードfocus対象にしない", self.spec)
 
-    def test_unresolved_proposals_are_separate_from_confirmed_spec(self):
-        self.assertIn("未決事項を確定仕様として扱ってはならず", self.spec)
-        self.assertIn("#### 採用・実装済み", self.spec)
-        self.assertIn("#### 後のユーザー判断で置換・不採用", self.spec)
-        self.assertIn("#### 未決", self.spec)
-        self.assertIn("AI利用を明示する注記", self.spec)
-        self.assertIn("モバイルsticky headerの圧縮", self.spec)
-        self.assertIn("ヘッダー絵文字の削除", self.spec)
+    def test_all_seven_choices_are_confirmed_and_no_active_unresolved_items_remain(self):
+        self.assertIn("**現時点の未決事項: なし。**", self.spec)
+        self.assertNotIn("#### 未決", self.spec)
+        self.assertIn("現行UIへAI利用を明示する専用注記は追加しない", self.spec)
+        self.assertIn("記事カード単位・分析区分単位の注記も採用しない", self.spec)
+        self.assertIn("600px以下でも現在のstickyとpaddingを維持し、圧縮案は採用しない", self.spec)
+        self.assertIn("現行Security Digestでは`🔐`を維持", self.spec)
+        self.assertIn("英語原題に行数制限やclampを設けず、原題の一部を省略しない", self.spec)
+        self.assertIn("現行の`.kev-badge`はアンバー系の小さいpillとして維持", self.spec)
+        self.assertIn("各セクション別の空状態を確定仕様として維持", self.spec)
+        self.assertIn("ページ全体を一つの専用空状態へ置き換えない", self.spec)
+        self.assertIn("ブラウザ既定のfocus表示を維持", self.spec)
+        self.assertIn("outlineやfocus表示を消してはならない", self.spec)
+        self.assertIn("専用の`:focus-visible`意匠は追加しない", self.spec)
+
+    def test_sd016_and_user_adjudication_are_recorded_verbatim(self):
+        self.assertIn(
+            "## SD-016 — Resolve the remaining BL-004 UI choices without changing the accepted layout",
+            self.decisions,
+        )
+        self.assertIn("- **Status:** Accepted / Active", self.decisions)
+        quote = "「7点ともこの方針でOK」"
+        self.assertIn(quote, self.decisions)
+        self.assertIn(quote, self.bl004)
+        self.assertIn(quote, self.spec)
 
     def test_bl004_remains_in_progress_with_original_evidence_unchanged(self):
         self.assertIn("- **状態:** 仕様化済み / 進行中", self.bl004)
@@ -96,7 +114,12 @@ class UiSpecDocumentTest(unittest.TestCase):
         )
         self.assertIn(expected_acceptance, self.bl004)
         self.assertIn(
-            "- **残作業:** 未決事項のユーザー裁定、UI_SPEC.mdの承認、完了記録",
+            "- **残作業:** PR #30の最終レビュー、merge、merge後検証、BL-004完了記録",
+            self.bl004,
+        )
+        self.assertIn("[UI_SPEC.md](UI_SPEC.md)をVersion 1.0／承認済みへ更新", self.bl004)
+        self.assertIn(
+            "[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)",
             self.bl004,
         )
         self.assertIn("[PR #30](https://github.com/matkei31/security-digest/pull/30)", self.bl004)
@@ -105,9 +128,10 @@ class UiSpecDocumentTest(unittest.TestCase):
         next_candidates = self.status.split("## 7. Next candidates", 1)[1].split(
             "## 8. Sources of truth", 1
         )[0]
-        self.assertIn("[UI_SPEC.md](UI_SPEC.md) Draft 0.1", self.status)
+        self.assertIn("[UI_SPEC.md](UI_SPEC.md) Version 1.0", self.status)
         self.assertIn("[PR #30](https://github.com/matkei31/security-digest/pull/30)", self.status)
-        self.assertIn("ユーザーレビュー待ち", self.status)
+        self.assertIn("ユーザー承認済み", self.status)
+        self.assertIn("merge、merge後検証、完了記録を待っている", self.status)
         self.assertRegex(next_candidates, r"(?m)^1\. \[BL-004\]")
         self.assertNotIn("BL-004", self.status.split("## 5. Recently completed work", 1)[1].split("## 6.", 1)[0])
 
