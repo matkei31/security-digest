@@ -31,6 +31,7 @@ Current prompt versions, schema version, source status, and known limitations ar
 ## Scope discipline
 
 - Implement only the approved ticket scope.
+- For UI changes, consult [UI_SPEC.md](UI_SPEC.md) and keep its confirmed specification separate from unresolved items awaiting user adjudication.
 - Do not infer requirements or expand the design when the specification is ambiguous.
 - If existing code or data conflicts with the ticket, report the conflict before changing behavior.
 - Do not introduce title-, vendor-, threat-actor-, CVE-, or article-specific rules unless the approved requirement explicitly calls for them.
