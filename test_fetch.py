@@ -2956,6 +2956,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         end = text.index("## BL-002", start)
         bl001_text = text[start:end]
         self.assertIn("- **状態:** 実装済み / ユーザー受入待ち", bl001_text)
+        self.assertIn("[PR #26](https://github.com/matkei31/security-digest/pull/26)", bl001_text)
         self.assertIn("[`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml)", bl001_text)
         self.assertIn("`contents: read`", bl001_text)
         self.assertIn("base SHAとhead SHAの実差分に対する`git diff --check`", bl001_text)

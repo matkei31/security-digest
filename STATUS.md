@@ -55,7 +55,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 6. Known issues and limitations
 
-- [BL-001](BACKLOG.md#bl-001--プルリクエストci): `Pull Request CI` is implemented on the current draft PR with read-only repository permissions and no production operations; merge and user acceptance are pending.
+- [BL-001](BACKLOG.md#bl-001--プルリクエストci): `Pull Request CI` is implemented on draft [PR #26](https://github.com/matkei31/security-digest/pull/26) with read-only repository permissions and no production operations; merge and user acceptance are pending.
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
 - [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる): Rebuilding the top page from stored daily JSON can show a different article-meta timestamp than the original production render; root cause and fix are not yet implemented.
