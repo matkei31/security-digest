@@ -52,17 +52,17 @@
 - **ID:** BL-001
 - **タイトル:** プルリクエストCI
 - **優先度:** P0
-- **状態:** 仕様化済み / 未実装
+- **状態:** 実装済み / ユーザー受入待ち
 - **出所種別:** 技術上の発見事項
 - **ユーザー原文:** 該当なし — 技術上の発見事項。
 - **ユーザー確認済み要約:** 未定義。
 - **解釈:** production作業を一切行わず、全PRに対してfull unittest suiteと`git diff --check`を実行する通常の`pull_request` CIを追加する。
 - **完了条件:** CIがfull unittest suiteと`git diff --check`を実行する。Geminiを呼ばず、secretsを受け取らず、`data/`や`docs/`を生成・commitせず、production publicationを行わない。
 - **依存関係:** GitHub Actions workflowの設計とrepository権限のレビュー。
-- **実装証跡:** 未実装。[STATUS.md](STATUS.md)と[`.github/workflows/fetch.yml`](.github/workflows/fetch.yml)に、通常の`pull_request` CIが存在しないことが記録されている。
-- **ユーザー受入証跡:** 実装が存在しないため、現時点では該当なし。
-- **残作業:** workflow実装、PR検証、明示的なmerge受入。
-- **注記:** 本項目が実装されるまでは、既存のローカルテストと独立レビューの証跡を代替とする。
+- **実装証跡:** 実装前は未実装であり、[STATUS.md](STATUS.md)と[`.github/workflows/fetch.yml`](.github/workflows/fetch.yml)に、通常の`pull_request` CIが存在しないことが記録されていた。今回、[`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml)を新設し、main向けの通常の`pull_request`で、repository権限を`contents: read`だけに限定し、資格情報を永続化しないcheckout、Python 3.12でのfull unittest suite、base SHAとhead SHAの実差分に対する`git diff --check`、同一PRの旧runを中止するconcurrencyを実装した。secrets、`fetch.py`、生成、commit、push、Pages deploymentを使用しないことをstdlibのみの静的回帰テストで検証する。PR番号はdraft PR作成後に追記する。
+- **ユーザー受入証跡:** 実装が存在しないため、現時点では該当なし。PR上の実装に対するユーザー受入待ち。
+- **残作業:** PR上のCI成功確認、レビュー、merge、完了記録
+- **注記:** 実装前は、既存のローカルテストと独立レビューの証跡を代替としていた。mergeまでは、このPR上のCI結果と独立レビューを受入判断の証跡とする。
 
 ## BL-002 — 記事カードの楕円バッジ多用を見直す
 
