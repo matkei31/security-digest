@@ -2665,7 +2665,7 @@ class AgentsFileTest(unittest.TestCase):
         text = backlog_path.read_text(encoding="utf-8")
 
         for required_text in (
-            "## Status definitions",
+            "## 状態の定義",
             "BL-001",
             "BL-002",
             "BL-005",
@@ -2674,7 +2674,7 @@ class AgentsFileTest(unittest.TestCase):
             "BL-014",
             "BL-015",
             "BL-016",
-            "## Completed reference",
+            "## 完了済み参照",
             "Ticket 14a-3",
             "Ticket 14a-4",
         ):
@@ -2683,19 +2683,19 @@ class AgentsFileTest(unittest.TestCase):
 
         required_fields = (
             "**ID:**",
-            "**Title:**",
-            "**Priority:**",
-            "**Status:**",
-            "**Source type:**",
-            "**Original user comment:**",
-            "**User-confirmed summary:**",
-            "**Interpretation:**",
-            "**Acceptance criteria:**",
-            "**Dependencies:**",
-            "**Implementation evidence:**",
-            "**User acceptance evidence:**",
-            "**Residual scope:**",
-            "**Notes:**",
+            "**タイトル:**",
+            "**優先度:**",
+            "**状態:**",
+            "**出所種別:**",
+            "**ユーザー原文:**",
+            "**ユーザー確認済み要約:**",
+            "**解釈:**",
+            "**完了条件:**",
+            "**依存関係:**",
+            "**実装証跡:**",
+            "**ユーザー受入証跡:**",
+            "**残作業:**",
+            "**注記:**",
         )
         item_ids = [f"BL-{number:03d}" for number in range(1, 17)]
         for index, item_id in enumerate(item_ids):
@@ -2703,7 +2703,7 @@ class AgentsFileTest(unittest.TestCase):
             if index + 1 < len(item_ids):
                 end = text.index(f"## {item_ids[index + 1]}", start)
             else:
-                end = text.index("## Completed reference", start)
+                end = text.index("## 完了済み参照", start)
             item_text = text[start:end]
             for field in required_fields:
                 with self.subTest(item_id=item_id, field=field):
@@ -2722,17 +2722,17 @@ class AgentsFileTest(unittest.TestCase):
         bl006 = section(backlog_text, "## BL-006", "## BL-007")
         bl007 = section(backlog_text, "## BL-007", "## BL-008")
         bl014 = section(backlog_text, "## BL-014", "## BL-015")
-        bl015 = section(backlog_text, "## BL-015", "## Completed reference")
+        bl015 = section(backlog_text, "## BL-015", "## 完了済み参照")
         sd008 = section(decisions_text, "## SD-008", "## SD-009")
 
         verbatim = (
             "「うん。他に未対応と見られる私のコメントある？同じように汎化してるなら私自身のコメントに立ち返って確認して。"
             "本来、指摘コメントを勝手に書き換えて対応済み扱いするのありえないから。ちゃんとバックログ管理して」"
         )
-        self.assertIn(f"- **Original user comment:** {verbatim}", bl014)
+        self.assertIn(f"- **ユーザー原文:** {verbatim}", bl014)
 
-        self.assertIn("- **Source type:** User-confirmed summary", bl006)
-        self.assertIn("- **Original user comment:** Original wording not recovered.", bl006)
+        self.assertIn("- **出所種別:** ユーザー確認済み要約", bl006)
+        self.assertIn("- **ユーザー原文:** 原文未回収。", bl006)
         self.assertIn("SD-010", bl006)
 
         # BL-014 batch 1 (BL014-A) added the verbatim original comment recovered
@@ -2740,28 +2740,28 @@ class AgentsFileTest(unittest.TestCase):
         # The quote and its provenance (date) are kept in separate fields — the
         # date is not appended inline to the Original user comment quote.
         self.assertIn(
-            "- **Source type:** Verbatim user comment / User-confirmed summary", bl007
+            "- **出所種別:** ユーザー原文 / ユーザー確認済み要約", bl007
         )
         self.assertIn(
-            "- **Original user comment:** 「URLがgithubのユーザー名なのが気になる」",
+            "- **ユーザー原文:** 「URLがgithubのユーザー名なのが気になる」",
             bl007,
         )
         self.assertNotIn(
             "「URLがgithubのユーザー名なのが気になる」（2026-07-09", bl007
         )
-        self.assertIn("- **Provenance:** 2026-07-09 project conversation.", bl007)
+        self.assertIn("- **出所:** 2026-07-09 プロジェクト会話。", bl007)
         self.assertIn("SD-011", bl007)
 
         # BL-014 batch 1 (BL014-C) added BL-015 with two separate verbatim
         # comments in separate fields, kept distinct rather than merged into
         # one paraphrase or mixed with English management commentary.
-        self.assertIn("- **Source type:** Verbatim user comment", bl015)
+        self.assertIn("- **出所種別:** ユーザー原文", bl015)
         self.assertIn(
-            "- **Original user comment:** 「セキュリティ要件みたいなのも後で決めよう」",
+            "- **ユーザー原文:** 「セキュリティ要件みたいなのも後で決めよう」",
             bl015,
         )
         self.assertIn(
-            "- **Additional original user comment:** "
+            "- **追加のユーザー原文:** "
             "「OK.ここはfable5にもレビューしてもらおう。"
             "公開情報を扱うものだから厳しいセキュリティ対策をする必要はないと思うが、"
             "必要なものは網羅しつつ過剰じゃないように整理して、fable5にレビューさせられる形にして。」",
@@ -2862,9 +2862,9 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
     def test_bl_016_status_and_evidence(self):
         text = self._read("BACKLOG.md")
         start = text.index("## BL-016")
-        end = text.index("## Completed reference", start)
+        end = text.index("## 完了済み参照", start)
         bl016_text = text[start:end]
-        self.assertIn("- **Status:** Implemented / Awaiting user acceptance", bl016_text)
+        self.assertIn("- **状態:** 実装済み / ユーザー受入待ち", bl016_text)
         self.assertIn("[PR #9](https://github.com/matkei31/security-digest/pull/9)", bl016_text)
         self.assertIn("82b23c720b5871c5f46d068813defc12af164e4a", bl016_text)
 
@@ -2883,12 +2883,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         start = text.index("## BL-005")
         end = text.index("## BL-006", start)
         bl005_text = text[start:end]
-        self.assertIn("- **Status:** Specified / Not implemented", bl005_text)
-        self.assertIn("- **Original user comment:** Original wording not recovered.", bl005_text)
+        self.assertIn("- **状態:** 仕様化済み / 未実装", bl005_text)
+        self.assertIn("- **ユーザー原文:** 原文未回収。", bl005_text)
 
     def test_completed_reference_covers_batch2_prs(self):
         text = self._read("BACKLOG.md")
-        start = text.index("## Completed reference")
+        start = text.index("## 完了済み参照")
         completed_text = text[start:]
         for merge_sha in (
             "d1518910cd1a685cffc5d526ec65f6e708a4d535",  # PR #8

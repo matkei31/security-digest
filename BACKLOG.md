@@ -1,388 +1,388 @@
-# Security Digest Backlog
+# Security Digest バックログ
 
-`BACKLOG.md` is the canonical source for requirements and issues that are incomplete, partially addressed, or awaiting user acceptance. Current operating state belongs in [STATUS.md](STATUS.md); stable decisions belong in [DECISIONS.md](DECISIONS.md).
+`BACKLOG.md`は、未完了・部分対応・ユーザー受入待ちの要求事項および課題を管理する正本である。現在の運用状態は[STATUS.md](STATUS.md)に、恒久的な決定事項は[DECISIONS.md](DECISIONS.md)に記録する。
 
-## Provenance types
+## 出所種別
 
-- **Verbatim user comment:** Wording directly recoverable from the user. Preserve characters, endings, and ambiguity without correction.
-- **User-confirmed summary:** A summary written by an implementation participant and explicitly affirmed by the user. Do not present it as verbatim wording.
-- **Recovered paraphrase:** A meaning reconstructed from earlier records when the original wording is unavailable. Do not place it in quotation marks; state `Original wording not recovered`.
-- **Engineering finding:** A test failure, warning, implementation limitation, or design finding not originating from a user comment.
+- **ユーザー原文:** ユーザーから直接回収できた文言。文字づかい・語尾・曖昧さを訂正せずそのまま保持する。
+- **ユーザー確認済み要約:** 実装関係者が作成し、ユーザーが明示的に確認した要約。原文として提示しない。
+- **復元要約:** 原文が入手できない場合に、過去の記録から意味を再構成したもの。かぎ括弧では表記せず、`原文未回収`と明記する。
+- **技術上の発見事項:** ユーザーコメントに由来しない、テスト失敗・警告・実装上の制約・設計上の発見。
 
-## Status definitions
+## 状態の定義
 
-- **Captured:** Recorded but not yet fully specified.
-- **Specified:** Acceptance scope is sufficiently defined for planning.
-- **In progress:** Approved work has started.
-- **Implemented:** Implementation exists but may still require acceptance.
-- **Awaiting user acceptance:** Implementation or design awaits explicit user review.
-- **Done:** Required implementation and acceptance are complete.
-- **Parked:** Intentionally deferred.
-- **Superseded:** Replaced by another recorded item without deleting the original record.
+- **記録済み:** 記録はされているが、まだ完全には仕様化されていない。
+- **仕様化済み:** 計画に十分な完了条件が定義されている。
+- **進行中:** 承認済みの作業が開始されている。
+- **実装済み:** 実装は存在するが、受入がまだ必要な場合がある。
+- **ユーザー受入待ち:** 実装または設計がユーザーによる明示的なレビューを待っている。
+- **完了:** 必要な実装と受入がいずれも完了している。
+- **保留:** 意図的に先送りされている。
+- **置換済み:** 元の記録を削除せずに、別の記録済み項目へ置き換えられている。
 
-Statuses may be combined, for example `Implemented / Awaiting user acceptance`. Initial records also use these explicit qualifiers:
+状態は組み合わせて使用してよい（例:`実装済み / ユーザー受入待ち`）。初期登録では次の明示的な修飾語も用いる:
 
-- **Accepted:** The direction or decision is accepted; this does not mean implementation is complete.
-- **Not implemented:** No implementation satisfying the item exists yet.
-- **Not completed:** The recorded work or audit has not been completed.
-- **Parked until prerequisites:** Deferred until the recorded dependencies are satisfied.
+- **方針承認済み:** 方向性・決定事項が承認されている。実装完了を意味しない。
+- **未実装:** この項目を満たす実装がまだ存在しない。
+- **未完了:** 記録された作業または監査が完了していない。
+- **前提条件が整うまで保留:** 記録された依存関係が満たされるまで先送りする。
 
-## Completion rules
+## 完了ルール
 
-1. Do not put original wording and implementation interpretation in the same field.
-2. Do not quote wording as a user statement when the original wording has not been recovered.
-3. A merged implementation PR alone does not make a subjective UI or writing-quality item `Done`.
-4. UI, writing quality, and brand expression require explicit user acceptance.
-5. A partially addressed item must retain its residual scope and must not be marked `Done`.
-6. When an item is split, merged, or marked `Superseded`, retain the original comment and old ID.
-7. Reopening a completed item requires new evidence.
-8. Do not replace a concrete comment with a broader generalization for implementation convenience.
+1. 原文と実装解釈を同じ欄に混在させない。
+2. 原文が回収できていない場合、それをユーザー発言として引用しない。
+3. 実装PRがmergeされただけでは、主観的なUIや文章品質に関する項目を`完了`にはしない。
+4. UI・文章品質・ブランド表現は、ユーザーによる明示的な受入を必要とする。
+5. 部分対応の項目は残作業を保持し、`完了`にはしない。
+6. 項目を分割・統合、または`置換済み`とする場合、元のコメントと旧IDを保持する。
+7. 完了済み項目の再オープンには新しい証跡を必要とする。
+8. 実装上の都合で、具体的なコメントをより広い一般化表現に置き換えない。
 
-## Initial migration scope
+## 初期移行範囲
 
-- BL-001 through BL-013 are the initial import into the canonical backlog.
-- They are not the result of a complete audit of past user comments.
-- BL-014 tracks the systematic migration audit and completeness review.
-- If additional past comments are found, add them with their original wording and provenance. Their discovery reflects an incomplete migration audit, not an error in preserving the initial backlog.
+- BL-001からBL-013は、正本バックログへの初期取り込みである。
+- 過去のユーザーコメントを完全に監査した結果ではない。
+- BL-014は、体系的な移行監査と網羅性レビューを追跡する。
+- 追加の過去コメントが見つかった場合は、原文と出所とともに追記する。これは初期バックログの保持における誤りではなく、移行監査が未完了であったことを示す。
 
-## Open backlog
+## 未完了バックログ
 
-## BL-001 — Pull request CI
+## BL-001 — プルリクエストCI
 
 - **ID:** BL-001
-- **Title:** Pull request CI
-- **Priority:** P0
-- **Status:** Specified / Not implemented
-- **Source type:** Engineering finding
-- **Original user comment:** Not applicable — engineering finding.
-- **User-confirmed summary:** Not defined.
-- **Interpretation:** Add ordinary `pull_request` CI that runs the full unittest suite and `git diff --check` for every PR without performing production work.
-- **Acceptance criteria:** CI runs the full unittest suite and `git diff --check`; it does not call Gemini, receive secrets, generate or commit `data/` or `docs/`, or perform production publication.
-- **Dependencies:** GitHub Actions workflow design and repository permissions review.
-- **Implementation evidence:** Not implemented. [STATUS.md](STATUS.md) and [`.github/workflows/fetch.yml`](.github/workflows/fetch.yml) record that ordinary `pull_request` CI is absent.
-- **User acceptance evidence:** Not applicable yet — no implementation exists.
-- **Residual scope:** Workflow implementation, PR validation, and explicit merge acceptance.
-- **Notes:** Existing local-test and independent-review evidence remains the fallback until this item is implemented.
+- **タイトル:** プルリクエストCI
+- **優先度:** P0
+- **状態:** 仕様化済み / 未実装
+- **出所種別:** 技術上の発見事項
+- **ユーザー原文:** 該当なし — 技術上の発見事項。
+- **ユーザー確認済み要約:** 未定義。
+- **解釈:** production作業を一切行わず、全PRに対してfull unittest suiteと`git diff --check`を実行する通常の`pull_request` CIを追加する。
+- **完了条件:** CIがfull unittest suiteと`git diff --check`を実行する。Geminiを呼ばず、secretsを受け取らず、`data/`や`docs/`を生成・commitせず、production publicationを行わない。
+- **依存関係:** GitHub Actions workflowの設計とrepository権限のレビュー。
+- **実装証跡:** 未実装。[STATUS.md](STATUS.md)と[`.github/workflows/fetch.yml`](.github/workflows/fetch.yml)に、通常の`pull_request` CIが存在しないことが記録されている。
+- **ユーザー受入証跡:** 実装が存在しないため、現時点では該当なし。
+- **残作業:** workflow実装、PR検証、明示的なmerge受入。
+- **注記:** 本項目が実装されるまでは、既存のローカルテストと独立レビューの証跡を代替とする。
 
 ## BL-002 — 記事カードの楕円バッジ多用を見直す
 
 - **ID:** BL-002
-- **Title:** 記事カードの楕円バッジ多用を見直す
-- **Priority:** P1
-- **Status:** Done
-- **Source type:** Verbatim user comment
-- **Original user comment:** 「楕円が並んでる見た目が気に入らないみたいなことを言った気がするんだよね。」
-- **User-confirmed summary:** 出元別の色分けや、楕円形のバッジが横に並ぶ見た目は要らない。全体として再設計したい。
-- **Interpretation:** Existing badge colors and corner radii are not the full issue. Redesign the article-card information hierarchy and the label representation itself.
-- **Acceptance criteria:** Concretized for the now-decided B案 (2026-07-17): (1) 取得元/重要度/確認目安/カテゴリ do not use ellipse (rounded-pill) badges on the ordinary article card; (2) 取得元 and the publish date render as plain text; (3) 重要度 and 確認目安 render as plain text on separate, independently-labeled axes (not a shared undifferentiated badge row); (4) emphasis is limited to 重要度「高」and 確認目安「本日確認」only — no other value gets equivalent visual weight; (5) category is removed from the card's display, while its storage, response schema, validation, and dashboard aggregation are unchanged; (6) only 関連タグ keeps a rounded, low-contrast `<span>` treatment, placed at the bottom of the card; (7) 関連タグ stays non-clickable (no `<a>`/`button`/click handler/`role="button"`); (8) no article search or tag search feature is introduced by this ticket; (9) the user visually reviews and approves the actual PC and 390px implementation (not just the mock) before this item is marked `Done`.
-- **Dependencies:** BL-004; coordinate with BL-003.
-- **Implementation evidence:** Implemented. The dashboard was redesigned from three heavy badge-like cards into a single lightweight block, and the new 優先確認 (priority index) section shows 重要度/確認目安 as plain text rather than ellipse badges (see the “feat: dashboard v2 + priority index + reason contract” ticket). A follow-on ticket (branch `feature/article-card-variant-b`, [PR #18](https://github.com/matkei31/security-digest/pull/18)) further removes the ordinary article-card source-color pill, `.importance-badge`, `.urgency-badge`, and `.category-badge` entirely: source and publish date render as a plain-text meta line, 重要度/確認目安 render as plain text with a light text-color/left-border accent limited to 高/本日確認 (no ellipse shape), and category is no longer displayed on the ordinary card at all (its daily-JSON storage, response schema, validation, and dashboard aggregation are unchanged). Per the user's explicit B案 choice, `.article-tag` (関連タグ) is the one label kept in its rounded pill form, relocated to a footer at the bottom of the card.
-- **User acceptance evidence:** Dashboard v2 and the 優先確認 reasoned index: accepted by the user in the project conversation on 2026-07-17. Article-card B案 direction: explicitly approved by the user in the project conversation on 2026-07-17, based on a reviewed two-variant mock. The actual PC/390px implementation (screenshots reviewed by the user outside the repository) was visually accepted by the user on 2026-07-17, verbatim: 「見られたけど、いいと思うよ」.
-- **Residual scope:** None.
-- **Notes:** If a future ticket introduces tag search or a tag landing page, the current non-clickable 関連タグ treatment should be re-evaluated at that time (not before).
+- **タイトル:** 記事カードの楕円バッジ多用を見直す
+- **優先度:** P1
+- **状態:** 完了
+- **出所種別:** ユーザー原文
+- **ユーザー原文:** 「楕円が並んでる見た目が気に入らないみたいなことを言った気がするんだよね。」
+- **ユーザー確認済み要約:** 出元別の色分けや、楕円形のバッジが横に並ぶ見た目は要らない。全体として再設計したい。
+- **解釈:** 既存のバッジ色や角丸自体が本質的な問題ではない。記事カードの情報階層とラベル表現そのものを再設計する。
+- **完了条件:** 確定したB案（2026-07-17）に基づき具体化: (1) 取得元/重要度/確認目安/カテゴリは、通常の記事カードで楕円（角丸ピル）バッジを使用しない; (2) 取得元と公開日はプレーンテキストで表示する; (3) 重要度と確認目安は、共有された無差別なバッジ行ではなく、それぞれ独立したラベル付きの軸としてプレーンテキストで表示する; (4) 強調は重要度「高」と確認目安「本日確認」のみに限定し、他の値には同等の視覚的重みを与えない; (5) カテゴリはカードの表示から削除するが、その保存・レスポンススキーマ・検証・dashboard集計は変更しない; (6) 関連タグのみ、丸く低コントラストな`<span>`表現を維持し、カード下部に配置する; (7) 関連タグはクリック不可のままとする（`<a>`／button／クリックハンドラ／`role="button"`なし）; (8) 本チケットにより記事検索やタグ検索機能は導入しない; (9) 実際のPCおよび390px実装（モックのみでなく）をユーザーが目視レビュー・承認したうえで、本項目を`完了`とする。
+- **依存関係:** BL-004；BL-003と調整する。
+- **実装証跡:** 実装済み。dashboardは、3つの重いバッジ状カードから単一の軽量ブロックへ再設計され、新しい優先確認（priority index）セクションでは重要度/確認目安を楕円バッジではなくプレーンテキストで表示する（「feat: dashboard v2 + priority index + reason contract」チケット参照）。後続チケット（branch `feature/article-card-variant-b`、[PR #18](https://github.com/matkei31/security-digest/pull/18)）では、通常の記事カードのsource-color pill、`.importance-badge`、`.urgency-badge`、`.category-badge`をさらに完全に削除する: 取得元と公開日はプレーンテキストのmeta行として表示し、重要度/確認目安は高/本日確認に限定した軽いtext-color/left-borderアクセント付きのプレーンテキストで表示し（楕円形状なし）、カテゴリは通常カードでは一切表示されなくなる（daily-JSONの保存、レスポンススキーマ、検証、dashboard集計は変更しない）。ユーザーの明示的なB案選択に従い、`.article-tag`（関連タグ）はカード下部のfooterへ再配置されたまま、丸いピル形状を維持する唯一のラベルとなる。
+- **ユーザー受入証跡:** Dashboard v2と優先確認の理由付きインデックス: 2026-07-17のプロジェクト会話でユーザーが受入。記事カードB案の方向性: レビューされた2案モックに基づき、2026-07-17のプロジェクト会話でユーザーが明示的に承認。実際のPC/390px実装（リポジトリ外でユーザーがレビューしたscreenshot）は、2026-07-17にユーザーが目視で受入、verbatim: 「見られたけど、いいと思うよ」。
+- **残作業:** なし。
+- **注記:** 将来のチケットでタグ検索やタグランディングページが導入される場合、現在のクリック不可の関連タグの扱いはその時点で再評価すべきである（それ以前ではない）。
 
 ## BL-003 — AIで機械処理された印象を弱める
 
 - **ID:** BL-003
-- **Title:** AIで機械処理された印象を弱める
-- **Priority:** P1
-- **Status:** Done
-- **Source type:** User-confirmed summary
-- **Original user comment:** Original wording not recovered.
-- **User-confirmed summary:** AIで機械処理された印象を弱める。
-- **Interpretation:** Do not conceal machine processing. Reduce unnecessary “AI-processed” appearance caused by repeated badge shapes, dense classification metadata, and overly uniform article cards.
-- **Acceptance criteria:** Concretized for the now-decided B案 (2026-07-17): (1) 取得元/重要度/確認目安/カテゴリ no longer render as a row of same-shaped, same-treatment classification labels; (2) the article title and body content are what the reader's eye reaches before the classification metadata, not after competing with it; (3) only 関連タグ remains as rounded, low-contrast supplementary information at the bottom of the card — it is not restyled to compete with the title/body for attention; (4) the user visually reviews the actual PC and 390px implementation and confirms the "AI-processed" impression has been sufficiently reduced before this item is marked `Done`.
-- **Dependencies:** BL-002 and BL-004.
-- **Implementation evidence:** Implemented. The dashboard's dense, repeated 3-card structure was replaced by one lightweight block with a clearer information hierarchy (重要度/確認目安 as primary axes, category as a visually de-emphasized supplementary row), and the 優先確認 section was reframed as a short reasoned index instead of a dense repeated recap of full article metadata. A follow-on ticket (branch `feature/article-card-variant-b`, [PR #18](https://github.com/matkei31/security-digest/pull/18)) additionally reworks ordinary article cards: source/importance/urgency/category no longer render as a row of same-shaped colored pills — source+date is plain text, 重要度/確認目安 is plain text with a light accent limited to 高/本日確認, and category is not shown. Only 関連タグ keeps a rounded, low-contrast pill treatment at the card's bottom, per the user's explicit B案 choice.
-- **User acceptance evidence:** Dashboard v2 and the 優先確認 reasoned index: accepted by the user in the project conversation on 2026-07-17. Article-card B案 direction: explicitly approved by the user in the project conversation on 2026-07-17, based on a reviewed two-variant mock. The actual PC/390px implementation (screenshots reviewed by the user outside the repository) was visually accepted by the user on 2026-07-17, verbatim: 「見られたけど、いいと思うよ」.
-- **Residual scope:** None.
-- **Notes:** Related to BL-002 but was a separate user-quality requirement; the same 2026-07-17 implementation and acceptance satisfy both independently.
+- **タイトル:** AIで機械処理された印象を弱める
+- **優先度:** P1
+- **状態:** 完了
+- **出所種別:** ユーザー確認済み要約
+- **ユーザー原文:** 原文未回収。
+- **ユーザー確認済み要約:** AIで機械処理された印象を弱める。
+- **解釈:** 機械処理であることを隠すのではない。繰り返されるバッジ形状、密な分類metadata、過度に均一な記事カードによって生じる不要な「AI処理された」見た目を軽減する。
+- **完了条件:** 確定したB案（2026-07-17）に基づき具体化: (1) 取得元/重要度/確認目安/カテゴリは、同一形状・同一処理の分類ラベルの行としてはもはや表示されない; (2) 読者の目が分類metadataより先に記事タイトルと本文へ到達し、それらと競合しない; (3) 関連タグのみ、カード下部の丸く低コントラストな補助情報として残り、タイトル/本文と注意を奪い合うようには再スタイルされない; (4) 実際のPCおよび390px実装をユーザーが目視レビューし、「AI処理された」印象が十分に軽減されたことを確認したうえで、本項目を`完了`とする。
+- **依存関係:** BL-002およびBL-004。
+- **実装証跡:** 実装済み。dashboardの密で反復的な3カード構成は、より明確な情報階層を持つ単一の軽量ブロック（重要度/確認目安を主軸とし、カテゴリは視覚的に控えめな補助行とする）へ置き換えられ、優先確認セクションは全記事metadataの密な反復的な再掲ではなく、短い理由付きインデックスへ再構成された。後続チケット（branch `feature/article-card-variant-b`、[PR #18](https://github.com/matkei31/security-digest/pull/18)）は、さらに通常の記事カードを見直す: source/importance/urgency/categoryはもはや同一形状の色付きピルの行として表示されない — source+dateはプレーンテキスト、重要度/確認目安は高/本日確認に限定した軽いアクセント付きのプレーンテキストとなり、カテゴリは表示されない。ユーザーの明示的なB案選択に従い、関連タグのみがカード下部で丸く低コントラストなピル表現を維持する。
+- **ユーザー受入証跡:** Dashboard v2と優先確認の理由付きインデックス: 2026-07-17のプロジェクト会話でユーザーが受入。記事カードB案の方向性: レビューされた2案モックに基づき、2026-07-17のプロジェクト会話でユーザーが明示的に承認。実際のPC/390px実装（リポジトリ外でユーザーがレビューしたscreenshot）は、2026-07-17にユーザーが目視で受入、verbatim: 「見られたけど、いいと思うよ」。
+- **残作業:** なし。
+- **注記:** BL-002と関連するが、別のユーザー品質要求であった; 同じ2026-07-17の実装と受入が両方を独立して満たす。
 
 ## BL-004 — Fable 5によるUIレビューとUI設計書
 
 - **ID:** BL-004
-- **Title:** Fable 5によるUIレビューとUI設計書
-- **Priority:** P1
-- **Status:** Specified / In progress
-- **Source type:** Verbatim user comment / User-confirmed summary
-- **Original user comment:** 「設計書は作成済みの理解で合ってる？」
-- **User-confirmed summary:** Fable 5に現行画面をレビューさせ、名称・色・形・配置・重複・導線を検討したうえでUI仕様を作る。
-- **Interpretation:** Produce a dedicated UI design specification for labels, article cards, and visual hierarchy; README, AGENTS, STATUS, and DECISIONS are not that specification.
-- **Acceptance criteria:** Fable 5 reviews the current UI; the proposed specification covers name, color, shape, placement, duplication, navigation, and acceptance examples; the user explicitly approves the specification.
-- **Dependencies:** Current-page review material; prerequisite for implementation of BL-002 and BL-003.
-- **Implementation evidence:** Not implemented as a dedicated specification document. Fable 5 review of the current UI, including ordinary article cards, has been completed. A dashboard mock generated outside the repository was reviewed and explicitly approved by the user in the project conversation on 2026-07-17; that approval informed the dashboard v2 implementation, and the resulting terminology decision (重要度/確認目安, not 確認優先度) is recorded in [DECISIONS.md](DECISIONS.md). Separately, a two-variant (A/B) ordinary-article-card mock, generated outside the repository, was reviewed by the user, who explicitly chose variant B (round labels removed from source/importance/urgency/category; only 関連タグ kept round, non-clickable) over variant A (all classification labels removed) — that choice is recorded above under BL-002/BL-003 and implemented on branch `feature/article-card-variant-b`. Neither review produced a standalone, repo-resident UI design specification document (name/color/shape/placement/duplication/navigation contract with acceptance examples); both were mock review + explicit user decision, not a formal spec artifact.
-- **User acceptance evidence:** Dashboard scope: accepted 2026-07-17. Article-card scope: the user explicitly chose a variant (B) for ordinary article cards in the project conversation on 2026-07-17, and separately visually accepted the resulting PC/390px implementation on 2026-07-17 (verbatim: 「見られたけど、いいと思うよ」; see [BL-002](#bl-002--記事カードの楕円バッジ多用を見直す)/[BL-003](#bl-003--aiで機械処理された印象を弱める)). This satisfies BL-004's acceptance criteria for the dashboard and article-card *decisions* themselves; it does not substitute for the still-missing dedicated specification document (see Residual scope).
-- **Residual scope:** A dedicated, repo-resident UI design specification document (covering name/color/shape/placement/duplication/navigation/acceptance examples for both the dashboard and article cards) does not exist. User adjudication of any remaining Fable 5 proposals beyond the dashboard and article-card decisions already made is outstanding.
-- **Notes:** Answered fact: README, AGENTS, STATUS, and DECISIONS exist, but a dedicated UI design document defining labels, article cards, and visual hierarchy has not been created. Fable 5 review itself is complete (including article cards); the user has since made concrete, explicit choices for both the dashboard (v2) and ordinary article cards (variant B) from reviewed mocks, without a formal specification document being authored. Status moved from `Captured` to `Specified / In progress` to reflect this concrete review-and-decision activity — it is not `Done`, since no repo-resident specification document exists yet.
+- **タイトル:** Fable 5によるUIレビューとUI設計書
+- **優先度:** P1
+- **状態:** 仕様化済み / 進行中
+- **出所種別:** ユーザー原文 / ユーザー確認済み要約
+- **ユーザー原文:** 「設計書は作成済みの理解で合ってる？」
+- **ユーザー確認済み要約:** Fable 5に現行画面をレビューさせ、名称・色・形・配置・重複・導線を検討したうえでUI仕様を作る。
+- **解釈:** ラベル・記事カード・視覚的階層に関する専用のUI設計仕様書を作成する；README・AGENTS・STATUS・DECISIONSはその仕様書ではない。
+- **完了条件:** Fable 5が現行UIをレビューする；提案される仕様書が名称・色・形・配置・重複・導線・受入例を網羅する；ユーザーが仕様書を明示的に承認する。
+- **依存関係:** 現行画面のレビュー資料；BL-002およびBL-003の実装の前提条件。
+- **実装証跡:** 専用の仕様書としては未実装。通常の記事カードを含む、現行UIのFable 5レビューは完了している。リポジトリ外で生成されたdashboardモックがレビューされ、2026-07-17のプロジェクト会話でユーザーに明示的に承認された；その承認がdashboard v2実装に反映され、結果として生じた用語決定（確認優先度ではなく重要度/確認目安）は[DECISIONS.md](DECISIONS.md)に記録されている。別途、リポジトリ外で生成された2案（A/B）の通常記事カードモックがユーザーによってレビューされ、ユーザーはvariant A（全分類ラベルを削除）ではなくvariant B（source/importance/urgency/categoryから丸ラベルを削除；関連タグのみ丸くクリック不可のまま維持）を明示的に選択した — この選択は上記BL-002/BL-003のもとに記録され、branch `feature/article-card-variant-b`で実装されている。いずれのレビューも、独立してリポジトリに常駐するUI設計仕様書（受入例付きの名称/色/形/配置/重複/導線契約）を生み出していない；両者ともモックレビューと明示的なユーザー決定であり、正式な仕様artifactではない。
+- **ユーザー受入証跡:** Dashboardスコープ: 2026-07-17に受入。記事カードスコープ: ユーザーは2026-07-17のプロジェクト会話で通常記事カードのvariant（B）を明示的に選択し、別途2026-07-17にPC/390px実装を目視で受入（verbatim: 「見られたけど、いいと思うよ」；[BL-002](#bl-002--記事カードの楕円バッジ多用を見直す)/[BL-003](#bl-003--aiで機械処理された印象を弱める)参照）。これはdashboardと記事カードの*決定事項*自体に関するBL-004の完了条件を満たすが、依然として不足している専用の仕様書の代替にはならない（残作業を参照）。
+- **残作業:** 専用の、リポジトリに常駐するUI設計仕様書（dashboardと記事カードの両方について名称/色/形/配置/重複/導線/受入例を網羅するもの）が存在しない。すでに行われたdashboardおよび記事カードの決定事項を超える、残りのFable 5提案に対するユーザーの裁定が未了である。
+- **注記:** 確認済みの事実: README・AGENTS・STATUS・DECISIONSは存在するが、ラベル・記事カード・視覚的階層を定義する専用のUI設計文書は作成されていない。Fable 5レビュー自体は完了している（記事カードを含む）；ユーザーはその後、レビュー済みモックからdashboard（v2）と通常記事カード（variant B）の両方について、正式な仕様書を作成することなく具体的で明示的な選択を行った。この具体的なレビューと決定活動を反映するため、Statusは`記録済み`から`仕様化済み / 進行中`へ移した — リポジトリに常駐する仕様書がまだ存在しないため、`完了`ではない。
 
 ## BL-005 — editorial-style-v1とtoday-brief-v4
 
 - **ID:** BL-005
-- **Title:** editorial-style-v1とtoday-brief-v4
-- **Priority:** P1
-- **Status:** Specified / Not implemented
-- **Source type:** User-confirmed summary (project decision)
-- **Original user comment:** Original wording not recovered.
-- **User-confirmed summary:** Security Digest独自の`editorial-style-v1`を作り、最初はBRIEFへ部分導入し、`today-brief-v4`でGemini promptへ本文を埋め込む。ARTICLEへは初期適用しない。
-- **Interpretation:** Use Fable 5 for design and comparative evaluation while retaining Gemini for production BRIEF generation. Do not copy an external Gist in full.
-- **Acceptance criteria:** Not fully defined. Must preserve deterministic BRIEF state/count logic, trusted-context boundaries, ARTICLE separation, and schema unless separately approved.
-- **Dependencies:** [SD-007](DECISIONS.md#sd-007--create-security-digest-editorial-style-v1-and-introduce-it-to-brief-first); Fable 5 design review.
-- **Implementation evidence:** Not implemented. The accepted direction is recorded in SD-007.
-- **User acceptance evidence:** Direction accepted; implementation acceptance not applicable until an implementation exists.
-- **Residual scope:** Editorial rules, prompt-size assessment, version update, fixtures, tests, comparative review, and production acceptance.
-- **Notes:** Gemini remains the production BRIEF generator. ARTICLE is outside the initial scope. This item's only GitHub-traceable origin is [PR #13](https://github.com/matkei31/security-digest/pull/13)'s documentation sync, where BL-005 and [SD-007](DECISIONS.md#sd-007--create-security-digest-editorial-style-v1-and-introduce-it-to-brief-first) were introduced together; the project conversation record is this direction's actual basis, and PR #13 alone is not treated as the origin of user acceptance (see [BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 2, Audit B). Original wording remains unrecovered.
+- **タイトル:** editorial-style-v1とtoday-brief-v4
+- **優先度:** P1
+- **状態:** 仕様化済み / 未実装
+- **出所種別:** ユーザー確認済み要約 (project decision)
+- **ユーザー原文:** 原文未回収。
+- **ユーザー確認済み要約:** Security Digest独自の`editorial-style-v1`を作り、最初はBRIEFへ部分導入し、`today-brief-v4`でGemini promptへ本文を埋め込む。ARTICLEへは初期適用しない。
+- **解釈:** 設計と比較評価にはFable 5を用い、production向けBRIEF生成にはGeminiを維持する。外部Gistを全面的にコピーしない。
+- **完了条件:** 十分には定義されていない。別途承認されない限り、決定論的なBRIEFのstate/count logic、trusted-context境界、ARTICLEとの分離、およびschemaを維持しなければならない。
+- **依存関係:** [SD-007](DECISIONS.md#sd-007--create-security-digest-editorial-style-v1-and-introduce-it-to-brief-first)；Fable 5デザインレビュー。
+- **実装証跡:** 未実装。承認済みの方向性はSD-007に記録されている。
+- **ユーザー受入証跡:** 方向性は承認済み；実装が存在するまでは実装受入は該当なし。
+- **残作業:** 編集ルール、prompt sizeの評価、version更新、fixtures、テスト、比較レビュー、production受入。
+- **注記:** Geminiはproduction向けBRIEF生成器であり続ける。ARTICLEは初期スコープ外である。この項目のGitHub上で追跡可能な唯一の出自は[PR #13](https://github.com/matkei31/security-digest/pull/13)の文書同期であり、そこでBL-005と[SD-007](DECISIONS.md#sd-007--create-security-digest-editorial-style-v1-and-introduce-it-to-brief-first)が同時に導入された；project conversation recordがこの方向性の実際の根拠であり、PR #13単独はユーザー受入の起点として扱わない（[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 2, Audit B参照）。原文は未回収のままである。
 
 ## BL-006 — Monomi Digestへのブランド変更
 
 - **ID:** BL-006
-- **Title:** Monomi Digestへのブランド変更
-- **Priority:** P2
-- **Status:** Accepted / Not implemented
-- **Source type:** User-confirmed summary
-- **Original user comment:** Original wording not recovered.
-- **User-confirmed summary:** 将来のサービス名は`Monomi Digest`とする。`Security Digest`と`Monomi Digest`のどちらにするかという未決定事項へ戻さない。
-- **Interpretation:** The decided future brand name is `Monomi Digest`. Do not reopen “Security Digest or Monomi Digest” as an undecided naming choice.
-- **Acceptance criteria:** Not defined. Implementation scope, migration timing, and treatment of the old name remain unspecified.
-- **Dependencies:** [SD-010](DECISIONS.md#sd-010--use-monomi-digest-as-the-future-public-brand), BL-007; About, SEO, public navigation, repository and publication naming decisions.
-- **Implementation evidence:** Not implemented. Current product and repository display remain `Security Digest`.
-- **User acceptance evidence:** Direction reconfirmed in the project conversation on 2026-07-17. Implementation acceptance is not recorded.
-- **Residual scope:** Inventory all brand surfaces, define migration and compatibility, implement, and obtain user acceptance.
-- **Notes:** This backlog introduction must not change the current displayed brand.
+- **タイトル:** Monomi Digestへのブランド変更
+- **優先度:** P2
+- **状態:** 方針承認済み / 未実装
+- **出所種別:** ユーザー確認済み要約
+- **ユーザー原文:** 原文未回収。
+- **ユーザー確認済み要約:** 将来のサービス名は`Monomi Digest`とする。`Security Digest`と`Monomi Digest`のどちらにするかという未決定事項へ戻さない。
+- **解釈:** 決定した将来のブランド名は`Monomi Digest`である。「Security DigestかMonomi Digestか」という未決定の命名選択として再オープンしない。
+- **完了条件:** 未定義。実装範囲、移行timing、旧名称の扱いは未定のままである。
+- **依存関係:** [SD-010](DECISIONS.md#sd-010--use-monomi-digest-as-the-future-public-brand)、BL-007；About、SEO、公開ナビゲーション、リポジトリおよび公開物の命名決定。
+- **実装証跡:** 未実装。現行のproductおよびリポジトリ表示は`Security Digest`のままである。
+- **ユーザー受入証跡:** 方向性は2026-07-17のプロジェクト会話で再確認された。実装受入は記録されていない。
+- **残作業:** 全ブランド接点の棚卸し、移行と互換性の定義、実装、ユーザー受入の取得。
+- **注記:** 本バックログへの導入は、現在表示されているブランドを変更してはならない。
 
 ## BL-007 — monomidigest.comへの移行
 
 - **ID:** BL-007
-- **Title:** monomidigest.comへの移行
-- **Priority:** P2
-- **Status:** Accepted / Not implemented
-- **Source type:** Verbatim user comment / User-confirmed summary
-- **Original user comment:** 「URLがgithubのユーザー名なのが気になる」
-- **Provenance:** 2026-07-09 project conversation.
-- **User-confirmed summary:** 主ドメインは`monomidigest.com`とし、`monomi.jp`は不要とする。
-- **Interpretation:** Use `monomidigest.com` as the primary domain. The recorded decision says `monomi.jp` is unnecessary.
-- **Acceptance criteria:** Not defined. Domain ownership and DNS state must be verified before implementation.
-- **Dependencies:** [SD-011](DECISIONS.md#sd-011--use-monomidigestcom-as-the-primary-domain), BL-006, About content, SEO, canonical URLs, and public navigation.
-- **Implementation evidence:** Not implemented. Domain acquisition and DNS configuration are not verified.
-- **User acceptance evidence:** Direction reconfirmed in the project conversation on 2026-07-17. Domain acquisition, configuration, and implementation acceptance are not recorded.
-- **Residual scope:** Verify ownership, define DNS/Pages configuration and redirects, update public metadata, test, and obtain user acceptance.
-- **Notes:** Do not infer that the domain has been purchased or configured.
+- **タイトル:** monomidigest.comへの移行
+- **優先度:** P2
+- **状態:** 方針承認済み / 未実装
+- **出所種別:** ユーザー原文 / ユーザー確認済み要約
+- **ユーザー原文:** 「URLがgithubのユーザー名なのが気になる」
+- **出所:** 2026-07-09 プロジェクト会話。
+- **ユーザー確認済み要約:** 主ドメインは`monomidigest.com`とし、`monomi.jp`は不要とする。
+- **解釈:** 主ドメインとして`monomidigest.com`を使用する。記録された決定では`monomi.jp`は不要とされている。
+- **完了条件:** 未定義。実装前にドメインの所有権とDNSの状態を検証する必要がある。
+- **依存関係:** [SD-011](DECISIONS.md#sd-011--use-monomidigestcom-as-the-primary-domain)、BL-006、Aboutコンテンツ、SEO、canonical URL、公開ナビゲーション。
+- **実装証跡:** 未実装。ドメイン取得とDNS設定は未検証である。
+- **ユーザー受入証跡:** 方向性は2026-07-17のプロジェクト会話で再確認された。ドメイン取得、設定、実装受入は記録されていない。
+- **残作業:** 所有権の検証、DNS/Pages設定とredirectの定義、公開metadataの更新、テスト、ユーザー受入の取得。
+- **注記:** ドメインが購入または設定済みであると推定しない。
 
 ## BL-008 — Fable 5による全体コードレビュー
 
 - **ID:** BL-008
-- **Title:** Fable 5による全体コードレビュー
-- **Priority:** P2
-- **Status:** Captured
-- **Source type:** Recovered paraphrase
-- **Original user comment:** Original wording not recovered.
-- **User-confirmed summary:** Not recovered.
-- **Interpretation:** At an appropriate stable point, perform a critical whole-codebase review of structure, duplication, responsibilities, overimplementation, and maintainability.
-- **Acceptance criteria:** Not defined.
-- **Dependencies:** A sufficiently stable implementation baseline and an agreed review package.
-- **Implementation evidence:** Not implemented.
-- **User acceptance evidence:** Not recorded.
-- **Residual scope:** Define timing, review questions, evidence package, evaluator role, and how findings become scoped tickets.
-- **Notes:** Fable 5 is not being designated as the routine implementation agent by this item.
+- **タイトル:** Fable 5による全体コードレビュー
+- **優先度:** P2
+- **状態:** 記録済み
+- **出所種別:** 復元要約
+- **ユーザー原文:** 原文未回収。
+- **ユーザー確認済み要約:** 回収できていない。
+- **解釈:** 適切な安定した時点で、構造・重複・責務・過剰実装・保守性についての批判的な全体コードレビューを行う。
+- **完了条件:** 未定義。
+- **依存関係:** 十分に安定した実装baseline、および合意されたレビューパッケージ。
+- **実装証跡:** 未実装。
+- **ユーザー受入証跡:** 記録なし。
+- **残作業:** timing、レビューの観点、証跡パッケージ、評価者の役割、および発見事項をどのようにスコープ付きチケットへ落とし込むかを定義する。
+- **注記:** 本項目により、Fable 5を通常の実装エージェントとして指定するものではない。
 
 ## BL-009 — SEOと閲覧者増加策
 
 - **ID:** BL-009
-- **Title:** SEOと閲覧者増加策
-- **Priority:** P2
-- **Status:** Captured / Parked until prerequisites
-- **Source type:** Verbatim user comment
-- **Original user comment:** 「あとでSEO対策や見てもらうための工夫について相談」
-- **Additional original user comment:** 「そういう話をするタイミングになったら教えて」
-- **Provenance:** 2026-07-13 project conversation.
-- **User-confirmed summary:** Not applicable — original wording recovered above.
-- **Interpretation:** Later, review SEO and ways to increase readership, and surface the topic when prerequisites make the timing appropriate.
-- **Acceptance criteria:** Not defined.
-- **Dependencies:** Ticket 14a-3 and Ticket 14a-4 are completed and are not prerequisites to reopen. At SEO start, confirm that no new P0/P1 data-quality issue is open. Also depends on BL-006, BL-007, the Japanese editorial specification, BL-002–BL-004, About content, metadata, and public navigation.
-- **Implementation evidence:** Not implemented.
-- **User acceptance evidence:** Not recorded.
-- **Residual scope:** Define audience and goals, audit technical/content SEO, prioritize measures, implement separately, and measure outcomes.
-- **Notes:** Parked until prerequisites. Original wording recovered during BL-014's final completion pass (2026-07-18); see [BACKLOG_AUDIT.md](BACKLOG_AUDIT.md).
+- **タイトル:** SEOと閲覧者増加策
+- **優先度:** P2
+- **状態:** 記録済み / 前提条件が整うまで保留
+- **出所種別:** ユーザー原文
+- **ユーザー原文:** 「あとでSEO対策や見てもらうための工夫について相談」
+- **追加のユーザー原文:** 「そういう話をするタイミングになったら教えて」
+- **出所:** 2026-07-13 プロジェクト会話。
+- **ユーザー確認済み要約:** 該当なし — 原文は上記のとおり回収済み。
+- **解釈:** 後日、SEOと閲覧者増加策を見直し、前提条件が整った適切なtimingでこの話題を取り上げる。
+- **完了条件:** 未定義。
+- **依存関係:** Ticket 14a-3およびTicket 14a-4は完了しており、再オープンの前提条件ではない。SEO開始時に、新たなP0/P1のデータ品質課題が未対応でないことを確認する。また、BL-006、BL-007、日本語版の編集仕様、BL-002〜BL-004、Aboutコンテンツ、metadata、公開ナビゲーションにも依存する。
+- **実装証跡:** 未実装。
+- **ユーザー受入証跡:** 記録なし。
+- **残作業:** 読者層と目標の定義、技術/コンテンツSEOの監査、施策の優先順位付け、個別実装、成果の測定。
+- **注記:** 前提条件が整うまで保留。原文はBL-014の最終完了パス（2026-07-18）で回収された；[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)を参照。
 
 ## BL-010 — 多言語対応の意義判断
 
 - **ID:** BL-010
-- **Title:** 多言語対応の意義判断
-- **Priority:** P3
-- **Status:** Captured / Parked until prerequisites
-- **Source type:** Verbatim user comment
-- **Original user comment:** 「このサイトを多言語対応する意味はあるか相談しよう。そのうち」
-- **Provenance:** 2026-07-13 project conversation.
-- **User-confirmed summary:** Not applicable — original wording recovered above.
-- **Interpretation:** After the Japanese edition is stable, decide whether multilingual support provides sufficient value relative to cost.
-- **Acceptance criteria:** Not defined. This is initially a decision exercise, not an implementation ticket.
-- **Dependencies:** Stable Japanese edition, BL-009, target-audience definition, and regulatory-mapping needs.
-- **Implementation evidence:** Not implemented.
-- **User acceptance evidence:** Not recorded.
-- **Residual scope:** Define candidate languages, audience value, editorial/translation cost, regulatory impact, SEO impact, and decision criteria.
-- **Notes:** Do not begin implementation before the prerequisite decision. Original wording recovered during BL-014's final completion pass (2026-07-18); see [BACKLOG_AUDIT.md](BACKLOG_AUDIT.md).
+- **タイトル:** 多言語対応の意義判断
+- **優先度:** P3
+- **状態:** 記録済み / 前提条件が整うまで保留
+- **出所種別:** ユーザー原文
+- **ユーザー原文:** 「このサイトを多言語対応する意味はあるか相談しよう。そのうち」
+- **出所:** 2026-07-13 プロジェクト会話。
+- **ユーザー確認済み要約:** 該当なし — 原文は上記のとおり回収済み。
+- **解釈:** 日本語版が安定した後、多言語対応がコストに見合う十分な価値を提供するかを判断する。
+- **完了条件:** 未定義。これは当初、実装チケットではなく決定事項の検討である。
+- **依存関係:** 日本語版の安定、BL-009、対象読者層の定義、規制上のmapping需要。
+- **実装証跡:** 未実装。
+- **ユーザー受入証跡:** 記録なし。
+- **残作業:** 候補言語、読者層にとっての価値、編集/翻訳コスト、規制上の影響、SEOへの影響、決定基準の定義。
+- **注記:** 前提となる決定の前に実装を開始しない。原文はBL-014の最終完了パス（2026-07-18）で回収された；[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)を参照。
 
 ## BL-011 — standalone NIST NVD記事取得の保留理由・再開条件
 
 - **ID:** BL-011
-- **Title:** standalone NIST NVD記事取得の保留理由・再開条件
-- **Priority:** P2
-- **Status:** Captured
-- **Source type:** Engineering finding
-- **Original user comment:** Not applicable — engineering finding.
-- **User-confirmed summary:** Not defined.
-- **Interpretation:** Document why standalone NIST NVD article collection is disabled and define evidence-based reactivation conditions without conflating it with NVD vulnerability-facts acquisition.
-- **Acceptance criteria:** The hold reason, owner, review trigger, reactivation conditions, and validation plan are recorded; the separate NVD facts path remains active and clearly distinguished.
-- **Dependencies:** Source history and current `source_definitions.json` behavior.
-- **Implementation evidence:** Not implemented. The gap is recorded in [STATUS.md](STATUS.md); NVD facts continue through a separate path.
-- **User acceptance evidence:** Not applicable yet.
-- **Residual scope:** Recover the original operational reason, specify reactivation criteria, and update the appropriate source/status records.
-- **Notes:** This item does not request immediate source re-enablement.
+- **タイトル:** standalone NIST NVD記事取得の保留理由・再開条件
+- **優先度:** P2
+- **状態:** 記録済み
+- **出所種別:** 技術上の発見事項
+- **ユーザー原文:** 該当なし — 技術上の発見事項。
+- **ユーザー確認済み要約:** 未定義。
+- **解釈:** standalone NIST NVD記事収集が無効化されている理由を文書化し、NVD脆弱性factsの取得と混同しない形で、証跡に基づく再開条件を定義する。
+- **完了条件:** 保留理由、担当者、レビューのトリガー、再開条件、検証計画が記録されている；別経路のNVD facts取得は稼働を継続し、明確に区別されている。
+- **依存関係:** ソースの履歴と現行の`source_definitions.json`の挙動。
+- **実装証跡:** 未実装。このgapは[STATUS.md](STATUS.md)に記録されている；NVD factsは別経路で継続している。
+- **ユーザー受入証跡:** 現時点では該当なし。
+- **残作業:** 元の運用上の理由の回収、再開条件の仕様化、該当するsource/status記録の更新。
+- **注記:** 本項目は、直ちにsourceを再有効化することを求めるものではない。
 
-## BL-012 — Gemini response error taxonomyの細分化
+## BL-012 — Gemini応答エラー分類の細分化
 
 - **ID:** BL-012
-- **Title:** Gemini response error taxonomyの細分化
-- **Priority:** P2
-- **Status:** Captured
-- **Source type:** Engineering finding
-- **Original user comment:** Not applicable — engineering finding.
-- **User-confirmed summary:** Not defined.
-- **Interpretation:** The current `schema_parse_error` classification does not sufficiently distinguish JSON decoding, response-schema mismatch, strict validation, and semantic/action-lint failures.
-- **Acceptance criteria:** Not defined. Taxonomy, compatibility, observability benefit, cost, and migration behavior require specification.
-- **Dependencies:** ARTICLE status/fallback contract and operational reporting requirements.
-- **Implementation evidence:** Not implemented. Ticket 17a corrected one lint false positive but did not introduce a general error taxonomy.
-- **User acceptance evidence:** Not applicable yet.
-- **Residual scope:** Inventory failure paths, propose stable categories, assess schema/logging impact, define tests, and obtain approval.
-- **Notes:** Do not reopen or reimplement Ticket 17a under this item.
+- **タイトル:** Gemini応答エラー分類の細分化
+- **優先度:** P2
+- **状態:** 記録済み
+- **出所種別:** 技術上の発見事項
+- **ユーザー原文:** 該当なし — 技術上の発見事項。
+- **ユーザー確認済み要約:** 未定義。
+- **解釈:** 現行の`schema_parse_error`分類は、JSONデコード、response-schema不一致、strict validation、semantic/action-lint失敗を十分に区別できていない。
+- **完了条件:** 未定義。分類体系、互換性、observability上の効果、コスト、移行時の挙動について仕様化が必要である。
+- **依存関係:** ARTICLEのstatus/fallback契約と運用上の報告要件。
+- **実装証跡:** 未実装。Ticket 17aは1件のlint誤検知を修正したが、汎用的なエラー分類体系は導入していない。
+- **ユーザー受入証跡:** 現時点では該当なし。
+- **残作業:** 失敗経路の棚卸し、安定した分類の提案、schema/logging影響の評価、テストの定義、承認の取得。
+- **注記:** 本項目のもとでTicket 17aを再オープン・再実装しない。
 
 ## BL-013 — GitHub Actions Node.js警告
 
 - **ID:** BL-013
-- **Title:** GitHub Actions Node.js警告
-- **Priority:** P3
-- **Status:** Parked
-- **Source type:** Engineering finding
-- **Original user comment:** Not applicable — engineering finding.
-- **User-confirmed summary:** Not defined.
-- **Interpretation:** GitHub Pages build/deploy currently succeeds but emits a Node.js runtime deprecation warning from actions. Do not start speculative upgrades until the warning, supported versions, and deadline are verified.
-- **Acceptance criteria:** Confirm the affected action versions, GitHub deadline, supported replacement path, and regression plan before changing workflows.
-- **Dependencies:** Official GitHub Actions/Pages guidance and an approved workflow-maintenance scope.
-- **Implementation evidence:** No remediation implemented. Recent Pages build and deployment completed successfully despite the warning.
-- **User acceptance evidence:** Not applicable yet.
-- **Residual scope:** Verify urgency, select supported action versions if needed, test build/deploy behavior, and obtain workflow-change approval.
-- **Notes:** Parked because current builds succeed and no verified deadline is recorded here.
+- **タイトル:** GitHub Actions Node.js警告
+- **優先度:** P3
+- **状態:** 保留
+- **出所種別:** 技術上の発見事項
+- **ユーザー原文:** 該当なし — 技術上の発見事項。
+- **ユーザー確認済み要約:** 未定義。
+- **解釈:** GitHub Pagesのbuild/deployは現在成功しているが、actionsからNode.js runtimeの非推奨警告が出力されている。警告内容、サポート対象version、期限が検証されるまで、投機的なアップグレードを開始しない。
+- **完了条件:** workflowを変更する前に、影響を受けるaction version、GitHubの期限、サポートされる置換経路、回帰計画を確認する。
+- **依存関係:** GitHub Actions/Pagesの公式ガイダンスと承認されたworkflow保守スコープ。
+- **実装証跡:** 是正は実施していない。直近のPages build/deploymentは、警告が出ているにもかかわらず成功している。
+- **ユーザー受入証跡:** 現時点では該当なし。
+- **残作業:** 緊急度の検証、必要な場合のサポート対象action versionの選定、build/deploy挙動のテスト、workflow変更の承認取得。
+- **注記:** 保留の理由は、現行のbuildが成功しており、ここに検証済みの期限が記録されていないためである。
 
 ## BL-014 — 過去ユーザーコメントの体系的棚卸し
 
 - **ID:** BL-014
-- **Title:** 過去ユーザーコメントの体系的棚卸し
-- **Priority:** P0
-- **Status:** Done
-- **Source type:** Verbatim user comment
-- **Original user comment:** 「うん。他に未対応と見られる私のコメントある？同じように汎化してるなら私自身のコメントに立ち返って確認して。本来、指摘コメントを勝手に書き換えて対応済み扱いするのありえないから。ちゃんとバックログ管理して」
-- **User-confirmed summary:** 過去のプロジェクト会話にある指摘・要望を原文へ立ち返って棚卸しし、実装済み、部分対応、未対応、受入待ち、Superseded、バックログ対象外のいずれかへ根拠付きで分類する。実装側が作った一般化表現で原コメントを置き換えない。
-- **Interpretation:** PR #16のBL-001〜BL-013は初期登録であり、過去のユーザーコメントを網羅的に監査した結果ではない。会話履歴、PRコメント、既存文書、完了記録を照合して、取りこぼしと誤完了を確認する。
-- **Acceptance criteria:** 棚卸し対象の会話範囲と期間を明示する。原文を取得できたコメントは原文のまま記録し、原文未回収は引用しない。各コメントを既存BL ID、新規BL ID、Done reference、Superseded、対象外のいずれかへ割り当てる。部分対応はresidual scopeを残す。完了判断にはPRだけでなく、必要に応じてユーザー受入を確認する。棚卸し結果をユーザーがレビューし、未分類コメントが残っていないかを明記する。
-- **Dependencies:** プロジェクト会話履歴、GitHub PR／コメント、README／STATUS／DECISIONS／BACKLOG、実装証跡へのアクセス。
-- **Implementation evidence:** PR #16は管理方式と初期項目を作成した。2026-07-17、第1バッチ（Candidate A〜F）の監査を実施し、A→BL-007更新、B→SD-014、C→BL-015、D→Completed reference、E→対応不要（新規BLなし）、F→BL-015スコープ内で評価対象として記録、へそれぞれ分類した。2026-07-18、第2バッチを実施し、PR化以前のdirect push 149 commitsを21機能グループ（PRE-00〜PRE-20）へ分類し、BL-005／BL-008／BL-009／BL-010をGitHub上で確認できる証跡の範囲に限定して監査した。PR #1／#2／#3／#8をCompleted referenceへ追加し、PR #6（Ticket 15a）をHistorical / Superseded referenceとして記録し、Ticket 5／7／11bをSuperseded referenceとして記録した。PR #8の内部識別子漏洩修正を一般化してSD-015として記録し、PR #9（Ticket 15c）の目視受入未確認をBL-016として記録した。2026-07-18、最終完了パスを実施し、BL-009へ原文2件、BL-010へ原文1件をそれぞれ別フィールドで追記した。BL-005・BL-008は原文未回収のまま確定した（今後の追加回収を前提としない最終状態として記録）。現時点で把握している未分類の過去コメントはない。PR #11〜#16／PR #19を最終確認し、新規の管理項目（BL／Completed reference／Superseded reference）は不要と判断した。About content／metadata／public navigationは、既存の[BL-006](#bl-006--monomi-digestへのブランド変更)／[BL-007](#bl-007--monomidigestcomへの移行)／[BL-009](#bl-009--seoと閲覧者増加策)の範囲で管理する。監査範囲・手法・各分類の根拠は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)に記録。
-- **User acceptance evidence:** バックログ管理方式の導入には同意済み。第1・第2バッチの分類記録は実施済み。2026-07-18、ユーザーはBL-014全体の完了について次のとおり明示的に承認した（verbatim）：「BL-014は拾えるだけ拾ったから完了にするってことね。まあいいよ」
-- **Residual scope:** BL-014（過去ユーザーコメントの体系的棚卸しという工程）自体の残作業はない。BL-005・BL-008の原文は未回収のまま確定した恒久的な記録であり、今後の再回収を前提としない。個別の未完了項目（[BL-001](#bl-001--pull-request-ci)、[BL-004](#bl-004--fable-5によるuiレビューとui設計書)、[BL-006](#bl-006--monomi-digestへのブランド変更)、[BL-007](#bl-007--monomidigestcomへの移行)、[BL-015](#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する)、[BL-016](#bl-016--本日の要点の表示階層を目視受入する)等）は、BL-014の完了と独立してそれぞれ継続する。
-- **Notes:** BL-014の完了は、現時点で把握している範囲での棚卸し完了を意味する。今後、新たに過去コメントの存在が判明した場合は、原文とともに追記する（[Initial migration scope](#initial-migration-scope)の原則を維持）。第1・第2バッチおよび最終完了パスの実施内容は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)に記録されている。
+- **タイトル:** 過去ユーザーコメントの体系的棚卸し
+- **優先度:** P0
+- **状態:** 完了
+- **出所種別:** ユーザー原文
+- **ユーザー原文:** 「うん。他に未対応と見られる私のコメントある？同じように汎化してるなら私自身のコメントに立ち返って確認して。本来、指摘コメントを勝手に書き換えて対応済み扱いするのありえないから。ちゃんとバックログ管理して」
+- **ユーザー確認済み要約:** 過去のプロジェクト会話にある指摘・要望を原文へ立ち返って棚卸しし、実装済み、部分対応、未対応、受入待ち、置換済み、バックログ対象外のいずれかへ根拠付きで分類する。実装側が作った一般化表現で原コメントを置き換えない。
+- **解釈:** PR #16のBL-001〜BL-013は初期登録であり、過去のユーザーコメントを網羅的に監査した結果ではない。会話履歴、PRコメント、既存文書、完了記録を照合して、取りこぼしと誤完了を確認する。
+- **完了条件:** 棚卸し対象の会話範囲と期間を明示する。原文を取得できたコメントは原文のまま記録し、原文未回収は引用しない。各コメントを既存BL ID、新規BL ID、完了済み参照、置換済み、対象外のいずれかへ割り当てる。部分対応は残作業を残す。完了判断にはPRだけでなく、必要に応じてユーザー受入を確認する。棚卸し結果をユーザーがレビューし、未分類コメントが残っていないかを明記する。
+- **依存関係:** プロジェクト会話履歴、GitHub PR／コメント、README／STATUS／DECISIONS／BACKLOG、実装証跡へのアクセス。
+- **実装証跡:** PR #16は管理方式と初期項目を作成した。2026-07-17、第1バッチ（Candidate A〜F）の監査を実施し、A→BL-007更新、B→SD-014、C→BL-015、D→完了済み参照、E→対応不要（新規BLなし）、F→BL-015スコープ内で評価対象として記録、へそれぞれ分類した。2026-07-18、第2バッチを実施し、PR化以前のdirect push 149 commitsを21機能グループ（PRE-00〜PRE-20）へ分類し、BL-005／BL-008／BL-009／BL-010をGitHub上で確認できる証跡の範囲に限定して監査した。PR #1／#2／#3／#8を完了済み参照へ追加し、PR #6（Ticket 15a）を履歴・置換済み参照として記録し、Ticket 5／7／11bを置換済み参照として記録した。PR #8の内部識別子漏洩修正を一般化してSD-015として記録し、PR #9（Ticket 15c）の目視受入未確認をBL-016として記録した。2026-07-18、最終完了パスを実施し、BL-009へ原文2件、BL-010へ原文1件をそれぞれ別フィールドで追記した。BL-005・BL-008は原文未回収のまま確定した（今後の追加回収を前提としない最終状態として記録）。現時点で把握している未分類の過去コメントはない。PR #11〜#16／PR #19を最終確認し、新規の管理項目（BL／完了済み参照／置換済み参照）は不要と判断した。Aboutコンテンツ／metadata／公開ナビゲーションは、既存の[BL-006](#bl-006--monomi-digestへのブランド変更)／[BL-007](#bl-007--monomidigestcomへの移行)／[BL-009](#bl-009--seoと閲覧者増加策)の範囲で管理する。監査範囲・手法・各分類の根拠は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)に記録。
+- **ユーザー受入証跡:** バックログ管理方式の導入には同意済み。第1・第2バッチの分類記録は実施済み。2026-07-18、ユーザーはBL-014全体の完了について次のとおり明示的に承認した（verbatim）：「BL-014は拾えるだけ拾ったから完了にするってことね。まあいいよ」
+- **残作業:** BL-014（過去ユーザーコメントの体系的棚卸しという工程）自体の残作業はない。BL-005・BL-008の原文は未回収のまま確定した恒久的な記録であり、今後の再回収を前提としない。個別の未完了項目（[BL-001](#bl-001--プルリクエストci)、[BL-004](#bl-004--fable-5によるuiレビューとui設計書)、[BL-006](#bl-006--monomi-digestへのブランド変更)、[BL-007](#bl-007--monomidigestcomへの移行)、[BL-015](#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する)、[BL-016](#bl-016--本日の要点の表示階層を目視受入する)等）は、BL-014の完了と独立してそれぞれ継続する。
+- **注記:** BL-014の完了は、現時点で把握している範囲での棚卸し完了を意味する。今後、新たに過去コメントの存在が判明した場合は、原文とともに追記する（[初期移行範囲](#初期移行範囲)の原則を維持）。第1・第2バッチおよび最終完了パスの実施内容は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)に記録されている。
 
 ## BL-015 — 公開サイトと生成基盤のセキュリティ要件を定義する
 
 - **ID:** BL-015
-- **Title:** 公開サイトと生成基盤のセキュリティ要件を定義する
-- **Priority:** P2
-- **Status:** Captured / Not completed
-- **Source type:** Verbatim user comment
-- **Original user comment:** 「セキュリティ要件みたいなのも後で決めよう」
-- **Additional original user comment:** 「OK.ここはfable5にもレビューしてもらおう。公開情報を扱うものだから厳しいセキュリティ対策をする必要はないと思うが、必要なものは網羅しつつ過剰じゃないように整理して、fable5にレビューさせられる形にして。」
-- **User-confirmed summary:** Not recorded.
-- **Interpretation:** For the static public site, GitHub Actions, external fetching, Gemini, stored data, secrets, and future custom-domain use, define a security requirements set proportionate to the current architecture, as a dedicated document (candidate name `SECURITY_REQUIREMENTS.md`, distinct from GitHub's vulnerability-reporting `SECURITY.md`). Do not uniformly introduce excessive controls; state necessity and reevaluation conditions for each item explicitly.
-- **Acceptance criteria:** The document defines: target systems and data flow; the trusted/untrusted boundary; what may and may not be stored; external URL handling, HTML escaping, and `safe_url`; secrets management; GitHub Actions permissions; logs/artifacts handling; dependency and GitHub Actions supply-chain management (including an explicit necessity evaluation of full commit SHA pinning and of Dependabot for GitHub Actions); the current state of least privilege; reevaluation triggers for adopting a custom domain; reevaluation triggers for adding forms, authentication, a database, or persistent storage; a clear separation of current measures, identified gaps, and reasons for not adopting a given measure; a Fable 5 review pass; and final user approval. Full commit SHA pinning, Dependabot, and similar concrete measures are not decided as required at this stage — they become separate tickets only if the evaluation above approves a specific gap response.
-- **Dependencies:** Current architecture; coordinate with [BL-001](#bl-001--pull-request-ci) (Pull request CI); coordinate with [BL-007](#bl-007--monomidigestcomへの移行) (monomidigest.comへの移行); existing security rules already recorded in `AGENTS.md` (「Security requirements」節) and in `DECISIONS.md`.
-- **Implementation evidence:** Individual rules already exist (`AGENTS.md`: HTML escaping, `http`/`https`-only links, `rel="noopener noreferrer"`, no forms/auth/database/new external dependencies/persistent storage without approval, standard-library/existing-dependency-only policy, static GitHub Pages compatibility), but no comprehensive, dedicated requirements document exists. `.github/workflows/fetch.yml` currently references `actions/checkout@v4` and `actions/setup-python@v5` by version tag (not full commit SHA), and no `.github/dependabot.yml` exists — recorded here as an evaluation item (see BL014-F in [BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)), not as a decided requirement.
-- **User acceptance evidence:** Not recorded. Direction ("decide this later", "have Fable 5 review it") is captured from the original comments; no requirements draft has been reviewed or approved by the user yet.
-- **Residual scope:** Requirements draft, evidence mapping, proportionality review, Fable 5 review, gap-ticket decision for any approved concrete measure, user acceptance.
-- **Notes:** Do not decide SHA pinning, Dependabot, or other individual Actions supply-chain measures as required before this ticket's evaluation is complete. See [BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 1 (BL014-C, BL014-F) for the audit trail that produced this item.
+- **タイトル:** 公開サイトと生成基盤のセキュリティ要件を定義する
+- **優先度:** P2
+- **状態:** 記録済み / 未完了
+- **出所種別:** ユーザー原文
+- **ユーザー原文:** 「セキュリティ要件みたいなのも後で決めよう」
+- **追加のユーザー原文:** 「OK.ここはfable5にもレビューしてもらおう。公開情報を扱うものだから厳しいセキュリティ対策をする必要はないと思うが、必要なものは網羅しつつ過剰じゃないように整理して、fable5にレビューさせられる形にして。」
+- **ユーザー確認済み要約:** 記録なし。
+- **解釈:** 静的な公開サイト、GitHub Actions、外部fetching、Gemini、保存データ、secrets、将来のcustom domain利用について、現行アーキテクチャに見合ったセキュリティ要件一式を、専用文書（候補名`SECURITY_REQUIREMENTS.md`、GitHubの脆弱性報告用`SECURITY.md`とは別）として定義する。過剰な対策を一律に導入しない；各項目について必要性と再評価条件を明示的に述べる。
+- **完了条件:** 文書は次を定義する: 対象systemとdata flow；trusted/untrusted境界；保存してよいものといけないもの；外部URLの扱い、HTMLエスケープ、`safe_url`；secrets管理；GitHub Actions権限；ログ/artifactsの扱い；依存関係とGitHub Actionsのsupply chain管理（full commit SHA pinningおよびGitHub Actions向けDependabotの明示的な必要性評価を含む）；現行のleast privilegeの状態；custom domain採用時の再評価トリガー；forms・認証・データベース・永続storageを追加する際の再評価トリガー；現行の対策・特定されたgap・特定の対策を採用しない理由の明確な区別；Fable 5レビューパス；最終的なユーザー承認。full commit SHA pinning、Dependabot、および同様の具体的対策は、この段階で必須と決定するものではない — 上記の評価が特定のgap対応を承認した場合にのみ、別チケットとなる。
+- **依存関係:** 現行アーキテクチャ；[BL-001](#bl-001--プルリクエストci)（プルリクエストCI）と調整；[BL-007](#bl-007--monomidigestcomへの移行)（monomidigest.comへの移行）と調整；`AGENTS.md`（「Security requirements」節）と`DECISIONS.md`にすでに記録されている既存のセキュリティルール。
+- **実装証跡:** 個別のルールはすでに存在する（`AGENTS.md`: HTMLエスケープ、`http`/`https`のみのリンク、`rel="noopener noreferrer"`、承認なしでのforms/認証/データベース/新規外部依存/永続storageの追加禁止、標準ライブラリ/既存依存のみの方針、静的GitHub Pagesとの互換性）が、包括的で専用の要件文書は存在しない。`.github/workflows/fetch.yml`は現在、`actions/checkout@v4`と`actions/setup-python@v5`をversion tagで参照しており（full commit SHAではない）、`.github/dependabot.yml`は存在しない — ここでは評価対象項目として記録するにとどめ（[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)のBL014-F参照）、確定した要件としては扱わない。
+- **ユーザー受入証跡:** 記録なし。方向性（後で決める、Fable 5にレビューさせる、という点）は元のコメントから把握しているが、要件案はまだユーザーによるレビュー・承認を受けていない。
+- **残作業:** 要件案の作成、証跡のmapping、比例性のレビュー、Fable 5レビュー、承認された具体的対策に対するgapチケットの判断、ユーザー受入。
+- **注記:** 本チケットの評価が完了する前に、SHA pinning、Dependabot、その他個別のActions supply chain対策を必須と決定しない。本項目の出典となった監査記録は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 1（BL014-C、BL014-F）を参照。
 
 ## BL-016 — 本日の要点の表示階層を目視受入する
 
 - **ID:** BL-016
-- **Title:** 本日の要点の表示階層を目視受入する
-- **Priority:** P2
-- **Status:** Implemented / Awaiting user acceptance
-- **Source type:** Engineering finding / historical acceptance gap
-- **Original user comment:** Not applicable — engineering finding.
-- **User-confirmed summary:** Not applicable — engineering finding.
-- **Interpretation:** Ticket 15c ([PR #9](https://github.com/matkei31/security-digest/pull/9)) implemented the current "本日の要点" display: the parent-heading rename on the top page and daily archive, the deterministic status-line separation from the rest of `overview`, and the empty-section-hiding behavior for `discussion_points`/`check_items`. Code and tests for this display exist, but PR #9's body explicitly states production acceptance had not been performed at merge time, and this audit found no later, explicit user-acceptance record for this specific display change anywhere in GitHub history.
-- **Acceptance criteria:** Visually confirm on current production: the PC display; the 390px display; the "本日の要点" heading; the deterministic status line's background, border, and spacing; the visual hierarchy between the status line and the overview body text; that `discussion_points`/`check_items` are hidden when empty; wrapping behavior for long text and item counts; consistency with the archive rendering; and explicit user acceptance.
-- **Dependencies:** Current production render; [PR #9](https://github.com/matkei31/security-digest/pull/9); current `fetch.py`; archive render.
-- **Implementation evidence:** [PR #9](https://github.com/matkei31/security-digest/pull/9), merge commit `82b23c720b5871c5f46d068813defc12af164e4a`; current implementation (`split_brief_overview_status_line()` and the "本日の要点" heading in `fetch.py`); regression tests in `test_fetch.py`/`test_archive.py`.
-- **User acceptance evidence:** Not recovered. PR #9's body explicitly states production acceptance was not performed ("本番受入は未実施です"), and no later GitHub-visible artifact records explicit user acceptance of this specific display change.
-- **Residual scope:** PC / 390px screenshot or current-production review; explicit user acceptance; status update.
-- **Notes:** No new UI implementation is proposed by this item; it records an existing acceptance gap identified during [BL-014](#bl-014--過去ユーザーコメントの体系的棚卸し) Batch 2. See [BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 2 for the audit trail.
+- **タイトル:** 本日の要点の表示階層を目視受入する
+- **優先度:** P2
+- **状態:** 実装済み / ユーザー受入待ち
+- **出所種別:** 技術上の発見事項 / 過去の受入ギャップ
+- **ユーザー原文:** 該当なし — 技術上の発見事項。
+- **ユーザー確認済み要約:** 該当なし — 技術上の発見事項。
+- **解釈:** Ticket 15c（[PR #9](https://github.com/matkei31/security-digest/pull/9)）は、現行の「本日の要点」表示を実装した: トップページと日別archiveでの親見出しの改称、`overview`の残り部分からの決定論的な状態行の分離、`discussion_points`/`check_items`が空の場合のセクション非表示動作。この表示のコードとテストは存在するが、PR #9の本文はmerge時点でproduction受入が実施されていないことを明記しており、本監査ではこの特定の表示変更について、GitHub履歴上のいかなる場所にも、その後の明示的なユーザー受入記録を見つけられなかった。
+- **完了条件:** 現行productionで目視確認する: PC表示；390px表示；「本日の要点」見出し；決定論的な状態行の背景・境界線・余白；状態行と概況本文の視覚的階層；`discussion_points`/`check_items`が空の場合に非表示となること；長文および件数の折返し挙動；archive表示との整合性；明示的なユーザー受入。
+- **依存関係:** 現行production表示；[PR #9](https://github.com/matkei31/security-digest/pull/9)；現行`fetch.py`；archive表示。
+- **実装証跡:** [PR #9](https://github.com/matkei31/security-digest/pull/9), merge commit `82b23c720b5871c5f46d068813defc12af164e4a`；現行実装（`fetch.py`内の`split_brief_overview_status_line()`と「本日の要点」見出し）；`test_fetch.py`/`test_archive.py`の回帰テスト。
+- **ユーザー受入証跡:** 回収できていない。PR #9の本文は、production受入が実施されていないことを明記しており（「本番受入は未実施です」）、その後のいかなるGitHub上で確認できる証跡も、この特定の表示変更に対する明示的なユーザー受入を記録していない。
+- **残作業:** PC／390pxのscreenshotまたは現行productionのレビュー；明示的なユーザー受入；status更新。
+- **注記:** 本項目は新規UI実装を提案するものではなく、[BL-014](#bl-014--過去ユーザーコメントの体系的棚卸し) Batch 2で確認された既存の受入ギャップを記録するものである。監査の詳細は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 2を参照。
 
-## Completed reference
+## 完了済み参照
 
-These references exist only to prevent completed work from being accidentally reopened as unfinished backlog.
+これらの参照記録は、完了済みの作業が誤って未完了バックログとして再オープンされることを防ぐためだけに存在する。
 
-### Ticket 14a-3 — Atom date parsing and undated article filtering
+### Ticket 14a-3 — Atom日付解析と日付未設定記事の除外
 
-- **Status:** Done
-- **Evidence:** [PR #4](https://github.com/matkei31/security-digest/pull/4), merge commit `9ae5240b4e1b00e74f4b7af7a03e6d5769d53511`
-- **Completed scope:** Fix-forward for fractional-second Atom date parsing, UTC comparison, published-before-updated selection, and filtering of missing or unparseable dates.
-- **Reopen rule:** Do not return this completed ticket to open backlog without new evidence.
+- **状態:** 完了
+- **証跡:** [PR #4](https://github.com/matkei31/security-digest/pull/4), merge commit `9ae5240b4e1b00e74f4b7af7a03e6d5769d53511`
+- **完了範囲:** 分数秒付きAtom日付解析、UTC比較、published優先のupdated選択、および欠落・解析不能な日付のフィルタリングに対するfix-forward。
+- **再オープン条件:** 新しい証跡なしに、この完了済みチケットを未完了バックログへ戻さない。
 
-### Ticket 14a-4 — 2026-07-11〜13 stale history repair
+### Ticket 14a-4 — 2026-07-11〜13の古い履歴修復
 
-- **Status:** Done
-- **Evidence:** [PR #5](https://github.com/matkei31/security-digest/pull/5), merge commit `0e7a5d26dafaca6a8f7d65bb07144d5da31369c0`
-- **Completed scope:** Repair of stale history for 2026-07-11 through 2026-07-13 after the Atom date fix.
-- **Reopen rule:** Do not return this completed ticket to open backlog without new evidence.
+- **状態:** 完了
+- **証跡:** [PR #5](https://github.com/matkei31/security-digest/pull/5), merge commit `0e7a5d26dafaca6a8f7d65bb07144d5da31369c0`
+- **完了範囲:** Atom日付修正後の、2026-07-11から2026-07-13までの古い履歴の修復。
+- **再オープン条件:** 新しい証跡なしに、この完了済みチケットを未完了バックログへ戻さない。
 
 ### ARTICLE内部識別子漏洩の修正
 
-- **Status:** Done
-- **Source type:** Engineering finding / production incident
-- **Evidence:** [PR #8](https://github.com/matkei31/security-digest/pull/8), merge commit `d1518910cd1a685cffc5d526ec65f6e708a4d535`; current `build_verified_context_for_prompt` in `fetch.py`; related regression tests in `test_fetch.py`/`test_article_v5.py`.
-- **Completed scope:** Removed the internal key `recent_kev_additions` and other internal identifiers from ARTICLE's Gemini input; introduced an explicit allowlist projection that converts internal container/field names, flag values, and status values to human-readable labels; stopped unknown facts keys, CVE fields, and rule flags from auto-propagating into the prompt; updated the ARTICLE prompt version for this input-contract change; closed the `reason`/daily-JSON/top-page/daily-archive re-exposure path the PR reproduced against real production runs.
-- **Evidence for the underlying incident:** PR #8's body records reproduction against two production run IDs (`29367843566`, `29374504304`) and their generated commits, for four articles in the vulnerability/patch category, with the leak appearing in `analysis.reason`, daily JSON, the top page, and the current-day archive.
-- **Reopen rule:** Reopen if a new trusted-context input bypasses the allowlist projection, an internal key/status/flag value is exposed to end users, a raw AI response is newly stored or displayed, or a similar input-contract leak is confirmed. See [SD-015](DECISIONS.md#sd-015--project-trusted-context-through-an-explicit-allowlist-and-do-not-expose-internal-identifiers) for the generalized boundary rule this incident established.
+- **状態:** 完了
+- **出所種別:** 技術上の発見事項 / 本番インシデント
+- **証跡:** [PR #8](https://github.com/matkei31/security-digest/pull/8), merge commit `d1518910cd1a685cffc5d526ec65f6e708a4d535`; 現行の`fetch.py`内`build_verified_context_for_prompt`; `test_fetch.py`/`test_article_v5.py`の関連回帰テスト。
+- **完了範囲:** ARTICLEのGemini入力から内部キー`recent_kev_additions`および他の内部識別子を削除；内部container/field名、flag値、status値を人間可読なラベルへ変換する明示的なallowlist projectionを導入；未知のfacts key、CVEフィールド、rule flagがpromptへ自動的に伝播することを停止；この入力契約変更に対応してARTICLE prompt versionを更新；PRが実際のproduction runsに対して再現した`reason`/daily-JSON/トップページ/日別archiveの再露出経路を閉じた。
+- **インシデント自体の証跡:** PR #8の本文は、脆弱性/パッチカテゴリの4記事について、2件のproduction run ID（`29367843566`、`29374504304`）とその生成commitに対する再現を記録しており、漏洩は`analysis.reason`、daily JSON、トップページ、当日archiveに現れた。
+- **再オープン条件:** 新しいtrusted-context入力がallowlist projectionを回避する場合、内部key/status/flag値が利用者へ露出した場合、raw AI responseが新たに保存または表示された場合、または類似の入力契約漏洩が確認された場合に再オープンする。このインシデントが確立した一般化された境界ルールについては[SD-015](DECISIONS.md#sd-015--project-trusted-context-through-an-explicit-allowlist-and-do-not-expose-internal-identifiers)を参照。
 
-### Ticket 12c — Use vulnerability facts in article analysis
+### Ticket 12c — 記事分析への脆弱性情報の活用
 
-- **Status:** Done
-- **Evidence:** [PR #1](https://github.com/matkei31/security-digest/pull/1), merge commit `8f6c5dfdcfc2113cba410a7059d230026d6d1a7a`
-- **Completed scope (per PR body):** Passed verified CVE/CVSS/KEV facts into Gemini ARTICLE analysis; separated verified context from untrusted article content; used CVSS as a soft signal and KEV as a strong but non-deterministic signal; preserved the existing response schema, Brief prompt, HTML, and facts-acquisition behavior; added prompt-injection and decision-boundary tests.
-- **Present in current implementation:** The vulnerability-facts acquisition and CVSS/KEV-as-signal logic this PR introduced remains foundational to the current ARTICLE pipeline.
-- **Replaced by later work:** The specific verified-context construction this PR introduced was replaced by the allowlist-projection approach recorded in [SD-015](DECISIONS.md#sd-015--project-trusted-context-through-an-explicit-allowlist-and-do-not-expose-internal-identifiers) ([PR #8](https://github.com/matkei31/security-digest/pull/8)).
-- **Reopen rule:** Do not return this completed ticket to open backlog without new evidence.
+- **状態:** 完了
+- **証跡:** [PR #1](https://github.com/matkei31/security-digest/pull/1), merge commit `8f6c5dfdcfc2113cba410a7059d230026d6d1a7a`
+- **完了範囲（PR本文より）:** 検証済みのCVE/CVSS/KEV factsをGemini ARTICLE分析へ渡した；verified contextをuntrustedな記事内容から分離した；CVSSをsoft signal、KEVをstrongだが非決定論的なsignalとして使用した；既存のresponse schema、Brief prompt、HTML、facts取得の挙動を維持した；prompt-injectionとdecision-boundaryのテストを追加した。
+- **現行実装への残存:** 本PRが導入したvulnerability-facts取得とCVSS/KEVをsignalとして扱うロジックは、現行ARTICLEパイプラインの基盤であり続けている。
+- **後続作業による置換:** 本PRが導入した具体的なverified-context構築は、[SD-015](DECISIONS.md#sd-015--project-trusted-context-through-an-explicit-allowlist-and-do-not-expose-internal-identifiers)（[PR #8](https://github.com/matkei31/security-digest/pull/8)）に記録されているallowlist-projectionアプローチによって置き換えられた。
+- **再オープン条件:** 新しい証跡なしに、この完了済みチケットを未完了バックログへ戻さない。
 
-### Ticket 13c — Distinguish feed failures from zero results
+### Ticket 13c — フィード取得失敗とゼロ件取得の区別
 
-- **Status:** Done
-- **Evidence:** [PR #2](https://github.com/matkei31/security-digest/pull/2), merge commit `a8b551818443f2ca9deb2df160fc661aab8faf77`
-- **Completed scope (per PR body):** Distinguished successful zero-result feeds from HTTP/XML failures; retried RSS requests once, only for HTTP 429 and selected 5xx responses; preserved `fetch_feed()`'s list-returning compatibility; reported successful zero-result CISA KEV collection as OK; sanitized error messages to prevent internal file-path exposure; recorded the actual HTTP response status.
-- **Present in current implementation:** Yes — `RSS_RETRYABLE_HTTP_STATUSES = {429, 500, 502, 503, 504}` and its associated retry logic remain in `fetch.py`, tagged "Ticket 13c" in code comments.
-- **Replaced by later work:** None identified.
-- **Reopen rule:** Do not return this completed ticket to open backlog without new evidence.
+- **状態:** 完了
+- **証跡:** [PR #2](https://github.com/matkei31/security-digest/pull/2), merge commit `a8b551818443f2ca9deb2df160fc661aab8faf77`
+- **完了範囲（PR本文より）:** 成功したゼロ件取得のfeedとHTTP/XML失敗を区別した；HTTP 429および特定の5xxレスポンスに限り、RSSリクエストを一度だけ再試行した；`fetch_feed()`のlist-returning互換性を維持した；ゼロ件取得に成功したCISA KEV収集をOKとして報告した；内部file-path露出を防ぐためエラーメッセージをsanitizeした；実際のHTTPレスポンスstatusを記録した。
+- **現行実装への残存:** はい — `RSS_RETRYABLE_HTTP_STATUSES = {429, 500, 502, 503, 504}`とその関連するretryロジックは`fetch.py`に残っており、コードコメントで「Ticket 13c」とタグ付けされている。
+- **後続作業による置換:** 特定されていない。
+- **再オープン条件:** 新しい証跡なしに、この完了済みチケットを未完了バックログへ戻さない。
 
-### Ticket 14a — Fix Atom article link selection
+### Ticket 14a — Atom記事リンク選択の修正
 
-- **Status:** Done
-- **Evidence:** [PR #3](https://github.com/matkei31/security-digest/pull/3), merge commit `d90fa3986a541aafbdf76bc6e6b4d8f0130ed19c`
-- **Completed scope (per PR body):** Fixed Atom `rel=alternate` article-link selection being ignored due to Element truthiness evaluation, which had fallen back to `rel=replies` comment-feed URLs; selected only unspecified-`rel`-or-`alternate` safe http/https article URLs; excluded comment feeds, feed/XML-type links, and non-HTTP URLs; skipped entries with no safe URL; applied `MAX_PER_FEED` to valid entries only. This was a fix-forward change; already-affected existing articles were separately repaired by Ticket 14a-3/14a-4.
-- **Present in current implementation:** Yes — this link-selection fix remains active in `fetch.py`, tagged "Ticket 14a" in code comments.
-- **Replaced by later work:** None; extended (not replaced) by Ticket 14a-3 (date parsing) and Ticket 14a-4 (2026-07-11–13 history repair), both already recorded above as their own Completed reference entries.
-- **Reopen rule:** Do not return this completed ticket to open backlog without new evidence.
+- **状態:** 完了
+- **証跡:** [PR #3](https://github.com/matkei31/security-digest/pull/3), merge commit `d90fa3986a541aafbdf76bc6e6b4d8f0130ed19c`
+- **完了範囲（PR本文より）:** Element真偽値評価によりAtomの`rel=alternate`記事リンク選択が無視され、`rel=replies`のコメントfeed URLへフォールバックしていた問題を修正した；rel未指定または`alternate`の安全なhttp/https記事URLのみを選択した；コメントfeed、feed/XML形式のリンク、非HTTP URLを除外した；安全なURLがないentryをskipした；`MAX_PER_FEED`を有効なentryのみへ適用した。これはfix-forwardの変更であった；既に影響を受けていた既存記事は、Ticket 14a-3/14a-4で別途修復された。
+- **現行実装への残存:** はい — このlink選択の修正は`fetch.py`で有効なまま残っており、コードコメントで「Ticket 14a」とタグ付けされている。
+- **後続作業による置換:** なし；Ticket 14a-3（日付解析）とTicket 14a-4（2026-07-11〜13の履歴修復）によって拡張されている（置換ではない）— いずれも上記にそれぞれ独立した完了済み参照entryとしてすでに記録されている。
+- **再オープン条件:** 新しい証跡なしに、この完了済みチケットを未完了バックログへ戻さない。
 
 ### 取得時証跡と内部日付別アーカイブ
 
-- **Status:** Done
-- **Original wording:** Original wording not recovered.
-- **Source type:** Recovered paraphrase / user-accepted approach
-- **Evidence:** `daily_json.py` (`build_raw_excerpt()` — bounded to 200 characters from the fetched feed description, no article-page scraping; `compute_content_hash()` — SHA-256 of `canonical_url`+`raw_title`+`raw_excerpt`); `fetch.py` (`build_daily_archive_html()`, `generate_archive_outputs()` — internal date-based archive built from daily JSON); `test_daily_json.py`, `test_archive.py`; commit `1c65be67eaaa223d65ca1056313fb933d31f1ec4` ("feat: add daily JSON schema and storage (Ticket 3)"), commit `b51de673b3ea15347413d905f32d473e6f92712e` ("feat: add daily archive pages", Ticket 9, merged at `fbba0b8e57a68adafa0bcabe69a621a3f0c08e54`)
-- **Completed scope:** Store, per article, `url`/`canonical_url`, `title`, `published_at`, `fetched_at`, a bounded `raw_excerpt`, and `content_hash` as minimal provenance against future link rot. Build an internal date-based archive (`docs/archive/YYYY-MM-DD.html`) from daily JSON. Do not store full article text or rich content (consistent with SD-002). Do not submit fetched URLs to an external archive service (no Wayback/archive.org integration exists in the codebase).
-- **Reopen rule:** Do not return this completed scope to open backlog without new evidence. Reopen/reevaluate if any of the following is proposed: expanding the `raw_excerpt` length or source beyond the current bounded, description-based contract; storing full article text; storing rich content; automatically submitting fetched URLs to an external archive service; supporting private/authenticated feeds; or providing stored data to an external party.
+- **状態:** 完了
+- **原文:** 原文未回収。
+- **出所種別:** 復元要約 / ユーザー承認済みのアプローチ
+- **証跡:** `daily_json.py`（`build_raw_excerpt()` — 取得したfeed descriptionから200文字に制限、記事ページのscrapingなし；`compute_content_hash()` — `canonical_url`＋`raw_title`＋`raw_excerpt`のSHA-256）；`fetch.py`（`build_daily_archive_html()`、`generate_archive_outputs()` — daily JSONから構築される内部の日付別archive）；`test_daily_json.py`、`test_archive.py`；commit `1c65be67eaaa223d65ca1056313fb933d31f1ec4`（「feat: add daily JSON schema and storage (Ticket 3)」）、commit `b51de673b3ea15347413d905f32d473e6f92712e`（「feat: add daily archive pages」、Ticket 9、`fbba0b8e57a68adafa0bcabe69a621a3f0c08e54`でmerge）
+- **完了範囲:** 記事ごとに、`url`/`canonical_url`、`title`、`published_at`、`fetched_at`、範囲制限された`raw_excerpt`、`content_hash`を、将来のlink rotに対する最小限のprovenanceとして保存する。daily JSONから内部の日付別archive（`docs/archive/YYYY-MM-DD.html`）を構築する。記事全文やrich contentは保存しない（SD-002と整合）。取得したURLを外部archiveサービスへ送信しない（コードベースにWayback/archive.org連携は存在しない）。
+- **再オープン条件:** 新しい証跡なしに、この完了済み範囲を未完了バックログへ戻さない。次のいずれかが提案された場合は再オープン・再評価する: 現行の範囲制限された、description-basedの契約を超えて`raw_excerpt`の長さや取得元を拡大すること；記事全文の保存；rich contentの保存；取得したURLの外部archiveサービスへの自動送信；private/認証feedへの対応；保存データの外部提供。
