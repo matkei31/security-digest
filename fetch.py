@@ -3839,6 +3839,7 @@ def build_html(
     subtitle=None,
     generated_at=None,
     archive_nav_html=None,
+    archive_footer_nav_html=None,
     legacy_status_line=None,
 ):
     now      = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
@@ -4135,6 +4136,7 @@ def build_html(
     .sub{{font-size:12px;color:#8b949e;margin-top:4px}}
     .count{{font-size:12px;color:#58a6ff;margin-top:2px}}
     .archive-nav{{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}}
+    .archive-bottom-nav{{max-width:680px;margin:20px auto 0;padding:0 12px}}
     .archive-link{{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
     .archive-link:hover{{text-decoration:underline}}
     .article-list-header{{max-width:680px;margin:12px auto 0;padding:0 12px}}
@@ -4249,6 +4251,7 @@ def build_html(
       <ul>{sources_li}</ul>
     </details>
   </div>
+  {archive_footer_nav_html or ""}
 </body>
 </html>"""
 
@@ -4276,17 +4279,42 @@ def synthesize_legacy_brief_status_line_from_digest(digest):
     return format_brief_status_line(ctx)
 
 
-def build_daily_archive_html(digest):
+def render_archive_adjacent_links(previous_date=None, next_date=None):
+    links = []
+    if previous_date:
+        links.append(
+            '<a class="archive-link archive-prev-link" '
+            f'href="{esc(previous_date)}.html">'
+            f'← 前のダイジェスト（{esc(format_digest_date_label(previous_date))}）</a>'
+        )
+    if next_date:
+        links.append(
+            '<a class="archive-link archive-next-link" '
+            f'href="{esc(next_date)}.html">'
+            f'次のダイジェスト（{esc(format_digest_date_label(next_date))}）→</a>'
+        )
+    return "".join(links)
+
+
+def build_daily_archive_html(digest, previous_date=None, next_date=None):
     digest_date = digest["digest_date"]
     items = digest_items_for_html(digest)
     brief = brief_for_html_from_digest(digest)
     subtitle = f"日次ダイジェスト：{format_digest_date_label(digest_date)}"
     generated_at = parse_archive_datetime(digest.get("generated_at"))
-    nav = (
+    adjacent_links = render_archive_adjacent_links(previous_date, next_date)
+    top_nav = (
         '<nav class="archive-nav">'
         '<a class="archive-link" href="../index.html">最新のダイジェストへ戻る</a>'
         '<a class="archive-link" href="index.html">過去のダイジェスト一覧へ戻る</a>'
+        f'{adjacent_links}'
         '</nav>'
+    )
+    bottom_nav = (
+        '<nav class="archive-nav archive-bottom-nav" aria-label="前後のダイジェスト">'
+        f'{adjacent_links}'
+        '</nav>'
+        if adjacent_links else ""
     )
     return build_html(
         items,
@@ -4294,14 +4322,14 @@ def build_daily_archive_html(digest):
         page_title="Security Digest",
         subtitle=subtitle,
         generated_at=generated_at or digest.get("generated_at"),
-        archive_nav_html=nav,
+        archive_nav_html=top_nav,
+        archive_footer_nav_html=bottom_nav,
         legacy_status_line=synthesize_legacy_brief_status_line_from_digest(digest),
     )
 
 
 def archive_summary_from_digest(digest):
     digest_date = digest["digest_date"]
-    brief = brief_for_html_from_digest(digest)
     run = digest.get("run") or {}
     counts = digest.get("counts") or {}
     return {
@@ -4312,7 +4340,6 @@ def archive_summary_from_digest(digest):
         "generated_at": digest.get("generated_at"),
         "total_items": int(run.get("total_items") or len(digest.get("items") or [])),
         "high_count": int((counts.get("importance") or {}).get("高", 0) or 0),
-        "brief_status": "本日の要点あり" if brief else "本日の要点なし",
     }
 
 
@@ -4331,7 +4358,6 @@ def build_archive_index_html(summaries, generated_at=None):
         <a class="archive-link archive-date-link" href="{esc(summary['href'])}">{esc(summary['label'])}</a>
         <div class="archive-meta">記事{esc(str(summary['total_items']))}件</div>
         <div class="archive-meta">重要度 高{esc(str(summary['high_count']))}件</div>
-        <div class="archive-meta">{esc(summary['brief_status'])}</div>
       </li>""")
 
     list_body = "\n      ".join(items_html) if items_html else '<li class="archive-list-item"><div class="archive-meta">公開済みのダイジェストはありません。</div></li>'
@@ -4438,18 +4464,37 @@ def generate_archive_outputs(data_dir=None, docs_dir=None, generated_at=None):
     data_dir = Path(data_dir) if data_dir is not None else daily_json.DATA_DIR
     docs_dir = Path(docs_dir) if docs_dir is not None else DOCS_DIR
     archive_dir = docs_dir / "archive"
+    digests = []
     summaries = []
 
     for path in daily_digest_paths(data_dir):
         try:
             digest = load_daily_digest(path)
-            archive_path = archive_dir / f"{digest['digest_date']}.html"
-            html = build_daily_archive_html(digest)
-            atomic_write_text(archive_path, html, validator=validate_html_document)
         except daily_json.DailyJsonError as e:
             print(f"[WARN] アーカイブ生成をスキップ: {e}", file=sys.stderr)
             continue
+        digests.append(digest)
         summaries.append(archive_summary_from_digest(digest))
+
+    dates = sorted(digest["digest_date"] for digest in digests)
+    adjacent_dates = {
+        digest_date: (
+            dates[index - 1] if index > 0 else None,
+            dates[index + 1] if index + 1 < len(dates) else None,
+        )
+        for index, digest_date in enumerate(dates)
+    }
+
+    for digest in digests:
+        digest_date = digest["digest_date"]
+        previous_date, next_date = adjacent_dates[digest_date]
+        archive_path = archive_dir / f"{digest_date}.html"
+        html = build_daily_archive_html(
+            digest,
+            previous_date=previous_date,
+            next_date=next_date,
+        )
+        atomic_write_text(archive_path, html, validator=validate_html_document)
 
     index_html = build_archive_index_html(summaries, generated_at=generated_at)
     atomic_write_text(archive_dir / "index.html", index_html, validator=validate_html_document)
