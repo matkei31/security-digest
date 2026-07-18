@@ -1587,6 +1587,7 @@ def digest_items_for_html(digest):
             or entry.get("published_at")
             or entry.get("date")
         )
+        analysis = entry.get("analysis") if isinstance(entry.get("analysis"), dict) else entry.get("ai_analysis")
         items.append({
             "id": entry.get("id"),
             "title": clean_archive_text(entry.get("title")) or clean_archive_text(entry.get("raw_title")) or "無題",
@@ -1596,7 +1597,12 @@ def digest_items_for_html(digest):
             "date": parse_archive_datetime(published),
             "source": clean_archive_text(entry.get("source_name")) or clean_archive_text(entry.get("source_id")) or clean_archive_text(entry.get("source")) or "不明",
             "lang": clean_archive_text(entry.get("language")) or clean_archive_text(entry.get("lang")),
-            "ai_analysis": entry.get("analysis") if isinstance(entry.get("analysis"), dict) else entry.get("ai_analysis"),
+            "ai_analysis": analysis,
+            # BL-016: is_article_evaluated()/compute_brief_trusted_context()が
+            # 判定済み/未判定の共通基準として参照するstatusのみを保持する
+            # (error_type/http_status/generated_atはarchive表示・状態行合成の
+            # いずれにも不要なため持たせない)。
+            "ai_analysis_meta": {"status": analysis.get("status")} if isinstance(analysis, dict) else None,
             # Ticket 12b: アーカイブページでも脆弱性情報を表示するため、保存済み
             # factsをそのまま引き継ぐ(型検証はrender_vulnerability_facts_html側で
             # 行う。factsキーの無い過去のdaily JSONではNoneのままでよい)。
@@ -4249,41 +4255,24 @@ def build_html(
 
 def synthesize_legacy_brief_status_line_from_digest(digest):
     """BL-016: Ticket 15b以前(決定論的状態行を持たない旧BRIEF)のarchive表示専用
-    fallback。保存済みdigest["counts"]/digest["run"]から、
-    compute_brief_trusted_context()と同じ定義の件数を再構成し、現行形式
-    (format_brief_status_line())の状態行を算出する。daily JSON自体は変更しない、
-    表示専用のpure helper。
+    fallback。digest_items_for_html()で復元したitemsに対し、
+    is_article_evaluated()/compute_brief_trusted_context()と全く同じ記事単位の
+    判定済み/未判定定義(analysis.statusがsuccess/fallback、かつimportance・
+    urgencyの両方が有効値の場合のみ判定済み。いずれか一方でも欠落・不正なら
+    記事全体を未判定として扱う)で件数を算出し、現行形式
+    (format_brief_status_line())の状態行を返す。daily JSON自体は変更しない、
+    表示専用のpure helper。counts軸別集計からunclassifiedを推定しない
+    (importance有効・urgency無効のような記事を誤ってimportance側の判定済みへ
+    数えてしまうため)。
 
-    countsが無い・不正な場合はNoneを返す(fail-open)。トップページの通常生成
-    (build_todays_brief()経由)ではoverview自体に既に決定論的状態行が
+    digest.itemsが無い・list以外の場合はNoneを返す(fail-open)。トップページの
+    通常生成(build_todays_brief()経由)ではoverview自体に既に決定論的状態行が
     埋め込まれているため、この関数の戻り値は使われない。
     """
-    counts = digest.get("counts")
-    if not isinstance(counts, dict):
+    if not isinstance(digest.get("items"), list):
         return None
-    importance_counts = counts.get("importance")
-    urgency_counts = counts.get("urgency")
-    if not isinstance(importance_counts, dict) or not isinstance(urgency_counts, dict):
-        return None
-
-    run = digest.get("run") or {}
-    published_total = run.get("total_items")
-    if not isinstance(published_total, int):
-        items = digest.get("items")
-        published_total = len(items) if isinstance(items, list) else None
-    if not isinstance(published_total, int):
-        return None
-
-    try:
-        ctx = {
-            "published_total": published_total,
-            "importance_high": int(importance_counts.get("高", 0) or 0),
-            "urgency_today": int(urgency_counts.get("本日確認", 0) or 0),
-            "urgency_week": int(urgency_counts.get("今週確認", 0) or 0),
-            "unclassified": int(importance_counts.get("未判定", 0) or 0),
-        }
-    except (TypeError, ValueError):
-        return None
+    items = digest_items_for_html(digest)
+    ctx = compute_brief_trusted_context(items)
     return format_brief_status_line(ctx)
 
 

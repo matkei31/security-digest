@@ -299,11 +299,13 @@ class ArchiveGenerationTest(unittest.TestCase):
         # digest自体(overview文字列)は補完前後で変更されない
         self.assertEqual(digest["brief"]["overview"], original_overview)
 
-    def test_unrecognized_overview_without_counts_is_shown_in_full_without_status_line(self):
-        # counts自体が存在しない/不正な場合はfail-openし、旧来どおり全文表示する。
+    def test_unrecognized_overview_without_items_is_shown_in_full_without_status_line(self):
+        # BL-016: digest.itemsがlist以外(不正)の場合はfail-openし、旧来どおり
+        # 全文表示する。合成は記事単位の判定(digest.items由来)を前提とするため、
+        # countsフィールドの有無ではなくitems自体の妥当性で判断する。
         digest = make_digest(digest_date="2026-07-05")
         digest["brief"]["overview"] = "2026-07-05の概況"
-        digest["counts"] = None
+        digest["items"] = None
 
         html = fetch.build_daily_archive_html(digest)
 
@@ -335,6 +337,76 @@ class ArchiveGenerationTest(unittest.TestCase):
         self.assertEqual(archive_html.count(expected_status_line), top_html.count(expected_status_line))
         # digest自体(記事内容・件数・overview文字列)は変換前後で変更されない
         self.assertEqual(digest["brief"]["overview"], legacy_overview)
+
+
+class LegacyStatusLineSynthesisTest(unittest.TestCase):
+    """BL-016: synthesize_legacy_brief_status_line_from_digest()の記事単位判定
+    テスト。is_article_evaluated()/compute_brief_trusted_context()と全く同じ
+    「analysis.statusがsuccess/fallback、かつimportance・urgencyの両方が
+    有効値の場合のみ判定済み。いずれか一方でも欠落・不正なら記事全体を
+    未判定として扱う」という定義から外れないことを確認する。
+    """
+
+    def test_valid_importance_with_invalid_urgency_is_unclassified_not_high(self):
+        digest = make_digest(total_items=1, high_count=1)
+        digest["items"][0]["analysis"]["urgency"] = "不正な値"
+        status_line = fetch.synthesize_legacy_brief_status_line_from_digest(digest)
+        self.assertIn("重要度「高」0件", status_line)
+        self.assertIn("未判定1件", status_line)
+
+    def test_valid_urgency_with_invalid_importance_is_unclassified_not_today(self):
+        digest = make_digest(total_items=1, high_count=0)
+        digest["items"][0]["analysis"]["importance"] = "不正な値"
+        digest["items"][0]["analysis"]["urgency"] = "本日確認"
+        status_line = fetch.synthesize_legacy_brief_status_line_from_digest(digest)
+        self.assertIn("本日確認0件", status_line)
+        self.assertIn("未判定1件", status_line)
+
+    def test_two_articles_each_invalid_on_different_axis_both_count_as_unclassified(self):
+        digest = make_digest(total_items=2, high_count=0)
+        digest["items"][0]["analysis"]["importance"] = "高"
+        digest["items"][0]["analysis"]["urgency"] = "不正な値"
+        digest["items"][1]["analysis"]["importance"] = "不正な値"
+        digest["items"][1]["analysis"]["urgency"] = "本日確認"
+        status_line = fetch.synthesize_legacy_brief_status_line_from_digest(digest)
+        self.assertIn("未判定2件", status_line)
+        self.assertIn("重要度「高」0件", status_line)
+        self.assertIn("本日確認0件", status_line)
+
+    def test_only_success_or_fallback_with_both_axes_valid_are_aggregated(self):
+        digest = make_digest(total_items=3, high_count=1)
+        # items[0]: success/高/本日確認(既定) → 集計対象
+        digest["items"][1]["analysis"]["status"] = "fallback"  # 両軸有効のまま → 集計対象
+        digest["items"][2]["analysis"]["status"] = "success"
+        digest["items"][2]["analysis"]["importance"] = "不正な値"  # 無効 → 未判定
+        status_line = fetch.synthesize_legacy_brief_status_line_from_digest(digest)
+        self.assertIn("掲載3件", status_line)
+        self.assertIn("未判定1件", status_line)
+
+    def test_failed_and_not_attempted_status_are_unclassified(self):
+        digest = make_digest(total_items=2, high_count=2)
+        digest["items"][0]["analysis"]["status"] = "failed"
+        digest["items"][1]["analysis"]["status"] = "not_attempted"
+        status_line = fetch.synthesize_legacy_brief_status_line_from_digest(digest)
+        self.assertIn("未判定2件", status_line)
+        self.assertIn("重要度「高」0件", status_line)
+
+    def test_existing_2026_07_archive_results_are_unchanged(self):
+        # 記事単位判定への変更後も、実データ(2026-07-11/07-12/07-14)の
+        # 合成結果が変わらないことを固定値で回帰確認する。
+        for digest_date, expected in (
+            ("2026-07-11", "掲載6件｜重要度「高」1件｜本日確認1件｜今週確認2件"),
+            ("2026-07-12", "掲載3件｜重要度「高」1件｜本日確認1件｜今週確認1件"),
+            ("2026-07-14", "掲載11件｜重要度「高」0件｜本日確認0件｜今週確認7件"),
+        ):
+            with self.subTest(digest_date=digest_date):
+                digest = fetch.load_daily_digest(
+                    Path(__file__).resolve().parent / "data" / f"{digest_date}.json"
+                )
+                self.assertEqual(
+                    fetch.synthesize_legacy_brief_status_line_from_digest(digest),
+                    expected,
+                )
 
 
 class ArchiveIndexAndPathTest(unittest.TestCase):

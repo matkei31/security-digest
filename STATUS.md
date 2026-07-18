@@ -58,6 +58,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
 - [BL-016](BACKLOG.md#bl-016--本日の要点の表示階層を目視受入する): The "本日の状態" label/brackets/colon/trailing period have been removed from the deterministic status line, and all existing per-day archive HTML has been regenerated from existing daily JSON; explicit production visual acceptance (PC/390px) of the resulting display has not yet been recorded.
+- [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる): Rebuilding the top page from stored daily JSON can show a different article-meta timestamp than the original production render; root cause and fix are not yet implemented.
 - [BL-017](BACKLOG.md#bl-017--過去ダイジェスト間を前後移動できるようにする): One-click previous/next navigation between existing daily archives is not yet implemented.
 - [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する): A comprehensive security requirements document does not yet exist; existing rules remain scattered across `AGENTS.md` and code.
 - Ticket 16a's standalone real-Gemini diagnostic for the Microsoft reference article remains unverified; this did not block its production acceptance.
@@ -65,8 +66,9 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 ## 7. Next candidates
 
 1. [BL-016](BACKLOG.md#bl-016--本日の要点の表示階層を目視受入する) — Visually accept the current "本日の要点" display on production, PC and 390px.
-2. [BL-001](BACKLOG.md#bl-001--プルリクエストci) — Add ordinary pull request CI.
-3. [BL-017](BACKLOG.md#bl-017--過去ダイジェスト間を前後移動できるようにする) — Implement one-click previous/next navigation between daily archives.
+2. [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる) — Determine and fix the article-meta timestamp discrepancy between normal generation and daily JSON reconstruction.
+3. [BL-001](BACKLOG.md#bl-001--プルリクエストci) — Add ordinary pull request CI.
+4. [BL-017](BACKLOG.md#bl-017--過去ダイジェスト間を前後移動できるようにする) — Implement one-click previous/next navigation between daily archives.
 
 [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not placed ahead of BL-001 in this priority list.
 
