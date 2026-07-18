@@ -99,12 +99,14 @@ class UiSpecDocumentTest(unittest.TestCase):
             "- **残作業:** 未決事項のユーザー裁定、UI_SPEC.mdの承認、完了記録",
             self.bl004,
         )
+        self.assertIn("[PR #30](https://github.com/matkei31/security-digest/pull/30)", self.bl004)
 
     def test_status_keeps_bl004_as_the_next_candidate(self):
         next_candidates = self.status.split("## 7. Next candidates", 1)[1].split(
             "## 8. Sources of truth", 1
         )[0]
-        self.assertIn("UI_SPEC.md Draft 0.1", self.status)
+        self.assertIn("[UI_SPEC.md](UI_SPEC.md) Draft 0.1", self.status)
+        self.assertIn("[PR #30](https://github.com/matkei31/security-digest/pull/30)", self.status)
         self.assertIn("ユーザーレビュー待ち", self.status)
         self.assertRegex(next_candidates, r"(?m)^1\. \[BL-004\]")
         self.assertNotIn("BL-004", self.status.split("## 5. Recently completed work", 1)[1].split("## 6.", 1)[0])
