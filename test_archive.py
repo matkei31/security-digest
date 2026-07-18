@@ -264,7 +264,7 @@ class ArchiveGenerationTest(unittest.TestCase):
             "urgency_today": 1, "urgency_week": 1, "unclassified": 0,
         }
         status_line = fetch.format_brief_status_line(ctx)
-        digest["brief"]["overview"] = status_line + "Geminiによる本文です。"
+        digest["brief"]["overview"] = status_line + "\nGeminiによる本文です。"
 
         archive_html = fetch.build_daily_archive_html(digest)
         top_html = fetch.build_html(
@@ -277,10 +277,33 @@ class ArchiveGenerationTest(unittest.TestCase):
             self.assertNotIn("Today’s Brief", html)
             self.assertIn(f'<p class="brief-status-line">{status_line}</p>', html)
             self.assertIn('<p class="brief-overview">Geminiによる本文です。</p>', html)
+            # 改行自体は表示要素の外へ出ない(status lineとoverview本文の
+            # HTMLエスケープ後テキストに"\n"が残らない)
+            self.assertNotIn(f"{status_line}\n", html)
 
-    def test_unrecognized_legacy_overview_from_json_is_shown_in_full_in_archive(self):
+    def test_legacy_free_text_overview_is_filled_with_synthesized_status_line_in_archive(self):
+        # BL-016 Blocker1: 決定論的状態行を持たない旧BRIEF(Ticket 15b以前、
+        # 自由文のみのoverview)は、archive表示時に限り、保存済みcountsから
+        # 算出した状態行が補完される。overview文字列自体は変更しない。
+        digest = make_digest(digest_date="2026-07-05", total_items=1, high_count=1)
+        digest["brief"]["overview"] = "2026-07-05の概況"
+        original_overview = digest["brief"]["overview"]
+
+        html = fetch.build_daily_archive_html(digest)
+
+        self.assertIn('<p class="brief-overview">2026-07-05の概況</p>', html)
+        self.assertIn(
+            '<p class="brief-status-line">掲載1件｜重要度「高」1件｜本日確認1件｜今週確認0件</p>',
+            html,
+        )
+        # digest自体(overview文字列)は補完前後で変更されない
+        self.assertEqual(digest["brief"]["overview"], original_overview)
+
+    def test_unrecognized_overview_without_counts_is_shown_in_full_without_status_line(self):
+        # counts自体が存在しない/不正な場合はfail-openし、旧来どおり全文表示する。
         digest = make_digest(digest_date="2026-07-05")
         digest["brief"]["overview"] = "2026-07-05の概況"
+        digest["counts"] = None
 
         html = fetch.build_daily_archive_html(digest)
 

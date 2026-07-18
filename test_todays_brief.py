@@ -720,7 +720,9 @@ class ArrayOverrideTest(unittest.TestCase):
         result = dict(VALID_BRIEF_RESPONSE)
         result.update({"status": "success", "error_type": None, "http_status": None})
         applied = fetch.apply_deterministic_brief_context(result, ctx)
-        expected_prefix = fetch.format_brief_status_line(ctx) + fetch.format_brief_state_explanation(ctx)
+        expected_prefix = (
+            fetch.format_brief_status_line(ctx) + "\n" + fetch.format_brief_state_explanation(ctx)
+        )
         self.assertTrue(applied["overview"].startswith(expected_prefix))
         self.assertIn(VALID_BRIEF_RESPONSE["overview"], applied["overview"])
 

@@ -908,8 +908,8 @@ class BriefStatusLineHtmlTest(unittest.TestCase):
         )
         expected_explanation = fetch.format_brief_state_explanation(ctx)
         expected_rest = expected_explanation + "Geminiが生成した補足本文そのもの。"
-        # 分離しても、状態行+残り本文を連結すれば元のoverviewと一字一句一致すること
-        self.assertEqual(brief["overview"], status_line + expected_rest)
+        # 分離しても、状態行+改行境界+残り本文を連結すれば元のoverviewと一字一句一致すること
+        self.assertEqual(brief["overview"], status_line + "\n" + expected_rest)
 
         html = fetch.build_html([self._make_item()], brief)
         segment = brief_segment(html)
@@ -1014,7 +1014,7 @@ class SplitBriefOverviewStatusLineTest(unittest.TestCase):
             "urgency_today": 2, "urgency_week": 4, "unclassified": 0,
         }
         status_line = fetch.format_brief_status_line(ctx)
-        overview = status_line + "続く説明文。"
+        overview = status_line + "\n続く説明文。"
         split = fetch.split_brief_overview_status_line(overview)
         self.assertEqual(split, (status_line, "続く説明文。"))
 
@@ -1024,9 +1024,20 @@ class SplitBriefOverviewStatusLineTest(unittest.TestCase):
             "urgency_today": 2, "urgency_week": 4, "unclassified": 5,
         }
         status_line = fetch.format_brief_status_line(ctx)
-        overview = status_line + "続く説明文。"
+        overview = status_line + "\n続く説明文。"
         split = fetch.split_brief_overview_status_line(overview)
         self.assertEqual(split, (status_line, "続く説明文。"))
+
+    def test_current_format_without_newline_boundary_is_not_split(self):
+        # BL-016: 現行形式であっても、直後が改行または文字列末尾でない場合
+        # (数字列の途中など、自由文と地続きになっているケース)は分離しない。
+        ctx = {
+            "published_total": 12, "importance_high": 3,
+            "urgency_today": 2, "urgency_week": 4, "unclassified": 0,
+        }
+        status_line = fetch.format_brief_status_line(ctx)
+        overview = status_line + "続く説明文。"  # 改行を挟まない
+        self.assertIsNone(fetch.split_brief_overview_status_line(overview))
 
     def test_status_line_only_with_no_trailing_text_splits_to_empty_rest(self):
         ctx = {
