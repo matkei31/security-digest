@@ -55,7 +55,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 6. Known issues and limitations
 
-- [BL-001](BACKLOG.md#bl-001--プルリクエストci): Pull requests have no ordinary GitHub Actions checks; scope-appropriate local verification and independent diff review are currently used as merge evidence.
+- [BL-001](BACKLOG.md#bl-001--プルリクエストci): `Pull Request CI` is implemented on draft [PR #26](https://github.com/matkei31/security-digest/pull/26) with read-only repository permissions and no production operations; merge and user acceptance are pending.
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
 - [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる): Rebuilding the top page from stored daily JSON can show a different article-meta timestamp than the original production render; root cause and fix are not yet implemented.
@@ -64,8 +64,8 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-1. [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる) — Determine and fix the article-meta timestamp discrepancy between normal generation and daily JSON reconstruction.
-2. [BL-001](BACKLOG.md#bl-001--プルリクエストci) — Add ordinary pull request CI.
+1. [BL-001](BACKLOG.md#bl-001--プルリクエストci) — Confirm the new PR CI succeeds, then review, merge, and record completion.
+2. [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる) — Determine and fix the article-meta timestamp discrepancy between normal generation and daily JSON reconstruction.
 
 [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not placed ahead of BL-001 in this priority list.
 
