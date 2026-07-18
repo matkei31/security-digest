@@ -3159,46 +3159,80 @@ def compute_brief_trusted_context(items):
 
 
 def format_brief_status_line(ctx):
-    """Ticket 15b: success時overview先頭に合成する決定論的な状態行(1行、改行なし)。"""
-    line = (
-        f"本日の状態（掲載{ctx['published_total']}件）："
-        f"重要度「高」{ctx['importance_high']}件、"
-        f"確認目安「本日確認」{ctx['urgency_today']}件、"
-        f"確認目安「今週確認」{ctx['urgency_week']}件"
-    )
+    """Ticket 15b/BL-016: success時overview先頭に合成する決定論的な状態行
+    (1行、改行なし)。ラベル・括弧・コロン・文末の句点を持たない、｜区切りの
+    プレーンな形式。件数の算出方法・未判定segmentの表示条件(unclassified>0
+    の場合のみ付加)はTicket 15b時点から変更しない。
+    """
+    parts = [
+        f"掲載{ctx['published_total']}件",
+        f"重要度「高」{ctx['importance_high']}件",
+        f"本日確認{ctx['urgency_today']}件",
+        f"今週確認{ctx['urgency_week']}件",
+    ]
     if ctx["unclassified"] > 0:
-        line += f"、未判定{ctx['unclassified']}件"
-    return line + "。"
+        parts.append(f"未判定{ctx['unclassified']}件")
+    return "｜".join(parts)
 
 
 _BRIEF_STATUS_LINE_RE = re.compile(
-    re.escape("本日の状態（掲載") + r"[0-9]+" + re.escape("件）：重要度「高」") + r"[0-9]+"
-    + re.escape("件、確認目安「本日確認」") + r"[0-9]+"
-    + re.escape("件、確認目安「今週確認」") + r"[0-9]+"
+    re.escape("掲載") + r"[0-9]+" + re.escape("件｜重要度「高」") + r"[0-9]+"
+    + re.escape("件｜本日確認") + r"[0-9]+"
+    + re.escape("件｜今週確認") + r"[0-9]+"
     + re.escape("件")
-    + "(?:" + re.escape("、未判定") + r"[0-9]+" + re.escape("件") + ")?"
+    + "(?:" + re.escape("｜未判定") + r"[0-9]+" + re.escape("件") + ")?"
+)
+
+# BL-016以前(Ticket 15b/15c)にformat_brief_status_line()が生成し、既存の
+# daily JSON(brief.overview)へそのまま保存されている旧形式。data/配下の
+# 過去JSONは書き換えないため、表示時に限り数値を抽出して現行形式へ変換する。
+_BRIEF_STATUS_LINE_LEGACY_RE = re.compile(
+    re.escape("本日の状態（掲載") + r"(?P<published>[0-9]+)" + re.escape("件）：重要度「高」") + r"(?P<high>[0-9]+)"
+    + re.escape("件、確認目安「本日確認」") + r"(?P<today>[0-9]+)"
+    + re.escape("件、確認目安「今週確認」") + r"(?P<week>[0-9]+)"
+    + re.escape("件")
+    + "(?:" + re.escape("、未判定") + r"(?P<unclassified>[0-9]+)" + re.escape("件") + ")?"
     + re.escape("。")
 )
 
 
+def _format_brief_status_line_from_legacy_match(match):
+    """_BRIEF_STATUS_LINE_LEGACY_REのmatchから、現行形式の状態行文字列を
+    組み立てる。数値はmatch groupから抽出するのみで、再計算はしない。
+    """
+    parts = [
+        f"掲載{match.group('published')}件",
+        f"重要度「高」{match.group('high')}件",
+        f"本日確認{match.group('today')}件",
+        f"今週確認{match.group('week')}件",
+    ]
+    unclassified = match.group("unclassified")
+    if unclassified is not None:
+        parts.append(f"未判定{unclassified}件")
+    return "｜".join(parts)
+
+
 def split_brief_overview_status_line(overview):
-    """Ticket 15c: format_brief_status_line()が生成した決定論的な状態行を、
+    """Ticket 15c/BL-016: format_brief_status_line()が生成した決定論的な状態行を、
     overview先頭から分離するHTML表示用のpure helper。
 
-    自由文は解析しない。最初の「。」までを候補とし、現在の状態行の完全形式と
-    厳密に一致する場合のみ (status_line, rest) を返す。一致しない場合・
-    overviewが空の場合はNoneを返し、呼び出し側はoverview全体を従来通り1つの
-    要素として表示する(fail-open。欠落・例外を発生させない)。
+    自由文は解析しない。overview先頭が現行形式の状態行と厳密に一致する場合は
+    そのまま、旧形式(Ticket 15b/15c、句点終端)と厳密に一致する場合は数値を
+    保ったまま現行形式へ変換したうえで、(status_line, rest) を返す。
+    いずれにも一致しない場合・overviewが空の場合はNoneを返し、呼び出し側は
+    overview全体を従来通り1つの要素として表示する(fail-open。欠落・例外を
+    発生させない)。
     """
     if not overview:
         return None
-    index = overview.find("。")
-    if index == -1:
-        return None
-    candidate = overview[:index + 1]
-    if not _BRIEF_STATUS_LINE_RE.fullmatch(candidate):
-        return None
-    return candidate, overview[index + 1:]
+    match = _BRIEF_STATUS_LINE_RE.match(overview)
+    if match:
+        return overview[:match.end()], overview[match.end():]
+    legacy_match = _BRIEF_STATUS_LINE_LEGACY_RE.match(overview)
+    if legacy_match:
+        status_line = _format_brief_status_line_from_legacy_match(legacy_match)
+        return status_line, overview[legacy_match.end():]
+    return None
 
 
 def format_brief_state_explanation(ctx):

@@ -603,8 +603,8 @@ class StatusLineTest(unittest.TestCase):
         self.assertNotIn("未判定", line)
         self.assertIn("掲載11件", line)
         self.assertIn("重要度「高」0件", line)
-        self.assertIn("確認目安「本日確認」0件", line)
-        self.assertIn("確認目安「今週確認」7件", line)
+        self.assertIn("本日確認0件", line)
+        self.assertIn("今週確認7件", line)
 
     def test_includes_unclassified_segment_when_positive(self):
         items = build_items_from_spec(

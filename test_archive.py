@@ -287,6 +287,32 @@ class ArchiveGenerationTest(unittest.TestCase):
         self.assertIn('<p class="brief-overview">2026-07-05の概況</p>', html)
         self.assertNotIn('<p class="brief-status-line">', html)
 
+    def test_legacy_status_line_overview_converts_identically_in_top_and_archive(self):
+        # BL-016: Ticket 15b/15c形式のoverviewを保持した過去archive再生成の
+        # 回帰テスト。data/JSON側の文字列(件数・記事内容)は変更せず、表示側
+        # だけが現行のラベルなし｜区切り形式へ変換され、トップページと
+        # archiveで一致することを確認する。
+        digest = make_digest(digest_date="2026-07-14", total_items=1, high_count=1)
+        legacy_overview = (
+            "本日の状態（掲載5件）：重要度「高」2件、確認目安「本日確認」1件、"
+            "確認目安「今週確認」1件。Geminiによる本文です。"
+        )
+        digest["brief"]["overview"] = legacy_overview
+
+        archive_html = fetch.build_daily_archive_html(digest)
+        top_html = fetch.build_html(
+            fetch.digest_items_for_html(digest), fetch.brief_for_html_from_digest(digest)
+        )
+
+        expected_status_line = "掲載5件｜重要度「高」2件｜本日確認1件｜今週確認1件"
+        for html in (archive_html, top_html):
+            self.assertNotIn("本日の状態", html)
+            self.assertIn(f'<p class="brief-status-line">{expected_status_line}</p>', html)
+            self.assertIn('<p class="brief-overview">Geminiによる本文です。</p>', html)
+        self.assertEqual(archive_html.count(expected_status_line), top_html.count(expected_status_line))
+        # digest自体(記事内容・件数・overview文字列)は変換前後で変更されない
+        self.assertEqual(digest["brief"]["overview"], legacy_overview)
+
 
 class ArchiveIndexAndPathTest(unittest.TestCase):
     def test_generate_archive_outputs_writes_daily_list_and_archive_paths(self):
@@ -321,6 +347,42 @@ class ArchiveIndexAndPathTest(unittest.TestCase):
             self.assertEqual(index_json["digests"][0]["total_items"], 2)
             self.assertEqual(index_json["digests"][0]["high_count"], 1)
             self.assertEqual(index_json["digests"][0]["archive_path"], "docs/archive/2026-07-11.html")
+
+    def test_regenerating_archive_from_legacy_json_does_not_modify_source_json(self):
+        # BL-016: 既存archive再生成の回帰テスト。旧形式のoverviewを含む
+        # daily JSONファイルを再生成しても、ファイル自体のバイト列は
+        # 一切変更されない(表示側だけが現行形式へ変換される)ことを確認する。
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+            digest = make_digest("2026-07-14", title="legacy", total_items=1, high_count=1)
+            legacy_overview = (
+                "本日の状態（掲載9件）：重要度「高」1件、確認目安「本日確認」1件、"
+                "確認目安「今週確認」2件。Geminiによる本文。"
+            )
+            digest["brief"]["overview"] = legacy_overview
+            digest_path = write_digest(data_dir, digest)
+            dj.save_index(data_dir, datetime.datetime(2026, 7, 14, 8, 0, tzinfo=JST))
+            generated_at = datetime.datetime(2026, 7, 14, 8, 0, tzinfo=JST)
+            # 実リポジトリの状態(archive_pathが既に生成済みhtmlを指している)を
+            # 再現するため、まず一度生成してからbefore/afterを比較する。
+            fetch.generate_archive_outputs(data_dir, docs_dir, generated_at)
+            before_bytes = digest_path.read_bytes()
+            before_index_bytes = (data_dir / "index.json").read_bytes()
+
+            fetch.generate_archive_outputs(data_dir, docs_dir, generated_at)
+
+            self.assertEqual(digest_path.read_bytes(), before_bytes)
+            self.assertEqual((data_dir / "index.json").read_bytes(), before_index_bytes)
+
+            archive_html = (docs_dir / "archive" / "2026-07-14.html").read_text(encoding="utf-8")
+            self.assertNotIn("本日の状態", archive_html)
+            self.assertIn(
+                '<p class="brief-status-line">掲載9件｜重要度「高」1件｜本日確認1件｜今週確認2件</p>',
+                archive_html,
+            )
 
     def test_brief_status_label_is_absent_when_brief_is_empty(self):
         digest = make_digest("2026-07-12", title="none", total_items=1, high_count=0)

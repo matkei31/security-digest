@@ -50,13 +50,15 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 - Ticket 15c: BRIEF display hierarchy — completed
 - Project documentation alignment — completed in [PR #13](https://github.com/matkei31/security-digest/pull/13)
 - Legacy local operation scripts — removed
+- BL-016 status-line relabel: the deterministic status line dropped its "本日の状態" label/brackets/colon/trailing period for a plain `｜`-delimited format, and all existing per-day archive HTML was regenerated from existing daily JSON (no Gemini/HTTP calls, no data/ changes) — implemented; production visual acceptance still outstanding
 
 ## 6. Known issues and limitations
 
 - [BL-001](BACKLOG.md#bl-001--プルリクエストci): Pull requests have no ordinary GitHub Actions checks; scope-appropriate local verification and independent diff review are currently used as merge evidence.
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
-- [BL-016](BACKLOG.md#bl-016--本日の要点の表示階層を目視受入する): The current "本日の要点" display (Ticket 15c) is implemented and tested, but explicit PC/390px production visual acceptance has not been recorded.
+- [BL-016](BACKLOG.md#bl-016--本日の要点の表示階層を目視受入する): The "本日の状態" label/brackets/colon/trailing period have been removed from the deterministic status line, and all existing per-day archive HTML has been regenerated from existing daily JSON; explicit production visual acceptance (PC/390px) of the resulting display has not yet been recorded.
+- [BL-017](BACKLOG.md#bl-017--過去ダイジェスト間を前後移動できるようにする): One-click previous/next navigation between existing daily archives is not yet implemented.
 - [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する): A comprehensive security requirements document does not yet exist; existing rules remain scattered across `AGENTS.md` and code.
 - Ticket 16a's standalone real-Gemini diagnostic for the Microsoft reference article remains unverified; this did not block its production acceptance.
 
@@ -64,6 +66,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 1. [BL-016](BACKLOG.md#bl-016--本日の要点の表示階層を目視受入する) — Visually accept the current "本日の要点" display on production, PC and 390px.
 2. [BL-001](BACKLOG.md#bl-001--プルリクエストci) — Add ordinary pull request CI.
+3. [BL-017](BACKLOG.md#bl-017--過去ダイジェスト間を前後移動できるようにする) — Implement one-click previous/next navigation between daily archives.
 
 [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not placed ahead of BL-001 in this priority list.
 
