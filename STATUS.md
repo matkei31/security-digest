@@ -2,7 +2,7 @@
 
 ## 1. As of
 
-2026-07-17
+2026-07-18
 
 This file records the current, changeable project state. Incomplete, partially addressed, and acceptance-pending items are recorded in [BACKLOG.md](BACKLOG.md). Stable design and operating decisions are recorded in [DECISIONS.md](DECISIONS.md).
 
@@ -57,6 +57,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 6. Known issues and limitations
 
+- [BL-004](BACKLOG.md#bl-004--fable-5によるuiレビューとui設計書): [PR #30](https://github.com/matkei31/security-digest/pull/30)で[UI_SPEC.md](UI_SPEC.md) Version 1.0をユーザー承認済みとし、7項目の裁定を[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)へ記録した。activeな未決事項はなく、PR #30のmerge、merge後検証、完了記録を待っている。
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
 - [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する): A comprehensive security requirements document does not yet exist; existing rules remain scattered across `AGENTS.md` and code.
@@ -64,7 +65,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-1. [BL-004](BACKLOG.md#bl-004--fable-5によるuiレビューとui設計書) — Complete the repository-resident UI design specification and obtain the remaining user decisions and acceptance.
+1. [BL-004](BACKLOG.md#bl-004--fable-5によるuiレビューとui設計書) — Complete final review and merge of [PR #30](https://github.com/matkei31/security-digest/pull/30), perform post-merge verification, and record completion; [UI_SPEC.md](UI_SPEC.md) Version 1.0 is already approved.
 
 [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not included in this short priority list.
 
@@ -86,4 +87,5 @@ The initial backlog import is not a complete historical-comment audit; [BL-014](
 | Published static output | `docs/` |
 | Incomplete, partial, and acceptance-pending items | `BACKLOG.md` |
 | Stable decisions | `DECISIONS.md` |
+| Approved UI specification and UI decision history | `UI_SPEC.md` |
 | Implementation-agent constraints | `AGENTS.md` |
