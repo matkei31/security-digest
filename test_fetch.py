@@ -2963,13 +2963,13 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("「新しい表示もPC・390px・過去ダイジェストとも問題なし」", bl016_text)
         self.assertIn("- **残作業:** なし。", bl016_text)
 
-    def test_bl_017_status_scope_and_user_wording(self):
+    def test_bl_017_completion_status_scope_and_user_wording(self):
         text = self._read("BACKLOG.md")
         start = text.index("## BL-017")
         end = text.index("## BL-018", start)
         bl017_text = text[start:end]
         self.assertIn("## BL-017 — 過去ダイジェストの回遊性と一覧表示を改善する", bl017_text)
-        self.assertIn("- **状態:** 実装済み / ユーザー受入待ち", bl017_text)
+        self.assertIn("- **状態:** 完了", bl017_text)
         self.assertIn(
             "- **ユーザー原文:** 「あと、過去のダイジェストについて、ワンクリックで前日分とかに行き来できる改修はこれから？」",
             bl017_text,
@@ -2979,7 +2979,37 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
             bl017_text,
         )
         self.assertIn("`brief_status`生成を削除", bl017_text)
-        self.assertIn("- **残作業:** ユーザー受入。", bl017_text)
+        self.assertIn("[PR #24](https://github.com/matkei31/security-digest/pull/24)", bl017_text)
+        self.assertIn("8cb8e95639d125fec31057737bb4c445252433f7", bl017_text)
+        expected_acceptance = (
+            "「読み直したらできたわ。以下どちらも完了でOK\n"
+            "\n"
+            "\n"
+            "過去ダイジェスト一覧\n"
+            "「本日の要点あり／なし」が消え、日付・記事数・重要度だけになっているか\n"
+            "7月14日など途中の日別ページ\n"
+            "上部と最下部に「前のダイジェスト」「次のダイジェスト」があり、実際に移動できるか」"
+        )
+        self.assertIn(expected_acceptance, bl017_text)
+        self.assertIn("- **残作業:** なし。", bl017_text)
+
+        status_text = self._read("STATUS.md")
+        recently_completed = status_text[
+            status_text.index("## 5. Recently completed work"):status_text.index("## 6. Known issues and limitations")
+        ]
+        known_issues = status_text[
+            status_text.index("## 6. Known issues and limitations"):status_text.index("## 7. Next candidates")
+        ]
+        next_candidates = status_text[
+            status_text.index("## 7. Next candidates"):status_text.index("## 8. Sources of truth")
+        ]
+        self.assertIn("BL-017", recently_completed)
+        self.assertIn("[PR #24](https://github.com/matkei31/security-digest/pull/24)", recently_completed)
+        self.assertNotIn("BL-017", known_issues)
+        self.assertNotIn("BL-017", next_candidates)
+        self.assertIn("1. [BL-018]", next_candidates)
+        self.assertIn("2. [BL-001]", next_candidates)
+        self.assertNotRegex(next_candidates, r"(?m)^3\. ")
 
     def test_bl_018_status_and_not_implemented_in_this_pr(self):
         text = self._read("BACKLOG.md")

@@ -51,6 +51,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 - Project documentation alignment — completed in [PR #13](https://github.com/matkei31/security-digest/pull/13)
 - Legacy local operation scripts — removed
 - BL-016 status-line relabel: the deterministic status line dropped its "本日の状態" label/brackets/colon/trailing period for a plain `｜`-delimited format, and all existing per-day archive HTML was regenerated from existing daily JSON (no Gemini/HTTP calls, no data/ changes) — completed and user-accepted (2026-07-18, verbatim: 「新しい表示もPC・390px・過去ダイジェストとも問題なし」); see [PR #23](https://github.com/matkei31/security-digest/pull/23), merge commit `b8c0ab0fa5411930fc55b1b9f97cfda016c29373`
+- BL-017 archive-list cleanup and previous/next navigation between existing daily archives — completed in [PR #24](https://github.com/matkei31/security-digest/pull/24), merge commit `8cb8e95639d125fec31057737bb4c445252433f7`, and user-accepted on 2026-07-18; see [BL-017](BACKLOG.md#bl-017--過去ダイジェストの回遊性と一覧表示を改善する)
 
 ## 6. Known issues and limitations
 
@@ -58,7 +59,6 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
 - [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる): Rebuilding the top page from stored daily JSON can show a different article-meta timestamp than the original production render; root cause and fix are not yet implemented.
-- [BL-017](BACKLOG.md#bl-017--過去ダイジェストの回遊性と一覧表示を改善する): The archive-list status rows have been removed and previous/next navigation between existing daily archives is implemented; explicit user acceptance is still outstanding.
 - [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する): A comprehensive security requirements document does not yet exist; existing rules remain scattered across `AGENTS.md` and code.
 - Ticket 16a's standalone real-Gemini diagnostic for the Microsoft reference article remains unverified; this did not block its production acceptance.
 
@@ -66,7 +66,6 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 1. [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる) — Determine and fix the article-meta timestamp discrepancy between normal generation and daily JSON reconstruction.
 2. [BL-001](BACKLOG.md#bl-001--プルリクエストci) — Add ordinary pull request CI.
-3. [BL-017](BACKLOG.md#bl-017--過去ダイジェストの回遊性と一覧表示を改善する) — Obtain user acceptance for the archive-list cleanup and previous/next navigation between existing daily archives.
 
 [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not placed ahead of BL-001 in this priority list.
 
