@@ -2950,30 +2950,31 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
         self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 16)})
 
-    def test_bl_001_is_implemented_and_waiting_for_acceptance(self):
+    def test_bl_001_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
         start = text.index("## BL-001")
         end = text.index("## BL-002", start)
         bl001_text = text[start:end]
-        self.assertIn("- **状態:** 実装済み / ユーザー受入待ち", bl001_text)
+        self.assertIn("- **状態:** 完了", bl001_text)
         self.assertIn("[PR #26](https://github.com/matkei31/security-digest/pull/26)", bl001_text)
-        self.assertIn("[`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml)", bl001_text)
-        self.assertIn("`contents: read`", bl001_text)
-        self.assertIn("base SHAとhead SHAの実差分に対する`git diff --check`", bl001_text)
-        self.assertIn("secrets、`fetch.py`、生成、commit、push、Pages deploymentを使用しない", bl001_text)
-        self.assertIn("- **残作業:** PR上のCI成功確認、レビュー、merge、完了記録", bl001_text)
+        self.assertIn("f5bbd04f42643d4a87f999d01f538d574fe39f17", bl001_text)
+        self.assertIn("- **残作業:** なし。", bl001_text)
 
         status_text = self._read("STATUS.md")
+        recently_completed = status_text[
+            status_text.index("## 5. Recently completed work"):status_text.index("## 6. Known issues and limitations")
+        ]
         known_issues = status_text[
             status_text.index("## 6. Known issues and limitations"):status_text.index("## 7. Next candidates")
         ]
         next_candidates = status_text[
             status_text.index("## 7. Next candidates"):status_text.index("## 8. Sources of truth")
         ]
-        self.assertIn("[BL-001]", known_issues)
-        self.assertIn("merge and user acceptance are pending", known_issues)
-        self.assertIn("1. [BL-001]", next_candidates)
-        self.assertIn("2. [BL-018]", next_candidates)
+        self.assertIn("BL-001", recently_completed)
+        self.assertIn("[PR #26](https://github.com/matkei31/security-digest/pull/26)", recently_completed)
+        self.assertNotIn("BL-001", known_issues)
+        self.assertNotIn("BL-001", next_candidates)
+        self.assertIn("1. [BL-018]", next_candidates)
 
     def test_bl_016_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -3032,9 +3033,8 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("[PR #24](https://github.com/matkei31/security-digest/pull/24)", recently_completed)
         self.assertNotIn("BL-017", known_issues)
         self.assertNotIn("BL-017", next_candidates)
-        self.assertIn("1. [BL-001]", next_candidates)
-        self.assertIn("2. [BL-018]", next_candidates)
-        self.assertNotRegex(next_candidates, r"(?m)^3\. ")
+        self.assertIn("1. [BL-018]", next_candidates)
+        self.assertNotRegex(next_candidates, r"(?m)^2\. ")
 
     def test_bl_018_status_and_not_implemented_in_this_pr(self):
         text = self._read("BACKLOG.md")
