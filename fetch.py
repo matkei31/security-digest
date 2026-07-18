@@ -4069,9 +4069,9 @@ def build_html(
             split = split_brief_overview_status_line(overview)
             if split is None and legacy_status_line:
                 # BL-016: archive表示専用。overview自体に決定論的状態行を
-                # 含まない旧BRIEF(Ticket 15b以前)のみ、保存済みcountsから
-                # 算出した状態行を表示専用で補う。overview文字列自体(daily
-                # JSON上の値)は書き換えない。
+                # 含まない旧BRIEF(Ticket 15b以前)のみ、呼び出し元が記事単位
+                # 判定で算出済みのlegacy_status_lineを表示専用で補う。overview
+                # 文字列自体(daily JSON上の値)は書き換えない。
                 split = (legacy_status_line, overview)
             if split:
                 status_line, rest = split

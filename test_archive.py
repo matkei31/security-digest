@@ -283,8 +283,9 @@ class ArchiveGenerationTest(unittest.TestCase):
 
     def test_legacy_free_text_overview_is_filled_with_synthesized_status_line_in_archive(self):
         # BL-016 Blocker1: 決定論的状態行を持たない旧BRIEF(Ticket 15b以前、
-        # 自由文のみのoverview)は、archive表示時に限り、保存済みcountsから
-        # 算出した状態行が補完される。overview文字列自体は変更しない。
+        # 自由文のみのoverview)は、archive表示時に限り、保存済みitemsから
+        # 記事単位判定で算出した状態行が補完される。overview文字列自体は
+        # 変更しない。
         digest = make_digest(digest_date="2026-07-05", total_items=1, high_count=1)
         digest["brief"]["overview"] = "2026-07-05の概況"
         original_overview = digest["brief"]["overview"]
