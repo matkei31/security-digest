@@ -355,17 +355,17 @@
 - **ID:** BL-018
 - **タイトル:** トップページとJSON再構築時の記事時刻表示を一致させる
 - **優先度:** P1
-- **状態:** 記録済み / 未完了
+- **状態:** 実装済み / ユーザー受入待ち
 - **出所種別:** 技術上の発見事項
 - **ユーザー原文:** 該当なし — 技術上の発見事項。
 - **ユーザー確認済み要約:** 該当なし — 技術上の発見事項。
-- **解釈:** 保存済みdaily JSONからトップページを再構築した場合と、`main()`がin-memory itemから直接生成した場合で、`article-meta`の記事時刻表示が一致しない可能性がある。タイムゾーンの正規化経路が異なることが原因候補。
+- **解釈:** 再現テストにより、通常生成のin-memory itemでは`parse_date()`が記事日時をUTC-naiveの`date`として保持する一方、daily JSONには同じ瞬間をJST aware（`+09:00`）の`published_at`として保存し、`digest_items_for_html()`はそのoffsetを保持したaware datetimeへ復元することを確認した。従来の`build_html()`が経路の異なる`date`をタイムゾーン正規化せず直接`strftime()`していたため、同一記事の`article-meta`が通常生成ではUTC相当、JSON復元ではJSTとして9時間ずれていた。
 - **完了条件:** 原因を再現テストで確定する；表示時刻の基準をJSTへ統一する；通常生成とdaily JSON再構築で同一表示になる；記事順、`published_at`の保存値、日付判定を意図せず変更しない。
 - **依存関係:** 現行`fetch.py`（`digest_items_for_html()`、`main()`内のトップページ生成、`parse_archive_datetime()`）；`data/`配下の既存daily JSON。
-- **実装証跡:** 未実装。BL-016残対応PR（[docs/index.htmlの状態行更新]）の作業中に、`digest_items_for_html()`経由でトップページをフル再構築すると、記事一覧の`article-meta`表示時刻が本番生成時と最大数時間ずれることを発見した。当該PRでは記事内容・時刻表示を変更しないため、状態行のみのピンポイント置換で対応し、フル再構築は行わなかった。
+- **実装証跡:** 発見時の経緯として、BL-016残対応PRの作業中に`digest_items_for_html()`経由のトップページ再構築と本番生成時の時刻差を確認し、当時は対象外としてフル再構築を行わなかった。本対応では既存`data/2026-07-18.json`の「New wp2shell WordPress Core Flaw Lets Unauthenticated Attackers Run Code」（`https://thehackernews.com/2026/07/new-wp2shell-wordpress-core-flaw-lets.html`）を使い、同じ瞬間が通常生成相当のUTC-naive `2026-07-17 21:20:10`（表示`07/17 21:20`）とJSON復元相当のJST aware `2026-07-18 06:20:10+09:00`（表示`07/18 06:20`）に分かれる9時間差を先に失敗する回帰テストで固定した。`normalize_datetime_for_display()`へaware datetimeのJST変換を集約し、`format_article_meta_time()`は`published_at_jst`、`published_at`、`date`の順に有効な日時を選んで表示する。ISO 8601の`Z`、`+00:00`、`+09:00`はoffsetを保持して解釈し、UTC/JST awareは同じJST表示へ正規化する。実データ調査では既存daily JSONの非null `published_at` 59件は全件`+09:00`でnaive値はなく、legacy naive値は根拠のないUTC/JST推定をせず従来どおりwall-clock値として扱う。保存値、記事順、当日判定、不正日時fallbackを不変とするテストと既存daily JSON回帰テストを追加した。既存JSONから一時生成した全9個のarchive HTMLはcommit済み版と完全一致し、`docs/index.html`だけは8記事の`article-meta`をJSTへ最小修正した（記事内容、順序、BRIEF、分析結果、件数は不変）。Gemini、外部HTTP、RSS再取得、記事再分析、daily JSON／`data/index.json`更新は実行していない。[PR #28](https://github.com/matkei31/security-digest/pull/28)。
 - **ユーザー受入証跡:** 記録なし。
-- **残作業:** 原因の再現・確定、修正方針の決定、実装、テスト、ユーザー受入。
-- **注記:** 本項目は発見時点の技術上の記録であり、本PR（BL-016残対応）では実装しない。
+- **残作業:** レビュー、merge、必要な表示確認、完了記録
+- **注記:** 本項目は技術上の発見事項であり、ユーザー受入後に完了へ移す。
 
 ## 完了済み参照
 

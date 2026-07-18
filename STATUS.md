@@ -58,13 +58,13 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
-- [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる): Rebuilding the top page from stored daily JSON can show a different article-meta timestamp than the original production render; root cause and fix are not yet implemented.
+- [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる): The UTC-naive in-memory/JST-aware JSON reconstruction mismatch is fixed on [PR #28](https://github.com/matkei31/security-digest/pull/28) by normalizing article-meta display to JST; merge and user acceptance remain pending.
 - [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する): A comprehensive security requirements document does not yet exist; existing rules remain scattered across `AGENTS.md` and code.
 - Ticket 16a's standalone real-Gemini diagnostic for the Microsoft reference article remains unverified; this did not block its production acceptance.
 
 ## 7. Next candidates
 
-1. [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる) — Determine and fix the article-meta timestamp discrepancy between normal generation and daily JSON reconstruction.
+1. [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる) — Review and merge [PR #28](https://github.com/matkei31/security-digest/pull/28), perform any needed display verification, and record completion.
 
 [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not included in this short priority list.
 

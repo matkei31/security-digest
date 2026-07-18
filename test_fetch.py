@@ -3036,13 +3036,36 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("1. [BL-018]", next_candidates)
         self.assertNotRegex(next_candidates, r"(?m)^2\. ")
 
-    def test_bl_018_status_and_not_implemented_in_this_pr(self):
+    def test_bl_018_status_and_implementation_evidence(self):
         text = self._read("BACKLOG.md")
         start = text.index("## BL-018")
         end = text.index("## 完了済み参照", start)
         bl018_text = text[start:end]
-        self.assertIn("- **状態:** 記録済み / 未完了", bl018_text)
+        self.assertIn("- **状態:** 実装済み / ユーザー受入待ち", bl018_text)
         self.assertIn("- **出所種別:** 技術上の発見事項", bl018_text)
+        self.assertIn("UTC-naive", bl018_text)
+        self.assertIn("JST aware", bl018_text)
+        self.assertIn("`normalize_datetime_for_display()`", bl018_text)
+        self.assertIn("`format_article_meta_time()`", bl018_text)
+        self.assertIn("[PR #28](https://github.com/matkei31/security-digest/pull/28)", bl018_text)
+        self.assertIn("- **残作業:** レビュー、merge、必要な表示確認、完了記録", bl018_text)
+
+        status_text = self._read("STATUS.md")
+        recently_completed = status_text[
+            status_text.index("## 5. Recently completed work"):status_text.index("## 6. Known issues and limitations")
+        ]
+        known_issues = status_text[
+            status_text.index("## 6. Known issues and limitations"):status_text.index("## 7. Next candidates")
+        ]
+        next_candidates = status_text[
+            status_text.index("## 7. Next candidates"):status_text.index("## 8. Sources of truth")
+        ]
+        self.assertNotIn("BL-018", recently_completed)
+        self.assertIn("BL-018", known_issues)
+        self.assertIn("[PR #28](https://github.com/matkei31/security-digest/pull/28)", known_issues)
+        self.assertIn("merge and user acceptance remain pending", known_issues)
+        self.assertIn("1. [BL-018]", next_candidates)
+        self.assertIn("Review and merge [PR #28]", next_candidates)
 
     def test_sd_015_records_trusted_context_allowlist_decision(self):
         text = self._read("DECISIONS.md")

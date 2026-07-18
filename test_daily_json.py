@@ -982,10 +982,10 @@ class IndexTest(unittest.TestCase):
             self.assertEqual(len(index["digests"]), 1)
 
 
-# ── 回帰: build_htmlは保存用メタデータを表示しない ────────────────────────
+# ── 回帰: build_htmlは表示対象外の保存用メタデータを表示しない ────────────
 
 class BuildHtmlRegressionTest(unittest.TestCase):
-    def test_storage_metadata_keys_do_not_affect_build_html_output(self):
+    def test_non_display_storage_metadata_keys_do_not_affect_build_html_output(self):
         base_item = {
             "title": "テスト記事", "link": "https://example.com/article",
             "summary": "概要文", "date": None, "source": "CISA", "lang": "ja",
@@ -995,7 +995,6 @@ class BuildHtmlRegressionTest(unittest.TestCase):
         item_with_new_keys = dict(base_item)
         item_with_new_keys.update({
             "raw_summary": "<p>raw</p>",
-            "published_at_jst": NOW,
             "ai_analysis_meta": {"status": "success", "error_type": None,
                                   "http_status": None, "generated_at": NOW.isoformat()},
         })
