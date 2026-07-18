@@ -3047,6 +3047,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("JST aware", bl018_text)
         self.assertIn("`normalize_datetime_for_display()`", bl018_text)
         self.assertIn("`format_article_meta_time()`", bl018_text)
+        self.assertIn("[PR #28](https://github.com/matkei31/security-digest/pull/28)", bl018_text)
         self.assertIn("- **残作業:** レビュー、merge、必要な表示確認、完了記録", bl018_text)
 
         status_text = self._read("STATUS.md")
@@ -3061,10 +3062,10 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         ]
         self.assertNotIn("BL-018", recently_completed)
         self.assertIn("BL-018", known_issues)
-        self.assertIn("fixed on the current draft PR", known_issues)
+        self.assertIn("[PR #28](https://github.com/matkei31/security-digest/pull/28)", known_issues)
         self.assertIn("merge and user acceptance remain pending", known_issues)
         self.assertIn("1. [BL-018]", next_candidates)
-        self.assertIn("Review and merge the JST article-time normalization", next_candidates)
+        self.assertIn("Review and merge [PR #28]", next_candidates)
 
     def test_sd_015_records_trusted_context_allowlist_decision(self):
         text = self._read("DECISIONS.md")
