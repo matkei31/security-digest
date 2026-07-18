@@ -53,22 +53,24 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 - BL-016 status-line relabel: the deterministic status line dropped its "本日の状態" label/brackets/colon/trailing period for a plain `｜`-delimited format, and all existing per-day archive HTML was regenerated from existing daily JSON (no Gemini/HTTP calls, no data/ changes) — completed and user-accepted (2026-07-18, verbatim: 「新しい表示もPC・390px・過去ダイジェストとも問題なし」); see [PR #23](https://github.com/matkei31/security-digest/pull/23), merge commit `b8c0ab0fa5411930fc55b1b9f97cfda016c29373`
 - BL-017 archive-list cleanup and previous/next navigation between existing daily archives — completed in [PR #24](https://github.com/matkei31/security-digest/pull/24), merge commit `8cb8e95639d125fec31057737bb4c445252433f7`, and user-accepted on 2026-07-18; see [BL-017](BACKLOG.md#bl-017--過去ダイジェストの回遊性と一覧表示を改善する)
 - BL-001 Pull Request CI — completed in [PR #26](https://github.com/matkei31/security-digest/pull/26), merge commit `f5bbd04f42643d4a87f999d01f538d574fe39f17`, after [Pull Request CI run 29640129033](https://github.com/matkei31/security-digest/actions/runs/29640129033) succeeded on the draft PR; see [BL-001](BACKLOG.md#bl-001--プルリクエストci)
+- BL-018 article-meta JST normalization — completed in [PR #28](https://github.com/matkei31/security-digest/pull/28), merge commit `196c77bcc2b71f8aecd9d0c6aef03388ffd5edf1`; [Pages deployment run 29643207764](https://github.com/matkei31/security-digest/actions/runs/29643207764) succeeded, and the user accepted the top-page timestamps, article order, and body content on 2026-07-18; see [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる)
 
 ## 6. Known issues and limitations
 
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
-- [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる): The UTC-naive in-memory/JST-aware JSON reconstruction mismatch is fixed on [PR #28](https://github.com/matkei31/security-digest/pull/28) by normalizing article-meta display to JST; merge and user acceptance remain pending.
 - [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する): A comprehensive security requirements document does not yet exist; existing rules remain scattered across `AGENTS.md` and code.
 - Ticket 16a's standalone real-Gemini diagnostic for the Microsoft reference article remains unverified; this did not block its production acceptance.
 
 ## 7. Next candidates
 
-1. [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる) — Review and merge [PR #28](https://github.com/matkei31/security-digest/pull/28), perform any needed display verification, and record completion.
+1. [BL-004](BACKLOG.md#bl-004--fable-5によるuiレビューとui設計書) — Complete the repository-resident UI design specification and obtain the remaining user decisions and acceptance.
 
 [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not included in this short priority list.
 
-This short priority list is not exhaustive. BL-004 and the other open items remain recorded in BACKLOG.md.
+[BL-005](BACKLOG.md#bl-005--editorial-style-v1とtoday-brief-v4) is also P1 but depends on the Fable 5 design review; therefore the already-in-progress BL-004 is the single next candidate without changing either item's recorded priority or dependencies.
+
+This short priority list is not exhaustive. Other open items remain recorded in BACKLOG.md.
 
 The initial backlog import is not a complete historical-comment audit; [BL-014](BACKLOG.md#bl-014--過去ユーザーコメントの体系的棚卸し) tracks that migration work, and [BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) records its batch-by-batch progress. Stable brand and domain directions are recorded in [SD-010](DECISIONS.md#sd-010--use-monomi-digest-as-the-future-public-brand) and [SD-011](DECISIONS.md#sd-011--use-monomidigestcom-as-the-primary-domain), with implementation scope in BL-006 and BL-007.
 
