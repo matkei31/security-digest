@@ -2974,7 +2974,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("[PR #26](https://github.com/matkei31/security-digest/pull/26)", recently_completed)
         self.assertNotIn("BL-001", known_issues)
         self.assertNotIn("BL-001", next_candidates)
-        self.assertIn("1. [BL-004]", next_candidates)
+        self.assertIn("1. [BL-005]", next_candidates)
 
     def test_bl_016_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -3033,7 +3033,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("[PR #24](https://github.com/matkei31/security-digest/pull/24)", recently_completed)
         self.assertNotIn("BL-017", known_issues)
         self.assertNotIn("BL-017", next_candidates)
-        self.assertIn("1. [BL-004]", next_candidates)
+        self.assertIn("1. [BL-005]", next_candidates)
         self.assertNotRegex(next_candidates, r"(?m)^2\. ")
 
     def test_bl_018_completion_status_and_evidence(self):
