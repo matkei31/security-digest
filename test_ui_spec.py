@@ -21,6 +21,7 @@ class UiSpecDocumentTest(unittest.TestCase):
         cls.decisions = (REPOSITORY_ROOT / "DECISIONS.md").read_text(encoding="utf-8")
         cls.status = (REPOSITORY_ROOT / "STATUS.md").read_text(encoding="utf-8")
         cls.bl004 = backlog_section(cls.backlog, "BL-004")
+        cls.bl005 = backlog_section(cls.backlog, "BL-005")
 
     def test_ui_spec_exists_with_approved_version_metadata(self):
         self.assertTrue(self.spec_path.is_file())
@@ -96,9 +97,8 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn(quote, self.bl004)
         self.assertIn(quote, self.spec)
 
-    def test_bl004_remains_in_progress_with_original_evidence_unchanged(self):
-        self.assertIn("- **状態:** 仕様化済み / 進行中", self.bl004)
-        self.assertNotIn("- **状態:** 完了", self.bl004)
+    def test_bl004_is_complete_with_original_evidence_unchanged(self):
+        self.assertIn("- **状態:** 完了", self.bl004)
         self.assertIn(
             "- **ユーザー原文:** 「設計書は作成済みの理解で合ってる？」",
             self.bl004,
@@ -113,8 +113,9 @@ class UiSpecDocumentTest(unittest.TestCase):
             "代替にはならない（残作業を参照）。"
         )
         self.assertIn(expected_acceptance, self.bl004)
+        self.assertIn("「7点ともこの方針でOK」", self.bl004)
         self.assertIn(
-            "- **残作業:** PR #30の最終レビュー、merge、merge後検証、BL-004完了記録",
+            "- **残作業:** なし。",
             self.bl004,
         )
         self.assertIn("[UI_SPEC.md](UI_SPEC.md)をVersion 1.0／承認済みへ更新", self.bl004)
@@ -123,17 +124,39 @@ class UiSpecDocumentTest(unittest.TestCase):
             self.bl004,
         )
         self.assertIn("[PR #30](https://github.com/matkei31/security-digest/pull/30)", self.bl004)
+        self.assertIn("198b5a6dc723870b691575ba89c2aaae89e35b8c", self.bl004)
+        self.assertIn("[Pull Request CI run 29647361707]", self.bl004)
+        self.assertIn("[Pages deployment run 29648894119]", self.bl004)
 
-    def test_status_keeps_bl004_as_the_next_candidate(self):
+    def test_status_completes_bl004_and_promotes_bl005(self):
+        recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
+            "## 6. Known issues and limitations", 1
+        )[0]
+        known_issues = self.status.split("## 6. Known issues and limitations", 1)[1].split(
+            "## 7. Next candidates", 1
+        )[0]
         next_candidates = self.status.split("## 7. Next candidates", 1)[1].split(
             "## 8. Sources of truth", 1
         )[0]
-        self.assertIn("[UI_SPEC.md](UI_SPEC.md) Version 1.0", self.status)
-        self.assertIn("[PR #30](https://github.com/matkei31/security-digest/pull/30)", self.status)
-        self.assertIn("ユーザー承認済み", self.status)
-        self.assertIn("merge、merge後検証、完了記録を待っている", self.status)
-        self.assertRegex(next_candidates, r"(?m)^1\. \[BL-004\]")
-        self.assertNotIn("BL-004", self.status.split("## 5. Recently completed work", 1)[1].split("## 6.", 1)[0])
+        self.assertIn("BL-004", recently_completed)
+        self.assertIn("[UI_SPEC.md](UI_SPEC.md) Version 1.0／承認済み", recently_completed)
+        self.assertIn("[SD-016]", recently_completed)
+        self.assertIn("[PR #30](https://github.com/matkei31/security-digest/pull/30)", recently_completed)
+        self.assertIn("198b5a6dc723870b691575ba89c2aaae89e35b8c", recently_completed)
+        self.assertIn("ユーザー裁定済み", recently_completed)
+        self.assertIn("merge後検証済み", recently_completed)
+        self.assertNotIn("BL-004", known_issues)
+        self.assertNotRegex(next_candidates, r"(?m)^\d+\. \[BL-004\]")
+        self.assertRegex(next_candidates, r"(?m)^1\. \[BL-005\]")
+        self.assertIn("(P1)", next_candidates)
+        self.assertIn("BL-004／Fable 5デザインレビューへの依存は完了", next_candidates)
+        self.assertIn("[SD-007]", next_candidates)
+        self.assertIn("Gemini promptのproduction実装にはまだ着手せず", next_candidates)
+        self.assertIn("ARTICLEは初期スコープ外", next_candidates)
+        self.assertIn("- **状態:** 仕様化済み / 未実装", self.bl005)
+        self.assertIn("- **実装証跡:** 未実装。", self.bl005)
+        self.assertNotIn("実装済み", self.bl005)
+        self.assertNotIn("- **状態:** 完了", self.bl005)
 
 
 if __name__ == "__main__":
