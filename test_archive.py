@@ -431,10 +431,12 @@ class ArchiveIndexAndPathTest(unittest.TestCase):
             self.assertIn('href="2026-07-11.html"', index_html)
             self.assertIn("記事2件", index_html)
             self.assertIn("重要度 高1件", index_html)
-            self.assertIn("本日の要点あり", index_html)
+            self.assertNotIn("本日の要点あり", index_html)
+            self.assertNotIn("本日の要点なし", index_html)
             self.assertNotIn("Today's Brief", index_html)
             self.assertNotIn("Today’s Brief", index_html)
             self.assertNotIn("missing.html", index_html)
+            self.assertEqual(index_html.count('<div class="archive-meta">'), 4)
 
             index_json = json.loads((data_dir / "index.json").read_text(encoding="utf-8"))
             dates = [d["digest_date"] for d in index_json["digests"]]
@@ -443,6 +445,62 @@ class ArchiveIndexAndPathTest(unittest.TestCase):
             self.assertEqual(index_json["digests"][0]["total_items"], 2)
             self.assertEqual(index_json["digests"][0]["high_count"], 1)
             self.assertEqual(index_json["digests"][0]["archive_path"], "docs/archive/2026-07-11.html")
+
+    def test_daily_navigation_uses_existing_dates_at_top_and_bottom(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+            for digest_date in ("2026-07-10", "2026-07-12", "2026-07-15"):
+                write_digest(data_dir, make_digest(digest_date))
+            dj.save_index(data_dir, datetime.datetime(2026, 7, 15, 8, 0, tzinfo=JST))
+            daily_before = {
+                path.name: path.read_bytes()
+                for path in data_dir.glob("????-??-??.json")
+            }
+
+            fetch.generate_archive_outputs(
+                data_dir,
+                docs_dir,
+                datetime.datetime(2026, 7, 15, 8, 0, tzinfo=JST),
+            )
+
+            daily_after = {
+                path.name: path.read_bytes()
+                for path in data_dir.glob("????-??-??.json")
+            }
+            self.assertEqual(daily_after, daily_before)
+
+            oldest_html = (docs_dir / "archive" / "2026-07-10.html").read_text(encoding="utf-8")
+            middle_html = (docs_dir / "archive" / "2026-07-12.html").read_text(encoding="utf-8")
+            latest_html = (docs_dir / "archive" / "2026-07-15.html").read_text(encoding="utf-8")
+
+            for html in (oldest_html, middle_html, latest_html):
+                self.assertIn("最新のダイジェストへ戻る", html)
+                self.assertIn("過去のダイジェスト一覧へ戻る", html)
+
+            self.assertNotIn("archive-prev-link", oldest_html)
+            self.assertEqual(oldest_html.count("archive-next-link"), 2)
+            self.assertIn('href="2026-07-12.html"', oldest_html)
+
+            self.assertEqual(middle_html.count("archive-prev-link"), 2)
+            self.assertEqual(middle_html.count("archive-next-link"), 2)
+            header_html = middle_html[:middle_html.index("</header>")]
+            bottom_html = middle_html[middle_html.index('<nav class="archive-nav archive-bottom-nav"'):]
+            for nav_html in (header_html, bottom_html):
+                self.assertIn('href="2026-07-10.html"', nav_html)
+                self.assertIn('href="2026-07-15.html"', nav_html)
+            self.assertNotIn('href="2026-07-11.html"', middle_html)
+            self.assertNotIn('href="2026-07-13.html"', middle_html)
+            self.assertGreater(
+                middle_html.index('<nav class="archive-nav archive-bottom-nav"'),
+                middle_html.index('<div class="sources">'),
+            )
+
+            self.assertEqual(latest_html.count("archive-prev-link"), 2)
+            self.assertNotIn("archive-next-link", latest_html)
+            self.assertIn('href="2026-07-12.html"', latest_html)
 
     def test_regenerating_archive_from_legacy_json_does_not_modify_source_json(self):
         # BL-016: 既存archive再生成の回帰テスト。旧形式のoverviewを含む
@@ -480,7 +538,7 @@ class ArchiveIndexAndPathTest(unittest.TestCase):
                 archive_html,
             )
 
-    def test_brief_status_label_is_absent_when_brief_is_empty(self):
+    def test_archive_summary_does_not_generate_brief_status(self):
         digest = make_digest("2026-07-12", title="none", total_items=1, high_count=0)
         digest["brief"] = {
             "status": "not_attempted",
@@ -493,9 +551,7 @@ class ArchiveIndexAndPathTest(unittest.TestCase):
             "error_type": None,
         }
         summary = fetch.archive_summary_from_digest(digest)
-        self.assertEqual(summary["brief_status"], "本日の要点なし")
-        self.assertNotIn("Today's Brief", summary["brief_status"])
-        self.assertNotIn("Today’s Brief", summary["brief_status"])
+        self.assertNotIn("brief_status", summary)
 
     def test_data_index_json_is_not_treated_as_daily_digest(self):
         with tempfile.TemporaryDirectory() as tmp:

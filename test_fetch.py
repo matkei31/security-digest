@@ -2955,20 +2955,31 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         start = text.index("## BL-016")
         end = text.index("## BL-017", start)
         bl016_text = text[start:end]
-        self.assertIn("- **状態:** 実装済み / ユーザー受入待ち", bl016_text)
+        self.assertIn("- **状態:** 完了", bl016_text)
         self.assertIn("[PR #9](https://github.com/matkei31/security-digest/pull/9)", bl016_text)
         self.assertIn("82b23c720b5871c5f46d068813defc12af164e4a", bl016_text)
+        self.assertIn("[PR #23](https://github.com/matkei31/security-digest/pull/23)", bl016_text)
+        self.assertIn("b8c0ab0fa5411930fc55b1b9f97cfda016c29373", bl016_text)
+        self.assertIn("「新しい表示もPC・390px・過去ダイジェストとも問題なし」", bl016_text)
+        self.assertIn("- **残作業:** なし。", bl016_text)
 
-    def test_bl_017_status_and_not_implemented_in_this_pr(self):
+    def test_bl_017_status_scope_and_user_wording(self):
         text = self._read("BACKLOG.md")
         start = text.index("## BL-017")
         end = text.index("## BL-018", start)
         bl017_text = text[start:end]
-        self.assertIn("- **状態:** 仕様化済み / 未実装", bl017_text)
+        self.assertIn("## BL-017 — 過去ダイジェストの回遊性と一覧表示を改善する", bl017_text)
+        self.assertIn("- **状態:** 実装済み / ユーザー受入待ち", bl017_text)
         self.assertIn(
             "- **ユーザー原文:** 「あと、過去のダイジェストについて、ワンクリックで前日分とかに行き来できる改修はこれから？」",
             bl017_text,
         )
+        self.assertIn(
+            "- **追加のユーザー原文:** 「だけど、この画面で「本日の要点あり」の記載は必要かな？不要な気がする」",
+            bl017_text,
+        )
+        self.assertIn("`brief_status`生成を削除", bl017_text)
+        self.assertIn("- **残作業:** ユーザー受入。", bl017_text)
 
     def test_bl_018_status_and_not_implemented_in_this_pr(self):
         text = self._read("BACKLOG.md")
