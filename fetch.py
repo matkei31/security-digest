@@ -1527,6 +1527,12 @@ def clean_archive_text(value):
 
 
 def parse_archive_datetime(value):
+    """保存済み日時またはdatetimeを解釈する。
+
+    ISO 8601のoffsetは保持し、timezone-aware値をnaive化しない。offsetの無い
+    legacy値は正確な瞬間を特定できないためnaiveのまま返し、ここではJST/UTCを
+    推測して付与しない。解釈不能値は既存どおりNoneへfallbackする。
+    """
     if not value:
         return None
     if isinstance(value, datetime.datetime):
@@ -1534,17 +1540,47 @@ def parse_archive_datetime(value):
     text = str(value).strip()
     if not text:
         return None
+    parsed = daily_json.parse_datetime(text)
+    if parsed is not None:
+        return parsed
     try:
         return datetime.datetime.fromisoformat(text)
     except ValueError:
         return None
 
 
-def format_archive_datetime(value):
+def normalize_datetime_for_display(value):
+    """表示用日時をJSTへ正規化する。
+
+    timezone-aware値だけを同一瞬間のJST表現へ変換する。offsetの無いlegacy
+    datetimeは瞬間を一意に決められないため、既存のwall-clock表示を維持して
+    timezoneを推測しない。解釈不能値はNoneを返す。
+    """
     dt = parse_archive_datetime(value)
+    if dt is None or dt.tzinfo is None:
+        return dt
+    return dt.astimezone(JST)
+
+
+def article_datetime_for_display(item):
+    """通常取得itemとdaily JSON復元itemの表示日時を同じ契約で解決する。"""
+    for key in ("published_at_jst", "published_at", "date"):
+        dt = normalize_datetime_for_display(item.get(key))
+        if dt is not None:
+            return dt
+    return None
+
+
+def format_article_meta_time(item):
+    dt = article_datetime_for_display(item)
+    return dt.strftime("%m/%d %H:%M") if dt else ""
+
+
+def format_archive_datetime(value):
+    dt = normalize_datetime_for_display(value)
     if not dt:
         return ""
-    return dt.astimezone(JST).strftime("%Y年%m月%d日 %H:%M")
+    return dt.strftime("%Y年%m月%d日 %H:%M")
 
 
 def format_digest_date_label(digest_date):
@@ -3845,7 +3881,7 @@ def build_html(
     now      = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     date_source = generated_at or now
     if isinstance(date_source, datetime.datetime):
-        date_str = date_source.astimezone(JST).strftime("%Y年%m月%d日 %H:%M")
+        date_str = normalize_datetime_for_display(date_source).strftime("%Y年%m月%d日 %H:%M")
     else:
         date_str = clean_archive_text(date_source)
     dashboard_html = render_dashboard_html(items)
@@ -3923,7 +3959,7 @@ def build_html(
 
     cards = []
     for display_index, item in enumerate(display_items, start=1):
-        date_label = item["date"].strftime("%m/%d %H:%M") if item["date"] else ""
+        date_label = format_article_meta_time(item)
         raw_summary = strip_html(item["summary"])
         analysis = normalize_display_analysis(item.get("ai_analysis"))
         anchor_id = article_anchor_id(display_index)

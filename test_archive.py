@@ -52,6 +52,54 @@ def parse_anchors(html):
     return parser
 
 
+class ArticleMetaParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.meta_by_url = {}
+        self.article_urls = []
+        self._in_card = False
+        self._article_url = None
+        self._article_meta = None
+        self._meta_parts = None
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        classes = set((attrs.get("class") or "").split())
+        if tag == "article" and "card" in classes:
+            self._in_card = True
+            self._article_url = None
+            self._article_meta = None
+            self._meta_parts = None
+        elif self._in_card and tag == "a" and "article-title-link" in classes:
+            self._article_url = attrs.get("href")
+            if self._article_url:
+                self.article_urls.append(self._article_url)
+        elif self._in_card and tag == "p" and "article-meta" in classes:
+            self._meta_parts = []
+
+    def handle_data(self, data):
+        if self._meta_parts is not None:
+            self._meta_parts.append(data)
+
+    def handle_endtag(self, tag):
+        if tag == "p" and self._meta_parts is not None:
+            self._article_meta = "".join(self._meta_parts).strip()
+            self._meta_parts = None
+        elif tag == "article" and self._in_card:
+            if self._article_url and self._article_meta:
+                self.meta_by_url[self._article_url] = self._article_meta
+            self._in_card = False
+            self._article_url = None
+            self._article_meta = None
+            self._meta_parts = None
+
+
+def article_meta_for_url(html, url):
+    parser = ArticleMetaParser()
+    parser.feed(html)
+    return parser.meta_by_url.get(url)
+
+
 def make_digest(digest_date="2026-07-11", *, title="記事A", total_items=1, high_count=1):
     items = []
     for index in range(total_items):
@@ -136,7 +184,143 @@ def write_digest(data_dir, digest):
     return path
 
 
+class ArticleTimeNormalizationTest(unittest.TestCase):
+    def test_aware_datetime_and_iso_offsets_normalize_to_same_jst_instant(self):
+        expected = datetime.datetime(2026, 7, 18, 6, 20, 10, tzinfo=JST)
+        cases = {
+            "UTC aware datetime": datetime.datetime(
+                2026, 7, 17, 21, 20, 10, tzinfo=datetime.timezone.utc
+            ),
+            "JST aware datetime": expected,
+            "ISO Z": "2026-07-17T21:20:10Z",
+            "ISO +00:00": "2026-07-17T21:20:10+00:00",
+            "ISO +09:00": "2026-07-18T06:20:10+09:00",
+        }
+
+        for label, value in cases.items():
+            with self.subTest(label=label):
+                normalized = fetch.normalize_datetime_for_display(value)
+                self.assertEqual(normalized, expected)
+                self.assertEqual(normalized.isoformat(), "2026-07-18T06:20:10+09:00")
+                self.assertEqual(fetch.format_article_meta_time({"date": value}), "07/18 06:20")
+
+    def test_naive_datetime_keeps_wall_clock_without_timezone_inference(self):
+        legacy = datetime.datetime(2026, 7, 18, 6, 20, 10)
+
+        normalized = fetch.normalize_datetime_for_display(legacy)
+
+        self.assertEqual(normalized, legacy)
+        self.assertIsNone(normalized.tzinfo)
+        self.assertEqual(
+            fetch.format_article_meta_time({"date": "2026-07-18T06:20:10"}),
+            "07/18 06:20",
+        )
+
+    def test_invalid_datetime_keeps_existing_empty_fallback(self):
+        self.assertIsNone(fetch.parse_archive_datetime("not-a-date"))
+        self.assertIsNone(fetch.normalize_datetime_for_display("not-a-date"))
+        self.assertEqual(
+            fetch.format_article_meta_time(
+                {"published_at_jst": "not-a-date", "date": None}
+            ),
+            "",
+        )
+
+    def test_display_normalization_does_not_change_collection_cutoff_value(self):
+        raw = "2026-07-17T21:20:10Z"
+        collection_date = fetch.parse_date(raw)
+        cutoff = datetime.datetime(2026, 7, 17, 22, 0, 0)
+        accepted_before = collection_date >= cutoff
+        item = {
+            "date": collection_date,
+            "published_at_jst": dj.parse_date_to_jst(raw),
+        }
+
+        self.assertEqual(fetch.format_article_meta_time(item), "07/18 06:20")
+        self.assertEqual(collection_date, datetime.datetime(2026, 7, 17, 21, 20, 10))
+        self.assertIsNone(collection_date.tzinfo)
+        self.assertEqual(collection_date >= cutoff, accepted_before)
+        self.assertFalse(accepted_before)
+
+    def test_existing_daily_json_values_order_and_digest_date_are_unchanged(self):
+        digest_path = Path(fetch.__file__).resolve().parent / "data" / "2026-07-18.json"
+        original_bytes = digest_path.read_bytes()
+        digest = fetch.load_daily_digest(digest_path)
+        published_values = [item.get("published_at") for item in digest["items"]]
+        digest_date = digest["digest_date"]
+        items = fetch.digest_items_for_html(digest)
+        expected_urls = [
+            item["link"] for item in fetch.sort_items_for_display(items)
+        ]
+
+        html = fetch.build_html(items, fetch.brief_for_html_from_digest(digest))
+        parser = ArticleMetaParser()
+        parser.feed(html)
+
+        self.assertEqual(parser.article_urls, expected_urls)
+        self.assertEqual(
+            [item.get("published_at") for item in digest["items"]],
+            published_values,
+        )
+        self.assertEqual(digest["digest_date"], digest_date)
+        self.assertEqual(digest_path.read_bytes(), original_bytes)
+
+
 class ArchiveGenerationTest(unittest.TestCase):
+    def test_existing_daily_json_article_time_matches_normal_generation_path(self):
+        digest_path = Path(fetch.__file__).resolve().parent / "data" / "2026-07-18.json"
+        digest = fetch.load_daily_digest(digest_path)
+        article_url = (
+            "https://thehackernews.com/2026/07/"
+            "new-wp2shell-wordpress-core-flaw-lets.html"
+        )
+        entry = next(item for item in digest["items"] if item.get("url") == article_url)
+        saved_published_at = entry["published_at"]
+        published_at = fetch.parse_archive_datetime(saved_published_at)
+
+        restored_item = next(
+            item for item in fetch.digest_items_for_html(digest)
+            if item.get("link") == article_url
+        )
+        normal_item = copy.deepcopy(restored_item)
+        normal_item["date"] = (
+            published_at.astimezone(datetime.timezone.utc).replace(tzinfo=None)
+        )
+        normal_item["published_at_jst"] = published_at.astimezone(JST)
+
+        normal_meta = article_meta_for_url(fetch.build_html([normal_item]), article_url)
+        restored_meta = article_meta_for_url(fetch.build_html([restored_item]), article_url)
+
+        self.assertEqual(
+            entry["title"],
+            "New wp2shell WordPress Core Flaw Lets Unauthenticated Attackers Run Code",
+        )
+        self.assertEqual(saved_published_at, "2026-07-18T06:20:10+09:00")
+        self.assertEqual(normal_item["date"], datetime.datetime(2026, 7, 17, 21, 20, 10))
+        self.assertIsNone(normal_item["date"].tzinfo)
+        self.assertEqual(
+            normal_item["published_at_jst"],
+            datetime.datetime(2026, 7, 18, 6, 20, 10, tzinfo=JST),
+        )
+        self.assertEqual(
+            restored_item["date"],
+            datetime.datetime(2026, 7, 18, 6, 20, 10, tzinfo=JST),
+        )
+        self.assertEqual(normal_item["date"].strftime("%m/%d %H:%M"), "07/17 21:20")
+        self.assertEqual(restored_item["date"].strftime("%m/%d %H:%M"), "07/18 06:20")
+        self.assertEqual(
+            restored_item["date"].replace(tzinfo=None) - normal_item["date"],
+            datetime.timedelta(hours=9),
+        )
+        self.assertEqual(
+            normal_meta,
+            restored_meta,
+            "normal path date is UTC-naive while the JSON path retains +09:00; "
+            f"normal={normal_item['date']!r}, published_at_jst="
+            f"{normal_item['published_at_jst']!r}, restored={restored_item['date']!r}",
+        )
+        self.assertEqual(normal_meta, "The Hacker News ・ 07/18 06:20")
+
     def test_daily_archive_from_json_contains_expected_sections_and_omits_internal_fields(self):
         digest = make_digest(total_items=2, high_count=1)
         html = fetch.build_daily_archive_html(digest)
