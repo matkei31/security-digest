@@ -52,17 +52,17 @@
 - **ID:** BL-001
 - **タイトル:** プルリクエストCI
 - **優先度:** P0
-- **状態:** 実装済み / ユーザー受入待ち
+- **状態:** 完了
 - **出所種別:** 技術上の発見事項
 - **ユーザー原文:** 該当なし — 技術上の発見事項。
 - **ユーザー確認済み要約:** 未定義。
 - **解釈:** production作業を一切行わず、全PRに対してfull unittest suiteと`git diff --check`を実行する通常の`pull_request` CIを追加する。
 - **完了条件:** CIがfull unittest suiteと`git diff --check`を実行する。Geminiを呼ばず、secretsを受け取らず、`data/`や`docs/`を生成・commitせず、production publicationを行わない。
 - **依存関係:** GitHub Actions workflowの設計とrepository権限のレビュー。
-- **実装証跡:** 実装前は未実装であり、[STATUS.md](STATUS.md)と[`.github/workflows/fetch.yml`](.github/workflows/fetch.yml)に、通常の`pull_request` CIが存在しないことが記録されていた。今回、[PR #26](https://github.com/matkei31/security-digest/pull/26)で[`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml)を新設し、main向けの通常の`pull_request`で、repository権限を`contents: read`だけに限定し、資格情報を永続化しないcheckout、Python 3.12でのfull unittest suite、base SHAとhead SHAの実差分に対する`git diff --check`、同一PRの旧runを中止するconcurrencyを実装した。secrets、`fetch.py`、生成、commit、push、Pages deploymentを使用しないことをstdlibのみの静的回帰テストで検証する。
-- **ユーザー受入証跡:** 実装前は「実装が存在しないため、現時点では該当なし。」と記録。現在はPR上の実装に対するユーザー受入待ち。
-- **残作業:** PR上のCI成功確認、レビュー、merge、完了記録
-- **注記:** 実装前は、既存のローカルテストと独立レビューの証跡を代替としていた。mergeまでは、このPR上のCI結果と独立レビューを受入判断の証跡とする。
+- **実装証跡:** 実装前は未実装であり、[STATUS.md](STATUS.md)と[`.github/workflows/fetch.yml`](.github/workflows/fetch.yml)に、通常の`pull_request` CIが存在しないことが記録されていた。[PR #26](https://github.com/matkei31/security-digest/pull/26)で[`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml)を新設し、main向けの通常の`pull_request`で、repository権限を`contents: read`だけに限定し、資格情報を永続化しないcheckout、Python 3.12でのfull unittest suite、base SHAとhead SHAの実差分に対する`git diff --check`、同一PRの旧runを中止するconcurrencyを実装した。draft PR上の[Pull Request CI run 29640129033](https://github.com/matkei31/security-digest/actions/runs/29640129033)でfull unittest 1,107件とPRのbase/head実差分に対する`git diff --check`が成功し、実効権限は`Contents: read`と暗黙の`Metadata: read`のみだった。このrunではrepository Secrets、Gemini/NVD、`fetch.py`、生成、commit、push、Pages publicationを実行していない。ChatGPT独立レビューでBlockerなしと判断された後、通常のmerge commit `f5bbd04f42643d4a87f999d01f538d574fe39f17`でmergeされた。
+- **ユーザー受入証跡:** 実装前は「実装が存在しないため、現時点では該当なし。」と記録。実装後の最終受入発言は存在しない。「オッケー、進めて。」は実装着手を進める指示であり、実装後の受入発言としては扱わない。本項目は技術上の発見事項であり、客観的な完了条件と上記のmerge証跡により完了した。
+- **残作業:** なし。
+- **注記:** 実装前は、既存のローカルテストと独立レビューの証跡を代替としていた。merge前はPR上のCI結果と独立レビューを受入判断の証跡とし、完了後は上記の客観的完了条件とmerge証跡を正本とする。
 
 ## BL-002 — 記事カードの楕円バッジ多用を見直す
 
