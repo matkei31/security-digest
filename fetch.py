@@ -212,6 +212,11 @@ def build_source_colors(sources):
     return {s["name"]: s["color"] for s in sources}
 
 
+def build_footer_sources(sources):
+    """収集元フッターへ表示するenabledな定義を、定義順のまま返す。"""
+    return [source for source in sources if source["enabled"]]
+
+
 def build_trusted_cyber_sources(sources):
     """source定義から、既存コードが期待する TRUSTED_CYBER_SOURCES 相当の
     表示名の集合を生成する。"""
@@ -4093,10 +4098,10 @@ def build_html(
     </article>""")
 
     cards_html = "\n".join(cards) if cards else '<p class="empty">本日の新着はありません。</p>'
-    all_sources = [f for f in RSS_FEEDS if not f[1].startswith("#")] + [("CISA KEV","","")]
+    all_sources = build_footer_sources(SOURCE_DEFINITIONS)
     sources_li = "".join(
-        '<li style="background:{}">{}</li>'.format(SOURCE_COLORS.get(n, "#555"), esc(n))
-        for n, *_ in all_sources
+        '<li style="background:{}">{}</li>'.format(source["color"], esc(source["name"]))
+        for source in all_sources
     )
 
     if brief:
@@ -4283,7 +4288,7 @@ def build_html(
   <div class="cards">{cards_html}</div>
   <div class="sources">
     <details>
-      <summary>収集元 ({esc(str(len(RSS_FEEDS)+2))}ソース)</summary>
+      <summary>収集元 ({esc(str(len(all_sources)))}ソース)</summary>
       <ul>{sources_li}</ul>
     </details>
   </div>

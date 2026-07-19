@@ -58,6 +58,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 6. Known issues and limitations
 
+- [BL-019](BACKLOG.md#bl-019--収集元見出し件数と列挙対象を一致させる): the source footer count/list mismatch is an independent small fix in progress; enabled sources will drive both the heading count and the ordered list without changing source enablement or collection behavior.
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
 - [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する): A comprehensive security requirements document does not yet exist; existing rules remain scattered across `AGENTS.md` and code.
@@ -66,6 +67,8 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 ## 7. Next candidates
 
 1. [BL-005](BACKLOG.md#bl-005--editorial-style-v1とtoday-brief-v4) (P1) — BL-004／Fable 5デザインレビューへの依存は完了した。[SD-007](DECISIONS.md#sd-007--create-security-digest-editorial-style-v1-and-introduce-it-to-brief-first)の既存方向性に従い、次に`editorial-style-v1`と`today-brief-v4`の要件、完了条件、比較評価方法を確定する。Gemini promptのproduction実装にはまだ着手せず、ARTICLEは初期スコープ外とする。決定論的なBRIEF state/count logic、trusted-context境界、ARTICLEとの分離、daily JSON schemaを維持する。
+
+[BL-019](BACKLOG.md#bl-019--収集元見出し件数と列挙対象を一致させる) (P2) is an independent small display-consistency fix in progress and does not replace BL-005 as the next major candidate.
 
 [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not included in this short priority list.
 
