@@ -2,7 +2,7 @@
 
 ## 1. As of
 
-2026-07-18
+2026-07-20
 
 This file records the current, changeable project state. Incomplete, partially addressed, and acceptance-pending items are recorded in [BACKLOG.md](BACKLOG.md). Stable design and operating decisions are recorded in [DECISIONS.md](DECISIONS.md).
 
