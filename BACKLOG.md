@@ -375,17 +375,35 @@
 - **ID:** BL-019
 - **タイトル:** 収集元見出し件数と列挙対象を一致させる
 - **優先度:** P2
-- **状態:** 進行中
+- **状態:** 完了
 - **出所種別:** 技術上の発見事項
 - **ユーザー原文:** 該当なし — 技術上の発見事項
 - **ユーザー確認済み要約:** 未定義。
 - **解釈:** 収集元フッターは、`source_definitions.json`で`enabled=true`の全取得元を`collection_method`にかかわらず定義順で列挙し、見出し件数も必ず同じ集合から算出する。CISA KEVは含め、無効化中のCISA advisory RSSとstandalone NIST NVD記事収集は除外する。NISTニュースRSSは含め、別経路のNVD vulnerability factsは記事収集元一覧へ含めない。各取得元の有効状態、取得方法、再開条件は変更しない。
 - **完了条件:** 見出し件数と収集元`li`数が一致する；表示集合が`enabled=true`の全定義と定義順まで一致する；CISA KEVとNISTニュースRSSを含む；無効化中のCISA advisory RSSとstandalone NIST NVD記事収集を除外する；通常トップページとdaily JSONから再構築した日別Archiveで収集元表示が一致する；daily JSON、`data/index.json`、source定義、schema、ARTICLE／BRIEF prompt、workflowを変更しない；既存daily JSONと現行設定だけで対象HTMLを再生成し、収集元見出し以外の記事内容・順序・BRIEF・時刻・件数を変更しない；関連テスト、full unittest、Pull Request CI、`git diff --check`が成功する；Pages公開表示で、見出し件数と列挙件数が一致し、期待する収集元集合が表示されることを確認する。
 - **依存関係:** 現行`source_definitions.json`；[SD-003](DECISIONS.md#sd-003--disable-cisa-advisory-rss-and-obtain-cisa-kev-from-the-official-github-mirror)；[BL-011](#bl-011--standalone-nist-nvd記事取得の保留理由再開条件)と意味を共有するが、その完了には依存しない。
-- **実装証跡:** `build_footer_sources()`が`enabled=true`の定義を定義順で返し、`build_html()`はその同じ戻り値から見出し件数と`li`一覧を生成する。固定の`len(RSS_FEEDS) + 2`とCISA KEVの個別追加を削除し、通常トップページとdaily JSON復元Archive、enabled／disabledのRSS・非RSSを混在させたfixtureで契約を検証する。既存daily JSONと現行設定から、外部HTTP、Gemini、RSS取得、ARTICLE／BRIEF再生成なしでトップページと全9日別Archive（2026-07-11〜2026-07-19）を再生成する。
-- **ユーザー受入証跡:** 現時点では該当なし。実装・merge・Pages公開後の表示確認とは分けて記録する。
-- **残作業:** Draft PRのレビュー、merge、Pages公開後の表示確認、ユーザー受入、完了記録。
+- **実装証跡:** `build_footer_sources()`が`enabled=true`の定義を定義順で返し、`build_html()`はその同じ戻り値から見出し件数と`li`一覧を生成する。固定の`len(RSS_FEEDS) + 2`とCISA KEVの個別追加を削除し、通常トップページとdaily JSON復元Archive、enabled／disabledのRSS・非RSSを混在させたfixtureで契約を検証した。既存daily JSONと現行設定から、外部HTTP、Gemini、RSS取得、ARTICLE／BRIEF再生成なしでトップページと全9日別Archive（2026-07-11〜2026-07-19）を再生成した。[PR #32](https://github.com/matkei31/security-digest/pull/32)を通常のmerge commit `d08a1b00d43488892ba6ef74b184340ab14a72c0`として2026-07-20 00:06:16 JSTにmergeした。merge後のfull unittest 1,122件、`git diff --check`、Markdownリンク確認が成功した。[Pages workflow run 29692162999](https://github.com/matkei31/security-digest/actions/runs/29692162999)のbuild／deploy／report-build-statusはすべてsuccessだった。公開トップページと最新Archive（2026-07-19）は「収集元 (15ソース)」かつ展開後15項目で、CISA KEVを含み、CISA advisory RSSとstandalone NIST NVD記事収集を含まないことを確認した。2026-07-18の記事、BRIEF、時刻、件数、前後ナビに変更がないことも確認した。
+- **ユーザー受入証跡:** 公開画面確認後のユーザー原文は「うん。バックログに入れるなりしてどこかで直せるように管理しよう。んで、次進もう」。この発言は、15ソースへの件数修正について別途やり直しを求めておらず、色分けをBL-019とは別の後続課題として管理して次へ進む、という範囲だけの受入として記録する。UI全体を包括的に承認した発言として一般化しない。
+- **残作業:** なし。
 - **注記:** 2026-07-18のFable 5サイトレビューで検出された技術上の発見事項であり、Fable 5の指摘をユーザー発言として扱わない。発見時の現行設定は全17定義、`enabled=true` 15件、`enabled=false` 2件だった。
+
+## BL-020 — 収集元一覧の取得元別カラーを廃止する
+
+- **ID:** BL-020
+- **タイトル:** 収集元一覧の取得元別カラーを廃止する
+- **優先度:** P2
+- **状態:** 仕様化済み / 未実装
+- **出所種別:** ユーザー原文 / ユーザー確認済み要約
+- **ユーザー原文:** 「なんで色分けしてるんだっけ？」
+- **追加のユーザー原文:** 「うん。バックログに入れるなりしてどこかで直せるように管理しよう。んで、次進もう」
+- **ユーザー確認済み要約:** ページ末尾の折りたたみ式「収集元」一覧について、取得元ごとの背景色と色付きpill表現を廃止し、無彩色で低強調のプレーンな一覧表示へ変更する。後続のUI修正として管理し、BL-019の件数修正とは分離する。
+- **解釈:** 対象はページ末尾の「収集元」一覧である。記事カード内の`article-meta`は既にプレーン表示であり、今回の対象外とする。収集元の名称、件数、`enabled`判定、定義順は変更せず、トップページと日別Archiveで同一表示にする。色に意味体系や凡例がなく、複数ソースが同じ色であるため、識別機能より装飾性が上回っている。[BL-002](#bl-002--記事カードの楕円バッジ多用を見直す)／[BL-003](#bl-003--aiで機械処理された印象を弱める)の「色付き楕円ラベルの多用を避ける」という方向へ整合させる。現行[UI_SPEC.md](UI_SPEC.md) 12.1の「取得元別カラーを維持する」と競合するため、実装時に正式に置換する。
+- **完了条件:** 各収集元`li`から取得元別のinline `background`指定を削除する；色付きpillではなく、無彩色・低強調のプレーンな一覧として表示する；15ソースという件数、列挙対象、定義順を変更しない；CISA KEVも他の収集元と同じ通常表示にする；トップページとすべての日別Archiveで同じ表示になる；[UI_SPEC.md](UI_SPEC.md) 12.1を新仕様へ更新する；必要な[DECISIONS.md](DECISIONS.md)の`Supersedes`関係を記録する；PCと390pxで折返し、可読性、横スクロールを確認する；関連テスト、full unittest、Pull Request CI、`git diff --check`が成功する；Pages公開後にユーザー受入を得る。
+- **依存関係:** [BL-002](#bl-002--記事カードの楕円バッジ多用を見直す)；[BL-003](#bl-003--aiで機械処理された印象を弱める)；[BL-004](#bl-004--fable-5によるuiレビューとui設計書)／[UI_SPEC.md](UI_SPEC.md) Version 1.0；[BL-019](#bl-019--収集元見出し件数と列挙対象を一致させる)；現行`build_footer_sources()`および`build_html()`。
+- **実装証跡:** 未実装。
+- **ユーザー受入証跡:** 未実装のため該当なし。
+- **残作業:** 表示仕様の具体化；UI_SPEC／DECISIONSの更新；実装；テスト；既存HTML再生成；Pages確認；ユーザー受入。
+- **注記:** BL-019を再オープンしない。収集元の有効・無効状態や取得処理を変更しない。BL-020登録時点ではUI_SPEC.mdやDECISIONS.mdを変更せず、UI_SPECの置換はBL-020実装と同じPRで行う。
 
 ## 完了済み参照
 
