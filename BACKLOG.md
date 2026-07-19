@@ -380,11 +380,11 @@
 - **ユーザー原文:** 該当なし — 技術上の発見事項
 - **ユーザー確認済み要約:** 未定義。
 - **解釈:** 収集元フッターは、`source_definitions.json`で`enabled=true`の全取得元を`collection_method`にかかわらず定義順で列挙し、見出し件数も必ず同じ集合から算出する。CISA KEVは含め、無効化中のCISA advisory RSSとstandalone NIST NVD記事収集は除外する。NISTニュースRSSは含め、別経路のNVD vulnerability factsは記事収集元一覧へ含めない。各取得元の有効状態、取得方法、再開条件は変更しない。
-- **完了条件:** 見出し件数と収集元`li`数が一致する；表示集合が`enabled=true`の全定義と定義順まで一致する；CISA KEVとNISTニュースRSSを含む；無効化中のCISA advisory RSSとstandalone NIST NVD記事収集を除外する；通常トップページとdaily JSONから再構築した日別Archiveで収集元表示が一致する；daily JSON、`data/index.json`、source定義、schema、ARTICLE／BRIEF prompt、workflowを変更しない；既存daily JSONと現行設定だけで対象HTMLを再生成し、収集元見出し以外の記事内容・順序・BRIEF・時刻・件数を変更しない；関連テスト、full unittest、Pull Request CI、`git diff --check`、PC／390px、Pages公開表示確認が成功する。
+- **完了条件:** 見出し件数と収集元`li`数が一致する；表示集合が`enabled=true`の全定義と定義順まで一致する；CISA KEVとNISTニュースRSSを含む；無効化中のCISA advisory RSSとstandalone NIST NVD記事収集を除外する；通常トップページとdaily JSONから再構築した日別Archiveで収集元表示が一致する；daily JSON、`data/index.json`、source定義、schema、ARTICLE／BRIEF prompt、workflowを変更しない；既存daily JSONと現行設定だけで対象HTMLを再生成し、収集元見出し以外の記事内容・順序・BRIEF・時刻・件数を変更しない；関連テスト、full unittest、Pull Request CI、`git diff --check`が成功する；Pages公開表示で、見出し件数と列挙件数が一致し、期待する収集元集合が表示されることを確認する。
 - **依存関係:** 現行`source_definitions.json`；[SD-003](DECISIONS.md#sd-003--disable-cisa-advisory-rss-and-obtain-cisa-kev-from-the-official-github-mirror)；[BL-011](#bl-011--standalone-nist-nvd記事取得の保留理由再開条件)と意味を共有するが、その完了には依存しない。
 - **実装証跡:** `build_footer_sources()`が`enabled=true`の定義を定義順で返し、`build_html()`はその同じ戻り値から見出し件数と`li`一覧を生成する。固定の`len(RSS_FEEDS) + 2`とCISA KEVの個別追加を削除し、通常トップページとdaily JSON復元Archive、enabled／disabledのRSS・非RSSを混在させたfixtureで契約を検証する。既存daily JSONと現行設定から、外部HTTP、Gemini、RSS取得、ARTICLE／BRIEF再生成なしでトップページと全9日別Archive（2026-07-11〜2026-07-19）を再生成する。
-- **ユーザー受入証跡:** 現時点では該当なし。実装・merge・Pages公開後のPC／390px表示確認とは分けて記録する。
-- **残作業:** Draft PRのレビュー、merge、Pages公開後のPC／390px表示確認、ユーザー受入、完了記録。
+- **ユーザー受入証跡:** 現時点では該当なし。実装・merge・Pages公開後の表示確認とは分けて記録する。
+- **残作業:** Draft PRのレビュー、merge、Pages公開後の表示確認、ユーザー受入、完了記録。
 - **注記:** 2026-07-18のFable 5サイトレビューで検出された技術上の発見事項であり、Fable 5の指摘をユーザー発言として扱わない。発見時の現行設定は全17定義、`enabled=true` 15件、`enabled=false` 2件だった。
 
 ## 完了済み参照
