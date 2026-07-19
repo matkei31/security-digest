@@ -1,0 +1,230 @@
+{
+  "schema_version": 1,
+  "digest_date": "2026-07-20",
+  "generated_at": "2026-07-20T07:51:23.309204+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-v3"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 3,
+    "ai_attempted_count": 3,
+    "ai_success_count": 3,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 1,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 3,
+      "参考": 0,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 1,
+      "攻撃・脅威動向": 2,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 0,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "gemini-2.5-flash",
+    "prompt_version": "today-brief-v3",
+    "overview": "掲載3件｜重要度「高」2件｜本日確認0件｜今週確認3件\n本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が3件あり、計画的な確認が必要です。一方、重要度の高い情報が2件あるため、内容は優先的に把握する必要があります。今週は、広く利用されるウェブサーバーやVPNアプライアンスにおける重大な脆弱性が複数報告され、特に一部は公開前に悪用が確認されており、迅速な対応が求められる状況です。",
+    "important_highlights": [
+      "F5がNGINXのワーカープロセスでヒープバッファオーバーフローを引き起こす重大な脆弱性（CVE-2026-42533）の修正をリリースしました。リモートの認証されていない攻撃者によってサービス停止や情報漏えいにつながる恐れがあるため、利用状況の確認と速やかなアップグレードが推奨されます。",
+      "SonicWall Secure Mobile Access (SMA) 1000シリーズVPNアプライアンスのゼロデイ脆弱性が、公開前に悪用されていたことが判明しました。外部からのアクセス経路として利用される製品であるため、利用している場合は内部ネットワークへの不正アクセスや情報漏えいのリスクが高まります。",
+      "ロシアの国家支援型脅威アクターUAC-0145が、ClickFix CAPTCHAを悪用してウクライナの標的をデータ窃取マルウェアに感染させていることが確認されました。直接的な金融機関への影響は低いものの、特定の攻撃手法と脅威アクターの動向として、情報収集の参考になります。"
+    ],
+    "discussion_points": [
+      "外部公開されるネットワーク機器やウェブサーバーの脆弱性が、公開前に悪用される事例が継続的に発生しており、サプライチェーン全体でのセキュリティ対策と迅速な情報共有・対応体制の重要性が改めて浮き彫りになっています。自組織だけでなく、委託先の利用状況を含めた包括的なリスク評価と対策の強化が求められます。",
+      "VPNアプライアンスやウェブサーバーなど、外部からのアクセス経路となる製品の脆弱性は、内部ネットワークへの侵入の足がかりとなるため、特に高い優先度での対応が必要です。これらの製品に対する脆弱性管理プロセスや緊急時の対応計画について、改めて見直しと強化を図るべきです。"
+    ],
+    "check_items": [
+      "自社および委託先でNGINXおよびSonicWall SMA 1000シリーズVPNアプライアンスの利用有無、バージョン、外部公開状況を確認し、該当する場合はベンダーの一次情報に基づき、速やかにパッチ適用や緩和策の実施を検討してください。",
+      "SonicWall SMA 1000シリーズVPNアプライアンスを利用している場合は、過去のログを調査し、不正アクセスや侵害の兆候がないか確認してください。"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:89f3cdde9df9a892df0c8e7a735051d7a16b7f93e7e7830dc8941d0fbc2661fe",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/critical-nginx-vulnerability-can-crash.html",
+      "canonical_url": "https://thehackernews.com/2026/07/critical-nginx-vulnerability-can-crash.html",
+      "published_at": "2026-07-20T05:42:49+09:00",
+      "fetched_at": "2026-07-20T07:50:10.316060+09:00",
+      "title": "NGINXの重大な脆弱性によりワーカープロセスがクラッシュ、リモートコード実行の可能性",
+      "raw_title": "Critical NGINX Vulnerability Can Crash Workers and May Allow Remote Code Execution",
+      "raw_excerpt": "F5 has shipped fixes for a critical nginx flaw that lets a remote, unauthenticated attacker trigger a heap buffer overflow in the worker process with crafted HTTP requests. CVE-2026-42533 was patched ",
+      "content_hash": "sha256:eb3ac71946b8703682fd385a8ec1897a43b3cadea52c5aa861c31bf6312314f2",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-20T07:50:13.202857+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "NGINXの重大な脆弱性とそれに対するパッチが主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "F5は、リモートの認証されていない攻撃者が細工されたHTTPリクエストによりNGINXのワーカープロセスでヒープバッファオーバーフローを引き起こす重大な脆弱性（CVE-2026-42533）に対する修正をリリースしました。この脆弱性はNGINX 1.30.4（stable）および1.31.3（mainline）、NGINX Plus 37.0.3.1で修正されており、以前のバージョンを使用している場合はアップグレードが必要です。",
+        "financial_impact": "多くの金融機関でウェブサーバーやリバースプロキシとしてNGINXが利用されている可能性があり、本脆弱性が悪用された場合、サービス停止や情報漏えいにつながる恐れがあるため関係します。",
+        "recommended_actions": [
+          "自社および委託先でNGINXの利用有無、バージョン、外部公開状況を確認する",
+          "NGINX 1.30.4（stable）、1.31.3（mainline）、NGINX Plus 37.0.3.1以降へのアップグレードを検討する",
+          "ベンダーの一次情報を確認し、詳細な影響と緩和策を評価する"
+        ],
+        "reason": "重要度は、CVSS9.2の重大な脆弱性であり、多くの金融機関で利用される可能性のあるNGINXが対象のため「高」です。確認目安は、パッチが公開されており対応が必要ですが、直近のKEV新規追加や悪用進行中の明確な時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-42533",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-07-19T22:50:10Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-42533",
+              "vuln_status": "Awaiting Analysis",
+              "published_at": "2026-07-15T15:16:33Z",
+              "last_modified_at": "2026-07-16T05:16:19Z",
+              "cvss": {
+                "version": "4.0",
+                "base_score": 9.2,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:4.0/AV:N/AC:H/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                "source": "f5sirt@f5.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "not_listed",
+              "retrieval": "live",
+              "fetched_at": "2026-07-19T22:50:10Z",
+              "date_added": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:3eace55fa61213fcdc9c700ebd0ec40beaed9103921f250b0de3ad634a057f1b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/uac-0145-uses-clickfix-captchas-to.html",
+      "canonical_url": "https://thehackernews.com/2026/07/uac-0145-uses-clickfix-captchas-to.html",
+      "published_at": "2026-07-19T22:30:55+09:00",
+      "fetched_at": "2026-07-20T07:50:10.316060+09:00",
+      "title": "ロシアの脅威アクターUAC-0145がClickFix CAPTCHAを悪用しウクライナのデバイスをマルウェアに感染させる",
+      "raw_title": "UAC-0145 Uses ClickFix CAPTCHAs to Infect Ukrainian Devices wih Malware",
+      "raw_excerpt": "Russian state-sponsored threat actors have been observed leveraging the infamous ClickFix strategy to trick Ukrainian targets into infecting their own machines with data-stealing malware.\n\nAccording t",
+      "content_hash": "sha256:063af38ce0b89b926225442e8b4787dc9ee849f790c97ff8849d507596a394eb",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-20T07:50:30.219454+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ロシアの国家支援型脅威アクターによる特定の攻撃手法とマルウェア利用が主題であるため。",
+        "tags": [
+          "APT",
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ロシアの国家支援型脅威アクターUAC-0145（Sandwormのサブクラスター）が、ClickFix CAPTCHAを悪用してウクライナの標的を騙し、データ窃取マルウェアに感染させていることが確認されました。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。特定の攻撃手法と脅威アクターの動向として、参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の国家支援型アクターによる攻撃動向であり、金融機関への直接的な適用性が不明なため「中」です。確認目安は、新たな脆弱性や緊急対応を要する情報ではなく、脅威動向の把握が中心となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ef3919eea15f184f3b4eac9600430eb2b4b47d2bb2cac178eeac7ff139d7e771",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/sonicwall-sma-zero-days-exploited.html",
+      "canonical_url": "https://thehackernews.com/2026/07/sonicwall-sma-zero-days-exploited.html",
+      "published_at": "2026-07-19T22:18:56+09:00",
+      "fetched_at": "2026-07-20T07:50:10.316060+09:00",
+      "title": "SonicWall SMAゼロデイ脆弱性、公開前に悪用されルートアクセスを奪取",
+      "raw_title": "SonicWall SMA Zero-Days Exploited Before Disclosure to Gain Root Access",
+      "raw_excerpt": "A previously undocumented threat actor has been attributed to the exploitation of recently disclosed SonicWall Secure Mobile Access (SMA) 1000 series VPN appliances as zero-days prior their public dis",
+      "content_hash": "sha256:03a06cdf268e56ffd35bf106a3ef219c90c95bfd440f207964535da2d2539707",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-20T07:50:47.758074+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "SonicWall SMAのゼロデイ脆弱性が公開前に悪用された事例であり、攻撃者と攻撃手法が主題であるため。",
+        "tags": [
+          "ゼロデイ",
+          "悪用確認済み",
+          "APT",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "SonicWall Secure Mobile Access (SMA) 1000シリーズVPNアプライアンスのゼロデイ脆弱性が、2026年6月22日以前から公開前に悪用されていたことが判明しました。Volexityは、この活動を「UTA0533」と名付け、未確認の脅威アクターによるものとして追跡しています。",
+        "financial_impact": "金融機関でSonicWall SMA 1000シリーズVPNアプライアンスを利用している場合に関係します。外部からのアクセス経路として利用される製品であるため、悪用されると内部ネットワークへの不正アクセスや情報漏えいにつながる可能性があります。",
+        "recommended_actions": [
+          "SonicWall SMA 1000シリーズVPNアプライアンスの利用有無と影響バージョンを確認する",
+          "SonicWallからの公式情報やパッチ、緩和策を確認し、対応要否を評価する",
+          "過去のログを調査し、不正アクセスや侵害の兆候がないか確認する"
+        ],
+        "reason": "重要度は、外部公開されるVPNアプライアンスのゼロデイ脆弱性が公開前に悪用された事例であり、金融機関での利用時に重大な影響を及ぼす可能性があるため「高」です。確認目安は、悪用が確認されているものの、CISA KEVへの新規追加がなく、緊急パッチや明確な期限が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
