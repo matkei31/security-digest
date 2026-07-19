@@ -100,6 +100,12 @@ def article_meta_for_url(html, url):
     return parser.meta_by_url.get(url)
 
 
+def source_footer_segment(html):
+    start = html.index('<div class="sources">')
+    end = html.index("</details>", start) + len("</details>")
+    return html[start:end]
+
+
 def make_digest(digest_date="2026-07-11", *, title="記事A", total_items=1, high_count=1):
     items = []
     for index in range(total_items):
@@ -867,6 +873,50 @@ class TopPageArchiveLinkTest(unittest.TestCase):
         self.assertEqual(len(archive_links), 1)
         self.assertIn("過去のダイジェストを見る", html)
         self.assertTrue(all("target" not in a and "rel" not in a for a in archive_links))
+
+
+class SourceFooterConsistencyTest(unittest.TestCase):
+    def test_enabled_sources_drive_top_and_restored_archive_footer(self):
+        sources = [
+            {
+                "id": "nist_news", "name": "NIST News", "collection_method": "rss",
+                "enabled": True, "color": "#111111",
+            },
+            {
+                "id": "cisa", "name": "CISA Advisory", "collection_method": "rss",
+                "enabled": False, "color": "#222222",
+            },
+            {
+                "id": "cisa_kev", "name": "CISA KEV", "collection_method": "cisa_kev_json",
+                "enabled": True, "color": "#333333",
+            },
+            {
+                "id": "nist_nvd", "name": "NIST NVD", "collection_method": "nist_nvd_json",
+                "enabled": False, "color": "#444444",
+            },
+        ]
+        digest = make_digest()
+
+        self.assertEqual(
+            [source["id"] for source in fetch.build_footer_sources(sources)],
+            ["nist_news", "cisa_kev"],
+        )
+
+        with mock.patch.object(fetch, "SOURCE_DEFINITIONS", sources):
+            top_html = fetch.build_html(
+                fetch.digest_items_for_html(digest),
+                fetch.brief_for_html_from_digest(digest),
+            )
+            archive_html = fetch.build_daily_archive_html(digest)
+
+        top_footer = source_footer_segment(top_html)
+        archive_footer = source_footer_segment(archive_html)
+        self.assertEqual(top_footer, archive_footer)
+        self.assertIn("収集元 (2ソース)", top_footer)
+        self.assertEqual(top_footer.count("<li "), 2)
+        self.assertLess(top_footer.index("NIST News"), top_footer.index("CISA KEV"))
+        self.assertNotIn("CISA Advisory", top_footer)
+        self.assertNotIn("NIST NVD", top_footer)
 
 
 if __name__ == "__main__":

@@ -2765,6 +2765,7 @@ class AgentsFileTest(unittest.TestCase):
             "BL-016",
             "BL-017",
             "BL-018",
+            "BL-019",
             "## 完了済み参照",
             "Ticket 14a-3",
             "Ticket 14a-4",
@@ -2788,7 +2789,7 @@ class AgentsFileTest(unittest.TestCase):
             "**残作業:**",
             "**注記:**",
         )
-        item_ids = [f"BL-{number:03d}" for number in range(1, 19)]
+        item_ids = [f"BL-{number:03d}" for number in range(1, 20)]
         for index, item_id in enumerate(item_ids):
             start = text.index(f"## {item_id}")
             if index + 1 < len(item_ids):
@@ -2936,12 +2937,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         kept = [ch for ch in lowered if ch.isalnum() or ch in (" ", "-", "_")]
         return "".join(kept).replace(" ", "-")
 
-    def test_bl_ids_are_unique_and_cover_bl001_to_bl018(self):
+    def test_bl_ids_are_unique_and_cover_bl001_to_bl019(self):
         text = self._read("BACKLOG.md")
         bl_headings = [h for h in self._headings(text) if re.match(r"^BL-\d{3}\b", h)]
         ids = [re.match(r"^(BL-\d{3})", h).group(1) for h in bl_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
-        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 19)})
+        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 20)})
 
     def test_sd_ids_are_unique_and_cover_sd001_to_sd016(self):
         text = self._read("DECISIONS.md")
@@ -3039,7 +3040,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
     def test_bl_018_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
         start = text.index("## BL-018")
-        end = text.index("## 完了済み参照", start)
+        end = text.index("## BL-019", start)
         bl018_text = text[start:end]
         self.assertIn("- **状態:** 完了", bl018_text)
         self.assertIn("- **出所種別:** 技術上の発見事項", bl018_text)
@@ -3069,6 +3070,28 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("[PR #28](https://github.com/matkei31/security-digest/pull/28)", recently_completed)
         self.assertNotIn("BL-018", known_issues)
         self.assertNotIn("BL-018", next_candidates)
+
+    def test_bl_019_progress_status_and_evidence(self):
+        text = self._read("BACKLOG.md")
+        start = text.index("## BL-019")
+        end = text.index("## 完了済み参照", start)
+        bl019_text = text[start:end]
+        self.assertIn("- **状態:** 進行中", bl019_text)
+        self.assertIn("- **出所種別:** 技術上の発見事項", bl019_text)
+        self.assertIn("- **ユーザー原文:** 該当なし — 技術上の発見事項", bl019_text)
+        self.assertIn("`build_footer_sources()`", bl019_text)
+        self.assertNotIn("- **残作業:** なし。", bl019_text)
+
+        status_text = self._read("STATUS.md")
+        known_issues = status_text[
+            status_text.index("## 6. Known issues and limitations"):status_text.index("## 7. Next candidates")
+        ]
+        next_candidates = status_text[
+            status_text.index("## 7. Next candidates"):status_text.index("## 8. Sources of truth")
+        ]
+        self.assertIn("BL-019", known_issues)
+        self.assertIn("1. [BL-005]", next_candidates)
+        self.assertIn("BL-019", next_candidates)
 
     def test_sd_015_records_trusted_context_allowlist_decision(self):
         text = self._read("DECISIONS.md")
