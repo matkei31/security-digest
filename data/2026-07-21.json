@@ -1,0 +1,384 @@
+{
+  "schema_version": 1,
+  "digest_date": "2026-07-21",
+  "generated_at": "2026-07-21T08:01:42.796258+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-v3"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 6,
+    "ai_attempted_count": 6,
+    "ai_success_count": 6,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 4,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 1,
+      "今週確認": 3,
+      "参考": 2,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 1,
+      "攻撃・脅威動向": 3,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 2,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "gemini-2.5-flash",
+    "prompt_version": "today-brief-v3",
+    "overview": "掲載6件｜重要度「高」2件｜本日確認1件｜今週確認3件\n本日中に適用性または初動要否を確認する記事が1件あります。本日は、WordPressの脆弱性が公開後すぐに広範な攻撃に悪用されている状況が確認されており、金融機関においてもウェブサイトや内部システムでの利用状況の確認が急務です。また、Microsoft 365の正規機能を悪用する新たなマルウェアの出現も報告されており、クラウド環境における脅威への警戒を強める必要があります。",
+    "important_highlights": [
+      "公開からわずか3日でWordPressの脆弱性（CVE-2026-60137、CVE-2026-63030）が悪用され、広範な攻撃が試みられています。金融機関がWordPressを利用している場合、情報漏えいや業務停止のリスクがあるため、早急な確認と対応が求められます。",
+      "HollowGraphと呼ばれるスパイマルウェアが、Microsoft 365のカレンダー機能をコマンド&コントロール(C2)チャネルとして悪用し、2050年のカレンダーイベントに指示や窃取ファイルを隠蔽する新たな手法が確認されました。多くの金融機関で利用されているMicrosoft 365の正規機能を悪用する攻撃であり、情報漏えいにつながる可能性があります。",
+      "約7,600の悪意あるGitHubリポジトリが「FakeGit」キャンペーンの一環としてSmartLoaderマルウェアを配布しており、特にAIスキルやModel Context Protocol (MCP)サーバーを装う手口が確認されています。金融機関の開発部門がGitHubを利用している場合、マルウェア感染のリスクに注意が必要です。"
+    ],
+    "discussion_points": [
+      "AI技術の導入が進む中で、CISOがAIリスク管理のプレッシャーに直面していることが示されており、金融機関におけるAIリスク管理体制の構築やCISOの役割・責任の明確化について議論が必要です。",
+      "LLMを活用した脆弱性修復の自動化が初期段階で有効性を示しているものの、コストや人間による介入の課題も指摘されており、金融機関が新たな技術をセキュリティ運用に導入する際の評価基準や導入戦略について検討する論点となり得ます。"
+    ],
+    "check_items": [
+      "自社および委託先でWordPressの利用有無、影響を受けるバージョン、および外部公開状況を確認し、ベンダーから提供される修正パッチまたは緩和策の適用を検討してください。また、攻撃の兆候がないかWordPressのアクセスログやセキュリティログを監視してください。",
+      "Microsoft 365環境における不審なカレンダーイベントやGraph APIトラフィックの有無を監視・確認し、監査ログを定期的に調査して異常なアクセスや設定変更がないか確認してください。HollowGraphマルウェアに関する最新の脅威インテリジェンスも確認し、自社環境への適用性を評価してください。"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:546ed8fa5cc92a365465c753253cfac3b1467a8249a4367cf5b52bba674b1006",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/cyberattacks-data-breaches/wp2shell-millions-wordpress-sites-remote-takeover",
+      "canonical_url": "https://www.darkreading.com/cyberattacks-data-breaches/wp2shell-millions-wordpress-sites-remote-takeover",
+      "published_at": "2026-07-21T06:38:18+09:00",
+      "fetched_at": "2026-07-21T07:59:33.094069+09:00",
+      "title": "「WP2Shell」攻撃、数百万のWordPressサイトをリモート乗っ取りの危機に",
+      "raw_title": "'WP2Shell' Opens Millions of WordPress Sites to Remote Takeover",
+      "raw_excerpt": "Barely three days after disclosure, attackers are widely chaining together CVE-2026-60137 and CVE-2026-63030 to lob exploit attempts against one of the largest attack surfaces on the Internet.",
+      "content_hash": "sha256:3a05ca7ad35732f472a2d29ba7eaea196bd0881f1350cdc71fdcf367c9400dab",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-21T07:59:35.931787+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "WordPressの脆弱性を悪用した攻撃が主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "公開からわずか3日後、攻撃者はCVE-2026-60137とCVE-2026-63030を組み合わせて、インターネット上で最も広範な攻撃対象の一つであるWordPressサイトに対するエクスプロイトを広く試みています。",
+        "financial_impact": "金融機関がWordPressをウェブサイトや内部システムで利用している場合、これらの脆弱性が悪用されると情報漏えいや業務停止のリスクに直面する可能性があります。",
+        "recommended_actions": [
+          "自社および委託先でWordPressの利用有無、影響を受けるバージョン、および外部公開状況を確認する",
+          "WordPressのベンダーから提供される一次情報、修正パッチ、または緩和策を確認し、対応要否を評価する",
+          "攻撃の兆候がないか、WordPressのアクセスログやセキュリティログを監視する"
+        ],
+        "reason": "重要度は、CVSS9.1および7.5の脆弱性が広く利用されるWordPressを標的とし、公開後すぐに広範な攻撃が確認されているため「高」です。確認目安は、公開からわずか3日で広範な攻撃が進行中であり、即時対応の根拠があるため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-60137",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-07-20T22:59:33Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-60137",
+              "vuln_status": "Received",
+              "published_at": "2026-07-17T20:17:27Z",
+              "last_modified_at": "2026-07-18T05:16:54Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 9.1,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N",
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "not_listed",
+              "retrieval": "live",
+              "fetched_at": "2026-07-20T22:59:33Z",
+              "date_added": null
+            }
+          },
+          {
+            "cve_id": "CVE-2026-63030",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-07-20T22:59:33Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-63030",
+              "vuln_status": "Received",
+              "published_at": "2026-07-17T20:17:28Z",
+              "last_modified_at": "2026-07-18T05:16:56Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 7.5,
+                "base_severity": "HIGH",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "not_listed",
+              "retrieval": "live",
+              "fetched_at": "2026-07-20T22:59:33Z",
+              "date_added": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:d9d2511bdb1006982e6f2cc2c3c29e74400df8c6110d39f143a7864a32e779d6",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/cybersecurity-operations/remediating-vulnerabilities-llms-ivanti-automation",
+      "canonical_url": "https://www.darkreading.com/cybersecurity-operations/remediating-vulnerabilities-llms-ivanti-automation",
+      "published_at": "2026-07-21T05:26:56+09:00",
+      "fetched_at": "2026-07-21T07:59:33.094069+09:00",
+      "title": "Ivanti、LLMを活用した脆弱性修復の自動化を推進",
+      "raw_title": "Remediating Vulnerabilities With LLMs: Inside Ivanti's Automation Push",
+      "raw_excerpt": "Ivanti CSO Daniel Spicer says frontier models have shown surprising effectiveness in early stages; but cost and human-in-the-loop viability remain open questions.",
+      "content_hash": "sha256:defc3e671eb3c1563747caa4f884c39b4e2379a1527de9b3047fb1c7b133bae8",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-21T07:59:52.731504+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題が、LLMを活用した脆弱性修復の自動化というAI・新技術リスクに関する内容であるため。",
+        "tags": [
+          "AI",
+          "LLM"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "IvantiのCSOであるDaniel Spicer氏によると、同社はLLMを活用した脆弱性修復の自動化を推進しており、初期段階では驚くべき有効性を示しているものの、コストと人間による介入の実現可能性が課題として残っているとのことです。",
+        "financial_impact": "金融機関がIvanti製品を利用しており、かつLLMを活用した脆弱性管理ソリューションの導入を検討している場合に、参考情報として関係します。",
+        "recommended_actions": [],
+        "reason": "重要度は、LLMを活用した脆弱性管理の動向に関する情報であり、現時点での直接的な影響が限定的であるため「中」です。確認目安は、具体的な対応期限や緊急性が示されていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:eca26416c8bdc26cf40621a28e2a43db46d59a0142761df8168fc3cfaadb6c8e",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/cybersecurity-operations/cisos-feel-heat-ai-risk",
+      "canonical_url": "https://www.darkreading.com/cybersecurity-operations/cisos-feel-heat-ai-risk",
+      "published_at": "2026-07-21T04:07:01+09:00",
+      "fetched_at": "2026-07-21T07:59:33.094069+09:00",
+      "title": "CISOがAIリスクで重圧を感じる",
+      "raw_title": "CISOs Feel the Heat Over AI Risk",
+      "raw_excerpt": "Job pressures have increased as companies run headlong into AI adoption, causing 26% of top security executives to consider leaving their position.",
+      "content_hash": "sha256:744497b25cc6a943e0ba8aba71919520dd7b65921d4bd7665612b7ea72bff3a8",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-21T08:00:09.909185+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAI導入に伴うリスクとCISOへの影響であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "企業がAI導入に突き進む中、CISOの職務上のプレッシャーが増大しており、トップセキュリティ幹部の26%が退職を検討していることが明らかになりました。",
+        "financial_impact": "金融機関においてもAI導入が進む中で、CISOが同様のプレッシャーに直面する可能性があり、AIリスク管理体制の構築やCISOの役割・責任の明確化が関係します。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI導入に伴うCISOの課題提起であり、金融機関のAIリスク管理体制を検討する上で参考となるため「中」です。確認目安は、具体的な脅威や期限の記述がなく、中長期的な検討事項であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0823fe2e9d3257827a981a80c0c54ee0d9f939339f37c19cbc9675474750563c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/fakegit-campaign-uses-7600-github.html",
+      "canonical_url": "https://thehackernews.com/2026/07/fakegit-campaign-uses-7600-github.html",
+      "published_at": "2026-07-21T03:23:03+09:00",
+      "fetched_at": "2026-07-21T07:59:33.094069+09:00",
+      "title": "FakeGitキャンペーン、7,600のGitHubリポジトリを悪用しSmartLoaderマルウェアを拡散",
+      "raw_title": "FakeGit Campaign Uses 7,600 GitHub Repositories to Spread SmartLoader Malware",
+      "raw_excerpt": "Cybersecurity researchers have discovered nearly 7,600 malicious GitHub repositories, out of which more than 800 pose as artificial intelligence (AI) skills or Model Context Protocol (MCP) servers to ",
+      "content_hash": "sha256:120d71e8ee33c074e238495efae3ad82a48c85af26c8b86b7a6631501766743e",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-21T08:00:27.367674+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "攻撃手法とマルウェアの拡散キャンペーンが主題であるため。",
+        "tags": [
+          "APT",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者らは、約7,600の悪意あるGitHubリポジトリを発見しました。そのうち800以上がAIスキルやModel Context Protocol (MCP)サーバーを装い、「FakeGit」と名付けられたキャンペーンの一環としてSmartLoaderマルウェアを配布しています。",
+        "financial_impact": "金融機関がGitHubを開発リポジトリとして利用している場合、または開発者が個人アカウントでGitHubを利用している場合に、マルウェア感染のリスクが生じる可能性があります。",
+        "recommended_actions": [
+          "開発部門に対し、GitHubリポジトリの利用における信頼性確認と、不審なリポジトリからのダウンロードを避けるよう注意喚起する",
+          "開発環境におけるマルウェア対策ソリューションの有効性を確認し、必要に応じて強化を検討する"
+        ],
+        "reason": "重要度は、GitHubを開発リポジトリとして利用している場合に影響する可能性があるため「中」です。確認目安は、新たな攻撃キャンペーンに関する情報であり、即時対応を要する具体的な期限や悪用継続の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c7c7b6f182da24086037a32d9c0cfaf9c4abcbc5b3b9e753285295b08c8b53bd",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/exposed-server-reveals-ai-assisted.html",
+      "canonical_url": "https://thehackernews.com/2026/07/exposed-server-reveals-ai-assisted.html",
+      "published_at": "2026-07-21T02:29:50+09:00",
+      "fetched_at": "2026-07-21T07:59:33.094069+09:00",
+      "title": "公開サーバーからAI支援型フィッシングツールキットが露呈、WebDAVマルウェアキャンペーンの背後を明らかに",
+      "raw_title": "Exposed Server Reveals AI-Assisted Phishing Toolkit Behind WebDAV Malware Campaign",
+      "raw_excerpt": "A malware operator left its delivery server wide open, and Rapid7 pulled down the whole toolkit: 1,048 files spanning lure templates, filename-spoofing tests, execution experiments, droppers, builder ",
+      "content_hash": "sha256:13f9fae659edecdb610d3825a8b6496415695c86bcd4a7a7d3f37c53bc60c482",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-21T08:00:44.877783+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "AI支援型フィッシングツールキットとWebDAVマルウェアキャンペーンに関する攻撃手法と脅威動向が主題であるため。",
+        "tags": [
+          "フィッシング",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "マルウェア運用者が配信サーバーを公開状態にしたことで、AI支援型フィッシングツールキットが露呈しました。このツールキットは、おとりテンプレート、ファイル名偽装テスト、実行実験、ドロッパーなど1,048ファイルを含み、メキシコのWindowsユーザーを標的とした情報窃取マルウェアのWebDAV経由での配信に利用されていました。",
+        "financial_impact": "金融機関が直接的な標的とされているとの記述はなく、特定の製品やサービスへの影響も不明です。一般的な脅威動向として、フィッシングや情報窃取型マルウェアへの警戒を継続する上で参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響や特定の製品への適用性が記事から確認できないため「中」です。確認目安は、新たな脆弱性や緊急対応を要する情報ではなく、一般的な脅威動向の把握が中心となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d7859924946fd9b5e0c153e509e6f70bf856aef7db8e514c6984be31d6bdbd0b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/hollowgraph-malware-hides-c2-and-stolen.html",
+      "canonical_url": "https://thehackernews.com/2026/07/hollowgraph-malware-hides-c2-and-stolen.html",
+      "published_at": "2026-07-20T23:33:43+09:00",
+      "fetched_at": "2026-07-21T07:59:33.094069+09:00",
+      "title": "HollowGraphマルウェア、Microsoft 365の2050年のイベントにC2と窃取ファイルを隠蔽",
+      "raw_title": "HollowGraph Malware Hides C2 and Stolen Files in Microsoft 365 Events Dated 2050",
+      "raw_excerpt": "A newly discovered espionage implant has been using a hijacked Microsoft 365 calendar as its command channel, planting operator instructions and smuggling out stolen files as attachments on calendar e",
+      "content_hash": "sha256:3e8c996d3bcd376c33f96988cfa5a6ed22a74267ec9d2e4abcbce68534e7bb13",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-21T08:01:02.625025+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "新たに発見されたマルウェアがMicrosoft 365の正規機能を悪用した攻撃手法に関する記事であるため。",
+        "tags": [
+          "APT",
+          "クラウド",
+          "情報漏えい"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "新たに発見されたHollowGraphと呼ばれるスパイマルウェアは、乗っ取ったMicrosoft 365カレンダーをコマンド&コントロール(C2)チャネルとして利用し、2050年のカレンダーイベントの添付ファイルとして指示や窃取ファイルを隠蔽していました。この手法により、正規のMicrosoft Graph APIトラフィック内に悪意のある活動を隠蔽します。",
+        "financial_impact": "多くの金融機関で利用されているMicrosoft 365の正規機能を悪用する攻撃手法であり、情報漏えいや業務停止につながる可能性があるため、関連部署は脅威動向として把握し、自社環境への影響有無を確認する必要があります。",
+        "recommended_actions": [
+          "Microsoft 365環境における不審なカレンダーイベントやGraph APIトラフィックの有無を監視・確認する",
+          "Microsoft 365の監査ログを定期的に確認し、異常なアクセスや設定変更がないか調査する",
+          "HollowGraphマルウェアに関する最新の脅威インテリジェンスを確認し、自社環境への適用性を評価する"
+        ],
+        "reason": "重要度は、多くの金融機関で利用されるMicrosoft 365の正規機能を悪用する新たな攻撃手法であるため「高」です。確認目安は、新たな脅威動向として把握し、自社環境への影響有無を評価する必要があるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
