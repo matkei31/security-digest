@@ -128,7 +128,7 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("[Pull Request CI run 29647361707]", self.bl004)
         self.assertIn("[Pages deployment run 29648894119]", self.bl004)
 
-    def test_status_completes_bl004_and_promotes_bl005(self):
+    def test_status_completes_bl004_and_promotes_bl021(self):
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
@@ -147,14 +147,16 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("merge後検証済み", recently_completed)
         self.assertNotIn("BL-004", known_issues)
         self.assertNotRegex(next_candidates, r"(?m)^\d+\. \[BL-004\]")
-        self.assertRegex(next_candidates, r"(?m)^1\. \[BL-005\]")
-        self.assertIn("(P1)", next_candidates)
-        self.assertIn("BL-004／Fable 5デザインレビューへの依存は完了", next_candidates)
-        self.assertIn("[SD-007]", next_candidates)
-        self.assertIn("Gemini promptのproduction実装にはまだ着手せず", next_candidates)
-        self.assertIn("ARTICLEは初期スコープ外", next_candidates)
-        self.assertIn("- **状態:** 仕様化済み / 未実装", self.bl005)
-        self.assertIn("- **実装証跡:** 未実装。", self.bl005)
+        self.assertNotRegex(next_candidates, r"(?m)^2\. ")
+        self.assertRegex(next_candidates, r"(?m)^1\. \[BL-021\]")
+        self.assertIn("(P1, proposed)", next_candidates)
+        self.assertIn("[BL-005]", next_candidates)
+        self.assertIn("No-Go", next_candidates)
+        self.assertIn("[SD-017]", next_candidates)
+        self.assertNotIn("/Users/", next_candidates)
+        self.assertIn("- **状態:** 実装試行済み（v4/v5/v6）／No-Go／main未反映", self.bl005)
+        self.assertIn("- **実装証跡:** 目的:", self.bl005)
+        self.assertIn("v4は構造ガードが成立したが編集品質Gate未達だった", self.bl005)
         self.assertNotIn("実装済み", self.bl005)
         self.assertNotIn("- **状態:** 完了", self.bl005)
 

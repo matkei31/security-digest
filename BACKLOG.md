@@ -121,17 +121,17 @@
 - **ID:** BL-005
 - **タイトル:** editorial-style-v1とtoday-brief-v4
 - **優先度:** P1
-- **状態:** 仕様化済み / 未実装
+- **状態:** 実装試行済み（v4/v5/v6）／No-Go／main未反映
 - **出所種別:** ユーザー確認済み要約 (project decision)
 - **ユーザー原文:** 原文未回収。
 - **ユーザー確認済み要約:** Security Digest独自の`editorial-style-v1`を作り、最初はBRIEFへ部分導入し、`today-brief-v4`でGemini promptへ本文を埋め込む。ARTICLEへは初期適用しない。
 - **解釈:** 設計と比較評価にはFable 5を用い、production向けBRIEF生成にはGeminiを維持する。外部Gistを全面的にコピーしない。
 - **完了条件:** 十分には定義されていない。別途承認されない限り、決定論的なBRIEFのstate/count logic、trusted-context境界、ARTICLEとの分離、およびschemaを維持しなければならない。
-- **依存関係:** [SD-007](DECISIONS.md#sd-007--create-security-digest-editorial-style-v1-and-introduce-it-to-brief-first)；Fable 5デザインレビュー。
-- **実装証跡:** 未実装。承認済みの方向性はSD-007に記録されている。
-- **ユーザー受入証跡:** 方向性は承認済み；実装が存在するまでは実装受入は該当なし。
-- **残作業:** 編集ルール、prompt sizeの評価、version更新、fixtures、テスト、比較レビュー、production受入。
-- **注記:** Geminiはproduction向けBRIEF生成器であり続ける。ARTICLEは初期スコープ外である。この項目のGitHub上で追跡可能な唯一の出自は[PR #13](https://github.com/matkei31/security-digest/pull/13)の文書同期であり、そこでBL-005と[SD-007](DECISIONS.md#sd-007--create-security-digest-editorial-style-v1-and-introduce-it-to-brief-first)が同時に導入された；project conversation recordがこの方向性の実際の根拠であり、PR #13単独はユーザー受入の起点として扱わない（[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 2, Audit B参照）。原文は未回収のままである。
+- **依存関係:** [SD-007](DECISIONS.md#sd-007--create-security-digest-editorial-style-v1-and-introduce-it-to-brief-first)；[SD-017](DECISIONS.md#sd-017--do-not-merge-prompt-only-todays-brief-experiments-redesign-semantic-validation-separately)；Fable 5デザインレビュー。
+- **実装証跡:** 目的: Today's Briefへ構造ガードを追加しつつ、v3相当以上の編集品質と意味忠実性を維持できるかを検証した。試行結果: v4は構造ガードが成立したが編集品質Gate未達だった；v5はv3 promptへ戻し最小限の忠実性指示を追加し、API・構造・比較Gateは通過したが、外部主体の記事から金融機関自身の統制・支援施策を導く問題が発生した；v6は上記変換を禁止するprompt文を追加したが、同種の問題が両runで再発し、加えて2026年を2024年へ変更する事実改変が発生した。成功した事項: Gemini API 10/10 success、決定論的ガード262/262 pass、highlight適格性検証、source ID validation、public list[str] projection、未判定記事除外、public JSON／HTML／archive互換、ID laundering 0件、semanticな孤児参照0件、Run 1比較Gate通過、平均編集品質はv3を上回った。失敗した事項: 全run失格0を達成できなかった、入力にない金融機関主体・取引先関係・統制/支援施策を追加した、年月等の記事内事実を忠実に維持できなかった、prompt-only対策では再現性ある解消に至らなかった。実験commit（いずれもlocal-onlyであり、pushされておらずorigin/mainから到達できない。GitHub上で参照可能なcommitではない）: `2f35df1ead9255b441bfa17fb80f337ce4649052`（v4構造ガード実験）、`b2061d6f54005d16f19bc3838c95996f89b313b5`（v5構造ガード実装）、`a722d5471c91ba17e700b7fdb53133ad0f1f43bb`（Gemini schema互換修正）、`a97a9e9c2de05346ae0f1855b6d92143db21739e`（v6 prompt候補）。最終決定: BL-005はNo-Goとして終了する；experimental branch／commitはmainへ統合しない；v7のprompt-only再試行は行わない；構造ガードの知見は[BL-021](#bl-021--todays-briefの意味忠実性semantic-validation再設計)へ引き継ぐ；意味品質対策はBL-021で再設計する。詳細はSD-017を参照。
+- **ユーザー受入証跡:** 編集品質・意味忠実性を改善する目的は維持する；ただし、editorial-style-v1をprompt-onlyでBRIEFへ導入する今回の実装経路はNo-Goであり、実装としてのユーザー受入は成立していない。
+- **残作業:** なし（このBL-005自体の残作業はない）。意味品質対策は[BL-021](#bl-021--todays-briefの意味忠実性semantic-validation再設計)として別途再設計する。
+- **注記:** Geminiはproduction向けBRIEF生成器であり続ける。ARTICLEは初期スコープ外である。この項目のGitHub上で追跡可能な唯一の出自は[PR #13](https://github.com/matkei31/security-digest/pull/13)の文書同期であり、そこでBL-005と[SD-007](DECISIONS.md#sd-007--create-security-digest-editorial-style-v1-and-introduce-it-to-brief-first)が同時に導入された；project conversation recordがこの方向性の実際の根拠であり、PR #13単独はユーザー受入の起点として扱わない（[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 2, Audit B参照）。原文は未回収のままである。今回のv4/v5/v6実装試行・screening・No-Go判定は、GitHub上のPRを経由せずローカルのexperimental branchで実施されたため、この注記に記録する（実験commit自体はGitHubへpushされていない）。
 
 ## BL-006 — Monomi Digestへのブランド変更
 
@@ -404,6 +404,23 @@
 - **ユーザー受入証跡:** 未実装のため該当なし。
 - **残作業:** 表示仕様の具体化；UI_SPEC／DECISIONSの更新；実装；テスト；既存HTML再生成；Pages確認；ユーザー受入。
 - **注記:** BL-019を再オープンしない。収集元の有効・無効状態や取得処理を変更しない。BL-020登録時点ではUI_SPEC.mdやDECISIONS.mdを変更せず、UI_SPECの置換はBL-020実装と同じPRで行う。
+
+## BL-021 — Today's Briefの意味忠実性・semantic validation再設計
+
+- **ID:** BL-021
+- **タイトル:** Today's Briefの意味忠実性・semantic validation再設計
+- **優先度:** P1（提案）。[BL-005](#bl-005--editorial-style-v1とtoday-brief-v4)の直接の後継であり、BL-005自体がP1だったことと整合させて提案する。他ticketとの優先順位付けは別途ユーザー判断を要する。
+- **状態:** 論点整理済み／未仕様化
+- **出所種別:** BL-005実装試行・Gate未達からの派生
+- **ユーザー原文:** 該当なし（BL-005のNo-Go判定を受けた派生ticketであり、独立したユーザー原文はない）。
+- **ユーザー確認済み要約:** 該当なし。
+- **解釈:** 検討時の作業呼称は「BL-005b」だったが、正式なbacklog IDはBL-021とする。BL-005で試行したprompt-onlyの忠実性指示（v5/v6）だけでは、外部主体から自組織への主体・対象範囲変更や、記事内の年月等の事実改変を再現性をもって防げなかった（[SD-017](DECISIONS.md#sd-017--do-not-merge-prompt-only-todays-brief-experiments-redesign-semantic-validation-separately)参照）。このticketは実装方式を決定するものではなく、次の論点・選択肢・Gateを仕様化するためのものである。
+- **完了条件:** 「実装完了」ではなく、設計判断に必要な論点・選択肢・Gateが仕様化されることとする。具体的には次の論点それぞれについて、選択肢の整理と採否判断に必要な評価軸が文書化されること: 日付・年・数値・期限のsource一致検証／overview・discussion・checkのprovenance／入力にない自組織統制・支援施策の検出／semantic validatorの実現方式／validation失敗時の項目単位削除／validation失敗時のBrief全体不成立／追加Gemini呼出の要否／APIコスト／fallback率／誤検知率／過剰削除率／audit可能性／v5・v6で成立した構造ガード部分の再利用可否。
+- **依存関係:** [BL-005](#bl-005--editorial-style-v1とtoday-brief-v4)のNo-Go記録；[SD-017](DECISIONS.md#sd-017--do-not-merge-prompt-only-todays-brief-experiments-redesign-semantic-validation-separately)。
+- **実装証跡:** 未実装。BL-005のv5/v6 screening成果物（決定論的ガード・source ID validation・public projection等の構造ガード部分）が、再利用候補として存在する（repository外のlocal screening記録。詳細はBL-005の実装証跡・SD-017を参照）。
+- **ユーザー受入証跡:** 該当なし（論点整理段階のため）。
+- **残作業:** 上記論点それぞれの選択肢整理、評価軸の確定、実装方式の決定、fixtures・テスト方針の確定、比較評価・受入方法の確定。
+- **注記:** この段階では実装方式を決定しない。BL-005で成立した決定論的構造ガード（highlight適格性・source ID validation・public list[str] projection・件数上限等）は破棄せず、再利用可否の検討対象として維持する。
 
 ## 完了済み参照
 

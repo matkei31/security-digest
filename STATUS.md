@@ -67,7 +67,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-1. [BL-005](BACKLOG.md#bl-005--editorial-style-v1とtoday-brief-v4) (P1) — BL-004／Fable 5デザインレビューへの依存は完了した。[SD-007](DECISIONS.md#sd-007--create-security-digest-editorial-style-v1-and-introduce-it-to-brief-first)の既存方向性に従い、次に`editorial-style-v1`と`today-brief-v4`の要件、完了条件、比較評価方法を確定する。Gemini promptのproduction実装にはまだ着手せず、ARTICLEは初期スコープ外とする。決定論的なBRIEF state/count logic、trusted-context境界、ARTICLEとの分離、daily JSON schemaを維持する。
+1. [BL-021](BACKLOG.md#bl-021--todays-briefの意味忠実性semantic-validation再設計) (P1, proposed) — [BL-005](BACKLOG.md#bl-005--editorial-style-v1とtoday-brief-v4)はprompt-only実装経路（v4/v5/v6）をNo-Goとして終了した（[SD-017](DECISIONS.md#sd-017--do-not-merge-prompt-only-todays-brief-experiments-redesign-semantic-validation-separately)参照）。次はBL-021として、Today's Briefの意味忠実性・semantic validationの再設計論点を仕様化する。詳細な試行結果・screening数値はBACKLOG.mdのBL-005／BL-021とSD-017を参照し、ここには重複記載しない。
 
 [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not included in this short priority list.
 

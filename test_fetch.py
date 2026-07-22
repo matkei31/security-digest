@@ -2767,6 +2767,7 @@ class AgentsFileTest(unittest.TestCase):
             "BL-018",
             "BL-019",
             "BL-020",
+            "BL-021",
             "## 完了済み参照",
             "Ticket 14a-3",
             "Ticket 14a-4",
@@ -2790,7 +2791,7 @@ class AgentsFileTest(unittest.TestCase):
             "**残作業:**",
             "**注記:**",
         )
-        item_ids = [f"BL-{number:03d}" for number in range(1, 21)]
+        item_ids = [f"BL-{number:03d}" for number in range(1, 22)]
         for index, item_id in enumerate(item_ids):
             start = text.index(f"## {item_id}")
             if index + 1 < len(item_ids):
@@ -2938,19 +2939,19 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         kept = [ch for ch in lowered if ch.isalnum() or ch in (" ", "-", "_")]
         return "".join(kept).replace(" ", "-")
 
-    def test_bl_ids_are_unique_and_cover_bl001_to_bl020(self):
+    def test_bl_ids_are_unique_and_cover_bl001_to_bl021(self):
         text = self._read("BACKLOG.md")
         bl_headings = [h for h in self._headings(text) if re.match(r"^BL-\d{3}\b", h)]
         ids = [re.match(r"^(BL-\d{3})", h).group(1) for h in bl_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
-        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 21)})
+        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 22)})
 
-    def test_sd_ids_are_unique_and_cover_sd001_to_sd016(self):
+    def test_sd_ids_are_unique_and_cover_sd001_to_sd017(self):
         text = self._read("DECISIONS.md")
         sd_headings = [h for h in self._headings(text) if re.match(r"^SD-\d{3}\b", h)]
         ids = [re.match(r"^(SD-\d{3})", h).group(1) for h in sd_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
-        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 17)})
+        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 18)})
 
     def test_bl_001_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -2976,7 +2977,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("[PR #26](https://github.com/matkei31/security-digest/pull/26)", recently_completed)
         self.assertNotIn("BL-001", known_issues)
         self.assertNotIn("BL-001", next_candidates)
-        self.assertIn("1. [BL-005]", next_candidates)
+        self.assertIn("1. [BL-021]", next_candidates)
 
     def test_bl_016_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -3035,7 +3036,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("[PR #24](https://github.com/matkei31/security-digest/pull/24)", recently_completed)
         self.assertNotIn("BL-017", known_issues)
         self.assertNotIn("BL-017", next_candidates)
-        self.assertIn("1. [BL-005]", next_candidates)
+        self.assertIn("1. [BL-021]", next_candidates)
         self.assertNotRegex(next_candidates, r"(?m)^2\. ")
 
     def test_bl_018_completion_status_and_evidence(self):
@@ -3108,7 +3109,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertNotIn("BL-019", next_candidates)
         self.assertIn("BL-020", known_issues)
         self.assertNotIn("BL-020", next_candidates)
-        self.assertIn("1. [BL-005]", next_candidates)
+        self.assertIn("1. [BL-021]", next_candidates)
 
     def test_sd_015_records_trusted_context_allowlist_decision(self):
         text = self._read("DECISIONS.md")
@@ -3125,8 +3126,26 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         start = text.index("## BL-005")
         end = text.index("## BL-006", start)
         bl005_text = text[start:end]
-        self.assertIn("- **状態:** 仕様化済み / 未実装", bl005_text)
+        self.assertIn("- **状態:** 実装試行済み（v4/v5/v6）／No-Go／main未反映", bl005_text)
         self.assertIn("- **ユーザー原文:** 原文未回収。", bl005_text)
+
+    def test_bl_005_no_go_closure_records_experiments_and_bl021_handoff(self):
+        text = self._read("BACKLOG.md")
+        start = text.index("## BL-005")
+        end = text.index("## BL-006", start)
+        bl005_text = text[start:end]
+        for experiment_commit in (
+            "2f35df1ead9255b441bfa17fb80f337ce4649052",
+            "b2061d6f54005d16f19bc3838c95996f89b313b5",
+            "a722d5471c91ba17e700b7fdb53133ad0f1f43bb",
+            "a97a9e9c2de05346ae0f1855b6d92143db21739e",
+        ):
+            with self.subTest(commit=experiment_commit):
+                self.assertIn(experiment_commit, bl005_text)
+        self.assertIn("local-only", bl005_text)
+        self.assertIn("[BL-021]", bl005_text)
+        self.assertIn("[SD-017]", bl005_text)
+        self.assertNotIn("/Users/", bl005_text)
 
     def test_completed_reference_covers_batch2_prs(self):
         text = self._read("BACKLOG.md")
