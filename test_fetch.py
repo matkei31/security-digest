@@ -3143,8 +3143,8 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         backlog = self._read("BACKLOG.md")
         bl021 = backlog[backlog.index("## BL-021"):backlog.index("## BL-022")]
         self.assertIn(
-            "- **状態:** Phase 1 semantic blocking No-Go／B案main merge済み"
-            "／post-merge production生成確認待ち／ユーザー受入待ち",
+            "- **状態:** Phase 1 semantic blocking No-Go／B案production確認済み"
+            "／ユーザー受入待ち",
             bl021,
         )
         self.assertIn("v1/v2を本番採用しない", bl021)
@@ -3152,14 +3152,15 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("today-brief-extractive-v1", bl021)
         self.assertIn("[PR #35](https://github.com/matkei31/security-digest/pull/35)", bl021)
         self.assertIn("d1755d413cd554d6905715af26521e9e3169001c", bl021)
-        self.assertIn("2026-07-23 08:05 JST生成の公開daily JSONは引き続き`today-brief-v3`", bl021)
+        self.assertIn("30012552188", bl021)
+        self.assertIn("1afbd0e7f5b008ea3051af676e57fb2951b648ed", bl021)
+        self.assertIn("30012791302", bl021)
         self.assertNotIn("- **状態:** 完了", bl021)
 
         decisions = self._read("DECISIONS.md")
         sd018 = decisions[decisions.index("## SD-018"):]
         self.assertIn(
-            "- **Status:** Merged to main / Awaiting post-merge production verification"
-            " and user acceptance",
+            "- **Status:** Implemented and verified in production / Awaiting user acceptance",
             sd018,
         )
         self.assertIn("semantic validator as a blocking production gate", sd018)
@@ -3170,8 +3171,8 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("| BRIEF composition contract on `main` | `today-brief-extractive-v1` |", status)
         self.assertIn("| BRIEF model on `main` | `deterministic-extractive` |", status)
         self.assertIn("| ARTICLE Gemini model | `gemini-2.5-flash` |", status)
-        self.assertIn("| Latest published daily JSON | `today-brief-v3`", status)
-        self.assertIn("post-merge production確認", status)
+        self.assertIn("| Latest published daily JSON | `today-brief-extractive-v1`／`deterministic-extractive`", status)
+        self.assertIn("production生成・Pages・PC 1280px／390px表示まで確認済み", status)
         self.assertIn("ユーザー受入待ち", status)
 
     def test_bl_022_and_bl_023_preserve_requested_scope(self):
