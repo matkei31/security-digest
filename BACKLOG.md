@@ -410,17 +410,65 @@
 - **ID:** BL-021
 - **タイトル:** Today's Briefの意味忠実性・semantic validation再設計
 - **優先度:** P1（提案）。[BL-005](#bl-005--editorial-style-v1とtoday-brief-v4)の直接の後継であり、BL-005自体がP1だったことと整合させて提案する。他ticketとの優先順位付けは別途ユーザー判断を要する。
-- **状態:** Phase 1 semantic blocking No-Go／B案local screening完了／ユーザー受入待ち／production未反映
+- **状態:** Phase 1 semantic blocking No-Go／B案production確認済み／ユーザー受入待ち
 - **出所種別:** BL-005実装試行・Gate未達からの派生
 - **ユーザー原文:** 該当なし（BL-005のNo-Go判定を受けた派生ticketであり、独立したユーザー原文はない）。
 - **ユーザー確認済み要約:** 該当なし。
 - **解釈:** 検討時の作業呼称は「BL-005b」だったが、正式なbacklog IDはBL-021とする。BL-005で試行したprompt-onlyの忠実性指示（v5/v6）だけでは、外部主体から自組織への主体・対象範囲変更や、記事内の年月等の事実改変を再現性をもって防げなかった（[SD-017](DECISIONS.md#sd-017--do-not-merge-prompt-only-todays-brief-experiments-redesign-semantic-validation-separately)参照）。Phase 1ではsemantic validator v1/v2を固定データでlive評価し、既知の重大違反検出は成功したが、忠実な出力を安定して過剰rejectしたためblocking方式をNo-Goとした。追加prompt調整は終了し、v1/v2を本番採用しない。次の候補Bは、BRIEFで新しい横断的意味を生成せず、既存ARTICLE分析の`summary`／`financial_impact`／`recommended_actions`を無加工で決定論的に選択・配置し、overviewを既存trusted contextだけから構成する。
 - **完了条件:** B案について、BRIEF用Gemini APIがproduction経路から到達不能であること、overviewと各listの決定論的選択・provenance・上限・完全一致重複除外・public `list[str]` projection・過去v3 archive互換をテストし、既存daily JSON 5日分のoffline screeningとPC／390px目視用screenshotを作成すること。full unittest、`git diff --check`、pre-commit scope reviewを完了し、ユーザー受入前はproduction実装済みまたは完了と扱わない。
 - **依存関係:** [BL-005](#bl-005--editorial-style-v1とtoday-brief-v4)のNo-Go記録；[SD-017](DECISIONS.md#sd-017--do-not-merge-prompt-only-todays-brief-experiments-redesign-semantic-validation-separately)。
-- **実装証跡:** Phase 1のsemantic validator blocking方式はrepository外の固定pilot／shadow／final live成果物でSafety Gate PASS・Usability Gate未達となりNo-Go。prompt調整は終了し、validator v1/v2を本番採用しない。local branch `feature/bl021-extractive-brief`でB案のlocal implementation、既存daily JSON 5日分のoffline screening、PC／390px表示確認を完了した。check itemsは本日確認→今週確認→既存表示順を維持しながら、各記事から1件ずつ選んだ後に残りを補う二段階選択とした。main／productionへは未反映。ARTICLE prompt・version・API・validation・fallbackは変更していない。
-- **ユーザー受入証跡:** B案のlocal implementationとoffline screeningの実施のみ承認済み。表示・選択結果・production採用はユーザー受入待ち。
-- **残作業:** Draft PRでのユーザー目視と採否判断。採用する場合もmergeとproduction反映は別途実施し、反映後に受入を記録する。
-- **注記:** productionは引き続き`today-brief-v3`。local B案のcomposition contract候補は`today-brief-extractive-v1`であり、ARTICLE prompt・ARTICLE分析契約・daily JSON `schema_version`は変更しない。Phase 1のdeterministic guardと評価成果物は回帰資産として保持する。
+- **実装証跡:** Phase 1のsemantic validator blocking方式はrepository外の固定pilot／shadow／final live成果物でSafety Gate PASS・Usability Gate未達となりNo-Go。prompt調整は終了し、validator v1/v2を本番採用しない。B案のlocal implementation、既存daily JSON 5日分のoffline screening、PC／390px表示確認を完了し、[PR #35](https://github.com/matkei31/security-digest/pull/35)を通常のmerge commit `d1755d413cd554d6905715af26521e9e3169001c`として2026-07-23にmergeした。[Pull Request CI run 29990255618](https://github.com/matkei31/security-digest/actions/runs/29990255618)とmerge後の[Pages deployment run 30011612439](https://github.com/matkei31/security-digest/actions/runs/30011612439)は成功した。許可された1回の[Daily Security Digest run 30012552188](https://github.com/matkei31/security-digest/actions/runs/30012552188)はretryなしで成功し、生成commit `1afbd0e7f5b008ea3051af676e57fb2951b648ed`を作成した。[Pages deployment run 30012791302](https://github.com/matkei31/security-digest/actions/runs/30012791302)も成功した。公開daily JSONはBRIEF model `deterministic-extractive`／composition contract `today-brief-extractive-v1`、ARTICLE prompt `article-analysis-v8`、9記事すべてARTICLE status `success`である。「金融機関との関連」「本日の確認事項」はPC 1280px／390pxの双方で表示され、横スクロールがないことを確認した。check itemsは本日確認→今週確認→既存表示順を維持しながら、各記事から1件ずつ選んだ後に残りを補う二段階選択とした。ARTICLE prompt・version・API・validation・fallbackは変更していない。
+- **ユーザー受入証跡:** B案のmerge、1回の手動production生成、成功時の管理文書PR mergeの指示は受領済み。公開表示に対する明示的な最終受入発言はまだ記録されていない。
+- **残作業:** 公開表示に対するユーザー受入を記録する。
+- **注記:** `main`および最新の公開daily JSONのBRIEF composition contractは`today-brief-extractive-v1`、BRIEF modelは`deterministic-extractive`である。ARTICLE promptは`article-analysis-v8`のままで、ARTICLE分析契約・daily JSON `schema_version`は変更していない。Phase 1のdeterministic guardと評価成果物は回帰資産として保持する。
+
+## BL-022 — 前日ダイジェスト直接リンク
+
+- **ID:** BL-022
+- **タイトル:** 前日ダイジェスト直接リンク
+- **優先度:** 未設定（ユーザー順位付け待ち）
+- **状態:** 記録済み / 未仕様化 / 未実装
+- **出所種別:** ユーザー原文
+- **ユーザー原文:**
+  > 前日ダイジェスト直接リンク
+  >
+  > - 現在の「過去のダイジェストを見る」に加え、前日分が存在する場合は直接移動できるリンクを表示
+  > - 日付欠落時のリンク先仕様は実装前に整理
+  > - UIの小規模Ticketとして扱う
+- **ユーザー確認済み要約:** 未定義。
+- **解釈:** トップページの既存「過去のダイジェストを見る」を維持し、前日分が存在する場合の直接リンクを追加する小規模UI ticketとして管理する。日付欠落時に暦上の前日、直近の存在日、一覧のいずれへ移動するかは未決定であり、実装前に明示的に仕様化する。
+- **完了条件:** 日付欠落時のリンク先を実装前に決定する；前日リンクの表示条件・ラベル・配置を現行[UI_SPEC.md](UI_SPEC.md)との関係を含めて仕様化する；既存の「過去のダイジェストを見る」を維持する；トップページと必要な表示幅で動作を検証する；実装後にユーザー受入を記録する。
+- **依存関係:** [BL-017](#bl-017--過去ダイジェストの回遊性と一覧表示を改善する)；[UI_SPEC.md](UI_SPEC.md) Version 1.0；既存daily JSON／archive日付一覧。
+- **実装証跡:** 未実装。
+- **ユーザー受入証跡:** 未実装のため該当なし。
+- **残作業:** 日付欠落時のリンク先仕様のユーザー判断；UI仕様化；実装；テスト；PC／390px確認；ユーザー受入。
+- **注記:** 本登録では実装、UI_SPEC変更、日付欠落時の挙動決定を行わない。
+
+## BL-023 — ARTICLE編集品質改善
+
+- **ID:** BL-023
+- **タイトル:** ARTICLE編集品質改善
+- **優先度:** 未設定（ユーザー順位付け待ち）
+- **状態:** 記録済み / 未仕様化 / 未実装
+- **出所種別:** ユーザー原文
+- **ユーザー原文:**
+  > ARTICLE編集品質改善
+  >
+  > - financial_impactでは、読者組織の製品・サービス利用状況を記事から確認できないという自明な断り書きを出力しない
+  > - 条件付きで関係する場合は、条件と想定影響だけを簡潔に記載
+  > - recommended_actionsにはCVE IDを原則含めない
+  > - 対象製品・サービスと確認内容を簡潔に記載
+  > - CVE IDはtitle、summary、facts等の識別用途では維持
+  > - Brief側の後処理やCVE文字列削除は行わない
+  > - 単純な禁止語・語彙ルールにはしない
+- **ユーザー確認済み要約:** 未定義。
+- **解釈:** ARTICLE生成の編集品質契約を対象とする。`financial_impact`は利用有無を記事から確認できないという自明な断り書きを避け、条件付きの関連では条件と想定影響を簡潔に示す。`recommended_actions`はCVE IDを原則として本文へ含めず、対象製品・サービスと確認内容を中心にする。一方、CVE IDは`title`、`summary`、facts等の識別用途では維持する。BRIEF側での後処理、CVE文字列削除、単純な禁止語・語彙規則による実現は対象外とする。
+- **完了条件:** ARTICLE prompt契約として各fieldの期待を仕様化する；prompt versionへの影響を評価する；`financial_impact`の条件付き関連と`recommended_actions`のCVE ID原則非掲載を、単純な禁止語・汎用regex削除ではなくfixtureとmock request／responseで検証する；CVE IDが`title`、`summary`、facts等の識別用途で維持されることを確認する；BRIEF後処理を追加しない；ARTICLEのsuccess／fallback／failed／not_attempted契約を維持する；実装後にユーザー受入を記録する。
+- **依存関係:** 現行ARTICLE prompt／version契約；[SD-015](DECISIONS.md#sd-015--project-trusted-context-through-an-explicit-allowlist-and-do-not-expose-internal-identifiers)；[AGENTS.md](AGENTS.md)のprompt／schemaおよびARTICLE validation契約。
+- **実装証跡:** 未実装。
+- **ユーザー受入証跡:** 未実装のため該当なし。
+- **残作業:** prompt契約の詳細仕様化；version影響評価；fixture設計；実装；関連回帰テスト；ユーザー受入。
+- **注記:** 本登録ではARTICLE／BRIEF prompt、schema、validation、fallback、実装コードを変更しない。
 
 ## 完了済み参照
 
