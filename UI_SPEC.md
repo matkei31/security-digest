@@ -1,7 +1,7 @@
 # Security Digest UI Specification
 
 - **文書名:** Security Digest UI Specification
-- **バージョン:** 1.0
+- **バージョン:** 1.1
 - **状態:** 承認済み
 - **適用対象:** 現行Security Digest。将来のMonomi Digestへの名称変更はBL-006の範囲とし、この文書内で先行変更しない。
 
@@ -11,7 +11,7 @@
 
 対象読者は、UIの設計・実装・レビュー・受入を行うユーザー、実装担当者、レビュー担当者である。本書は表示仕様を扱い、ARTICLE／BRIEF prompt、daily JSON schema、生成・公開workflow、ブランド名変更の仕様書ではない。
 
-Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた7項目のユーザー裁定を反映した承認済み文書である。Fable 5提案を無条件に採用したものではなく、後のユーザー判断と受入済み実装を優先している。
+Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた7項目のユーザー裁定を反映した承認済み文書である。Version 1.1は、BL-022で明示されたトップページの直前公開ダイジェストリンクを追加した。Fable 5提案を無条件に採用したものではなく、後のユーザー判断と受入済み実装を優先している。
 
 ## 2. 正本と優先順位
 
@@ -22,9 +22,9 @@ Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた
 3. 現在の`main`実装と回帰テスト
 4. Fable 5の提案
 
-本書では、上記1〜3で根拠を確認できた項目を「確定仕様」、現行コードにある具体値を「現行値」と表記する。将来新たな未決事項が生じた場合は確定仕様へ混入させず、実装前にユーザー裁定を得る。Version 1.0時点の未決事項はない。
+本書では、上記1〜3で根拠を確認できた項目を「確定仕様」、現行コードにある具体値を「現行値」と表記する。将来新たな未決事項が生じた場合は確定仕様へ混入させず、実装前にユーザー裁定を得る。Version 1.1時点の未決事項はない。
 
-主要な根拠は[SD-012](DECISIONS.md#sd-012--dashboard-v2-priority-index-and-the-article-reason-no-imperative-contract)、[SD-013](DECISIONS.md#sd-013--ordinary-article-card-variant-b-remove-classification-label-badges-keep-関連タグ-round)、[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)、[BL-016](BACKLOG.md#bl-016--本日の状態ラベルを除去する)、[BL-017](BACKLOG.md#bl-017--過去ダイジェストの回遊性と一覧表示を改善する)、[BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる)、`fetch.py`、`test_fetch.py`、`test_archive.py`である。
+主要な根拠は[SD-012](DECISIONS.md#sd-012--dashboard-v2-priority-index-and-the-article-reason-no-imperative-contract)、[SD-013](DECISIONS.md#sd-013--ordinary-article-card-variant-b-remove-classification-label-badges-keep-関連タグ-round)、[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)、[SD-020](DECISIONS.md#sd-020--link-the-top-page-to-the-latest-validated-earlier-digest)、[BL-016](BACKLOG.md#bl-016--本日の状態ラベルを除去する)、[BL-017](BACKLOG.md#bl-017--過去ダイジェストの回遊性と一覧表示を改善する)、[BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる)、[BL-022](BACKLOG.md#bl-022--前日ダイジェスト直接リンク)、`fetch.py`、`test_fetch.py`、`test_archive.py`である。
 
 ## 3. UI設計原則
 
@@ -100,13 +100,22 @@ Brief、優先確認、dashboardはそれぞれ「概況」「短い索引」「
 ### 6.1 確定仕様
 
 - トップページの可視見出しは現行の`🔐 Security Digest`、日別Archiveは`Security Digest`、Archive一覧は`過去のダイジェスト`である。現行Security Digestでは`🔐`を維持し、BL-004では削除しない。Monomi Digest移行時はBL-006のブランド全体変更として別途置換され得る。
-- トップページは「最終更新」「記事件数」「過去のダイジェストを見る」を表示する。
+- トップページは「最終更新」「記事件数」「過去のダイジェストを見る →」を表示し、直前の公開日がある場合だけ、その日への直接リンクも表示する。
 - 日別Archiveは`日次ダイジェスト：YYYY年MM月DD日`、最終更新、記事件数、戻り導線と前後導線を表示する。
 - ヘッダーは`position: sticky; top: 0; z-index: 10`である。
 
 ### 6.2 モバイルsticky header
 
 ヘッダーpaddingはPC／モバイルとも`20px 16px 16px`、見出しは`18px`である。600px以下でも現在のstickyとpaddingを維持し、圧縮案は採用しない。sticky headerとアンカー移動の関係は第15章のanchor offset契約を維持する。
+
+### 6.3 直前の公開ダイジェスト
+
+- 直接リンクの対象は、検証済みdaily JSONと`data/index.json`に存在し、対応するArchive HTMLが生成済みである日付のうち、現在の`digest_date`より前で最も新しい日とする。
+- 配列の保存順には依存せず、日付比較で選ぶ。現在日、未来日、不正日付、必要な成果物が欠ける日付は選ばない。
+- 直前の公開日が暦上の前日なら「← 前日のダイジェスト」、1日以上の欠落をまたぐ場合は「← 前回のダイジェスト（M/D）」と表示する。
+- 過去の公開日がない場合は直接リンクを表示しない。この場合も「過去のダイジェストを見る →」は維持する。
+- PCでは両リンクを同じ`.archive-nav`へ置く。390pxでは`flex-wrap`により自然に折り返し、横スクロールを発生させない。
+- このトップページ導線は、第14章の日別Archive上部・最下部にある既存の前後ナビゲーションを変更しない。
 
 ## 7. 本日の要点
 
@@ -296,6 +305,8 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 - [ ] 関連タグをクリック・Tab移動しても操作対象にならない。
 - [ ] CVE／CVSS／KEVがある記事では、客観情報がAI分析区分の間に独立表示される。実データ例は2026-07-15のCVE-2026-56155。
 - [ ] 掲載0件で、優先確認・dashboard・記事一覧の現行空状態が壊れない。
+- [ ] トップページで、前日が存在すれば「← 前日のダイジェスト」、欠落があれば「← 前回のダイジェスト（M/D）」が最も新しい存在日へ移動する。
+- [ ] 過去日がなくても「過去のダイジェストを見る →」は残り、PC／390pxとも横スクロールがない。
 
 ### 18.2 Archiveと日時
 
@@ -317,7 +328,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 
 **現時点の未決事項: なし。**
 
-将来別スコープで再検討できることは、Version 1.0の未決事項を意味しない。確定仕様を変更する場合は、第20章の変更管理に従い、新しいユーザー判断とSupersedes記録を必要とする。
+将来別スコープで再検討できることは、Version 1.1の未決事項を意味しない。確定仕様を変更する場合は、第20章の変更管理に従い、新しいユーザー判断とSupersedes記録を必要とする。
 
 ### 19.1 今回解決した7項目の決定表
 
@@ -380,3 +391,4 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 |---|---|---|
 | Draft 0.1 | 初稿 | 確定仕様と未決事項を統合した初稿 |
 | 1.0 | 承認済み | 7項目のユーザー裁定を反映し、未決事項を解消して承認 |
+| 1.1 | 承認済み | BL-022の直前公開ダイジェストリンク、日付欠落時の選択、ラベル、responsive配置を追加 |

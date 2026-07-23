@@ -17,7 +17,7 @@ This file records the current, changeable project state. Incomplete, partially a
 | Daily JSON `schema_version` | `1` |
 | ARTICLE Gemini model | `gemini-2.5-flash` |
 
-Version source of truthは`main`上の`daily_json.py`、model source of truthは`fetch.py`である。[PR #35](https://github.com/matkei31/security-digest/pull/35)は2026-07-23にmerge済み。許可された1回の[Daily Security Digest run 30012552188](https://github.com/matkei31/security-digest/actions/runs/30012552188)と[Pages deployment run 30012791302](https://github.com/matkei31/security-digest/actions/runs/30012791302)は成功し、公開daily JSONとPC 1280px／390px表示で`today-brief-extractive-v1`／`deterministic-extractive`の反映を確認した。ARTICLE prompt・version・API・validation・fallbackは変更しておらず、公開daily JSONの9記事はすべて`article-analysis-v8`／`success`。公開表示のユーザー受入待ち。
+Version source of truthは`main`上の`daily_json.py`、model source of truthは`fetch.py`である。[PR #35](https://github.com/matkei31/security-digest/pull/35)は2026-07-23にmerge済み。許可された1回の[Daily Security Digest run 30012552188](https://github.com/matkei31/security-digest/actions/runs/30012552188)と[Pages deployment run 30012791302](https://github.com/matkei31/security-digest/actions/runs/30012791302)は成功し、公開daily JSONとPC 1280px／390px表示で`today-brief-extractive-v1`／`deterministic-extractive`の反映を確認した。ARTICLE prompt・version・API・validation・fallbackは変更しておらず、公開daily JSONの9記事はすべて`article-analysis-v8`／`success`。BL-021は2026-07-23にユーザー受入済みとして完了した。
 
 ## 3. Generation and publication
 
@@ -58,13 +58,13 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 - BL-018 article-meta JST normalization — completed in [PR #28](https://github.com/matkei31/security-digest/pull/28), merge commit `196c77bcc2b71f8aecd9d0c6aef03388ffd5edf1`; [Pages deployment run 29643207764](https://github.com/matkei31/security-digest/actions/runs/29643207764) succeeded, and the user accepted the top-page timestamps, article order, and body content on 2026-07-18; see [BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる)
 - BL-004 UI specification — completed with [UI_SPEC.md](UI_SPEC.md) Version 1.0／承認済み; the seven choices are ユーザー裁定済み and recorded in [SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout); [PR #30](https://github.com/matkei31/security-digest/pull/30) was merged as `198b5a6dc723870b691575ba89c2aaae89e35b8c` and is merge後検証済み; see [BL-004](BACKLOG.md#bl-004--fable-5によるuiレビューとui設計書)
 - BL-019 source-footer count/list consistency — completed in [PR #32](https://github.com/matkei31/security-digest/pull/32), merge commit `d08a1b00d43488892ba6ef74b184340ab14a72c0`; [Pages deployment run 29692162999](https://github.com/matkei31/security-digest/actions/runs/29692162999) and post-merge verification succeeded, and the user's acceptance is limited to the 15-source correction while source colors continue separately as BL-020; see [BL-019](BACKLOG.md#bl-019--収集元見出し件数と列挙対象を一致させる)
+- BL-021 deterministic-extractive Today's Brief — completed and user-accepted on 2026-07-23 after [PR #35](https://github.com/matkei31/security-digest/pull/35), one authorized production generation, Pages deployment, and PC 1280px／390px verification; the semantic-validator blocking approach remains No-Go; see [SD-018](DECISIONS.md#sd-018--screen-deterministic-extractive-todays-brief-without-a-semantic-blocking-validator)
 
 ## 6. Known issues and limitations
 
 - [BL-020](BACKLOG.md#bl-020--収集元一覧の取得元別カラーを廃止する): the per-source color and pill-like treatment in the collapsible source footer is a specified but unimplemented small UI fix, separate from the completed source-count correction.
-- [BL-021](BACKLOG.md#bl-021--todays-briefの意味忠実性semantic-validation再設計): Phase 1のsemantic validator blocking方式は過剰rejectによりNo-Go。v1/v2は本番不採用でprompt調整を終了した。deterministic overview＋ARTICLE fieldの無加工選択を行うB案は[PR #35](https://github.com/matkei31/security-digest/pull/35)で`main`へmergeし、production生成・Pages・PC 1280px／390px表示まで確認済み。公開表示のユーザー受入を待つ。
-- [BL-022](BACKLOG.md#bl-022--前日ダイジェスト直接リンク): 既存のarchive導線に前日分への直接リンクを追加する小規模UI ticket。日付欠落時のリンク先は実装前のユーザー判断が必要で、未実装。
-- [BL-023](BACKLOG.md#bl-023--article編集品質改善): `financial_impact`と`recommended_actions`の編集品質をARTICLE契約側で改善する未仕様化ticket。BRIEF後処理、CVE文字列削除、単純な禁止語・語彙規則は採用しない。
+- [BL-022](BACKLOG.md#bl-022--前日ダイジェスト直接リンク): 直前の公開ダイジェストへのトップページリンクはlocal実装・offline screening済みで、Draft PR reviewとユーザー受入待ち。日付欠落時は、検証済み公開日のうち現在日より前の最新日へ移動する。productionは未変更。
+- [BL-023](BACKLOG.md#bl-023--article編集品質改善): 固定15 fixture・2 logical runs・30 attemptsで`article-analysis-v9`候補を評価したが、Technical GateのみPASSし、financial_impact／recommended_actions／Safety・Non-regression GateはFAIL。prompt-only改善はNo-Goとして保留し、productionは`article-analysis-v8`を維持する。prompt再調整、regex削除、禁止語規則、Brief後処理は行わない。
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
 - [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する): A comprehensive security requirements document does not yet exist; existing rules remain scattered across `AGENTS.md` and code.
@@ -72,11 +72,11 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-1. [BL-021](BACKLOG.md#bl-021--todays-briefの意味忠実性semantic-validation再設計) (P1, proposed) — [BL-005](BACKLOG.md#bl-005--editorial-style-v1とtoday-brief-v4)のprompt-only経路とPhase 1 semantic validator blocking方式をNo-Goとして終了した（[SD-017](DECISIONS.md#sd-017--do-not-merge-prompt-only-todays-brief-experiments-redesign-semantic-validation-separately)、[SD-018](DECISIONS.md#sd-018--screen-deterministic-extractive-todays-brief-without-a-semantic-blocking-validator)参照）。BRIEFで新しい横断意味を生成しないB案はproduction確認済みで、公開表示のユーザー受入を待つ。
+1. [BL-022](BACKLOG.md#bl-022--前日ダイジェスト直接リンク) (priority unset, active) — local implementationと前日／日付欠落／過去日なしのoffline screeningが完了し、Draft PR reviewとユーザー受入を待つ。
 
 [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not included in this short priority list.
 
-[BL-022](BACKLOG.md#bl-022--前日ダイジェスト直接リンク) and [BL-023](BACKLOG.md#bl-023--article編集品質改善) are newly recorded with unset priority and therefore are not ranked in this short priority list.
+[BL-023](BACKLOG.md#bl-023--article編集品質改善) is on hold after the prompt-only No-Go evaluation and is not ranked in this short priority list. Reconsider it only through a separately designed structured ARTICLE-field contract or facts-based limited deterministic composition.
 
 This short priority list is not exhaustive. Other open items remain recorded in BACKLOG.md.
 

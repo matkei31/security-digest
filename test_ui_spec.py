@@ -22,11 +22,12 @@ class UiSpecDocumentTest(unittest.TestCase):
         cls.status = (REPOSITORY_ROOT / "STATUS.md").read_text(encoding="utf-8")
         cls.bl004 = backlog_section(cls.backlog, "BL-004")
         cls.bl005 = backlog_section(cls.backlog, "BL-005")
+        cls.bl022 = backlog_section(cls.backlog, "BL-022")
 
     def test_ui_spec_exists_with_approved_version_metadata(self):
         self.assertTrue(self.spec_path.is_file())
         self.assertIn("# Security Digest UI Specification", self.spec)
-        self.assertIn("- **バージョン:** 1.0", self.spec)
+        self.assertIn("- **バージョン:** 1.1", self.spec)
         self.assertIn("- **状態:** 承認済み", self.spec)
         self.assertIn("将来のMonomi Digestへの名称変更はBL-006の範囲", self.spec)
 
@@ -83,6 +84,26 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("各セクション別の空状態を確定仕様として維持", self.spec)
         self.assertIn("ページ全体を一つの専用空状態へ置き換えない", self.spec)
         self.assertIn("ブラウザ既定のfocus表示を維持", self.spec)
+
+    def test_bl022_previous_digest_link_is_an_approved_responsive_contract(self):
+        self.assertIn("### 6.3 直前の公開ダイジェスト", self.spec)
+        self.assertIn("現在の`digest_date`より前で最も新しい日", self.spec)
+        self.assertIn("← 前日のダイジェスト", self.spec)
+        self.assertIn("← 前回のダイジェスト（M/D）", self.spec)
+        self.assertIn("「過去のダイジェストを見る →」は維持", self.spec)
+        self.assertIn("390pxでは`flex-wrap`により自然に折り返し", self.spec)
+        self.assertIn("日別Archive上部・最下部にある既存の前後ナビゲーションを変更しない", self.spec)
+        self.assertIn("| 1.1 | 承認済み | BL-022", self.spec)
+        self.assertIn("offline screening完了", self.bl022)
+
+        self.assertIn(
+            "## SD-020 — Link the top page to the latest validated earlier digest",
+            self.decisions,
+        )
+        self.assertIn(
+            "do not change daily Archive previous/next navigation",
+            self.decisions,
+        )
         self.assertIn("outlineやfocus表示を消してはならない", self.spec)
         self.assertIn("専用の`:focus-visible`意匠は追加しない", self.spec)
 
@@ -128,7 +149,7 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("[Pull Request CI run 29647361707]", self.bl004)
         self.assertIn("[Pages deployment run 29648894119]", self.bl004)
 
-    def test_status_completes_bl004_and_promotes_bl021(self):
+    def test_status_completes_bl004_and_bl021_and_promotes_bl022(self):
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
@@ -148,11 +169,13 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertNotIn("BL-004", known_issues)
         self.assertNotRegex(next_candidates, r"(?m)^\d+\. \[BL-004\]")
         self.assertNotRegex(next_candidates, r"(?m)^2\. ")
-        self.assertRegex(next_candidates, r"(?m)^1\. \[BL-021\]")
-        self.assertIn("(P1, proposed)", next_candidates)
-        self.assertIn("[BL-005]", next_candidates)
-        self.assertIn("No-Go", next_candidates)
-        self.assertIn("[SD-017]", next_candidates)
+        self.assertRegex(next_candidates, r"(?m)^1\. \[BL-022\]")
+        self.assertIn("(priority unset, active)", next_candidates)
+        self.assertIn("BL-021 deterministic-extractive Today's Brief", recently_completed)
+        self.assertIn("completed and user-accepted", recently_completed)
+        self.assertNotIn("[BL-021]", known_issues)
+        self.assertIn("[BL-023]", known_issues)
+        self.assertIn("prompt-only改善はNo-Go", known_issues)
         self.assertNotIn("/Users/", next_candidates)
         self.assertIn("- **状態:** 実装試行済み（v4/v5/v6）／No-Go／main未反映", self.bl005)
         self.assertIn("- **実装証跡:** 目的:", self.bl005)

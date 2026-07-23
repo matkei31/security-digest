@@ -2938,12 +2938,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
         self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 24)})
 
-    def test_sd_ids_are_unique_and_cover_sd001_to_sd018(self):
+    def test_sd_ids_are_unique_and_cover_sd001_to_sd020(self):
         text = self._read("DECISIONS.md")
         sd_headings = [h for h in self._headings(text) if re.match(r"^SD-\d{3}\b", h)]
         ids = [re.match(r"^(SD-\d{3})", h).group(1) for h in sd_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
-        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 19)})
+        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 21)})
 
     def test_bl_001_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -2969,7 +2969,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("[PR #26](https://github.com/matkei31/security-digest/pull/26)", recently_completed)
         self.assertNotIn("BL-001", known_issues)
         self.assertNotIn("BL-001", next_candidates)
-        self.assertIn("1. [BL-021]", next_candidates)
+        self.assertIn("1. [BL-022]", next_candidates)
 
     def test_bl_016_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -3028,7 +3028,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("[PR #24](https://github.com/matkei31/security-digest/pull/24)", recently_completed)
         self.assertNotIn("BL-017", known_issues)
         self.assertNotIn("BL-017", next_candidates)
-        self.assertIn("1. [BL-021]", next_candidates)
+        self.assertIn("1. [BL-022]", next_candidates)
         self.assertNotRegex(next_candidates, r"(?m)^2\. ")
 
     def test_bl_018_completion_status_and_evidence(self):
@@ -3101,7 +3101,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertNotIn("BL-019", next_candidates)
         self.assertIn("BL-020", known_issues)
         self.assertNotIn("BL-020", next_candidates)
-        self.assertIn("1. [BL-021]", next_candidates)
+        self.assertIn("1. [BL-022]", next_candidates)
 
     def test_sd_015_records_trusted_context_allowlist_decision(self):
         text = self._read("DECISIONS.md")
@@ -3139,14 +3139,10 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("[SD-017]", bl005_text)
         self.assertNotIn("/Users/", bl005_text)
 
-    def test_bl_021_records_phase1_no_go_and_merged_extractive_state(self):
+    def test_bl_021_records_phase1_no_go_and_completed_extractive_state(self):
         backlog = self._read("BACKLOG.md")
         bl021 = backlog[backlog.index("## BL-021"):backlog.index("## BL-022")]
-        self.assertIn(
-            "- **状態:** Phase 1 semantic blocking No-Go／B案production確認済み"
-            "／ユーザー受入待ち",
-            bl021,
-        )
+        self.assertIn("- **状態:** 完了", bl021)
         self.assertIn("v1/v2を本番採用しない", bl021)
         self.assertIn("追加prompt調整は終了", bl021)
         self.assertIn("today-brief-extractive-v1", bl021)
@@ -3155,47 +3151,67 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("30012552188", bl021)
         self.assertIn("1afbd0e7f5b008ea3051af676e57fb2951b648ed", bl021)
         self.assertIn("30012791302", bl021)
-        self.assertNotIn("- **状態:** 完了", bl021)
+        self.assertIn("ユーザー受入済みとして『完了』へ更新する", bl021)
+        self.assertIn("- **残作業:** なし。", bl021)
 
         decisions = self._read("DECISIONS.md")
-        sd018 = decisions[decisions.index("## SD-018"):]
+        sd018 = decisions[decisions.index("## SD-018"):decisions.index("## SD-019")]
         self.assertIn(
-            "- **Status:** Implemented and verified in production / Awaiting user acceptance",
+            "- **Status:** Accepted / Implemented and verified in production",
             sd018,
         )
         self.assertIn("semantic validator as a blocking production gate", sd018)
         self.assertIn("does not newly guarantee that the ARTICLE analysis itself is factually correct", sd018)
         self.assertIn("d1755d413cd554d6905715af26521e9e3169001c", sd018)
+        self.assertIn("user acceptance were completed on 2026-07-23", sd018)
 
         status = self._read("STATUS.md")
         self.assertIn("| BRIEF composition contract on `main` | `today-brief-extractive-v1` |", status)
         self.assertIn("| BRIEF model on `main` | `deterministic-extractive` |", status)
         self.assertIn("| ARTICLE Gemini model | `gemini-2.5-flash` |", status)
         self.assertIn("| Latest published daily JSON | `today-brief-extractive-v1`／`deterministic-extractive`", status)
-        self.assertIn("production生成・Pages・PC 1280px／390px表示まで確認済み", status)
-        self.assertIn("ユーザー受入待ち", status)
+        self.assertIn("BL-021は2026-07-23にユーザー受入済みとして完了", status)
 
     def test_bl_022_and_bl_023_preserve_requested_scope(self):
         backlog = self._read("BACKLOG.md")
         bl022 = backlog[backlog.index("## BL-022"):backlog.index("## BL-023")]
-        self.assertIn("- **状態:** 記録済み / 未仕様化 / 未実装", bl022)
+        self.assertIn(
+            "- **状態:** 実装済み／offline screening完了／ユーザー受入待ち／production未反映",
+            bl022,
+        )
         self.assertIn("現在の「過去のダイジェストを見る」に加え", bl022)
         self.assertIn("日付欠落時のリンク先仕様は実装前に整理", bl022)
         self.assertIn("UIの小規模Ticketとして扱う", bl022)
-        self.assertIn("日付欠落時のリンク先仕様のユーザー判断", bl022)
+        self.assertIn("`digest_date`より前の最大値", bl022)
+        self.assertIn("← 前日のダイジェスト", bl022)
+        self.assertIn("← 前回のダイジェスト（M/D）", bl022)
+        self.assertIn("日別Archiveの既存前後リンクは変更しない", bl022)
 
         bl023 = backlog[backlog.index("## BL-023"):backlog.index("## 完了済み参照")]
-        self.assertIn("- **状態:** 記録済み / 未仕様化 / 未実装", bl023)
+        self.assertIn("- **状態:** 保留／prompt-only改善No-Go／production変更なし", bl023)
         self.assertIn("自明な断り書きを出力しない", bl023)
         self.assertIn("recommended_actionsにはCVE IDを原則含めない", bl023)
         self.assertIn("CVE IDはtitle、summary、facts等の識別用途では維持", bl023)
         self.assertIn("Brief側の後処理やCVE文字列削除は行わない", bl023)
         self.assertIn("単純な禁止語・語彙ルールにはしない", bl023)
+        self.assertIn("固定15 fixture", bl023)
+        self.assertIn("2 logical runs・30 attempts・retry 0", bl023)
+        self.assertIn("Technical GateはPASS", bl023)
+        self.assertIn("productionは`article-analysis-v8`を維持", bl023)
+
+        decisions = self._read("DECISIONS.md")
+        sd019 = decisions[decisions.index("## SD-019"):decisions.index("## SD-020")]
+        self.assertIn("- **Status:** Accepted / No-Go", sd019)
+        self.assertIn("15 fixtures in 2 logical runs (30 attempts, no retry)", sd019)
+        self.assertIn("Production remains on `article-analysis-v8`", sd019)
+        self.assertIn("generic regex deletion", sd019)
+        self.assertIn("facts-based, narrowly bounded deterministic composition", sd019)
 
         status = self._read("STATUS.md")
         self.assertIn("[BL-022]", status)
         self.assertIn("[BL-023]", status)
-        self.assertIn("newly recorded with unset priority", status)
+        self.assertIn("Draft PR reviewとユーザー受入待ち", status)
+        self.assertIn("prompt-only改善はNo-Goとして保留", status)
 
     def test_completed_reference_covers_batch2_prs(self):
         text = self._read("BACKLOG.md")
