@@ -1,0 +1,557 @@
+{
+  "schema_version": 1,
+  "digest_date": "2026-07-24",
+  "generated_at": "2026-07-24T07:58:12.374029+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v1"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 11,
+    "ai_attempted_count": 11,
+    "ai_success_count": 10,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 8,
+      "低": 1,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 8,
+      "参考": 3,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 0,
+      "攻撃・脅威動向": 7,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 3,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v1",
+    "overview": "掲載11件｜重要度「高」2件｜本日確認0件｜今週確認8件\n本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が8件あり、計画的な確認が必要です。一方、重要度の高い情報が2件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "ロシアの国家支援型サイバー諜報グループが、Zimbraのウェブメールクライアントの未知の脆弱性（ゼロデイ）を数ヶ月にわたり悪用し、西側諸国のメールボックスからメールや二要素認証（2FA）コードを窃取していたことが判明しました。この攻撃は、メールを開くだけで過去90日間のメール、組織のメールディレクトリ全体、ブラウザに保存されたパスワード、および2FAリカバリコードを窃取するものでした。",
+      "英国GCHQのNCSCと国際パートナーは、ロシア国家支援のサイバー脅威グループ「LAUNDRY BEAR」が、西側組織を標的とした新たな「ゼロクリック」フィッシングキャンペーンを展開していることを公表し、警告を発しました。"
+    ],
+    "discussion_points": [
+      "Zimbraのウェブメールクライアントを利用している金融機関は、本攻撃の対象となる可能性があります。特に、メールシステムが外部に公開されている場合や、機密情報、認証情報、2FAコードが窃取されるリスクがあるため、影響は重大です。",
+      "金融機関が西側組織に該当する場合、この攻撃キャンペーンの標的となる可能性があります。特に、高度なフィッシング攻撃に対する防御策の確認が重要です。"
+    ],
+    "check_items": [
+      "Zimbraウェブメールクライアントの利用有無と影響を受ける可能性のあるバージョンを確認する",
+      "NCSCが提供する詳細情報やIOCを確認し、自組織への関連性や侵害兆候の有無を評価する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:47dd838936283eaf543f450e96b5690df3449beaaef39094366ed69e55a5a06f",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/cyberattacks-data-breaches/russian-hackers-zimbra-zero-day-us-ukraine-targets",
+      "canonical_url": "https://www.darkreading.com/cyberattacks-data-breaches/russian-hackers-zimbra-zero-day-us-ukraine-targets",
+      "published_at": "2026-07-24T06:23:18+09:00",
+      "fetched_at": "2026-07-24T07:54:56.234182+09:00",
+      "title": "ロシアのハッカーがZimbraのゼロデイ脆弱性を悪用し米国とウクライナを標的",
+      "raw_title": "Russian Hackers Exploit Zimbra Zero-Day Against US, Ukraine Targets",
+      "raw_excerpt": "A state-sponsored threat group, dubbed &quot;Laundry Bear,&quot; sends &quot;half-click&quot; phishing emails that require a victim only to open or preview the message.",
+      "content_hash": "sha256:b644a383d49dce557bc6c0f592f601c965fba7edcaf615980ec6a67a914ee880",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-24T07:54:58.329464+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "国家支援型攻撃グループによるゼロデイ脆弱性の悪用と攻撃キャンペーンが主題であるため。",
+        "tags": [
+          "ゼロデイ",
+          "APT",
+          "フィッシング",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "「Laundry Bear」と呼ばれる国家支援型脅威グループが、Zimbraのゼロデイ脆弱性を悪用し、米国とウクライナの標的に対して「ハーフクリック」フィッシングメールを送信していることが確認されました。この攻撃は、被害者がメールを開封またはプレビューするだけで成立します。",
+        "financial_impact": "金融機関でZimbra製品を利用している場合に限り関係します。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Zimbra製品の利用有無と影響バージョンを確認する",
+          "Zimbraベンダーからのゼロデイ脆弱性に関する情報提供と緩和策を確認する"
+        ],
+        "reason": "重要度は、Zimbra製品の利用有無により適用範囲が限定されるため「中」です。確認目安は、ゼロデイ脆弱性の悪用が確認されているものの、金融機関への直接的な影響や緊急対応の期限が記事から不明なため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5518fb6b7eb971cc33861d96c9d7923b4ee92924f1d6d51a27c9751a41eab89f",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/russian-espionage-group-exploited.html",
+      "canonical_url": "https://thehackernews.com/2026/07/russian-espionage-group-exploited.html",
+      "published_at": "2026-07-24T03:36:08+09:00",
+      "fetched_at": "2026-07-24T07:54:56.234182+09:00",
+      "title": "ロシアのサイバー諜報グループがZimbraのゼロデイ脆弱性を悪用しメールと2FAコードを窃取",
+      "raw_title": "Russian Espionage Group Exploited Zimbra Zero-Day to Steal Mail and 2FA Codes",
+      "raw_excerpt": "A Russian state-supported espionage group spent months reading Western mailboxes through a then-unknown flaw in Zimbra's webmail client.\n\nThe payload goes after the last 90 days of email, the organiza",
+      "content_hash": "sha256:e1d5be3917c944e15136b25fc993ad4df7b39cc5d634791ed03348c0a10ff8ec",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-24T07:55:16.164208+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ロシアの国家支援型サイバー諜報グループによる攻撃手法と脅威動向が主題であるため。",
+        "tags": [
+          "ゼロデイ",
+          "悪用確認済み",
+          "APT",
+          "情報漏えい"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "ロシアの国家支援型サイバー諜報グループが、Zimbraのウェブメールクライアントの未知の脆弱性（ゼロデイ）を数ヶ月にわたり悪用し、西側諸国のメールボックスからメールや二要素認証（2FA）コードを窃取していたことが判明しました。この攻撃は、メールを開くだけで過去90日間のメール、組織のメールディレクトリ全体、ブラウザに保存されたパスワード、および2FAリカバリコードを窃取するものでした。",
+        "financial_impact": "Zimbraのウェブメールクライアントを利用している金融機関は、本攻撃の対象となる可能性があります。特に、メールシステムが外部に公開されている場合や、機密情報、認証情報、2FAコードが窃取されるリスクがあるため、影響は重大です。",
+        "recommended_actions": [
+          "Zimbraウェブメールクライアントの利用有無と影響を受ける可能性のあるバージョンを確認する",
+          "ベンダーからの公式情報やパッチ、緩和策の有無を確認し、対応要否を評価する",
+          "過去のログを調査し、不審なアクセスや侵害の痕跡がないか確認する"
+        ],
+        "reason": "重要度は、国家支援型グループによるゼロデイ脆弱性の悪用で、メールや認証情報窃取の重大なリスクがあるため「高」です。確認目安は、攻撃は過去に行われたものであり、直ちに緊急対応を要する新たな情報や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c2feb9ad65c59b988ba62670a5eb3e1ac9c783e45ee19feb2a9e88c3fff6e44f",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/dont-swing-at-everything/",
+      "canonical_url": "https://blog.talosintelligence.com/dont-swing-at-everything/",
+      "published_at": "2026-07-24T03:00:46+09:00",
+      "fetched_at": "2026-07-24T07:54:56.234182+09:00",
+      "title": "Don’t swing at everything",
+      "raw_title": "Don’t swing at everything",
+      "raw_excerpt": "Thorsten explores Q2 2026 stats, the artificial buffer zone of 2026, and why smart, prioritized patching is more critical than ever.",
+      "content_hash": "sha256:ec5b054b3c6eecebed0efd5730af873512bf64e1ad9f210800157d98e13d60d6",
+      "rule_flags": [],
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-24T07:55:34.152983+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "AI関連CVEの増加、KEV動向、ルーマニアの土地登記データベース消去事件など、広範な脅威の動向と攻撃事例が主題であるため。",
+        "tags": [
+          "AI",
+          "KEV",
+          "インシデント",
+          "業務停止"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Cisco Talosの週報によると、AI関連のCVEが大幅に増加しており、KEV掲載の脆弱性ではネットワーク機器関連が引き続き増加傾向にあります。また、ルーマニアで土地登記データベースがハッカーによって消去され、不動産市場が麻痺する事件が",
+        "financial_impact": "AI関連技術の導入が進む金融機関では、AI関連CVEの増加は潜在的なリスク要因となり得ます。また、ルーマニアの事例は、データベースの破壊が業務停止や経済活動に甚大な影響を与える可能性を示しており、金融機関のシステム堅牢性やデータバックアップ戦略の重要性を再認識させるものです。",
+        "recommended_actions": [
+          "AI関連技術や製品を導入している場合、関連するCVE情報の収集と適用性評価のプロセスを確認する",
+          "ネットワーク機器の脆弱性に関するCISA KEVの動向を継続的に監視し、自社環境への影響を評価する",
+          "重要なデータベースのバックアップと復旧計画について、定期的な見直しとテストを実施する"
+        ],
+        "reason": "重要度は、AI関連の脆弱性増加やデータベース破壊事例は潜在的な影響が大きいものの、記事は特定の製品や緊急の対応を求めていないため「中」です。確認目安は、広範な脅威動向の把握が目的であり、直ちに確認すべき具体的な期限や悪用情報がないため「今週確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0fad97e2f1c1223d951ec9dd7501782537f4d84ec3a910290932e88cb90461a2",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/threatsday-android-spyware-plc-attacks.html",
+      "canonical_url": "https://thehackernews.com/2026/07/threatsday-android-spyware-plc-attacks.html",
+      "published_at": "2026-07-24T00:02:07+09:00",
+      "fetched_at": "2026-07-24T07:54:56.234182+09:00",
+      "title": "ThreatsDay: Androidスパイウェア、PLC攻撃、AI画像プロンプトインジェクションなど12の脅威",
+      "raw_title": "ThreatsDay: Android Spyware, PLC Attacks, AI Image Prompt Injection + 12 More Stories",
+      "raw_excerpt": "Most of this week's trouble came dressed as something useful.\n\nA package stole data. A fake extension opened remote access. A safety app became spyware. An image gave hidden orders to an AI agent. Oth",
+      "content_hash": "sha256:00eaad4637f7016aebee6a38c2e27a9497826a45bdce315426dc0f15a8b67ffc",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-24T07:55:50.951301+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の脅威動向をまとめた週次レポートであり、特定の主題に絞られないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "今週の脅威は、有用なものに見せかけたものが多く、データ窃取パッケージ、偽の拡張機能によるリモートアクセス、スパイウェア化した安全アプリ、AIエージェントへの隠れた指示を含む画像などが報告されました。その他にも、オープンシステム、脆弱なコード、通常のネットワークトラフィックに潜む脅威が確認されています。",
+        "financial_impact": "記事は一般的な脅威動向のまとめであり、金融機関に特化した情報や直接的な影響は確認できません。個別の脅威については、利用しているシステムやサービスによって影響の可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や具体的なアクションを伴わない一般的な週次まとめ記事のため「低」です。確認目安は、短期的な対応を促す具体的な情報がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:90ed2eac0bde6e4a5c97d87cbf5956eb010a6633cc81642a887a5ae35c4c0a3b",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/07/23/email-threat-landscape-q2-2026-trends-and-insights/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/07/23/email-threat-landscape-q2-2026-trends-and-insights/",
+      "published_at": "2026-07-24T00:00:00+09:00",
+      "fetched_at": "2026-07-24T07:54:56.234182+09:00",
+      "title": "2026年第2四半期のメール脅威動向：Tycoon2FAの沈静化とTeamsを悪用したソーシャルエンジニアリングの増加",
+      "raw_title": "Email threat landscape: Q2 2026 trends and insights",
+      "raw_excerpt": "In the second quarter of 2026, the continuing effects of Microsoft’s disruption of the Tycoon2FA phishing platform contributed to sustained declines in several major phishing techniques, while threat ",
+      "content_hash": "sha256:aa394cb5ec11f42e8f9681cc89925598015cdefd7cdea6646749ef02a0eec111",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-24T07:56:08.680755+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "記事は、メールとTeamsを悪用したフィッシングやBEC攻撃の動向、攻撃手法の変化について分析しているため。",
+        "tags": [
+          "フィッシング",
+          "APT",
+          "認証",
+          "クラウド"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "2026年第2四半期（4月～6月）は、MicrosoftによるTycoon2FAフィッシングサービス（PhaaS）の摘発後、関連フィッシング量が92%減少しました。一方で、Microsoft Teamsを悪用したソーシャルエンジニアリング、特にボイスフィッシング（vishing）が大幅に増加し、メール以外の信頼されたコミュニケーションプラットフォームへの脅威拡大が示されています。",
+        "financial_impact": "金融機関は、メールだけでなくMicrosoft Teamsなどのコミュニケーションプラットフォームも広く利用しているため、これらのプラットフォームを悪用したソーシャルエンジニアリング攻撃の動向は、従業員への脅威として関係します。特に認証情報窃取やBEC攻撃は、直接的な金銭的被害や情報漏えいにつながる可能性があります。",
+        "recommended_actions": [
+          "自社におけるMicrosoft Teamsの利用状況と、ソーシャルエンジニアリング対策の現状を確認する",
+          "メールおよびTeamsにおけるフィッシング対策、特にボイスフィッシング（vishing）への注意喚起と従業員教育の実施状況を評価する",
+          "Microsoft Threat Intelligenceの最新情報を継続的に監視し、新たな脅威動向や対策に関するガイダンスを確認する"
+        ],
+        "reason": "重要度は、金融機関が広く利用するコミュニケーションプラットフォームを狙った攻撃動向であり、対策の検討が必要となるため「中」です。確認目安は、特定の緊急対応を求めるものではなく、中長期的な脅威動向の把握と対策検討が中心となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e159988bd46b5a0aba74067e74412e7737606aea5a61ec213e861ef3765466c2",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/claude-cowork-flaw-could-let-ai-agent.html",
+      "canonical_url": "https://thehackernews.com/2026/07/claude-cowork-flaw-could-let-ai-agent.html",
+      "published_at": "2026-07-23T22:27:59+09:00",
+      "fetched_at": "2026-07-24T07:54:56.234182+09:00",
+      "title": "Claude Coworkの脆弱性によりAIエージェントがMacファイルへアクセス可能に",
+      "raw_title": "Claude Cowork Flaw Could Let AI Agent Escape Its VM and Access Mac Files",
+      "raw_excerpt": "Cybersecurity researchers have uncovered a sandbox escape vulnerability in Anthropic's Claude Cowork that makes it possible to break out of the confines of a Linux virtual machine (VM) within which th",
+      "content_hash": "sha256:89d5744d4a78b0c30c697c9b1904a16a382b5453c008502d30391891ceca431e",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-24T07:56:25.446452+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AnthropicのAIエージェント「Claude Cowork」の脆弱性が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、AnthropicのAIエージェント「Claude Cowork」にサンドボックスエスケープの脆弱性を発見しました。これにより、エージェントが動作するLinux仮想マシンから脱出し、Mac上の任意のファイルを読み書きできる可能性があります。",
+        "financial_impact": "金融機関がMac環境でAnthropicのClaude Coworkを利用している場合に限り、適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Claude Coworkの利用有無と、Mac環境での影響バージョンを確認する",
+          "Anthropicからの公式発表やパッチ、緩和策の情報を確認する"
+        ],
+        "reason": "重要度は、特定のAIエージェントとMac環境に限定されるため適用範囲が限定的であるため「中」です。確認目安は、実悪用や緊急対応の明確な指示が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:98f3a356bca73b1b425723c18a4b27d291808a62183e5a583fb2777c99d04c7c",
+      "source_id": "ncsc",
+      "source_name": "NCSC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.ncsc.gov.uk/news/uk-and-partners-expose-russian-state-supported-actors-for-new-zero-click-phishing-campaign",
+      "canonical_url": "https://www.ncsc.gov.uk/news/uk-and-partners-expose-russian-state-supported-actors-for-new-zero-click-phishing-campaign",
+      "published_at": "2026-07-23T21:00:00+09:00",
+      "fetched_at": "2026-07-24T07:54:56.234182+09:00",
+      "title": "英国とパートナーがロシア国家支援の「LAUNDRY BEAR」によるゼロクリックフィッシングキャンペーンを公表",
+      "raw_title": "UK and partners expose Russian state-supported actors for new ‘zero-click’ phishing campaign targeting Western organisations",
+      "raw_excerpt": "GCHQ’s National Cyber Security Centre and international partners issue warning as ‘LAUNDRY BEAR’ cyber threat group exposed for targeted phishing campaign",
+      "content_hash": "sha256:4ccb63c419775a46c8a0270e9c2a161bdae75ffb8dd7a2bbb0a0e203bbcd6dc6",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-24T07:56:42.689643+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ロシア国家支援の攻撃グループによる新たなフィッシングキャンペーンが主題であるため。",
+        "tags": [
+          "APT",
+          "フィッシング",
+          "情報漏えい"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "英国GCHQのNCSCと国際パートナーは、ロシア国家支援のサイバー脅威グループ「LAUNDRY BEAR」が、西側組織を標的とした新たな「ゼロクリック」フィッシングキャンペーンを展開していることを公表し、警告を発しました。",
+        "financial_impact": "金融機関が西側組織に該当する場合、この攻撃キャンペーンの標的となる可能性があります。特に、高度なフィッシング攻撃に対する防御策の確認が重要です。",
+        "recommended_actions": [
+          "NCSCが提供する詳細情報やIOCを確認し、自組織への関連性や侵害兆候の有無を評価する",
+          "従業員へのゼロクリックフィッシングに関する注意喚起と、不審な通信に対する報告体制を再確認する"
+        ],
+        "reason": "重要度は、ロシア国家支援の攻撃グループによる新たなゼロクリックフィッシングキャンペーンであり、金融機関も標的となり得るため「高」です。確認目安は、具体的な期限や緊急パッチの適用指示はないものの、新たな脅威動向として今週中の情報確認が推奨されるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d49458a8914de1d28110e458f276bfc5fba939f4f6034d0177341fed682e1c46",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/endpoint-security/agentic-ai-challenges-progress-in-confidential-computing",
+      "canonical_url": "https://www.darkreading.com/endpoint-security/agentic-ai-challenges-progress-in-confidential-computing",
+      "published_at": "2026-07-23T20:17:51+09:00",
+      "fetched_at": "2026-07-24T07:54:56.234182+09:00",
+      "title": "エージェントAIが機密コンピューティングの進展に新たな課題を提起",
+      "raw_title": "Agentic AI Challenges Progress in Confidential Computing",
+      "raw_excerpt": "Core issues that slowed down adoption of secure data vaults are being resolved by technology, but artificial intelligence poses new ones. Experts have some answers.",
+      "content_hash": "sha256:5a980c0f2c931265da484bb41413f94b2966f6406043dbcadd5ae9cae2e10a7a",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-24T07:56:59.526426+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がエージェントAIと機密コンピューティングにおける新たなリスクであるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "機密コンピューティングの導入を妨げていた既存の課題は技術によって解決されつつあるものの、エージェントAIが新たな課題をもたらしていると指摘されています。専門家はこれらの課題に対するいくつかの解決策を提示しています。",
+        "financial_impact": "金融機関は機密コンピューティングやAI技術の導入を検討する際に、エージェントAIがもたらす新たなセキュリティリスクを考慮する必要があります。直接的なインシデントや脆弱性の情報ではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、エージェントAIが機密コンピューティングにもたらす潜在的なリスクについて、中長期的な技術動向として把握する必要があるため「中」です。確認目安は、具体的な脅威や対応期限の記述がなく、短期的なアクションが求められないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:678e715aba628c277ff44cfffe039c136b45a0bd3cc32a0f29b4e63d3ff962c1",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/chaos-msarat-living-off-the-browser-to-build-covert-c2-channel/",
+      "canonical_url": "https://blog.talosintelligence.com/chaos-msarat-living-off-the-browser-to-build-covert-c2-channel/",
+      "published_at": "2026-07-23T19:00:38+09:00",
+      "fetched_at": "2026-07-24T07:54:56.234182+09:00",
+      "title": "ChaosランサムウェアグループのmsaRAT、ブラウザを悪用し隠れたC2チャネルを構築",
+      "raw_title": "Chaos ransomware's msaRAT: Living off the browser to build a covert C2 channel",
+      "raw_excerpt": "The Chaos ransomware group uses new malware \"msaRAT\" that hijacks browsers. The malware doesn't communicate directly with C2 but connects through the browser. It enables arbitrary command execution wh",
+      "content_hash": "sha256:6d794854cbeb5f18dcc2cba717488ba6a59b9edc546a89d42576194136397726",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-24T07:57:16.875353+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Chaosランサムウェアグループによる新しいRATの攻撃手法とC2通信チャネルの構築が主題であるため。",
+        "tags": [
+          "ランサムウェア",
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Cisco Talosは、Chaosランサムウェアグループが使用する新しいRustベースのリモートアクセス型トロイの木馬「msaRAT」を発見しました。msaRATはChrome DevTools Protocol (CDP)を介してブラウザを操作し、WebRTC DataChannelを利用して隠れたC2通信チャネルを確立します。",
+        "financial_impact": "金融機関がChaosランサムウェアグループの標的となる可能性があり、この新しいRATは従来のネットワーク監視ツールによる検出を回避する可能性があります。直接的な影響は、標的型攻撃を受けた場合に生じます。",
+        "recommended_actions": [
+          "記事に記載されたClamAVシグネチャおよびSNORTルールを参考に、自社のセキュリティ製品での検出状況を確認する",
+          "ブラウザのDevTools Protocolの利用状況を監視し、異常な挙動がないか確認する"
+        ],
+        "reason": "重要度は、特定のランサムウェアグループによる新しい攻撃手法であり、金融機関が標的となる可能性があるため「中」です。確認目安は、新たな脅威動向に関する情報であり、即時対応を要する具体的な期限や進行中の攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:428496341ed8c67acd9bd96e021e573d3b957c3d8cbcc5bee952311852fba71e",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/preview-cisco-talos-at-black-hat-usa-2026/",
+      "canonical_url": "https://blog.talosintelligence.com/preview-cisco-talos-at-black-hat-usa-2026/",
+      "published_at": "2026-07-23T19:00:14+09:00",
+      "fetched_at": "2026-07-24T07:54:56.234182+09:00",
+      "title": "Cisco TalosがBlack Hat USA 2026での発表内容をプレビュー",
+      "raw_title": "Preview: Cisco Talos at Black Hat USA 2026",
+      "raw_excerpt": "Here’s some of the ways Talos is showing up at Black Hat, alongside our friends at Cisco and Splunk.",
+      "content_hash": "sha256:6ec8977ff88ee30e2c5d6ca591ecbaf5ca18b4b1271346f639faf67aa2bdba20",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-24T07:57:34.040051+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIエージェントのセキュリティ課題、AIを活用した脆弱性発見や脅威ハンティング、AIエージェントがインサイダー脅威となる可能性など、AI・新技術リスクに焦点を当てているため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Cisco Talosは、Black Hat USA 2026での発表内容をプレビューしました。AIエージェントのセキュリティ課題、AIを活用した脆弱性発見や脅威ハンティング、AIエージェントがインサイダー脅威となる可能性など、多岐にわたるテーマが紹介されています。",
+        "financial_impact": "金融機関がAIエージェントや関連技術を導入・活用する際に、新たなセキュリティリスクや脅威への対応を検討する上で参考となる情報です。直接的な影響は現時点では確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントのセキュリティに関する一般的な動向であり、具体的な製品や脆弱性への即時対応を求めるものではないため「中」です。確認目安は、Black Hatでの発表プレビューであり、短期的な対応期限や緊急性を示す情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:595728cd86e774189ec626c397882365e0d30d4b98b0b6ce5b1b9ee295545a80",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/cyberattacks-data-breaches/brazilian-banking-trojan-spreading-portugal",
+      "canonical_url": "https://www.darkreading.com/cyberattacks-data-breaches/brazilian-banking-trojan-spreading-portugal",
+      "published_at": "2026-07-23T16:00:00+09:00",
+      "fetched_at": "2026-07-24T07:54:56.234182+09:00",
+      "title": "ブラジルのバンキング型トロイの木馬がポルトガルで活発に拡散中",
+      "raw_title": "Brazilian Banking Trojan Actively Spreading in Portugal",
+      "raw_excerpt": "Portuguese businesses operate in the same native language as Brazilian hackers, making those businesses easy targets.",
+      "content_hash": "sha256:c12ccfc60e0d492f3e6ad4d8dd228cc8130da9eb48c85d074dd49ecca2c54032",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-24T07:57:51.060351+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ブラジルの攻撃者がバンキング型トロイの木馬を拡散しているという攻撃手法と脅威動向が主題のため。",
+        "tags": [
+          "APT",
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ポルトガルで、ブラジルを拠点とする攻撃者によるバンキング型トロイの木馬が活発に拡散しています。両国が同じ言語を話すため、ポルトガルの企業が容易な標的となっています。",
+        "financial_impact": "金融機関を直接標的とするバンキング型トロイの木馬に関する情報であり、攻撃手法の把握は重要です。ただし、記事はポルトガル国内の状況に限定されており、日本国内の金融機関への直接的な影響は確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関を標的とする攻撃手法に関する情報ですが、日本国内への直接的な影響は不明確なため「中」です。確認目安は、具体的な緊急対応の指示や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
