@@ -1686,10 +1686,14 @@ def load_validated_published_digest_dates(data_dir=None, docs_dir=None):
             continue
         if not (docs_dir / "archive" / f"{digest_date}.html").is_file():
             continue
+        digest_path = data_dir / f"{digest_date}.json"
         try:
-            digest = load_daily_digest(data_dir / f"{digest_date}.json")
+            digest = load_daily_digest(digest_path)
             daily_json.validate_daily_digest(digest)
         except daily_json.DailyJsonError:
+            continue
+        internal_digest_date = digest.get("digest_date")
+        if internal_digest_date != digest_date or internal_digest_date != digest_path.stem:
             continue
         validated_dates.append(digest_date)
     return validated_dates
@@ -4890,12 +4894,13 @@ def main():
     save_cache(cache)
     print(f"  翻訳キャッシュ: {len(cache)} 件")
 
+    generated_at = datetime.datetime.now(JST)
     published_dates = load_validated_published_digest_dates(
         data_dir=daily_json.DATA_DIR,
         docs_dir=DOCS_DIR,
     )
     archive_nav_html = render_top_archive_nav_html(
-        fetched_at.strftime("%Y-%m-%d"),
+        generated_at.strftime("%Y-%m-%d"),
         published_dates,
     )
     html = build_html(
@@ -4907,7 +4912,6 @@ def main():
     print(f"  生成完了: {out_path}")
 
     print("日次JSONを保存中...")
-    generated_at = datetime.datetime.now(JST)
     digest = daily_json.generate_and_save_daily_digest(
         items=items,
         brief_result=brief_result,
