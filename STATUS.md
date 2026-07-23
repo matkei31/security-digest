@@ -11,18 +11,19 @@ This file records the current, changeable project state. Incomplete, partially a
 | Contract | Current value |
 |---|---|
 | ARTICLE prompt | `article-analysis-v8` |
-| BRIEF prompt | `today-brief-v3` |
-| Local BL-021 candidate | `today-brief-extractive-v1`（B案、local screening完了、ユーザー受入待ち、production未反映） |
+| BRIEF composition contract on `main` | `today-brief-extractive-v1` |
+| BRIEF model on `main` | `deterministic-extractive` |
+| Latest published daily JSON | `today-brief-v3`（2026-07-23 08:05 JST生成、PR #35 merge前） |
 | Daily JSON `schema_version` | `1` |
-| Gemini model | `gemini-2.5-flash` |
+| ARTICLE Gemini model | `gemini-2.5-flash` |
 
-Productionのversion source of truthは`main`上の`daily_json.py`、model source of truthは`fetch.py`である。local branchではB案のcomposition contract候補の実装とoffline screeningを完了したが、ユーザー受入待ち・merge前のためproductionのCurrent valueは`today-brief-v3`のままとする。ARTICLE prompt・version・API・validation・fallbackは変更していない。
+Version source of truthは`main`上の`daily_json.py`、model source of truthは`fetch.py`である。[PR #35](https://github.com/matkei31/security-digest/pull/35)は2026-07-23にmerge済みで、`main`のBRIEF composition contractは`today-brief-extractive-v1`、BRIEF modelは`deterministic-extractive`である。merge後の日次生成はまだ実行されていないため、最新の公開daily JSONはmerge前の`today-brief-v3`のままであり、post-merge production確認・ユーザー受入待ち。ARTICLE prompt・version・API・validation・fallbackは変更していない。
 
 ## 3. Generation and publication
 
 - Daily Security Digest runs through `.github/workflows/fetch.yml`.
 - Supported triggers are the daily schedule and explicit `workflow_dispatch`.
-- There is no ordinary `pull_request` or `push` CI workflow.
+- `.github/workflows/pr-ci.yml` runs the ordinary `pull_request` CI checks.
 - Production generation writes daily JSON under `data/` and static output under `docs/`.
 - GitHub Pages publishes the `docs/` directory from `main`.
 - A normal code merge does not require a manual daily run or real Gemini diagnostic unless the ticket's acceptance plan explicitly requires one.
@@ -61,7 +62,9 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 ## 6. Known issues and limitations
 
 - [BL-020](BACKLOG.md#bl-020--収集元一覧の取得元別カラーを廃止する): the per-source color and pill-like treatment in the collapsible source footer is a specified but unimplemented small UI fix, separate from the completed source-count correction.
-- [BL-021](BACKLOG.md#bl-021--todays-briefの意味忠実性semantic-validation再設計): Phase 1のsemantic validator blocking方式は過剰rejectによりNo-Go。v1/v2は本番不採用でprompt調整を終了した。deterministic overview＋ARTICLE fieldの無加工選択を行うB案はlocal implementationとoffline screeningを完了し、ユーザー受入待ち・production未反映。productionは引き続き`today-brief-v3`。
+- [BL-021](BACKLOG.md#bl-021--todays-briefの意味忠実性semantic-validation再設計): Phase 1のsemantic validator blocking方式は過剰rejectによりNo-Go。v1/v2は本番不採用でprompt調整を終了した。deterministic overview＋ARTICLE fieldの無加工選択を行うB案は[PR #35](https://github.com/matkei31/security-digest/pull/35)で`main`へmerge済み。post-mergeの日次生成結果とPC／390px表示の確認、およびユーザー受入を待つ。
+- [BL-022](BACKLOG.md#bl-022--前日ダイジェスト直接リンク): 既存のarchive導線に前日分への直接リンクを追加する小規模UI ticket。日付欠落時のリンク先は実装前のユーザー判断が必要で、未実装。
+- [BL-023](BACKLOG.md#bl-023--article編集品質改善): `financial_impact`と`recommended_actions`の編集品質をARTICLE契約側で改善する未仕様化ticket。BRIEF後処理、CVE文字列削除、単純な禁止語・語彙規則は採用しない。
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
 - [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する): A comprehensive security requirements document does not yet exist; existing rules remain scattered across `AGENTS.md` and code.
@@ -69,9 +72,11 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-1. [BL-021](BACKLOG.md#bl-021--todays-briefの意味忠実性semantic-validation再設計) (P1, proposed) — [BL-005](BACKLOG.md#bl-005--editorial-style-v1とtoday-brief-v4)のprompt-only経路とPhase 1 semantic validator blocking方式をNo-Goとして終了した（[SD-017](DECISIONS.md#sd-017--do-not-merge-prompt-only-todays-brief-experiments-redesign-semantic-validation-separately)、[SD-018](DECISIONS.md#sd-018--screen-deterministic-extractive-todays-brief-without-a-semantic-blocking-validator)参照）。BRIEFで新しい横断意味を生成しないB案はlocal implementationとoffline screeningを完了し、ユーザー受入待ち・production未反映。
+1. [BL-021](BACKLOG.md#bl-021--todays-briefの意味忠実性semantic-validation再設計) (P1, proposed) — [BL-005](BACKLOG.md#bl-005--editorial-style-v1とtoday-brief-v4)のprompt-only経路とPhase 1 semantic validator blocking方式をNo-Goとして終了した（[SD-017](DECISIONS.md#sd-017--do-not-merge-prompt-only-todays-brief-experiments-redesign-semantic-validation-separately)、[SD-018](DECISIONS.md#sd-018--screen-deterministic-extractive-todays-brief-without-a-semantic-blocking-validator)参照）。BRIEFで新しい横断意味を生成しないB案は`main`へmerge済みで、post-merge production確認とユーザー受入を待つ。
 
 [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not included in this short priority list.
+
+[BL-022](BACKLOG.md#bl-022--前日ダイジェスト直接リンク) and [BL-023](BACKLOG.md#bl-023--article編集品質改善) are newly recorded with unset priority and therefore are not ranked in this short priority list.
 
 This short priority list is not exhaustive. Other open items remain recorded in BACKLOG.md.
 
