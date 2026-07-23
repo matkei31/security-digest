@@ -3151,7 +3151,9 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("30012552188", bl021)
         self.assertIn("1afbd0e7f5b008ea3051af676e57fb2951b648ed", bl021)
         self.assertIn("30012791302", bl021)
-        self.assertIn("ユーザー受入済みとして『完了』へ更新する", bl021)
+        self.assertIn("BL-021を正式完了として扱い、次の作業へ進む整理", bl021)
+        self.assertIn("ユーザーは「ok」、続けて「ok,go」と応答した", bl021)
+        self.assertNotIn("ユーザー受入済みとして『完了』へ更新する", bl021)
         self.assertIn("- **残作業:** なし。", bl021)
 
         decisions = self._read("DECISIONS.md")

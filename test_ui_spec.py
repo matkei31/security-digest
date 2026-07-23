@@ -84,6 +84,8 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("各セクション別の空状態を確定仕様として維持", self.spec)
         self.assertIn("ページ全体を一つの専用空状態へ置き換えない", self.spec)
         self.assertIn("ブラウザ既定のfocus表示を維持", self.spec)
+        self.assertIn("outlineやfocus表示を消してはならない", self.spec)
+        self.assertIn("専用の`:focus-visible`意匠は追加しない", self.spec)
 
     def test_bl022_previous_digest_link_is_an_approved_responsive_contract(self):
         self.assertIn("### 6.3 直前の公開ダイジェスト", self.spec)
@@ -104,8 +106,6 @@ class UiSpecDocumentTest(unittest.TestCase):
             "do not change daily Archive previous/next navigation",
             self.decisions,
         )
-        self.assertIn("outlineやfocus表示を消してはならない", self.spec)
-        self.assertIn("専用の`:focus-visible`意匠は追加しない", self.spec)
 
     def test_sd016_and_user_adjudication_are_recorded_verbatim(self):
         self.assertIn(
