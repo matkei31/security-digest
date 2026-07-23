@@ -1658,6 +1658,7 @@ def brief_for_html_from_digest(digest):
         return None
 
     normalized = {
+        "prompt_version": clean_archive_text(brief.get("prompt_version")),
         "overview": clean_archive_text(brief.get("overview")),
         "important_highlights": [
             text for text in (clean_archive_text(v) for v in (brief.get("important_highlights") or [])) if text
@@ -3508,7 +3509,12 @@ _BRIEF_OVERVIEW_SCHEMA_DESCRIPTION = {
 
 
 def gemini_todays_brief(brief_items, trusted_context):
-    """戻り値: {"overview": str|None, "important_highlights": list[str],
+    """BL-021以前のBRIEF Gemini実装（production経路からは到達不能）。
+
+    既存request/response境界の回帰証跡として当面残すが、build_todays_brief()は
+    この関数を呼ばない。後続の差分縮小判断で削除候補とする。
+
+    戻り値: {"overview": str|None, "important_highlights": list[str],
     "discussion_points": list[str], "check_items": list[str],
     "status": "success"|"failed"|"not_attempted",
     "error_type": str|None, "http_status": int|None}
@@ -3695,28 +3701,229 @@ def gemini_todays_brief(brief_items, trusted_context):
     return _empty_brief_result("failed", error_type="unknown")
 
 
-def build_todays_brief(items):
-    """戻り値: gemini_todays_brief()と同じ形。
-    Today's Briefの入力選定・not_attempted判定を行う。
-    同一日の再実行では、常にこの実行のitemsから再生成する(前日以前のBriefは
-    一切参照・流用しない)。
+def _build_brief_source_ids(items):
+    """現在のinput itemsだけを参照する一意な内部source IDを作る。
+
+    daily JSONから復元したitemでは既存article IDを優先する。production生成前の
+    itemはまだarticle IDを持たないため、input内の安定した1-based位置を使う。
+    重複・空IDは位置IDへ退避し、公開JSON/HTMLへはprojectionしない。
+    """
+    raw_ids = [clean_display_text(item.get("id")) for item in items]
+    counts = {value: raw_ids.count(value) for value in set(raw_ids) if value}
+    used = set()
+    source_ids = {}
+
+    for index, (item, raw_id) in enumerate(zip(items, raw_ids), start=1):
+        if raw_id and counts.get(raw_id) == 1 and raw_id not in used:
+            source_id = raw_id
+        else:
+            source_id = f"brief-input-{index}"
+            suffix = 1
+            while source_id in used:
+                suffix += 1
+                source_id = f"brief-input-{index}-{suffix}"
+        used.add(source_id)
+        source_ids[id(item)] = source_id
+
+    return source_ids
+
+
+def _project_extractive_candidates(candidates, valid_source_ids, max_items):
+    """内部provenance付き候補をpublic list[str]へ決定論的にprojectする。
+
+    source IDが現在のitemsに無い候補、空文字、完全一致重複を除外する。
+    元文字列はstrip/修正せずそのまま返す。
+    """
+    texts = []
+    provenance = []
+    seen_texts = set()
+
+    for candidate in candidates:
+        if candidate.get("source_id") not in valid_source_ids:
+            continue
+        text = candidate.get("source_text")
+        if not isinstance(text, str) or not text.strip() or text in seen_texts:
+            continue
+        seen_texts.add(text)
+        texts.append(text)
+        provenance.append({
+            "source_id": candidate["source_id"],
+            "article_field": candidate["article_field"],
+            "source_text": text,
+            "section": candidate["section"],
+            "selection_rank": len(texts),
+        })
+        if len(texts) >= max_items:
+            break
+
+    return texts, provenance
+
+
+def compose_extractive_brief(items):
+    """既存ARTICLE分析を無加工で選択・配置し、内部provenanceとともに返す。
+
+    戻り値のbriefだけがpublic daily JSON/HTML経路へ進む。provenanceはoffline
+    screening・テスト用であり、public projectionには含めない。
     """
     brief_items = select_brief_input_items(items)
     if not brief_items:
-        return _empty_brief_result("not_attempted")
+        return {
+            "brief": {
+                **_empty_brief_result("not_attempted"),
+                "model": daily_json.BRIEF_MODEL,
+                "prompt_version": daily_json.BRIEF_PROMPT_VERSION,
+            },
+            "provenance": [],
+        }
 
-    print("Today's Briefを生成中...")
     ctx = compute_brief_trusted_context(items)
-    result = gemini_todays_brief(brief_items, ctx)
+    source_ids = _build_brief_source_ids(items)
+    valid_source_ids = set(source_ids.values())
+    ordered_items = sort_items_for_display(items)
+
+    highlight_candidates = []
+    discussion_candidates = []
+    for item in ordered_items:
+        if not is_article_evaluated(item):
+            continue
+        analysis = item["ai_analysis"]
+        source_id = source_ids[id(item)]
+        importance = analysis.get("importance")
+        urgency = analysis.get("urgency")
+
+        if importance == "高" or urgency == "本日確認":
+            highlight_candidates.append({
+                "source_id": source_id,
+                "article_field": "analysis.summary",
+                "source_text": analysis.get("summary"),
+                "section": "important_highlights",
+            })
+
+        if importance == "高" or urgency in ("本日確認", "今週確認"):
+            discussion_candidates.append({
+                "source_id": source_id,
+                "article_field": "analysis.financial_impact",
+                "source_text": analysis.get("financial_impact"),
+                "section": "discussion_points",
+            })
+
+    highlights, highlight_provenance = _project_extractive_candidates(
+        highlight_candidates,
+        valid_source_ids,
+        daily_json.BRIEF_MAX_HIGHLIGHTS,
+    )
+    discussion_points, discussion_provenance = _project_extractive_candidates(
+        discussion_candidates,
+        valid_source_ids,
+        daily_json.BRIEF_EXTRACTIVE_MAX_DISCUSSION_POINTS,
+    )
+
+    check_candidates = []
+    if ctx["temporal_state"] != "C":
+        ordered_check_items = []
+        for urgency in ("本日確認", "今週確認"):
+            for item in ordered_items:
+                if not is_article_evaluated(item):
+                    continue
+                analysis = item["ai_analysis"]
+                if analysis.get("urgency") != urgency:
+                    continue
+                actions = analysis.get("recommended_actions")
+                if not isinstance(actions, list):
+                    continue
+                ordered_check_items.append((item, actions))
+
+        seen_check_texts = set()
+        selected_action_indexes = {}
+
+        # 第1段階: 優先順に各記事から最初の未採用actionを1件ずつ選ぶ。
+        for item, actions in ordered_check_items:
+            for action_index, action in enumerate(actions):
+                if (
+                    not isinstance(action, str)
+                    or not action.strip()
+                    or action in seen_check_texts
+                ):
+                    continue
+                check_candidates.append({
+                    "source_id": source_ids[id(item)],
+                    "article_field": "analysis.recommended_actions",
+                    "source_text": action,
+                    "section": "check_items",
+                })
+                seen_check_texts.add(action)
+                selected_action_indexes.setdefault(id(item), set()).add(action_index)
+                break
+            if len(check_candidates) >= daily_json.BRIEF_MAX_CHECK_ITEMS:
+                break
+
+        # 第2段階: 上限に満たない場合だけ、同じ記事順で残りのactionを補う。
+        if len(check_candidates) < daily_json.BRIEF_MAX_CHECK_ITEMS:
+            for item, actions in ordered_check_items:
+                used_indexes = selected_action_indexes.get(id(item), set())
+                for action_index, action in enumerate(actions):
+                    if (
+                        action_index in used_indexes
+                        or not isinstance(action, str)
+                        or not action.strip()
+                        or action in seen_check_texts
+                    ):
+                        continue
+                    check_candidates.append({
+                        "source_id": source_ids[id(item)],
+                        "article_field": "analysis.recommended_actions",
+                        "source_text": action,
+                        "section": "check_items",
+                    })
+                    seen_check_texts.add(action)
+                    if len(check_candidates) >= daily_json.BRIEF_MAX_CHECK_ITEMS:
+                        break
+                if len(check_candidates) >= daily_json.BRIEF_MAX_CHECK_ITEMS:
+                    break
+
+    check_items, check_provenance = _project_extractive_candidates(
+        check_candidates,
+        valid_source_ids,
+        daily_json.BRIEF_MAX_CHECK_ITEMS,
+    )
+
+    overview = format_brief_status_line(ctx) + "\n" + format_brief_state_explanation(ctx)
+    return {
+        "brief": {
+            "overview": overview,
+            "important_highlights": highlights,
+            "discussion_points": discussion_points,
+            "check_items": check_items,
+            "status": "success",
+            "model": daily_json.BRIEF_MODEL,
+            "prompt_version": daily_json.BRIEF_PROMPT_VERSION,
+            "error_type": None,
+            "http_status": None,
+        },
+        "provenance": (
+            highlight_provenance + discussion_provenance + check_provenance
+        ),
+    }
+
+
+def build_todays_brief(items):
+    """既存ARTICLE分析だけからToday's Briefを決定論的に構成する。
+
+    BRIEF用Gemini API、外部HTTP、前日以前のBriefは参照しない。
+    """
+    composition = compose_extractive_brief(items)
+    result = composition["brief"]
+
     if result["status"] == "success":
-        result = apply_deterministic_brief_context(result, ctx)
+        ctx = compute_brief_trusted_context(items)
         print(
-            f"  Today's Brief: 概況1件(状態:{ctx['temporal_state']}) / "
+            f"Today's Briefを構成: 概況1件(状態:{ctx['temporal_state']}) / "
             f"ハイライト{len(result['important_highlights'])}件 / "
-            f"論点{len(result['discussion_points'])}件 / 確認事項{len(result['check_items'])}件"
+            f"金融機関との関連{len(result['discussion_points'])}件 / "
+            f"確認事項{len(result['check_items'])}件"
         )
     else:
-        print(f"  Today's Brief: {'未実施' if result['status'] == 'not_attempted' else '生成失敗'}")
+        print("Today's Brief: 未実施")
     return result
 
 
@@ -4132,8 +4339,13 @@ def build_html(
             f"<li>{esc(text)}</li>" for text in (brief.get("discussion_points") or [])
         )
         if discussion_html:
+            discussion_heading = (
+                "金融機関との関連"
+                if brief.get("prompt_version") == "today-brief-extractive-v1"
+                else "本日の注目論点"
+            )
             brief_sections.append(f"""<div class="brief-section">
-      <h3 class="brief-section-title">本日の注目論点</h3>
+      <h3 class="brief-section-title">{discussion_heading}</h3>
       <ul class="brief-list">{discussion_html}</ul>
     </div>""")
 
@@ -4586,7 +4798,6 @@ def main():
 
     items = enrich_with_ai(items)
 
-    time.sleep(15)
     brief_result = build_todays_brief(items)
     brief_for_html = brief_result if brief_result["status"] == "success" else None
 

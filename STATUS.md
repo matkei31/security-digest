@@ -2,7 +2,7 @@
 
 ## 1. As of
 
-2026-07-20
+2026-07-23
 
 This file records the current, changeable project state. Incomplete, partially addressed, and acceptance-pending items are recorded in [BACKLOG.md](BACKLOG.md). Stable design and operating decisions are recorded in [DECISIONS.md](DECISIONS.md).
 
@@ -12,10 +12,11 @@ This file records the current, changeable project state. Incomplete, partially a
 |---|---|
 | ARTICLE prompt | `article-analysis-v8` |
 | BRIEF prompt | `today-brief-v3` |
+| Local BL-021 candidate | `today-brief-extractive-v1`（B案、local screening完了、ユーザー受入待ち、production未反映） |
 | Daily JSON `schema_version` | `1` |
 | Gemini model | `gemini-2.5-flash` |
 
-The code-level version source of truth is `daily_json.py`; the model source of truth is `fetch.py`.
+Productionのversion source of truthは`main`上の`daily_json.py`、model source of truthは`fetch.py`である。local branchではB案のcomposition contract候補の実装とoffline screeningを完了したが、ユーザー受入待ち・merge前のためproductionのCurrent valueは`today-brief-v3`のままとする。ARTICLE prompt・version・API・validation・fallbackは変更していない。
 
 ## 3. Generation and publication
 
@@ -60,6 +61,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 ## 6. Known issues and limitations
 
 - [BL-020](BACKLOG.md#bl-020--収集元一覧の取得元別カラーを廃止する): the per-source color and pill-like treatment in the collapsible source footer is a specified but unimplemented small UI fix, separate from the completed source-count correction.
+- [BL-021](BACKLOG.md#bl-021--todays-briefの意味忠実性semantic-validation再設計): Phase 1のsemantic validator blocking方式は過剰rejectによりNo-Go。v1/v2は本番不採用でprompt調整を終了した。deterministic overview＋ARTICLE fieldの無加工選択を行うB案はlocal implementationとoffline screeningを完了し、ユーザー受入待ち・production未反映。productionは引き続き`today-brief-v3`。
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
 - [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する): A comprehensive security requirements document does not yet exist; existing rules remain scattered across `AGENTS.md` and code.
@@ -67,7 +69,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-1. [BL-021](BACKLOG.md#bl-021--todays-briefの意味忠実性semantic-validation再設計) (P1, proposed) — [BL-005](BACKLOG.md#bl-005--editorial-style-v1とtoday-brief-v4)はprompt-only実装経路（v4/v5/v6）をNo-Goとして終了した（[SD-017](DECISIONS.md#sd-017--do-not-merge-prompt-only-todays-brief-experiments-redesign-semantic-validation-separately)参照）。次はBL-021として、Today's Briefの意味忠実性・semantic validationの再設計論点を仕様化する。詳細な試行結果・screening数値はBACKLOG.mdのBL-005／BL-021とSD-017を参照し、ここには重複記載しない。
+1. [BL-021](BACKLOG.md#bl-021--todays-briefの意味忠実性semantic-validation再設計) (P1, proposed) — [BL-005](BACKLOG.md#bl-005--editorial-style-v1とtoday-brief-v4)のprompt-only経路とPhase 1 semantic validator blocking方式をNo-Goとして終了した（[SD-017](DECISIONS.md#sd-017--do-not-merge-prompt-only-todays-brief-experiments-redesign-semantic-validation-separately)、[SD-018](DECISIONS.md#sd-018--screen-deterministic-extractive-todays-brief-without-a-semantic-blocking-validator)参照）。BRIEFで新しい横断意味を生成しないB案はlocal implementationとoffline screeningを完了し、ユーザー受入待ち・production未反映。
 
 [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not included in this short priority list.
 

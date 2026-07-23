@@ -381,6 +381,29 @@ class ArchiveGenerationTest(unittest.TestCase):
         self.assertNotIn("None", html)
         self.assertNotIn(">null<", html)
 
+    def test_v3_archive_keeps_old_heading_and_digest_is_unchanged(self):
+        digest = make_digest(total_items=2, high_count=1)
+        digest["brief"]["prompt_version"] = "today-brief-v3"
+        before = json.dumps(digest, ensure_ascii=False, sort_keys=True)
+
+        html = fetch.build_daily_archive_html(digest)
+
+        self.assertIn("本日の注目論点", html)
+        self.assertNotIn("金融機関との関連", html)
+        self.assertEqual(
+            json.dumps(digest, ensure_ascii=False, sort_keys=True),
+            before,
+        )
+
+    def test_extractive_archive_uses_financial_relevance_heading(self):
+        digest = make_digest(total_items=2, high_count=1)
+        digest["brief"]["prompt_version"] = "today-brief-extractive-v1"
+
+        html = fetch.build_daily_archive_html(digest)
+
+        self.assertIn("金融機関との関連", html)
+        self.assertNotIn("本日の注目論点", html)
+
     def test_internal_and_external_links_are_safe(self):
         digest = make_digest(total_items=1)
         digest["items"][0]["url"] = "javascript:alert(1)"

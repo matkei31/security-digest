@@ -727,50 +727,269 @@ class ArrayOverrideTest(unittest.TestCase):
         self.assertIn(VALID_BRIEF_RESPONSE["overview"], applied["overview"])
 
 
-# ── build_todays_brief 統合 (Ticket 15b) ───────────────────────────────────
+# ── build_todays_brief extractive統合 (BL-021) ─────────────────────────────
 
-def call_build_todays_brief(items, *, response_body=None, side_effect=None):
-    def fake_urlopen(req, timeout=None):
-        if side_effect is not None:
-            raise side_effect
-        return FakeHTTPResponse(response_body)
-
-    with patch.dict(os.environ, {"GEMINI_API_KEY": "test-key-not-real"}):
-        with patch("fetch.urllib.request.urlopen", side_effect=fake_urlopen):
-            with patch("fetch.time.sleep"):
-                return fetch.build_todays_brief(items)
-
-
-class BuildTodaysBriefIntegrationTest(unittest.TestCase):
-    def test_success_overview_starts_with_deterministic_prefix(self):
-        items = build_items_from_spec(
-            [("中", "今週確認")] + [("中", "参考")] * 3, unclassified_count=2,
+class ExtractiveBriefIntegrationTest(unittest.TestCase):
+    def _item(self, item_id, *, importance="中", urgency="参考",
+              summary=None, impact=None, actions=None, status="success"):
+        item = make_brief_item(
+            title=item_id,
+            status=status,
+            importance=importance,
+            urgency=urgency,
+            summary=summary if summary is not None else f"{item_id} summary",
+            financial_impact=impact if impact is not None else f"{item_id} impact",
+            recommended_actions=actions if actions is not None else [],
         )
-        result = call_build_todays_brief(items, response_body=make_brief_body(VALID_BRIEF_RESPONSE))
+        item["id"] = item_id
+        return item
+
+    def test_production_path_never_calls_brief_http_even_with_api_key(self):
+        items = [self._item("today", urgency="本日確認", actions=["そのまま確認"])]
+        with patch.dict(os.environ, {"GEMINI_API_KEY": "test-key-not-real"}):
+            with patch(
+                "fetch.urllib.request.urlopen",
+                side_effect=AssertionError("BRIEF HTTP must be unreachable"),
+            ):
+                result = fetch.build_todays_brief(items)
         self.assertEqual(result["status"], "success")
-        self.assertIn("未判定2件", result["overview"])
-        self.assertIn(VALID_BRIEF_RESPONSE["overview"], result["overview"])
+
+    def test_overview_is_exactly_existing_deterministic_functions(self):
+        items = [
+            self._item("week", urgency="今週確認"),
+            make_unclassified_item("failed-item", status="failed"),
+        ]
+        ctx = fetch.compute_brief_trusted_context(items)
+        result = fetch.build_todays_brief(items)
+        expected = (
+            fetch.format_brief_status_line(ctx)
+            + "\n"
+            + fetch.format_brief_state_explanation(ctx)
+        )
+        self.assertEqual(result["overview"], expected)
+        self.assertNotIn(VALID_BRIEF_RESPONSE["overview"], result["overview"])
+
+    def test_highlights_and_financial_relevance_follow_display_order_and_limits(self):
+        items = [
+            self._item("reference-medium", summary="参照中 summary", impact="参照中 impact"),
+            self._item(
+                "week-high", importance="高", urgency="今週確認",
+                summary="週高 summary", impact="週高 impact",
+            ),
+            self._item(
+                "today-low", importance="低", urgency="本日確認",
+                summary="本日低 summary", impact="本日低 impact",
+            ),
+            self._item(
+                "reference-high", importance="高", urgency="参考",
+                summary="参照高 summary", impact="参照高 impact",
+            ),
+        ]
+        composition = fetch.compose_extractive_brief(items)
+        brief = composition["brief"]
+        self.assertEqual(
+            brief["important_highlights"],
+            ["本日低 summary", "週高 summary", "参照高 summary"],
+        )
+        self.assertEqual(
+            brief["discussion_points"],
+            ["本日低 impact", "週高 impact"],
+        )
+        highlight_sources = [
+            entry["source_id"]
+            for entry in composition["provenance"]
+            if entry["section"] == "important_highlights"
+        ]
+        discussion_sources = [
+            entry["source_id"]
+            for entry in composition["provenance"]
+            if entry["section"] == "discussion_points"
+        ]
+        self.assertEqual(highlight_sources, ["today-low", "week-high", "reference-high"])
+        self.assertEqual(discussion_sources, ["today-low", "week-high"])
+
+    def test_article_strings_are_preserved_byte_for_byte(self):
+        summary = "  要約の前後空白も保持する。  "
+        impact = "金融機関への関係（原文どおり）。"
+        action = "条件Aの場合のみ、設定を確認する。"
+        item = self._item(
+            "exact", importance="高", urgency="本日確認",
+            summary=summary, impact=impact, actions=[action],
+        )
+        result = fetch.build_todays_brief([item])
+        self.assertEqual(result["important_highlights"], [summary])
+        self.assertEqual(result["discussion_points"], [impact])
+        self.assertEqual(result["check_items"], [action])
+
+    def test_exact_duplicates_only_are_removed(self):
+        items = [
+            self._item(
+                "today-1", importance="高", urgency="本日確認",
+                summary="同じ要約", impact="同じ影響",
+                actions=["同じ確認", "同じ確認"],
+            ),
+            self._item(
+                "today-2", importance="高", urgency="本日確認",
+                summary="同じ要約", impact="同じ影響 ",
+                actions=["同じ確認", "別の確認"],
+            ),
+        ]
+        result = fetch.build_todays_brief(items)
+        self.assertEqual(result["important_highlights"], ["同じ要約"])
+        self.assertEqual(result["discussion_points"], ["同じ影響", "同じ影響 "])
+        self.assertEqual(result["check_items"], ["同じ確認", "別の確認"])
+
+    def test_check_items_use_today_then_week_and_never_reference(self):
+        items = [
+            self._item("week", urgency="今週確認", actions=["今週action", "今週2"]),
+            self._item("reference", importance="高", urgency="参考", actions=["参考action"]),
+            self._item("today", urgency="本日確認", actions=["本日action"]),
+        ]
+        composition = fetch.compose_extractive_brief(items)
+        self.assertEqual(
+            composition["brief"]["check_items"],
+            ["本日action", "今週action"],
+        )
+        sources = [
+            entry["source_id"]
+            for entry in composition["provenance"]
+            if entry["section"] == "check_items"
+        ]
+        self.assertEqual(sources, ["today", "week"])
+
+    def test_check_items_prefer_one_action_from_each_of_two_articles(self):
+        items = [
+            self._item(
+                "today-first",
+                urgency="本日確認",
+                actions=["先頭記事action 1", "先頭記事action 2"],
+            ),
+            self._item(
+                "today-second",
+                urgency="本日確認",
+                actions=["次記事action 1"],
+            ),
+        ]
+        composition = fetch.compose_extractive_brief(items)
+        self.assertEqual(
+            composition["brief"]["check_items"],
+            ["先頭記事action 1", "次記事action 1"],
+        )
+        sources = [
+            entry["source_id"]
+            for entry in composition["provenance"]
+            if entry["section"] == "check_items"
+        ]
+        self.assertEqual(sources, ["today-first", "today-second"])
+
+    def test_check_items_fill_from_one_article_when_it_is_only_eligible_article(self):
+        item = self._item(
+            "today-only",
+            urgency="本日確認",
+            actions=["唯一記事action 1", "唯一記事action 2"],
+        )
+        composition = fetch.compose_extractive_brief([item])
+        self.assertEqual(
+            composition["brief"]["check_items"],
+            ["唯一記事action 1", "唯一記事action 2"],
+        )
+        sources = [
+            entry["source_id"]
+            for entry in composition["provenance"]
+            if entry["section"] == "check_items"
+        ]
+        self.assertEqual(sources, ["today-only", "today-only"])
+
+    def test_check_items_skip_duplicate_first_action_within_second_article(self):
+        items = [
+            self._item(
+                "today-first",
+                urgency="本日確認",
+                actions=["共通action"],
+            ),
+            self._item(
+                "today-second",
+                urgency="本日確認",
+                actions=["共通action", "次記事の別action"],
+            ),
+        ]
+        composition = fetch.compose_extractive_brief(items)
+        self.assertEqual(
+            composition["brief"]["check_items"],
+            ["共通action", "次記事の別action"],
+        )
+        sources = [
+            entry["source_id"]
+            for entry in composition["provenance"]
+            if entry["section"] == "check_items"
+        ]
+        self.assertEqual(sources, ["today-first", "today-second"])
+
+    def test_state_c_forces_empty_checks_but_keeps_high_reference_highlight(self):
+        item = self._item(
+            "high-reference", importance="高", urgency="参考",
+            actions=["参考記事のaction"],
+        )
+        result = fetch.build_todays_brief([item])
+        self.assertEqual(result["important_highlights"], ["high-reference summary"])
+        self.assertEqual(result["discussion_points"], ["high-reference impact"])
+        self.assertEqual(result["check_items"], [])
+
+    def test_invalid_source_id_is_excluded_before_public_projection(self):
+        candidates = [{
+            "source_id": "unknown",
+            "article_field": "analysis.summary",
+            "source_text": "公開してはならない",
+            "section": "important_highlights",
+        }]
+        texts, provenance = fetch._project_extractive_candidates(
+            candidates, {"known"}, dj.BRIEF_MAX_HIGHLIGHTS,
+        )
+        self.assertEqual(texts, [])
+        self.assertEqual(provenance, [])
+
+    def test_public_result_is_list_of_strings_without_internal_provenance(self):
+        result = fetch.build_todays_brief([
+            self._item("today", urgency="本日確認", actions=["確認"]),
+        ])
+        self.assertNotIn("provenance", result)
+        for key in ("important_highlights", "discussion_points", "check_items"):
+            self.assertIsInstance(result[key], list)
+            self.assertTrue(all(isinstance(value, str) for value in result[key]))
+        serialized = json.dumps(result, ensure_ascii=False)
+        self.assertNotIn("article_field", serialized)
+        self.assertNotIn("source_id", serialized)
+        self.assertNotIn("selection_rank", serialized)
+
+    def test_metadata_is_extractive_contract(self):
+        result = fetch.build_todays_brief([self._item("week", urgency="今週確認")])
+        self.assertEqual(result["status"], "success")
+        self.assertEqual(result["model"], "deterministic-extractive")
+        self.assertEqual(result["prompt_version"], "today-brief-extractive-v1")
+        self.assertIsNone(result["error_type"])
+        self.assertEqual(dj.BRIEF_EXTRACTIVE_MAX_DISCUSSION_POINTS, 2)
+        self.assertEqual(dj.SCHEMA_VERSION, 1)
+        self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v8")
 
     def test_zero_evaluated_stays_not_attempted_without_calling_gemini(self):
         items = [make_unclassified_item("failed-item", status="failed")]
-        captured = []
-
-        def fake_urlopen(req, timeout=None):
-            captured.append(req)
-            return FakeHTTPResponse(make_brief_body(VALID_BRIEF_RESPONSE))
-
         with patch.dict(os.environ, {"GEMINI_API_KEY": "test-key-not-real"}):
-            with patch("fetch.urllib.request.urlopen", side_effect=fake_urlopen):
+            with patch(
+                "fetch.urllib.request.urlopen",
+                side_effect=AssertionError("BRIEF HTTP must be unreachable"),
+            ):
                 result = fetch.build_todays_brief(items)
 
         self.assertEqual(result["status"], "not_attempted")
         self.assertIsNone(result["overview"])
         self.assertEqual(result["important_highlights"], [])
+        self.assertEqual(result["discussion_points"], [])
         self.assertEqual(result["check_items"], [])
-        self.assertEqual(captured, [])
+        self.assertEqual(result["model"], "deterministic-extractive")
+        self.assertEqual(result["prompt_version"], "today-brief-extractive-v1")
 
     def test_zero_published_stays_not_attempted(self):
-        result = call_build_todays_brief([], response_body=make_brief_body(VALID_BRIEF_RESPONSE))
+        result = fetch.build_todays_brief([])
         self.assertEqual(result["status"], "not_attempted")
         self.assertIsNone(result["overview"])
 
