@@ -410,17 +410,17 @@
 - **ID:** BL-021
 - **タイトル:** Today's Briefの意味忠実性・semantic validation再設計
 - **優先度:** P1（提案）。[BL-005](#bl-005--editorial-style-v1とtoday-brief-v4)の直接の後継であり、BL-005自体がP1だったことと整合させて提案する。他ticketとの優先順位付けは別途ユーザー判断を要する。
-- **状態:** 論点整理済み／未仕様化
+- **状態:** Phase 1 semantic blocking No-Go／B案local screening完了／ユーザー受入待ち／production未反映
 - **出所種別:** BL-005実装試行・Gate未達からの派生
 - **ユーザー原文:** 該当なし（BL-005のNo-Go判定を受けた派生ticketであり、独立したユーザー原文はない）。
 - **ユーザー確認済み要約:** 該当なし。
-- **解釈:** 検討時の作業呼称は「BL-005b」だったが、正式なbacklog IDはBL-021とする。BL-005で試行したprompt-onlyの忠実性指示（v5/v6）だけでは、外部主体から自組織への主体・対象範囲変更や、記事内の年月等の事実改変を再現性をもって防げなかった（[SD-017](DECISIONS.md#sd-017--do-not-merge-prompt-only-todays-brief-experiments-redesign-semantic-validation-separately)参照）。このticketは実装方式を決定するものではなく、次の論点・選択肢・Gateを仕様化するためのものである。
-- **完了条件:** 「実装完了」ではなく、設計判断に必要な論点・選択肢・Gateが仕様化されることとする。具体的には次の論点それぞれについて、選択肢の整理と採否判断に必要な評価軸が文書化されること: 日付・年・数値・期限のsource一致検証／overview・discussion・checkのprovenance／入力にない自組織統制・支援施策の検出／semantic validatorの実現方式／validation失敗時の項目単位削除／validation失敗時のBrief全体不成立／追加Gemini呼出の要否／APIコスト／fallback率／誤検知率／過剰削除率／audit可能性／v5・v6で成立した構造ガード部分の再利用可否。
+- **解釈:** 検討時の作業呼称は「BL-005b」だったが、正式なbacklog IDはBL-021とする。BL-005で試行したprompt-onlyの忠実性指示（v5/v6）だけでは、外部主体から自組織への主体・対象範囲変更や、記事内の年月等の事実改変を再現性をもって防げなかった（[SD-017](DECISIONS.md#sd-017--do-not-merge-prompt-only-todays-brief-experiments-redesign-semantic-validation-separately)参照）。Phase 1ではsemantic validator v1/v2を固定データでlive評価し、既知の重大違反検出は成功したが、忠実な出力を安定して過剰rejectしたためblocking方式をNo-Goとした。追加prompt調整は終了し、v1/v2を本番採用しない。次の候補Bは、BRIEFで新しい横断的意味を生成せず、既存ARTICLE分析の`summary`／`financial_impact`／`recommended_actions`を無加工で決定論的に選択・配置し、overviewを既存trusted contextだけから構成する。
+- **完了条件:** B案について、BRIEF用Gemini APIがproduction経路から到達不能であること、overviewと各listの決定論的選択・provenance・上限・完全一致重複除外・public `list[str]` projection・過去v3 archive互換をテストし、既存daily JSON 5日分のoffline screeningとPC／390px目視用screenshotを作成すること。full unittest、`git diff --check`、pre-commit scope reviewを完了し、ユーザー受入前はproduction実装済みまたは完了と扱わない。
 - **依存関係:** [BL-005](#bl-005--editorial-style-v1とtoday-brief-v4)のNo-Go記録；[SD-017](DECISIONS.md#sd-017--do-not-merge-prompt-only-todays-brief-experiments-redesign-semantic-validation-separately)。
-- **実装証跡:** 未実装。BL-005のv5/v6 screening成果物（決定論的ガード・source ID validation・public projection等の構造ガード部分）が、再利用候補として存在する（repository外のlocal screening記録。詳細はBL-005の実装証跡・SD-017を参照）。
-- **ユーザー受入証跡:** 該当なし（論点整理段階のため）。
-- **残作業:** 上記論点それぞれの選択肢整理、評価軸の確定、実装方式の決定、fixtures・テスト方針の確定、比較評価・受入方法の確定。
-- **注記:** この段階では実装方式を決定しない。BL-005で成立した決定論的構造ガード（highlight適格性・source ID validation・public list[str] projection・件数上限等）は破棄せず、再利用可否の検討対象として維持する。
+- **実装証跡:** Phase 1のsemantic validator blocking方式はrepository外の固定pilot／shadow／final live成果物でSafety Gate PASS・Usability Gate未達となりNo-Go。prompt調整は終了し、validator v1/v2を本番採用しない。local branch `feature/bl021-extractive-brief`でB案のlocal implementation、既存daily JSON 5日分のoffline screening、PC／390px表示確認を完了した。check itemsは本日確認→今週確認→既存表示順を維持しながら、各記事から1件ずつ選んだ後に残りを補う二段階選択とした。main／productionへは未反映。ARTICLE prompt・version・API・validation・fallbackは変更していない。
+- **ユーザー受入証跡:** B案のlocal implementationとoffline screeningの実施のみ承認済み。表示・選択結果・production採用はユーザー受入待ち。
+- **残作業:** Draft PRでのユーザー目視と採否判断。採用する場合もmergeとproduction反映は別途実施し、反映後に受入を記録する。
+- **注記:** productionは引き続き`today-brief-v3`。local B案のcomposition contract候補は`today-brief-extractive-v1`であり、ARTICLE prompt・ARTICLE分析契約・daily JSON `schema_version`は変更しない。Phase 1のdeterministic guardと評価成果物は回帰資産として保持する。
 
 ## 完了済み参照
 

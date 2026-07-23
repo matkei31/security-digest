@@ -23,7 +23,10 @@ DATA_DIR = REPOSITORY_ROOT / "data"
 # ── バージョン・スキーマ定数(一元管理) ───────────────────────────────────────
 SCHEMA_VERSION = 1
 ARTICLE_PROMPT_VERSION = "article-analysis-v8"
-BRIEF_PROMPT_VERSION = "today-brief-v3"
+# BL-021: 後方互換のためprompt_versionという既存フィールド名を維持するが、
+# 新値はLLM promptではなくToday's Brief composition contractのversionを表す。
+BRIEF_PROMPT_VERSION = "today-brief-extractive-v1"
+BRIEF_MODEL = "deterministic-extractive"
 CATEGORY_VERSION = "v1"
 
 VALID_RUN_STATUSES = {"success", "partial", "failed", "not_attempted"}
@@ -35,6 +38,9 @@ VALID_BRIEF_STATUSES = {"success", "failed", "not_attempted"}
 BRIEF_MAX_HIGHLIGHTS = 3
 BRIEF_MAX_DISCUSSION_POINTS = 3
 BRIEF_MAX_CHECK_ITEMS = 2
+# BL-021 extractive contractではdiscussion_pointsを「金融機関との関連」として
+# 最大2件だけ構成する。保存前検証の後方互換上限3件は過去Brief向けに維持する。
+BRIEF_EXTRACTIVE_MAX_DISCUSSION_POINTS = 2
 VALID_ERROR_TYPES = {
     "rate_limit", "quota_exceeded", "billing_or_balance", "schema_parse_error",
     "network_error", "api_error", "unknown",
@@ -476,14 +482,18 @@ def build_brief_section(brief_result, model):
     "check_items":..., "status":..., "error_type":..., "http_status":...}) から
     Today's Brief用のbriefオブジェクトを構築する。
 
-    brief_resultにこれらのキーが無い場合(Ticket 3時点の旧
+    BL-021 extractive contractではbrief_result内のmodel/prompt_versionを
+    composition metadataとして保存する。キーが無い旧呼び出しでは現行の
+    BRIEF_MODEL/BRIEF_PROMPT_VERSIONを使う。
+
+    brief_resultに4要素のキーが無い場合(Ticket 3時点の旧
     {"lines":...}形式など)は、.get()のデフォルトによりoverview=None・
     各配列=[]として扱う(not_attempted/failed相当の空データとして安全側に倒す)。
     """
     return {
         "status": brief_result["status"],
-        "model": model,
-        "prompt_version": BRIEF_PROMPT_VERSION,
+        "model": brief_result.get("model") or BRIEF_MODEL,
+        "prompt_version": brief_result.get("prompt_version") or BRIEF_PROMPT_VERSION,
         "overview": brief_result.get("overview"),
         "important_highlights": brief_result.get("important_highlights") or [],
         "discussion_points": brief_result.get("discussion_points") or [],

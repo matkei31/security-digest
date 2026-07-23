@@ -671,6 +671,32 @@ class TodaysBriefHtmlTest(unittest.TestCase):
         for text in SAMPLE_BRIEF["discussion_points"]:
             self.assertIn(f"<li>{text}</li>", segment)
 
+    def test_extractive_brief_uses_financial_relevance_heading(self):
+        brief = dict(SAMPLE_BRIEF)
+        brief["prompt_version"] = "today-brief-extractive-v1"
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertIn("金融機関との関連", segment)
+        self.assertNotIn(
+            '<h3 class="brief-section-title">本日の注目論点</h3>',
+            segment,
+        )
+        for text in brief["discussion_points"]:
+            self.assertIn(f"<li>{text}</li>", segment)
+
+    def test_v3_brief_keeps_legacy_discussion_heading_without_mutation(self):
+        brief = dict(SAMPLE_BRIEF)
+        brief["prompt_version"] = "today-brief-v3"
+        before = json.dumps(brief, ensure_ascii=False, sort_keys=True)
+        html = fetch.build_html([self._make_item()], brief)
+        segment = brief_segment(html)
+        self.assertIn("本日の注目論点", segment)
+        self.assertNotIn("金融機関との関連", segment)
+        self.assertEqual(
+            json.dumps(brief, ensure_ascii=False, sort_keys=True),
+            before,
+        )
+
     def test_check_items_render_as_list(self):
         html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
         segment = brief_segment(html)
@@ -1974,12 +2000,9 @@ class VulnerabilityFactsIntegrationTest(unittest.TestCase):
         ):
             self.assertNotIn(leaked_value, sent_body, f"{leaked_value!r} leaked into Gemini request body")
 
-    def test_todays_brief_request_body_does_not_leak_facts_data(self):
-        # Ticket 12a-review: Today's Brief生成(build_todays_brief() →
-        # gemini_todays_brief())へもfactsを一切渡さないことを動的に確認する。
-        # "cvss"/"kev"という語自体の有無ではなく(既存プロンプトが一般語彙として
-        # 使用しているため)、item["facts"]に埋め込んだ一意なマーカー値が実際に
-        # 送信されていないことを直接検証する。
+    def test_extractive_brief_makes_no_request_and_does_not_project_facts(self):
+        # BL-021: BRIEF production経路はHTTP request自体を発生させず、
+        # ARTICLE分析の許可fieldだけをpublic resultへprojectする。
         unique_cve = "CVE-2099-999999"
         unique_score = 9.7
         unique_severity = "CRITICAL-UNIQUE-FACTS-MARKER"
@@ -2016,49 +2039,18 @@ class VulnerabilityFactsIntegrationTest(unittest.TestCase):
             }]},
         }
 
-        captured = []
-
-        def fake_urlopen(req, timeout=None):
-            captured.append(req)
-            brief_response = {
-                "overview": "本日は脆弱性関連の情報が中心の一日でした。金融機関への影響確認が望まれる内容です。",
-                "important_highlights": ["重要なハイライトのテスト文です。"],
-                "discussion_points": ["注目論点のテスト文です。"],
-                "check_items": ["確認事項のテスト文です。"],
-            }
-            body = json.dumps({
-                "candidates": [{"content": {"parts": [{"text": json.dumps(brief_response, ensure_ascii=False)}]}}]
-            }).encode("utf-8")
-
-            class FakeResponse:
-                def read(self_inner):
-                    return body
-
-                def __enter__(self_inner):
-                    return self_inner
-
-                def __exit__(self_inner, *a):
-                    return False
-
-            return FakeResponse()
-
         with patch.dict(os.environ, {"GEMINI_API_KEY": "test-key-not-real"}):
-            with patch("fetch.urllib.request.urlopen", side_effect=fake_urlopen):
-                with patch("fetch.time.sleep"):
-                    result = fetch.build_todays_brief([item])
+            with patch(
+                "fetch.urllib.request.urlopen",
+                side_effect=AssertionError("BRIEF HTTP must be unreachable"),
+            ):
+                result = fetch.build_todays_brief([item])
 
-        # Today's Briefのリクエストが実際に発生したことを確認する
-        self.assertEqual(len(captured), 1)
         self.assertEqual(result["status"], "success")
-
-        sent_body = captured[0].data.decode("utf-8")
-        # json.dumps()はデフォルトで非ASCII文字を\uXXXXへエスケープするため、
-        # 日本語部分文字列の検証はデコード後のプロンプト本文に対して行う。
-        sent_prompt_text = json.loads(sent_body)["contents"][0]["parts"][0]["text"]
-
-        # 記事分析結果として必要な情報(ai_analysis由来)は含まれることを確認する
-        self.assertIn("UNIQUE-RECOMMENDED-ACTION-MARKER", sent_body)
-        self.assertIn("テスト要約文です。", sent_prompt_text)
+        self.assertEqual(result["important_highlights"], ["テスト要約文です。"])
+        self.assertEqual(result["discussion_points"], ["テスト影響文です。"])
+        self.assertEqual(result["check_items"], ["UNIQUE-RECOMMENDED-ACTION-MARKER"])
+        public_result = json.dumps(result, ensure_ascii=False)
 
         # item["facts"]内の固有値は1つも含まれないことを確認する
         for leaked_value in (
@@ -2066,8 +2058,8 @@ class VulnerabilityFactsIntegrationTest(unittest.TestCase):
             unique_url, unique_date_added,
         ):
             self.assertNotIn(
-                leaked_value, sent_body,
-                f"{leaked_value!r} leaked into Today's Brief request body",
+                leaked_value, public_result,
+                f"{leaked_value!r} leaked into extractive Brief result",
             )
 
     def test_facts_extraction_uses_raw_snapshot_fields_not_mutated_title(self):
@@ -2946,12 +2938,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
         self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 22)})
 
-    def test_sd_ids_are_unique_and_cover_sd001_to_sd017(self):
+    def test_sd_ids_are_unique_and_cover_sd001_to_sd018(self):
         text = self._read("DECISIONS.md")
         sd_headings = [h for h in self._headings(text) if re.match(r"^SD-\d{3}\b", h)]
         ids = [re.match(r"^(SD-\d{3})", h).group(1) for h in sd_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
-        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 18)})
+        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 19)})
 
     def test_bl_001_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -3146,6 +3138,37 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("[BL-021]", bl005_text)
         self.assertIn("[SD-017]", bl005_text)
         self.assertNotIn("/Users/", bl005_text)
+
+    def test_bl_021_records_phase1_no_go_and_extractive_screening_state(self):
+        backlog = self._read("BACKLOG.md")
+        bl021 = backlog[backlog.index("## BL-021"):backlog.index("## 完了済み参照")]
+        self.assertIn(
+            "- **状態:** Phase 1 semantic blocking No-Go／B案local screening完了"
+            "／ユーザー受入待ち／production未反映",
+            bl021,
+        )
+        self.assertIn("v1/v2を本番採用しない", bl021)
+        self.assertIn("追加prompt調整は終了", bl021)
+        self.assertIn("today-brief-extractive-v1", bl021)
+        self.assertIn("productionは引き続き`today-brief-v3`", bl021)
+        self.assertNotIn("- **状態:** 完了", bl021)
+
+        decisions = self._read("DECISIONS.md")
+        sd018 = decisions[decisions.index("## SD-018"):]
+        self.assertIn(
+            "- **Status:** Local screening complete / Awaiting user acceptance"
+            " / Not implemented in production",
+            sd018,
+        )
+        self.assertIn("semantic validator as a blocking production gate", sd018)
+        self.assertIn("does not newly guarantee that the ARTICLE analysis itself is factually correct", sd018)
+
+        status = self._read("STATUS.md")
+        self.assertIn("| BRIEF prompt | `today-brief-v3` |", status)
+        self.assertIn("today-brief-extractive-v1", status)
+        self.assertIn("local screening完了", status)
+        self.assertIn("ユーザー受入待ち", status)
+        self.assertIn("production未反映", status)
 
     def test_completed_reference_covers_batch2_prs(self):
         text = self._read("BACKLOG.md")
