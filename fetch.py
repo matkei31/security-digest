@@ -1596,6 +1596,48 @@ def format_digest_date_label(digest_date):
     return dt.strftime("%Y年%m月%d日")
 
 
+def select_previous_digest_date(current_digest_date, published_dates):
+    """公開済み日付から、current_digest_dateより前で最も新しい日を選ぶ。"""
+    try:
+        current_date = datetime.date.fromisoformat(current_digest_date)
+    except (TypeError, ValueError):
+        return None
+
+    candidates = []
+    for value in published_dates or []:
+        try:
+            parsed = datetime.date.fromisoformat(value)
+        except (TypeError, ValueError):
+            continue
+        if parsed.isoformat() == value and parsed < current_date:
+            candidates.append(parsed)
+
+    return max(candidates).isoformat() if candidates else None
+
+
+def render_top_archive_nav_html(current_digest_date, published_dates):
+    """トップページのArchive一覧リンクと、直前の公開日へのリンクを描画する。"""
+    links = []
+    previous_date = select_previous_digest_date(current_digest_date, published_dates)
+    if previous_date:
+        current = datetime.date.fromisoformat(current_digest_date)
+        previous = datetime.date.fromisoformat(previous_date)
+        if (current - previous).days == 1:
+            label = "← 前日のダイジェスト"
+        else:
+            label = f"← 前回のダイジェスト（{previous.month}/{previous.day}）"
+        links.append(
+            f'<a class="archive-link" href="archive/{esc(previous_date)}.html">'
+            f"{esc(label)}</a>"
+        )
+
+    links.append(
+        '<a class="archive-link" href="archive/index.html">'
+        "過去のダイジェストを見る →</a>"
+    )
+    return f'<nav class="archive-nav">{"".join(links)}</nav>'
+
+
 def load_daily_digest(path):
     path = Path(path)
     try:
@@ -1616,6 +1658,45 @@ def load_daily_digest(path):
             f"{path.name}: ファイル名とdigest_dateが一致しません: {digest_date!r}"
         )
     return data
+
+
+def load_validated_published_digest_dates(data_dir=None, docs_dir=None):
+    """indexとdaily JSONとArchive HTMLが揃った公開済み日付だけを返す。"""
+    data_dir = Path(data_dir) if data_dir is not None else daily_json.DATA_DIR
+    docs_dir = Path(docs_dir) if docs_dir is not None else DOCS_DIR
+    index_path = data_dir / "index.json"
+    try:
+        index = json.loads(index_path.read_text(encoding="utf-8"))
+        daily_json.validate_index(index)
+    except (OSError, json.JSONDecodeError, daily_json.DailyJsonError):
+        return []
+
+    validated_dates = []
+    for entry in index.get("digests") or []:
+        if not isinstance(entry, dict):
+            continue
+        digest_date = entry.get("digest_date")
+        try:
+            parsed_date = datetime.date.fromisoformat(digest_date)
+        except (TypeError, ValueError):
+            continue
+        if parsed_date.isoformat() != digest_date:
+            continue
+        if entry.get("archive_path") != f"docs/archive/{digest_date}.html":
+            continue
+        if not (docs_dir / "archive" / f"{digest_date}.html").is_file():
+            continue
+        digest_path = data_dir / f"{digest_date}.json"
+        try:
+            digest = load_daily_digest(digest_path)
+            daily_json.validate_daily_digest(digest)
+        except daily_json.DailyJsonError:
+            continue
+        internal_digest_date = digest.get("digest_date")
+        if internal_digest_date != digest_date or internal_digest_date != digest_path.stem:
+            continue
+        validated_dates.append(digest_date)
+    return validated_dates
 
 
 def digest_items_for_html(digest):
@@ -4368,7 +4449,7 @@ def build_html(
         brief_html = ""
 
     if archive_nav_html is None:
-        archive_nav_html = '<nav class="archive-nav"><a class="archive-link" href="archive/index.html">過去のダイジェストを見る</a></nav>'
+        archive_nav_html = '<nav class="archive-nav"><a class="archive-link" href="archive/index.html">過去のダイジェストを見る →</a></nav>'
     subtitle_html = (
         f'\n    <div class="sub">{esc(subtitle)}</div>' if subtitle else ""
     )
@@ -4813,12 +4894,24 @@ def main():
     save_cache(cache)
     print(f"  翻訳キャッシュ: {len(cache)} 件")
 
-    html = build_html(items, brief_for_html)
+    generated_at = datetime.datetime.now(JST)
+    published_dates = load_validated_published_digest_dates(
+        data_dir=daily_json.DATA_DIR,
+        docs_dir=DOCS_DIR,
+    )
+    archive_nav_html = render_top_archive_nav_html(
+        generated_at.strftime("%Y-%m-%d"),
+        published_dates,
+    )
+    html = build_html(
+        items,
+        brief_for_html,
+        archive_nav_html=archive_nav_html,
+    )
     atomic_write_text(out_path, html, validator=validate_html_document)
     print(f"  生成完了: {out_path}")
 
     print("日次JSONを保存中...")
-    generated_at = datetime.datetime.now(JST)
     digest = daily_json.generate_and_save_daily_digest(
         items=items,
         brief_result=brief_result,

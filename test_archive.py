@@ -894,8 +894,278 @@ class TopPageArchiveLinkTest(unittest.TestCase):
         archive_links = [a for a in parser.anchors if a.get("href") == "archive/index.html"]
 
         self.assertEqual(len(archive_links), 1)
-        self.assertIn("過去のダイジェストを見る", html)
+        self.assertIn("過去のダイジェストを見る →", html)
         self.assertTrue(all("target" not in a and "rel" not in a for a in archive_links))
+
+    def test_previous_calendar_day_uses_previous_day_label_and_archive_url(self):
+        html = fetch.render_top_archive_nav_html(
+            "2026-07-23",
+            ["2026-07-22", "2026-07-21"],
+        )
+
+        self.assertIn('href="archive/2026-07-22.html"', html)
+        self.assertIn("← 前日のダイジェスト", html)
+        self.assertNotIn("前回のダイジェスト", html)
+
+    def test_missing_calendar_day_uses_latest_existing_date_and_gap_label(self):
+        html = fetch.render_top_archive_nav_html(
+            "2026-07-23",
+            ["2026-07-19", "2026-07-21"],
+        )
+
+        self.assertIn('href="archive/2026-07-21.html"', html)
+        self.assertIn("← 前回のダイジェスト（7/21）", html)
+
+    def test_no_past_date_hides_direct_link_but_keeps_archive_index(self):
+        html = fetch.render_top_archive_nav_html(
+            "2026-07-23",
+            ["2026-07-23", "2026-07-24"],
+        )
+
+        self.assertNotIn("← 前", html)
+        self.assertIn('href="archive/index.html"', html)
+        self.assertIn("過去のダイジェストを見る →", html)
+
+    def test_irregular_index_order_is_compared_by_date(self):
+        self.assertEqual(
+            fetch.select_previous_digest_date(
+                "2026-07-23",
+                ["2026-07-18", "2026-07-22", "2026-07-19", "2026-07-21"],
+            ),
+            "2026-07-22",
+        )
+
+    def test_current_future_and_invalid_dates_are_never_selected_or_injected(self):
+        html = fetch.render_top_archive_nav_html(
+            "2026-07-23",
+            [
+                "2026-07-23",
+                "2026-07-24",
+                '2026-07-22"><script>alert(1)</script>',
+            ],
+        )
+
+        self.assertNotIn("<script>", html)
+        self.assertNotIn("2026-07-24", html)
+        self.assertEqual(html.count("<a "), 1)
+
+    def test_navigation_wraps_and_does_not_enable_horizontal_scrolling(self):
+        html = fetch.build_html(
+            [],
+            None,
+            archive_nav_html=fetch.render_top_archive_nav_html(
+                "2026-07-23",
+                ["2026-07-22"],
+            ),
+        )
+
+        self.assertIn(".archive-nav{display:flex;flex-wrap:wrap;", html)
+        self.assertNotIn(".archive-nav{white-space:nowrap", html)
+        self.assertNotIn("overflow-x:scroll", html)
+        self.assertNotIn("overflow-x:auto", html)
+
+    def test_only_fully_validated_published_dates_are_loaded(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            archive_dir = docs_dir / "archive"
+            data_dir.mkdir()
+            archive_dir.mkdir(parents=True)
+
+            valid_digest = make_digest("2026-07-22")
+            for item in valid_digest["items"]:
+                item["facts"] = {"cves": []}
+            write_digest(data_dir, valid_digest)
+            (archive_dir / "2026-07-22.html").write_text(
+                "<!DOCTYPE html><html><body>valid</body></html>",
+                encoding="utf-8",
+            )
+            missing_archive_digest = make_digest("2026-07-21")
+            for item in missing_archive_digest["items"]:
+                item["facts"] = {"cves": []}
+            write_digest(data_dir, missing_archive_digest)
+            wrong_path_digest = make_digest("2026-07-20")
+            for item in wrong_path_digest["items"]:
+                item["facts"] = {"cves": []}
+            write_digest(data_dir, wrong_path_digest)
+            (archive_dir / "2026-07-20.html").write_text(
+                "<!DOCTYPE html><html><body>wrong path</body></html>",
+                encoding="utf-8",
+            )
+            (data_dir / "index.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "digests": [
+                            {
+                                "digest_date": "2026-07-21",
+                                "archive_path": "docs/archive/2026-07-21.html",
+                            },
+                            {
+                                "digest_date": "2026-07-20",
+                                "archive_path": "docs/archive/not-the-date.html",
+                            },
+                            {
+                                "digest_date": "2026-07-22",
+                                "archive_path": "docs/archive/2026-07-22.html",
+                            },
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            self.assertEqual(
+                fetch.load_validated_published_digest_dates(data_dir, docs_dir),
+                ["2026-07-22"],
+            )
+
+    def test_validated_digest_with_internal_date_mismatch_is_excluded(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            archive_dir = docs_dir / "archive"
+            data_dir.mkdir()
+            archive_dir.mkdir(parents=True)
+
+            mismatched_digest = make_digest("2026-07-21")
+            for item in mismatched_digest["items"]:
+                item["facts"] = {"cves": []}
+            (data_dir / "2026-07-22.json").write_text(
+                json.dumps(mismatched_digest),
+                encoding="utf-8",
+            )
+            (data_dir / "index.json").write_text(
+                json.dumps(
+                    {
+                        "schema_version": 1,
+                        "digests": [
+                            {
+                                "digest_date": "2026-07-22",
+                                "archive_path": "docs/archive/2026-07-22.html",
+                            },
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            (archive_dir / "2026-07-22.html").write_text(
+                "<!DOCTYPE html><html><body>published</body></html>",
+                encoding="utf-8",
+            )
+
+            def load_without_filename_check(path):
+                return json.loads(Path(path).read_text(encoding="utf-8"))
+
+            with mock.patch(
+                "fetch.load_daily_digest",
+                side_effect=load_without_filename_check,
+            ):
+                self.assertEqual(
+                    fetch.load_validated_published_digest_dates(data_dir, docs_dir),
+                    [],
+                )
+
+    def test_main_uses_generated_date_for_top_daily_and_archive_across_midnight(self):
+        fetched_at = datetime.datetime(2026, 7, 23, 23, 59, 59, tzinfo=JST)
+        generated_at = datetime.datetime(2026, 7, 24, 0, 0, 1, tzinfo=JST)
+
+        class CrossingMidnightDateTime(datetime.datetime):
+            values = [fetched_at, generated_at]
+            call_count = 0
+
+            @classmethod
+            def now(cls, tz=None):
+                value = cls.values[cls.call_count]
+                cls.call_count += 1
+                return value
+
+        def render_navigation(current_digest_date, published_dates):
+            self.assertEqual(CrossingMidnightDateTime.call_count, 2)
+            self.assertEqual(current_digest_date, "2026-07-24")
+            self.assertEqual(published_dates, ["2026-07-23"])
+            return '<nav class="archive-nav"></nav>'
+
+        with tempfile.TemporaryDirectory() as tmp:
+            docs_dir = Path(tmp) / "docs"
+            with (
+                mock.patch("fetch.DOCS_DIR", docs_dir),
+                mock.patch("fetch.datetime.datetime", CrossingMidnightDateTime),
+                mock.patch("fetch.collect_recent", return_value=[]),
+                mock.patch("fetch.get_source_definition", return_value=None),
+                mock.patch(
+                    "fetch.vulnerability_facts.default_cache_path",
+                    return_value=Path(tmp) / "facts-cache.json",
+                ),
+                mock.patch(
+                    "fetch.vulnerability_facts.build_facts_for_items",
+                    return_value={},
+                ),
+                mock.patch(
+                    "fetch.vulnerability_facts.format_facts_log_summary",
+                    return_value="facts",
+                ),
+                mock.patch("fetch.enrich_with_ai", return_value=[]),
+                mock.patch(
+                    "fetch.build_todays_brief",
+                    return_value={"status": "not_attempted"},
+                ),
+                mock.patch("fetch.load_cache", return_value={}),
+                mock.patch("fetch.save_cache"),
+                mock.patch(
+                    "fetch.load_validated_published_digest_dates",
+                    return_value=["2026-07-23"],
+                ),
+                mock.patch(
+                    "fetch.render_top_archive_nav_html",
+                    side_effect=render_navigation,
+                ) as render_mock,
+                mock.patch(
+                    "fetch.build_html",
+                    return_value="<!DOCTYPE html><html><body></body></html>",
+                ),
+                mock.patch("fetch.atomic_write_text"),
+                mock.patch(
+                    "fetch.daily_json.generate_and_save_daily_digest",
+                    return_value={
+                        "digest_date": "2026-07-24",
+                        "run": {"status": "success"},
+                    },
+                ) as generate_digest_mock,
+                mock.patch(
+                    "fetch.generate_archive_outputs",
+                    return_value=[],
+                ) as generate_archive_mock,
+            ):
+                fetch.main()
+
+        self.assertEqual(CrossingMidnightDateTime.call_count, 2)
+        render_mock.assert_called_once_with("2026-07-24", ["2026-07-23"])
+        self.assertEqual(
+            generate_digest_mock.call_args.kwargs["generated_at"],
+            generated_at,
+        )
+        self.assertEqual(
+            generate_digest_mock.call_args.kwargs["fetched_at"],
+            fetched_at,
+        )
+        self.assertEqual(
+            generate_archive_mock.call_args.kwargs["generated_at"],
+            generated_at,
+        )
+
+    def test_daily_archive_navigation_contract_is_unchanged(self):
+        html = fetch.build_daily_archive_html(
+            make_digest("2026-07-22"),
+            previous_date="2026-07-20",
+            next_date="2026-07-23",
+        )
+
+        self.assertIn("← 前のダイジェスト（2026年07月20日）", html)
+        self.assertIn("次のダイジェスト（2026年07月23日）→", html)
+        self.assertNotIn("← 前日のダイジェスト", html)
 
 
 class SourceFooterConsistencyTest(unittest.TestCase):
