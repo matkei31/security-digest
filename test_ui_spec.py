@@ -27,7 +27,7 @@ class UiSpecDocumentTest(unittest.TestCase):
     def test_ui_spec_exists_with_approved_version_metadata(self):
         self.assertTrue(self.spec_path.is_file())
         self.assertIn("# Security Digest UI Specification", self.spec)
-        self.assertIn("- **バージョン:** 1.1", self.spec)
+        self.assertIn("- **バージョン:** 1.2", self.spec)
         self.assertIn("- **状態:** 承認済み", self.spec)
         self.assertIn("将来のMonomi Digestへの名称変更はBL-006の範囲", self.spec)
 
@@ -90,22 +90,27 @@ class UiSpecDocumentTest(unittest.TestCase):
     def test_bl022_previous_digest_link_is_an_approved_responsive_contract(self):
         self.assertIn("### 6.3 直前の公開ダイジェスト", self.spec)
         self.assertIn("現在の`digest_date`より前で最も新しい日", self.spec)
-        self.assertIn("← 前日のダイジェスト", self.spec)
-        self.assertIn("← 前回のダイジェスト（M/D）", self.spec)
-        self.assertIn("「過去のダイジェストを見る →」は維持", self.spec)
-        self.assertIn("390pxでは`flex-wrap`により自然に折り返し", self.spec)
-        self.assertIn("日別Archive上部・最下部にある既存の前後ナビゲーションを変更しない", self.spec)
+        self.assertIn("表示文言は「← 前のダイジェスト」", self.spec)
+        self.assertIn("日付を含めない", self.spec)
+        self.assertIn("「過去のダイジェスト」は維持", self.spec)
+        self.assertIn("方向移動グループを左、全体導線グループを右", self.spec)
+        self.assertIn("グループのDOM順と区別を保ったまま`flex-wrap`", self.spec)
+        self.assertIn("「次のダイジェスト →」", self.spec)
+        self.assertIn("「最新のダイジェスト」「過去のダイジェスト」", self.spec)
         self.assertIn("| 1.1 | 承認済み | BL-022", self.spec)
-        self.assertIn("offline screening完了", self.bl022)
+        self.assertIn("| 1.2 | 承認済み | ナビゲーションの4用語を統一", self.spec)
+        self.assertIn("改訂仕様承認済み", self.bl022)
 
         self.assertIn(
             "## SD-020 — Link the top page to the latest validated earlier digest",
             self.decisions,
         )
         self.assertIn(
-            "do not change daily Archive previous/next navigation",
+            "## SD-021 — Unify digest navigation labels and separate direction from global navigation",
             self.decisions,
         )
+        self.assertIn("SD-020's validated earlier-date selection", self.decisions)
+        self.assertIn("only for navigation labels, date display, placement", self.decisions)
 
     def test_sd016_and_user_adjudication_are_recorded_verbatim(self):
         self.assertIn(
@@ -171,6 +176,7 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertNotRegex(next_candidates, r"(?m)^2\. ")
         self.assertRegex(next_candidates, r"(?m)^1\. \[BL-022\]")
         self.assertIn("(priority unset, active)", next_candidates)
+        self.assertIn("改訂仕様のlocal実装", next_candidates)
         self.assertIn("BL-021 deterministic-extractive Today's Brief", recently_completed)
         self.assertIn("completed and user-accepted", recently_completed)
         self.assertNotIn("[BL-021]", known_issues)

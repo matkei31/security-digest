@@ -1615,27 +1615,49 @@ def select_previous_digest_date(current_digest_date, published_dates):
     return max(candidates).isoformat() if candidates else None
 
 
+PREVIOUS_DIGEST_LABEL = "← 前のダイジェスト"
+NEXT_DIGEST_LABEL = "次のダイジェスト →"
+LATEST_DIGEST_LABEL = "最新のダイジェスト"
+ARCHIVE_INDEX_LABEL = "過去のダイジェスト"
+
+
+def render_archive_nav_groups(
+    direction_links,
+    global_links,
+    *,
+    extra_class="",
+    aria_label="ダイジェストナビゲーション",
+):
+    classes = "archive-nav"
+    if extra_class:
+        classes += f" {extra_class}"
+    return (
+        f'<nav class="{classes}" aria-label="{esc(aria_label)}">'
+        f'<div class="archive-nav-group archive-direction-nav">{direction_links}</div>'
+        f'<div class="archive-nav-group archive-global-nav">{global_links}</div>'
+        "</nav>"
+    )
+
+
 def render_top_archive_nav_html(current_digest_date, published_dates):
     """トップページのArchive一覧リンクと、直前の公開日へのリンクを描画する。"""
-    links = []
+    direction_links = ""
     previous_date = select_previous_digest_date(current_digest_date, published_dates)
     if previous_date:
-        current = datetime.date.fromisoformat(current_digest_date)
-        previous = datetime.date.fromisoformat(previous_date)
-        if (current - previous).days == 1:
-            label = "← 前日のダイジェスト"
-        else:
-            label = f"← 前回のダイジェスト（{previous.month}/{previous.day}）"
-        links.append(
+        direction_links = (
             f'<a class="archive-link" href="archive/{esc(previous_date)}.html">'
-            f"{esc(label)}</a>"
+            f"{esc(PREVIOUS_DIGEST_LABEL)}</a>"
         )
 
-    links.append(
+    global_links = (
         '<a class="archive-link" href="archive/index.html">'
-        "過去のダイジェストを見る →</a>"
+        f"{esc(ARCHIVE_INDEX_LABEL)}</a>"
     )
-    return f'<nav class="archive-nav">{"".join(links)}</nav>'
+    return render_archive_nav_groups(
+        direction_links,
+        global_links,
+        aria_label="トップページのダイジェストナビゲーション",
+    )
 
 
 def load_daily_digest(path):
@@ -4449,7 +4471,12 @@ def build_html(
         brief_html = ""
 
     if archive_nav_html is None:
-        archive_nav_html = '<nav class="archive-nav"><a class="archive-link" href="archive/index.html">過去のダイジェストを見る →</a></nav>'
+        archive_nav_html = render_archive_nav_groups(
+            "",
+            '<a class="archive-link" href="archive/index.html">'
+            f"{esc(ARCHIVE_INDEX_LABEL)}</a>",
+            aria_label="トップページのダイジェストナビゲーション",
+        )
     subtitle_html = (
         f'\n    <div class="sub">{esc(subtitle)}</div>' if subtitle else ""
     )
@@ -4469,9 +4496,11 @@ def build_html(
     header h1{{font-size:18px;font-weight:600;letter-spacing:.02em}}
     .sub{{font-size:12px;color:#8b949e;margin-top:4px}}
     .count{{font-size:12px;color:#58a6ff;margin-top:2px}}
-    .archive-nav{{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}}
+    .archive-nav{{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;column-gap:24px;row-gap:8px;margin-top:8px}}
+    .archive-nav-group{{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;min-width:0}}
+    .archive-global-nav{{margin-left:auto}}
     .archive-bottom-nav{{max-width:680px;margin:20px auto 0;padding:0 12px}}
-    .archive-link{{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
+    .archive-link{{display:inline-flex;align-items:center;min-height:32px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
     .archive-link:hover{{text-decoration:underline}}
     .article-list-header{{max-width:680px;margin:12px auto 0;padding:0 12px}}
     .article-list-header h2{{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}}
@@ -4541,6 +4570,9 @@ def build_html(
     .dashboard-category-item strong{{color:#8b949e;font-weight:600}}
     .dashboard-empty{{list-style:none;font-size:12px;color:#8b949e;line-height:1.5}}
     @media (max-width:600px){{
+      .archive-nav{{align-items:stretch}}
+      .archive-nav-group{{width:100%}}
+      .archive-global-nav{{margin-left:0}}
       .dashboard-axes{{grid-template-columns:1fr}}
       .dashboard-axis+.dashboard-axis{{border-left:none;border-top:1px solid #21262d}}
     }}
@@ -4619,13 +4651,13 @@ def render_archive_adjacent_links(previous_date=None, next_date=None):
         links.append(
             '<a class="archive-link archive-prev-link" '
             f'href="{esc(previous_date)}.html">'
-            f'← 前のダイジェスト（{esc(format_digest_date_label(previous_date))}）</a>'
+            f"{esc(PREVIOUS_DIGEST_LABEL)}</a>"
         )
     if next_date:
         links.append(
             '<a class="archive-link archive-next-link" '
             f'href="{esc(next_date)}.html">'
-            f'次のダイジェスト（{esc(format_digest_date_label(next_date))}）→</a>'
+            f"{esc(NEXT_DIGEST_LABEL)}</a>"
         )
     return "".join(links)
 
@@ -4637,18 +4669,22 @@ def build_daily_archive_html(digest, previous_date=None, next_date=None):
     subtitle = f"日次ダイジェスト：{format_digest_date_label(digest_date)}"
     generated_at = parse_archive_datetime(digest.get("generated_at"))
     adjacent_links = render_archive_adjacent_links(previous_date, next_date)
-    top_nav = (
-        '<nav class="archive-nav">'
-        '<a class="archive-link" href="../index.html">最新のダイジェストへ戻る</a>'
-        '<a class="archive-link" href="index.html">過去のダイジェスト一覧へ戻る</a>'
-        f'{adjacent_links}'
-        '</nav>'
+    global_links = (
+        '<a class="archive-link" href="../index.html">'
+        f"{esc(LATEST_DIGEST_LABEL)}</a>"
+        '<a class="archive-link" href="index.html">'
+        f"{esc(ARCHIVE_INDEX_LABEL)}</a>"
     )
-    bottom_nav = (
-        '<nav class="archive-nav archive-bottom-nav" aria-label="前後のダイジェスト">'
-        f'{adjacent_links}'
-        '</nav>'
-        if adjacent_links else ""
+    top_nav = render_archive_nav_groups(
+        adjacent_links,
+        global_links,
+        aria_label="日別ダイジェスト上部ナビゲーション",
+    )
+    bottom_nav = render_archive_nav_groups(
+        adjacent_links,
+        global_links,
+        extra_class="archive-bottom-nav",
+        aria_label="日別ダイジェスト下部ナビゲーション",
     )
     return build_html(
         items,
@@ -4710,7 +4746,7 @@ def build_archive_index_html(summaries, generated_at=None):
     header h1{{font-size:18px;font-weight:600}}
     .sub,.archive-meta{{font-size:12px;color:#8b949e;line-height:1.5}}
     .archive-nav{{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}}
-    .archive-link{{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
+    .archive-link{{display:inline-flex;align-items:center;min-height:32px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
     .archive-link:hover{{text-decoration:underline}}
     .archive-list{{max-width:680px;margin:12px auto 0;padding:0 12px;list-style:none;display:grid;gap:10px}}
     .archive-list-item{{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;display:grid;gap:4px}}
@@ -4720,7 +4756,7 @@ def build_archive_index_html(summaries, generated_at=None):
 <body>
   <header>
     <h1>過去のダイジェスト</h1>{updated_html}
-    <nav class="archive-nav"><a class="archive-link" href="../index.html">最新のダイジェストへ戻る</a></nav>
+    <nav class="archive-nav"><a class="archive-link" href="../index.html">{esc(LATEST_DIGEST_LABEL)}</a></nav>
   </header>
   <ul class="archive-list">
       {list_body}

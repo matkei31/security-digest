@@ -2,7 +2,7 @@
 
 ## 1. As of
 
-2026-07-23
+2026-07-24
 
 This file records the current, changeable project state. Incomplete, partially addressed, and acceptance-pending items are recorded in [BACKLOG.md](BACKLOG.md). Stable design and operating decisions are recorded in [DECISIONS.md](DECISIONS.md).
 
@@ -13,11 +13,11 @@ This file records the current, changeable project state. Incomplete, partially a
 | ARTICLE prompt | `article-analysis-v8` |
 | BRIEF composition contract on `main` | `today-brief-extractive-v1` |
 | BRIEF model on `main` | `deterministic-extractive` |
-| Latest published daily JSON | `today-brief-extractive-v1`／`deterministic-extractive`（2026-07-23 22:47 JST生成） |
+| Latest published daily JSON | `today-brief-extractive-v1`／`deterministic-extractive`（2026-07-24 07:58 JST生成） |
 | Daily JSON `schema_version` | `1` |
 | ARTICLE Gemini model | `gemini-2.5-flash` |
 
-Version source of truthは`main`上の`daily_json.py`、model source of truthは`fetch.py`である。[PR #35](https://github.com/matkei31/security-digest/pull/35)は2026-07-23にmerge済み。許可された1回の[Daily Security Digest run 30012552188](https://github.com/matkei31/security-digest/actions/runs/30012552188)と[Pages deployment run 30012791302](https://github.com/matkei31/security-digest/actions/runs/30012791302)は成功し、公開daily JSONとPC 1280px／390px表示で`today-brief-extractive-v1`／`deterministic-extractive`の反映を確認した。ARTICLE prompt・version・API・validation・fallbackは変更しておらず、公開daily JSONの9記事はすべて`article-analysis-v8`／`success`。BL-021は2026-07-23にユーザー受入済みとして完了した。
+Version source of truthは`main`上の`daily_json.py`、model source of truthは`fetch.py`である。[PR #35](https://github.com/matkei31/security-digest/pull/35)は2026-07-23にmerge済み。許可された1回の[Daily Security Digest run 30012552188](https://github.com/matkei31/security-digest/actions/runs/30012552188)と[Pages deployment run 30012791302](https://github.com/matkei31/security-digest/actions/runs/30012791302)は成功し、公開daily JSONとPC 1280px／390px表示で`today-brief-extractive-v1`／`deterministic-extractive`の反映を確認した。ARTICLE prompt・version・API・validation・fallbackは変更していない。BL-021は2026-07-23にユーザー受入済みとして完了した。BL-022のPR #37機能はproductionへ反映され、ユーザーが直前ダイジェストリンクの表示と動作を確認済みである。改訂した4用語・日付非表示・左右グループ配置は承認済みで、現在はlocal実装と公開前検証の段階にある。
 
 ## 3. Generation and publication
 
@@ -63,7 +63,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 ## 6. Known issues and limitations
 
 - [BL-020](BACKLOG.md#bl-020--収集元一覧の取得元別カラーを廃止する): the per-source color and pill-like treatment in the collapsible source footer is a specified but unimplemented small UI fix, separate from the completed source-count correction.
-- [BL-022](BACKLOG.md#bl-022--前日ダイジェスト直接リンク): 直前の公開ダイジェストへのトップページリンクはlocal実装・offline screening済みで、Draft PR reviewとユーザー受入待ち。日付欠落時は、検証済み公開日のうち現在日より前の最新日へ移動する。productionは未変更。
+- [BL-022](BACKLOG.md#bl-022--前日ダイジェスト直接リンク): PR #37の直前ダイジェストリンクはproduction反映・ユーザー動作確認済み。承認済みの改訂仕様として、トップ／日別Archiveの4用語統一、リンク文言の日付廃止、方向移動と全体導線の左右グループ化をlocal実装中。日付選択・検証ロジックは維持する。
 - [BL-023](BACKLOG.md#bl-023--article編集品質改善): 固定15 fixture・2 logical runs・30 attemptsで`article-analysis-v9`候補を評価したが、Technical GateのみPASSし、financial_impact／recommended_actions／Safety・Non-regression GateはFAIL。prompt-only改善はNo-Goとして保留し、productionは`article-analysis-v8`を維持する。prompt再調整、regex削除、禁止語規則、Brief後処理は行わない。
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
@@ -72,7 +72,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-1. [BL-022](BACKLOG.md#bl-022--前日ダイジェスト直接リンク) (priority unset, active) — local implementationと前日／日付欠落／過去日なしのoffline screeningが完了し、Draft PR reviewとユーザー受入を待つ。
+1. [BL-022](BACKLOG.md#bl-022--前日ダイジェスト直接リンク) (priority unset, active) — 改訂仕様のlocal実装、全Archive再生成、PC 1280px／390px検証、PR／Pages公開確認を進める。
 
 [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not included in this short priority list.
 

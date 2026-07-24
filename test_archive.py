@@ -418,7 +418,10 @@ class ArchiveGenerationTest(unittest.TestCase):
         article_links = [a for a in parser.anchors if a.get("class") in ("article-title-link", "article-source-link")]
         self.assertEqual(article_links, [])
         internal = [a for a in parser.anchors if a.get("class") == "archive-link"]
-        self.assertEqual([a.get("href") for a in internal], ["../index.html", "index.html"])
+        self.assertEqual(
+            [a.get("href") for a in internal],
+            ["../index.html", "index.html", "../index.html", "index.html"],
+        )
         self.assertTrue(all("target" not in a and "rel" not in a for a in internal))
         self.assertFalse(parser.nested_anchor)
         self.assertEqual(parser.comments, [])
@@ -690,15 +693,38 @@ class ArchiveIndexAndPathTest(unittest.TestCase):
             latest_html = (docs_dir / "archive" / "2026-07-15.html").read_text(encoding="utf-8")
 
             for html in (oldest_html, middle_html, latest_html):
-                self.assertIn("最新のダイジェストへ戻る", html)
-                self.assertIn("過去のダイジェスト一覧へ戻る", html)
+                self.assertEqual(html.count(">最新のダイジェスト</a>"), 2)
+                self.assertEqual(html.count(">過去のダイジェスト</a>"), 2)
+                self.assertEqual(
+                    html.count('<div class="archive-nav-group archive-direction-nav">'),
+                    2,
+                )
+                self.assertEqual(
+                    html.count('<div class="archive-nav-group archive-global-nav">'),
+                    2,
+                )
+                self.assertLess(
+                    html.index('<div class="archive-nav-group archive-direction-nav">'),
+                    html.index('<div class="archive-nav-group archive-global-nav">'),
+                )
+                parser = parse_anchors(html)
+                internal_links = [
+                    anchor for anchor in parser.anchors
+                    if anchor.get("class") and "archive-link" in anchor["class"].split()
+                ]
+                self.assertTrue(
+                    all("target" not in anchor and "rel" not in anchor for anchor in internal_links)
+                )
 
             self.assertNotIn("archive-prev-link", oldest_html)
             self.assertEqual(oldest_html.count("archive-next-link"), 2)
+            self.assertEqual(oldest_html.count(fetch.NEXT_DIGEST_LABEL), 2)
             self.assertIn('href="2026-07-12.html"', oldest_html)
 
             self.assertEqual(middle_html.count("archive-prev-link"), 2)
             self.assertEqual(middle_html.count("archive-next-link"), 2)
+            self.assertEqual(middle_html.count(fetch.PREVIOUS_DIGEST_LABEL), 2)
+            self.assertEqual(middle_html.count(fetch.NEXT_DIGEST_LABEL), 2)
             header_html = middle_html[:middle_html.index("</header>")]
             bottom_html = middle_html[middle_html.index('<nav class="archive-nav archive-bottom-nav"'):]
             for nav_html in (header_html, bottom_html):
@@ -713,6 +739,7 @@ class ArchiveIndexAndPathTest(unittest.TestCase):
 
             self.assertEqual(latest_html.count("archive-prev-link"), 2)
             self.assertNotIn("archive-next-link", latest_html)
+            self.assertEqual(latest_html.count(fetch.PREVIOUS_DIGEST_LABEL), 2)
             self.assertIn('href="2026-07-12.html"', latest_html)
 
     def test_regenerating_archive_from_legacy_json_does_not_modify_source_json(self):
@@ -894,27 +921,31 @@ class TopPageArchiveLinkTest(unittest.TestCase):
         archive_links = [a for a in parser.anchors if a.get("href") == "archive/index.html"]
 
         self.assertEqual(len(archive_links), 1)
-        self.assertIn("過去のダイジェストを見る →", html)
+        self.assertIn(">過去のダイジェスト</a>", html)
+        self.assertNotIn("過去のダイジェストを見る", html)
         self.assertTrue(all("target" not in a and "rel" not in a for a in archive_links))
 
-    def test_previous_calendar_day_uses_previous_day_label_and_archive_url(self):
+    def test_previous_calendar_day_uses_unified_label_and_archive_url(self):
         html = fetch.render_top_archive_nav_html(
             "2026-07-23",
             ["2026-07-22", "2026-07-21"],
         )
 
         self.assertIn('href="archive/2026-07-22.html"', html)
-        self.assertIn("← 前日のダイジェスト", html)
+        self.assertIn(fetch.PREVIOUS_DIGEST_LABEL, html)
+        self.assertNotIn("前日のダイジェスト", html)
         self.assertNotIn("前回のダイジェスト", html)
 
-    def test_missing_calendar_day_uses_latest_existing_date_and_gap_label(self):
+    def test_missing_calendar_day_uses_latest_existing_date_and_unified_label(self):
         html = fetch.render_top_archive_nav_html(
             "2026-07-23",
             ["2026-07-19", "2026-07-21"],
         )
 
         self.assertIn('href="archive/2026-07-21.html"', html)
-        self.assertIn("← 前回のダイジェスト（7/21）", html)
+        self.assertIn(fetch.PREVIOUS_DIGEST_LABEL, html)
+        self.assertNotIn("7/21", html)
+        self.assertNotIn("前回のダイジェスト", html)
 
     def test_no_past_date_hides_direct_link_but_keeps_archive_index(self):
         html = fetch.render_top_archive_nav_html(
@@ -924,7 +955,9 @@ class TopPageArchiveLinkTest(unittest.TestCase):
 
         self.assertNotIn("← 前", html)
         self.assertIn('href="archive/index.html"', html)
-        self.assertIn("過去のダイジェストを見る →", html)
+        self.assertIn(">過去のダイジェスト</a>", html)
+        self.assertIn("archive-direction-nav", html)
+        self.assertIn("archive-global-nav", html)
 
     def test_irregular_index_order_is_compared_by_date(self):
         self.assertEqual(
@@ -959,10 +992,20 @@ class TopPageArchiveLinkTest(unittest.TestCase):
             ),
         )
 
-        self.assertIn(".archive-nav{display:flex;flex-wrap:wrap;", html)
+        self.assertIn(
+            ".archive-nav{display:flex;align-items:center;"
+            "justify-content:space-between;flex-wrap:wrap;",
+            html,
+        )
+        self.assertIn(".archive-nav-group{display:flex;", html)
+        self.assertIn(".archive-nav-group{width:100%}", html)
+        self.assertIn(".archive-global-nav{margin-left:0}", html)
+        self.assertIn("min-height:32px", html)
         self.assertNotIn(".archive-nav{white-space:nowrap", html)
         self.assertNotIn("overflow-x:scroll", html)
         self.assertNotIn("overflow-x:auto", html)
+        self.assertNotIn("outline:none", html)
+        self.assertNotIn("outline:0", html)
 
     def test_only_fully_validated_published_dates_are_loaded(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -1156,16 +1199,68 @@ class TopPageArchiveLinkTest(unittest.TestCase):
             generated_at,
         )
 
-    def test_daily_archive_navigation_contract_is_unchanged(self):
+    def test_daily_archive_navigation_uses_unified_labels_and_global_links(self):
         html = fetch.build_daily_archive_html(
             make_digest("2026-07-22"),
             previous_date="2026-07-20",
             next_date="2026-07-23",
         )
 
-        self.assertIn("← 前のダイジェスト（2026年07月20日）", html)
-        self.assertIn("次のダイジェスト（2026年07月23日）→", html)
-        self.assertNotIn("← 前日のダイジェスト", html)
+        self.assertEqual(html.count(fetch.PREVIOUS_DIGEST_LABEL), 2)
+        self.assertEqual(html.count(fetch.NEXT_DIGEST_LABEL), 2)
+        self.assertEqual(html.count(">最新のダイジェスト</a>"), 2)
+        self.assertEqual(html.count(">過去のダイジェスト</a>"), 2)
+        self.assertIn('href="2026-07-20.html"', html)
+        self.assertIn('href="2026-07-23.html"', html)
+
+        for obsolete in (
+            "前日のダイジェスト",
+            "前回のダイジェスト",
+            "前のダイジェスト（",
+            "次のダイジェスト（",
+            "過去のダイジェストを見る",
+            "過去のダイジェスト一覧へ戻る",
+            "最新のダイジェストへ戻る",
+        ):
+            self.assertNotIn(obsolete, html)
+
+    def test_daily_archive_without_adjacent_dates_keeps_global_links_at_both_positions(self):
+        html = fetch.build_daily_archive_html(make_digest("2026-07-22"))
+
+        self.assertNotIn("archive-prev-link", html)
+        self.assertNotIn("archive-next-link", html)
+        self.assertEqual(html.count(">最新のダイジェスト</a>"), 2)
+        self.assertEqual(html.count(">過去のダイジェスト</a>"), 2)
+        self.assertEqual(
+            html.count('<div class="archive-nav-group archive-direction-nav">'),
+            2,
+        )
+        self.assertEqual(
+            html.count('<div class="archive-nav-group archive-global-nav">'),
+            2,
+        )
+
+    def test_top_daily_and_archive_index_use_the_same_navigation_terms(self):
+        top_html = fetch.render_top_archive_nav_html(
+            "2026-07-23",
+            ["2026-07-21"],
+        )
+        daily_html = fetch.build_daily_archive_html(
+            make_digest("2026-07-22"),
+            previous_date="2026-07-20",
+            next_date="2026-07-23",
+        )
+        archive_index_html = fetch.build_archive_index_html(
+            [fetch.archive_summary_from_digest(make_digest("2026-07-22"))]
+        )
+
+        self.assertIn(fetch.PREVIOUS_DIGEST_LABEL, top_html)
+        self.assertIn(fetch.PREVIOUS_DIGEST_LABEL, daily_html)
+        self.assertIn(fetch.NEXT_DIGEST_LABEL, daily_html)
+        self.assertIn(fetch.LATEST_DIGEST_LABEL, daily_html)
+        self.assertIn(fetch.LATEST_DIGEST_LABEL, archive_index_html)
+        self.assertIn(fetch.ARCHIVE_INDEX_LABEL, top_html)
+        self.assertIn(fetch.ARCHIVE_INDEX_LABEL, daily_html)
 
 
 class SourceFooterConsistencyTest(unittest.TestCase):

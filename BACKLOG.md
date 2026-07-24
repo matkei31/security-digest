@@ -427,7 +427,7 @@
 - **ID:** BL-022
 - **タイトル:** 前日ダイジェスト直接リンク
 - **優先度:** 未設定（ユーザー順位付け待ち）
-- **状態:** 実装済み／offline screening完了／ユーザー受入待ち／production未反映
+- **状態:** 改訂仕様承認済み／local実装中／production未反映
 - **出所種別:** ユーザー原文
 - **ユーザー原文:**
   > 前日ダイジェスト直接リンク
@@ -435,14 +435,20 @@
   > - 現在の「過去のダイジェストを見る」に加え、前日分が存在する場合は直接移動できるリンクを表示
   > - 日付欠落時のリンク先仕様は実装前に整理
   > - UIの小規模Ticketとして扱う
-- **ユーザー確認済み要約:** トップページでは、検証済みdaily JSONと`data/index.json`に存在する現在日より前の最も新しい公開日へ直接リンクする。暦上の前日なら「← 前日のダイジェスト」、欠落をまたぐ場合は「← 前回のダイジェスト（M/D）」とし、過去日がなければ表示しない。既存の「過去のダイジェストを見る →」は常に維持する。
-- **解釈:** 日付配列の保存順には依存せず、日付比較で現在の`digest_date`より前の最大値を選ぶ。現在日・未来日・不正日付、daily JSON・`data/index.json`・生成済みArchive HTMLのいずれかが検証できない日付は候補から除外し、存在しないページへのリンクを生成しない。2リンクはトップページheaderの同一`.archive-nav`へ置き、既存の`flex-wrap`で390pxでも横スクロールなしに折り返す。日別Archiveの既存前後リンクは変更しない。
-- **完了条件:** 前日が存在する場合に「← 前日のダイジェスト」で正しいArchiveへ移動する；前日が欠落する場合にそれ以前の最新存在日を選び「← 前回のダイジェスト（M/D）」と表示する；過去日がない場合は直接リンクだけを省略する；現在日・未来日・不正日付を選ばない；既存「過去のダイジェストを見る →」を常に維持する；PC 1280px／390pxで自然に折り返し横スクロールを生じない；日別Archiveの既存ナビゲーション、ARTICLE／BRIEF、daily JSON、`data/`を変更しない；関連テスト、full unittest、Markdownリンク、`git diff --check`を成功させ、ユーザー受入を得る。
-- **依存関係:** [BL-017](#bl-017--過去ダイジェストの回遊性と一覧表示を改善する)；[UI_SPEC.md](UI_SPEC.md) Version 1.1；既存daily JSON／archive日付一覧。
-- **実装証跡:** `select_previous_digest_date()`が順不同の日付集合から現在日より前の最大日を選び、`load_validated_published_digest_dates()`が`data/index.json`、daily JSON、生成済みArchive HTMLを照合する。`render_top_archive_nav_html()`は日差に応じたラベルと内部URLを生成し、`main()`から既存`build_html()`のarchive navigation注入口へ渡す。前日／欠落／過去日なしのoffline表示を、既存daily JSONだけからPC 1280px／390pxで確認した。
-- **ユーザー受入証跡:** 実装とoffline screeningの実行は承認済み。表示の最終受入は未了。
-- **残作業:** Draft PR review；merge後のproduction反映確認；ユーザー受入。
-- **注記:** productionは未変更。ARTICLE／BRIEF prompt・model・schema、daily JSON、`data/`、日別Archiveの前後ナビゲーションは変更しない。
+- **追加のユーザー原文（PR #37公開機能の確認）:**
+  > 左上に「←　前日のダイジェスト」が表示されるようになって機能することも確認した。これはgood。
+- **追加のユーザー原文（文言統一の提案）:**
+  > 「前日のダイジェスト」「前回のダイジェスト」「前のダイジェスト」と書き分けないで、「前のダイジェスト」に統一でいいんじゃないかな。日付も入れなくてんじゃないかな
+- **追加のユーザー承認原文:**
+  > うん。いいと思うよ。他の修正の方向性もok
+- **ユーザー確認済み要約:** トップページと日別Archiveのナビゲーションを、前方向「← 前のダイジェスト」、次方向「次のダイジェスト →」、最新ページ「最新のダイジェスト」、一覧「過去のダイジェスト」の4用語へ統一し、リンク文言に日付を含めない。PCでは方向移動を左、全体導線を右へ分け、390pxではグループの区別とDOM順を保って自然に折り返す。
+- **解釈:** [SD-020](DECISIONS.md#sd-020--link-the-top-page-to-the-latest-validated-earlier-digest)の日付選択と検証は維持する。日付配列の保存順には依存せず、現在の`digest_date`より前の最大の有効公開日をトップページの移動先とする。日別Archiveも実在する直前・直後の公開日だけを移動先とし、欠けた方向のみ省略する。トップページの「過去のダイジェスト」と、日別Archive上部・最下部の「最新のダイジェスト」「過去のダイジェスト」は常に維持する。
+- **完了条件:** トップページの前日あり／日付欠落／過去日なし、日別Archiveの前後あり／前のみ／次のみ／前後なしを検証する；4用語を統一しリンク文言に日付や廃止文言を残さない；hrefは従来どおり検証済みの実在日を指す；方向移動と全体導線を別DOMグループにする；PC 1280px／390pxで左右配置または自然な折返しとなり、横スクロール、重なり、不自然に狭いタップ領域を生じない；focus表示を維持し、内部リンクへ外部用`target`／`rel`を加えない；既存daily JSONから全生成HTMLを再生成し、差分をナビゲーションと必要CSSに限定する；`data/`、ARTICLE／BRIEF、prompt／model／schema／validation／fallback、source、workflowを変更しない；関連テスト、full unittest、Markdownリンク、`git diff --check`、PR CI、Pages deployment、公開PC／390px確認を成功させる。
+- **依存関係:** [BL-017](#bl-017--過去ダイジェストの回遊性と一覧表示を改善する)；[SD-020](DECISIONS.md#sd-020--link-the-top-page-to-the-latest-validated-earlier-digest)；[SD-021](DECISIONS.md#sd-021--unify-digest-navigation-labels-and-separate-direction-from-global-navigation)；[UI_SPEC.md](UI_SPEC.md) Version 1.2；既存daily JSON／archive日付一覧。
+- **実装証跡:** PR #37の直前公開日選択はmerge commit `d43c563a9a59506aaaa4a41cc6297620cbb6f276`、[Pages deployment run 30022728319](https://github.com/matkei31/security-digest/actions/runs/30022728319)、production生成commit `e8183bd9ee6bb8288dc329eaf68c412225eecbc8`を経て公開済みで、ユーザーがリンクの表示と動作を確認した。改訂仕様は承認済みで、4用語と方向／全体導線グループをlocal実装する。
+- **ユーザー受入証跡:** PR #37の既存機能は公開画面で動作確認済み。今回の正確な文言・日付非表示・配置仕様は上記原文で承認済み。改訂後画面をユーザーが目視済みとは記録しない。
+- **残作業:** local検証；Draft PR；merge；Pages deployment；改訂後の公開PC 1280px／390px客観確認；完了記録。
+- **注記:** productionの公開HTMLはまだ改訂前。ARTICLE／BRIEF prompt・model・schema、daily JSON、`data/`、記事内容、日付選択ロジックは変更しない。
 
 ## BL-023 — ARTICLE編集品質改善
 

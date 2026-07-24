@@ -13,9 +13,11 @@
     header h1{font-size:18px;font-weight:600;letter-spacing:.02em}
     .sub{font-size:12px;color:#8b949e;margin-top:4px}
     .count{font-size:12px;color:#58a6ff;margin-top:2px}
-    .archive-nav{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+    .archive-nav{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;column-gap:24px;row-gap:8px;margin-top:8px}
+    .archive-nav-group{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;min-width:0}
+    .archive-global-nav{margin-left:auto}
     .archive-bottom-nav{max-width:680px;margin:20px auto 0;padding:0 12px}
-    .archive-link{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}
+    .archive-link{display:inline-flex;align-items:center;min-height:32px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}
     .archive-link:hover{text-decoration:underline}
     .article-list-header{max-width:680px;margin:12px auto 0;padding:0 12px}
     .article-list-header h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}
@@ -85,6 +87,9 @@
     .dashboard-category-item strong{color:#8b949e;font-weight:600}
     .dashboard-empty{list-style:none;font-size:12px;color:#8b949e;line-height:1.5}
     @media (max-width:600px){
+      .archive-nav{align-items:stretch}
+      .archive-nav-group{width:100%}
+      .archive-global-nav{margin-left:0}
       .dashboard-axes{grid-template-columns:1fr}
       .dashboard-axis+.dashboard-axis{border-left:none;border-top:1px solid #21262d}
     }
@@ -114,7 +119,7 @@
     <div class="sub">日次ダイジェスト：2026年07月19日</div>
     <div class="sub">最終更新: 2026年07月19日 07:47</div>
     <div class="count">0 件</div>
-    <nav class="archive-nav"><a class="archive-link" href="../index.html">最新のダイジェストへ戻る</a><a class="archive-link" href="index.html">過去のダイジェスト一覧へ戻る</a><a class="archive-link archive-prev-link" href="2026-07-18.html">← 前のダイジェスト（2026年07月18日）</a><a class="archive-link archive-next-link" href="2026-07-20.html">次のダイジェスト（2026年07月20日）→</a></nav>
+    <nav class="archive-nav" aria-label="日別ダイジェスト上部ナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link archive-prev-link" href="2026-07-18.html">← 前のダイジェスト</a><a class="archive-link archive-next-link" href="2026-07-20.html">次のダイジェスト →</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="../index.html">最新のダイジェスト</a><a class="archive-link" href="index.html">過去のダイジェスト</a></div></nav>
   </header>
   
   <section class="important-items">
@@ -154,6 +159,6 @@
       <ul><li style="background:#c0392b">金融庁</li><li style="background:#2471a3">JPCERT/CC</li><li style="background:#555">IPA</li><li style="background:#555">NIST</li><li style="background:#0078d4">Microsoft Security</li><li style="background:#e67e22">Mandiant</li><li style="background:#cc0000">CrowdStrike</li><li style="background:#4285f4">Google TAG</li><li style="background:#005eb8">NCSC</li><li style="background:#555">Krebs on Security</li><li style="background:#555">Dark Reading</li><li style="background:#555">The Hacker News</li><li style="background:#6f42c1">Cisco Talos</li><li style="background:#f38020">Cloudflare</li><li style="background:#e74c3c">CISA KEV</li></ul>
     </details>
   </div>
-  <nav class="archive-nav archive-bottom-nav" aria-label="前後のダイジェスト"><a class="archive-link archive-prev-link" href="2026-07-18.html">← 前のダイジェスト（2026年07月18日）</a><a class="archive-link archive-next-link" href="2026-07-20.html">次のダイジェスト（2026年07月20日）→</a></nav>
+  <nav class="archive-nav archive-bottom-nav" aria-label="日別ダイジェスト下部ナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link archive-prev-link" href="2026-07-18.html">← 前のダイジェスト</a><a class="archive-link archive-next-link" href="2026-07-20.html">次のダイジェスト →</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="../index.html">最新のダイジェスト</a><a class="archive-link" href="index.html">過去のダイジェスト</a></div></nav>
 </body>
 </html>
