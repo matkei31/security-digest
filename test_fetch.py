@@ -2969,7 +2969,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("[PR #26](https://github.com/matkei31/security-digest/pull/26)", recently_completed)
         self.assertNotIn("BL-001", known_issues)
         self.assertNotIn("BL-001", next_candidates)
-        self.assertIn("1. [BL-022]", next_candidates)
+        self.assertNotIn("[BL-022]", next_candidates)
 
     def test_bl_016_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -3028,7 +3028,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("[PR #24](https://github.com/matkei31/security-digest/pull/24)", recently_completed)
         self.assertNotIn("BL-017", known_issues)
         self.assertNotIn("BL-017", next_candidates)
-        self.assertIn("1. [BL-022]", next_candidates)
+        self.assertNotIn("[BL-022]", next_candidates)
         self.assertNotRegex(next_candidates, r"(?m)^2\. ")
 
     def test_bl_018_completion_status_and_evidence(self):
@@ -3101,7 +3101,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertNotIn("BL-019", next_candidates)
         self.assertIn("BL-020", known_issues)
         self.assertNotIn("BL-020", next_candidates)
-        self.assertIn("1. [BL-022]", next_candidates)
+        self.assertNotIn("[BL-022]", next_candidates)
 
     def test_sd_015_records_trusted_context_allowlist_decision(self):
         text = self._read("DECISIONS.md")
@@ -3178,7 +3178,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         backlog = self._read("BACKLOG.md")
         bl022 = backlog[backlog.index("## BL-022"):backlog.index("## BL-023")]
         self.assertIn(
-            "- **状態:** 改訂仕様承認済み／local実装中／production未反映",
+            "- **状態:** 完了",
             bl022,
         )
         self.assertIn("現在の「過去のダイジェストを見る」に加え", bl022)
@@ -3192,6 +3192,10 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("最新ページ「最新のダイジェスト」", bl022)
         self.assertIn("一覧「過去のダイジェスト」", bl022)
         self.assertIn("改訂後画面をユーザーが目視済みとは記録しない", bl022)
+        self.assertIn("[PR #38](https://github.com/matkei31/security-digest/pull/38)", bl022)
+        self.assertIn("85e1b3e3cd4bb3c8927c9b1608652c77a9ebb6e9", bl022)
+        self.assertIn("[Pages deployment run 30061770611]", bl022)
+        self.assertIn("- **残作業:** なし。", bl022)
 
         bl023 = backlog[backlog.index("## BL-023"):backlog.index("## 完了済み参照")]
         self.assertIn("- **状態:** 保留／prompt-only改善No-Go／production変更なし", bl023)
@@ -3214,10 +3218,23 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("facts-based, narrowly bounded deterministic composition", sd019)
 
         status = self._read("STATUS.md")
-        self.assertIn("[BL-022]", status)
+        self.assertIn("BL-022 digest navigation wording and layout", status)
         self.assertIn("[BL-023]", status)
-        self.assertIn("PR #37の直前ダイジェストリンクはproduction反映", status)
-        self.assertIn("4用語統一", status)
+        recently_completed = status[
+            status.index("## 5. Recently completed work"):
+            status.index("## 6. Known issues and limitations")
+        ]
+        known_issues = status[
+            status.index("## 6. Known issues and limitations"):
+            status.index("## 7. Next candidates")
+        ]
+        next_candidates = status[
+            status.index("## 7. Next candidates"):
+            status.index("## 8. Sources of truth")
+        ]
+        self.assertIn("BL-022 digest navigation wording and layout", recently_completed)
+        self.assertNotIn("[BL-022]", known_issues)
+        self.assertNotIn("[BL-022]", next_candidates)
         self.assertIn("prompt-only改善はNo-Goとして保留", status)
 
         sd020 = decisions[decisions.index("## SD-020"):decisions.index("## SD-021")]
@@ -3228,6 +3245,8 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("最新のダイジェスト", sd021)
         self.assertIn("過去のダイジェスト", sd021)
         self.assertIn("validated earlier-date selection", sd021)
+        self.assertIn("Accepted / Implemented and verified in production", sd021)
+        self.assertIn("Pages deployment run 30061770611", sd021)
 
     def test_completed_reference_covers_batch2_prs(self):
         text = self._read("BACKLOG.md")

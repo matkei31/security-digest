@@ -99,7 +99,8 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("「最新のダイジェスト」「過去のダイジェスト」", self.spec)
         self.assertIn("| 1.1 | 承認済み | BL-022", self.spec)
         self.assertIn("| 1.2 | 承認済み | ナビゲーションの4用語を統一", self.spec)
-        self.assertIn("改訂仕様承認済み", self.bl022)
+        self.assertIn("- **状態:** 完了", self.bl022)
+        self.assertIn("[PR #38](https://github.com/matkei31/security-digest/pull/38)", self.bl022)
 
         self.assertIn(
             "## SD-020 — Link the top page to the latest validated earlier digest",
@@ -154,7 +155,7 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("[Pull Request CI run 29647361707]", self.bl004)
         self.assertIn("[Pages deployment run 29648894119]", self.bl004)
 
-    def test_status_completes_bl004_and_bl021_and_promotes_bl022(self):
+    def test_status_completes_bl004_bl021_and_bl022(self):
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
@@ -174,12 +175,14 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertNotIn("BL-004", known_issues)
         self.assertNotRegex(next_candidates, r"(?m)^\d+\. \[BL-004\]")
         self.assertNotRegex(next_candidates, r"(?m)^2\. ")
-        self.assertRegex(next_candidates, r"(?m)^1\. \[BL-022\]")
-        self.assertIn("(priority unset, active)", next_candidates)
-        self.assertIn("改訂仕様のlocal実装", next_candidates)
+        self.assertNotIn("[BL-022]", next_candidates)
+        self.assertIn("No active candidate is currently ranked", next_candidates)
         self.assertIn("BL-021 deterministic-extractive Today's Brief", recently_completed)
         self.assertIn("completed and user-accepted", recently_completed)
         self.assertNotIn("[BL-021]", known_issues)
+        self.assertIn("BL-022 digest navigation wording and layout", recently_completed)
+        self.assertIn("[PR #38](https://github.com/matkei31/security-digest/pull/38)", recently_completed)
+        self.assertNotIn("[BL-022]", known_issues)
         self.assertIn("[BL-023]", known_issues)
         self.assertIn("prompt-only改善はNo-Go", known_issues)
         self.assertNotIn("/Users/", next_candidates)
