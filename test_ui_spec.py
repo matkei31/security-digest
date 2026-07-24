@@ -22,12 +22,13 @@ class UiSpecDocumentTest(unittest.TestCase):
         cls.status = (REPOSITORY_ROOT / "STATUS.md").read_text(encoding="utf-8")
         cls.bl004 = backlog_section(cls.backlog, "BL-004")
         cls.bl005 = backlog_section(cls.backlog, "BL-005")
+        cls.bl020 = backlog_section(cls.backlog, "BL-020")
         cls.bl022 = backlog_section(cls.backlog, "BL-022")
 
     def test_ui_spec_exists_with_approved_version_metadata(self):
         self.assertTrue(self.spec_path.is_file())
         self.assertIn("# Security Digest UI Specification", self.spec)
-        self.assertIn("- **バージョン:** 1.2", self.spec)
+        self.assertIn("- **バージョン:** 1.3", self.spec)
         self.assertIn("- **状態:** 承認済み", self.spec)
         self.assertIn("将来のMonomi Digestへの名称変更はBL-006の範囲", self.spec)
 
@@ -99,6 +100,7 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("「最新のダイジェスト」「過去のダイジェスト」", self.spec)
         self.assertIn("| 1.1 | 承認済み | BL-022", self.spec)
         self.assertIn("| 1.2 | 承認済み | ナビゲーションの4用語を統一", self.spec)
+        self.assertIn("| 1.3 | 承認済み | 収集元フッターの取得元別カラーとpill表現を廃止", self.spec)
         self.assertIn("- **状態:** 完了", self.bl022)
         self.assertIn("[PR #38](https://github.com/matkei31/security-digest/pull/38)", self.bl022)
 
@@ -112,6 +114,22 @@ class UiSpecDocumentTest(unittest.TestCase):
         )
         self.assertIn("SD-020's validated earlier-date selection", self.decisions)
         self.assertIn("only for navigation labels, date display, placement", self.decisions)
+
+    def test_bl020_source_footer_is_plain_and_awaits_visual_acceptance(self):
+        self.assertIn("取得元別カラー、背景、border、pill状の角丸", self.spec)
+        self.assertIn("無彩色・低強調のプレーンテキスト一覧", self.spec)
+        self.assertIn("件数、表示集合、定義順は`build_footer_sources()`", self.spec)
+        self.assertIn("CISA KEVも他の取得元と同じ通常表示", self.spec)
+        self.assertIn("トップページと日別Archive", self.spec)
+        self.assertIn("PCで3列、600px以下で1列", self.spec)
+        self.assertIn("browser既定のfocus表示を維持", self.spec)
+        self.assertIn(
+            "## SD-023 — Remove source-specific colors and pill styling from the source footer",
+            self.decisions,
+        )
+        self.assertIn("- **状態:** 実装済み / ユーザー受入待ち", self.bl020)
+        self.assertIn("- **ユーザー受入証跡:** 未受入。", self.bl020)
+        self.assertNotIn("- **状態:** 完了", self.bl020)
 
     def test_sd016_and_user_adjudication_are_recorded_verbatim(self):
         self.assertIn(

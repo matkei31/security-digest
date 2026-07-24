@@ -273,17 +273,21 @@ class CompatLayerTest(unittest.TestCase):
     def test_trusted_cyber_sources_match_baseline(self):
         self.assertEqual(fetch.TRUSTED_CYBER_SOURCES, BASELINE_TRUSTED_CYBER_SOURCES)
 
-    def test_source_colors_match_baseline(self):
+    def test_source_definition_colors_match_baseline(self):
+        current_colors = {
+            source["name"]: source["color"]
+            for source in fetch.SOURCE_DEFINITIONS
+        }
         all_names = (
             set(BASELINE_SOURCE_COLORS)
-            | set(fetch.SOURCE_COLORS)
+            | set(current_colors)
             | {name for name, _, _ in BASELINE_RSS_FEEDS}
         )
         for name in all_names:
             with self.subTest(name=name):
                 self.assertEqual(
                     BASELINE_SOURCE_COLORS.get(name, "#555"),
-                    fetch.SOURCE_COLORS.get(name, "#555"),
+                    current_colors.get(name, "#555"),
                 )
 
 

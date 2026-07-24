@@ -42,9 +42,9 @@ DOCS_DIR = Path(__file__).parent / "docs"
 ARCHIVE_DIR = DOCS_DIR / "archive"
 
 # ── ソース定義 (source_definitions.json) ─────────────────────────────────────
-# ソース関連の設定(RSS_FEEDS・SOURCE_COLORS・TRUSTED_CYBER_SOURCES等)の正本は
+# ソース関連の設定(RSS_FEEDS・TRUSTED_CYBER_SOURCES等)の正本は
 # source_definitions.json に一元化されている。以下はそれを読み込み・検証し、
-# 既存コードが期待する形（RSS_FEEDS/SOURCE_COLORS/TRUSTED_CYBER_SOURCES）に
+# 既存コードが期待する形（RSS_FEEDS/TRUSTED_CYBER_SOURCES）に
 # 変換する互換レイヤー。
 
 SOURCE_DEFINITIONS_PATH = Path(__file__).resolve().parent / "source_definitions.json"
@@ -206,12 +206,6 @@ def build_rss_feeds(sources):
     ]
 
 
-def build_source_colors(sources):
-    """source定義から、既存コードが期待する SOURCE_COLORS 相当の
-    {表示名: 色コード} を生成する(enabled有無に関わらず全ソース分)。"""
-    return {s["name"]: s["color"] for s in sources}
-
-
 def build_footer_sources(sources):
     """収集元フッターへ表示するenabledな定義を、定義順のまま返す。"""
     return [source for source in sources if source["enabled"]]
@@ -237,7 +231,6 @@ SOURCE_DEFINITIONS = load_source_definitions()
 # build_htmlの表示等)は従来通りこれらの名前をそのまま参照する。
 # 正本は source_definitions.json のみで、ここでの二重管理はしない。
 RSS_FEEDS = build_rss_feeds(SOURCE_DEFINITIONS)
-SOURCE_COLORS = build_source_colors(SOURCE_DEFINITIONS)
 TRUSTED_CYBER_SOURCES = build_trusted_cyber_sources(SOURCE_DEFINITIONS)
 
 # ── 翻訳 (Google Translate 非公式エンドポイント + キャッシュ) ────────────────
@@ -4410,7 +4403,7 @@ def build_html(
     cards_html = "\n".join(cards) if cards else '<p class="empty">本日の新着はありません。</p>'
     all_sources = build_footer_sources(SOURCE_DEFINITIONS)
     sources_li = "".join(
-        '<li style="background:{}">{}</li>'.format(source["color"], esc(source["name"]))
+        f'<li>{esc(source["name"])}</li>'
         for source in all_sources
     )
 
@@ -4592,8 +4585,9 @@ def build_html(
     .sources summary{{font-size:12px;color:#8b949e;cursor:pointer;list-style:none}}
     .sources summary::before{{content:"▶  ";font-size:10px}}
     details[open] summary::before{{content:"▼  "}}
-    .sources ul{{margin-top:10px;list-style:none;display:flex;flex-wrap:wrap;gap:6px}}
-    .sources li{{font-size:11px;padding:3px 10px;border-radius:100px;color:#fff}}
+    .sources ul{{margin:10px 0 0;padding-left:18px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:18px;row-gap:5px}}
+    .sources li{{font-size:11px;line-height:1.5;color:#8b949e;overflow-wrap:anywhere}}
+    @media (max-width:600px){{.sources ul{{grid-template-columns:1fr}}}}
   </style>
 </head>
 <body>

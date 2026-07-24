@@ -2938,12 +2938,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
         self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 24)})
 
-    def test_sd_ids_are_unique_and_cover_sd001_to_sd022(self):
+    def test_sd_ids_are_unique_and_cover_sd001_to_sd023(self):
         text = self._read("DECISIONS.md")
         sd_headings = [h for h in self._headings(text) if re.match(r"^SD-\d{3}\b", h)]
         ids = [re.match(r"^(SD-\d{3})", h).group(1) for h in sd_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
-        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 23)})
+        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 24)})
 
     def test_bl_001_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -3078,13 +3078,19 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("「うん。バックログに入れるなりしてどこかで直せるように管理しよう。んで、次進もう」", bl019_text)
         self.assertIn("- **残作業:** なし。", bl019_text)
 
-        bl020_text = text[text.index("## BL-020"):text.index("## 完了済み参照", text.index("## BL-020"))]
-        self.assertIn("- **状態:** 仕様化済み / 未実装", bl020_text)
+        bl020_text = text[text.index("## BL-020"):text.index("## BL-021", text.index("## BL-020"))]
+        self.assertIn("- **状態:** 実装済み / ユーザー受入待ち", bl020_text)
         self.assertIn("- **出所種別:** ユーザー原文 / ユーザー確認済み要約", bl020_text)
         self.assertIn("「なんで色分けしてるんだっけ？」", bl020_text)
         self.assertIn("「うん。バックログに入れるなりしてどこかで直せるように管理しよう。んで、次進もう」", bl020_text)
-        self.assertIn("- **実装証跡:** 未実装。", bl020_text)
-        self.assertIn("- **ユーザー受入証跡:** 未実装のため該当なし。", bl020_text)
+        self.assertIn("取得元別inline backgroundを削除", bl020_text)
+        self.assertIn("[UI_SPEC.md](UI_SPEC.md) Version 1.3", bl020_text)
+        self.assertIn("[SD-023]", bl020_text)
+        self.assertIn("enabledな15ソースの集合、定義順", bl020_text)
+        self.assertIn("repository-external `BL-020/neutral-source-footer/`", bl020_text)
+        self.assertIn("productionは未変更", bl020_text)
+        self.assertIn("- **ユーザー受入証跡:** 未受入。", bl020_text)
+        self.assertNotIn("- **状態:** 完了", bl020_text)
 
         status_text = self._read("STATUS.md")
         recently_completed = status_text[
@@ -3100,8 +3106,19 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertNotIn("BL-019", known_issues)
         self.assertNotIn("BL-019", next_candidates)
         self.assertIn("BL-020", known_issues)
-        self.assertNotIn("BL-020", next_candidates)
+        self.assertNotRegex(next_candidates, r"(?m)^\d+\. \[BL-020\]")
         self.assertNotIn("[BL-022]", next_candidates)
+        self.assertIn("implemented in a Draft PR and awaits user visual acceptance", known_issues)
+        self.assertIn("implemented in a Draft PR and awaits user visual acceptance", next_candidates)
+        self.assertNotRegex(recently_completed, r"(?m)^- BL-020\b")
+
+        decisions = self._read("DECISIONS.md")
+        sd023 = decisions[decisions.index("## SD-023"):]
+        self.assertIn("- **Status:** Accepted / Implemented locally; user visual acceptance pending", sd023)
+        self.assertIn("same achromatic, low-emphasis plain-text `ul`／`li` contract", sd023)
+        self.assertIn("`SOURCE_COLORS` and its compatibility builder are removed", sd023)
+        self.assertIn("does not supersede SD-013's ordinary-card variant B", sd023)
+        self.assertIn("any part of BL-019's count, enabled-source set, or definition-order contract", sd023)
 
     def test_sd_015_records_trusted_context_allowlist_decision(self):
         text = self._read("DECISIONS.md")
@@ -3269,7 +3286,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("Accepted / Implemented and verified in production", sd021)
         self.assertIn("Pages deployment run 30061770611", sd021)
 
-        sd022 = decisions[decisions.index("## SD-022"):]
+        sd022 = decisions[decisions.index("## SD-022"):decisions.index("## SD-023")]
         self.assertIn("- **Status:** Accepted / No-Go", sd022)
         self.assertIn("17 fixtures in 2 logical runs (34 attempts, no retry)", sd022)
         self.assertIn("HTTP 200 34/34", sd022)

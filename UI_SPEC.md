@@ -1,7 +1,7 @@
 # Security Digest UI Specification
 
 - **文書名:** Security Digest UI Specification
-- **バージョン:** 1.2
+- **バージョン:** 1.3
 - **状態:** 承認済み
 - **適用対象:** 現行Security Digest。将来のMonomi Digestへの名称変更はBL-006の範囲とし、この文書内で先行変更しない。
 
@@ -11,7 +11,7 @@
 
 対象読者は、UIの設計・実装・レビュー・受入を行うユーザー、実装担当者、レビュー担当者である。本書は表示仕様を扱い、ARTICLE／BRIEF prompt、daily JSON schema、生成・公開workflow、ブランド名変更の仕様書ではない。
 
-Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた7項目のユーザー裁定を反映した承認済み文書である。Version 1.1は、BL-022で明示されたトップページの直前公開ダイジェストリンクを追加した。Version 1.2は、トップページと日別Archiveのナビゲーション用語を統一し、日付をリンク文言から除き、方向移動と全体導線を左右の別グループへ整理した。Fable 5提案を無条件に採用したものではなく、後のユーザー判断と受入済み実装を優先している。
+Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた7項目のユーザー裁定を反映した承認済み文書である。Version 1.1は、BL-022で明示されたトップページの直前公開ダイジェストリンクを追加した。Version 1.2は、トップページと日別Archiveのナビゲーション用語を統一し、日付をリンク文言から除き、方向移動と全体導線を左右の別グループへ整理した。Version 1.3は、BL-020で収集元フッターの取得元別カラーとpill表現を廃止し、無彩色・低強調のプレーンテキスト一覧へ置き換えた。Fable 5提案を無条件に採用したものではなく、後のユーザー判断と受入済み実装を優先している。
 
 ## 2. 正本と優先順位
 
@@ -22,9 +22,9 @@ Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた
 3. 現在の`main`実装と回帰テスト
 4. Fable 5の提案
 
-本書では、上記1〜3で根拠を確認できた項目を「確定仕様」、現行コードにある具体値を「現行値」と表記する。将来新たな未決事項が生じた場合は確定仕様へ混入させず、実装前にユーザー裁定を得る。Version 1.2時点の未決事項はない。
+本書では、上記1〜3で根拠を確認できた項目を「確定仕様」、現行コードにある具体値を「現行値」と表記する。将来新たな未決事項が生じた場合は確定仕様へ混入させず、実装前にユーザー裁定を得る。Version 1.3時点の未決事項はない。
 
-主要な根拠は[SD-012](DECISIONS.md#sd-012--dashboard-v2-priority-index-and-the-article-reason-no-imperative-contract)、[SD-013](DECISIONS.md#sd-013--ordinary-article-card-variant-b-remove-classification-label-badges-keep-関連タグ-round)、[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)、[SD-020](DECISIONS.md#sd-020--link-the-top-page-to-the-latest-validated-earlier-digest)、[SD-021](DECISIONS.md#sd-021--unify-digest-navigation-labels-and-separate-direction-from-global-navigation)、[BL-016](BACKLOG.md#bl-016--本日の状態ラベルを除去する)、[BL-017](BACKLOG.md#bl-017--過去ダイジェストの回遊性と一覧表示を改善する)、[BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる)、[BL-022](BACKLOG.md#bl-022--前日ダイジェスト直接リンク)、`fetch.py`、`test_fetch.py`、`test_archive.py`である。
+主要な根拠は[SD-012](DECISIONS.md#sd-012--dashboard-v2-priority-index-and-the-article-reason-no-imperative-contract)、[SD-013](DECISIONS.md#sd-013--ordinary-article-card-variant-b-remove-classification-label-badges-keep-関連タグ-round)、[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)、[SD-020](DECISIONS.md#sd-020--link-the-top-page-to-the-latest-validated-earlier-digest)、[SD-021](DECISIONS.md#sd-021--unify-digest-navigation-labels-and-separate-direction-from-global-navigation)、[SD-023](DECISIONS.md#sd-023--remove-source-specific-colors-and-pill-styling-from-the-source-footer)、[BL-016](BACKLOG.md#bl-016--本日の状態ラベルを除去する)、[BL-017](BACKLOG.md#bl-017--過去ダイジェストの回遊性と一覧表示を改善する)、[BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる)、[BL-020](BACKLOG.md#bl-020--収集元一覧の取得元別カラーを廃止する)、[BL-022](BACKLOG.md#bl-022--前日ダイジェスト直接リンク)、`fetch.py`、`test_fetch.py`、`test_archive.py`である。
 
 ## 3. UI設計原則
 
@@ -205,7 +205,7 @@ PCでは2軸を2列、600px以下では1列に積む。
 
 記事時刻はBL-018の契約に従いJSTの`MM/DD HH:MM`で表示する。`published_at_jst`、`published_at`、`date`の順で解釈可能な値を選び、timezone-awareな日時はoffsetを保持して同じ瞬間のJSTへ変換する。`Z`、`+00:00`、`+09:00`を正しく解釈し、`+09:00`を二重変換しない。offsetのないlegacy naive値は根拠なくUTC／JSTを付与せず、従来のwall-clock表示を維持する。解釈不能値は日時を表示しない。保存済み`published_at`、記事順、digest日付、当日判定は表示変換によって変更しない。
 
-記事カードとは別に、ページ末尾の折りたたみ式「収集元」一覧は現行の取得元別カラーを維持する。ここでの色付き表示を通常記事カードへ戻さない。
+記事カードとは別に、ページ末尾の折りたたみ式「収集元」一覧を維持する。取得元別カラー、背景、border、pill状の角丸、chip状の内部余白は使用せず、全取得元を同じ無彩色・低強調のプレーンテキスト一覧として表示する。件数、表示集合、定義順は`build_footer_sources()`の戻り値を唯一の基準とし、CISA KEVも他の取得元と同じ通常表示にする。トップページと日別Archiveは同じ`ul`／`li`構造と表示契約を使い、browser既定のfocus表示を維持する。
 
 ### 12.2 重要度と確認目安
 
@@ -263,6 +263,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 - 現行ヘッダーは600px以下でもstickyで同じpaddingを使い、圧縮しない。
 - 現行の英語原題はモバイルでもclampせず自然に折り返し、原題の一部を省略しない。
 - ナビゲーションの方向移動グループと全体導線グループは390pxでも区別できるDOM構造を維持し、自然に折り返す。横スクロール、リンクの重なり、不自然に狭いタップ領域を生じさせない。
+- 収集元一覧はPCで3列、600px以下で1列とし、同じ`ul`／`li`構造のまま名称を省略せず自然に折り返す。390pxで横スクロールや項目の重なりを生じさせず、タップ対象ではない項目を大きなchip状領域にしない。
 
 ## 16. 空状態・欠損状態・例外状態
 
@@ -330,7 +331,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 
 **現時点の未決事項: なし。**
 
-将来別スコープで再検討できることは、Version 1.2の未決事項を意味しない。確定仕様を変更する場合は、第20章の変更管理に従い、新しいユーザー判断とSupersedes記録を必要とする。
+将来別スコープで再検討できることは、Version 1.3の未決事項を意味しない。確定仕様を変更する場合は、第20章の変更管理に従い、新しいユーザー判断とSupersedes記録を必要とする。
 
 ### 19.1 今回解決した7項目の決定表
 
@@ -385,7 +386,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 4. DOM class、表示条件、具体的な設計値を変更した場合は、本書と対応する静的／HTML回帰テストを同じPRで更新する。
 5. UI実装の受入では、少なくともPCと390px、優先確認0件／あり、分析欠損、KEVあり、Archive境界日と中間日を確認する。
 6. `docs/`の再生成、daily JSON変更、prompt／schema／workflow変更は、UI仕様書更新だけを理由に行わない。各変更の承認範囲に従う。
-7. Version 1.2は承認済みの確定仕様である。今回解消した7項目とナビゲーション統一仕様を再び未決として扱わず、変更には新しいユーザー判断とSupersedes記録を必要とする。
+7. Version 1.3は承認済みの確定仕様である。今回解消した7項目、ナビゲーション統一仕様、収集元フッターのプレーン表示を再び未決として扱わず、変更には新しいユーザー判断とSupersedes記録を必要とする。
 
 ### 20.1 版履歴
 
@@ -395,3 +396,4 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 | 1.0 | 承認済み | 7項目のユーザー裁定を反映し、未決事項を解消して承認 |
 | 1.1 | 承認済み | BL-022の直前公開ダイジェストリンク、日付欠落時の選択、ラベル、responsive配置を追加 |
 | 1.2 | 承認済み | ナビゲーションの4用語を統一し、リンク文言の日付を廃止し、方向移動と全体導線を左右の別グループへ整理 |
+| 1.3 | 承認済み | 収集元フッターの取得元別カラーとpill表現を廃止し、PC 3列／600px以下1列のプレーンテキスト一覧へ変更 |
