@@ -1,15 +1,21 @@
 # Security Digest Security Requirements
 
-- **Version:** Draft 0.1
-- **Status:** Fable 5 review and user approval pending
+- **Version:** Draft 0.2
+- **Status:** Fable 5 review incorporated; user approval pending
 - **As of:** 2026-07-24
 - **Scope:** Current static GitHub Pages site and its repository-backed generation pipeline
 - **Out of scope:** Security-control implementation in this PR
 
 This is an architecture security-requirements draft, not the GitHub vulnerability-reporting
-policy normally placed in a `SECURITY.md` file. Draft 0.1 records requirements, repository
-evidence, confirmed gaps, proportional exclusions, and review questions. It does not approve
+policy normally placed in a `SECURITY.md` file. Draft 0.2 records requirements, repository
+evidence, register entries, proportional exclusions, and review questions. It does not approve
 or implement a gap response.
+
+Fable 5 reviewed Draft 0.1 as proportional to the current architecture and suitable for
+continued review, with no Critical or High findings. Draft 0.2 incorporates the user's
+adjudication of F-001 through F-009. Fable 5 could not retrieve `STATUS.md` or
+`test_security_requirements.py`; those two files were instead checked independently at the
+PR head. This review incorporation is not user approval and does not implement any control.
 
 ## 1. Purpose and proportionality
 
@@ -168,8 +174,12 @@ screenshots only under the separate artifact-handling requirements below.
 ## 6. Security requirements
 
 The `Current state` values are limited to `Met`, `Partially met`, `Not met`,
-`Not applicable now`, and `Unverified outside repository`. `Met` is used only with concrete
-repository evidence.
+`Not applicable now`, and `Unverified outside repository`. `Met` means that the contract,
+implementation, or test is satisfied only to the extent confirmed by repository evidence; it
+does not attest to GitHub, Pages, DNS, or other repository-external settings. For human or
+agent process requirements, `Met` confirms documented policy and repository evidence, not
+perfect compliance in every future execution. Exceptions and repository-external matters are
+shown in the Gap / exception column or as `Unverified outside repository`.
 
 ### 6.1 Input and content handling
 
@@ -191,6 +201,12 @@ repository evidence.
 | SR-009 | Do not store raw Gemini responses, request credentials, or internal prompt identifiers in daily JSON, HTML, normal logs, or repository artifacts. | These may expose secrets, unreviewed content, or internal contracts. | Met | [`test_article_analysis.py`](test_article_analysis.py): `SecurityTest`; [`test_article_internal_identifier_leak.py`](test_article_internal_identifier_leak.py); [`test_todays_brief.py`](test_todays_brief.py): raw-input exclusion tests | Explicit repository-external live evaluations can retain raw responses only under a separately approved artifact scope. | New logging, tracing, evaluation, or observability path. |
 | SR-010 | Review ARTICLE and BRIEF as independent contracts; prompt, schema, normalization, validation, model, and version changes require scope-specific tests and version assessment. | A change to one contract must not silently alter the other. | Met | [`AGENTS.md`](AGENTS.md): Prompt and schema contracts; [`daily_json.py`](daily_json.py): `ARTICLE_PROMPT_VERSION`, `BRIEF_PROMPT_VERSION`; related request-boundary tests | No current exception. | Any AI contract or daily schema change. |
 | SR-011 | Keep production Brief deterministic-extractive: select validated ARTICLE fields with source provenance and public limits, and make no BRIEF Gemini request. | Avoids a second generative trust boundary and cross-article semantic invention. | Met | [`fetch.py`](fetch.py): `compose_extractive_brief()`, `build_todays_brief()`; [`test_todays_brief.py`](test_todays_brief.py): production no-request, source-ID, and projection tests; [SD-018](DECISIONS.md#sd-018--screen-deterministic-extractive-todays-brief-without-a-semantic-blocking-validator) | ARTICLE text itself remains model-generated and subject to ARTICLE validation limits. | Reintroduction of generated Brief text or another composition model. |
+
+Structural and schema validation do not by themselves guarantee semantic fidelity. Fixed
+BL-005 and BL-023 evaluations observed unsupported assertions and subject or scope regressions;
+the article-analysis-v9 and article-analysis-v10 prompt-only candidates were No-Go, while
+production remains article-analysis-v8. This is a known residual content-integrity risk, not
+evidence that improvement in general is impossible or that production v8 always fails.
 
 ### 6.3 Storage and publication
 
@@ -227,8 +243,8 @@ repository evidence.
 | ID | Requirement | Rationale | Current state | Evidence | Gap / exception | Re-evaluation trigger |
 |---|---|---|---|---|---|---|
 | SR-027 | Prefer the Python standard library and local modules; require explicit approval and security review for new runtime dependencies. | A small static generator should avoid unnecessary supply-chain surface. | Met | Imports in [`fetch.py`](fetch.py), [`daily_json.py`](daily_json.py), and [`vulnerability_facts.py`](vulnerability_facts.py) are standard-library or local; no Python dependency manifest is present; [`AGENTS.md`](AGENTS.md) requires approval | GitHub Actions remain external build dependencies. | Any package manifest or third-party runtime import. |
-| SR-028 | Review third-party Actions for publisher, purpose, permissions, update path, and immutable-reference trade-offs. Full commit SHA pinning is an evaluation item, not an approved mandatory control in Draft 0.1. | Major tags are readable and maintainable but mutable; immutable SHAs improve provenance and require an update process. | Partially met | Workflows currently use `actions/checkout@v4` and `actions/setup-python@v5`; [BACKLOG.md](BACKLOG.md) BL-015 records the open evaluation | Full SHA pinning is not used and has not been approved or rejected. See GAP-002 and Open review questions. | New Action, Action compromise/advisory, or accepted supply-chain policy. |
-| SR-029 | Define how dependency and Action updates are discovered and reviewed, including publisher/ownership and official-mirror verification for source repositories. GitHub Actions Dependabot is an evaluation item, not an approved mandatory control in Draft 0.1. | Update automation can reduce stale dependencies but creates review volume and must fit the pinning policy; a mirror must not be trusted solely by name. | Partially met | PR CI provides tests for proposed updates; `.github/dependabot.yml` is absent; [`AGENTS.md`](AGENTS.md) requires explicit dependency approval; [`source_definitions.json`](source_definitions.json) identifies the current CISA KEV mirror under the `cisagov` organization | No documented update cadence/checklist and no Dependabot configuration. See GAP-003 and GAP-007. | First runtime dependency, new Action, source-repository change, or accepted update policy. |
+| SR-028 | Review third-party Actions for publisher, purpose, permissions, update path, and immutable-reference trade-offs. Full commit SHA pinning is an evaluation item, not an approved mandatory control in Draft 0.2. | Major tags are readable and maintainable but mutable; immutable SHAs improve provenance and require an update process. | Partially met | Workflows currently use `actions/checkout@v4` and `actions/setup-python@v5`; [BACKLOG.md](BACKLOG.md) BL-015 records the open evaluation | Full SHA pinning is not used and has not been approved or rejected. See GAP-002 and Open review questions. | New Action, Action compromise/advisory, or accepted supply-chain policy. |
+| SR-029 | Define how dependency and Action updates are discovered and reviewed, including publisher/ownership and official-mirror verification for source repositories. GitHub Actions Dependabot is an evaluation item, not an approved mandatory control in Draft 0.2. | Update automation can reduce stale dependencies but creates review volume and must fit the pinning policy; a mirror must not be trusted solely by name. | Partially met | PR CI provides tests for proposed updates; `.github/dependabot.yml` is absent; [`AGENTS.md`](AGENTS.md) requires explicit dependency approval; [`source_definitions.json`](source_definitions.json) identifies the current CISA KEV mirror under the `cisagov` organization | No documented update cadence/checklist and no Dependabot configuration. See GAP-003 and GAP-007. | First runtime dependency, new Action, source-repository change, or accepted update policy. |
 
 ### 6.7 Logging and artifacts
 
@@ -239,14 +255,46 @@ repository evidence.
 | SR-032 | Treat generated JSON/HTML as intentionally public; treat screenshots and evaluation bundles according to their contents, not merely their file extension. | Visual and evaluation artifacts can capture local or raw model data. | Partially met | `data/` and `docs/` roles are defined in [STATUS.md](STATUS.md); repository-external evidence is recorded without absolute paths in management documents | No common retention/access policy for external artifacts. See GAP-008. | New screenshot, review bundle, or external sharing destination. |
 | SR-033 | Confirm Actions log/artifact visibility and retention through repository-owner review; do not infer platform settings from workflow YAML. | Repository configuration does not reveal every GitHub-side control. | Unverified outside repository | No `upload-artifact` step exists in repository workflows; workflow logs are platform-managed | Visibility, retention, manual rerun rights, and artifact policy are not repository-verifiable. See GAP-010. | Repository visibility, organization policy, or workflow artifact use. |
 
+The Draft 0.2 exception-output audit covered `fetch.py`, `daily_json.py`,
+`vulnerability_facts.py`, every local module imported by the production path, and shell output
+from both workflows:
+
+| Path | Observed handling at the PR head |
+|---|---|
+| RSS / Atom retrieval | `_safe_fetch_error_text()` bounds common HTTP/network failures; XML parse errors are logged separately without a response body. |
+| Translation | `translate()` prints raw exception text; its request URL can contain bounded public article text in the query. |
+| Standalone NIST NVD and ARTICLE / legacy BRIEF Gemini | `fetch_nist_nvd()`, `gemini_analyze()`, and `gemini_todays_brief()` have general exception paths that print raw exception text; Gemini paths also print the exception type. |
+| Active NVD facts and KEV structured-source retrieval | `vulnerability_facts.py` prints raw network, decoding, parsing, and cache-write exception text in several paths. |
+| Source-definition loader | `load_source_definitions()` does not directly print the path-bearing error; it raises it during module initialization, so an uncaught failure can reach workflow stderr with a traceback and local path. |
+| Daily JSON, archive, and cache persistence | Some write, scan, validation, and archive-load failures are re-raised or later printed without the feed sanitizer and can expose a local path, URL, or validation value. |
+| Workflow shell | No shell tracing or explicit secret dump is configured, but `python3 fetch.py`, Git, and uncaught Python failures can emit the application and command errors above to Actions stderr. |
+
+No explicit traceback-printing helper or response-body logger was found. Uncaught Python
+exceptions can still produce a traceback. GAP-009 covers the inconsistent exception-output
+boundary; this Draft adds no sanitizer.
+
 ### 6.8 Availability and recovery
 
 | ID | Requirement | Rationale | Current state | Evidence | Gap / exception | Re-evaluation trigger |
 |---|---|---|---|---|---|---|
-| SR-034 | Bound source timeouts and retries; isolate source failures so one unavailable source does not produce unbounded retry or expose response bodies. | External sources fail independently and can delay scheduled generation. | Met | [`fetch.py`](fetch.py): `_fetch_feed_result()`; [`vulnerability_facts.py`](vulnerability_facts.py): bounded NVD/KEV retrieval; [`test_feed_fetch_status.py`](test_feed_fetch_status.py) | Some structured-source fallback uses cached data by design. | Source SLA change or repeated schedule overruns. |
+| SR-034 | Bound source timeouts and retries, apply proportionate external-response resource-consumption limits, and isolate source failures so one unavailable or oversized source does not produce unbounded retry, memory use, or response-body exposure. | External sources fail independently and can delay or exhaust scheduled generation. | Partially met | [`fetch.py`](fetch.py) and [`vulnerability_facts.py`](vulnerability_facts.py) use bounded timeouts/retries and post-parse or downstream limits; [`test_feed_fetch_status.py`](test_feed_fetch_status.py) | External HTTP responses are read without a consistent network byte cap before parsing. See GAP-015. | New source/provider, oversized response, memory/time failure, source SLA change, or repeated schedule overrun. |
 | SR-035 | Record ARTICLE `success`, `fallback`, `failed`, and `not_attempted` states and preserve safe empty behavior when generation cannot produce validated output. | A failed AI call must not masquerade as successful analysis. | Met | [`fetch.py`](fetch.py): `gemini_analyze()`, `enrich_with_ai()`; [`daily_json.py`](daily_json.py): validation/status contracts; ARTICLE regression tests | Fallback is availability behavior, not proof of semantic correctness. | Status/fallback/validation change. |
 | SR-036 | Use atomic writes, repository history, validated daily JSON, and offline HTML regeneration as the primary recovery mechanisms for the current scale. | These controls support recovery without introducing a new stateful service. | Met | [`daily_json.py`](daily_json.py): `atomic_write_json()`; [`fetch.py`](fetch.py): `atomic_write_text()`, `generate_archive_outputs()`; [`test_daily_json.py`](test_daily_json.py), [`test_archive.py`](test_archive.py) | GitHub service recovery objectives are outside repository evidence. | Database, external object store, or non-repository publication. |
 | SR-037 | Detect scheduled-generation and Pages failures through existing Actions results and operator review; do not require 24/7 SOC monitoring for the current public static site. | Monitoring effort should reflect impact and architecture. | Partially met | Workflows have timeouts; [STATUS.md](STATUS.md) records run and Pages verification practices | Notification routing, Pages settings, and recovery ownership are unverified outside the repository. See GAP-010. | Paid service, confidential data, contractual uptime, forms/authentication, or critical operational dependency. |
+
+The Draft 0.2 response-size audit found no consistent byte cap at the network `read()` boundary:
+
+| External response | Network read | Later bound, which is not a network byte cap |
+|---|---|---|
+| RSS / Atom | Entire response is read before XML parsing. | At most three feed items are selected after parsing; ARTICLE feed-native body input is then limited to 4,000 characters and stored `raw_excerpt` to 200 characters. |
+| Translation | Entire response is read before JSON parsing. | Request text is limited to 500 characters and cache keys to 300 characters; these do not cap provider response bytes. |
+| ARTICLE Gemini | Entire response is read before JSON parsing. | `maxOutputTokens` and response-schema limits constrain the provider contract, not bytes accepted from the network. |
+| Legacy BRIEF Gemini | Entire response is read before JSON parsing; this boundary is not used by current deterministic-extractive production Brief. | Provider token/schema limits are not network byte caps. |
+| Standalone NIST NVD | Entire response is read before JSON parsing; the source is currently disabled. | `resultsPerPage=3` is a server query parameter, not a local response byte cap. |
+| Active NVD facts | Entire response is read before JSON parsing. | CVE requests are chunked to 100 identifiers, but response bytes remain unbounded. |
+| CISA KEV structured source | The full catalog response is read before JSON parsing. | Article selection and normalization happen only after the catalog is in memory. |
+
+GAP-015 records the hardening candidate. No response-reader implementation is changed here.
 
 ### 6.9 Change and review control
 
@@ -257,42 +305,49 @@ repository evidence.
 | SR-040 | Require explicit authorization for production workflow execution, Pages operations, generated-output mutation, Ready, and merge; do not infer these permissions from edit/test approval. | Repository and production mutations have different impact and ownership. | Met | [`AGENTS.md`](AGENTS.md): Approval boundaries; [`.github/workflows/fetch.yml`](.github/workflows/fetch.yml) separates production triggers from PR CI | GitHub-side actor permissions are unverified outside the repository. | Repository role or workflow-trigger change. |
 | SR-041 | For prompt, request-boundary, schema, validation, fallback, or workflow changes, perform the additional contract-specific review and mocked request/transport tests defined by project policy; real API or production diagnostics need separate approval. | High-risk boundary changes need evidence beyond generic unit tests. | Met | [`AGENTS.md`](AGENTS.md): Prompt and schema contracts, Gemini and production safety, Testing and review; mocked request tests in [`test_article_analysis.py`](test_article_analysis.py), [`test_vulnerability_facts_prompt.py`](test_vulnerability_facts_prompt.py), and [`test_todays_brief.py`](test_todays_brief.py) | The exact additional test set depends on the approved ticket. | Any listed contract or workflow change. |
 | SR-042 | Keep acceptance-pending UI, writing-quality, brand, and security-requirements work open until the required user approval is recorded without inventing or paraphrasing a quote as verbatim evidence. | Merge evidence and user acceptance answer different questions. | Met | [`AGENTS.md`](AGENTS.md): Backlog provenance and completion; [BACKLOG.md](BACKLOG.md) state/completion rules; BL-015 remains pending | Objective technical tickets may close through defined non-subjective criteria where recorded. | Change to backlog completion policy or approval owner. |
+| SR-043 | Define a correction, withdrawal, regeneration, and record procedure for published daily JSON or HTML when a major factual error, unsupported claim, subject or scope shift, or prompt-injection-derived output is confirmed. Decide in advance which HTML, daily JSON, and repository history are affected; align the procedure with SD-014; record the correction reason and impact scope. | Published generated content is durable and can affect reader decisions and trust. | Not met | [SD-014](DECISIONS.md#sd-014--keep-daily-json-outside-the-github-pages-publication-tree-and-limit-stored-content) defines the current storage/history boundary; fixed BL-005 and BL-023 evaluations provide content-integrity evidence | No correction or withdrawal procedure is defined. See GAP-014. This Draft does not choose an implementation or correction format. | A confirmed published-output integrity issue, or before Version 1.0 if the user approves a minimum process. |
 
 ## 7. Current control mapping
 
-| Area | Requirement IDs | Current implementation | Evidence | Status |
-|---|---|---|---|---|
-| Input and content handling | SR-001–SR-005 | Common parsers, HTML normalization, bounded rich-content selection, `esc()`, `safe_url()`, and source-definition review | [`fetch.py`](fetch.py), [`test_fetch.py`](test_fetch.py), [`test_feed_rich_content.py`](test_feed_rich_content.py) | Partially met |
-| Prompt and AI boundary | SR-006–SR-011 | Separate verified/untrusted JSON, allowlist projection, ARTICLE validation/fallback, no BRIEF API | [`fetch.py`](fetch.py), [`daily_json.py`](daily_json.py), [`test_article_internal_identifier_leak.py`](test_article_internal_identifier_leak.py), [`test_todays_brief.py`](test_todays_brief.py) | Met |
-| Storage and publication | SR-012–SR-016 | Validated atomic daily JSON in `data/`, escaped HTML in `docs/`, bounded stored content | [`daily_json.py`](daily_json.py), [`fetch.py`](fetch.py), [SD-014](DECISIONS.md#sd-014--keep-daily-json-outside-the-github-pages-publication-tree-and-limit-stored-content) | Partially met |
-| Secrets | SR-017–SR-020 | Production-only secret references and persistence tests; no documented values | [`.github/workflows/fetch.yml`](.github/workflows/fetch.yml), [`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml), [`test_article_analysis.py`](test_article_analysis.py) | Partially met |
-| GitHub Actions | SR-021–SR-026 | Explicit per-workflow permissions, isolated PR CI, production-only commit/push | [`.github/workflows/`](.github/workflows), [`test_pr_ci_workflow.py`](test_pr_ci_workflow.py), [BL-001](BACKLOG.md#bl-001--プルリクエストci) | Partially met |
-| Dependencies and supply chain | SR-027–SR-029 | Standard-library runtime; official Actions referenced by major tags; no Dependabot file | Python imports and [`.github/workflows/`](.github/workflows) | Partially met |
-| Logging and artifacts | SR-030–SR-033 | Bounded feed errors, no raw response persistence, external review artifacts kept outside repository | [`fetch.py`](fetch.py), related logging tests, [BACKLOG.md](BACKLOG.md) | Partially met |
-| Availability and recovery | SR-034–SR-037 | Bounded retries, explicit statuses, atomic writes, repository history, offline regeneration | [`fetch.py`](fetch.py), [`daily_json.py`](daily_json.py), related tests | Partially met |
-| Change and review control | SR-038–SR-042 | Dedicated branches/PRs, full unittest and diff CI, scope review, separate production authorization, contract-specific tests | [`AGENTS.md`](AGENTS.md), [`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml), [`test_pr_ci_workflow.py`](test_pr_ci_workflow.py) | Partially met |
-| Forms, authentication, database, and payments | Re-evaluation triggers only | No such component exists in the current repository | [`AGENTS.md`](AGENTS.md), current static generator and HTML | Not applicable now |
-| GitHub/Pages/DNS settings outside the repository | SR-019, SR-024, SR-026, SR-033, SR-037 | Must be checked by an owner; Draft makes no inferred claim | Repository evidence boundary in this document | Unverified outside repository |
+| Area | Requirement IDs | Current implementation | Evidence | Aggregate status | SR state breakdown |
+|---|---|---|---|---|---|
+| Input and content handling | SR-001–SR-005 | Common parsers, HTML normalization, bounded rich-content selection, `esc()`, `safe_url()`, and source-definition review | [`fetch.py`](fetch.py), [`test_fetch.py`](test_fetch.py), [`test_feed_rich_content.py`](test_feed_rich_content.py) | Partially met | Met 4 / Partial 1 / Not met 0 / Unverified 0 |
+| Prompt and AI boundary | SR-006–SR-011 | Separate verified/untrusted JSON, allowlist projection, ARTICLE validation/fallback, no BRIEF API | [`fetch.py`](fetch.py), [`daily_json.py`](daily_json.py), [`test_article_internal_identifier_leak.py`](test_article_internal_identifier_leak.py), [`test_todays_brief.py`](test_todays_brief.py) | Met | Met 6 / Partial 0 / Not met 0 / Unverified 0 |
+| Storage and publication | SR-012–SR-016 | Validated atomic daily JSON in `data/`, escaped HTML in `docs/`, bounded stored content | [`daily_json.py`](daily_json.py), [`fetch.py`](fetch.py), [SD-014](DECISIONS.md#sd-014--keep-daily-json-outside-the-github-pages-publication-tree-and-limit-stored-content) | Partially met | Met 4 / Partial 1 / Not met 0 / Unverified 0 |
+| Secrets | SR-017–SR-020 | Production-only secret references and persistence tests; no documented values | [`.github/workflows/fetch.yml`](.github/workflows/fetch.yml), [`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml), [`test_article_analysis.py`](test_article_analysis.py) | Partially met | Met 1 / Partial 1 / Not met 1 / Unverified 1 |
+| GitHub Actions | SR-021–SR-026 | Explicit per-workflow permissions, isolated PR CI, production-only commit/push | [`.github/workflows/`](.github/workflows), [`test_pr_ci_workflow.py`](test_pr_ci_workflow.py), [BL-001](BACKLOG.md#bl-001--プルリクエストci) | Partially met | Met 3 / Partial 3 / Not met 0 / Unverified 0 |
+| Dependencies and supply chain | SR-027–SR-029 | Standard-library runtime; official Actions referenced by major tags; no Dependabot file | Python imports and [`.github/workflows/`](.github/workflows) | Partially met | Met 1 / Partial 2 / Not met 0 / Unverified 0 |
+| Logging and artifacts | SR-030–SR-033 | Bounded feed errors, no raw response persistence, external review artifacts kept outside repository | [`fetch.py`](fetch.py), related logging tests, [BACKLOG.md](BACKLOG.md) | Partially met | Met 0 / Partial 3 / Not met 0 / Unverified 1 |
+| Availability and recovery | SR-034–SR-037 | Bounded timeouts/retries, explicit statuses, atomic writes, repository history, and offline regeneration; response-size limits remain open | [`fetch.py`](fetch.py), [`daily_json.py`](daily_json.py), related tests | Partially met | Met 2 / Partial 2 / Not met 0 / Unverified 0 |
+| Change and review control | SR-038–SR-043 | Dedicated branches/PRs, full unittest and diff CI, scope review, separate production authorization, contract-specific tests; published-output correction remains undefined | [`AGENTS.md`](AGENTS.md), [`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml), [`test_pr_ci_workflow.py`](test_pr_ci_workflow.py) | Partially met | Met 4 / Partial 1 / Not met 1 / Unverified 0 |
+| Forms, authentication, database, and payments | Re-evaluation triggers only | No such component exists in the current repository | [`AGENTS.md`](AGENTS.md), current static generator and HTML | Not applicable now | No current SR count |
+| GitHub/Pages/DNS settings outside the repository | SR-019, SR-024, SR-026, SR-033, SR-037 | Must be checked by an owner; Draft makes no inferred claim | Repository evidence boundary in this document | Unverified outside repository | Cross-cutting owner checks; not counted again in domain totals |
 
 ## 8. Gap register
 
-No gap below is implemented or automatically accepted by this Draft.
+These are register entries, not a claim that every item is a confirmed security defect.
+`Security gap`, `Hardening candidate`, `Policy decision`, `Owner verification`, and
+`Future trigger` distinguish current gaps from optional hardening, pending choices,
+repository-external checks, and future-only conditions. No entry is implemented or
+automatically accepted by this Draft.
 
-| Gap ID | Related requirement | Description | Risk | Proportionality | Recommended disposition | Separate ticket required? | Trigger / timing |
-|---|---|---|---|---|---|---|---|
-| GAP-001 | SR-003 | Actual source URLs are HTTPS, but source-definition validation does not enforce `http`/`https` for outbound collection URLs. | A reviewed configuration error could select an unintended `urllib` handler. | Small deterministic validation; relevant to the existing boundary. | Review and, if accepted, add scheme validation with source-definition tests. | Yes, after Draft approval | Before adding or changing a collection endpoint. |
-| GAP-002 | SR-028 | Actions use major-version tags, not full commit SHAs. | Mutable tags provide weaker immutable provenance for secret-bearing/write workflows. | SHA pinning increases update and review burden; benefit is strongest for production. | Fable 5 and user should decide whether all Actions, only production Actions, or none require full SHA pinning. | Yes if accepted | Draft review or an Action supply-chain advisory. |
-| GAP-003 | SR-029 | `.github/dependabot.yml` is absent, including GitHub Actions update automation. | Action updates may be noticed late; automation can also add unnecessary PR volume. | Only two official Actions are used and the runtime has no third-party package manifest. | Decide together with the pinning/update policy; do not add automatically. | Yes if accepted | Draft review, first runtime dependency, or Action expansion. |
-| GAP-004 | SR-025 | Production generation has no concurrency group. | Scheduled and manual runs could race on generated files and `git push`. | A simple workflow control may be proportionate, but it changes production workflow behavior. | Evaluate serialization/cancellation semantics in a separately approved workflow ticket. | Yes | Before increasing frequency, or after an overlap/push conflict. |
-| GAP-005 | SR-023 | Production checkout relies on default persisted credentials for its later push. | Credential availability is broader within the job than an explicitly documented push mechanism. | The job does require a push; eliminating persistence is not automatically safer without a replacement. | Document and review the chosen credential lifetime and push mechanism. | Yes if a workflow change is accepted | Checkout upgrade or publication redesign. |
-| GAP-006 | SR-020 | No minimum secret rotation and revocation procedure is documented. | Response may be delayed or incomplete after suspected leakage. | A short owner/runbook section is proportionate; no new security product is implied. | Define triggers, responsible owner, revoke/replace steps, and post-rotation verification. | Yes or an approved operations document | Before another secret is added; urgent on suspected leakage. |
-| GAP-007 | SR-029 | Approval is required for new dependencies, but no concrete ownership/provenance/update review checklist exists. | A future dependency could be adopted without consistent supply-chain review. | No runtime third-party dependency exists today, so a compact just-in-time checklist is enough. | Define the checklist before accepting the first new dependency. | Not necessarily before that trigger | First new Python dependency or third-party Action. |
-| GAP-008 | SR-015, SR-032 | Repository-external evaluation artifacts have no common retention, access, or disposal rule. | Raw model output, request data, screenshots, or local metadata may persist longer or be shared more broadly than intended. | Artifacts are occasional; per-evaluation classification plus a small default is preferable to a large archive system. | Decide whether to define a default retention period and exceptions. | Yes if a common policy is accepted | Before the next live evaluation bundle. |
-| GAP-009 | SR-017, SR-030, SR-031 | Feed errors use a bounded sanitizer, but translation and general Gemini exception paths print `str(exception)` directly. | Exception text can include local paths or request URLs; translation URLs can contain public article text in query parameters. | Input is public, so confidentiality impact is limited, but consistent log hygiene is inexpensive to evaluate. | Review a common bounded exception formatter without changing normal output. | Yes if accepted | Before adding debug logging or another provider. |
-| GAP-010 | SR-019, SR-024, SR-026, SR-033, SR-037 | Secret configuration, dispatch rights, branch protection, repository visibility controls, Pages source/deployment settings, log retention, and notification routing are not verifiable from repository files. | Repository-only documentation can otherwise overstate control coverage. | Owner confirmation is sufficient; no setting change is implied. | Complete a read-only owner checklist and record only non-sensitive outcomes. | Possibly documentation-only | Before Version 1.0 approval and after relevant GitHub setting changes. |
-| GAP-011 | SR-012, SR-037 | No approved custom-domain security preflight checklist exists. | DNS ownership, HTTPS/Pages binding, canonical URLs, and redirects could be misconfigured during BL-007. | Not a current-site gap because the custom domain is not implemented. | Prepare the checklist within BL-007 before domain activation. | Coordinate with BL-007 | Before any `monomidigest.com` DNS or Pages change. |
-| GAP-012 | SR-001, SR-030 | The production summary translation path uses an unofficial endpoint and sends bounded public article text in a URL query; provider guarantees and retention are not documented in-repository. | Availability or provider behavior can change, and request URLs can appear in intermediary logs. | The data is already public and cached output is public, so this is not treated as confidential-data processing. | Confirm continued acceptance or define a replacement only through a separate ticket; do not add a dependency in this Draft. | Yes if change is desired | Provider failure, policy change, private input, or new translation requirement. |
-| GAP-013 | SR-020, SR-033 | No compact security-incident / credential-leakage response procedure is maintained. | Detection, containment, evidence preservation, and communication may be improvised. | A minimal procedure is proportionate; a 24/7 incident platform is not. | Decide whether to make it a section of an operations document or a separate document. | Yes if accepted | Before Version 1.0 or immediately after an incident. |
+| Gap ID | Classification | Related requirement | Description | Risk | Proportionality | Recommended disposition | Separate ticket required? | Trigger / timing |
+|---|---|---|---|---|---|---|---|---|
+| GAP-001 | Security gap | SR-003 | Actual source URLs are HTTPS, but source-definition validation does not enforce `http`/`https` for outbound collection URLs. | A reviewed configuration error could select an unintended `urllib` handler. | Small deterministic validation; relevant to the existing boundary. | Review and, if accepted, add scheme validation with source-definition tests. | Yes, after Draft approval | Before adding or changing a collection endpoint. |
+| GAP-002 | Policy decision | SR-028 | Actions use major-version tags, not full commit SHAs. | Mutable tags provide weaker immutable provenance for secret-bearing/write workflows. | SHA pinning increases update and review burden; benefit is strongest for production. | Fable 5 recommends full-SHA pinning for both workflows; user decision is pending. | Yes if accepted | Draft review or an Action supply-chain advisory. |
+| GAP-003 | Policy decision | SR-029 | `.github/dependabot.yml` is absent, including GitHub Actions update automation. | Action updates may be noticed late; automation can also add unnecessary PR volume. | Only two official Actions are used and the runtime has no third-party package manifest. | Fable 5 recommends weekly GitHub Actions updates and one combined ticket with SHA pinning; user decision is pending. | Yes if accepted | Draft review, first runtime dependency, or Action expansion. |
+| GAP-004 | Hardening candidate | SR-025 | Production generation has no concurrency group. | Scheduled and manual runs could race on generated files and `git push`. | A simple workflow control may be proportionate, but it changes production workflow behavior. | Fable 5 recommends production concurrency with `cancel-in-progress: false` at low priority; user decision is pending. | Yes | Before increasing frequency, or after an overlap/push conflict. |
+| GAP-005 | Policy decision | SR-023 | Production checkout relies on default persisted credentials for its later push. | Credential availability is broader within the job than an explicitly documented push mechanism. | The job does require a push; eliminating persistence is not automatically safer without a replacement. | Fable 5 considers current persistence acceptable and recommends documentation only; user decision is pending. | Only if a workflow change is accepted | Checkout upgrade or publication redesign. |
+| GAP-006 | Policy decision | SR-020 | No minimum secret rotation and revocation procedure is documented. | Response may be delayed or incomplete after suspected leakage. | A short owner/runbook section is proportionate; no new security product is implied. | Fable 5 recommends one compact operations document shared with incident response; user decision is pending. | Yes or an approved operations document | Before another secret is added; urgent on suspected leakage. |
+| GAP-007 | Future trigger | SR-029 | Approval is required for new dependencies, but no concrete ownership/provenance/update review checklist exists. | A future dependency could be adopted without consistent supply-chain review. | No runtime third-party dependency exists today, so a compact just-in-time checklist is enough. | Define the checklist before accepting the first new dependency. | Not necessarily before that trigger | First new Python dependency or third-party Action. |
+| GAP-008 | Policy decision | SR-015, SR-032 | Repository-external evaluation artifacts have no common retention, access, or disposal rule. | Raw model output, request data, screenshots, or local metadata may persist longer or be shared more broadly than intended. | Artifacts are occasional; per-evaluation classification plus a small default is preferable to a large archive system. | Decide whether to define a default retention period and exceptions. | Yes if a common policy is accepted | Before the next live evaluation bundle. |
+| GAP-009 | Security gap | SR-017, SR-030, SR-031 | The Draft 0.2 audit found inconsistent exception handling: translation, standalone NVD, ARTICLE and legacy BRIEF Gemini, active NVD/KEV, cache, daily/archive, and uncaught loader/write paths can bypass `_safe_fetch_error_text()`. The source-definition loader raises rather than directly printing its path-bearing error. | Raw exception text or uncaught tracebacks can expose local paths, request URLs, public article text in a translation query, or validation context in Actions stderr. | Public source text limits confidentiality impact, but repository and provider paths remain log-hygiene concerns; no raw response-body logger was found. | Review a common bounded exception formatter and uncaught-error boundary in a separate accepted ticket; this Draft changes no sanitizer. | Yes if accepted | Before debug logging, another provider, or a confirmed sensitive diagnostic leak. |
+| GAP-010 | Owner verification | SR-019, SR-024, SR-026, SR-033, SR-037 | Secret configuration, dispatch rights, branch protection, repository visibility controls, Pages source/deployment settings, log retention, and notification routing are not verifiable from repository files. | Repository-only documentation can otherwise overstate control coverage. | Owner confirmation is sufficient; no setting change is implied. | Fable 5 recommends completing a read-only owner checklist before Version 1.0; user decision is pending. | Possibly documentation-only | Before Version 1.0 approval and after relevant GitHub setting changes. |
+| GAP-011 | Future trigger | SR-012, SR-037 | No approved custom-domain security preflight exists for Pages verified-domain/domain verification, dangling DNS or takeover prevention, safe Pages/DNS cutover and teardown order, registrar MFA, auto-renew, expiration protection, registrar/transfer lock, repository rename impact, rollback, and ownership. | A future custom-domain rollout or withdrawal could leave an unsafe binding or dangling CNAME. | This is not a current-site security gap because the custom domain is not implemented. | Prepare and approve the checklist within BL-007 before activation; include safe teardown and ownership. | Coordinate with BL-007 | Before any `monomidigest.com` DNS or Pages change. |
+| GAP-012 | Policy decision | SR-001, SR-030 | The production summary translation path uses an unofficial endpoint and sends bounded public article text in a URL query. `docs/translate_cache.json` persists provider output in the repository and Pages across days; no cache TTL or provider-response integrity validation was found. | Provider behavior can change, request URLs can appear in intermediary logs, and inaccurate or malicious cached translations can be reused across days. | The text and cache are public, so confidentiality impact is low; continued provider use, cache invalidation, or replacement is a user decision. | Confirm continued acceptance or define cache invalidation/replacement only through a separate ticket; do not add a dependency in this Draft. | Yes if change is desired | Provider failure or policy change, incorrect cached output, private input, or new translation requirement. |
+| GAP-013 | Policy decision | SR-020, SR-033 | No compact security-incident / credential-leakage response procedure is maintained. | Detection, containment, evidence preservation, and communication may be improvised. | A minimal procedure is proportionate; a 24/7 incident platform is not. | Fable 5 recommends one compact operations document shared with secret rotation; user decision is pending. | Yes if accepted | Before Version 1.0 or immediately after an incident. |
+| GAP-014 | Security gap | SR-043 | Published generated content has no defined correction, withdrawal, regeneration, or repository-history procedure. | A major factual error, unsupported claim, subject/scope shift, or prompt-injection-derived output can harm content integrity and reader trust. | A minimum discovery-time procedure is proportionate; 24/7 monitoring is not required. | Decide the affected HTML/daily JSON/history treatment, reason/scope record, and SD-014 alignment in Version 1.0 or a later operations document. | User decision pending for a separate implementation ticket | Before Version 1.0 if accepted, or immediately after a confirmed issue. |
+| GAP-015 | Hardening candidate | SR-034 | RSS/Atom, translation, ARTICLE and legacy BRIEF Gemini, standalone and active NVD, and KEV responses are read in full before parsing; no common network response byte cap was found. | An oversized or malformed provider response can increase memory use and delay or fail generation before later item/character limits apply. | Confidentiality impact is low and no incident was found; a proportionate per-endpoint cap or common bounded reader is a separate hardening choice. | Evaluate endpoint-specific limits or a common bounded reader without confusing downstream item, token, input-character, or excerpt limits with network bytes. | Yes if accepted | New source/provider, oversized response, or observed memory/time failure. |
 
 ## 9. Explicitly non-required controls for the current architecture
 
@@ -308,11 +363,11 @@ the current static, public-information architecture:
 | Payment security / PCI controls | Not applicable now: there is no payment flow or cardholder data. |
 | Dedicated DDoS service | Not required now beyond the hosting platform's normal service: there is no separately operated origin. Re-evaluate if availability becomes contractual or an origin is introduced. |
 | 24/7 SOC monitoring | Not proportionate to the present public static digest. Existing Actions/Pages results and operator review are the baseline. |
-| Dynamic application scanning | Not applicable to a static generator with no dynamic endpoint. Continue unit tests and review; re-evaluate if an application/API appears. |
+| Dynamic application scanning (DAST) | Not applicable to a static generator with no dynamic endpoint. Continue unit tests and review; re-evaluate if an application/API appears. |
 | Container and Kubernetes security | Not applicable now: no container image, cluster, or Kubernetes manifest is part of the architecture. |
-| Dedicated SAST/DAST product | Not automatically required for this standard-library project. Re-evaluate with dependency growth, an interactive service, or a confirmed need; current PR CI and review remain required. |
+| Dedicated SAST product | Not automatically required for this standard-library project. Re-evaluate with dependency growth, an interactive service, or a confirmed need; current PR CI and review remain required. |
 | Mandatory CSP in this Draft | Not approved as a new control here. Re-evaluate before third-party scripts, analytics, forms, or a custom domain materially changes browser-side risk. |
-| Paid secret-scanning features | Not required by Draft 0.1. Repository-owner settings and available platform controls must be reviewed without assuming a paid feature. |
+| Paid secret-scanning features | Not required by Draft 0.2. Repository-owner settings and available platform controls must be reviewed without assuming a paid feature. |
 
 ## 10. Re-evaluation triggers
 
@@ -349,8 +404,11 @@ Fable 5 and the user should decide:
    and which owner-only details should remain outside it?
 4. Should repository-external artifacts have a default retention period, and which evaluated
    evidence warrants a longer exception?
-5. Which checks must be complete before custom-domain activation: registrar ownership and MFA,
-   DNS records, Pages HTTPS enforcement, canonical URLs, redirects, and rollback?
+5. Which checks must be complete before custom-domain activation: ownership; GitHub Pages
+   verified-domain/domain verification; dangling DNS and takeover prevention; safe ordering for
+   Pages custom-domain configuration and DNS cutover; safe teardown without a dangling CNAME;
+   registrar MFA, auto-renew, expiration protection, and registrar/transfer lock; repository
+   rename impact; HTTPS enforcement, canonical URLs, redirects, rollback, and responsible owner?
 6. Should the minimal security-incident and credential-leakage response be a standalone document
    or a short operations section?
 7. Are any requirements disproportionate to a public static digest?
@@ -361,15 +419,30 @@ Fable 5 and the user should decide:
 10. Should outbound source URL scheme validation and production concurrency be the first
     candidate implementation tickets after approval?
 
+### Fable 5 recommendations — user decision pending
+
+These recommendations are review input, not accepted requirements or implementation approval:
+
+- pin both workflows' Actions to full commit SHAs;
+- configure weekly Dependabot updates for GitHub Actions and, if accepted, handle that work with
+  SHA pinning in one ticket;
+- add production concurrency with `cancel-in-progress: false` at low priority;
+- leave production checkout credential persistence as-is and document the rationale;
+- use one compact operations document for secret rotation and incident response;
+- complete the GAP-010 repository-owner checklist before Version 1.0.
+
 ## 12. Approval and maintenance
 
-- Draft 0.1 is unapproved.
-- Fable 5 review is pending.
+- Draft 0.2 is unapproved.
+- Fable 5 review has been incorporated: Critical 0, High 0; accepted and modified findings are
+  reflected, and the rejected F-004 consolidation was not applied. Fable 5 did not inspect `STATUS.md` or
+  `test_security_requirements.py`; those files were independently checked at the PR head.
 - User approval is pending.
 - After review corrections and explicit user approval, the document may become Version 1.0.
-- Only approved gaps become separate implementation tickets.
+- Only approved register entries, including accepted gaps or policy decisions, become separate
+  implementation tickets.
 - This document does not impose a mechanical annual-update cycle. Update it when a
   re-evaluation trigger occurs, an incident reveals a missing boundary, or the user approves a
   material security-policy change.
-- A stable decision record, if needed, is deferred until Version 1.0 approval. Draft 0.1 does
+- A stable decision record, if needed, is deferred until Version 1.0 approval. Draft 0.2 does
   not add SD-024 or any later decision.

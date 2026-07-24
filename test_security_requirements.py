@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Static contract tests for BL-015 SECURITY_REQUIREMENTS.md Draft 0.1."""
+"""Static contract tests for BL-015 SECURITY_REQUIREMENTS.md Draft 0.2."""
 
 import re
 import unittest
+from collections import Counter
 from pathlib import Path
 
 
@@ -32,17 +33,34 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
         kept = [ch for ch in lowered if ch.isalnum() or ch in (" ", "-", "_")]
         return "".join(kept).replace(" ", "-")
 
-    def test_document_exists_and_is_unapproved_draft_01(self):
+    @staticmethod
+    def _markdown_rows(section):
+        for line in section.splitlines():
+            if line.startswith("| ") and not line.startswith("|---"):
+                yield [cell.strip() for cell in line.strip().strip("|").split("|")]
+
+    def _section(self, start, end):
+        return self.requirements.split(start, 1)[1].split(end, 1)[0]
+
+    def test_document_exists_and_is_unapproved_draft_02(self):
         self.assertTrue(REQUIREMENTS_PATH.is_file())
         self.assertIn("# Security Digest Security Requirements", self.requirements)
-        self.assertIn("**Version:** Draft 0.1", self.requirements)
+        self.assertIn("**Version:** Draft 0.2", self.requirements)
         self.assertIn(
-            "**Status:** Fable 5 review and user approval pending",
+            "**Status:** Fable 5 review incorporated; user approval pending",
             self.requirements,
         )
-        self.assertIn("Draft 0.1 is unapproved.", self.requirements)
-        self.assertIn("Fable 5 review is pending.", self.requirements)
+        self.assertIn("no Critical or High findings", self.requirements)
+        self.assertIn("accepted and modified findings", self.requirements)
+        self.assertIn("rejected F-004 consolidation was not applied", self.requirements)
+        self.assertIn("Draft 0.2 is unapproved.", self.requirements)
         self.assertIn("User approval is pending.", self.requirements)
+        self.assertIn(
+            "Fable 5 could not retrieve `STATUS.md` or\n"
+            "`test_security_requirements.py`",
+            self.requirements,
+        )
+        self.assertIn("checked independently at the\nPR head", self.requirements)
 
     def test_required_sections_are_present(self):
         for heading in (
@@ -58,45 +76,279 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
             "## 9. Explicitly non-required controls for the current architecture",
             "## 10. Re-evaluation triggers",
             "## 11. Open review questions",
+            "### Fable 5 recommendations — user decision pending",
             "## 12. Approval and maintenance",
         ):
             with self.subTest(heading=heading):
                 self.assertIn(heading, self.requirements)
 
-    def test_sr_ids_are_stable_unique_and_contiguous(self):
+    def test_sr_ids_are_stable_unique_and_contiguous_through_043(self):
         ids = re.findall(r"(?m)^\|\s*(SR-\d{3})\s*\|", self.requirements)
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SR IDs: {ids}")
-        self.assertEqual(ids, [f"SR-{number:03d}" for number in range(1, 43)])
+        self.assertEqual(ids, [f"SR-{number:03d}" for number in range(1, 44)])
+        self.assertLess(self.requirements.index("| SR-030 |"), self.requirements.index("| SR-031 |"))
+        self.assertLess(self.requirements.index("| SR-031 |"), self.requirements.index("| SR-032 |"))
+        self.assertLess(self.requirements.index("| SR-042 |"), self.requirements.index("| SR-043 |"))
 
-    def test_current_gaps_non_required_and_triggers_are_distinct(self):
-        mapping = self.requirements.split("## 7. Current control mapping", 1)[1].split(
-            "## 8. Gap register", 1
-        )[0]
-        gaps = self.requirements.split("## 8. Gap register", 1)[1].split(
-            "## 9. Explicitly non-required controls for the current architecture", 1
-        )[0]
-        non_required = self.requirements.split(
-            "## 9. Explicitly non-required controls for the current architecture", 1
-        )[1].split("## 10. Re-evaluation triggers", 1)[0]
-        triggers = self.requirements.split("## 10. Re-evaluation triggers", 1)[1].split(
-            "## 11. Open review questions", 1
-        )[0]
+    def test_published_output_correction_requirement_and_gap_are_recorded(self):
+        self.assertRegex(
+            self.requirements,
+            r"\| SR-043 \|.*correction, withdrawal, regeneration, and record procedure",
+        )
+        self.assertRegex(
+            self.requirements,
+            r"\| SR-043 \|.*\| Not met \|",
+        )
+        self.assertIn("daily JSON or HTML", self.requirements)
+        self.assertIn("subject or scope shift", self.requirements)
+        self.assertIn("prompt-injection-derived output", self.requirements)
+        self.assertIn("align the procedure with SD-014", self.requirements)
+        self.assertRegex(
+            self.requirements,
+            r"\| GAP-014 \| Security gap \| SR-043 \|",
+        )
+        self.assertIn("24/7 monitoring is not required", self.requirements)
 
-        for status in (
-            "Met",
-            "Partially met",
-            "Not applicable now",
-            "Unverified outside repository",
+    def test_semantic_risk_is_evidenced_without_impossibility_generalization(self):
+        self.assertIn("BL-005 and BL-023", self.requirements)
+        self.assertIn("unsupported assertions", self.requirements)
+        self.assertIn("subject or scope regressions", self.requirements)
+        self.assertIn("article-analysis-v9 and article-analysis-v10", self.requirements)
+        self.assertIn("production remains article-analysis-v8", self.requirements)
+        self.assertIn(
+            "not\nevidence that improvement in general is impossible",
+            self.requirements,
+        )
+        self.assertNotIn("prompt improvement is impossible", self.requirements)
+        self.assertIn("or that production v8 always fails", self.requirements)
+
+    def test_gap_ids_and_classifications_are_complete_and_limited(self):
+        gaps = self._section(
+            "## 8. Gap register",
+            "## 9. Explicitly non-required controls for the current architecture",
+        )
+        rows = {
+            row[0]: row
+            for row in self._markdown_rows(gaps)
+            if re.fullmatch(r"GAP-\d{3}", row[0])
+        }
+        expected_ids = [f"GAP-{number:03d}" for number in range(1, 16)]
+        self.assertEqual(list(rows), expected_ids)
+        self.assertEqual(len(rows), len(set(rows)))
+
+        allowed = {
+            "Security gap",
+            "Hardening candidate",
+            "Policy decision",
+            "Owner verification",
+            "Future trigger",
+        }
+        self.assertEqual({row[1] for row in rows.values()}, allowed)
+        expected = {
+            "GAP-001": "Security gap",
+            "GAP-002": "Policy decision",
+            "GAP-003": "Policy decision",
+            "GAP-004": "Hardening candidate",
+            "GAP-005": "Policy decision",
+            "GAP-006": "Policy decision",
+            "GAP-007": "Future trigger",
+            "GAP-008": "Policy decision",
+            "GAP-009": "Security gap",
+            "GAP-010": "Owner verification",
+            "GAP-011": "Future trigger",
+            "GAP-012": "Policy decision",
+            "GAP-013": "Policy decision",
+            "GAP-014": "Security gap",
+            "GAP-015": "Hardening candidate",
+        }
+        self.assertEqual({gap_id: row[1] for gap_id, row in rows.items()}, expected)
+        self.assertIn("not a claim that every item is a confirmed security defect", gaps)
+
+    def test_current_control_mapping_breakdowns_match_individual_sr_states(self):
+        requirement_states = {}
+        for row in self._markdown_rows(
+            self._section("## 6. Security requirements", "## 7. Current control mapping")
         ):
-            self.assertIn(status, mapping)
-        self.assertRegex(gaps, r"(?m)^\|\s*GAP-001\s*\|")
-        self.assertIn("No gap below is implemented or automatically accepted", gaps)
-        self.assertIn("WAF", non_required)
-        self.assertIn("24/7 SOC monitoring", non_required)
-        self.assertIn("introducing `monomidigest.com`", triggers)
-        self.assertIn("adding forms, authentication, sessions", triggers)
+            if re.fullmatch(r"SR-\d{3}", row[0]):
+                requirement_states[int(row[0][3:])] = row[3]
 
-    def test_supply_chain_options_are_not_preapproved(self):
+        area_ids = {
+            "Input and content handling": range(1, 6),
+            "Prompt and AI boundary": range(6, 12),
+            "Storage and publication": range(12, 17),
+            "Secrets": range(17, 21),
+            "GitHub Actions": range(21, 27),
+            "Dependencies and supply chain": range(27, 30),
+            "Logging and artifacts": range(30, 34),
+            "Availability and recovery": range(34, 38),
+            "Change and review control": range(38, 44),
+        }
+        mapping = self._section("## 7. Current control mapping", "## 8. Gap register")
+        mapping_rows = {row[0]: row for row in self._markdown_rows(mapping)}
+        labels = {
+            "Met": "Met",
+            "Partially met": "Partial",
+            "Not met": "Not met",
+            "Unverified outside repository": "Unverified",
+        }
+
+        mapped_ids = []
+        for area, ids in area_ids.items():
+            with self.subTest(area=area):
+                ids = list(ids)
+                mapped_ids.extend(ids)
+                counts = Counter(labels[requirement_states[number]] for number in ids)
+                expected_breakdown = (
+                    f"Met {counts['Met']} / Partial {counts['Partial']} / "
+                    f"Not met {counts['Not met']} / Unverified {counts['Unverified']}"
+                )
+                row = mapping_rows[area]
+                self.assertEqual(row[5], expected_breakdown)
+                expected_aggregate = "Met" if counts == Counter({"Met": len(ids)}) else "Partially met"
+                self.assertEqual(row[4], expected_aggregate)
+
+        self.assertEqual(sorted(mapped_ids), list(range(1, 44)))
+        self.assertEqual(
+            mapping_rows["Secrets"][5],
+            "Met 1 / Partial 1 / Not met 1 / Unverified 1",
+        )
+        self.assertEqual(
+            mapping_rows["Availability and recovery"][5],
+            "Met 2 / Partial 2 / Not met 0 / Unverified 0",
+        )
+        self.assertEqual(
+            mapping_rows["Change and review control"][5],
+            "Met 4 / Partial 1 / Not met 1 / Unverified 0",
+        )
+        self.assertEqual(
+            mapping_rows["GitHub/Pages/DNS settings outside the repository"][4],
+            "Unverified outside repository",
+        )
+
+    def test_met_definition_is_repository_limited(self):
+        self.assertIn(
+            "`Met` means that the contract,\nimplementation, or test is satisfied only "
+            "to the extent confirmed by repository evidence",
+            self.requirements,
+        )
+        self.assertIn("does not attest to GitHub, Pages, DNS", self.requirements)
+        self.assertIn("not\nperfect compliance in every future execution", self.requirements)
+
+    def test_exception_output_inventory_is_comprehensive_and_precise(self):
+        for marker in (
+            "`fetch.py`",
+            "`daily_json.py`",
+            "`vulnerability_facts.py`",
+            "`_safe_fetch_error_text()`",
+            "`translate()`",
+            "`fetch_nist_nvd()`",
+            "`gemini_analyze()`",
+            "`gemini_todays_brief()`",
+            "`load_source_definitions()`",
+            "Active NVD facts and KEV structured-source retrieval",
+            "Workflow shell",
+            "does not directly print",
+            "uncaught failure can reach workflow stderr",
+        ):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, self.requirements)
+        self.assertIn("| GAP-009 | Security gap |", self.requirements)
+        self.assertIn("No explicit traceback-printing helper", self.requirements)
+
+    def test_external_response_size_audit_and_gap_are_recorded(self):
+        for response in (
+            "RSS / Atom",
+            "Translation",
+            "ARTICLE Gemini",
+            "Legacy BRIEF Gemini",
+            "Standalone NIST NVD",
+            "Active NVD facts",
+            "CISA KEV structured source",
+        ):
+            with self.subTest(response=response):
+                self.assertIn(f"| {response} |", self.requirements)
+        self.assertRegex(
+            self.requirements,
+            r"\| SR-034 \|.*resource-consumption limits.*\| Partially met \|",
+        )
+        self.assertRegex(
+            self.requirements,
+            r"\| GAP-015 \| Hardening candidate \| SR-034 \|",
+        )
+        self.assertIn("no consistent byte cap at the network `read()` boundary", self.requirements)
+        self.assertIn("no incident was found", self.requirements)
+
+    def test_custom_domain_preflight_is_future_only_and_complete(self):
+        for marker in (
+            "verified-domain/domain verification",
+            "dangling DNS",
+            "takeover prevention",
+            "safe Pages/DNS cutover and teardown order",
+            "registrar MFA",
+            "auto-renew",
+            "expiration protection",
+            "registrar/transfer lock",
+            "repository rename impact",
+            "rollback",
+            "ownership",
+        ):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, self.requirements)
+        self.assertRegex(
+            self.requirements,
+            r"\| GAP-011 \| Future trigger \|",
+        )
+        self.assertIn(
+            "not a current-site security gap because the custom domain is not implemented",
+            self.requirements,
+        )
+
+    def test_dast_is_not_duplicated(self):
+        non_required = self._section(
+            "## 9. Explicitly non-required controls for the current architecture",
+            "## 10. Re-evaluation triggers",
+        )
+        self.assertEqual(non_required.count("DAST"), 1)
+        self.assertIn("Dynamic application scanning (DAST)", non_required)
+        self.assertIn("Dedicated SAST product", non_required)
+        self.assertNotIn("SAST/DAST", non_required)
+
+    def test_translation_cache_persistence_risk_is_recorded(self):
+        gap_012 = next(
+            row
+            for row in self._markdown_rows(
+                self._section(
+                    "## 8. Gap register",
+                    "## 9. Explicitly non-required controls for the current architecture",
+                )
+            )
+            if row[0] == "GAP-012"
+        )
+        text = " ".join(gap_012)
+        self.assertIn("`docs/translate_cache.json`", text)
+        self.assertIn("repository and Pages across days", text)
+        self.assertIn("no cache TTL", text)
+        self.assertIn("provider-response integrity validation", text)
+        self.assertIn("confidentiality impact is low", text)
+        self.assertIn("user decision", text)
+
+    def test_fable_recommendations_are_pending_not_accepted_decisions(self):
+        review = self._section(
+            "### Fable 5 recommendations — user decision pending",
+            "## 12. Approval and maintenance",
+        )
+        self.assertIn("not accepted requirements or implementation approval", review)
+        for marker in (
+            "full commit SHAs",
+            "weekly Dependabot",
+            "`cancel-in-progress: false`",
+            "credential persistence as-is",
+            "compact operations document",
+            "GAP-010 repository-owner checklist before Version 1.0",
+        ):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, review)
+        self.assertNotIn("Accepted Decision", review)
         self.assertIn(
             "Full commit SHA pinning is an evaluation item, not an approved mandatory control",
             self.requirements,
@@ -105,20 +357,51 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
             "GitHub Actions Dependabot is an evaluation item, not an approved mandatory control",
             self.requirements,
         )
-        self.assertIn(
-            "Full SHA pinning is not used and has not been approved or rejected",
-            self.requirements,
+
+    def test_workflows_and_dependabot_remain_unmodified_in_design(self):
+        production = (ROOT / ".github/workflows/fetch.yml").read_text(encoding="utf-8")
+        pull_request = (ROOT / ".github/workflows/pr-ci.yml").read_text(encoding="utf-8")
+        self.assertIn("uses: actions/checkout@v4", production)
+        self.assertIn("uses: actions/setup-python@v5", production)
+        self.assertNotIn("concurrency:", production)
+        self.assertNotRegex(
+            production + pull_request,
+            r"uses:\s*[^@\s]+@[0-9a-f]{40}(?:\s|$)",
         )
-        self.assertIn(
-            "Decide together with the pinning/update policy; do not add automatically",
-            self.requirements,
+        self.assertFalse((ROOT / ".github/dependabot.yml").exists())
+        self.assertIn("This review incorporation is not user approval", self.requirements)
+        self.assertIn("does not implement any control", self.requirements)
+
+    def test_current_gaps_non_required_and_triggers_are_distinct(self):
+        mapping = self._section("## 7. Current control mapping", "## 8. Gap register")
+        gaps = self._section(
+            "## 8. Gap register",
+            "## 9. Explicitly non-required controls for the current architecture",
+        )
+        non_required = self._section(
+            "## 9. Explicitly non-required controls for the current architecture",
+            "## 10. Re-evaluation triggers",
+        )
+        triggers = self._section(
+            "## 10. Re-evaluation triggers",
+            "## 11. Open review questions",
         )
 
+        for status in (
+            "Met",
+            "Partially met",
+            "Not applicable now",
+            "Unverified outside repository",
+        ):
+            self.assertIn(status, mapping)
+        self.assertIn("No entry is implemented or\nautomatically accepted", gaps)
+        self.assertIn("WAF", non_required)
+        self.assertIn("24/7 SOC monitoring", non_required)
+        self.assertIn("introducing `monomidigest.com`", triggers)
+        self.assertIn("adding forms, authentication, sessions", triggers)
+
     def test_future_components_are_not_misstated_as_current(self):
-        self.assertIn(
-            "the future `monomidigest.com` custom domain",
-            self.requirements,
-        )
+        self.assertIn("the future `monomidigest.com` custom domain", self.requirements)
         self.assertRegex(
             self.requirements,
             r"which is not implemented in this\s+repository",
@@ -146,11 +429,20 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
     def test_bl015_is_active_pending_and_not_complete(self):
         bl015 = self.backlog.split("## BL-015", 1)[1].split("## BL-016", 1)[0]
         self.assertIn(
-            "**状態:** 進行中 / Draft 0.1 / Fable 5・ユーザー確認待ち",
+            "**状態:** 進行中 / Draft 0.2 / Fable 5レビュー反映済み / "
+            "ユーザー確認待ち",
             bl015,
         )
         self.assertIn("[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Draft 0.1", bl015)
+        self.assertIn("Draft 0.2", bl015)
+        self.assertIn("Critical 0、High 0", bl015)
+        self.assertIn("F-001〜F-003およびF-005〜F-009", bl015)
+        self.assertIn("F-004", bl015)
+        self.assertIn("SR-043", bl015)
+        self.assertIn("GAP-014", bl015)
+        self.assertIn("GAP-015", bl015)
         self.assertIn("security-control実装", bl015)
+        self.assertIn("GAP-010 owner checklist", bl015)
         self.assertIn("**ユーザー受入証跡:** 未受入。", bl015)
         self.assertNotIn("**状態:** 完了", bl015)
 
@@ -161,7 +453,10 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
             "## 6. Known issues and limitations", 1
         )[0]
         self.assertIn("BL-015", active)
-        self.assertIn("Fable 5 review and user approval are pending", active)
+        self.assertIn("Version Draft 0.2", active)
+        self.assertIn("Critical 0, High 0", active)
+        self.assertIn("final user approval remains pending", active)
+        self.assertIn("owner checklist before Version 1.0", active)
         self.assertNotIn("BL-015", recently_completed)
 
     def test_no_unapproved_decision_was_added(self):
