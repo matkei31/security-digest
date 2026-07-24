@@ -417,17 +417,27 @@ class SecurityRequirementsTest(unittest.TestCase):
                 self.assertIn(marker, review)
         self.assertIn("approve follow-up scope, not implementation", review)
 
-    def test_workflows_and_dependabot_remain_unmodified_in_design(self):
+    def test_workflows_and_dependabot_reflect_bl026_implementation(self):
+        # BL-026 implements the GAP-002/003/004 roadmap this section approved.
+        # SECURITY_REQUIREMENTS.md itself is not updated until user acceptance,
+        # so its SR-028/SR-029/GAP rows remain "Partially met" /
+        # "Approved for implementation ticket" in text even though the
+        # workflows below are now pinned and hardened. See BL-026.
         production = (ROOT / ".github/workflows/fetch.yml").read_text(encoding="utf-8")
         pull_request = (ROOT / ".github/workflows/pr-ci.yml").read_text(encoding="utf-8")
-        self.assertIn("uses: actions/checkout@v4", production)
-        self.assertIn("uses: actions/setup-python@v5", production)
-        self.assertNotIn("concurrency:", production)
-        self.assertNotRegex(
+        self.assertRegex(
             production + pull_request,
-            r"uses:\s*[^@\s]+@[0-9a-f]{40}(?:\s|$)",
+            r"uses:\s*actions/checkout@[0-9a-f]{40} # v4\.3\.1",
         )
-        self.assertFalse((ROOT / ".github/dependabot.yml").exists())
+        self.assertRegex(
+            production + pull_request,
+            r"uses:\s*actions/setup-python@[0-9a-f]{40} # v5\.6\.0",
+        )
+        self.assertNotIn("actions/checkout@v4", production + pull_request)
+        self.assertNotIn("actions/setup-python@v5", production + pull_request)
+        self.assertIn("concurrency:", production)
+        self.assertIn("cancel-in-progress: false", production)
+        self.assertTrue((ROOT / ".github/dependabot.yml").exists())
         self.assertIn(
             "Runtime security-control implementation beyond the accepted BL-025",
             self.requirements,
@@ -577,7 +587,11 @@ class SecurityRequirementsTest(unittest.TestCase):
             "## 5. Recently completed work", 1
         )[0]
         self.assertNotIn("BL-025", active)
-        self.assertIn("None", active)
+        self.assertIn("BL-026", active)
+        self.assertIn("Draft PR", active)
+        self.assertIn("User implementation acceptance is pending", active)
+        self.assertIn("no production run or `workflow_dispatch` occurred", active)
+        self.assertNotIn("- None.", active)
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
@@ -591,7 +605,9 @@ class SecurityRequirementsTest(unittest.TestCase):
         next_candidates = self.status.split("## 7. Next candidates", 1)[1].split(
             "## 8. Sources of truth", 1
         )[0]
-        self.assertIn("1. [BL-026]", next_candidates)
+        self.assertNotIn("1. [BL-026]", next_candidates)
+        self.assertIn("[BL-026]", next_candidates)
+        self.assertIn("moved from next candidate to active work", next_candidates)
         self.assertNotIn("[BL-025]", next_candidates)
         self.assertRegex(
             self.requirements,
@@ -602,16 +618,18 @@ class SecurityRequirementsTest(unittest.TestCase):
             r"\| GAP-001 \| Security gap \| Implemented \| SR-003 \|",
         )
         self.assertNotIn("## SD-026", self.decisions)
-        for backlog_id, title, priority in (
-            ("BL-026", "GitHub Actions supply chainとproduction concurrencyを強化する", "P2"),
-        ):
-            with self.subTest(backlog_id=backlog_id):
-                section = self.backlog.split(f"## {backlog_id}", 1)[1].split(
-                    "\n## ", 1
-                )[0]
-                self.assertIn(title, section)
-                self.assertIn(f"**優先度:** {priority}", section)
-                self.assertIn("未実装", section)
+        bl026 = self.backlog.split("## BL-026", 1)[1].split("\n## ", 1)[0]
+        self.assertIn(
+            "GitHub Actions supply chainとproduction concurrencyを強化する", bl026
+        )
+        self.assertIn("**優先度:** P2", bl026)
+        self.assertIn("**状態:** 進行中 / 実装済みDraft PR / ユーザー受入待ち", bl026)
+        self.assertIn("34e114876b0b11c390a56381ad16ebd13914f8d5", bl026)
+        self.assertIn("a26af69be951a213d495a4c3e4e4022e16d87065", bl026)
+        self.assertIn("cancel-in-progress: false", bl026)
+        self.assertIn("dependabot.yml", bl026)
+        self.assertIn("production workflowとworkflow_dispatchは未実行", bl026)
+        self.assertNotIn("**状態:** 完了", bl026)
         self.assertIn("GAP-009", self.requirements)
         self.assertIn("Remains open for later prioritization", self.requirements)
         self.assertIn("GAP-015", self.requirements)

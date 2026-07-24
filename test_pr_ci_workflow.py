@@ -28,11 +28,19 @@ class PullRequestCIWorkflowTest(unittest.TestCase):
         self.assertNotIn("contents: write", self.workflow)
 
     def test_checkout_and_python_are_pinned_safely(self):
-        self.assertIn("uses: actions/checkout@v4", self.workflow)
+        self.assertIn(
+            "uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1",
+            self.workflow,
+        )
         self.assertRegex(self.workflow, r"(?m)^\s+fetch-depth: 0$")
         self.assertRegex(self.workflow, r"(?m)^\s+persist-credentials: false$")
-        self.assertIn("uses: actions/setup-python@v5", self.workflow)
+        self.assertIn(
+            "uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0",
+            self.workflow,
+        )
         self.assertRegex(self.workflow, r'(?m)^\s+python-version: "3\.12"$')
+        self.assertNotIn("actions/checkout@v4", self.workflow)
+        self.assertNotIn("actions/setup-python@v5", self.workflow)
 
     def test_limits_runtime_and_cancels_superseded_runs(self):
         self.assertRegex(self.workflow, r"(?m)^\s+timeout-minutes: 15$")
