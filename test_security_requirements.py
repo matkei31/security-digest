@@ -1,0 +1,618 @@
+#!/usr/bin/env python3
+"""Static contract tests for BL-015 SECURITY_REQUIREMENTS.md Version 1.0."""
+
+import re
+import unittest
+from collections import Counter
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parent
+REQUIREMENTS_PATH = ROOT / "SECURITY_REQUIREMENTS.md"
+
+
+class SecurityRequirementsTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.requirements = REQUIREMENTS_PATH.read_text(encoding="utf-8")
+        cls.backlog = (ROOT / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (ROOT / "STATUS.md").read_text(encoding="utf-8")
+        cls.decisions = (ROOT / "DECISIONS.md").read_text(encoding="utf-8")
+        cls.agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
+
+    @staticmethod
+    def _headings(text):
+        return [
+            match.group(2).strip()
+            for line in text.splitlines()
+            if (match := re.match(r"^(#{1,6})\s+(.*)$", line))
+        ]
+
+    @staticmethod
+    def _slugify(heading_text):
+        lowered = heading_text.strip().lower()
+        kept = [ch for ch in lowered if ch.isalnum() or ch in (" ", "-", "_")]
+        return "".join(kept).replace(" ", "-")
+
+    @staticmethod
+    def _markdown_rows(section):
+        for line in section.splitlines():
+            if line.startswith("| ") and not line.startswith("|---"):
+                yield [cell.strip() for cell in line.strip().strip("|").split("|")]
+
+    def _section(self, start, end):
+        return self.requirements.split(start, 1)[1].split(end, 1)[0]
+
+    def test_document_is_approved_version_10_with_review_and_user_context(self):
+        self.assertTrue(REQUIREMENTS_PATH.is_file())
+        self.assertIn("# Security Digest Security Requirements", self.requirements)
+        self.assertIn("**Version:** 1.0", self.requirements)
+        self.assertIn("**Status:** Approved", self.requirements)
+        self.assertIn("no Critical or High findings", self.requirements)
+        self.assertIn("accepted and modified findings", self.requirements)
+        self.assertIn("rejected F-004 consolidation was not applied", self.requirements)
+        self.assertIn("Version 1.0 is approved.", self.requirements)
+        self.assertIn("answered 「ok」 to the complete decision brief", self.requirements)
+        self.assertIn("not blanket preapproval", self.requirements)
+        self.assertIn(
+            "Fable 5 could not retrieve `STATUS.md` or\n"
+            "`test_security_requirements.py`",
+            self.requirements,
+        )
+        self.assertIn("checked independently at the\nPR head", self.requirements)
+
+    def test_required_sections_are_present(self):
+        for heading in (
+            "## 1. Purpose and proportionality",
+            "## 2. System scope and components",
+            "## 3. Data flow",
+            "## 4. Assets and data classification",
+            "## 5. Trust boundaries",
+            "## 6. Security requirements",
+            "### 6.9 Change and review control",
+            "## 7. Current control mapping",
+            "## 8. Gap register",
+            "## 9. Explicitly non-required controls for the current architecture",
+            "## 10. Re-evaluation triggers",
+            "## 11. Approved roadmap decisions",
+            "## 12. Approval and maintenance",
+            "## 13. Repository-owner verification",
+        ):
+            with self.subTest(heading=heading):
+                self.assertIn(heading, self.requirements)
+
+    def test_sr_ids_are_stable_unique_and_contiguous_through_043(self):
+        ids = re.findall(r"(?m)^\|\s*(SR-\d{3})\s*\|", self.requirements)
+        self.assertEqual(len(ids), len(set(ids)), f"Duplicate SR IDs: {ids}")
+        self.assertEqual(ids, [f"SR-{number:03d}" for number in range(1, 44)])
+        self.assertLess(self.requirements.index("| SR-030 |"), self.requirements.index("| SR-031 |"))
+        self.assertLess(self.requirements.index("| SR-031 |"), self.requirements.index("| SR-032 |"))
+        self.assertLess(self.requirements.index("| SR-042 |"), self.requirements.index("| SR-043 |"))
+
+    def test_published_output_correction_requirement_and_gap_are_recorded(self):
+        self.assertRegex(
+            self.requirements,
+            r"\| SR-043 \|.*correction, withdrawal, regeneration, and record procedure",
+        )
+        self.assertRegex(
+            self.requirements,
+            r"\| SR-043 \|.*\| Not met \|",
+        )
+        self.assertIn("daily JSON or HTML", self.requirements)
+        self.assertIn("subject or scope shift", self.requirements)
+        self.assertIn("prompt-injection-derived output", self.requirements)
+        self.assertIn("align the procedure with SD-014", self.requirements)
+        self.assertRegex(
+            self.requirements,
+            r"\| GAP-014 \| Security gap \| Approved for documentation ticket \| SR-043 \|",
+        )
+        self.assertIn("24/7 monitoring is not required", self.requirements)
+
+    def test_semantic_risk_is_evidenced_without_impossibility_generalization(self):
+        self.assertIn("BL-005 and BL-023", self.requirements)
+        self.assertIn("unsupported assertions", self.requirements)
+        self.assertIn("subject or scope regressions", self.requirements)
+        self.assertIn("article-analysis-v9 and article-analysis-v10", self.requirements)
+        self.assertIn("production remains article-analysis-v8", self.requirements)
+        self.assertIn(
+            "not\nevidence that improvement in general is impossible",
+            self.requirements,
+        )
+        self.assertNotIn("prompt improvement is impossible", self.requirements)
+        self.assertIn("or that production v8 always fails", self.requirements)
+
+    def test_gap_ids_and_classifications_are_complete_and_limited(self):
+        gaps = self._section(
+            "## 8. Gap register",
+            "## 9. Explicitly non-required controls for the current architecture",
+        )
+        rows = {
+            row[0]: row
+            for row in self._markdown_rows(gaps)
+            if re.fullmatch(r"GAP-\d{3}", row[0])
+        }
+        expected_ids = [f"GAP-{number:03d}" for number in range(1, 16)]
+        self.assertEqual(list(rows), expected_ids)
+        self.assertEqual(len(rows), len(set(rows)))
+
+        allowed = {
+            "Security gap",
+            "Hardening candidate",
+            "Policy decision",
+            "Owner verification",
+            "Future trigger",
+        }
+        self.assertEqual({row[1] for row in rows.values()}, allowed)
+        expected = {
+            "GAP-001": "Security gap",
+            "GAP-002": "Policy decision",
+            "GAP-003": "Policy decision",
+            "GAP-004": "Hardening candidate",
+            "GAP-005": "Policy decision",
+            "GAP-006": "Policy decision",
+            "GAP-007": "Future trigger",
+            "GAP-008": "Policy decision",
+            "GAP-009": "Security gap",
+            "GAP-010": "Owner verification",
+            "GAP-011": "Future trigger",
+            "GAP-012": "Policy decision",
+            "GAP-013": "Policy decision",
+            "GAP-014": "Security gap",
+            "GAP-015": "Hardening candidate",
+        }
+        self.assertEqual({gap_id: row[1] for gap_id, row in rows.items()}, expected)
+        allowed_dispositions = {
+            "Approved for implementation ticket",
+            "Approved for documentation ticket",
+            "Accepted current state",
+            "Accepted residual risk",
+            "Deferred until trigger",
+            "Completed owner verification",
+            "Remains open for later prioritization",
+        }
+        self.assertEqual({row[2] for row in rows.values()}, allowed_dispositions)
+        expected_dispositions = {
+            "GAP-001": "Approved for implementation ticket",
+            "GAP-002": "Approved for implementation ticket",
+            "GAP-003": "Approved for implementation ticket",
+            "GAP-004": "Approved for implementation ticket",
+            "GAP-005": "Accepted current state",
+            "GAP-006": "Approved for documentation ticket",
+            "GAP-007": "Deferred until trigger",
+            "GAP-008": "Approved for documentation ticket",
+            "GAP-009": "Remains open for later prioritization",
+            "GAP-010": "Completed owner verification",
+            "GAP-011": "Deferred until trigger",
+            "GAP-012": "Accepted residual risk",
+            "GAP-013": "Approved for documentation ticket",
+            "GAP-014": "Approved for documentation ticket",
+            "GAP-015": "Deferred until trigger",
+        }
+        self.assertEqual(
+            {gap_id: row[2] for gap_id, row in rows.items()},
+            expected_dispositions,
+        )
+        self.assertIn("not a claim that every item is a confirmed security defect", gaps)
+
+    def test_current_control_mapping_breakdowns_match_individual_sr_states(self):
+        requirement_states = {}
+        for row in self._markdown_rows(
+            self._section("## 6. Security requirements", "## 7. Current control mapping")
+        ):
+            if re.fullmatch(r"SR-\d{3}", row[0]):
+                requirement_states[int(row[0][3:])] = row[3]
+
+        area_ids = {
+            "Input and content handling": range(1, 6),
+            "Prompt and AI boundary": range(6, 12),
+            "Storage and publication": range(12, 17),
+            "Secrets": range(17, 21),
+            "GitHub Actions": range(21, 27),
+            "Dependencies and supply chain": range(27, 30),
+            "Logging and artifacts": range(30, 34),
+            "Availability and recovery": range(34, 38),
+            "Change and review control": range(38, 44),
+        }
+        mapping = self._section("## 7. Current control mapping", "## 8. Gap register")
+        mapping_rows = {row[0]: row for row in self._markdown_rows(mapping)}
+        labels = {
+            "Met": "Met",
+            "Partially met": "Partial",
+            "Not met": "Not met",
+            "Unverified outside repository": "Unverified",
+        }
+
+        mapped_ids = []
+        for area, ids in area_ids.items():
+            with self.subTest(area=area):
+                ids = list(ids)
+                mapped_ids.extend(ids)
+                counts = Counter(labels[requirement_states[number]] for number in ids)
+                expected_breakdown = (
+                    f"Met {counts['Met']} / Partial {counts['Partial']} / "
+                    f"Not met {counts['Not met']} / Unverified {counts['Unverified']}"
+                )
+                row = mapping_rows[area]
+                self.assertEqual(row[5], expected_breakdown)
+                expected_aggregate = "Met" if counts == Counter({"Met": len(ids)}) else "Partially met"
+                self.assertEqual(row[4], expected_aggregate)
+
+        self.assertEqual(sorted(mapped_ids), list(range(1, 44)))
+        self.assertEqual(
+            mapping_rows["Secrets"][5],
+            "Met 1 / Partial 2 / Not met 1 / Unverified 0",
+        )
+        self.assertEqual(
+            mapping_rows["GitHub Actions"][5],
+            "Met 4 / Partial 2 / Not met 0 / Unverified 0",
+        )
+        self.assertEqual(
+            mapping_rows["Logging and artifacts"][5],
+            "Met 0 / Partial 4 / Not met 0 / Unverified 0",
+        )
+        self.assertEqual(
+            mapping_rows["Availability and recovery"][5],
+            "Met 2 / Partial 2 / Not met 0 / Unverified 0",
+        )
+        self.assertEqual(
+            mapping_rows["Change and review control"][5],
+            "Met 4 / Partial 1 / Not met 1 / Unverified 0",
+        )
+        self.assertEqual(
+            mapping_rows["GitHub/Pages/DNS settings outside the repository"][4],
+            "Partially met",
+        )
+
+    def test_met_definition_is_repository_limited(self):
+        self.assertIn(
+            "`Met` means that the contract,\nimplementation, or test is satisfied only "
+            "to the extent confirmed by repository evidence",
+            self.requirements,
+        )
+        self.assertIn("does not attest to GitHub, Pages, DNS", self.requirements)
+        self.assertIn("not\nperfect compliance in every future execution", self.requirements)
+
+    def test_exception_output_inventory_is_comprehensive_and_precise(self):
+        for marker in (
+            "`fetch.py`",
+            "`daily_json.py`",
+            "`vulnerability_facts.py`",
+            "`_safe_fetch_error_text()`",
+            "`translate()`",
+            "`fetch_nist_nvd()`",
+            "`gemini_analyze()`",
+            "`gemini_todays_brief()`",
+            "`load_source_definitions()`",
+            "Active NVD facts and KEV structured-source retrieval",
+            "Workflow shell",
+            "does not directly print",
+            "uncaught failure can reach workflow stderr",
+        ):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, self.requirements)
+        self.assertIn(
+            "| GAP-009 | Security gap | Remains open for later prioritization |",
+            self.requirements,
+        )
+        self.assertIn("No explicit traceback-printing helper", self.requirements)
+
+    def test_external_response_size_audit_and_gap_are_recorded(self):
+        for response in (
+            "RSS / Atom",
+            "Translation",
+            "ARTICLE Gemini",
+            "Legacy BRIEF Gemini",
+            "Standalone NIST NVD",
+            "Active NVD facts",
+            "CISA KEV structured source",
+        ):
+            with self.subTest(response=response):
+                self.assertIn(f"| {response} |", self.requirements)
+        self.assertRegex(
+            self.requirements,
+            r"\| SR-034 \|.*resource-consumption limits.*\| Partially met \|",
+        )
+        self.assertRegex(
+            self.requirements,
+            r"\| GAP-015 \| Hardening candidate \| Deferred until trigger \| SR-034 \|",
+        )
+        self.assertIn("no consistent byte cap at the network `read()` boundary", self.requirements)
+        self.assertIn("no incident was found", self.requirements)
+
+    def test_custom_domain_preflight_is_future_only_and_complete(self):
+        for marker in (
+            "verified-domain/domain verification",
+            "dangling DNS",
+            "takeover prevention",
+            "safe Pages/DNS cutover and teardown order",
+            "registrar MFA",
+            "auto-renew",
+            "expiration protection",
+            "registrar/transfer lock",
+            "repository rename impact",
+            "rollback",
+            "ownership",
+        ):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, self.requirements)
+        self.assertRegex(
+            self.requirements,
+            r"\| GAP-011 \| Future trigger \| Deferred until trigger \|",
+        )
+        self.assertIn(
+            "not a current-site security gap because the custom domain is not implemented",
+            self.requirements,
+        )
+
+    def test_dast_is_not_duplicated(self):
+        non_required = self._section(
+            "## 9. Explicitly non-required controls for the current architecture",
+            "## 10. Re-evaluation triggers",
+        )
+        self.assertEqual(non_required.count("DAST"), 1)
+        self.assertIn("Dynamic application scanning (DAST)", non_required)
+        self.assertIn("Dedicated SAST product", non_required)
+        self.assertNotIn("SAST/DAST", non_required)
+
+    def test_translation_cache_persistence_risk_is_recorded(self):
+        gap_012 = next(
+            row
+            for row in self._markdown_rows(
+                self._section(
+                    "## 8. Gap register",
+                    "## 9. Explicitly non-required controls for the current architecture",
+                )
+            )
+            if row[0] == "GAP-012"
+        )
+        text = " ".join(gap_012)
+        self.assertIn("`docs/translate_cache.json`", text)
+        self.assertIn("repository and Pages across days", text)
+        self.assertIn("no cache TTL", text)
+        self.assertIn("provider-response integrity validation", text)
+        self.assertIn("confidentiality impact is low", text)
+        self.assertIn("Accepted residual risk", text)
+        self.assertIn("private/confidential input", text)
+
+    def test_approved_roadmap_decisions_are_bounded_and_not_implemented(self):
+        review = self._section(
+            "## 11. Approved roadmap decisions",
+            "## 12. Approval and maintenance",
+        )
+        for marker in (
+            "full commit SHAs",
+            "weekly `github-actions` Dependabot",
+            "`cancel-in-progress: false`",
+            "checkout credential persistence",
+            "`SECURITY_OPERATIONS.md`",
+            "90 days",
+            "GAP-009 open for later prioritization",
+        ):
+            with self.subTest(marker=marker):
+                self.assertIn(marker, review)
+        self.assertIn("approve follow-up scope, not implementation", review)
+
+    def test_workflows_and_dependabot_remain_unmodified_in_design(self):
+        production = (ROOT / ".github/workflows/fetch.yml").read_text(encoding="utf-8")
+        pull_request = (ROOT / ".github/workflows/pr-ci.yml").read_text(encoding="utf-8")
+        self.assertIn("uses: actions/checkout@v4", production)
+        self.assertIn("uses: actions/setup-python@v5", production)
+        self.assertNotIn("concurrency:", production)
+        self.assertNotRegex(
+            production + pull_request,
+            r"uses:\s*[^@\s]+@[0-9a-f]{40}(?:\s|$)",
+        )
+        self.assertFalse((ROOT / ".github/dependabot.yml").exists())
+        self.assertIn("security-control implementation outside this PR", self.requirements)
+
+    def test_current_gaps_non_required_and_triggers_are_distinct(self):
+        mapping = self._section("## 7. Current control mapping", "## 8. Gap register")
+        gaps = self._section(
+            "## 8. Gap register",
+            "## 9. Explicitly non-required controls for the current architecture",
+        )
+        non_required = self._section(
+            "## 9. Explicitly non-required controls for the current architecture",
+            "## 10. Re-evaluation triggers",
+        )
+        triggers = self._section(
+            "## 10. Re-evaluation triggers",
+            "## 11. Approved roadmap decisions",
+        )
+
+        for status in (
+            "Met",
+            "Partially met",
+            "Not applicable now",
+        ):
+            self.assertIn(status, mapping)
+        self.assertIn("does not mean the underlying control is implemented", gaps)
+        self.assertIn("WAF", non_required)
+        self.assertIn("24/7 SOC monitoring", non_required)
+        self.assertIn("introducing `monomidigest.com`", triggers)
+        self.assertIn("adding forms, authentication, sessions", triggers)
+
+    def test_future_components_are_not_misstated_as_current(self):
+        self.assertIn("the future `monomidigest.com` custom domain", self.requirements)
+        self.assertRegex(
+            self.requirements,
+            r"which is not implemented in this\s+repository",
+        )
+        self.assertIn(
+            "No component for forms, authentication, sessions, a database, payments",
+            self.requirements,
+        )
+        self.assertIn(
+            "Forms, authentication, database, and payments",
+            self.requirements,
+        )
+        self.assertNotIn("custom domain is implemented", self.requirements)
+        self.assertNotIn("forms are currently implemented", self.requirements)
+
+    def test_no_secret_value_or_local_absolute_path_is_present(self):
+        for text in (
+            self.requirements,
+            self.backlog,
+            self.status,
+            self.decisions,
+            self.agents,
+        ):
+            self.assertNotIn("/Users/", text)
+            self.assertNotRegex(text, r"AIza[0-9A-Za-z_-]{20,}")
+            self.assertNotRegex(text, r"ghp_[0-9A-Za-z]{20,}")
+            self.assertNotRegex(text, r"github_pat_[0-9A-Za-z_]{20,}")
+        self.assertIn("secret names", self.requirements)
+        self.assertIn("No value was inspected", self.requirements)
+
+    def test_bl015_is_version_10_approved_merge_pending_and_not_complete(self):
+        bl015 = self.backlog.split("## BL-015", 1)[1].split("## BL-016", 1)[0]
+        self.assertIn(
+            "**状態:** Version 1.0承認済み / PR #44 merge待ち",
+            bl015,
+        )
+        self.assertIn("[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Draft 0.1", bl015)
+        self.assertIn("Draft 0.2", bl015)
+        self.assertIn("Critical 0、High 0", bl015)
+        self.assertIn("F-001〜F-003およびF-005〜F-009", bl015)
+        self.assertIn("F-004", bl015)
+        self.assertIn("SR-043", bl015)
+        self.assertIn("GAP-014", bl015)
+        self.assertIn("GAP-015", bl015)
+        self.assertIn("security-control実装", bl015)
+        self.assertIn("GAP-010 repository-owner checklist", bl015)
+        self.assertIn("「ok」", bl015)
+        self.assertIn("BL-024", bl015)
+        self.assertIn("BL-025", bl015)
+        self.assertIn("BL-026", bl015)
+        self.assertNotIn("**状態:** 完了", bl015)
+
+        active = self.status.split("## Active work", 1)[1].split(
+            "## 5. Recently completed work", 1
+        )[0]
+        recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
+            "## 6. Known issues and limitations", 1
+        )[0]
+        self.assertIn("BL-015", active)
+        self.assertIn("Version 1.0 approved", active)
+        self.assertIn("waiting for", active)
+        self.assertIn("repository-owner checklist is complete", active)
+        self.assertIn("「ok」", active)
+        self.assertNotIn("BL-015", recently_completed)
+
+    def test_sd024_and_follow_up_tickets_are_recorded(self):
+        self.assertIn(
+            "## SD-024 — Approve Security Requirements Version 1.0 and the "
+            "proportionate security roadmap",
+            self.decisions,
+        )
+        sd024 = self.decisions.split("## SD-024", 1)[1]
+        self.assertIn("「ok」", sd024)
+        self.assertIn("PR #44", sd024)
+        for backlog_id, title, priority in (
+            ("BL-024", "最小Security Operationsと公開済み生成物の訂正手順を定義する", "P1"),
+            ("BL-025", "収集元URLをhttp／https schemeへ制限する", "P2"),
+            ("BL-026", "GitHub Actions supply chainとproduction concurrencyを強化する", "P2"),
+        ):
+            with self.subTest(backlog_id=backlog_id):
+                section = self.backlog.split(f"## {backlog_id}", 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                self.assertIn(title, section)
+                self.assertIn(f"**優先度:** {priority}", section)
+                self.assertIn("未実装", section)
+        self.assertIn("GAP-009", self.requirements)
+        self.assertIn("Remains open for later prioritization", self.requirements)
+        self.assertIn("GAP-015", self.requirements)
+        self.assertIn("Deferred until trigger", self.requirements)
+
+    def test_owner_checklist_mandatory_items_are_resolved_without_sensitive_data(self):
+        owner = self.requirements.split("## 13. Repository-owner verification", 1)[1]
+        rows = [
+            row
+            for row in self._markdown_rows(owner)
+            if row[0] in {"Repository", "Actions", "Pages", "Notifications", "Security"}
+        ]
+        mandatory = [row for row in rows if "(mandatory)" in row[1]]
+        self.assertGreaterEqual(len(mandatory), 13)
+        allowed_results = (
+            "Verified",
+            "Not configured",
+            "Not applicable",
+            "Unverified — owner access required",
+        )
+        self.assertTrue(all(row[2].startswith(allowed_results) for row in rows))
+        self.assertTrue(
+            all(row[2] != "Unverified — owner access required" for row in mandatory)
+        )
+        for marker in (
+            "Visibility (mandatory)",
+            "Default branch (mandatory)",
+            "Main branch protection or ruleset (mandatory)",
+            "Force-push blocking (mandatory)",
+            "Branch-deletion blocking (mandatory)",
+            "Default workflow token permission (mandatory)",
+            "Fork PR approval policy (mandatory)",
+            "`workflow_dispatch` permission range (mandatory)",
+            "Required production secret `GEMINI_API_KEY` (mandatory)",
+            "Source branch/directory (mandatory)",
+            "HTTPS enforcement (mandatory)",
+            "Custom domain (mandatory)",
+            "Log and default artifact retention (mandatory)",
+        ):
+            self.assertIn(marker, owner)
+        self.assertIn("Mandatory checklist items contain no", owner)
+
+    def test_agents_references_version_10_without_blanket_authorization(self):
+        security = self.agents.split("## Security requirements", 1)[1].split(
+            "## Testing and review", 1
+        )[0]
+        self.assertIn("SECURITY_REQUIREMENTS.md", security)
+        self.assertIn("Version 1.0", security)
+        self.assertIn("re-evaluation triggers", security)
+        self.assertIn("approved ticket", security)
+        self.assertIn("not blanket authorization", security)
+
+    def test_security_requirements_internal_markdown_links_resolve(self):
+        docs = {
+            name: (ROOT / name).read_text(encoding="utf-8")
+            for name in (
+                "SECURITY_REQUIREMENTS.md",
+                "BACKLOG.md",
+                "STATUS.md",
+                "DECISIONS.md",
+                "AGENTS.md",
+                "test_fetch.py",
+                "test_archive.py",
+                "test_daily_json.py",
+                "test_feed_fetch_status.py",
+                "test_feed_rich_content.py",
+                "test_article_analysis.py",
+                "test_article_internal_identifier_leak.py",
+                "test_todays_brief.py",
+                "test_vulnerability_facts_prompt.py",
+                "test_pr_ci_workflow.py",
+                "test_source_definitions.py",
+                "fetch.py",
+                "daily_json.py",
+                "vulnerability_facts.py",
+                "source_definitions.json",
+            )
+        }
+        anchors = {
+            name: {self._slugify(heading) for heading in self._headings(text)}
+            for name, text in docs.items()
+            if name.endswith(".md")
+        }
+        link_pattern = re.compile(r"\]\((?!https?://)([^)#\s]+)(?:#([^)\s]+))?\)")
+
+        for target, anchor in link_pattern.findall(self.requirements):
+            with self.subTest(target=target, anchor=anchor):
+                target_path = ROOT / target
+                self.assertTrue(target_path.exists(), f"Missing link target: {target}")
+                if anchor:
+                    self.assertIn(target, anchors, f"Cannot resolve anchor in {target}")
+                    self.assertIn(anchor, anchors[target], f"Missing anchor {target}#{anchor}")
+
+
+if __name__ == "__main__":
+    unittest.main()

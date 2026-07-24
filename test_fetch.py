@@ -2931,19 +2931,19 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         kept = [ch for ch in lowered if ch.isalnum() or ch in (" ", "-", "_")]
         return "".join(kept).replace(" ", "-")
 
-    def test_bl_ids_are_unique_and_cover_bl001_to_bl023(self):
+    def test_bl_ids_are_unique_and_cover_bl001_to_bl026(self):
         text = self._read("BACKLOG.md")
         bl_headings = [h for h in self._headings(text) if re.match(r"^BL-\d{3}\b", h)]
         ids = [re.match(r"^(BL-\d{3})", h).group(1) for h in bl_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
-        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 24)})
+        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 27)})
 
-    def test_sd_ids_are_unique_and_cover_sd001_to_sd023(self):
+    def test_sd_ids_are_unique_and_cover_sd001_to_sd024(self):
         text = self._read("DECISIONS.md")
         sd_headings = [h for h in self._headings(text) if re.match(r"^SD-\d{3}\b", h)]
         ids = [re.match(r"^(SD-\d{3})", h).group(1) for h in sd_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
-        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 24)})
+        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 25)})
 
     def test_bl_001_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -3029,7 +3029,9 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertNotIn("BL-017", known_issues)
         self.assertNotIn("BL-017", next_candidates)
         self.assertNotIn("[BL-022]", next_candidates)
-        self.assertNotRegex(next_candidates, r"(?m)^2\. ")
+        self.assertRegex(next_candidates, r"(?m)^1\. \[BL-024\]")
+        self.assertRegex(next_candidates, r"(?m)^2\. \[BL-025\]")
+        self.assertRegex(next_candidates, r"(?m)^3\. \[BL-026\]")
 
     def test_bl_018_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
