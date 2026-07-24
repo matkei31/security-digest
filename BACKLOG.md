@@ -427,7 +427,7 @@
 - **ID:** BL-022
 - **タイトル:** 前日ダイジェスト直接リンク
 - **優先度:** 未設定（ユーザー順位付け待ち）
-- **状態:** 改訂仕様承認済み／local実装中／production未反映
+- **状態:** 完了
 - **出所種別:** ユーザー原文
 - **ユーザー原文:**
   > 前日ダイジェスト直接リンク
@@ -445,10 +445,10 @@
 - **解釈:** [SD-020](DECISIONS.md#sd-020--link-the-top-page-to-the-latest-validated-earlier-digest)の日付選択と検証は維持する。日付配列の保存順には依存せず、現在の`digest_date`より前の最大の有効公開日をトップページの移動先とする。日別Archiveも実在する直前・直後の公開日だけを移動先とし、欠けた方向のみ省略する。トップページの「過去のダイジェスト」と、日別Archive上部・最下部の「最新のダイジェスト」「過去のダイジェスト」は常に維持する。
 - **完了条件:** トップページの前日あり／日付欠落／過去日なし、日別Archiveの前後あり／前のみ／次のみ／前後なしを検証する；4用語を統一しリンク文言に日付や廃止文言を残さない；hrefは従来どおり検証済みの実在日を指す；方向移動と全体導線を別DOMグループにする；PC 1280px／390pxで左右配置または自然な折返しとなり、横スクロール、重なり、不自然に狭いタップ領域を生じない；focus表示を維持し、内部リンクへ外部用`target`／`rel`を加えない；既存daily JSONから全生成HTMLを再生成し、差分をナビゲーションと必要CSSに限定する；`data/`、ARTICLE／BRIEF、prompt／model／schema／validation／fallback、source、workflowを変更しない；関連テスト、full unittest、Markdownリンク、`git diff --check`、PR CI、Pages deployment、公開PC／390px確認を成功させる。
 - **依存関係:** [BL-017](#bl-017--過去ダイジェストの回遊性と一覧表示を改善する)；[SD-020](DECISIONS.md#sd-020--link-the-top-page-to-the-latest-validated-earlier-digest)；[SD-021](DECISIONS.md#sd-021--unify-digest-navigation-labels-and-separate-direction-from-global-navigation)；[UI_SPEC.md](UI_SPEC.md) Version 1.2；既存daily JSON／archive日付一覧。
-- **実装証跡:** PR #37の直前公開日選択はmerge commit `d43c563a9a59506aaaa4a41cc6297620cbb6f276`、[Pages deployment run 30022728319](https://github.com/matkei31/security-digest/actions/runs/30022728319)、production生成commit `e8183bd9ee6bb8288dc329eaf68c412225eecbc8`を経て公開済みで、ユーザーがリンクの表示と動作を確認した。改訂仕様は承認済みで、4用語と方向／全体導線グループをlocal実装する。
-- **ユーザー受入証跡:** PR #37の既存機能は公開画面で動作確認済み。今回の正確な文言・日付非表示・配置仕様は上記原文で承認済み。改訂後画面をユーザーが目視済みとは記録しない。
-- **残作業:** local検証；Draft PR；merge；Pages deployment；改訂後の公開PC 1280px／390px客観確認；完了記録。
-- **注記:** productionの公開HTMLはまだ改訂前。ARTICLE／BRIEF prompt・model・schema、daily JSON、`data/`、記事内容、日付選択ロジックは変更しない。
+- **実装証跡:** PR #37の直前公開日選択はmerge commit `d43c563a9a59506aaaa4a41cc6297620cbb6f276`、[Pages deployment run 30022728319](https://github.com/matkei31/security-digest/actions/runs/30022728319)、production生成commit `e8183bd9ee6bb8288dc329eaf68c412225eecbc8`を経て公開済みで、ユーザーがリンクの表示と動作を確認した。改訂仕様は[PR #38](https://github.com/matkei31/security-digest/pull/38)、merge commit `85e1b3e3cd4bb3c8927c9b1608652c77a9ebb6e9`で実装し、[Pull Request CI run 30061712600](https://github.com/matkei31/security-digest/actions/runs/30061712600)と[Pages deployment run 30061770611](https://github.com/matkei31/security-digest/actions/runs/30061770611)が成功した。公開トップページと日別Archiveの上部・最下部をPC 1280px／390pxで客観確認し、4用語、左右または折返し配置、正しいhref、横スクロールなしを確認した。
+- **ユーザー受入証跡:** PR #37の既存機能は公開画面で動作確認済み。今回の正確な文言・日付非表示・配置仕様は上記原文で承認済み。承認済み仕様との完全一致、全検証、Pages公開表示の客観確認を完了したため、追加のユーザー確認を要しない完了条件を満たした。改訂後画面をユーザーが目視済みとは記録しない。
+- **残作業:** なし。
+- **注記:** ARTICLE／BRIEF prompt・model・schema、daily JSON、`data/`、記事内容、日付選択ロジックは変更していない。
 
 ## BL-023 — ARTICLE編集品質改善
 
