@@ -1,9 +1,13 @@
+#!/usr/bin/env python3
+"""Static contract tests for BL-024 SECURITY_OPERATIONS.md Draft 0.2."""
+
 import re
 import unittest
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parent
+OPERATIONS_PATH = ROOT / "SECURITY_OPERATIONS.md"
 
 
 def github_anchor(heading):
@@ -19,23 +23,41 @@ def compact_whitespace(text):
 class SecurityOperationsContractTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.operations_path = ROOT / "SECURITY_OPERATIONS.md"
-        cls.operations = cls.operations_path.read_text(encoding="utf-8")
+        cls.operations = OPERATIONS_PATH.read_text(encoding="utf-8")
         cls.backlog = (ROOT / "BACKLOG.md").read_text(encoding="utf-8")
         cls.status = (ROOT / "STATUS.md").read_text(encoding="utf-8")
         cls.decisions = (ROOT / "DECISIONS.md").read_text(encoding="utf-8")
 
-    def test_draft_identity_scope_and_pending_approval(self):
-        self.assertTrue(self.operations_path.exists())
+    def section(self, start, end):
+        return self.operations.split(start, 1)[1].split(end, 1)[0]
+
+    def test_draft_identity_review_record_and_pending_user_decision(self):
+        self.assertTrue(OPERATIONS_PATH.exists())
         self.assertIn("# Security Digest Security Operations", self.operations)
-        self.assertIn("**Version:** Draft 0.1", self.operations)
-        self.assertIn("**Status:** User and external review pending", self.operations)
-        self.assertIn("personally managed static site", self.operations)
-        self.assertIn("Runtime implementation", self.operations)
-        self.assertIn("production execution are out of scope", self.operations)
+        self.assertIn("**Version:** Draft 0.2", self.operations)
+        self.assertIn(
+            "**Status:** Fable 5 review incorporated; user decision pending",
+            self.operations,
+        )
+        approval = self.section("## 12. Approval and maintenance", "\nReview this runbook")
+        for contract in (
+            "Critical 0",
+            "High 1 (F-001)",
+            "F-001 through F-010",
+            "could not retrieve `test_security_operations.py`",
+            "did not review that file",
+            "independently inspected",
+            "F-011",
+            "unapproved",
+            "user decision is pending",
+            "no runtime, workflow, or production change",
+        ):
+            with self.subTest(contract=contract):
+                self.assertIn(contract, compact_whitespace(approval))
 
     def test_requirements_and_decision_references(self):
         for reference in (
+            "SECURITY_REQUIREMENTS.md",
             "SR-043",
             "GAP-006",
             "GAP-008",
@@ -49,89 +71,275 @@ class SecurityOperationsContractTest(unittest.TestCase):
             with self.subTest(reference=reference):
                 self.assertIn(reference, self.operations)
 
-    def test_history_and_published_output_contract(self):
-        self.assertRegex(
-            self.operations,
-            r"(?s)do not force-push or rewrite history.*daily JSON.*HTML",
+    def test_canonical_secret_prohibition_is_unconditional(self):
+        evidence = self.section(
+            "## 9. Canonical secret and sensitive-evidence contract",
+            "## 10. Validation and closure",
         )
-        for asset in (
-            "`data/YYYY-MM-DD.json`",
-            "`data/index.json`",
-            "`docs/index.html`",
-            "`docs/archive/YYYY-MM-DD.html`",
-            "`docs/archive/index.html`",
-            "Git repository history",
-        ):
-            with self.subTest(asset=asset):
-                self.assertIn(asset, self.operations)
-        self.assertIn("deterministic offline regeneration", self.operations)
-        self.assertIn("do not rerun Gemini or external HTTP", self.operations)
-        self.assertIn("Do not run the production workflow", self.operations)
-
-    def test_rotation_steps_and_github_token_distinction(self):
-        rotation = self.operations.split("## 5. Secret and credential rotation", 1)[1].split(
-            "## 6.", 1
-        )[0]
-        for contract in (
-            "revoke or disable",
-            "replacement credential",
-            "update the corresponding GitHub Actions repository secret",
-            "old credential can no longer be used",
-            "without recording the value",
-        ):
-            with self.subTest(contract=contract):
-                self.assertIn(contract, rotation)
-        self.assertIn("job-scoped `GITHUB_TOKEN`", rotation)
-        self.assertIn("not a long-lived", rotation)
-
-    def test_artifact_retention_and_sensitive_data_boundaries(self):
-        artifact = self.operations.split(
-            "## 8. Repository-external artifact handling", 1
-        )[1].split("## 9.", 1)[0]
-        compact_artifact = compact_whitespace(artifact)
-        self.assertIn("90 days after the evaluation is completed", artifact)
-        self.assertIn("Evaluation summaries", artifact)
-        self.assertIn("manifest or hash lists", artifact)
-        self.assertIn("approved BL or SD evidence", artifact)
+        compact = compact_whitespace(evidence)
         for prohibited in (
-            "secret",
-            "credential",
+            "secret value",
+            "credential value",
+            "full token",
             "authorization header",
             "cookie",
             "private key",
-            "unnecessary local absolute path",
+            "recovery code",
+            "equivalent authentication material",
         ):
             with self.subTest(prohibited=prohibited):
-                self.assertIn(prohibited, compact_artifact)
-        self.assertIn("Existing artifacts are not deleted", compact_artifact)
-        self.assertIn(
-            "not this repository-external artifact policy",
-            compact_artifact,
-        )
+                self.assertIn(prohibited, compact)
+        for surface in (
+            "incident evidence",
+            "repository-external artifacts",
+            "screenshots",
+            "manifests",
+            "logs",
+            "documents",
+            "repository",
+            "generated output",
+        ):
+            with self.subTest(surface=surface):
+                self.assertIn(surface, compact)
+        self.assertIn("No approval can authorize", compact)
+        self.assertIn("never a reason to keep them", compact)
+        self.assertIn("Do not retain an unredacted copy", compact)
+        self.assertIn("Do not retain a hash when it could be used", compact)
 
-    def test_emergency_and_withdrawal_remain_pending(self):
-        self.assertIn(
-            "direct production rewrite that bypasses a pull request is not approved",
-            self.operations,
+    def test_approved_secret_stores_are_not_mistaken_for_evidence(self):
+        evidence = self.section(
+            "## 9. Canonical secret and sensitive-evidence contract",
+            "## 10. Validation and closure",
         )
+        compact = compact_whitespace(evidence)
+        self.assertIn("approved secret stores", compact)
+        self.assertIn("GitHub Actions Secrets", compact)
+        self.assertIn("provider-managed secret storage", compact)
+        self.assertIn("operating system or credential manager", compact)
+        self.assertIn("copying the value from those stores into evidence", compact)
+
+    def test_only_non_secret_data_can_use_an_approved_artifact_exception(self):
+        artifact = self.section(
+            "## 8. Repository-external artifact handling",
+            "## 9. Canonical secret and sensitive-evidence contract",
+        )
+        compact = compact_whitespace(artifact)
+        self.assertIn("Only non-secret, minimized information", compact)
+        for allowed in (
+            "raw public response",
+            "sanitized local path",
+            "relevant personal or account metadata",
+            "non-secret data beyond the normal production storage scope",
+        ):
+            with self.subTest(allowed=allowed):
+                self.assertIn(allowed, compact)
+        for record_field in (
+            "reason",
+            "exact retained items",
+            "owner",
+            "access scope",
+            "review or deletion date",
+            "secret-scan result",
+            "approval reference",
+        ):
+            with self.subTest(record_field=record_field):
+                self.assertIn(record_field, compact)
+
+    def test_rotation_has_immediate_and_controlled_paths(self):
+        response = self.section(
+            "## 5. Secret, credential, and account response",
+            "## 6. Minimal incident response",
+        )
+        immediate = response.split("### Immediate revocation path", 1)[1].split(
+            "### Controlled rotation path", 1
+        )[0]
+        controlled = response.split("### Controlled rotation path", 1)[1].split(
+            "### GitHub owner account", 1
+        )[0]
+        self.assertLess(immediate.index("revokes or disables"), immediate.index("replacement"))
+        self.assertIn("temporary service interruption", immediate)
+        self.assertIn("old credential cannot be used", immediate)
+        self.assertLess(controlled.index("replacement"), controlled.index("explicitly revokes"))
+        self.assertIn("old credential cannot be used", controlled)
+        self.assertIn("non-sensitive record", controlled)
+        self.assertIn("Never assume", response)
+        self.assertIn("automatically invalidates the old one", response)
+
+    def test_nvd_secret_state_has_owner_verification_evidence(self):
+        response = self.section(
+            "## 5. Secret, credential, and account response",
+            "## 6. Minimal incident response",
+        )
+        compact = compact_whitespace(response)
+        self.assertIn("`NVD_API_KEY` is optional", compact)
+        self.assertIn("Security Requirements Version 1.0 owner verification", compact)
+        self.assertIn("completed on 2026-07-24", compact)
+        self.assertIn("not configured at repository-secret scope", compact)
+        self.assertIn("No value was inspected", compact)
+        self.assertIn("Reverify this state after", compact)
+        self.assertIn("job-scoped `GITHUB_TOKEN`", compact)
+        self.assertIn("not a long-lived provider secret", compact)
+
+    def test_github_account_compromise_and_published_secret_containment(self):
+        response = self.section(
+            "### GitHub owner account or repository access compromise",
+            "## 6. Minimal incident response",
+        )
+        for contract in (
+            "sessions",
+            "tokens",
+            "keys",
+            "authorizations",
+            "password, MFA, and recovery methods",
+            "security-log or audit information",
+            "recent commits, branches, workflow runs, repository settings",
+            "account-recovery or support",
+        ):
+            with self.subTest(contract=contract):
+                self.assertIn(contract, compact_whitespace(response))
+
+        containment = self.section(
+            "## 4. Initial assessment and containment",
+            "## 5. Secret, credential, and account response",
+        )
+        compact = compact_whitespace(containment)
+        self.assertIn("deletion commit alone is not containment", compact)
+        self.assertIn("first response is immediate provider-side revocation", compact)
+        self.assertIn("Removing the value", compact)
+        self.assertIn("is secondary", compact)
+        self.assertIn("History rewrite is not the normal default", compact)
+        self.assertIn("incident-specific explicit approval", compact)
+
+    def test_translation_cache_correction_handles_recontamination(self):
+        correction = self.section(
+            "## 7. Published-output correction, withdrawal, and regeneration",
+            "## 8. Repository-external artifact handling",
+        )
+        cache = correction.split("### Translation cache", 1)[1].split("### Validation", 1)[0]
+        compact = compact_whitespace(cache)
+        self.assertIn("`docs/translate_cache.json`", correction)
+        self.assertIn("remove an erroneous, contaminated", compact)
+        self.assertIn("source-supported value", compact)
+        self.assertIn("cache, affected daily JSON, and derived HTML", compact)
+        self.assertIn("Do not leave a contaminated entry", compact)
+        self.assertIn("deleting an entry", compact)
+        self.assertIn("not complete remediation by itself", compact)
+        self.assertIn("separately approved ticket", compact)
+        self.assertIn("changes no runtime or cache processing", compact)
+
+    def test_closure_conditions_are_conditional(self):
+        closure = self.section(
+            "## 10. Validation and closure",
+            "## 11. Open review questions",
+        )
+        compact = compact_whitespace(closure)
+        for always_required in (
+            "containment",
+            "applicable validation",
+            "evidence is sanitized",
+            "residual risk or `none identified`",
+            "responsible owner confirms closure",
+        ):
+            with self.subTest(always_required=always_required):
+                self.assertIn(always_required, compact)
+        for conditional in (
+            "when credentials were involved",
+            "when public content was affected",
+            "when `data/` or `docs/` changed",
+            "when public output changed",
+            "when residual work or recurrence prevention remains",
+        ):
+            with self.subTest(conditional=conditional):
+                self.assertIn(conditional, compact)
+        self.assertIn("record `not required` and the reason", compact)
+        self.assertIn("pull request alone is not incident closure", compact)
+
+    def test_artifact_evidence_priority_and_role_boundaries(self):
+        artifact = self.section(
+            "## 8. Repository-external artifact handling",
+            "## 9. Canonical secret and sensitive-evidence contract",
+        )
+        compact_artifact = compact_whitespace(artifact)
+        self.assertIn("90 days after the evaluation is completed", compact_artifact)
+        for derivative in (
+            "sanitized or minimized derivative",
+            "manifest",
+            "hash list",
+            "gate summary",
+            "approved BL, SD, user-acceptance, merge, or No-Go record",
+        ):
+            with self.subTest(derivative=derivative):
+                self.assertIn(derivative, compact_artifact)
+        self.assertIn("Do not default to retaining raw artifacts long-term", compact_artifact)
+        self.assertIn("Section 9 overrides every long-term evidence designation", compact_artifact)
+        self.assertIn("Existing artifacts are not deleted", compact_artifact)
+        self.assertIn("not this repository-external artifact policy", compact_artifact)
+
+        roles = self.section(
+            "## 2. Roles and authorization boundaries",
+            "## 3. Events covered by this runbook",
+        )
+        compact_roles = compact_whitespace(roles)
+        self.assertIn("same person may hold", compact_roles)
+        self.assertIn("Roles define responsibilities and approval boundaries", compact_roles)
+        self.assertIn("Reviewer independent", compact_roles)
+        self.assertIn("does not replace the User approval owner's decision", compact_roles)
+
+    def test_open_questions_remain_recommendations(self):
+        questions = self.section(
+            "## 11. Open review questions",
+            "## 12. Approval and maintenance",
+        )
+        self.assertIn("Recommendation / user decision pending", questions)
+        for question in (
+            "Emergency hotfix",
+            "Withdrawal",
+            "Material daily JSON correction",
+            "Correction notice contract",
+            "Artifact retention",
+            "AGENTS.md reference",
+        ):
+            with self.subTest(question=question):
+                self.assertIn(question, questions)
+        compact = compact_whitespace(questions)
+        self.assertIn("without skipping CI", compact)
+        self.assertIn("no code or workflow change", compact)
+        self.assertIn("not approved by Draft 0.2", self.operations)
         self.assertIn(
-            "Draft 0.1 does not unconditionally select or authorize one",
+            "Draft 0.2 does not unconditionally select or authorize one",
             compact_whitespace(self.operations),
         )
-        open_questions = self.operations.split("## 11. Open review questions", 1)[1]
-        self.assertIn("Emergency hotfix", open_questions)
-        self.assertIn("Withdrawal display", open_questions)
-        self.assertIn("These recommendations are not approved decisions", open_questions)
 
-    def test_bl024_and_status_are_active_and_not_complete(self):
-        section = self.backlog.split("## BL-024", 1)[1].split("## BL-025", 1)[0]
-        self.assertIn(
-            "進行中 / SECURITY_OPERATIONS Draft 0.1 / ユーザー・外部レビュー待ち",
-            section,
-        )
-        self.assertIn("Version 1.0前は未完了", section)
-        self.assertIn("Draft 0.1のユーザー受入および外部レビューは未実施", section)
-        self.assertIn("BL-024", self.status.split("## Active work", 1)[1])
+    def test_bl024_status_and_non_change_contract(self):
+        backlog_section = self.backlog.split("## BL-024", 1)[1].split("## BL-025", 1)[0]
+        for contract in (
+            "進行中 / SECURITY_OPERATIONS Draft 0.2 / Fable 5レビュー反映済み / ユーザー判断待ち",
+            "Critical 0",
+            "High 1（F-001）",
+            "F-001〜F-011",
+            "user decision pending",
+            "Version 1.0前は未完了",
+        ):
+            with self.subTest(contract=contract):
+                self.assertIn(contract, backlog_section)
+        active = self.status.split("## Active work", 1)[1].split(
+            "## 5. Recently completed work", 1
+        )[0]
+        self.assertIn("Draft 0.2", active)
+        self.assertIn("Fable 5", active)
+        self.assertIn("Critical 0／High F-001", active)
+        self.assertIn("user decision pending", active)
+        for unchanged in (
+            "runtime",
+            "workflow",
+            "`data/`",
+            "`docs/`",
+            "production",
+            "ARTICLE／BRIEF contract",
+            "daily schema",
+        ):
+            with self.subTest(unchanged=unchanged):
+                self.assertIn(unchanged, active)
         self.assertNotIn("## SD-025", self.decisions)
 
     def test_no_local_absolute_path_or_credential_value_pattern(self):

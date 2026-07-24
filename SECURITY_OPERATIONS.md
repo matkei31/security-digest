@@ -1,7 +1,7 @@
 # Security Digest Security Operations
 
-- **Version:** Draft 0.1
-- **Status:** User and external review pending
+- **Version:** Draft 0.2
+- **Status:** Fable 5 review incorporated; user decision pending
 - **As of:** 2026-07-24
 
 ## Scope
@@ -29,7 +29,7 @@ public-information accuracy, repository integrity, credentials, and published Pa
 protection value.
 
 - Combine rapid containment with a safe, reviewable evidence trail.
-- Never preserve a secret value or unnecessary raw data merely as “evidence.”
+- Apply the unconditional secret-value prohibition and evidence rules in section 9.
 - Do not force-push or rewrite Git history to hide a problem.
 - Correct content with a new commit and an explicit record.
 - Keep the normal approval boundaries for production execution and control changes.
@@ -44,11 +44,18 @@ protection value.
 | Reviewer | Independently checks scope, evidence, correction integrity, and residual risk without requesting secret values. |
 | User approval owner | Approves material policy choices, production operations, emergency exceptions, Ready status, and merge where separately required. |
 
-Only the Repository owner handles secret values. Work and AI reviewers must not request,
-display, copy, or store them. Normal corrections use a branch, pull request, and CI. Production
-workflow execution, GitHub setting changes, secret updates, Ready for review, and merge retain
-their separate approval boundaries. Approval of Security Requirements Version 1.0 is not
-unlimited advance approval for real incident actions.
+In this personally managed project, the same person may hold the Repository owner, Operator,
+and User approval owner roles. Roles define responsibilities and approval boundaries, not a
+required headcount. Keep the Reviewer independent from the change author where practicable.
+Fable 5 or another agent review is supporting evidence and does not replace the User approval
+owner's decision.
+
+Only the Repository owner handles secret values, and only through approved secret stores.
+Work and AI reviewers must not request or handle those values; see section 9. Normal
+corrections use a branch, pull request, and CI. Production workflow execution, GitHub setting
+changes, secret updates, Ready for review, and merge retain their separate approval boundaries.
+Approval of Security Requirements Version 1.0 is not unlimited advance approval for real
+incident actions.
 
 ## 3. Events covered by this runbook
 
@@ -80,42 +87,89 @@ Record, without sensitive values:
 - the difference between the source and public content; and
 - whether immediate containment is urgent.
 
-Do not paste secret values into chat, issues, pull requests, or logs. Do not broaden the
-investigation without need, rewrite Git history in haste, or rerun Gemini, external retrieval,
-or production merely to diagnose the event. Preserve existing safe evidence, but do not retain
-evidence containing credentials. Before changing anything, record the affected identifiers in
-a non-sensitive form.
+Follow the unconditional handling contract in section 9. Do not broaden the investigation
+without need, rewrite Git history in haste, or rerun Gemini, external retrieval, or production
+merely to diagnose the event. Before changing anything, record affected identifiers only in a
+non-sensitive form.
+
+If a credential value was published once in a commit, log, artifact, Pages output, or other
+surface, a deletion commit alone is not containment: Git history, caches, logs, and copies may
+retain it. The first response is immediate provider-side revocation or disablement. Removing
+the value from files, HTML, or artifacts is secondary. History rewrite is not the normal
+default.
+
+If non-revocable private data or a legal deletion duty requires a history purge, do not treat
+that as an automatic runbook step. Require incident-specific explicit approval, the current
+GitHub or provider guidance, an impact assessment, and an after-action record.
 
 The normal containment path is a dedicated branch and the smallest reviewable pull request.
-A direct production rewrite that bypasses a pull request is not approved by Draft 0.1; the
+A direct production rewrite that bypasses a pull request is not approved by Draft 0.2; the
 need, authorizer, limits, and mandatory after-action record remain an open review question.
 
-## 5. Secret and credential rotation
+## 5. Secret, credential, and account response
 
 Rotation or revocation is triggered by suspected disclosure, unexpected use, access or
 collaborator change, provider compromise, or replacement of the credential owner.
 
-1. Identify the suspected credential by provider and secret name, never by value.
-2. Review related workflows, runs, and sanitized logs.
-3. If active misuse is suspected, have the Repository owner revoke or disable it at the
-   provider.
-4. Issue a replacement credential through the provider.
-5. Have the Repository owner update the corresponding GitHub Actions repository secret.
-6. Verify at the provider that the old credential can no longer be used.
-7. Check the repository, logs, artifacts, and local files for the exposure scope without
-   copying the value into evidence.
-8. Perform only the separately authorized validation appropriate to that credential.
-9. Record time, secret name, actions, and result without recording the value.
+Identify the credential by provider and secret name, review related runs and sanitized records,
+and follow section 9 throughout. Use one of the following paths.
+
+### Immediate revocation path
+
+Use this path when active misuse or public exposure is suspected:
+
+1. The Repository owner revokes or disables the affected credential at the provider first.
+2. Accept temporary service interruption while containment takes priority.
+3. Issue a replacement credential.
+4. Update the approved secret store.
+5. Perform only separately authorized validation.
+6. Confirm explicitly that the old credential cannot be used.
+
+### Controlled rotation path
+
+Use this path when active misuse is not known but preventive rotation is required:
+
+1. Issue a replacement credential.
+2. Update the approved secret store.
+3. Perform separately authorized minimal validation.
+4. The Repository owner explicitly revokes the old credential.
+5. Confirm explicitly that the old credential cannot be used.
+6. Leave a non-sensitive record.
+
+Never assume that issuing a new credential automatically invalidates the old one. This Draft
+does not issue, update, validate, or revoke a real credential.
 
 `GEMINI_API_KEY` is the required repository secret. `NVD_API_KEY` is optional and is currently
-not configured. Both are long-lived provider credentials when configured. A local credential,
-an environment secret, and a GitHub repository secret are distinct storage or delivery
-contexts and must be checked separately.
+not configured at repository-secret scope according to the Security Requirements Version 1.0
+owner verification completed on 2026-07-24. No value was inspected. Reverify this state after a
+secret-inventory, workflow-reference, or provider-usage change. Both are long-lived provider
+credentials when configured. A local credential, an environment secret, and a GitHub
+repository secret are distinct storage or delivery contexts and must be checked separately.
 
 The job-scoped `GITHUB_TOKEN` is issued by GitHub for a workflow run; it is not a long-lived
 provider secret to be rotated using the procedure above. Respond instead by containing the
 affected run or repository access and reviewing the workflow permissions and platform event.
 This Draft performs no secret update, real API validation, or production execution.
+
+### GitHub owner account or repository access compromise
+
+For suspected compromise of a GitHub password or session, personal access token, SSH key,
+OAuth or GitHub App authorization, recovery method, MFA, collaborator access, or repository
+access:
+
+1. Use GitHub's current account-security controls to inventory and revoke suspicious sessions,
+   tokens, keys, and authorizations.
+2. Check and recover the password, MFA, and recovery methods.
+3. Review available security-log or audit information.
+4. Review recent commits, branches, workflow runs, repository settings, and the secret
+   inventory.
+5. Identify unauthorized changes.
+6. Record containment results without credential values, following section 9.
+7. Route unauthorized public output through section 7.
+8. Route unauthorized workflow or code changes through the smallest normal fix pull request
+   and a complete scope review.
+9. If the owner cannot access the account, use GitHub's current account-recovery or support
+   route.
 
 ## 6. Minimal incident response
 
@@ -141,7 +195,7 @@ The minimum incident record contains:
 - validation, residual risk, and follow-up ticket; and
 - closure decision.
 
-Do not record personal information, a secret value, raw authorization header, or cookie.
+Apply section 9 to the incident record. Record no secret or authentication value.
 
 ## 7. Published-output correction, withdrawal, and regeneration
 
@@ -152,7 +206,7 @@ Treat these as separate assets:
 - `docs/index.html`;
 - `docs/archive/YYYY-MM-DD.html`;
 - `docs/archive/index.html`;
-- the translation cache;
+- public and committed `docs/translate_cache.json`;
 - Git repository history; and
 - repository-external screenshots and evaluation artifacts.
 
@@ -185,7 +239,7 @@ pull request must identify the exact affected date and files.
 Withdraw when a correct replacement cannot be produced promptly and continued publication has
 material impact. The recommended future default is an explicit withdrawal or correction notice
 that preserves navigation and makes the unavailable content clear. Blank output, article
-deletion, and a dedicated notice can require schema or UI changes, so Draft 0.1 does not
+deletion, and a dedicated notice can require schema or UI changes, so Draft 0.2 does not
 unconditionally select or authorize one.
 
 ### Regeneration
@@ -197,6 +251,20 @@ unconditionally select or authorize one.
 5. Do not run the production workflow.
 6. Do not call Gemini, RSS, NVD, or other external HTTP.
 
+### Translation cache
+
+1. Check whether `docs/translate_cache.json` contains an entry for each corrected source text
+   or translation.
+2. In the same correction pull request, remove an erroneous, contaminated, prompt-derived, or
+   provider-abnormal entry, or replace it with a source-supported value.
+3. Confirm consistency among the cache, affected daily JSON, and derived HTML.
+4. Do not leave a contaminated entry available for reuse on a later day.
+
+If provider behavior is the root cause, deleting an entry may allow the same response to return
+and is not complete remediation by itself. Provider suspension, a runtime guard, or cache
+validation requires a separately approved ticket. This Draft changes no runtime or cache
+processing.
+
 ### Validation
 
 Confirm daily JSON validation, HTML escaping, safe URLs, Archive consistency, top/Archive
@@ -207,11 +275,18 @@ verification.
 ## 8. Repository-external artifact handling
 
 Before creating an artifact, classify it, identify its intended reviewers, and set its
-retention or disposal decision. Limit access and sharing to those identified reviewers.
+retention or disposal decision. Limit access and sharing to those identified reviewers. The
+unconditional secret prohibition in section 9 always takes priority.
 
-Never store a secret, credential, authorization header, cookie, private key, unnecessary local
-absolute path, unrelated personal information, or production-prohibited raw data without a
-specific approved need.
+Only non-secret, minimized information can have a specific approved retention need:
+
+- a raw public response;
+- a sanitized local path;
+- relevant personal or account metadata; or
+- non-secret data beyond the normal production storage scope.
+
+The exception record must state the reason, exact retained items, owner, access scope, review
+or deletion date, secret-scan result, and approval reference.
 
 Detailed artifacts normally expire 90 days after the evaluation is completed:
 
@@ -220,71 +295,100 @@ Detailed artifacts normally expire 90 days after the evaluation is completed:
 - screenshots containing detailed local or raw context; and
 - temporary debugging output.
 
-At or before the deletion date, the artifact owner deletes the expiring detailed items and
-records only a sanitized result if evidence is still needed. Evaluation summaries,
-manifest or hash lists, approved BL or SD evidence, gate results, and the minimum basis for a
-merge or No-Go decision may be retained for as long as that decision needs support.
+At or before the deletion date, delete raw artifacts when a sanitized or minimized derivative,
+manifest, hash list, gate summary, or approved BL, SD, user-acceptance, merge, or No-Go record
+can preserve the decision evidence. Do not default to retaining raw artifacts long-term merely
+because a decision needs evidence.
 
-A 90-day exception records the reason, retained items, owner, review or deletion date,
-confirmation that secrets and unnecessary local paths are absent, and the approved decision
-reference. The recommended approver is the User approval owner. Existing artifacts are not
-deleted by this Draft, and no retention automation, cron job, or cleanup script is introduced.
-GitHub Actions log and platform-artifact retention are platform settings and are not this
-repository-external artifact policy.
+A screenshot may be designated for longer retention only when the screenshot itself is
+necessary and contains no secret or credential value, unnecessary local path, or unrelated
+personal information. Section 9 overrides every long-term evidence designation. An artifact
+that cannot be sanitized because it contains a secret value is not retained; revoke the
+credential and remove the artifact from the retained set.
 
-## 9. Evidence preservation
+The recommended approver for a 90-day exception is the User approval owner. Existing artifacts
+are not deleted by this Draft, and no retention automation, cron job, or cleanup script is
+introduced. GitHub Actions log and platform-artifact retention are platform settings and are
+not this repository-external artifact policy.
 
-Safe evidence includes a commit SHA, pull request URL, workflow or Pages run URL, file path,
-affected date, screenshot reviewed for secrets and local paths, sanitized error category, and
-artifact manifest or hash.
+## 9. Canonical secret and sensitive-evidence contract
 
-Do not preserve a secret value, full token, raw authorization header, cookie, unnecessary full
-response body, unredacted local path, or unrelated user or account information. Evidence
-preservation never justifies retaining a secret.
+Never store a secret value, credential value, full token, authorization header, cookie, private
+key, recovery code, or equivalent authentication material in incident evidence,
+repository-external artifacts, screenshots, manifests, logs, documents, the repository, or
+generated output. No approval can authorize storing these values in evidence or review
+artifacts. Evidence preservation is never a reason to keep them.
+
+Do not retain an unredacted copy before redaction. Do not retain a hash when it could be used to
+verify, recover, or abuse a credential.
+
+This prohibition does not prevent operational credential storage in approved secret stores,
+including GitHub Actions Secrets, provider-managed secret storage, or an approved operating
+system or credential manager. It prohibits copying the value from those stores into evidence,
+artifacts, repository content, generated output, or logs.
+
+Safe evidence includes a commit SHA, pull request URL, workflow or Pages run URL, non-sensitive
+file path, affected date, screenshot that passed the section 8 review, sanitized error
+category, and sanitized artifact manifest or hash list. Apply the section 8 approval and
+retention record to any exceptional non-secret sensitive information.
 
 ## 10. Validation and closure
 
-Close an incident or correction only when:
+Close every incident or correction only when containment and all applicable validation are
+complete, evidence is sanitized, residual risk or `none identified` is recorded, and the
+responsible owner confirms closure.
 
-- containment is complete;
-- required credential revocation or rotation is complete;
-- affected public output is corrected or withdrawn;
-- JSON and HTML consistency is confirmed;
-- relevant tests pass;
-- the public deployment is confirmed;
-- residual risk and a follow-up ticket are recorded;
-- evidence is sanitized; and
-- the responsible owner confirms closure.
+Apply the remaining conditions only when relevant:
+
+- complete credential revocation or rotation when credentials were involved;
+- correct or withdraw affected public output when public content was affected;
+- confirm JSON and HTML consistency when `data/` or `docs/` changed;
+- confirm deployment when public output changed;
+- directly verify the public result for a material public change, a security or
+  content-integrity correction, or a display-contract change; and
+- register a follow-up ticket when residual work or recurrence prevention remains. Otherwise,
+  record `not required` and the reason in the incident record.
 
 A merged documentation or code pull request alone is not incident closure.
 
 ## 11. Open review questions
 
-These recommendations are not approved decisions in Draft 0.1:
+Each item is a **Recommendation / user decision pending**, not an approved decision:
 
-1. **Emergency hotfix:** allow a minimal direct hotfix only when immediate containment cannot
-   safely wait for a pull request, with explicit Repository owner and User approval owner
-   authorization, exact file limits, and a mandatory after-action branch, record, and review.
-2. **Withdrawal display:** prefer an explicit notice that preserves the page and navigation;
-   decide the schema and UI contract before adoption.
-3. **Material daily JSON correction:** make correction of the affected daily JSON, followed by
-   deterministic HTML regeneration, the normal default when a supported replacement exists.
-4. **Correction notice contract:** add dedicated schema or UI only if repeated corrections show
-   that commit and pull-request evidence is insufficient for readers.
-5. **90-day start:** retain evaluation-completion date as the start because it is stable and
-   reviewable, including when files were created incrementally.
-6. **Longer retention:** require User approval owner approval and a recorded next review or
-   deletion date.
-7. **AGENTS.md reference:** after Version 1.0 approval, add only a concise pointer and preserve
-   existing per-operation authorization boundaries.
-8. **External review:** obtain Fable 5 review before Version 1.0.
+1. **Emergency hotfix:** default to a fast-track branch and pull request without skipping CI.
+   Permit a direct public hotfix only when continued publication creates material harm and the
+   normal path is too slow, with explicit Repository owner and User approval owner
+   authorization, normally limited to affected public files in `docs/`, no code or workflow
+   change, and an after-action pull request within 24 hours to restore JSON consistency, tests,
+   records, and review.
+2. **Withdrawal:** prefer an explicit notice over blank output, and use article or page deletion
+   only last. Preserve navigation and Archive contracts. Do not approve temporary withdrawal
+   text inside an existing schema field without field-contract review. Add dedicated schema or
+   UI only through a separate ticket when first needed or repeated.
+3. **Material daily JSON correction:** when a supported replacement exists, correct daily JSON,
+   deterministically regenerate HTML, retain the original in Git history, and use the BL entry,
+   commit, and pull request as the normal evidence. Do not add a dedicated incident document
+   until repeated use justifies it.
+4. **Correction notice contract:** add no schema or UI now. Reevaluate if corrections recur and
+   commit, pull-request, and BL evidence is insufficient for readers.
+5. **Artifact retention:** start the detailed-artifact 90 days at evaluation completion, let
+   the User approval owner approve longer exceptions, and retain sanitized decision evidence
+   for the period it is needed.
+6. **AGENTS.md reference:** after Version 1.0 merges, add only one or two lines directing
+   incidents, secret rotation, and published-output correction or withdrawal to this runbook;
+   do not change existing operation-specific approval boundaries.
 
 ## 12. Approval and maintenance
 
-Draft 0.1 is unapproved. User approval and external review are pending. After both reviews and
-the user's final decision, the document may become Version 1.0. Only after Version 1.0 is
-merged should the project decide whether to update the state of GAP-006, GAP-008, GAP-013,
-GAP-014, and SR-043 in SECURITY_REQUIREMENTS.md.
+Draft 0.2 is unapproved and the user decision is pending. External Fable 5 review is complete:
+Critical 0 and High 1 (F-001). The adjudication of F-001 through F-010 is incorporated into
+Draft 0.2. Fable 5 could not retrieve `test_security_operations.py`; it did not review that
+file. The test was independently inspected at the PR head and strengthened under F-011.
+
+This review and Draft update make no runtime, workflow, or production change. After the user's
+final decision, the document may become Version 1.0. Only after Version 1.0 is merged should
+the project decide whether to update the state of GAP-006, GAP-008, GAP-013, GAP-014, and
+SR-043 in SECURITY_REQUIREMENTS.md.
 
 Review this runbook when an incident or architecture change exposes a missing boundary. A
 mechanical annual update is not required.

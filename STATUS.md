@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- [BL-024](BACKLOG.md#bl-024--最小security-operationsと公開済み生成物の訂正手順を定義する) — [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Draft 0.1を作成し、user／external review pending。documentation-onlyであり、runtime、workflow、`data/`、`docs/`、production、ARTICLE／BRIEF contract、daily schemaは不変。
+- [BL-024](BACKLOG.md#bl-024--最小security-operationsと公開済み生成物の訂正手順を定義する) — [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Draft 0.2へFable 5レビュー（Critical 0／High F-001）とユーザー裁定を反映し、F-001を修正済み。user decision pending。documentation-onlyであり、runtime、workflow、`data/`、`docs/`、production、ARTICLE／BRIEF contract、daily schemaは不変。
 
 ## 5. Recently completed work
 
@@ -76,7 +76,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-1. [BL-024](BACKLOG.md#bl-024--最小security-operationsと公開済み生成物の訂正手順を定義する) — Active work: Security Operations Draft 0.1 (`P1`)
+1. [BL-024](BACKLOG.md#bl-024--最小security-operationsと公開済み生成物の訂正手順を定義する) — Active work: Security Operations Draft 0.2, user decision pending (`P1`)
 2. [BL-025](BACKLOG.md#bl-025--収集元urlをhttphttps-schemeへ制限する) — next candidate: source URL scheme validation (`P2`)
 3. [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する) — following candidate: Actions supply chain／production concurrency (`P2`)
 
