@@ -63,7 +63,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 6. Known issues and limitations
 
-- [BL-020](BACKLOG.md#bl-020--収集元一覧の取得元別カラーを廃止する): the per-source color and pill-like treatment in the collapsible source footer is a specified but unimplemented small UI fix, separate from the completed source-count correction.
+- [BL-020](BACKLOG.md#bl-020--収集元一覧の取得元別カラーを廃止する): the per-source color and pill-like treatment has been replaced locally with the UI_SPEC Version 1.3 achromatic plain-text list while preserving the completed 15-source count, enabled set, and definition order. The user visually accepted the pre-merge generated PC 1280px／390px screenshots with 「この表示でOK、進めて」. [PR #41](https://github.com/matkei31/security-digest/pull/41) is implemented and user-accepted, but merge and objective Pages verification remain pending; production remains unchanged.
 - [BL-023](BACKLOG.md#bl-023--article編集品質改善): 固定15 fixture・2 logical runs・30 attemptsで`article-analysis-v9`候補を評価したが、Technical GateのみPASSし、financial_impact／recommended_actions／Safety・Non-regression GateはFAIL。続く`article-analysis-v10`固定候補は17 fixture・2 logical runs・34 attempts・retry 0でHTTP 200／schema parseが34/34、Technical GateはPASSしたが、financial_impact／Safety・Non-regression Gateおよびmandatory Zimbra／NCSC記事はFAILした。v9／v10ともprompt-only改善はNo-Goとして保留し、productionは`article-analysis-v8`を維持する。v10結果を受けた追加prompt調整は行わず、この結論は今回固定した候補に限定して、簡素化やprompt改善一般を不可能とは判断しない。regex削除、禁止語規則、Brief後処理は行わない。
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
@@ -73,6 +73,8 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 ## 7. Next candidates
 
 No active candidate is currently ranked in this short priority list.
+
+[BL-020](BACKLOG.md#bl-020--収集元一覧の取得元別カラーを廃止する) is implemented and user-accepted in [PR #41](https://github.com/matkei31/security-digest/pull/41), and awaits merge and objective Pages verification, so it is not ranked as an implementation candidate.
 
 [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not included in this short priority list.
 

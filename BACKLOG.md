@@ -392,17 +392,17 @@
 - **ID:** BL-020
 - **タイトル:** 収集元一覧の取得元別カラーを廃止する
 - **優先度:** P2
-- **状態:** 仕様化済み / 未実装
+- **状態:** 実装済み / ユーザー受入済み / Pages公開確認待ち
 - **出所種別:** ユーザー原文 / ユーザー確認済み要約
 - **ユーザー原文:** 「なんで色分けしてるんだっけ？」
 - **追加のユーザー原文:** 「うん。バックログに入れるなりしてどこかで直せるように管理しよう。んで、次進もう」
 - **ユーザー確認済み要約:** ページ末尾の折りたたみ式「収集元」一覧について、取得元ごとの背景色と色付きpill表現を廃止し、無彩色で低強調のプレーンな一覧表示へ変更する。後続のUI修正として管理し、BL-019の件数修正とは分離する。
 - **解釈:** 対象はページ末尾の「収集元」一覧である。記事カード内の`article-meta`は既にプレーン表示であり、今回の対象外とする。収集元の名称、件数、`enabled`判定、定義順は変更せず、トップページと日別Archiveで同一表示にする。色に意味体系や凡例がなく、複数ソースが同じ色であるため、識別機能より装飾性が上回っている。[BL-002](#bl-002--記事カードの楕円バッジ多用を見直す)／[BL-003](#bl-003--aiで機械処理された印象を弱める)の「色付き楕円ラベルの多用を避ける」という方向へ整合させる。現行[UI_SPEC.md](UI_SPEC.md) 12.1の「取得元別カラーを維持する」と競合するため、実装時に正式に置換する。
-- **完了条件:** 各収集元`li`から取得元別のinline `background`指定を削除する；色付きpillではなく、無彩色・低強調のプレーンな一覧として表示する；15ソースという件数、列挙対象、定義順を変更しない；CISA KEVも他の収集元と同じ通常表示にする；トップページとすべての日別Archiveで同じ表示になる；[UI_SPEC.md](UI_SPEC.md) 12.1を新仕様へ更新する；必要な[DECISIONS.md](DECISIONS.md)の`Supersedes`関係を記録する；PCと390pxで折返し、可読性、横スクロールを確認する；関連テスト、full unittest、Pull Request CI、`git diff --check`が成功する；Pages公開後にユーザー受入を得る。
-- **依存関係:** [BL-002](#bl-002--記事カードの楕円バッジ多用を見直す)；[BL-003](#bl-003--aiで機械処理された印象を弱める)；[BL-004](#bl-004--fable-5によるuiレビューとui設計書)／[UI_SPEC.md](UI_SPEC.md) Version 1.0；[BL-019](#bl-019--収集元見出し件数と列挙対象を一致させる)；現行`build_footer_sources()`および`build_html()`。
-- **実装証跡:** 未実装。
-- **ユーザー受入証跡:** 未実装のため該当なし。
-- **残作業:** 表示仕様の具体化；UI_SPEC／DECISIONSの更新；実装；テスト；既存HTML再生成；Pages確認；ユーザー受入。
+- **完了条件:** 各収集元`li`から取得元別のinline `background`指定を削除する；色付きpillではなく、無彩色・低強調のプレーンな一覧として表示する；15ソースという件数、列挙対象、定義順を変更しない；CISA KEVも他の収集元と同じ通常表示にする；トップページとすべての日別Archiveで同じ表示になる；[UI_SPEC.md](UI_SPEC.md) 12.1を新仕様へ更新する；必要な[DECISIONS.md](DECISIONS.md)の`Supersedes`関係を記録する；PCと390pxで折返し、可読性、横スクロールを確認する；関連テスト、full unittest、Pull Request CI、`git diff --check`が成功する；ユーザーがmerge前の生成screenshotsを目視受入し、merge後の公開Pagesがその受入済み表示と一致することを客観確認する。
+- **依存関係:** [BL-002](#bl-002--記事カードの楕円バッジ多用を見直す)；[BL-003](#bl-003--aiで機械処理された印象を弱める)；[BL-004](#bl-004--fable-5によるuiレビューとui設計書)／[UI_SPEC.md](UI_SPEC.md) Version 1.3；[BL-019](#bl-019--収集元見出し件数と列挙対象を一致させる)；[SD-023](DECISIONS.md#sd-023--remove-source-specific-colors-and-pill-styling-from-the-source-footer)；現行`build_footer_sources()`および`build_html()`。
+- **実装証跡:** `build_html()`の収集元`li`から取得元別inline backgroundを削除し、背景・border・pill状radius・chip状paddingを持たない補助テキスト色のプレーン一覧へ変更した。件数、enabledな15ソースの集合、定義順、CISA KEVの表示、`ul`／`li`構造、トップページ／日別Archiveの共通表示は維持する。PCは3列、600px以下は1列とし、既存daily JSONだけからトップページと全日別Archiveをoffline再生成した。[UI_SPEC.md](UI_SPEC.md) Version 1.3と[SD-023](DECISIONS.md#sd-023--remove-source-specific-colors-and-pill-styling-from-the-source-footer)へ表示契約を記録し、関連33 tests、full unittest 1156 tests、Markdown内部リンク、全15生成ページのフッター契約、`git diff --check`が成功し、`data/`と`data/index.json`は不変である。repository-external `BL-020/neutral-source-footer/`にトップページ／日別ArchiveそれぞれのPC 1280px／390px screenshotsを保存した。[Draft PR #41](https://github.com/matkei31/security-digest/pull/41)を作成し、ユーザー受入済みで、productionは未変更のままPages公開確認を待つ。
+- **ユーザー受入証跡:** repository-external `BL-020/neutral-source-footer/`のトップページ／日別ArchiveそれぞれのPC 1280px／390px生成screenshotsに対し、ユーザーは「この表示でOK、進めて」と目視受入した。PCの3列、390pxの1列、取得元別カラーとpill／chipのない全15ソースの低強調プレーンテキスト表示、横スクロール・重なり・文字切れがないこと、およびbrowser標準focus表示を含む表示が受入対象である。これはmerge前の生成画面に対する受入であり、ユーザーが公開production Pagesを確認したことを意味しない。
+- **残作業:** [PR #41](https://github.com/matkei31/security-digest/pull/41)のmergeとPages公開確認。公開トップページ／日別ArchiveのPC 1280px／390px表示が受入済みscreenshotsと一致した場合に完了できる。
 - **注記:** BL-019を再オープンしない。収集元の有効・無効状態や取得処理を変更しない。BL-020登録時点ではUI_SPEC.mdやDECISIONS.mdを変更せず、UI_SPECの置換はBL-020実装と同じPRで行う。
 
 ## BL-021 — Today's Briefの意味忠実性・semantic validation再設計

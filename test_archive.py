@@ -1301,10 +1301,50 @@ class SourceFooterConsistencyTest(unittest.TestCase):
         archive_footer = source_footer_segment(archive_html)
         self.assertEqual(top_footer, archive_footer)
         self.assertIn("収集元 (2ソース)", top_footer)
-        self.assertEqual(top_footer.count("<li "), 2)
+        self.assertEqual(top_footer.count("<li>"), 2)
         self.assertLess(top_footer.index("NIST News"), top_footer.index("CISA KEV"))
         self.assertNotIn("CISA Advisory", top_footer)
         self.assertNotIn("NIST NVD", top_footer)
+        self.assertNotIn("<li style=", top_footer)
+        self.assertNotIn("<li class=", top_footer)
+        self.assertNotIn("background:", top_footer)
+        self.assertIn(
+            ".sources ul{margin:10px 0 0;padding-left:18px;display:grid;"
+            "grid-template-columns:repeat(3,minmax(0,1fr));",
+            top_html,
+        )
+        self.assertIn(
+            ".sources li{font-size:11px;line-height:1.5;color:#8b949e;"
+            "overflow-wrap:anywhere}",
+            top_html,
+        )
+        self.assertIn(
+            "@media (max-width:600px){.sources ul{grid-template-columns:1fr}}",
+            top_html,
+        )
+        self.assertNotIn(".sources li{font-size:11px;padding:", top_html)
+        self.assertNotIn(".sources li{font-size:11px;border-radius:", top_html)
+
+    def test_real_footer_keeps_enabled_set_count_order_and_plain_contract(self):
+        expected = fetch.build_footer_sources(fetch.SOURCE_DEFINITIONS)
+        html = fetch.build_html([])
+        footer = source_footer_segment(html)
+
+        self.assertEqual(len(expected), 15)
+        self.assertIn("収集元 (15ソース)", footer)
+        self.assertEqual(footer.count("<li>"), len(expected))
+        positions = []
+        for source in expected:
+            escaped_name = fetch.esc(source["name"])
+            self.assertIn(f"<li>{escaped_name}</li>", footer)
+            positions.append(footer.index(escaped_name))
+        self.assertEqual(positions, sorted(positions))
+        self.assertIn("nist", [source["id"] for source in expected])
+        self.assertIn("<li>CISA KEV</li>", footer)
+        self.assertIn("<li>NIST</li>", footer)
+        self.assertNotIn("CISA Advisory", footer)
+        self.assertNotIn(">NIST NVD<", footer)
+        self.assertNotIn("NVD vulnerability facts", footer)
 
 
 if __name__ == "__main__":
