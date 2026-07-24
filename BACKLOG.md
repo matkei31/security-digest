@@ -499,17 +499,17 @@
 - **ID:** BL-025
 - **タイトル:** 収集元URLをhttp／https schemeへ制限する
 - **優先度:** P2
-- **状態:** 実装受入済み / PR #48 merge待ち
+- **状態:** 完了
 - **出所種別:** ユーザー承認済み方針
 - **ユーザー原文:** 該当なし — BL-015 decision brief全体への承認「ok」に基づく後続Ticket。
 - **ユーザー確認済み要約:** GAP-001を最小のsource-definition validation変更として実装する。
 - **解釈:** `load_source_definitions()`でcollection URLを`http`／`https` schemeへ制限する。collection URL、display URL等の各URL fieldの役割を区別し、title・vendor・記事固有ruleを追加しない。
 - **完了条件:** 非HTTP(S) collection URLを拒否する；各URL fieldの役割に沿ったsource-definition testsを追加する；現在の有効設定と取得挙動を非回帰確認する；runtime変更を最小化し、個別受入を記録する。
 - **依存関係:** GAP-001；[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.2；[SD-024](DECISIONS.md#sd-024--approve-security-requirements-version-10-and-the-proportionate-security-roadmap)。
-- **実装証跡:** `fetch.py`のsource-definition loader境界へ、`URL_REQUIRED_COLLECTION_METHODS`をsource of truthとするcollection `url` validatorを追加した。`rss`／`cisa_kev_json`／`nist_nvd_json`はenabled状態にかかわらず、空でない文字列、前後whitespaceなし、absolute URL、`http`／`https` scheme、hostありを要求し、違反を外部取得前に`SourceDefinitionError`で拒否する。collection URLと表示用`display_url`は別役割のまま、CISA KEVのenabled時presence契約とrender-time `safe_url()`境界を変更していない。17件の現行source定義、active RSSの名前／順序／URL、trusted source set、CISA KEV／NIST NVDのstructured-source URLは不変である。hostname allowlist、private network／DNS／redirect／port／TLS検査、HTTPS-only化は非対象。関連source-definition tests 63件、管理文書を含む関連tests 129件、full unittest 1,205件、[PR #48](https://github.com/matkei31/security-digest/pull/48)のPull Request CIが成功した。Gemini、RSS、NVD、CISA KEV、translation、production、外部HTTPは実行していない。[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.2でSR-003を`Met`、GAP-001を`Implemented`へ更新した。
+- **実装証跡:** `fetch.py`のsource-definition loader境界へ、`URL_REQUIRED_COLLECTION_METHODS`をsource of truthとするcollection `url` validatorを追加した。`rss`／`cisa_kev_json`／`nist_nvd_json`はenabled状態にかかわらず、空でない文字列、前後whitespaceなし、absolute URL、`http`／`https` scheme、hostありを要求し、違反を外部取得前に`SourceDefinitionError`で拒否する。collection URLと表示用`display_url`は別役割のまま、CISA KEVのenabled時presence契約とrender-time `safe_url()`境界を変更していない。17件の現行source定義、active RSSの名前／順序／URL、trusted source set、CISA KEV／NIST NVDのstructured-source URLは不変である。hostname allowlist、private network／DNS／redirect／port／TLS検査、HTTPS-only化は非対象。関連source-definition tests 63件、受入状態のfocused tests 120件、full unittest 1,205件が成功した。[PR #48](https://github.com/matkei31/security-digest/pull/48)はfinal head `ffca290ba74f3002adf9f383bddfff80b42860b7`で[Pull Request CI run 30107009791](https://github.com/matkei31/security-digest/actions/runs/30107009791)成功後、merge commit `2f93556532c6600a0d650c93d388a237b98e7aaa`として通常mergeされた。Gemini、RSS、NVD、CISA KEV、translation、production、外部HTTPは実行していない。[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.2でSR-003を`Met`、GAP-001を`Implemented`へ更新した。
 - **ユーザー受入証跡:** 2026-07-25、ユーザーはPR #48の完成実装へ「ok」と回答し、上記collection URL scheme validationを個別受入した。この受入はhostname allowlist、private IP、DNS、redirect、port、TLS等の将来対策、`display_url`への新validation、production実行を承認するものではない。
-- **残作業:** PR #48のReady化・mergeと、merge後の客観的完了記録。merge後に完了可能。
-- **注記:** runtime変更はsource-definition loader境界だけであり、source定義、取得対象、ARTICLE／BRIEF／daily schema、workflow、production、`data/`、`docs/`は不変。実装受入済みだがmerge前のためBL-025は未完了。
+- **残作業:** なし。
+- **注記:** runtime変更はsource-definition loader境界だけであり、source定義、取得対象、ARTICLE／BRIEF／daily schema、workflow、production、`data/`、`docs/`は不変。production実行や外部content requestを行わず、個別受入、CI、通常merge、完了記録まで完了した。
 
 ## BL-026 — GitHub Actions supply chainとproduction concurrencyを強化する
 

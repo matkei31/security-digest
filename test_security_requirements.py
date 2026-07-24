@@ -564,20 +564,30 @@ class SecurityRequirementsTest(unittest.TestCase):
         bl025 = self.backlog.split("## BL-025", 1)[1].split("\n## ", 1)[0]
         self.assertIn("収集元URLをhttp／https schemeへ制限する", bl025)
         self.assertIn("**優先度:** P2", bl025)
-        self.assertIn("実装受入済み / PR #48 merge待ち", bl025)
+        self.assertIn("**状態:** 完了", bl025)
         self.assertIn("完成実装へ「ok」", bl025)
         self.assertIn("hostname allowlist", bl025)
         self.assertIn("production実行を承認するものではない", bl025)
         self.assertIn("SR-003を`Met`、GAP-001を`Implemented`", bl025)
-        self.assertIn("merge前のためBL-025は未完了", bl025)
+        self.assertIn("ffca290ba74f3002adf9f383bddfff80b42860b7", bl025)
+        self.assertIn("Pull Request CI run 30107009791", bl025)
+        self.assertIn("2f93556532c6600a0d650c93d388a237b98e7aaa", bl025)
+        self.assertIn("**残作業:** なし", bl025)
         active = self.status.split("## Active work", 1)[1].split(
             "## 5. Recently completed work", 1
         )[0]
-        self.assertIn("BL-025", active)
-        self.assertIn("「ok」で個別受入", active)
-        self.assertIn("PR #48", active)
-        self.assertIn("loader境界だけ", active)
-        self.assertIn("SR-003を`Met`、GAP-001を`Implemented`", active)
+        self.assertNotIn("BL-025", active)
+        self.assertIn("None", active)
+        recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
+            "## 6. Known issues and limitations", 1
+        )[0]
+        self.assertIn("BL-025 source collection URL scheme validation", recently_completed)
+        self.assertIn("「ok」", recently_completed)
+        self.assertIn("PR #48", recently_completed)
+        self.assertIn("ffca290ba74f3002adf9f383bddfff80b42860b7", recently_completed)
+        self.assertIn("Pull Request CI run 30107009791", recently_completed)
+        self.assertIn("2f93556532c6600a0d650c93d388a237b98e7aaa", recently_completed)
+        self.assertIn("no residual work", recently_completed)
         next_candidates = self.status.split("## 7. Next candidates", 1)[1].split(
             "## 8. Sources of truth", 1
         )[0]
