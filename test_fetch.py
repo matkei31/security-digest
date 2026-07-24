@@ -2938,12 +2938,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
         self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 27)})
 
-    def test_sd_ids_are_unique_and_cover_sd001_to_sd024(self):
+    def test_sd_ids_are_unique_and_cover_sd001_to_sd025(self):
         text = self._read("DECISIONS.md")
         sd_headings = [h for h in self._headings(text) if re.match(r"^SD-\d{3}\b", h)]
         ids = [re.match(r"^(SD-\d{3})", h).group(1) for h in sd_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
-        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 25)})
+        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 26)})
 
     def test_bl_001_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -3029,9 +3029,8 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertNotIn("BL-017", known_issues)
         self.assertNotIn("BL-017", next_candidates)
         self.assertNotIn("[BL-022]", next_candidates)
-        self.assertRegex(next_candidates, r"(?m)^1\. \[BL-024\]")
-        self.assertRegex(next_candidates, r"(?m)^2\. \[BL-025\]")
-        self.assertRegex(next_candidates, r"(?m)^3\. \[BL-026\]")
+        self.assertRegex(next_candidates, r"(?m)^1\. \[BL-025\]")
+        self.assertRegex(next_candidates, r"(?m)^2\. \[BL-026\]")
 
     def test_bl_018_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")

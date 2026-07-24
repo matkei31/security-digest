@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-No item is currently recorded in this short active-work section.
+- [BL-024](BACKLOG.md#bl-024--最小security-operationsと公開済み生成物の訂正手順を定義する) — Security Operations Version 1.0承認済み / PR #46 merge待ち。ユーザーは最終decision brief全体へ「ok」と回答し、限定的emergency hotfix、withdrawal優先順、決定論的訂正と証跡、correction notice schema／UI非追加、artifact 90日原則を承認した。[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.1はSR-015／020／032／043をMet、GAP-006／008／013／014を`Completed by documentation`として記録し、[SD-025](DECISIONS.md#sd-025--approve-security-operations-version-10-and-the-minimal-incident-and-correction-policy)と[AGENTS.md](AGENTS.md)最小参照を追加した。documentation-onlyであり、runtime、workflow、`data/`、`docs/`、production、ARTICLE／BRIEF contract、daily schemaは不変。merge前のため完了扱いではない。
 
 ## 5. Recently completed work
 
@@ -76,9 +76,8 @@ No item is currently recorded in this short active-work section.
 
 ## 7. Next candidates
 
-1. [BL-024](BACKLOG.md#bl-024--最小security-operationsと公開済み生成物の訂正手順を定義する) — Security Operations／published-output correction documentation (`P1`)
-2. [BL-025](BACKLOG.md#bl-025--収集元urlをhttphttps-schemeへ制限する) — source URL scheme validation (`P2`)
-3. [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する) — Actions supply chain／production concurrency (`P2`)
+1. [BL-025](BACKLOG.md#bl-025--収集元urlをhttphttps-schemeへ制限する) — next candidate: source URL scheme validation (`P2`)
+2. [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する) — following candidate: Actions supply chain／production concurrency (`P2`)
 
 [BL-023](BACKLOG.md#bl-023--article編集品質改善) is on hold after the v9 and fixed-v10 prompt-only No-Go evaluations and is not ranked in this short priority list. Reconsider it only through a separately designed structured ARTICLE-field contract or facts-based limited deterministic composition.
 
@@ -99,5 +98,6 @@ The initial backlog import is not a complete historical-comment audit; [BL-014](
 | Incomplete, partial, and acceptance-pending items | `BACKLOG.md` |
 | Stable decisions | `DECISIONS.md` |
 | Approved UI specification and UI decision history | `UI_SPEC.md` |
-| Approved security requirements and evidence mapping | `SECURITY_REQUIREMENTS.md` Version 1.0 |
+| Approved security requirements and evidence mapping | `SECURITY_REQUIREMENTS.md` Version 1.1 |
+| Approved incident, secret-rotation, correction, withdrawal, regeneration, and external-artifact policy | `SECURITY_OPERATIONS.md` Version 1.0 |
 | Implementation-agent constraints | `AGENTS.md` |

@@ -100,9 +100,10 @@ Current prompt versions, schema version, source status, and known limitations ar
 
 ## Security requirements
 
-- [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.0 is the source of truth for the current architecture security baseline, accepted residual risks, and re-evaluation triggers.
+- [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.1 is the source of truth for the current architecture security baseline, accepted residual risks, and re-evaluation triggers.
 - Consult that baseline when a listed trigger occurs. Implementing a security control still requires its own approved ticket, scope, tests, review, and merge.
 - Approval of the baseline is not blanket authorization for production execution, GitHub setting changes, or an individual control change.
+- For incidents, credential rotation or revocation, published-output correction or withdrawal, deterministic regeneration, and repository-external artifact handling, follow [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.0. That runbook does not replace the separate approval boundaries for production, generated-output changes, GitHub settings, secrets, Ready status, or merge.
 - Escape all external and AI-generated strings before inserting them into HTML.
 - Only allow `http` and `https` links.
 - External links must use `rel="noopener noreferrer"`.
