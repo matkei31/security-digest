@@ -115,7 +115,7 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("SD-020's validated earlier-date selection", self.decisions)
         self.assertIn("only for navigation labels, date display, placement", self.decisions)
 
-    def test_bl020_source_footer_is_plain_user_accepted_and_awaits_pages(self):
+    def test_bl020_source_footer_is_plain_user_accepted_and_complete(self):
         self.assertIn("取得元別カラー、背景、border、pill状の角丸", self.spec)
         self.assertIn("無彩色・低強調のプレーンテキスト一覧", self.spec)
         self.assertIn("件数、表示集合、定義順は`build_footer_sources()`", self.spec)
@@ -127,11 +127,12 @@ class UiSpecDocumentTest(unittest.TestCase):
             "## SD-023 — Remove source-specific colors and pill styling from the source footer",
             self.decisions,
         )
-        self.assertIn("- **状態:** 実装済み / ユーザー受入済み / Pages公開確認待ち", self.bl020)
+        self.assertIn("- **状態:** 完了", self.bl020)
         self.assertIn("「この表示でOK、進めて」", self.bl020)
-        self.assertIn("merge前の生成画面に対する受入", self.bl020)
-        self.assertIn("ユーザーが公開production Pagesを確認したことを意味しない", self.bl020)
-        self.assertNotIn("- **状態:** 完了", self.bl020)
+        self.assertIn("ユーザーが確認したのはmerge前の生成screenshots", self.bl020)
+        self.assertIn("公開PagesはWorkが客観確認", self.bl020)
+        self.assertIn("ユーザーが公開サイトを目視したとは記録しない", self.bl020)
+        self.assertIn("- **残作業:** なし。", self.bl020)
 
     def test_sd016_and_user_adjudication_are_recorded_verbatim(self):
         self.assertIn(
