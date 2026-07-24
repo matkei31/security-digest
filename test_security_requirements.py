@@ -464,14 +464,12 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("secret names", self.requirements)
         self.assertIn("No value was inspected", self.requirements)
 
-    def test_bl015_is_version_10_approved_merge_pending_and_not_complete(self):
+    def test_bl015_is_complete_and_removed_from_active_work(self):
         bl015 = self.backlog.split("## BL-015", 1)[1].split("## BL-016", 1)[0]
-        self.assertIn(
-            "**状態:** Version 1.0承認済み / PR #44 merge待ち",
-            bl015,
-        )
+        self.assertIn("**状態:** 完了", bl015)
         self.assertIn("[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Draft 0.1", bl015)
         self.assertIn("Draft 0.2", bl015)
+        self.assertIn("Version 1.0", bl015)
         self.assertIn("Critical 0、High 0", bl015)
         self.assertIn("F-001〜F-003およびF-005〜F-009", bl015)
         self.assertIn("F-004", bl015)
@@ -484,7 +482,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("BL-024", bl015)
         self.assertIn("BL-025", bl015)
         self.assertIn("BL-026", bl015)
-        self.assertNotIn("**状態:** 完了", bl015)
+        self.assertIn("PR #44", bl015)
+        self.assertIn("eef80a3a589bbaee8dbb373c4a0ee0f75038546d", bl015)
+        self.assertIn("3f1803388161495f9145150e760d91b03821ad80", bl015)
+        self.assertIn("Pull Request CI run 30095261901", bl015)
+        self.assertIn("BL-015自体はなし", bl015)
 
         active = self.status.split("## Active work", 1)[1].split(
             "## 5. Recently completed work", 1
@@ -492,12 +494,13 @@ class SecurityRequirementsTest(unittest.TestCase):
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
-        self.assertIn("BL-015", active)
-        self.assertIn("Version 1.0 approved", active)
-        self.assertIn("waiting for", active)
-        self.assertIn("repository-owner checklist is complete", active)
-        self.assertIn("「ok」", active)
-        self.assertNotIn("BL-015", recently_completed)
+        self.assertNotIn("BL-015", active)
+        self.assertIn("BL-015 Security Requirements Version 1.0", recently_completed)
+        self.assertIn("GAP-010 repository-owner checklist", recently_completed)
+        self.assertIn("「ok」", recently_completed)
+        self.assertIn("PR #44", recently_completed)
+        self.assertIn("3f1803388161495f9145150e760d91b03821ad80", recently_completed)
+        self.assertIn("BL-015 itself has no residual work", recently_completed)
 
     def test_sd024_and_follow_up_tickets_are_recorded(self):
         self.assertIn(
@@ -508,6 +511,10 @@ class SecurityRequirementsTest(unittest.TestCase):
         sd024 = self.decisions.split("## SD-024", 1)[1]
         self.assertIn("「ok」", sd024)
         self.assertIn("PR #44", sd024)
+        self.assertIn("**Status:** Accepted / Version 1.0 merged", sd024)
+        self.assertIn("eef80a3a589bbaee8dbb373c4a0ee0f75038546d", sd024)
+        self.assertIn("3f1803388161495f9145150e760d91b03821ad80", sd024)
+        self.assertIn("Pull Request CI run 30095261901", sd024)
         for backlog_id, title, priority in (
             ("BL-024", "最小Security Operationsと公開済み生成物の訂正手順を定義する", "P1"),
             ("BL-025", "収集元URLをhttp／https schemeへ制限する", "P2"),
