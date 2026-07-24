@@ -1,16 +1,17 @@
 # Security Digest Security Requirements
 
-- **Version:** 1.1
+- **Version:** 1.2
 - **Status:** Approved
-- **As of:** 2026-07-24
+- **As of:** 2026-07-25
 - **Scope:** Current static GitHub Pages site and its repository-backed generation pipeline
-- **Out of scope:** Runtime security-control implementation in this maintenance update
+- **Out of scope:** Runtime security-control implementation beyond the accepted BL-025 loader-boundary change
 
 This is the approved architecture security-requirements baseline, not the GitHub
-vulnerability-reporting policy normally placed in a `SECURITY.md` file. Version 1.1 retains
+vulnerability-reporting policy normally placed in a `SECURITY.md` file. Version 1.2 retains
 requirements, repository evidence, register entries, proportional exclusions, owner-check
-results, and approved roadmap decisions, and records the approved Security Operations
-documentation completed by BL-024. It does not implement a runtime gap response.
+results, and approved roadmap decisions; records the approved Security Operations
+documentation completed by BL-024; and records the accepted BL-025 collection-URL validator.
+It does not implement any broader runtime gap response.
 
 Fable 5 reviewed Draft 0.1 as proportional to the current architecture and suitable for
 continued review, with no Critical or High findings. Draft 0.2 incorporated the user's
@@ -18,9 +19,10 @@ adjudication of F-001 through F-009. Fable 5 could not retrieve `STATUS.md` or
 `test_security_requirements.py`; those two files were instead checked independently at the
 PR head. The repository-owner checklist was then completed read-only, and the user approved
 the complete decision brief with 「ok」. Version 1.0 recorded that policy approval. Version 1.1
-is a maintenance update reflecting the separately approved
+recorded the separately approved
 [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.0 and [SD-025](DECISIONS.md#sd-025--approve-security-operations-version-10-and-the-minimal-incident-and-correction-policy),
-while leaving runtime security-control implementation outside this update.
+and Version 1.2 records the separately accepted BL-025 loader-boundary implementation without
+expanding it into a new network-security policy.
 
 ## 1. Purpose and proportionality
 
@@ -192,7 +194,7 @@ shown in the Gap / exception column or as `Unverified outside repository`.
 |---|---|---|---|---|---|---|
 | SR-001 | Treat feed, article, structured-source, translation, and API response content as untrusted input and fail closed or fall back at its parser boundary. | External content can be malformed, unavailable, or instruction-like. | Met | [`fetch.py`](fetch.py): `_parse_feed_items()`, `normalize_feed_body_text()`, `_fetch_feed_result()`; [`vulnerability_facts.py`](vulnerability_facts.py): normalization and cache validation; [`test_feed_fetch_status.py`](test_feed_fetch_status.py) | No current exception. | New source format, parser, provider, or article-page retrieval. |
 | SR-002 | Escape every external or AI-generated string before inserting it into HTML; allow only `http` and `https` rendered links through `safe_url()`; add `rel="noopener noreferrer"` to external links opened with `target="_blank"`. | Prevents markup/script injection and unsafe navigation. | Met | [`fetch.py`](fetch.py): `esc()`, `safe_url()`, `build_html()`; [`test_fetch.py`](test_fetch.py): `HtmlEscapeTest`, `SafeUrlTest`, article-link tests; [`test_archive.py`](test_archive.py): `test_internal_and_external_links_are_safe` | Internal navigation intentionally does not use external-link attributes. | New renderer, HTML field, URL source, or client-side script. |
-| SR-003 | Permit production outbound collection only to reviewed `http`/`https` endpoints and validate that scheme at the configuration boundary. | A trusted configuration error should not silently enable a non-web URL handler. | Partially met | All current URLs in [`source_definitions.json`](source_definitions.json) are HTTPS; [`fetch.py`](fetch.py): `load_source_definitions()` validates presence and collection method; [`test_source_definitions.py`](test_source_definitions.py) | `load_source_definitions()` does not enforce an `http`/`https` scheme for collection URLs. See GAP-001. | Any source-definition or collection-method change. |
+| SR-003 | Permit production outbound collection only to reviewed `http`/`https` endpoints and validate that scheme at the configuration boundary. | A trusted configuration error should not silently enable a non-web URL handler. | Met | [`fetch.py`](fetch.py): `URL_REQUIRED_COLLECTION_METHODS`, `ALLOWED_COLLECTION_URL_SCHEMES`, `_validate_collection_url()`, and `_validate_source_entry()`; [`test_source_definitions.py`](test_source_definitions.py); [BL-025](BACKLOG.md#bl-025--収集元urlをhttphttps-schemeへ制限する); [PR #48](https://github.com/matkei31/security-digest/pull/48), including its final head, Pull Request CI, and merge record | URL-required collection methods now require a non-empty string with no surrounding whitespace, an absolute `http`/`https` URL, and a host at loader time, including disabled sources. Hostname allowlisting, private/loopback address restrictions, DNS, redirect destinations, ports, TLS, and new `display_url` validation remain outside this requirement. See GAP-001. | Any source-definition, collection-method, collection URL field, or source-loader change. |
 | SR-004 | Do not fetch article pages for richer content. Use only feed-native content, select one bounded representation deterministically, and do not store the full rich body. | Limits new attack surface, data transfer, and unintended retention. | Met | [`fetch.py`](fetch.py): `build_article_body_text()`, `apply_article_body_char_limit()`; [`daily_json.py`](daily_json.py): `build_raw_excerpt()`; [`test_feed_rich_content.py`](test_feed_rich_content.py): `SafetyBoundaryTest`, `RawExcerptAndArticleEntryUnaffectedTest` | The separate summary translation endpoint receives a bounded public summary, not rich content. | Article-page scraping, full-content storage, or another content provider. |
 | SR-005 | Add source-specific behavior only through an approved source contract; do not add unbounded title-, vendor-, CVE-, or article-specific exceptions. | Special cases can bypass common safety and validation paths. | Met | [`AGENTS.md`](AGENTS.md): Scope discipline; [`source_definitions.json`](source_definitions.json); [`test_feed_rich_content.py`](test_feed_rich_content.py): source/name-independence tests | Current approved source-specific behavior, such as shared CISA KEV URLs, remains explicit and tested. | A source cannot be supported without bypassing a common boundary. |
 
@@ -316,7 +318,7 @@ GAP-015 records the hardening candidate. No response-reader implementation is ch
 
 | Area | Requirement IDs | Current implementation | Evidence | Aggregate status | SR state breakdown |
 |---|---|---|---|---|---|
-| Input and content handling | SR-001–SR-005 | Common parsers, HTML normalization, bounded rich-content selection, `esc()`, `safe_url()`, and source-definition review | [`fetch.py`](fetch.py), [`test_fetch.py`](test_fetch.py), [`test_feed_rich_content.py`](test_feed_rich_content.py) | Partially met | Met 4 / Partial 1 / Not met 0 / Unverified 0 |
+| Input and content handling | SR-001–SR-005 | Common parsers, HTML normalization, bounded rich-content selection, `esc()`, `safe_url()`, source-definition review, and loader-time collection URL validation | [`fetch.py`](fetch.py), [`test_fetch.py`](test_fetch.py), [`test_feed_rich_content.py`](test_feed_rich_content.py), [`test_source_definitions.py`](test_source_definitions.py) | Met | Met 5 / Partial 0 / Not met 0 / Unverified 0 |
 | Prompt and AI boundary | SR-006–SR-011 | Separate verified/untrusted JSON, allowlist projection, ARTICLE validation/fallback, no BRIEF API | [`fetch.py`](fetch.py), [`daily_json.py`](daily_json.py), [`test_article_internal_identifier_leak.py`](test_article_internal_identifier_leak.py), [`test_todays_brief.py`](test_todays_brief.py) | Met | Met 6 / Partial 0 / Not met 0 / Unverified 0 |
 | Storage and publication | SR-012–SR-016 | Validated atomic daily JSON in `data/`, escaped HTML in `docs/`, bounded stored content, and documented external-artifact handling | [`daily_json.py`](daily_json.py), [`fetch.py`](fetch.py), [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md), [SD-014](DECISIONS.md#sd-014--keep-daily-json-outside-the-github-pages-publication-tree-and-limit-stored-content) | Met | Met 5 / Partial 0 / Not met 0 / Unverified 0 |
 | Secrets | SR-017–SR-020 | Production-only secret references, owner-verified configuration state, persistence tests, and documented rotation/revocation; no values recorded | [`.github/workflows/fetch.yml`](.github/workflows/fetch.yml), [`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml), [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md), [`test_article_analysis.py`](test_article_analysis.py), section 13 | Partially met | Met 2 / Partial 2 / Not met 0 / Unverified 0 |
@@ -339,7 +341,7 @@ it does not mean the underlying control is implemented.
 
 | Gap ID | Classification | Current disposition | Related requirement | Description | Risk | Proportionality | Approved handling | Separate ticket | Trigger / timing |
 |---|---|---|---|---|---|---|---|---|---|
-| GAP-001 | Security gap | Approved for implementation ticket | SR-003 | Source-definition validation does not enforce `http`/`https` for outbound collection URLs. | A reviewed configuration error could select an unintended handler. | Small deterministic validation at an existing boundary. | Reject non-HTTP(S) collection URLs while distinguishing collection and display URL roles. | [BL-025](BACKLOG.md#bl-025--収集元urlをhttphttps-schemeへ制限する) | Before adding or changing a collection endpoint. |
+| GAP-001 | Security gap | Implemented | SR-003 | The Version 1.1 baseline did not enforce `http`/`https` for outbound collection URLs. | A reviewed configuration error could select an unintended handler. | Small deterministic validation at an existing boundary. | BL-025 implemented loader-time validation in [`fetch.py`](fetch.py), covered by [`test_source_definitions.py`](test_source_definitions.py), user acceptance 「ok」, and [PR #48](https://github.com/matkei31/security-digest/pull/48), including its final head, Pull Request CI, and merge record. Collection and display URL roles remain distinct. | [BL-025](BACKLOG.md#bl-025--収集元urlをhttphttps-schemeへ制限する) | Implemented; re-evaluate on a collection method, collection URL field, or source-loader change. |
 | GAP-002 | Policy decision | Approved for implementation ticket | SR-028 | Actions use major-version tags, not full commit SHAs. | Mutable tags provide weaker immutable provenance. | Pinning requires an update path but is proportionate for both workflows. | Pin both workflows to full SHAs together with weekly Actions Dependabot. | [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する) | Approved follow-up; Action advisory or workflow expansion increases urgency. |
 | GAP-003 | Policy decision | Approved for implementation ticket | SR-029 | GitHub Actions update automation is absent. | Action updates may be noticed late. | Only the `github-actions` ecosystem is needed now. | Add weekly GitHub Actions Dependabot with full-SHA pinning for both workflows. | [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する) | Approved follow-up. |
 | GAP-004 | Hardening candidate | Approved for implementation ticket | SR-025 | Production generation has no concurrency group. | Scheduled and manual writers could race. | A serialized group is proportionate but low priority. | Add production concurrency with `cancel-in-progress: false` in BL-026. | [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する) | Before frequency increases or after overlap/push conflict. |
@@ -426,7 +428,7 @@ These decisions approve follow-up scope, not implementation or production execut
 
 ## 12. Approval and maintenance
 
-- Version 1.1 is approved as a maintenance update to the Version 1.0 baseline.
+- Version 1.2 is approved as a maintenance update to the Version 1.0 baseline.
 - Fable 5 review has been incorporated: Critical 0, High 0; accepted and modified findings are
   reflected, and the rejected F-004 consolidation was not applied. Fable 5 did not inspect `STATUS.md` or
   `test_security_requirements.py`; those files were independently checked at the PR head.
@@ -435,6 +437,11 @@ These decisions approve follow-up scope, not implementation or production execut
 - The user separately approved Security Operations Version 1.0 with 「ok」; Version 1.1 records
   SR-015, SR-020, SR-032, and SR-043 as Met and GAP-006, GAP-008, GAP-013, and GAP-014 as
   `Completed by documentation`, without claiming runtime implementation.
+- The user separately accepted the completed BL-025 collection URL scheme validation with
+  「ok」. Version 1.2 records SR-003 as Met and GAP-001 as `Implemented`. That acceptance is
+  limited to the loader-time collection URL contract; it does not approve hostname allowlists,
+  private-address, DNS, redirect, port, or TLS controls, new display-URL validation, or a
+  production execution.
 - This remains policy approval. It is not blanket preapproval
   for later security-control pull requests, production execution, or GitHub setting changes.
 - Each implementation or documentation ticket still requires its normal approved scope, tests,
@@ -446,7 +453,8 @@ These decisions approve follow-up scope, not implementation or production execut
   records the Version 1.0 baseline approval, and
   [SD-025](DECISIONS.md#sd-025--approve-security-operations-version-10-and-the-minimal-incident-and-correction-policy)
   records the Version 1.1 maintenance basis without replacing existing security decisions or
-  implementation-agent boundaries.
+  implementation-agent boundaries. Version 1.2 is the BL-025 maintenance update under the
+  already-approved SD-024 roadmap and creates no new Stable Decision.
 
 ## 13. Repository-owner verification
 
