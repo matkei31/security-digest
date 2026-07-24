@@ -472,9 +472,10 @@
 - **完了条件:** ARTICLE prompt契約として各fieldの期待を仕様化する；prompt versionへの影響を評価する；`financial_impact`の条件付き関連と`recommended_actions`のCVE ID原則非掲載を、単純な禁止語・汎用regex削除ではなくfixtureとmock request／responseで検証する；CVE IDが`title`、`summary`、facts等の識別用途で維持されることを確認する；BRIEF後処理を追加しない；ARTICLEのsuccess／fallback／failed／not_attempted契約を維持する；実装後にユーザー受入を記録する。
 - **依存関係:** 現行ARTICLE prompt／version契約；[SD-015](DECISIONS.md#sd-015--project-trusted-context-through-an-explicit-allowlist-and-do-not-expose-internal-identifiers)；[AGENTS.md](AGENTS.md)のprompt／schemaおよびARTICLE validation契約。
 - **実装証跡:** `article-analysis-v9`候補をrepository外の固定15 fixture（targeted 11／control 4）に対し、`gemini-2.5-flash`で2 logical runs・30 attempts・retry 0として評価した。Technical GateはPASSしたが、financial_impact Gate、recommended_actions Gate、Safety／Non-regression GateはFAIL。sourceにない主体・対象等の主張追加、複数脆弱性や複数製品に関する重要条件の欠落、control fixtureの重要度・緊急度悪化を確認した。repository変更は0件で、評価成果物はrepository外の`BL-023/article-editorial-quality-pilot/`にNo-Go証跡として保持する。
+- **追加評価証跡:** `article-analysis-v10`固定候補をrepository外の17 fixtureに対し、`gemini-2.5-flash`で2 logical runs・34 attempts・retry 0として評価した。HTTP 200およびschema parseは34/34、technical error・field欠落・内部識別子漏えいは0件でTechnical GateはPASSしたが、financial_impact Gate、Safety／Non-regression Gate、mandatory Zimbra／NCSC記事はFAIL。sourceにない情報漏えい、業務停止、普及度、委託関係、与信／決済影響の追加、具体的な関連を生成できない場合の抽象化、適用条件やrecommended actionの欠落、importance等の変更対象外fieldの悪化を確認し、source限定性と他field非回帰を安定保証できなかった。v10候補は採用・実装せず、repository変更は0件、productionは`article-analysis-v8`を維持し、評価結果を受けた追加prompt調整も行わない。この結論は今回固定したv10候補に限定し、簡素化の方向やpromptによる改善一般を不可能とは判断しない。評価成果物はrepository-external `BL-023/article-financial-impact-v10-screening/`にNo-Go証跡として保持する。
 - **ユーザー受入証跡:** 2026-07-23、ユーザーがNo-Go状態とproduction非変更の記録を指示した。
 - **残作業:** prompt-only案の再調整は行わない。ARTICLE fieldの構造化設計、またはfactsを使った限定的な決定論的compositionを別ticketとして設計する場合のみ再検討する。
-- **注記:** v9候補は本番採用せず、productionは`article-analysis-v8`を維持する。regex削除、禁止語ルール、Brief側の後処理は導入しない。
+- **注記:** v9およびv10候補は本番採用せず、productionは`article-analysis-v8`を維持する。regex削除、禁止語ルール、Brief側の後処理は導入しない。
 
 ## 完了済み参照
 

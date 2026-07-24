@@ -64,7 +64,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 ## 6. Known issues and limitations
 
 - [BL-020](BACKLOG.md#bl-020--収集元一覧の取得元別カラーを廃止する): the per-source color and pill-like treatment in the collapsible source footer is a specified but unimplemented small UI fix, separate from the completed source-count correction.
-- [BL-023](BACKLOG.md#bl-023--article編集品質改善): 固定15 fixture・2 logical runs・30 attemptsで`article-analysis-v9`候補を評価したが、Technical GateのみPASSし、financial_impact／recommended_actions／Safety・Non-regression GateはFAIL。prompt-only改善はNo-Goとして保留し、productionは`article-analysis-v8`を維持する。prompt再調整、regex削除、禁止語規則、Brief後処理は行わない。
+- [BL-023](BACKLOG.md#bl-023--article編集品質改善): 固定15 fixture・2 logical runs・30 attemptsで`article-analysis-v9`候補を評価したが、Technical GateのみPASSし、financial_impact／recommended_actions／Safety・Non-regression GateはFAIL。続く`article-analysis-v10`固定候補は17 fixture・2 logical runs・34 attempts・retry 0でHTTP 200／schema parseが34/34、Technical GateはPASSしたが、financial_impact／Safety・Non-regression Gateおよびmandatory Zimbra／NCSC記事はFAILした。v9／v10ともprompt-only改善はNo-Goとして保留し、productionは`article-analysis-v8`を維持する。v10結果を受けた追加prompt調整は行わず、この結論は今回固定した候補に限定して、簡素化やprompt改善一般を不可能とは判断しない。regex削除、禁止語規則、Brief後処理は行わない。
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
 - [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する): A comprehensive security requirements document does not yet exist; existing rules remain scattered across `AGENTS.md` and code.
@@ -76,7 +76,7 @@ No active candidate is currently ranked in this short priority list.
 
 [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not included in this short priority list.
 
-[BL-023](BACKLOG.md#bl-023--article編集品質改善) is on hold after the prompt-only No-Go evaluation and is not ranked in this short priority list. Reconsider it only through a separately designed structured ARTICLE-field contract or facts-based limited deterministic composition.
+[BL-023](BACKLOG.md#bl-023--article編集品質改善) is on hold after the v9 and fixed-v10 prompt-only No-Go evaluations and is not ranked in this short priority list. Reconsider it only through a separately designed structured ARTICLE-field contract or facts-based limited deterministic composition.
 
 This short priority list is not exhaustive. Other open items remain recorded in BACKLOG.md.
 
