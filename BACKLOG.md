@@ -482,17 +482,17 @@
 - **ID:** BL-024
 - **タイトル:** 最小Security Operationsと公開済み生成物の訂正手順を定義する
 - **優先度:** P1
-- **状態:** 未着手 / Version 1.0 follow-up承認済み / 個別実装受入待ち
+- **状態:** 進行中 / SECURITY_OPERATIONS Draft 0.1 / ユーザー・外部レビュー待ち
 - **出所種別:** ユーザー承認済み方針
 - **ユーザー原文:** 該当なし — BL-015 decision brief全体への承認「ok」に基づく後続Ticket。
 - **ユーザー確認済み要約:** GAP-006、GAP-008、GAP-013、GAP-014を1つの短い`SECURITY_OPERATIONS.md`へ統合する。
 - **解釈:** secret rotation、credential revocation、suspected leakage、minimal incident response、evidence preservation、published-output correction／withdrawal／regeneration、daily JSON／HTML／repository historyの扱い、repository-external artifact retention／disposal／exception approvalを、runtimeやworkflowを変更しない最小運用文書として定義する。
 - **完了条件:** 詳細なraw request／response artifactは原則90日、評価要約・manifest・BL／SD意思決定証跡は必要期間保持、secret・credential・不要なlocal absolute pathは保存禁止、90日超の例外は評価単位で理由と対象を記録する；既存artifactをこのTicketで自動削除しない；訂正・撤回・再生成の対象と証跡をSD-014と整合させる；ユーザー承認を記録する。
 - **依存関係:** [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.0；[SD-024](DECISIONS.md#sd-024--approve-security-requirements-version-10-and-the-proportionate-security-roadmap)。
-- **実装証跡:** 未実装。
-- **ユーザー受入証跡:** Ticket化と方針は承認済み。完成文書の受入は未実施。
-- **残作業:** 文書設計、レビュー、テスト、個別受入。
-- **注記:** 公開済み誤情報への既知のcontent-integrity残余リスクへ先に最小手順を定義するP1文書Ticketであり、runtime／workflow変更を基本的に含めない。
+- **実装証跡:** [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Draft 0.1はGAP-006／008／013／014を統合し、secret rotation、最小incident response、公開済み生成物のcorrection／withdrawal／deterministic offline regeneration、repository-external artifactの原則90日保持と例外記録を定義する。Git historyのforce push／rewriteを訂正手段にせず、daily JSONと派生HTMLの整合を新しいcommit／PRで回復する。runtime、workflow、production、security-controlは未実装で、既存artifactは変更・実行・削除していない。
+- **ユーザー受入証跡:** Ticket化と方針は承認済み。Draft 0.1のユーザー受入および外部レビューは未実施。
+- **残作業:** Fable 5レビュー、finding裁定、ユーザーによるOpen review questionsとVersion 1.0の承認。Version 1.0前は未完了。
+- **注記:** 公開済み誤情報への既知のcontent-integrity残余リスクへ先に最小手順を定義するP1文書Ticketである。Draft 0.1はruntime／workflow／productionを変更せず、emergency direct hotfixやwithdrawal表示を無条件に承認しない。
 
 ## BL-025 — 収集元URLをhttp／https schemeへ制限する
 
