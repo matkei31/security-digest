@@ -2938,12 +2938,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
         self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 24)})
 
-    def test_sd_ids_are_unique_and_cover_sd001_to_sd020(self):
+    def test_sd_ids_are_unique_and_cover_sd001_to_sd021(self):
         text = self._read("DECISIONS.md")
         sd_headings = [h for h in self._headings(text) if re.match(r"^SD-\d{3}\b", h)]
         ids = [re.match(r"^(SD-\d{3})", h).group(1) for h in sd_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
-        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 21)})
+        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 22)})
 
     def test_bl_001_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -3178,16 +3178,20 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         backlog = self._read("BACKLOG.md")
         bl022 = backlog[backlog.index("## BL-022"):backlog.index("## BL-023")]
         self.assertIn(
-            "- **状態:** 実装済み／offline screening完了／ユーザー受入待ち／production未反映",
+            "- **状態:** 改訂仕様承認済み／local実装中／production未反映",
             bl022,
         )
         self.assertIn("現在の「過去のダイジェストを見る」に加え", bl022)
         self.assertIn("日付欠落時のリンク先仕様は実装前に整理", bl022)
         self.assertIn("UIの小規模Ticketとして扱う", bl022)
-        self.assertIn("`digest_date`より前の最大値", bl022)
-        self.assertIn("← 前日のダイジェスト", bl022)
-        self.assertIn("← 前回のダイジェスト（M/D）", bl022)
-        self.assertIn("日別Archiveの既存前後リンクは変更しない", bl022)
+        self.assertIn("左上に「←　前日のダイジェスト」", bl022)
+        self.assertIn("「前のダイジェスト」に統一でいいんじゃないかな", bl022)
+        self.assertIn("うん。いいと思うよ。他の修正の方向性もok", bl022)
+        self.assertIn("前方向「← 前のダイジェスト」", bl022)
+        self.assertIn("次方向「次のダイジェスト →」", bl022)
+        self.assertIn("最新ページ「最新のダイジェスト」", bl022)
+        self.assertIn("一覧「過去のダイジェスト」", bl022)
+        self.assertIn("改訂後画面をユーザーが目視済みとは記録しない", bl022)
 
         bl023 = backlog[backlog.index("## BL-023"):backlog.index("## 完了済み参照")]
         self.assertIn("- **状態:** 保留／prompt-only改善No-Go／production変更なし", bl023)
@@ -3212,8 +3216,18 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         status = self._read("STATUS.md")
         self.assertIn("[BL-022]", status)
         self.assertIn("[BL-023]", status)
-        self.assertIn("Draft PR reviewとユーザー受入待ち", status)
+        self.assertIn("PR #37の直前ダイジェストリンクはproduction反映", status)
+        self.assertIn("4用語統一", status)
         self.assertIn("prompt-only改善はNo-Goとして保留", status)
+
+        sd020 = decisions[decisions.index("## SD-020"):decisions.index("## SD-021")]
+        self.assertIn("Accepted / Implemented and verified in production", sd020)
+        sd021 = decisions[decisions.index("## SD-021"):]
+        self.assertIn("← 前のダイジェスト", sd021)
+        self.assertIn("次のダイジェスト →", sd021)
+        self.assertIn("最新のダイジェスト", sd021)
+        self.assertIn("過去のダイジェスト", sd021)
+        self.assertIn("validated earlier-date selection", sd021)
 
     def test_completed_reference_covers_batch2_prs(self):
         text = self._read("BACKLOG.md")
