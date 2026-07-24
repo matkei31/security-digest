@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- None.
+- [BL-025](BACKLOG.md#bl-025--収集元urlをhttphttps-schemeへ制限する) — source collection URL validationをloader境界へ実装したDraft PR／user implementation acceptance pending。URL-required methodはenabled状態にかかわらずabsolute HTTP(S) collection URLとhostを要求し、外部取得前に不正設定を拒否する。collection `url`と`display_url`の役割分離、17件のsource定義、active collection set／順序／URLは不変。runtime変更はloader境界だけで、ARTICLE／BRIEF／daily schema、workflow、production、`data/`、`docs/`は不変。SR-003／GAP-001の最終更新、Ready化、merge、完了記録はユーザー受入後。
 
 ## 5. Recently completed work
 
@@ -77,8 +77,8 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-1. [BL-025](BACKLOG.md#bl-025--収集元urlをhttphttps-schemeへ制限する) — next candidate: source URL scheme validation (`P2`)
-2. [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する) — following candidate: Actions supply chain／production concurrency (`P2`)
+1. [BL-025](BACKLOG.md#bl-025--収集元urlをhttphttps-schemeへ制限する) — Active work: source collection URL validation Draft PR／user implementation acceptance pending (`P2`)
+2. [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する) — next candidate: Actions supply chain／production concurrency (`P2`)
 
 [BL-023](BACKLOG.md#bl-023--article編集品質改善) is on hold after the v9 and fixed-v10 prompt-only No-Go evaluations and is not ranked in this short priority list. Reconsider it only through a separately designed structured ARTICLE-field contract or facts-based limited deterministic composition.
 

@@ -556,8 +556,37 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("047534601d8d15419a8d3b45142d8828bc655ad4", sd025)
         self.assertIn("Pull Request CI run 30102905467", sd025)
         self.assertIn("Pages deployment run 30103074821", sd025)
+        bl025 = self.backlog.split("## BL-025", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("収集元URLをhttp／https schemeへ制限する", bl025)
+        self.assertIn("**優先度:** P2", bl025)
+        self.assertIn("進行中 / 実装済みDraft PR / ユーザー受入待ち", bl025)
+        self.assertIn("完成実装のユーザー受入は未実施", bl025)
+        self.assertIn("SR-003／GAP-001最終状態判断", bl025)
+        self.assertIn("merge前かつユーザー受入前のためBL-025は未完了", bl025)
+        active = self.status.split("## Active work", 1)[1].split(
+            "## 5. Recently completed work", 1
+        )[0]
+        self.assertIn("BL-025", active)
+        self.assertIn("user implementation acceptance pending", active)
+        self.assertIn("loader境界だけ", active)
+        self.assertIn("SR-003／GAP-001の最終更新", active)
+        next_candidates = self.status.split("## 7. Next candidates", 1)[1].split(
+            "## 8. Sources of truth", 1
+        )[0]
+        self.assertLess(
+            next_candidates.index("1. [BL-025]"),
+            next_candidates.index("2. [BL-026]"),
+        )
+        self.assertRegex(
+            self.requirements,
+            r"\| SR-003 \|.*\| Partially met \|",
+        )
+        self.assertRegex(
+            self.requirements,
+            r"\| GAP-001 \| Security gap \| Approved for implementation ticket \| SR-003 \|",
+        )
+        self.assertNotIn("## SD-026", self.decisions)
         for backlog_id, title, priority in (
-            ("BL-025", "収集元URLをhttp／https schemeへ制限する", "P2"),
             ("BL-026", "GitHub Actions supply chainとproduction concurrencyを強化する", "P2"),
         ):
             with self.subTest(backlog_id=backlog_id):
