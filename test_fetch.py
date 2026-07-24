@@ -2938,12 +2938,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
         self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 24)})
 
-    def test_sd_ids_are_unique_and_cover_sd001_to_sd021(self):
+    def test_sd_ids_are_unique_and_cover_sd001_to_sd022(self):
         text = self._read("DECISIONS.md")
         sd_headings = [h for h in self._headings(text) if re.match(r"^SD-\d{3}\b", h)]
         ids = [re.match(r"^(SD-\d{3})", h).group(1) for h in sd_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
-        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 22)})
+        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 23)})
 
     def test_bl_001_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -3207,6 +3207,18 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("固定15 fixture", bl023)
         self.assertIn("2 logical runs・30 attempts・retry 0", bl023)
         self.assertIn("Technical GateはPASS", bl023)
+        self.assertIn("`article-analysis-v10`固定候補", bl023)
+        self.assertIn("17 fixture", bl023)
+        self.assertIn("2 logical runs・34 attempts・retry 0", bl023)
+        self.assertIn("HTTP 200およびschema parseは34/34", bl023)
+        self.assertIn("financial_impact Gate、Safety／Non-regression Gate", bl023)
+        self.assertIn("mandatory Zimbra／NCSC記事はFAIL", bl023)
+        self.assertIn("technical error・field欠落・内部識別子漏えいは0件", bl023)
+        self.assertIn("v10候補は採用・実装せず、repository変更は0件", bl023)
+        self.assertIn("評価結果を受けた追加prompt調整も行わない", bl023)
+        self.assertIn("今回固定したv10候補に限定", bl023)
+        self.assertIn("promptによる改善一般を不可能とは判断しない", bl023)
+        self.assertIn("BL-023/article-financial-impact-v10-screening/", bl023)
         self.assertIn("productionは`article-analysis-v8`を維持", bl023)
 
         decisions = self._read("DECISIONS.md")
@@ -3236,10 +3248,19 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertNotIn("[BL-022]", known_issues)
         self.assertNotIn("[BL-022]", next_candidates)
         self.assertIn("prompt-only改善はNo-Goとして保留", status)
+        self.assertIn("`article-analysis-v10`固定候補は17 fixture", status)
+        self.assertIn("2 logical runs・34 attempts・retry 0", status)
+        self.assertIn("HTTP 200／schema parseが34/34", status)
+        self.assertIn("mandatory Zimbra／NCSC記事はFAIL", status)
+        self.assertIn("v10結果を受けた追加prompt調整は行わず", status)
+        self.assertIn("今回固定した候補に限定", status)
+        self.assertIn("prompt改善一般を不可能とは判断しない", status)
+        self.assertIn("v9 and fixed-v10 prompt-only No-Go evaluations", next_candidates)
+        self.assertNotIn("[BL-023]", recently_completed)
 
         sd020 = decisions[decisions.index("## SD-020"):decisions.index("## SD-021")]
         self.assertIn("Accepted / Implemented and verified in production", sd020)
-        sd021 = decisions[decisions.index("## SD-021"):]
+        sd021 = decisions[decisions.index("## SD-021"):decisions.index("## SD-022")]
         self.assertIn("← 前のダイジェスト", sd021)
         self.assertIn("次のダイジェスト →", sd021)
         self.assertIn("最新のダイジェスト", sd021)
@@ -3247,6 +3268,24 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("validated earlier-date selection", sd021)
         self.assertIn("Accepted / Implemented and verified in production", sd021)
         self.assertIn("Pages deployment run 30061770611", sd021)
+
+        sd022 = decisions[decisions.index("## SD-022"):]
+        self.assertIn("- **Status:** Accepted / No-Go", sd022)
+        self.assertIn("17 fixtures in 2 logical runs (34 attempts, no retry)", sd022)
+        self.assertIn("HTTP 200 34/34", sd022)
+        self.assertIn("schema parse 34/34", sd022)
+        self.assertIn("Technical Gate PASS", sd022)
+        self.assertIn("financial_impact Gate FAIL", sd022)
+        self.assertIn("Safety／Non-regression Gate FAIL", sd022)
+        self.assertIn("mandatory Zimbra／NCSC articles FAIL", sd022)
+        self.assertIn("Production remains on `article-analysis-v8`", sd022)
+        self.assertIn("no additional prompt adjustment", sd022)
+        self.assertIn(
+            "does not establish that simplification or prompt-based improvement is generally impossible",
+            sd022,
+        )
+        self.assertIn("BL-023/article-financial-impact-v10-screening/", sd022)
+        self.assertIn("SD-019を置換せず", sd022)
 
     def test_completed_reference_covers_batch2_prs(self):
         text = self._read("BACKLOG.md")
