@@ -295,7 +295,7 @@
 - **ID:** BL-015
 - **タイトル:** 公開サイトと生成基盤のセキュリティ要件を定義する
 - **優先度:** P2
-- **状態:** 記録済み / 未完了
+- **状態:** 進行中 / Draft 0.1 / Fable 5・ユーザー確認待ち
 - **出所種別:** ユーザー原文
 - **ユーザー原文:** 「セキュリティ要件みたいなのも後で決めよう」
 - **追加のユーザー原文:** 「OK.ここはfable5にもレビューしてもらおう。公開情報を扱うものだから厳しいセキュリティ対策をする必要はないと思うが、必要なものは網羅しつつ過剰じゃないように整理して、fable5にレビューさせられる形にして。」
@@ -303,10 +303,10 @@
 - **解釈:** 静的な公開サイト、GitHub Actions、外部fetching、Gemini、保存データ、secrets、将来のcustom domain利用について、現行アーキテクチャに見合ったセキュリティ要件一式を、専用文書（候補名`SECURITY_REQUIREMENTS.md`、GitHubの脆弱性報告用`SECURITY.md`とは別）として定義する。過剰な対策を一律に導入しない；各項目について必要性と再評価条件を明示的に述べる。
 - **完了条件:** 文書は次を定義する: 対象systemとdata flow；trusted/untrusted境界；保存してよいものといけないもの；外部URLの扱い、HTMLエスケープ、`safe_url`；secrets管理；GitHub Actions権限；ログ/artifactsの扱い；依存関係とGitHub Actionsのsupply chain管理（full commit SHA pinningおよびGitHub Actions向けDependabotの明示的な必要性評価を含む）；現行のleast privilegeの状態；custom domain採用時の再評価トリガー；forms・認証・データベース・永続storageを追加する際の再評価トリガー；現行の対策・特定されたgap・特定の対策を採用しない理由の明確な区別；Fable 5レビューパス；最終的なユーザー承認。full commit SHA pinning、Dependabot、および同様の具体的対策は、この段階で必須と決定するものではない — 上記の評価が特定のgap対応を承認した場合にのみ、別チケットとなる。
 - **依存関係:** 現行アーキテクチャ；[BL-001](#bl-001--プルリクエストci)（プルリクエストCI）と調整；[BL-007](#bl-007--monomidigestcomへの移行)（monomidigest.comへの移行）と調整；`AGENTS.md`（「Security requirements」節）と`DECISIONS.md`にすでに記録されている既存のセキュリティルール。
-- **実装証跡:** 個別のルールはすでに存在する（`AGENTS.md`: HTMLエスケープ、`http`/`https`のみのリンク、`rel="noopener noreferrer"`、承認なしでのforms/認証/データベース/新規外部依存/永続storageの追加禁止、標準ライブラリ/既存依存のみの方針、静的GitHub Pagesとの互換性）が、包括的で専用の要件文書は存在しない。`.github/workflows/fetch.yml`は現在、`actions/checkout@v4`と`actions/setup-python@v5`をversion tagで参照しており（full commit SHAではない）、`.github/dependabot.yml`は存在しない — ここでは評価対象項目として記録するにとどめ（[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)のBL014-F参照）、確定した要件としては扱わない。
-- **ユーザー受入証跡:** 記録なし。方向性（後で決める、Fable 5にレビューさせる、という点）は元のコメントから把握しているが、要件案はまだユーザーによるレビュー・承認を受けていない。
-- **残作業:** 要件案の作成、証跡のmapping、比例性のレビュー、Fable 5レビュー、承認された具体的対策に対するgapチケットの判断、ユーザー受入。
-- **注記:** 本チケットの評価が完了する前に、SHA pinning、Dependabot、その他個別のActions supply chain対策を必須と決定しない。本項目の出典となった監査記録は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 1（BL014-C、BL014-F）を参照。
+- **実装証跡:** 個別のルールはすでに存在する（`AGENTS.md`: HTMLエスケープ、`http`/`https`のみの表示リンク、`rel="noopener noreferrer"`、承認なしでのforms/認証/データベース/新規外部依存/永続storageの追加禁止、標準ライブラリ/既存依存のみの方針、静的GitHub Pagesとの互換性）。これらと現行実装、daily JSON、GitHub Actions、テスト、公開／保存境界を照合し、[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Draft 0.1へrepository証跡mapping、proportionality review、current control mapping、gap register、現行構成では通常不要な対策、re-evaluation trigger、open review questionsを記録した。Draft作成ではsecurity-control実装、runtime、workflow、`data/`、`docs/`、productionを変更していない。`.github/workflows/fetch.yml`の`actions/checkout@v4`／`actions/setup-python@v5`参照（full commit SHAではない）と`.github/dependabot.yml`不在は、引き続きレビュー対象であり、確定要件ではない（[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)のBL014-F参照）。
+- **ユーザー受入証跡:** 未受入。方向性（後で決める、Fable 5にレビューさせる、という点）は元のコメントから把握しているが、Draft 0.1はFable 5レビューとユーザー確認のどちらも未完了である。
+- **残作業:** Fable 5レビュー、レビューfindingの反映判断、ユーザー承認、Version 1.0化の判断、承認されたgapだけを後続Ticket化する判断。
+- **注記:** Draft 0.1はsecurity-control実装を含まない。本チケットの評価とユーザー承認が完了する前に、SHA pinning、Dependabot、その他個別のActions supply chain対策を必須と決定しない。承認後に安定したDecisionが必要な場合だけSD-024以降を別途検討する。本項目の出典となった監査記録は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 1（BL014-C、BL014-F）を参照。
 
 ## BL-016 — 本日の要点の表示階層を目視受入する
 

@@ -41,6 +41,10 @@ The canonical configuration is `source_definitions.json`.
 
 Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this file does not duplicate the entire list.
 
+## Active work
+
+- [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) is in progress with [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version Draft 0.1. The repository evidence mapping, proportionality review, current-control mapping, gap register, explicit non-required controls, and re-evaluation triggers are prepared. Fable 5 review and user approval are pending. This Draft does not implement security controls or change runtime, workflows, `data/`, `docs/`, or production. Current ARTICLE `article-analysis-v8`, BRIEF `today-brief-extractive-v1`／`deterministic-extractive`, and daily schema version `1` remain unchanged.
+
 ## 5. Recently completed work
 
 - Ordinary article card, variant B (removes source/importance/urgency/category ellipse badges, keeps 関連タグ round and non-clickable) — completed and user-accepted (2026-07-17, verbatim: 「見られたけど、いいと思うよ」); see [SD-013](DECISIONS.md#sd-013--ordinary-article-card-variant-b-remove-classification-label-badges-keep-関連タグ-round), [BL-002](BACKLOG.md#bl-002--記事カードの楕円バッジ多用を見直す), [BL-003](BACKLOG.md#bl-003--aiで機械処理された印象を弱める), [PR #18](https://github.com/matkei31/security-digest/pull/18)
@@ -67,14 +71,11 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 - [BL-023](BACKLOG.md#bl-023--article編集品質改善): 固定15 fixture・2 logical runs・30 attemptsで`article-analysis-v9`候補を評価したが、Technical GateのみPASSし、financial_impact／recommended_actions／Safety・Non-regression GateはFAIL。続く`article-analysis-v10`固定候補は17 fixture・2 logical runs・34 attempts・retry 0でHTTP 200／schema parseが34/34、Technical GateはPASSしたが、financial_impact／Safety・Non-regression Gateおよびmandatory Zimbra／NCSC記事はFAILした。v9／v10ともprompt-only改善はNo-Goとして保留し、productionは`article-analysis-v8`を維持する。v10結果を受けた追加prompt調整は行わず、この結論は今回固定した候補に限定して、簡素化やprompt改善一般を不可能とは判断しない。regex削除、禁止語規則、Brief後処理は行わない。
 - CISA advisory RSS remains disabled until its documented reactivation conditions are met.
 - [BL-011](BACKLOG.md#bl-011--standalone-nist-nvd記事取得の保留理由再開条件): The reason and reactivation conditions for standalone NIST NVD article collection are not fully documented.
-- [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する): A comprehensive security requirements document does not yet exist; existing rules remain scattered across `AGENTS.md` and code.
 - Ticket 16a's standalone real-Gemini diagnostic for the Microsoft reference article remains unverified; this did not block its production acceptance.
 
 ## 7. Next candidates
 
 No active candidate is currently ranked in this short priority list.
-
-[BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) (P2, security requirements document) is recorded in BACKLOG.md but is not included in this short priority list.
 
 [BL-023](BACKLOG.md#bl-023--article編集品質改善) is on hold after the v9 and fixed-v10 prompt-only No-Go evaluations and is not ranked in this short priority list. Reconsider it only through a separately designed structured ARTICLE-field contract or facts-based limited deterministic composition.
 
@@ -95,4 +96,5 @@ The initial backlog import is not a complete historical-comment audit; [BL-014](
 | Incomplete, partial, and acceptance-pending items | `BACKLOG.md` |
 | Stable decisions | `DECISIONS.md` |
 | Approved UI specification and UI decision history | `UI_SPEC.md` |
+| Draft security requirements and evidence mapping | `SECURITY_REQUIREMENTS.md` |
 | Implementation-agent constraints | `AGENTS.md` |
