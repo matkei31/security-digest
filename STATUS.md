@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) is in progress with [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version Draft 0.2. Fable 5 reported Critical 0, High 0, Medium F-001–F-003, and Low／Editorial F-004–F-009; the user's adjudication is incorporated while final user approval remains pending. Draft 0.2 adds SR-043, register classifications, GAP-014 and GAP-015, complete exception-output and external-response-size inventories, custom-domain preflight details, translation-cache risk, and mechanically checked current-state counts. Fable 5 could not inspect `STATUS.md` or `test_security_requirements.py`; those were independently checked at the PR head. Fable recommendations remain user decisions, including the GAP-010 owner checklist before Version 1.0. This Draft does not implement security controls or change runtime, workflows, `data/`, `docs/`, or production. Current ARTICLE `article-analysis-v8`, BRIEF `today-brief-extractive-v1`／`deterministic-extractive`, and daily schema version `1` remain unchanged.
+- [BL-015](BACKLOG.md#bl-015--公開サイトと生成基盤のセキュリティ要件を定義する) has [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.0 approved and is waiting for [PR #44](https://github.com/matkei31/security-digest/pull/44) to merge. Fable 5 reported Critical 0 and High 0; its findings were adjudicated in Draft 0.2. The read-only GAP-010 repository-owner checklist is complete with all mandatory settings verified, not configured, or not applicable, and no new Critical／High finding. The user approved the complete Version 1.0 decision brief with 「ok」, recorded in [SD-024](DECISIONS.md#sd-024--approve-security-requirements-version-10-and-the-proportionate-security-roadmap). Approved follow-up scope is registered as [BL-024](BACKLOG.md#bl-024--最小security-operationsと公開済み生成物の訂正手順を定義する), [BL-025](BACKLOG.md#bl-025--収集元urlをhttphttps-schemeへ制限する), and [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する), but no security control is implemented in this PR. Runtime, workflows, `data/`, `docs/`, and production are unchanged. ARTICLE `article-analysis-v8`, BRIEF `today-brief-extractive-v1`／`deterministic-extractive`, and daily schema version `1` remain unchanged.
 
 ## 5. Recently completed work
 
@@ -75,7 +75,9 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-No active candidate is currently ranked in this short priority list.
+1. [BL-024](BACKLOG.md#bl-024--最小security-operationsと公開済み生成物の訂正手順を定義する) — Security Operations／published-output correction documentation (`P1`)
+2. [BL-025](BACKLOG.md#bl-025--収集元urlをhttphttps-schemeへ制限する) — source URL scheme validation (`P2`)
+3. [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する) — Actions supply chain／production concurrency (`P2`)
 
 [BL-023](BACKLOG.md#bl-023--article編集品質改善) is on hold after the v9 and fixed-v10 prompt-only No-Go evaluations and is not ranked in this short priority list. Reconsider it only through a separately designed structured ARTICLE-field contract or facts-based limited deterministic composition.
 
@@ -96,5 +98,5 @@ The initial backlog import is not a complete historical-comment audit; [BL-014](
 | Incomplete, partial, and acceptance-pending items | `BACKLOG.md` |
 | Stable decisions | `DECISIONS.md` |
 | Approved UI specification and UI decision history | `UI_SPEC.md` |
-| Draft security requirements and evidence mapping | `SECURITY_REQUIREMENTS.md` |
+| Approved security requirements and evidence mapping | `SECURITY_REQUIREMENTS.md` Version 1.0 |
 | Implementation-agent constraints | `AGENTS.md` |

@@ -295,7 +295,7 @@
 - **ID:** BL-015
 - **タイトル:** 公開サイトと生成基盤のセキュリティ要件を定義する
 - **優先度:** P2
-- **状態:** 進行中 / Draft 0.2 / Fable 5レビュー反映済み / ユーザー確認待ち
+- **状態:** Version 1.0承認済み / PR #44 merge待ち
 - **出所種別:** ユーザー原文
 - **ユーザー原文:** 「セキュリティ要件みたいなのも後で決めよう」
 - **追加のユーザー原文:** 「OK.ここはfable5にもレビューしてもらおう。公開情報を扱うものだから厳しいセキュリティ対策をする必要はないと思うが、必要なものは網羅しつつ過剰じゃないように整理して、fable5にレビューさせられる形にして。」
@@ -303,10 +303,10 @@
 - **解釈:** 静的な公開サイト、GitHub Actions、外部fetching、Gemini、保存データ、secrets、将来のcustom domain利用について、現行アーキテクチャに見合ったセキュリティ要件一式を、専用文書（候補名`SECURITY_REQUIREMENTS.md`、GitHubの脆弱性報告用`SECURITY.md`とは別）として定義する。過剰な対策を一律に導入しない；各項目について必要性と再評価条件を明示的に述べる。
 - **完了条件:** 文書は次を定義する: 対象systemとdata flow；trusted/untrusted境界；保存してよいものといけないもの；外部URLの扱い、HTMLエスケープ、`safe_url`；secrets管理；GitHub Actions権限；ログ/artifactsの扱い；依存関係とGitHub Actionsのsupply chain管理（full commit SHA pinningおよびGitHub Actions向けDependabotの明示的な必要性評価を含む）；現行のleast privilegeの状態；custom domain採用時の再評価トリガー；forms・認証・データベース・永続storageを追加する際の再評価トリガー；現行の対策・特定されたgap・特定の対策を採用しない理由の明確な区別；Fable 5レビューパス；最終的なユーザー承認。full commit SHA pinning、Dependabot、および同様の具体的対策は、この段階で必須と決定するものではない — 上記の評価が特定のgap対応を承認した場合にのみ、別チケットとなる。
 - **依存関係:** 現行アーキテクチャ；[BL-001](#bl-001--プルリクエストci)（プルリクエストCI）と調整；[BL-007](#bl-007--monomidigestcomへの移行)（monomidigest.comへの移行）と調整；`AGENTS.md`（「Security requirements」節）と`DECISIONS.md`にすでに記録されている既存のセキュリティルール。
-- **実装証跡:** 個別のルールはすでに存在する（`AGENTS.md`: HTMLエスケープ、`http`/`https`のみの表示リンク、`rel="noopener noreferrer"`、承認なしでのforms/認証/データベース/新規外部依存/永続storageの追加禁止、標準ライブラリ/既存依存のみの方針、静的GitHub Pagesとの互換性）。これらと現行実装、daily JSON、GitHub Actions、テスト、公開／保存境界を照合した[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Draft 0.1をFable 5がレビューし、Critical 0、High 0、Medium F-001〜F-003、Low／Editorial F-004〜F-009を報告した。ユーザー裁定により、F-001〜F-003およびF-005〜F-009を採用または修正して採用し、F-004のSR統合は不採用として、Draft 0.2へSR-043、register Classification、GAP-014、GAP-015、例外出力と外部response sizeの全数棚卸し、custom-domain preflight、translation cacheリスク、Current control mappingの個別状態集計を反映した。Fable 5が取得できなかった`STATUS.md`と`test_security_requirements.py`はPR headで独立確認したため、Fableレビュー済みとは扱わない。Fable 5のfull SHA pinning、週次Actions Dependabot、production concurrency、checkout credential persistenceの文書化、共通operations文書、GAP-010 owner checklistの各提案はユーザー判断待ちである。Draft 0.1／Fable review／裁定／Draft 0.2のいずれでもsecurity-control実装、runtime、workflow、`data/`、`docs/`、productionは変更していない。
-- **ユーザー受入証跡:** 未受入。方向性（後で決める、Fable 5にレビューさせる、という点）とFable findingのDraft 0.2への反映方針はユーザーが示したが、Security Requirementsそのものの最終承認とVersion 1.0化は未完了である。
-- **残作業:** Draft 0.2のユーザー確認、Version 1.0化の判断、Version 1.0前のGAP-010 owner checklist（Fable推奨、ユーザー判断待ち）、承認されたgapまたはpolicy decisionだけを後続Ticket化する判断。
-- **注記:** Draft 0.2はsecurity-control実装を含まない。本チケットの評価とユーザー承認が完了する前に、SHA pinning、Dependabot、production concurrency、その他個別対策を必須と決定しない。GAP-014の訂正方式とGAP-015のresponse byte capも未実装・ユーザー判断待ちである。承認後に安定したDecisionが必要な場合だけSD-024以降を別途検討する。本項目の出典となった監査記録は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 1（BL014-C、BL014-F）を参照。
+- **実装証跡:** 個別のルールはすでに存在する（`AGENTS.md`: HTMLエスケープ、`http`/`https`のみの表示リンク、`rel="noopener noreferrer"`、承認なしでのforms/認証/データベース/新規外部依存/永続storageの追加禁止、標準ライブラリ/既存依存のみの方針、静的GitHub Pagesとの互換性）。これらと現行実装、daily JSON、GitHub Actions、テスト、公開／保存境界を照合した[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Draft 0.1をFable 5がレビューし、Critical 0、High 0、Medium F-001〜F-003、Low／Editorial F-004〜F-009を報告した。ユーザー裁定によりF-001〜F-003およびF-005〜F-009を採用または修正して採用し、F-004のSR統合は不採用として、Draft 0.2へSR-043、register Classification、GAP-014、GAP-015、例外出力と外部response sizeの全数棚卸し、custom-domain preflight、translation cacheリスク、Current control mappingの個別状態集計を反映した。Fable 5が取得できなかった`STATUS.md`と`test_security_requirements.py`はPR headで独立確認したため、Fableレビュー済みとは扱わない。GAP-010 repository-owner checklistはread-onlyで完了し、必須項目にowner-access未確認を残さず、重大・High相当の新規findingもなかった。Version 1.0はowner確認結果と限定dispositionを記録し、[SD-024](DECISIONS.md#sd-024--approve-security-requirements-version-10-and-the-proportionate-security-roadmap)を追加した。承認された後続範囲は[BL-024](#bl-024--最小security-operationsと公開済み生成物の訂正手順を定義する)、[BL-025](#bl-025--収集元urlをhttphttps-schemeへ制限する)、[BL-026](#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する)へ登録した。Draft 0.1からVersion 1.0までsecurity-control実装、runtime、workflow、`data/`、`docs/`、productionは変更していない。
+- **ユーザー受入証跡:** 2026-07-24、ユーザーは提示されたdecision brief全体に「ok」と回答し、Security Requirements Version 1.0の方針、GAP-010 read-only確認、限定disposition、後続Ticket化を承認した。この承認は各後続security-control PR、production実行、またはmergeの包括的な事前承認ではない。
+- **残作業:** PR #44のmerge。merge後にBL-015を完了できる。後続controlとoperations文書はBL-024〜BL-026で個別に管理し、各Ticketでscope、test、review、merge手続を必要とする。
+- **注記:** Version 1.0はsecurity-control実装を含まない。GAP-009は未解決のまま後日優先順位を決め、GAP-015はtriggerまで保留する。GAP-011はBL-007へ統合し、GAP-012は公開情報用途に限定したaccepted residual riskである。本項目の出典となった監査記録は[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md) Batch 1（BL014-C、BL014-F）を参照。
 
 ## BL-016 — 本日の要点の表示階層を目視受入する
 
@@ -476,6 +476,57 @@
 - **ユーザー受入証跡:** 2026-07-23、ユーザーがNo-Go状態とproduction非変更の記録を指示した。
 - **残作業:** prompt-only案の再調整は行わない。ARTICLE fieldの構造化設計、またはfactsを使った限定的な決定論的compositionを別ticketとして設計する場合のみ再検討する。
 - **注記:** v9およびv10候補は本番採用せず、productionは`article-analysis-v8`を維持する。regex削除、禁止語ルール、Brief側の後処理は導入しない。
+
+## BL-024 — 最小Security Operationsと公開済み生成物の訂正手順を定義する
+
+- **ID:** BL-024
+- **タイトル:** 最小Security Operationsと公開済み生成物の訂正手順を定義する
+- **優先度:** P1
+- **状態:** 未着手 / Version 1.0 follow-up承認済み / 個別実装受入待ち
+- **出所種別:** ユーザー承認済み方針
+- **ユーザー原文:** 該当なし — BL-015 decision brief全体への承認「ok」に基づく後続Ticket。
+- **ユーザー確認済み要約:** GAP-006、GAP-008、GAP-013、GAP-014を1つの短い`SECURITY_OPERATIONS.md`へ統合する。
+- **解釈:** secret rotation、credential revocation、suspected leakage、minimal incident response、evidence preservation、published-output correction／withdrawal／regeneration、daily JSON／HTML／repository historyの扱い、repository-external artifact retention／disposal／exception approvalを、runtimeやworkflowを変更しない最小運用文書として定義する。
+- **完了条件:** 詳細なraw request／response artifactは原則90日、評価要約・manifest・BL／SD意思決定証跡は必要期間保持、secret・credential・不要なlocal absolute pathは保存禁止、90日超の例外は評価単位で理由と対象を記録する；既存artifactをこのTicketで自動削除しない；訂正・撤回・再生成の対象と証跡をSD-014と整合させる；ユーザー承認を記録する。
+- **依存関係:** [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.0；[SD-024](DECISIONS.md#sd-024--approve-security-requirements-version-10-and-the-proportionate-security-roadmap)。
+- **実装証跡:** 未実装。
+- **ユーザー受入証跡:** Ticket化と方針は承認済み。完成文書の受入は未実施。
+- **残作業:** 文書設計、レビュー、テスト、個別受入。
+- **注記:** 公開済み誤情報への既知のcontent-integrity残余リスクへ先に最小手順を定義するP1文書Ticketであり、runtime／workflow変更を基本的に含めない。
+
+## BL-025 — 収集元URLをhttp／https schemeへ制限する
+
+- **ID:** BL-025
+- **タイトル:** 収集元URLをhttp／https schemeへ制限する
+- **優先度:** P2
+- **状態:** 未着手 / Version 1.0 follow-up承認済み / 個別実装受入待ち
+- **出所種別:** ユーザー承認済み方針
+- **ユーザー原文:** 該当なし — BL-015 decision brief全体への承認「ok」に基づく後続Ticket。
+- **ユーザー確認済み要約:** GAP-001を最小のsource-definition validation変更として実装する。
+- **解釈:** `load_source_definitions()`でcollection URLを`http`／`https` schemeへ制限する。collection URL、display URL等の各URL fieldの役割を区別し、title・vendor・記事固有ruleを追加しない。
+- **完了条件:** 非HTTP(S) collection URLを拒否する；各URL fieldの役割に沿ったsource-definition testsを追加する；現在の有効設定と取得挙動を非回帰確認する；runtime変更を最小化し、個別受入を記録する。
+- **依存関係:** GAP-001；[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.0；[SD-024](DECISIONS.md#sd-024--approve-security-requirements-version-10-and-the-proportionate-security-roadmap)。
+- **実装証跡:** 未実装。
+- **ユーザー受入証跡:** Ticket化と方針は承認済み。実装受入は未実施。
+- **残作業:** 実装、test、review、個別受入。
+- **注記:** 現行の正当な設定を壊さず、source-definition境界だけを対象とする。
+
+## BL-026 — GitHub Actions supply chainとproduction concurrencyを強化する
+
+- **ID:** BL-026
+- **タイトル:** GitHub Actions supply chainとproduction concurrencyを強化する
+- **優先度:** P2
+- **状態:** 未着手 / Version 1.0 follow-up承認済み / 個別実装受入待ち
+- **出所種別:** ユーザー承認済み方針
+- **ユーザー原文:** 該当なし — BL-015 decision brief全体への承認「ok」に基づく後続Ticket。
+- **ユーザー確認済み要約:** GAP-002、GAP-003、GAP-004を1つのworkflow hardening Ticketとして扱う。
+- **解釈:** `actions/checkout`と`actions/setup-python`を両workflowでfull commit SHAへ固定し、`github-actions` ecosystemだけのweekly Dependabotを追加し、production runを`cancel-in-progress: false`で直列化する。
+- **完了条件:** 両workflowのAction参照を検証済みfull SHAへ固定する；weekly GitHub Actions Dependabotを追加する；production concurrencyを直列化し実行中runをcancelしない；workflow-specific testsとfull unittestを成功させる；production実行なしで個別受入を記録する。
+- **依存関係:** GAP-002、GAP-003、GAP-004；[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.0；[SD-024](DECISIONS.md#sd-024--approve-security-requirements-version-10-and-the-proportionate-security-roadmap)。
+- **実装証跡:** 未実装。
+- **ユーザー受入証跡:** Ticket化と方針は承認済み。実装受入は未実施。
+- **残作業:** 実装、workflow tests、review、個別受入。
+- **注記:** 低優先のworkflow hardeningであり、本Ticket実装時にもproduction executionは行わない。
 
 ## 完了済み参照
 

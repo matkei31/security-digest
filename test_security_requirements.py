@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static contract tests for BL-015 SECURITY_REQUIREMENTS.md Draft 0.2."""
+"""Static contract tests for BL-015 SECURITY_REQUIREMENTS.md Version 1.0."""
 
 import re
 import unittest
@@ -11,13 +11,14 @@ ROOT = Path(__file__).resolve().parent
 REQUIREMENTS_PATH = ROOT / "SECURITY_REQUIREMENTS.md"
 
 
-class SecurityRequirementsDraftTest(unittest.TestCase):
+class SecurityRequirementsTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.requirements = REQUIREMENTS_PATH.read_text(encoding="utf-8")
         cls.backlog = (ROOT / "BACKLOG.md").read_text(encoding="utf-8")
         cls.status = (ROOT / "STATUS.md").read_text(encoding="utf-8")
         cls.decisions = (ROOT / "DECISIONS.md").read_text(encoding="utf-8")
+        cls.agents = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
 
     @staticmethod
     def _headings(text):
@@ -42,19 +43,17 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
     def _section(self, start, end):
         return self.requirements.split(start, 1)[1].split(end, 1)[0]
 
-    def test_document_exists_and_is_unapproved_draft_02(self):
+    def test_document_is_approved_version_10_with_review_and_user_context(self):
         self.assertTrue(REQUIREMENTS_PATH.is_file())
         self.assertIn("# Security Digest Security Requirements", self.requirements)
-        self.assertIn("**Version:** Draft 0.2", self.requirements)
-        self.assertIn(
-            "**Status:** Fable 5 review incorporated; user approval pending",
-            self.requirements,
-        )
+        self.assertIn("**Version:** 1.0", self.requirements)
+        self.assertIn("**Status:** Approved", self.requirements)
         self.assertIn("no Critical or High findings", self.requirements)
         self.assertIn("accepted and modified findings", self.requirements)
         self.assertIn("rejected F-004 consolidation was not applied", self.requirements)
-        self.assertIn("Draft 0.2 is unapproved.", self.requirements)
-        self.assertIn("User approval is pending.", self.requirements)
+        self.assertIn("Version 1.0 is approved.", self.requirements)
+        self.assertIn("answered 「ok」 to the complete decision brief", self.requirements)
+        self.assertIn("not blanket preapproval", self.requirements)
         self.assertIn(
             "Fable 5 could not retrieve `STATUS.md` or\n"
             "`test_security_requirements.py`",
@@ -75,9 +74,9 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
             "## 8. Gap register",
             "## 9. Explicitly non-required controls for the current architecture",
             "## 10. Re-evaluation triggers",
-            "## 11. Open review questions",
-            "### Fable 5 recommendations — user decision pending",
+            "## 11. Approved roadmap decisions",
             "## 12. Approval and maintenance",
+            "## 13. Repository-owner verification",
         ):
             with self.subTest(heading=heading):
                 self.assertIn(heading, self.requirements)
@@ -105,7 +104,7 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
         self.assertIn("align the procedure with SD-014", self.requirements)
         self.assertRegex(
             self.requirements,
-            r"\| GAP-014 \| Security gap \| SR-043 \|",
+            r"\| GAP-014 \| Security gap \| Approved for documentation ticket \| SR-043 \|",
         )
         self.assertIn("24/7 monitoring is not required", self.requirements)
 
@@ -162,6 +161,37 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
             "GAP-015": "Hardening candidate",
         }
         self.assertEqual({gap_id: row[1] for gap_id, row in rows.items()}, expected)
+        allowed_dispositions = {
+            "Approved for implementation ticket",
+            "Approved for documentation ticket",
+            "Accepted current state",
+            "Accepted residual risk",
+            "Deferred until trigger",
+            "Completed owner verification",
+            "Remains open for later prioritization",
+        }
+        self.assertEqual({row[2] for row in rows.values()}, allowed_dispositions)
+        expected_dispositions = {
+            "GAP-001": "Approved for implementation ticket",
+            "GAP-002": "Approved for implementation ticket",
+            "GAP-003": "Approved for implementation ticket",
+            "GAP-004": "Approved for implementation ticket",
+            "GAP-005": "Accepted current state",
+            "GAP-006": "Approved for documentation ticket",
+            "GAP-007": "Deferred until trigger",
+            "GAP-008": "Approved for documentation ticket",
+            "GAP-009": "Remains open for later prioritization",
+            "GAP-010": "Completed owner verification",
+            "GAP-011": "Deferred until trigger",
+            "GAP-012": "Accepted residual risk",
+            "GAP-013": "Approved for documentation ticket",
+            "GAP-014": "Approved for documentation ticket",
+            "GAP-015": "Deferred until trigger",
+        }
+        self.assertEqual(
+            {gap_id: row[2] for gap_id, row in rows.items()},
+            expected_dispositions,
+        )
         self.assertIn("not a claim that every item is a confirmed security defect", gaps)
 
     def test_current_control_mapping_breakdowns_match_individual_sr_states(self):
@@ -210,7 +240,15 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
         self.assertEqual(sorted(mapped_ids), list(range(1, 44)))
         self.assertEqual(
             mapping_rows["Secrets"][5],
-            "Met 1 / Partial 1 / Not met 1 / Unverified 1",
+            "Met 1 / Partial 2 / Not met 1 / Unverified 0",
+        )
+        self.assertEqual(
+            mapping_rows["GitHub Actions"][5],
+            "Met 4 / Partial 2 / Not met 0 / Unverified 0",
+        )
+        self.assertEqual(
+            mapping_rows["Logging and artifacts"][5],
+            "Met 0 / Partial 4 / Not met 0 / Unverified 0",
         )
         self.assertEqual(
             mapping_rows["Availability and recovery"][5],
@@ -222,7 +260,7 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
         )
         self.assertEqual(
             mapping_rows["GitHub/Pages/DNS settings outside the repository"][4],
-            "Unverified outside repository",
+            "Partially met",
         )
 
     def test_met_definition_is_repository_limited(self):
@@ -252,7 +290,10 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
         ):
             with self.subTest(marker=marker):
                 self.assertIn(marker, self.requirements)
-        self.assertIn("| GAP-009 | Security gap |", self.requirements)
+        self.assertIn(
+            "| GAP-009 | Security gap | Remains open for later prioritization |",
+            self.requirements,
+        )
         self.assertIn("No explicit traceback-printing helper", self.requirements)
 
     def test_external_response_size_audit_and_gap_are_recorded(self):
@@ -273,7 +314,7 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
         )
         self.assertRegex(
             self.requirements,
-            r"\| GAP-015 \| Hardening candidate \| SR-034 \|",
+            r"\| GAP-015 \| Hardening candidate \| Deferred until trigger \| SR-034 \|",
         )
         self.assertIn("no consistent byte cap at the network `read()` boundary", self.requirements)
         self.assertIn("no incident was found", self.requirements)
@@ -296,7 +337,7 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
                 self.assertIn(marker, self.requirements)
         self.assertRegex(
             self.requirements,
-            r"\| GAP-011 \| Future trigger \|",
+            r"\| GAP-011 \| Future trigger \| Deferred until trigger \|",
         )
         self.assertIn(
             "not a current-site security gap because the custom domain is not implemented",
@@ -330,33 +371,26 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
         self.assertIn("no cache TTL", text)
         self.assertIn("provider-response integrity validation", text)
         self.assertIn("confidentiality impact is low", text)
-        self.assertIn("user decision", text)
+        self.assertIn("Accepted residual risk", text)
+        self.assertIn("private/confidential input", text)
 
-    def test_fable_recommendations_are_pending_not_accepted_decisions(self):
+    def test_approved_roadmap_decisions_are_bounded_and_not_implemented(self):
         review = self._section(
-            "### Fable 5 recommendations — user decision pending",
+            "## 11. Approved roadmap decisions",
             "## 12. Approval and maintenance",
         )
-        self.assertIn("not accepted requirements or implementation approval", review)
         for marker in (
             "full commit SHAs",
-            "weekly Dependabot",
+            "weekly `github-actions` Dependabot",
             "`cancel-in-progress: false`",
-            "credential persistence as-is",
-            "compact operations document",
-            "GAP-010 repository-owner checklist before Version 1.0",
+            "checkout credential persistence",
+            "`SECURITY_OPERATIONS.md`",
+            "90 days",
+            "GAP-009 open for later prioritization",
         ):
             with self.subTest(marker=marker):
                 self.assertIn(marker, review)
-        self.assertNotIn("Accepted Decision", review)
-        self.assertIn(
-            "Full commit SHA pinning is an evaluation item, not an approved mandatory control",
-            self.requirements,
-        )
-        self.assertIn(
-            "GitHub Actions Dependabot is an evaluation item, not an approved mandatory control",
-            self.requirements,
-        )
+        self.assertIn("approve follow-up scope, not implementation", review)
 
     def test_workflows_and_dependabot_remain_unmodified_in_design(self):
         production = (ROOT / ".github/workflows/fetch.yml").read_text(encoding="utf-8")
@@ -369,8 +403,7 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
             r"uses:\s*[^@\s]+@[0-9a-f]{40}(?:\s|$)",
         )
         self.assertFalse((ROOT / ".github/dependabot.yml").exists())
-        self.assertIn("This review incorporation is not user approval", self.requirements)
-        self.assertIn("does not implement any control", self.requirements)
+        self.assertIn("security-control implementation outside this PR", self.requirements)
 
     def test_current_gaps_non_required_and_triggers_are_distinct(self):
         mapping = self._section("## 7. Current control mapping", "## 8. Gap register")
@@ -384,17 +417,16 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
         )
         triggers = self._section(
             "## 10. Re-evaluation triggers",
-            "## 11. Open review questions",
+            "## 11. Approved roadmap decisions",
         )
 
         for status in (
             "Met",
             "Partially met",
             "Not applicable now",
-            "Unverified outside repository",
         ):
             self.assertIn(status, mapping)
-        self.assertIn("No entry is implemented or\nautomatically accepted", gaps)
+        self.assertIn("does not mean the underlying control is implemented", gaps)
         self.assertIn("WAF", non_required)
         self.assertIn("24/7 SOC monitoring", non_required)
         self.assertIn("introducing `monomidigest.com`", triggers)
@@ -418,19 +450,24 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
         self.assertNotIn("forms are currently implemented", self.requirements)
 
     def test_no_secret_value_or_local_absolute_path_is_present(self):
-        for text in (self.requirements, self.backlog, self.status):
+        for text in (
+            self.requirements,
+            self.backlog,
+            self.status,
+            self.decisions,
+            self.agents,
+        ):
             self.assertNotIn("/Users/", text)
             self.assertNotRegex(text, r"AIza[0-9A-Za-z_-]{20,}")
             self.assertNotRegex(text, r"ghp_[0-9A-Za-z]{20,}")
             self.assertNotRegex(text, r"github_pat_[0-9A-Za-z_]{20,}")
-        self.assertIn("secret names used by production code", self.requirements)
-        self.assertIn("Values, presence", self.requirements)
+        self.assertIn("secret names", self.requirements)
+        self.assertIn("No value was inspected", self.requirements)
 
-    def test_bl015_is_active_pending_and_not_complete(self):
+    def test_bl015_is_version_10_approved_merge_pending_and_not_complete(self):
         bl015 = self.backlog.split("## BL-015", 1)[1].split("## BL-016", 1)[0]
         self.assertIn(
-            "**状態:** 進行中 / Draft 0.2 / Fable 5レビュー反映済み / "
-            "ユーザー確認待ち",
+            "**状態:** Version 1.0承認済み / PR #44 merge待ち",
             bl015,
         )
         self.assertIn("[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Draft 0.1", bl015)
@@ -442,8 +479,11 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
         self.assertIn("GAP-014", bl015)
         self.assertIn("GAP-015", bl015)
         self.assertIn("security-control実装", bl015)
-        self.assertIn("GAP-010 owner checklist", bl015)
-        self.assertIn("**ユーザー受入証跡:** 未受入。", bl015)
+        self.assertIn("GAP-010 repository-owner checklist", bl015)
+        self.assertIn("「ok」", bl015)
+        self.assertIn("BL-024", bl015)
+        self.assertIn("BL-025", bl015)
+        self.assertIn("BL-026", bl015)
         self.assertNotIn("**状態:** 完了", bl015)
 
         active = self.status.split("## Active work", 1)[1].split(
@@ -453,15 +493,80 @@ class SecurityRequirementsDraftTest(unittest.TestCase):
             "## 6. Known issues and limitations", 1
         )[0]
         self.assertIn("BL-015", active)
-        self.assertIn("Version Draft 0.2", active)
-        self.assertIn("Critical 0, High 0", active)
-        self.assertIn("final user approval remains pending", active)
-        self.assertIn("owner checklist before Version 1.0", active)
+        self.assertIn("Version 1.0 approved", active)
+        self.assertIn("waiting for", active)
+        self.assertIn("repository-owner checklist is complete", active)
+        self.assertIn("「ok」", active)
         self.assertNotIn("BL-015", recently_completed)
 
-    def test_no_unapproved_decision_was_added(self):
-        self.assertNotIn("## SD-024", self.decisions)
-        self.assertRegex(self.requirements, r"does\s+not add SD-024")
+    def test_sd024_and_follow_up_tickets_are_recorded(self):
+        self.assertIn(
+            "## SD-024 — Approve Security Requirements Version 1.0 and the "
+            "proportionate security roadmap",
+            self.decisions,
+        )
+        sd024 = self.decisions.split("## SD-024", 1)[1]
+        self.assertIn("「ok」", sd024)
+        self.assertIn("PR #44", sd024)
+        for backlog_id, title, priority in (
+            ("BL-024", "最小Security Operationsと公開済み生成物の訂正手順を定義する", "P1"),
+            ("BL-025", "収集元URLをhttp／https schemeへ制限する", "P2"),
+            ("BL-026", "GitHub Actions supply chainとproduction concurrencyを強化する", "P2"),
+        ):
+            with self.subTest(backlog_id=backlog_id):
+                section = self.backlog.split(f"## {backlog_id}", 1)[1].split(
+                    "\n## ", 1
+                )[0]
+                self.assertIn(title, section)
+                self.assertIn(f"**優先度:** {priority}", section)
+                self.assertIn("未実装", section)
+        self.assertIn("GAP-009", self.requirements)
+        self.assertIn("Remains open for later prioritization", self.requirements)
+        self.assertIn("GAP-015", self.requirements)
+        self.assertIn("Deferred until trigger", self.requirements)
+
+    def test_owner_checklist_mandatory_items_are_resolved_without_sensitive_data(self):
+        owner = self.requirements.split("## 13. Repository-owner verification", 1)[1]
+        rows = list(self._markdown_rows(owner))
+        mandatory = [row for row in rows if "(mandatory)" in row[1]]
+        self.assertGreaterEqual(len(mandatory), 13)
+        allowed_results = (
+            "Verified",
+            "Not configured",
+            "Not applicable",
+            "Unverified — owner access required",
+        )
+        self.assertTrue(all(row[2].startswith(allowed_results) for row in rows))
+        self.assertTrue(
+            all(row[2] != "Unverified — owner access required" for row in mandatory)
+        )
+        for marker in (
+            "Visibility (mandatory)",
+            "Default branch (mandatory)",
+            "Main branch protection or ruleset (mandatory)",
+            "Force-push blocking (mandatory)",
+            "Branch-deletion blocking (mandatory)",
+            "Default workflow token permission (mandatory)",
+            "Fork PR approval policy (mandatory)",
+            "`workflow_dispatch` permission range (mandatory)",
+            "Required production secret `GEMINI_API_KEY` (mandatory)",
+            "Source branch/directory (mandatory)",
+            "HTTPS enforcement (mandatory)",
+            "Custom domain (mandatory)",
+            "Log and default artifact retention (mandatory)",
+        ):
+            self.assertIn(marker, owner)
+        self.assertIn("Mandatory checklist items contain no", owner)
+
+    def test_agents_references_version_10_without_blanket_authorization(self):
+        security = self.agents.split("## Security requirements", 1)[1].split(
+            "## Testing and review", 1
+        )[0]
+        self.assertIn("SECURITY_REQUIREMENTS.md", security)
+        self.assertIn("Version 1.0", security)
+        self.assertIn("re-evaluation triggers", security)
+        self.assertIn("approved ticket", security)
+        self.assertIn("not blanket authorization", security)
 
     def test_security_requirements_internal_markdown_links_resolve(self):
         docs = {
