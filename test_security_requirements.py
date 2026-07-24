@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static contract tests for BL-015 SECURITY_REQUIREMENTS.md Version 1.0."""
+"""Static contract tests for SECURITY_REQUIREMENTS.md Version 1.1."""
 
 import re
 import unittest
@@ -43,17 +43,19 @@ class SecurityRequirementsTest(unittest.TestCase):
     def _section(self, start, end):
         return self.requirements.split(start, 1)[1].split(end, 1)[0]
 
-    def test_document_is_approved_version_10_with_review_and_user_context(self):
+    def test_document_is_approved_version_11_maintenance_update(self):
         self.assertTrue(REQUIREMENTS_PATH.is_file())
         self.assertIn("# Security Digest Security Requirements", self.requirements)
-        self.assertIn("**Version:** 1.0", self.requirements)
+        self.assertIn("**Version:** 1.1", self.requirements)
         self.assertIn("**Status:** Approved", self.requirements)
         self.assertIn("no Critical or High findings", self.requirements)
         self.assertIn("accepted and modified findings", self.requirements)
         self.assertIn("rejected F-004 consolidation was not applied", self.requirements)
-        self.assertIn("Version 1.0 is approved.", self.requirements)
+        self.assertIn("Version 1.1 is approved as a maintenance update", self.requirements)
         self.assertIn("answered 「ok」 to the complete decision brief", self.requirements)
         self.assertIn("not blanket preapproval", self.requirements)
+        self.assertIn("Completed by documentation", self.requirements)
+        self.assertIn("SD-025", self.requirements)
         self.assertIn(
             "Fable 5 could not retrieve `STATUS.md` or\n"
             "`test_security_requirements.py`",
@@ -96,7 +98,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         )
         self.assertRegex(
             self.requirements,
-            r"\| SR-043 \|.*\| Not met \|",
+            r"\| SR-043 \|.*\| Met \|",
         )
         self.assertIn("daily JSON or HTML", self.requirements)
         self.assertIn("subject or scope shift", self.requirements)
@@ -104,9 +106,27 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("align the procedure with SD-014", self.requirements)
         self.assertRegex(
             self.requirements,
-            r"\| GAP-014 \| Security gap \| Approved for documentation ticket \| SR-043 \|",
+            r"\| GAP-014 \| Security gap \| Completed by documentation \| SR-043 \|",
         )
         self.assertIn("24/7 monitoring is not required", self.requirements)
+
+    def test_operations_requirements_are_met_by_documentation_only(self):
+        requirements = self._section(
+            "## 6. Security requirements",
+            "## 7. Current control mapping",
+        )
+        for requirement_id in ("SR-015", "SR-020", "SR-032", "SR-043"):
+            row = next(
+                row
+                for row in self._markdown_rows(requirements)
+                if row[0] == requirement_id
+            )
+            with self.subTest(requirement_id=requirement_id):
+                self.assertEqual(row[3], "Met")
+                self.assertIn("SECURITY_OPERATIONS.md", row[4])
+        self.assertIn("no real secret operation", requirements)
+        self.assertIn("without adding a correction schema/UI", requirements)
+        self.assertIn("no retention automation", requirements)
 
     def test_semantic_risk_is_evidenced_without_impossibility_generalization(self):
         self.assertIn("BL-005 and BL-023", self.requirements)
@@ -163,7 +183,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertEqual({gap_id: row[1] for gap_id, row in rows.items()}, expected)
         allowed_dispositions = {
             "Approved for implementation ticket",
-            "Approved for documentation ticket",
+            "Completed by documentation",
             "Accepted current state",
             "Accepted residual risk",
             "Deferred until trigger",
@@ -177,15 +197,15 @@ class SecurityRequirementsTest(unittest.TestCase):
             "GAP-003": "Approved for implementation ticket",
             "GAP-004": "Approved for implementation ticket",
             "GAP-005": "Accepted current state",
-            "GAP-006": "Approved for documentation ticket",
+            "GAP-006": "Completed by documentation",
             "GAP-007": "Deferred until trigger",
-            "GAP-008": "Approved for documentation ticket",
+            "GAP-008": "Completed by documentation",
             "GAP-009": "Remains open for later prioritization",
             "GAP-010": "Completed owner verification",
             "GAP-011": "Deferred until trigger",
             "GAP-012": "Accepted residual risk",
-            "GAP-013": "Approved for documentation ticket",
-            "GAP-014": "Approved for documentation ticket",
+            "GAP-013": "Completed by documentation",
+            "GAP-014": "Completed by documentation",
             "GAP-015": "Deferred until trigger",
         }
         self.assertEqual(
@@ -240,7 +260,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertEqual(sorted(mapped_ids), list(range(1, 44)))
         self.assertEqual(
             mapping_rows["Secrets"][5],
-            "Met 1 / Partial 2 / Not met 1 / Unverified 0",
+            "Met 2 / Partial 2 / Not met 0 / Unverified 0",
         )
         self.assertEqual(
             mapping_rows["GitHub Actions"][5],
@@ -248,7 +268,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         )
         self.assertEqual(
             mapping_rows["Logging and artifacts"][5],
-            "Met 0 / Partial 4 / Not met 0 / Unverified 0",
+            "Met 1 / Partial 3 / Not met 0 / Unverified 0",
         )
         self.assertEqual(
             mapping_rows["Availability and recovery"][5],
@@ -256,7 +276,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         )
         self.assertEqual(
             mapping_rows["Change and review control"][5],
-            "Met 4 / Partial 1 / Not met 1 / Unverified 0",
+            "Met 5 / Partial 1 / Not met 0 / Unverified 0",
         )
         self.assertEqual(
             mapping_rows["GitHub/Pages/DNS settings outside the repository"][4],
@@ -403,7 +423,10 @@ class SecurityRequirementsTest(unittest.TestCase):
             r"uses:\s*[^@\s]+@[0-9a-f]{40}(?:\s|$)",
         )
         self.assertFalse((ROOT / ".github/dependabot.yml").exists())
-        self.assertIn("security-control implementation outside this PR", self.requirements)
+        self.assertIn(
+            "Runtime security-control implementation in this maintenance update",
+            self.requirements,
+        )
 
     def test_current_gaps_non_required_and_triggers_are_distinct(self):
         mapping = self._section("## 7. Current control mapping", "## 8. Gap register")
@@ -502,7 +525,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("3f1803388161495f9145150e760d91b03821ad80", recently_completed)
         self.assertIn("BL-015 itself has no residual work", recently_completed)
 
-    def test_sd024_and_follow_up_tickets_are_recorded(self):
+    def test_sd024_sd025_and_follow_up_tickets_are_recorded(self):
         self.assertIn(
             "## SD-024 — Approve Security Requirements Version 1.0 and the "
             "proportionate security roadmap",
@@ -515,8 +538,20 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("eef80a3a589bbaee8dbb373c4a0ee0f75038546d", sd024)
         self.assertIn("3f1803388161495f9145150e760d91b03821ad80", sd024)
         self.assertIn("Pull Request CI run 30095261901", sd024)
+        bl024 = self.backlog.split("## BL-024", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("Version 1.0承認済み / PR #46 merge待ち", bl024)
+        self.assertIn("merge前のためBL-024は完了扱いにしない", bl024)
+        self.assertIn("「ok」", bl024)
+        self.assertIn(
+            "## SD-025 — Approve Security Operations Version 1.0 and the "
+            "minimal incident and correction policy",
+            self.decisions,
+        )
+        sd025 = self.decisions.split("## SD-025", 1)[1]
+        self.assertIn("Completed by documentation", sd025)
+        self.assertIn("PR #46", sd025)
+        self.assertIn("「ok」", sd025)
         for backlog_id, title, priority in (
-            ("BL-024", "最小Security Operationsと公開済み生成物の訂正手順を定義する", "P1"),
             ("BL-025", "収集元URLをhttp／https schemeへ制限する", "P2"),
             ("BL-026", "GitHub Actions supply chainとproduction concurrencyを強化する", "P2"),
         ):
@@ -569,12 +604,16 @@ class SecurityRequirementsTest(unittest.TestCase):
             self.assertIn(marker, owner)
         self.assertIn("Mandatory checklist items contain no", owner)
 
-    def test_agents_references_version_10_without_blanket_authorization(self):
+    def test_agents_references_version_11_and_operations_without_blanket_authorization(self):
         security = self.agents.split("## Security requirements", 1)[1].split(
             "## Testing and review", 1
         )[0]
         self.assertIn("SECURITY_REQUIREMENTS.md", security)
-        self.assertIn("Version 1.0", security)
+        self.assertIn("SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.1", security)
+        self.assertIn("SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.0", security)
+        self.assertIn("credential rotation or revocation", security)
+        self.assertIn("published-output correction or withdrawal", security)
+        self.assertIn("repository-external artifact handling", security)
         self.assertIn("re-evaluation triggers", security)
         self.assertIn("approved ticket", security)
         self.assertIn("not blanket authorization", security)
@@ -584,6 +623,7 @@ class SecurityRequirementsTest(unittest.TestCase):
             name: (ROOT / name).read_text(encoding="utf-8")
             for name in (
                 "SECURITY_REQUIREMENTS.md",
+                "SECURITY_OPERATIONS.md",
                 "BACKLOG.md",
                 "STATUS.md",
                 "DECISIONS.md",

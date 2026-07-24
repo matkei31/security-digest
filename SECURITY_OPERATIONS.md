@@ -1,7 +1,7 @@
 # Security Digest Security Operations
 
-- **Version:** Draft 0.2
-- **Status:** Fable 5 review incorporated; user decision pending
+- **Version:** 1.0
+- **Status:** Approved
 - **As of:** 2026-07-24
 
 ## Scope
@@ -11,15 +11,16 @@ generation pipeline, GitHub Actions credentials, published daily JSON and HTML, 
 repository-external review artifacts.
 
 Runtime implementation, workflow changes, GitHub setting changes, actual secret rotation,
-actual incident-response execution, and production execution are out of scope for this Draft.
+actual incident-response execution, and production execution are out of scope for Version 1.0.
 This is a short runbook proportionate to a personally managed static site, not a general
 enterprise incident-response plan.
 
 This document implements the documentation scope approved by
-[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.0, especially SR-043,
+[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.1, especially SR-043,
 GAP-006, GAP-008, GAP-013, and GAP-014. It also follows the GAP-010 owner-checklist evidence
 boundary, [SD-014](DECISIONS.md#sd-014--keep-daily-json-outside-the-github-pages-publication-tree-and-limit-stored-content),
 [SD-024](DECISIONS.md#sd-024--approve-security-requirements-version-10-and-the-proportionate-security-roadmap),
+[SD-025](DECISIONS.md#sd-025--approve-security-operations-version-10-and-the-minimal-incident-and-correction-policy),
 and the approval boundaries in [AGENTS.md](AGENTS.md).
 
 ## 1. Purpose and operating principles
@@ -54,7 +55,7 @@ Only the Repository owner handles secret values, and only through approved secre
 Work and AI reviewers must not request or handle those values; see section 9. Normal
 corrections use a branch, pull request, and CI. Production workflow execution, GitHub setting
 changes, secret updates, Ready for review, and merge retain their separate approval boundaries.
-Approval of Security Requirements Version 1.0 is not unlimited advance approval for real
+Approval of Security Operations Version 1.0 is not unlimited advance approval for real
 incident actions.
 
 ## 3. Events covered by this runbook
@@ -102,9 +103,27 @@ If non-revocable private data or a legal deletion duty requires a history purge,
 that as an automatic runbook step. Require incident-specific explicit approval, the current
 GitHub or provider guidance, an impact assessment, and an after-action record.
 
-The normal containment path is a dedicated branch and the smallest reviewable pull request.
-A direct production rewrite that bypasses a pull request is not approved by Draft 0.2; the
-need, authorizer, limits, and mandatory after-action record remain an open review question.
+The normal containment path is a dedicated branch and the smallest reviewable pull request:
+prepare the smallest change, use a fast-track pull request, run relevant local tests and Pull
+Request CI, complete a scope review, then obtain the normal approval and merge. Fast-track
+never means skipping review or CI.
+
+A direct public hotfix is an exceptional path only when continued publication creates
+material public harm and the normal pull-request and CI path is clearly too slow. It requires
+explicit approval from both the Repository owner and the User approval owner. If one person
+holds both roles, record why the exception is necessary and record both approvals. The direct
+change is normally limited to the affected public files in `docs/`; keep the diff minimal.
+It must not change code, workflows, schemas, prompts, models, validation, secrets, or GitHub
+settings, and it must not force-push or rewrite history. Do not call Gemini, RSS, NVD, other
+external HTTP, or the production workflow. Run local validation when the available response
+time permits.
+
+Within 24 hours of a direct public hotfix, create an after-action branch and pull request that
+reviews and, when needed, corrects the daily JSON; restores JSON/HTML consistency through
+deterministic offline regeneration; checks the translation cache; runs relevant tests, the
+full unittest suite, and `git diff --check`; records the incident and correction; receives an
+independent review; and confirms the public Pages result. The exception is not a permanent
+bypass.
 
 ## 5. Secret, credential, and account response
 
@@ -136,11 +155,11 @@ Use this path when active misuse is not known but preventive rotation is require
 5. Confirm explicitly that the old credential cannot be used.
 6. Leave a non-sensitive record.
 
-Never assume that issuing a new credential automatically invalidates the old one. This Draft
+Never assume that issuing a new credential automatically invalidates the old one. This document
 does not issue, update, validate, or revoke a real credential.
 
 `GEMINI_API_KEY` is the required repository secret. `NVD_API_KEY` is optional and is currently
-not configured at repository-secret scope according to the Security Requirements Version 1.0
+not configured at repository-secret scope according to the Security Requirements Version 1.1
 owner verification completed on 2026-07-24. No value was inspected. Reverify this state after a
 secret-inventory, workflow-reference, or provider-usage change. Both are long-lived provider
 credentials when configured. A local credential, an environment secret, and a GitHub
@@ -149,7 +168,7 @@ repository secret are distinct storage or delivery contexts and must be checked 
 The job-scoped `GITHUB_TOKEN` is issued by GitHub for a workflow run; it is not a long-lived
 provider secret to be rotated using the procedure above. Respond instead by containing the
 affected run or repository access and reviewing the workflow permissions and platform event.
-This Draft performs no secret update, real API validation, or production execution.
+This document performs no secret update, real API validation, or production execution.
 
 ### GitHub owner account or repository access compromise
 
@@ -214,7 +233,7 @@ Material content-integrity problems include a fact absent from the source; chang
 scope; a material date, number, or product error; unsupported financial impact;
 prompt-injection-derived output; or publication of an internal identifier or private data.
 
-The Draft default is:
+The default is:
 
 - correct the current published files;
 - restore consistency between the affected daily JSON and the HTML generated from it;
@@ -229,18 +248,33 @@ The Draft default is:
 
 ### Correction
 
-When a supported replacement is available, correct the affected `data/YYYY-MM-DD.json`, run
-daily JSON validation, and regenerate every derived HTML surface from the corrected data.
-Because manual changes to generated output are a separate approval boundary, the correction
-pull request must identify the exact affected date and files.
+When a supported replacement is available, correct the affected `data/YYYY-MM-DD.json`, keep
+`data/index.json` consistent, run daily JSON validation, and regenerate every derived HTML
+surface from the corrected data offline. Review the translation cache, run relevant tests and
+the full unittest suite, run `git diff --check`, and after an authorized merge confirm Pages.
+For a material correction, directly verify the public result. Because manual changes to
+generated output are a separate approval boundary, the correction pull request must identify
+the exact affected date and files.
+
+Preserve the original in Git history. Do not force-push or rewrite history, rerun Gemini or
+external HTTP, run production, change an unapproved contract, or leave JSON and HTML changed
+on only one side without an explicit record. The canonical evidence is the BL correction
+record, commit, pull request, affected dates and files, source-supported diff, validation
+results, Pages result, and user acceptance when it is required. Version 1.0 does not add a
+dedicated `INCIDENTS.md`.
 
 ### Withdrawal
 
 Withdraw when a correct replacement cannot be produced promptly and continued publication has
-material impact. The recommended future default is an explicit withdrawal or correction notice
-that preserves navigation and makes the unavailable content clear. Blank output, article
-deletion, and a dedicated notice can require schema or UI changes, so Draft 0.2 does not
-unconditionally select or authorize one.
+material impact. First use an explicit withdrawal or correction notice that preserves
+navigation and the Archive. If that is insufficient, use blank output; delete an article or
+page only as a last resort.
+
+Version 1.0 does not add a schema field, UI component, temporary ARTICLE text, schema change,
+or renderer change. The first real withdrawal requires a separate ticket and user approval,
+must preserve navigation, Archive, and daily-JSON contracts, and may use the direct-public-
+hotfix exception only when section 4's emergency conditions are met. Reevaluate a dedicated
+schema or UI contract if withdrawals recur.
 
 ### Regeneration
 
@@ -262,7 +296,7 @@ unconditionally select or authorize one.
 
 If provider behavior is the root cause, deleting an entry may allow the same response to return
 and is not complete remediation by itself. Provider suspension, a runtime guard, or cache
-validation requires a separately approved ticket. This Draft changes no runtime or cache
+validation requires a separately approved ticket. This document changes no runtime or cache
 processing.
 
 ### Validation
@@ -306,10 +340,14 @@ personal information. Section 9 overrides every long-term evidence designation. 
 that cannot be sanitized because it contains a secret value is not retained; revoke the
 credential and remove the artifact from the retained set.
 
-The recommended approver for a 90-day exception is the User approval owner. Existing artifacts
-are not deleted by this Draft, and no retention automation, cron job, or cleanup script is
-introduced. GitHub Actions log and platform-artifact retention are platform settings and are
-not this repository-external artifact policy.
+Retention beyond 90 days requires the User approval owner's approval and a record of the
+reason, exact retained items, owner, access scope, secret-scan result, approval reference, and
+next review or deletion date. Prefer a sanitized summary, manifest, hash list, gate result, or
+BL/SD/user-acceptance/merge/No-Go record for long-term evidence. Retain raw material long-term
+only when it is indispensable and safe. Existing artifacts are not deleted by Version 1.0;
+review them at the next artifact inventory. No retention automation, cron job, or cleanup
+script is introduced. GitHub Actions log and platform-artifact retention are platform settings
+and are not this repository-external artifact policy.
 
 ## 9. Canonical secret and sensitive-evidence contract
 
@@ -351,44 +389,43 @@ Apply the remaining conditions only when relevant:
 
 A merged documentation or code pull request alone is not incident closure.
 
-## 11. Open review questions
+## 11. Approved operational decisions
 
-Each item is a **Recommendation / user decision pending**, not an approved decision:
+The user approved the following Version 1.0 decisions:
 
 1. **Emergency hotfix:** default to a fast-track branch and pull request without skipping CI.
-   Permit a direct public hotfix only when continued publication creates material harm and the
-   normal path is too slow, with explicit Repository owner and User approval owner
-   authorization, normally limited to affected public files in `docs/`, no code or workflow
-   change, and an after-action pull request within 24 hours to restore JSON consistency, tests,
-   records, and review.
+   Permit a direct public hotfix only under section 4's material-harm, dual-approval,
+   constrained-scope, and 24-hour after-action requirements.
 2. **Withdrawal:** prefer an explicit notice over blank output, and use article or page deletion
-   only last. Preserve navigation and Archive contracts. Do not approve temporary withdrawal
-   text inside an existing schema field without field-contract review. Add dedicated schema or
-   UI only through a separate ticket when first needed or repeated.
+   only last. Preserve navigation, Archive, and daily-JSON contracts. Add no schema or UI now;
+   use a separate ticket and user approval for the first real withdrawal and reconsider a
+   dedicated contract if withdrawals recur.
 3. **Material daily JSON correction:** when a supported replacement exists, correct daily JSON,
    deterministically regenerate HTML, retain the original in Git history, and use the BL entry,
-   commit, and pull request as the normal evidence. Do not add a dedicated incident document
-   until repeated use justifies it.
+   commit, pull request, validation, Pages result, and any required user acceptance as the
+   normal evidence. Do not add a dedicated incident document now.
 4. **Correction notice contract:** add no schema or UI now. Reevaluate if corrections recur and
-   commit, pull-request, and BL evidence is insufficient for readers.
+   existing evidence is insufficient for readers.
 5. **Artifact retention:** start the detailed-artifact 90 days at evaluation completion, let
-   the User approval owner approve longer exceptions, and retain sanitized decision evidence
-   for the period it is needed.
-6. **AGENTS.md reference:** after Version 1.0 merges, add only one or two lines directing
+   the User approval owner approve and record longer exceptions, and prefer sanitized decision
+   evidence over raw artifacts for long-term retention.
+6. **AGENTS.md reference:** add only a short paragraph directing
    incidents, secret rotation, and published-output correction or withdrawal to this runbook;
    do not change existing operation-specific approval boundaries.
 
 ## 12. Approval and maintenance
 
-Draft 0.2 is unapproved and the user decision is pending. External Fable 5 review is complete:
+Version 1.0 is approved. External Fable 5 review is complete:
 Critical 0 and High 1 (F-001). The adjudication of F-001 through F-010 is incorporated into
 Draft 0.2. Fable 5 could not retrieve `test_security_operations.py`; it did not review that
 file. The test was independently inspected at the PR head and strengthened under F-011.
 
-This review and Draft update make no runtime, workflow, or production change. After the user's
-final decision, the document may become Version 1.0. Only after Version 1.0 is merged should
-the project decide whether to update the state of GAP-006, GAP-008, GAP-013, GAP-014, and
-SR-043 in SECURITY_REQUIREMENTS.md.
+The user approved the complete final decision brief with 「ok」, including emergency public
+hotfix limits, withdrawal priority, material daily-JSON correction, no correction-notice
+schema or UI change now, the artifact-retention rule, and the minimal AGENTS reference. This
+review and Version update make no runtime, workflow, schema, prompt, model, validation,
+generated-output, or production change. [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md)
+Version 1.1 records the documentation completion of GAP-006, GAP-008, GAP-013, and GAP-014.
 
 Review this runbook when an incident or architecture change exposes a missing boundary. A
 mechanical annual update is not required.

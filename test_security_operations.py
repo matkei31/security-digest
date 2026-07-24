@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static contract tests for BL-024 SECURITY_OPERATIONS.md Draft 0.2."""
+"""Static contract tests for BL-024 SECURITY_OPERATIONS.md Version 1.0."""
 
 import re
 import unittest
@@ -31,14 +31,11 @@ class SecurityOperationsContractTest(unittest.TestCase):
     def section(self, start, end):
         return self.operations.split(start, 1)[1].split(end, 1)[0]
 
-    def test_draft_identity_review_record_and_pending_user_decision(self):
+    def test_version_10_identity_review_record_and_user_approval(self):
         self.assertTrue(OPERATIONS_PATH.exists())
         self.assertIn("# Security Digest Security Operations", self.operations)
-        self.assertIn("**Version:** Draft 0.2", self.operations)
-        self.assertIn(
-            "**Status:** Fable 5 review incorporated; user decision pending",
-            self.operations,
-        )
+        self.assertIn("**Version:** 1.0", self.operations)
+        self.assertIn("**Status:** Approved", self.operations)
         approval = self.section("## 12. Approval and maintenance", "\nReview this runbook")
         for contract in (
             "Critical 0",
@@ -48,9 +45,10 @@ class SecurityOperationsContractTest(unittest.TestCase):
             "did not review that file",
             "independently inspected",
             "F-011",
-            "unapproved",
-            "user decision is pending",
-            "no runtime, workflow, or production change",
+            "Version 1.0 is approved",
+            "complete final decision brief with 「ok」",
+            "no runtime, workflow, schema, prompt, model, validation, "
+            "generated-output, or production change",
         ):
             with self.subTest(contract=contract):
                 self.assertIn(contract, compact_whitespace(approval))
@@ -66,6 +64,7 @@ class SecurityOperationsContractTest(unittest.TestCase):
             "GAP-010",
             "SD-014",
             "SD-024",
+            "SD-025",
             "AGENTS.md",
         ):
             with self.subTest(reference=reference):
@@ -172,7 +171,7 @@ class SecurityOperationsContractTest(unittest.TestCase):
         )
         compact = compact_whitespace(response)
         self.assertIn("`NVD_API_KEY` is optional", compact)
-        self.assertIn("Security Requirements Version 1.0 owner verification", compact)
+        self.assertIn("Security Requirements Version 1.1 owner verification", compact)
         self.assertIn("completed on 2026-07-24", compact)
         self.assertIn("not configured at repository-secret scope", compact)
         self.assertIn("No value was inspected", compact)
@@ -230,7 +229,7 @@ class SecurityOperationsContractTest(unittest.TestCase):
     def test_closure_conditions_are_conditional(self):
         closure = self.section(
             "## 10. Validation and closure",
-            "## 11. Open review questions",
+            "## 11. Approved operational decisions",
         )
         compact = compact_whitespace(closure)
         for always_required in (
@@ -285,12 +284,12 @@ class SecurityOperationsContractTest(unittest.TestCase):
         self.assertIn("Reviewer independent", compact_roles)
         self.assertIn("does not replace the User approval owner's decision", compact_roles)
 
-    def test_open_questions_remain_recommendations(self):
+    def test_approved_operational_decisions_and_emergency_boundaries(self):
         questions = self.section(
-            "## 11. Open review questions",
+            "## 11. Approved operational decisions",
             "## 12. Approval and maintenance",
         )
-        self.assertIn("Recommendation / user decision pending", questions)
+        self.assertIn("user approved", questions)
         for question in (
             "Emergency hotfix",
             "Withdrawal",
@@ -302,33 +301,89 @@ class SecurityOperationsContractTest(unittest.TestCase):
             with self.subTest(question=question):
                 self.assertIn(question, questions)
         compact = compact_whitespace(questions)
-        self.assertIn("without skipping CI", compact)
-        self.assertIn("no code or workflow change", compact)
-        self.assertIn("not approved by Draft 0.2", self.operations)
-        self.assertIn(
-            "Draft 0.2 does not unconditionally select or authorize one",
-            compact_whitespace(self.operations),
+        containment = self.section(
+            "## 4. Initial assessment and containment",
+            "## 5. Secret, credential, and account response",
         )
+        compact_containment = compact_whitespace(containment)
+        for contract in (
+            "Fast-track never means skipping review or CI",
+            "material public harm",
+            "normal pull-request and CI path is clearly too slow",
+            "Repository owner and the User approval owner",
+            "normally limited to the affected public files in `docs/`",
+            "must not change code, workflows, schemas, prompts, models, validation, "
+            "secrets, or GitHub settings",
+            "must not force-push or rewrite history",
+            "Within 24 hours",
+            "after-action branch and pull request",
+            "not a permanent bypass",
+        ):
+            with self.subTest(contract=contract):
+                self.assertIn(contract, compact_containment)
+
+    def test_withdrawal_and_correction_policy_is_fixed_without_new_contract(self):
+        correction = self.section(
+            "## 7. Published-output correction, withdrawal, and regeneration",
+            "## 8. Repository-external artifact handling",
+        )
+        compact = compact_whitespace(correction)
+        self.assertLess(compact.index("explicit withdrawal or correction notice"), compact.index("blank output"))
+        self.assertLess(compact.index("blank output"), compact.index("last resort"))
+        for contract in (
+            "first real withdrawal requires a separate ticket and user approval",
+            "preserve navigation",
+            "daily-JSON contracts",
+            "does not add a schema field, UI component, temporary ARTICLE text",
+            "`data/index.json` consistent",
+            "deterministic offline regeneration",
+            "translation cache",
+            "Do not force-push or rewrite history",
+            "canonical evidence",
+            "does not add a dedicated `INCIDENTS.md`",
+        ):
+            with self.subTest(contract=contract):
+                self.assertIn(contract, compact)
+
+    def test_artifact_retention_exception_is_recorded_and_reviewed(self):
+        artifact = self.section(
+            "## 8. Repository-external artifact handling",
+            "## 9. Canonical secret and sensitive-evidence contract",
+        )
+        compact = compact_whitespace(artifact)
+        self.assertIn("beyond 90 days requires the User approval owner's approval", compact)
+        for contract in (
+            "reason",
+            "exact retained items",
+            "owner",
+            "access scope",
+            "secret-scan result",
+            "approval reference",
+            "next review or deletion date",
+            "Retain raw material long-term only when it is indispensable and safe",
+            "next artifact inventory",
+        ):
+            with self.subTest(contract=contract):
+                self.assertIn(contract, compact)
 
     def test_bl024_status_and_non_change_contract(self):
         backlog_section = self.backlog.split("## BL-024", 1)[1].split("## BL-025", 1)[0]
         for contract in (
-            "進行中 / SECURITY_OPERATIONS Draft 0.2 / Fable 5レビュー反映済み / ユーザー判断待ち",
+            "Version 1.0承認済み / PR #46 merge待ち",
             "Critical 0",
             "High 1（F-001）",
             "F-001〜F-011",
-            "user decision pending",
-            "Version 1.0前は未完了",
+            "最終decision brief全体へ「ok」",
+            "merge前のためBL-024は完了扱いにしない",
         ):
             with self.subTest(contract=contract):
                 self.assertIn(contract, backlog_section)
         active = self.status.split("## Active work", 1)[1].split(
             "## 5. Recently completed work", 1
         )[0]
-        self.assertIn("Draft 0.2", active)
-        self.assertIn("Fable 5", active)
-        self.assertIn("Critical 0／High F-001", active)
-        self.assertIn("user decision pending", active)
+        self.assertIn("Version 1.0承認済み / PR #46 merge待ち", active)
+        self.assertIn("最終decision brief全体へ「ok」", active)
+        self.assertIn("完了扱いではない", active)
         for unchanged in (
             "runtime",
             "workflow",
@@ -340,7 +395,10 @@ class SecurityOperationsContractTest(unittest.TestCase):
         ):
             with self.subTest(unchanged=unchanged):
                 self.assertIn(unchanged, active)
-        self.assertNotIn("## SD-025", self.decisions)
+        sd025 = self.decisions.split("## SD-025", 1)[1]
+        self.assertIn("Accepted / Version 1.0 approved / PR #46 merge pending", sd025)
+        self.assertIn("「ok」", sd025)
+        self.assertIn("Completed by documentation", sd025)
 
     def test_no_local_absolute_path_or_credential_value_pattern(self):
         reviewed = "\n".join((self.operations, self.backlog, self.status))
