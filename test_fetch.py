@@ -3090,7 +3090,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("repository-external `BL-020/neutral-source-footer/`", bl020_text)
         self.assertIn("[PR #41](https://github.com/matkei31/security-digest/pull/41)", bl020_text)
         self.assertIn("関連33 tests、full unittest 1156 tests", bl020_text)
-        self.assertIn("f699056bf81b8baac0e548d76d4e5494ef163d7c", bl020_text)
+        self.assertIn("f6990564de8f84dabdd2e614a7fe72996cf961fe", bl020_text)
         self.assertIn("1d55897e1241138d6bbb0bd2bd2381e10bc05f2e", bl020_text)
         self.assertIn("d16a2ce28c05a2381d98ed3dbb28599ebd317b7b", bl020_text)
         self.assertIn("Pull Request CI run 30068786053", bl020_text)
