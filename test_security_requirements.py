@@ -539,8 +539,8 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("3f1803388161495f9145150e760d91b03821ad80", sd024)
         self.assertIn("Pull Request CI run 30095261901", sd024)
         bl024 = self.backlog.split("## BL-024", 1)[1].split("\n## ", 1)[0]
-        self.assertIn("Version 1.0承認済み / PR #46 merge待ち", bl024)
-        self.assertIn("merge前のためBL-024は完了扱いにしない", bl024)
+        self.assertIn("**状態:** 完了", bl024)
+        self.assertIn("**残作業:** なし", bl024)
         self.assertIn("「ok」", bl024)
         self.assertIn(
             "## SD-025 — Approve Security Operations Version 1.0 and the "
@@ -551,6 +551,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("Completed by documentation", sd025)
         self.assertIn("PR #46", sd025)
         self.assertIn("「ok」", sd025)
+        self.assertIn("Accepted / Version 1.0 merged", sd025)
+        self.assertIn("a04e3a3b6c5789d0a2e4de983054035080f0ce75", sd025)
+        self.assertIn("047534601d8d15419a8d3b45142d8828bc655ad4", sd025)
+        self.assertIn("Pull Request CI run 30102905467", sd025)
+        self.assertIn("Pages deployment run 30103074821", sd025)
         for backlog_id, title, priority in (
             ("BL-025", "収集元URLをhttp／https schemeへ制限する", "P2"),
             ("BL-026", "GitHub Actions supply chainとproduction concurrencyを強化する", "P2"),

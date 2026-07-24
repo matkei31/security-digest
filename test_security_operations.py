@@ -366,24 +366,33 @@ class SecurityOperationsContractTest(unittest.TestCase):
             with self.subTest(contract=contract):
                 self.assertIn(contract, compact)
 
-    def test_bl024_status_and_non_change_contract(self):
+    def test_bl024_is_closed_with_merge_and_deployment_evidence(self):
         backlog_section = self.backlog.split("## BL-024", 1)[1].split("## BL-025", 1)[0]
         for contract in (
-            "Version 1.0承認済み / PR #46 merge待ち",
+            "**状態:** 完了",
             "Critical 0",
             "High 1（F-001）",
             "F-001〜F-011",
             "最終decision brief全体へ「ok」",
-            "merge前のためBL-024は完了扱いにしない",
+            "a04e3a3b6c5789d0a2e4de983054035080f0ce75",
+            "047534601d8d15419a8d3b45142d8828bc655ad4",
+            "Pull Request CI run 30102905467",
+            "Pages deployment run 30103074821",
+            "**残作業:** なし",
         ):
             with self.subTest(contract=contract):
                 self.assertIn(contract, backlog_section)
         active = self.status.split("## Active work", 1)[1].split(
             "## 5. Recently completed work", 1
         )[0]
-        self.assertIn("Version 1.0承認済み / PR #46 merge待ち", active)
-        self.assertIn("最終decision brief全体へ「ok」", active)
-        self.assertIn("完了扱いではない", active)
+        self.assertNotIn("BL-024", active)
+        self.assertIn("None", active)
+        recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
+            "## 6. Known issues and limitations", 1
+        )[0]
+        self.assertIn("BL-024 Security Operations Version 1.0", recently_completed)
+        self.assertIn("completed", recently_completed)
+        self.assertIn("no residual work", recently_completed)
         for unchanged in (
             "runtime",
             "workflow",
@@ -394,11 +403,15 @@ class SecurityOperationsContractTest(unittest.TestCase):
             "daily schema",
         ):
             with self.subTest(unchanged=unchanged):
-                self.assertIn(unchanged, active)
+                self.assertIn(unchanged, recently_completed)
         sd025 = self.decisions.split("## SD-025", 1)[1]
-        self.assertIn("Accepted / Version 1.0 approved / PR #46 merge pending", sd025)
+        self.assertIn("Accepted / Version 1.0 merged", sd025)
         self.assertIn("「ok」", sd025)
         self.assertIn("Completed by documentation", sd025)
+        self.assertIn("a04e3a3b6c5789d0a2e4de983054035080f0ce75", sd025)
+        self.assertIn("047534601d8d15419a8d3b45142d8828bc655ad4", sd025)
+        self.assertIn("Pull Request CI run 30102905467", sd025)
+        self.assertIn("Pages deployment run 30103074821", sd025)
 
     def test_no_local_absolute_path_or_credential_value_pattern(self):
         reviewed = "\n".join((self.operations, self.backlog, self.status))
