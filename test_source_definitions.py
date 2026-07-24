@@ -238,6 +238,145 @@ class LoadSourceDefinitionsTest(unittest.TestCase):
             path.unlink()
 
 
+class CollectionUrlValidationTest(unittest.TestCase):
+    """外部取得用urlだけにabsolute HTTP(S)境界を適用するBL-025契約。"""
+
+    def _load_one(self, **overrides):
+        path = _write_temp_definitions([_valid_entry(**overrides)])
+        try:
+            return fetch.load_source_definitions(path=path)
+        finally:
+            path.unlink()
+
+    def test_http_and_https_absolute_urls_are_accepted(self):
+        valid_urls = (
+            "http://example.com/feed.xml",
+            "https://example.com/feed.xml",
+            "https://example.com:8443/feed.xml",
+            "https://example.com/feed.xml?format=rss",
+            "HTTPS://EXAMPLE.com/feed.xml",
+        )
+        for url in valid_urls:
+            with self.subTest(url=url):
+                sources = self._load_one(url=url)
+                self.assertEqual(sources[0]["url"], url)
+
+    def test_every_url_required_collection_method_accepts_https(self):
+        self.assertEqual(fetch.ALLOWED_COLLECTION_URL_SCHEMES, {"http", "https"})
+        self.assertEqual(
+            fetch.URL_REQUIRED_COLLECTION_METHODS,
+            fetch.VALID_COLLECTION_METHODS,
+        )
+        for method in fetch.URL_REQUIRED_COLLECTION_METHODS:
+            with self.subTest(method=method):
+                sources = self._load_one(
+                    collection_method=method,
+                    url=f"https://example.com/{method}",
+                    enabled=False,
+                )
+                self.assertEqual(sources[0]["collection_method"], method)
+
+    def test_disabled_source_still_validates_and_accepts_a_valid_url(self):
+        sources = self._load_one(
+            id="disabled_source",
+            enabled=False,
+            url="http://example.com:8080/feed?disabled=true",
+        )
+        self.assertFalse(sources[0]["enabled"])
+
+    def test_invalid_collection_urls_are_rejected_with_stable_context(self):
+        invalid_urls = (
+            "file:///etc/passwd",
+            "ftp://example.com/feed",
+            "data:text/plain,hello",
+            "javascript:alert(1)",
+            "mailto:security@example.com",
+            "//example.com/feed",
+            "feed.xml",
+            "/feed.xml",
+            "https:/feed.xml",
+            "https://",
+            "",
+            "   ",
+            " https://example.com/feed ",
+            None,
+            123,
+            ["https://example.com/feed"],
+            {"url": "https://example.com/feed"},
+        )
+        for url in invalid_urls:
+            with self.subTest(url=url):
+                path = _write_temp_definitions([
+                    _valid_entry(id="invalid_url_source", url=url)
+                ])
+                try:
+                    with self.assertRaises(fetch.SourceDefinitionError) as ctx:
+                        fetch.load_source_definitions(path=path)
+                    message = str(ctx.exception)
+                    self.assertIn("sources[0]", message)
+                    self.assertIn("invalid_url_source", message)
+                    self.assertIn("url", message)
+                    self.assertIn("http", message)
+                    self.assertIn("https", message)
+                finally:
+                    path.unlink()
+
+    def test_non_http_scheme_is_rejected_for_every_url_required_method(self):
+        for method in fetch.URL_REQUIRED_COLLECTION_METHODS:
+            with self.subTest(method=method):
+                path = _write_temp_definitions([
+                    _valid_entry(
+                        id=f"invalid_{method}",
+                        collection_method=method,
+                        url="ftp://example.com/source",
+                        enabled=False,
+                    )
+                ])
+                try:
+                    with self.assertRaises(fetch.SourceDefinitionError):
+                        fetch.load_source_definitions(path=path)
+                finally:
+                    path.unlink()
+
+    @patch("fetch.urllib.request.urlopen")
+    def test_invalid_url_fails_before_any_external_request(self, mock_urlopen):
+        path = _write_temp_definitions([
+            _valid_entry(id="pre_request_failure", url="file:///etc/passwd")
+        ])
+        try:
+            with self.assertRaises(fetch.SourceDefinitionError):
+                fetch.load_source_definitions(path=path)
+            mock_urlopen.assert_not_called()
+        finally:
+            path.unlink()
+
+    def test_display_url_is_not_treated_as_a_collection_endpoint(self):
+        # disabledの表示用値は取得にも公開にも使われない。collection urlだけを
+        # BL-025 validatorへ渡し、display_urlの既存presence契約は変更しない。
+        sources = self._load_one(
+            id="cisa_kev",
+            name="CISA KEV",
+            collection_method="cisa_kev_json",
+            enabled=False,
+            url="https://example.com/kev.json",
+            display_url="relative-display-reference",
+        )
+        self.assertEqual(sources[0]["display_url"], "relative-display-reference")
+
+    def test_structured_source_urls_remain_unchanged(self):
+        cisa_kev = fetch.get_source_definition(fetch.SOURCE_DEFINITIONS, "cisa_kev")
+        nist_nvd = fetch.get_source_definition(fetch.SOURCE_DEFINITIONS, "nist_nvd")
+        self.assertEqual(
+            cisa_kev["url"],
+            "https://raw.githubusercontent.com/cisagov/kev-data/develop/"
+            "known_exploited_vulnerabilities.json",
+        )
+        self.assertEqual(
+            nist_nvd["url"],
+            "https://services.nvd.nist.gov/rest/json/cves/2.0",
+        )
+
+
 class CompatLayerTest(unittest.TestCase):
     def test_disabled_source_excluded_from_rss_feeds(self):
         sources = [

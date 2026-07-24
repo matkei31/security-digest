@@ -60,6 +60,7 @@ VALID_COLLECTION_FREQUENCIES = {"daily", "weekly", "manual"}
 # 追加する場合はここから除外する)
 VALID_COLLECTION_METHODS = {"rss", "cisa_kev_json", "nist_nvd_json"}
 URL_REQUIRED_COLLECTION_METHODS = set(VALID_COLLECTION_METHODS)
+ALLOWED_COLLECTION_URL_SCHEMES = {"http", "https"}
 
 REQUIRED_SOURCE_FIELDS = (
     "id", "name", "url", "collection_method", "language",
@@ -71,6 +72,32 @@ REQUIRED_SOURCE_FIELDS = (
 
 class SourceDefinitionError(Exception):
     """source_definitions.json の読み込み・検証エラー"""
+
+
+def _validate_collection_url(url, where, source_id):
+    """外部取得に使うcollection URLがabsolute HTTP(S) URLか検証する。
+
+    記事表示用のdisplay_urlは別契約であり、このvalidatorの対象にしない。
+    """
+    error = (
+        f"{where} (id={source_id!r}): url は空でない文字列のabsolute URLで、"
+        "schemeはhttpまたはhttps、hostが必要です"
+    )
+    if not isinstance(url, str) or not url or url != url.strip():
+        raise SourceDefinitionError(error)
+
+    try:
+        parsed = urllib.parse.urlsplit(url)
+        hostname = parsed.hostname
+    except ValueError as exc:
+        raise SourceDefinitionError(error) from exc
+
+    if (
+        parsed.scheme.lower() not in ALLOWED_COLLECTION_URL_SCHEMES
+        or not parsed.netloc
+        or not hostname
+    ):
+        raise SourceDefinitionError(error)
 
 
 def _validate_source_entry(entry, index):
@@ -129,8 +156,11 @@ def _validate_source_entry(entry, index):
 
     if entry["collection_method"] in URL_REQUIRED_COLLECTION_METHODS and not entry.get("url"):
         raise SourceDefinitionError(
-            f"{where} (id={sid!r}): collection_method={entry['collection_method']!r} はURLが必須です"
+            f"{where} (id={sid!r}): collection_method={entry['collection_method']!r} の "
+            "url は空でない文字列のabsolute URLで、schemeはhttpまたはhttps、hostが必要です"
         )
+    if entry["collection_method"] in URL_REQUIRED_COLLECTION_METHODS:
+        _validate_collection_url(entry["url"], where, sid)
 
     # CISA KEV固有: fetch_cisa_kev()は記事表示用の固定リンクとしてdisplay_urlを
     # 必要とする。enabled=trueで実際に取得される場合のみ必須とする。

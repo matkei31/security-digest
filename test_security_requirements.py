@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static contract tests for SECURITY_REQUIREMENTS.md Version 1.1."""
+"""Static contract tests for SECURITY_REQUIREMENTS.md Version 1.2."""
 
 import re
 import unittest
@@ -43,15 +43,15 @@ class SecurityRequirementsTest(unittest.TestCase):
     def _section(self, start, end):
         return self.requirements.split(start, 1)[1].split(end, 1)[0]
 
-    def test_document_is_approved_version_11_maintenance_update(self):
+    def test_document_is_approved_version_12_maintenance_update(self):
         self.assertTrue(REQUIREMENTS_PATH.is_file())
         self.assertIn("# Security Digest Security Requirements", self.requirements)
-        self.assertIn("**Version:** 1.1", self.requirements)
+        self.assertIn("**Version:** 1.2", self.requirements)
         self.assertIn("**Status:** Approved", self.requirements)
         self.assertIn("no Critical or High findings", self.requirements)
         self.assertIn("accepted and modified findings", self.requirements)
         self.assertIn("rejected F-004 consolidation was not applied", self.requirements)
-        self.assertIn("Version 1.1 is approved as a maintenance update", self.requirements)
+        self.assertIn("Version 1.2 is approved as a maintenance update", self.requirements)
         self.assertIn("answered 「ok」 to the complete decision brief", self.requirements)
         self.assertIn("not blanket preapproval", self.requirements)
         self.assertIn("Completed by documentation", self.requirements)
@@ -184,6 +184,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         allowed_dispositions = {
             "Approved for implementation ticket",
             "Completed by documentation",
+            "Implemented",
             "Accepted current state",
             "Accepted residual risk",
             "Deferred until trigger",
@@ -192,7 +193,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         }
         self.assertEqual({row[2] for row in rows.values()}, allowed_dispositions)
         expected_dispositions = {
-            "GAP-001": "Approved for implementation ticket",
+            "GAP-001": "Implemented",
             "GAP-002": "Approved for implementation ticket",
             "GAP-003": "Approved for implementation ticket",
             "GAP-004": "Approved for implementation ticket",
@@ -261,6 +262,10 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertEqual(
             mapping_rows["Secrets"][5],
             "Met 2 / Partial 2 / Not met 0 / Unverified 0",
+        )
+        self.assertEqual(
+            mapping_rows["Input and content handling"][5],
+            "Met 5 / Partial 0 / Not met 0 / Unverified 0",
         )
         self.assertEqual(
             mapping_rows["GitHub Actions"][5],
@@ -424,7 +429,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         )
         self.assertFalse((ROOT / ".github/dependabot.yml").exists())
         self.assertIn(
-            "Runtime security-control implementation in this maintenance update",
+            "Runtime security-control implementation beyond the accepted BL-025",
             self.requirements,
         )
 
@@ -556,8 +561,38 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("047534601d8d15419a8d3b45142d8828bc655ad4", sd025)
         self.assertIn("Pull Request CI run 30102905467", sd025)
         self.assertIn("Pages deployment run 30103074821", sd025)
+        bl025 = self.backlog.split("## BL-025", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("収集元URLをhttp／https schemeへ制限する", bl025)
+        self.assertIn("**優先度:** P2", bl025)
+        self.assertIn("実装受入済み / PR #48 merge待ち", bl025)
+        self.assertIn("完成実装へ「ok」", bl025)
+        self.assertIn("hostname allowlist", bl025)
+        self.assertIn("production実行を承認するものではない", bl025)
+        self.assertIn("SR-003を`Met`、GAP-001を`Implemented`", bl025)
+        self.assertIn("merge前のためBL-025は未完了", bl025)
+        active = self.status.split("## Active work", 1)[1].split(
+            "## 5. Recently completed work", 1
+        )[0]
+        self.assertIn("BL-025", active)
+        self.assertIn("「ok」で個別受入", active)
+        self.assertIn("PR #48", active)
+        self.assertIn("loader境界だけ", active)
+        self.assertIn("SR-003を`Met`、GAP-001を`Implemented`", active)
+        next_candidates = self.status.split("## 7. Next candidates", 1)[1].split(
+            "## 8. Sources of truth", 1
+        )[0]
+        self.assertIn("1. [BL-026]", next_candidates)
+        self.assertNotIn("[BL-025]", next_candidates)
+        self.assertRegex(
+            self.requirements,
+            r"\| SR-003 \|.*\| Met \|",
+        )
+        self.assertRegex(
+            self.requirements,
+            r"\| GAP-001 \| Security gap \| Implemented \| SR-003 \|",
+        )
+        self.assertNotIn("## SD-026", self.decisions)
         for backlog_id, title, priority in (
-            ("BL-025", "収集元URLをhttp／https schemeへ制限する", "P2"),
             ("BL-026", "GitHub Actions supply chainとproduction concurrencyを強化する", "P2"),
         ):
             with self.subTest(backlog_id=backlog_id):
@@ -609,12 +644,12 @@ class SecurityRequirementsTest(unittest.TestCase):
             self.assertIn(marker, owner)
         self.assertIn("Mandatory checklist items contain no", owner)
 
-    def test_agents_references_version_11_and_operations_without_blanket_authorization(self):
+    def test_agents_references_version_12_and_operations_without_blanket_authorization(self):
         security = self.agents.split("## Security requirements", 1)[1].split(
             "## Testing and review", 1
         )[0]
         self.assertIn("SECURITY_REQUIREMENTS.md", security)
-        self.assertIn("SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.1", security)
+        self.assertIn("SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.2", security)
         self.assertIn("SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.0", security)
         self.assertIn("credential rotation or revocation", security)
         self.assertIn("published-output correction or withdrawal", security)

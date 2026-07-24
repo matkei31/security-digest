@@ -3029,8 +3029,8 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertNotIn("BL-017", known_issues)
         self.assertNotIn("BL-017", next_candidates)
         self.assertNotIn("[BL-022]", next_candidates)
-        self.assertRegex(next_candidates, r"(?m)^1\. \[BL-025\]")
-        self.assertRegex(next_candidates, r"(?m)^2\. \[BL-026\]")
+        self.assertRegex(next_candidates, r"(?m)^1\. \[BL-026\]")
+        self.assertNotIn("[BL-025]", next_candidates)
 
     def test_bl_018_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
