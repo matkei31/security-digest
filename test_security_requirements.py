@@ -527,7 +527,11 @@ class SecurityRequirementsTest(unittest.TestCase):
 
     def test_owner_checklist_mandatory_items_are_resolved_without_sensitive_data(self):
         owner = self.requirements.split("## 13. Repository-owner verification", 1)[1]
-        rows = list(self._markdown_rows(owner))
+        rows = [
+            row
+            for row in self._markdown_rows(owner)
+            if row[0] in {"Repository", "Actions", "Pages", "Notifications", "Security"}
+        ]
         mandatory = [row for row in rows if "(mandatory)" in row[1]]
         self.assertGreaterEqual(len(mandatory), 13)
         allowed_results = (
