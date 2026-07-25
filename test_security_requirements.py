@@ -479,13 +479,13 @@ class SecurityRequirementsTest(unittest.TestCase):
             r"\| GAP-004 \| Hardening candidate \| Implemented \| SR-025 \|",
         )
 
-    def test_bl027_backlog_entry_records_draft_v7_upgrade_stable_contract(self):
+    def test_bl027_backlog_entry_records_merged_awaiting_schedule_validation(self):
         bl027 = self.backlog.split("## BL-027", 1)[1].split("\n## ", 1)[0]
         self.assertIn(
             "GitHub Actions checkout／setup-pythonをv7系へmajor upgradeする", bl027
         )
         self.assertIn("**優先度:** P2", bl027)
-        self.assertIn("**状態:** 実装受入済み / PR #54 merge待ち", bl027)
+        self.assertIn("**状態:** 実装merge済み / 通常schedule validation待ち", bl027)
         self.assertIn("3d3c42e5aac5ba805825da76410c181273ba90b1", bl027)
         self.assertIn("5fda3b95a4ea91299a34e894583c3862153e4b97", bl027)
         self.assertIn("v7.0.1", bl027)
@@ -496,8 +496,24 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("a26af69be951a213d495a4c3e4e4022e16d87065", bl027)
         self.assertIn("「ok」と個別実装受入した", bl027)
         self.assertIn("d7461b9adfe474793a60f61cd6fe8b219153b499", bl027)
-        self.assertIn("merge前なのでBL-027は未完了", bl027)
+        self.assertIn("241e7f69c9c843fc212c1c590f3a328da5946579", bl027)
+        self.assertIn("69f7da859e1856beffac9fa381f0f0cc92564e36", bl027)
+        self.assertIn("superseded close", bl027)
+        self.assertIn(
+            "production commit／push経路の次回通常schedule validationが未達のため、BL-027は未完了",
+            bl027,
+        )
         self.assertNotIn("**状態:** 完了", bl027)
+        active = self.status.split("## Active work", 1)[1].split(
+            "## 5. Recently completed work", 1
+        )[0]
+        recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
+            "## 6. Known issues and limitations", 1
+        )[0]
+        self.assertIn("BL-027", active)
+        self.assertIn("implementation merged", active)
+        self.assertIn("ordinary schedule validation pending", active)
+        self.assertNotIn("BL-027", recently_completed)
 
     def test_bl026_closure_records_pending_run_limitation_and_leaves_other_gaps_unchanged(self):
         self.assertIn(
