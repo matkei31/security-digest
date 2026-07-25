@@ -38,7 +38,8 @@ the user with 「ok」 at [PR #50](https://github.com/matkei31/security-digest/p
 runtime-dependency, or Pages-operations policy, and Version 1.4 records the separately
 accepted BL-027 GitHub Actions major-version upgrade, accepted by the user with 「ok」 at
 [PR #54](https://github.com/matkei31/security-digest/pull/54) head
-`241e7f69c9c843fc212c1c590f3a328da5946579` and merged as
+`d7461b9adfe474793a60f61cd6fe8b219153b499`; the acceptance-recording commit produced final
+head `241e7f69c9c843fc212c1c590f3a328da5946579`, which passed Pull Request CI and merged as
 `69f7da859e1856beffac9fa381f0f0cc92564e36`, with production validated by one authorized
 `workflow_dispatch` run ([run 30147337332](https://github.com/matkei31/security-digest/actions/runs/30147337332))
 that generated commit `226db6285021d9daf98fe2941248b7f5b20ba143` and pushed it successfully,

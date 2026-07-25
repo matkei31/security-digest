@@ -479,6 +479,29 @@ class SecurityRequirementsTest(unittest.TestCase):
             r"\| GAP-004 \| Hardening candidate \| Implemented \| SR-025 \|",
         )
 
+    def test_bl027_acceptance_head_is_distinct_from_pr54_final_head(self):
+        # The explicit 「ok」 was given at PR #54 head d7461b9..., not at the
+        # later final head 241e7f69... produced by the acceptance-recording
+        # commit. SECURITY_REQUIREMENTS.md must not conflate the two.
+        self.assertIn(
+            "accepted by the user with 「ok」 at\n"
+            "[PR #54](https://github.com/matkei31/security-digest/pull/54) head\n"
+            "`d7461b9adfe474793a60f61cd6fe8b219153b499`",
+            self.requirements,
+        )
+        self.assertIn(
+            "the acceptance-recording commit produced final\n"
+            "head `241e7f69c9c843fc212c1c590f3a328da5946579`, which passed Pull Request CI "
+            "and merged as",
+            self.requirements,
+        )
+        self.assertNotIn(
+            "accepted by the user with 「ok」 at\n"
+            "[PR #54](https://github.com/matkei31/security-digest/pull/54) head\n"
+            "`241e7f69c9c843fc212c1c590f3a328da5946579`",
+            self.requirements,
+        )
+
     def test_bl027_backlog_entry_records_completed_workflow_dispatch_validation(self):
         bl027 = self.backlog.split("## BL-027", 1)[1].split("\n## ", 1)[0]
         self.assertIn(
@@ -703,6 +726,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("BL-026 has no residual work", recently_completed)
         self.assertIn("BL-027 GitHub Actions checkout／setup-python combined major upgrade to v7", recently_completed)
         self.assertIn("PR #54", recently_completed)
+        self.assertIn("d7461b9adfe474793a60f61cd6fe8b219153b499", recently_completed)
         self.assertIn("241e7f69c9c843fc212c1c590f3a328da5946579", recently_completed)
         self.assertIn("69f7da859e1856beffac9fa381f0f0cc92564e36", recently_completed)
         self.assertIn("30147337332", recently_completed)
