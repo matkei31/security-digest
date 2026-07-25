@@ -2,7 +2,7 @@
 
 - **文書名:** Monomi Digest UI Specification
 - **バージョン:** 1.4
-- **状態:** 承認済み
+- **状態:** Draft／ユーザー受入待ち
 - **適用対象:** 現行Monomi Digest。BL-006でSecurity Digestからのブランド名変更を実装し、この文書もあわせて現在形へ更新した。
 
 ## 1. 文書の目的と対象読者
@@ -11,7 +11,7 @@
 
 対象読者は、UIの設計・実装・レビュー・受入を行うユーザー、実装担当者、レビュー担当者である。本書は表示仕様を扱い、ARTICLE／BRIEF prompt、daily JSON schema、生成・公開workflow、ブランド名変更の仕様書ではない。
 
-Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた7項目のユーザー裁定を反映した承認済み文書である。Version 1.1は、BL-022で明示されたトップページの直前公開ダイジェストリンクを追加した。Version 1.2は、トップページと日別Archiveのナビゲーション用語を統一し、日付をリンク文言から除き、方向移動と全体導線を左右の別グループへ整理した。Version 1.3は、BL-020で収集元フッターの取得元別カラーとpill表現を廃止し、無彩色・低強調のプレーンテキスト一覧へ置き換えた。Version 1.4は、BL-006でブランド名をSecurity DigestからMonomi Digestへ変更し、`🔐`は維持したままtitle／H1の絵文字表記を統一した。Fable 5提案を無条件に採用したものではなく、後のユーザー判断と受入済み実装を優先している。
+Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた7項目のユーザー裁定を反映した承認済み文書である。Version 1.1は、BL-022で明示されたトップページの直前公開ダイジェストリンクを追加した。Version 1.2は、トップページと日別Archiveのナビゲーション用語を統一し、日付をリンク文言から除き、方向移動と全体導線を左右の別グループへ整理した。Version 1.3は、BL-020で収集元フッターの取得元別カラーとpill表現を廃止し、無彩色・低強調のプレーンテキスト一覧へ置き換えた。Version 1.4は、BL-006でブランド名をSecurity DigestからMonomi Digestへ変更し、`🔐`は維持したままtitle／H1の絵文字表記を統一したDraftであり、PC 1280px／390pxの目視によるユーザー受入を待っている。
 
 ## 2. 正本と優先順位
 
@@ -24,7 +24,7 @@ Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた
 
 本書では、上記1〜3で根拠を確認できた項目を「確定仕様」、現行コードにある具体値を「現行値」と表記する。将来新たな未決事項が生じた場合は確定仕様へ混入させず、実装前にユーザー裁定を得る。Version 1.3時点の未決事項はない。
 
-主要な根拠は[SD-012](DECISIONS.md#sd-012--dashboard-v2-priority-index-and-the-article-reason-no-imperative-contract)、[SD-013](DECISIONS.md#sd-013--ordinary-article-card-variant-b-remove-classification-label-badges-keep-関連タグ-round)、[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)、[SD-020](DECISIONS.md#sd-020--link-the-top-page-to-the-latest-validated-earlier-digest)、[SD-021](DECISIONS.md#sd-021--unify-digest-navigation-labels-and-separate-direction-from-global-navigation)、[SD-023](DECISIONS.md#sd-023--remove-source-specific-colors-and-pill-styling-from-the-source-footer)、[BL-016](BACKLOG.md#bl-016--本日の状態ラベルを除去する)、[BL-017](BACKLOG.md#bl-017--過去ダイジェストの回遊性と一覧表示を改善する)、[BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる)、[BL-020](BACKLOG.md#bl-020--収集元一覧の取得元別カラーを廃止する)、[BL-022](BACKLOG.md#bl-022--前日ダイジェスト直接リンク)、`fetch.py`、`test_fetch.py`、`test_archive.py`である。
+主要な根拠は[SD-012](DECISIONS.md#sd-012--dashboard-v2-priority-index-and-the-article-reason-no-imperative-contract)、[SD-013](DECISIONS.md#sd-013--ordinary-article-card-variant-b-remove-classification-label-badges-keep-関連タグ-round)、[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)、[SD-020](DECISIONS.md#sd-020--link-the-top-page-to-the-latest-validated-earlier-digest)、[SD-021](DECISIONS.md#sd-021--unify-digest-navigation-labels-and-separate-direction-from-global-navigation)、[SD-023](DECISIONS.md#sd-023--remove-source-specific-colors-and-pill-styling-from-the-source-footer)、[BL-016](BACKLOG.md#bl-016--本日の要点の表示階層を目視受入する)、[BL-017](BACKLOG.md#bl-017--過去ダイジェストの回遊性と一覧表示を改善する)、[BL-018](BACKLOG.md#bl-018--トップページとjson再構築時の記事時刻表示を一致させる)、[BL-020](BACKLOG.md#bl-020--収集元一覧の取得元別カラーを廃止する)、[BL-022](BACKLOG.md#bl-022--前日ダイジェスト直接リンク)、`fetch.py`、`test_fetch.py`、`test_archive.py`である。
 
 ## 3. UI設計原則
 
@@ -387,7 +387,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 5. UI実装の受入では、少なくともPCと390px、優先確認0件／あり、分析欠損、KEVあり、Archive境界日と中間日を確認する。
 6. `docs/`の再生成、daily JSON変更、prompt／schema／workflow変更は、UI仕様書更新だけを理由に行わない。各変更の承認範囲に従う。
 7. Version 1.3は承認済みの確定仕様である。今回解消した7項目、ナビゲーション統一仕様、収集元フッターのプレーン表示を再び未決として扱わず、変更には新しいユーザー判断とSupersedes記録を必要とする。
-8. Version 1.4はBL-006のブランド名変更（Security Digest→Monomi Digest、`🔐`維持、title／H1絵文字統一）を確定仕様へ反映した。custom domain・DNS・canonical等（BL-007）およびAbout・meta description・analytics等（BL-009）は本書の対象外であり、Version 1.4では変更していない。
+8. Version 1.4はBL-006のブランド名変更（Security Digest→Monomi Digest、`🔐`維持、title／H1絵文字統一）をDraftとして記録したものであり、PC 1280px／390pxの目視によるユーザー受入後に確定仕様へ格上げする。custom domain・DNS・canonical等（BL-007）およびAbout・meta description・analytics等（BL-009）は本書の対象外であり、Version 1.4では変更していない。
 
 ### 20.1 版履歴
 
@@ -398,4 +398,4 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 | 1.1 | 承認済み | BL-022の直前公開ダイジェストリンク、日付欠落時の選択、ラベル、responsive配置を追加 |
 | 1.2 | 承認済み | ナビゲーションの4用語を統一し、リンク文言の日付を廃止し、方向移動と全体導線を左右の別グループへ整理 |
 | 1.3 | 承認済み | 収集元フッターの取得元別カラーとpill表現を廃止し、PC 3列／600px以下1列のプレーンテキスト一覧へ変更 |
-| 1.4 | 承認済み | BL-006でSecurity DigestからMonomi Digestへブランド名を変更し、`🔐`は維持したまま、トップページと日別Archiveのtitle／H1の絵文字表記を統一した |
+| 1.4 | Draft／ユーザー受入待ち | BL-006でSecurity DigestからMonomi Digestへブランド名を変更し、`🔐`は維持したまま、トップページと日別Archiveのtitle／H1の絵文字表記を統一した |

@@ -25,11 +25,11 @@ class UiSpecDocumentTest(unittest.TestCase):
         cls.bl020 = backlog_section(cls.backlog, "BL-020")
         cls.bl022 = backlog_section(cls.backlog, "BL-022")
 
-    def test_ui_spec_exists_with_approved_version_metadata(self):
+    def test_ui_spec_exists_with_version_metadata(self):
         self.assertTrue(self.spec_path.is_file())
         self.assertIn("# Monomi Digest UI Specification", self.spec)
         self.assertIn("- **バージョン:** 1.4", self.spec)
-        self.assertIn("- **状態:** 承認済み", self.spec)
+        self.assertIn("- **状態:** Draft／ユーザー受入待ち", self.spec)
         self.assertIn("BL-006でSecurity Digestからのブランド名変更を実装し", self.spec)
 
     def test_all_required_chapters_exist_in_order(self):
