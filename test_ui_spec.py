@@ -198,7 +198,7 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertNotIn("[BL-022]", next_candidates)
         self.assertNotRegex(next_candidates, r"(?m)^1\. \[BL-026\]")
         self.assertIn("[BL-026]", next_candidates)
-        self.assertIn("is complete", next_candidates)
+        self.assertIn("are both complete", next_candidates)
         self.assertIn("no new ranked next candidate is named here", next_candidates)
         self.assertIn("[BL-027]", next_candidates)
         self.assertNotIn("[BL-025]", next_candidates)
