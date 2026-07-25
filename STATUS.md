@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- None.
+- [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する) GitHub Actions supply-chain hardening and production concurrency — implementation accepted with 「ok」 at [PR #50](https://github.com/matkei31/security-digest/pull/50) head `394dd157395b69e86928d98a376386131474b20f`; merge is pending. Accepted scope: `actions/checkout` and `actions/setup-python` pinned in both `.github/workflows/fetch.yml` and `.github/workflows/pr-ci.yml` to verified full commit SHAs (`actions/checkout` v4.4.0, `actions/setup-python` v5.6.0), a weekly `github-actions`-only `.github/dependabot.yml`, and a workflow-level `daily-security-digest-production` concurrency group with `cancel-in-progress: false` on `.github/workflows/fetch.yml`. [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) final-state update (SR-025／SR-028／SR-029, GAP-002／GAP-003／GAP-004) is pending until merge. No production run or `workflow_dispatch` occurred, and ARTICLE／BRIEF contracts, daily schema, runtime, `data/`, and `docs/` are unchanged.
 
 ## 5. Recently completed work
 
@@ -78,7 +78,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-1. [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する) — next candidate: Actions supply chain／production concurrency (`P2`)
+[BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する) has moved from next candidate to active work; see [Active work](#active-work) above. BACKLOG.md records no explicit ordering beyond BL-026, so next candidates will be re-evaluated after its user implementation acceptance rather than guessed here.
 
 [BL-023](BACKLOG.md#bl-023--article編集品質改善) is on hold after the v9 and fixed-v10 prompt-only No-Go evaluations and is not ranked in this short priority list. Reconsider it only through a separately designed structured ARTICLE-field contract or facts-based limited deterministic composition.
 

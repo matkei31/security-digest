@@ -2700,6 +2700,36 @@ class WorkflowStaticCheckTest(unittest.TestCase):
         self.assertIn("cron: '0 22 * * *'", text)
         self.assertIn("contents: write", text)
 
+    def test_timeout_and_python_version_unchanged(self):
+        text = self._workflow_text()
+        self.assertIn("timeout-minutes: 20", text)
+        self.assertIn("python-version: '3.12'", text)
+
+    def test_production_has_workflow_level_serialized_concurrency(self):
+        # BL-026 / GAP-004: scheduled and manual production runs must not race,
+        # and an in-flight production run must not be cancelled by a new one.
+        text = self._workflow_text()
+        self.assertRegex(
+            text,
+            r"(?m)^concurrency:\n  group: daily-security-digest-production\n"
+            r"  cancel-in-progress: false$",
+        )
+        # The concurrency block must be workflow-level (before `jobs:`), not job-level.
+        self.assertLess(text.index("concurrency:"), text.index("jobs:"))
+        self.assertEqual(text.count("concurrency:"), 1)
+        # The group must not vary by branch or run id, so scheduled and
+        # workflow_dispatch runs always share the same serialization queue.
+        self.assertNotIn("github.ref", text.split("concurrency:", 1)[1].split("jobs:", 1)[0])
+        self.assertNotIn("github.run_id", text.split("concurrency:", 1)[1].split("jobs:", 1)[0])
+
+    def test_production_concurrency_group_differs_from_pr_ci(self):
+        production = self._workflow_text()
+        pull_request = (
+            Path(__file__).resolve().parent / ".github" / "workflows" / "pr-ci.yml"
+        ).read_text(encoding="utf-8")
+        self.assertIn("group: daily-security-digest-production", production)
+        self.assertIn("group: pr-ci-${{ github.event.pull_request.number }}", pull_request)
+
 
 class AgentsFileTest(unittest.TestCase):
     def test_agents_file_contains_current_safety_guardrails(self):
@@ -3029,7 +3059,9 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertNotIn("BL-017", known_issues)
         self.assertNotIn("BL-017", next_candidates)
         self.assertNotIn("[BL-022]", next_candidates)
-        self.assertRegex(next_candidates, r"(?m)^1\. \[BL-026\]")
+        self.assertNotRegex(next_candidates, r"(?m)^1\. \[BL-026\]")
+        self.assertIn("[BL-026]", next_candidates)
+        self.assertIn("moved from next candidate to active work", next_candidates)
         self.assertNotIn("[BL-025]", next_candidates)
 
     def test_bl_018_completion_status_and_evidence(self):
