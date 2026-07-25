@@ -424,18 +424,29 @@ class SecurityRequirementsTest(unittest.TestCase):
         # BL-026 implements the GAP-002/003/004 roadmap this section approved,
         # and Version 1.3 records SR-025/SR-028/SR-029 as Met and
         # GAP-002/003/004 as Implemented following user acceptance and merge.
+        #
+        # BL-027 (Draft, user implementation acceptance pending) has since
+        # moved the *live* workflow files to actions/checkout v7.0.1 and
+        # actions/setup-python v7.0.0, so the assertions below check the
+        # current pinned SHAs rather than the v4.4.0/v5.6.0 pair BL-026
+        # accepted. SECURITY_REQUIREMENTS.md itself is untouched by BL-027
+        # until user acceptance, merge, and the next scheduled production
+        # run validate it; its Version 1.3 text (checked via self.requirements
+        # below) still documents the accepted BL-026 v4.4.0/v5.6.0 baseline.
         production = (ROOT / ".github/workflows/fetch.yml").read_text(encoding="utf-8")
         pull_request = (ROOT / ".github/workflows/pr-ci.yml").read_text(encoding="utf-8")
         self.assertRegex(
             production + pull_request,
-            r"uses:\s*actions/checkout@[0-9a-f]{40} # v4\.4\.0",
+            r"uses:\s*actions/checkout@[0-9a-f]{40} # v7\.0\.1",
         )
         self.assertRegex(
             production + pull_request,
-            r"uses:\s*actions/setup-python@[0-9a-f]{40} # v5\.6\.0",
+            r"uses:\s*actions/setup-python@[0-9a-f]{40} # v7\.0\.0",
         )
         self.assertNotIn("actions/checkout@v4", production + pull_request)
         self.assertNotIn("actions/setup-python@v5", production + pull_request)
+        self.assertNotIn("11d5960a326750d5838078e36cf38b85af677262", production + pull_request)
+        self.assertNotIn("a26af69be951a213d495a4c3e4e4022e16d87065", production + pull_request)
         self.assertIn("concurrency:", production)
         self.assertIn("cancel-in-progress: false", production)
         self.assertTrue((ROOT / ".github/dependabot.yml").exists())
@@ -467,6 +478,26 @@ class SecurityRequirementsTest(unittest.TestCase):
             self.requirements,
             r"\| GAP-004 \| Hardening candidate \| Implemented \| SR-025 \|",
         )
+
+    def test_bl027_backlog_entry_records_draft_v7_upgrade_stable_contract(self):
+        bl027 = self.backlog.split("## BL-027", 1)[1].split("\n## ", 1)[0]
+        self.assertIn(
+            "GitHub Actions checkout／setup-pythonをv7系へmajor upgradeする", bl027
+        )
+        self.assertIn("**優先度:** P2", bl027)
+        self.assertIn("**状態:** 実装受入済み / PR #54 merge待ち", bl027)
+        self.assertIn("3d3c42e5aac5ba805825da76410c181273ba90b1", bl027)
+        self.assertIn("5fda3b95a4ea91299a34e894583c3862153e4b97", bl027)
+        self.assertIn("v7.0.1", bl027)
+        self.assertIn("v7.0.0", bl027)
+        self.assertIn("PR #51", bl027)
+        self.assertIn("PR #52", bl027)
+        self.assertIn("11d5960a326750d5838078e36cf38b85af677262", bl027)
+        self.assertIn("a26af69be951a213d495a4c3e4e4022e16d87065", bl027)
+        self.assertIn("「ok」と個別実装受入した", bl027)
+        self.assertIn("d7461b9adfe474793a60f61cd6fe8b219153b499", bl027)
+        self.assertIn("merge前なのでBL-027は未完了", bl027)
+        self.assertNotIn("**状態:** 完了", bl027)
 
     def test_bl026_closure_records_pending_run_limitation_and_leaves_other_gaps_unchanged(self):
         self.assertIn(
@@ -633,7 +664,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         )[0]
         self.assertNotIn("BL-025", active)
         self.assertNotIn("BL-026", active)
-        self.assertIn("None", active)
+        self.assertIn("BL-027", active)
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
@@ -656,7 +687,8 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertNotIn("1. [BL-026]", next_candidates)
         self.assertIn("[BL-026]", next_candidates)
         self.assertIn("is complete", next_candidates)
-        self.assertIn("no ranked next candidate is named here", next_candidates)
+        self.assertIn("[BL-027]", next_candidates)
+        self.assertIn("no new ranked next candidate is named here", next_candidates)
         self.assertNotIn("[BL-025]", next_candidates)
         self.assertRegex(
             self.requirements,

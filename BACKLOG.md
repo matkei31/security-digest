@@ -528,6 +528,36 @@
 - **残作業:** なし。将来のAction update、Dependabot PR、runtime dependency導入、新しいthird-party Actionは、それぞれ通常のreviewまたはtrigger時の別判断であり、BL-026の残作業としては扱わない。
 - **注記:** 低優先のworkflow hardeningであり、本Ticket実装時にもproduction executionは行わない。BL-025 closure後のautomatic Pages deployment run 30107780883（artifact upload failure、deploy skipped）はBL-026と独立した一時的事象として扱い、本Ticketのscopeへ含めなかった。PR #50 merge直後、Dependabotが`actions/checkout`と`actions/setup-python`のmajor upgrade提案PRを自動作成したが、本Ticketでは処理していない（ユーザー指示により対象外）。
 
+## BL-027 — GitHub Actions checkout／setup-pythonをv7系へmajor upgradeする
+
+- **ID:** BL-027
+- **タイトル:** GitHub Actions checkout／setup-pythonをv7系へmajor upgradeする
+- **優先度:** P2
+- **状態:** 実装受入済み / PR #54 merge待ち
+- **出所種別:** 技術上の発見事項
+- **ユーザー原文:** 該当なし — BL-026 merge直後にDependabotが作成した[PR #51](https://github.com/matkei31/security-digest/pull/51)／[PR #52](https://github.com/matkei31/security-digest/pull/52)の評価brief（read-only調査）を受けたユーザー承認「ok」に基づくTicket。
+- **ユーザー確認済み要約:** checkoutとsetup-pythonを1つのcombined Ticketでv7へ更新する；Dependabot PR #51／#52を直接mergeせずreplacement PRを作る；exact-SHA契約testを新versionへ更新する；merge後は手動dispatchではなく次回の通常schedule runでproduction経路を確認する；production検証成功後にTicketをclosureする。今回の「ok」は実装着手と上記方針への承認であり、完成したDraft PRの個別実装受入ではない。将来のAction update、Dependabot PRの自動merge、新しいthird-party Action、runtime dependency、workflow_dispatch、production実行、Pages操作、GitHub設定変更を包括承認するものでもない。
+- **解釈:** [BL-026](#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する)でfull-SHA pinningとweekly GitHub Actions Dependabotを導入した。Dependabotが`actions/checkout` v7.0.1と`actions/setup-python` v7.0.0を提案した。major upgradeはBL-026の「current major維持」という受入境界を超えるため、別Ticketとして扱う。現在のPR #51／#52のCI failureはAction incompatibilityではなく、承認済みexact SHA／versionを固定するrepository testによるmanual review gateであり、想定どおりの動作である。2つのActionはNode 24移行、対象workflow、対象test、承認境界を共有するためcombined Ticketで扱う。
+- **完了条件:**
+  1. 両workflow（`.github/workflows/fetch.yml`、`.github/workflows/pr-ci.yml`）で`actions/checkout`をv7.0.1の同一full SHAへ固定する。
+  2. 両workflowで`actions/setup-python`をv7.0.0の同一full SHAへ固定する。
+  3. exact-SHA／version契約test（`test_workflow_action_pinning.py`等）を新versionへ更新する。
+  4. Pull Request CIを成功させる。
+  5. ユーザーによる完成実装の個別受入を得る。
+  6. replacement PRをmergeする。
+  7. 次回の通常schedule runでv7 Actionsが起動し、生成処理が完了することを確認する。
+  8. scheduled runが実際に変更を生成した場合、commit／pushまで成功することを確認する。
+  9. scheduled runが変更なしでcommit／pushを通らなかった場合、push経路の検証は次の変更発生runまで未完了として残す。
+  10. production検証成功後に[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) maintenance update（Version 1.4）とBL-027 closureを行う。
+- **依存関係:** [BL-026](#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する)；[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.3；[SD-024](DECISIONS.md#sd-024--approve-security-requirements-version-10-and-the-proportionate-security-roadmap)；[PR #51](https://github.com/matkei31/security-digest/pull/51)；[PR #52](https://github.com/matkei31/security-digest/pull/52)。
+- **実装証跡:** `.github/workflows/fetch.yml`と`.github/workflows/pr-ci.yml`の両方で、`actions/checkout`をfull commit SHA `3d3c42e5aac5ba805825da76410c181273ba90b1`（v7.0.1）へ、`actions/setup-python`をfull commit SHA `5fda3b95a4ea91299a34e894583c3862153e4b97`（v7.0.0）へ固定し、両SHAをupstream tag参照（`git ls-remote`）で読み取り専用に再確認した（Dependabot提案SHAと完全一致）。production workflowのschedule／workflow_dispatch／`contents: write`／timeout-minutes: 20／Python 3.12／secrets参照／`python3 fetch.py`／commit・push処理／production concurrency（`daily-security-digest-production`、`cancel-in-progress: false`）、PR CIのpull_requestのみ／`contents: read`／`persist-credentials: false`／`fetch-depth: 0`／secretsなし／full unittest／diff check／PR単位concurrencyは変更していない。checkout v7のcredential保存先変更（`.git/config`から`$RUNNER_TEMP`下の別ファイルへ）に対する独自workaroundは追加していない。`.github/dependabot.yml`は変更していない。関連test: `test_workflow_action_pinning.py`（定数・test名・exact SHA／versionをv7へ）、`test_pr_ci_workflow.py`、`test_fetch.py`の`WorkflowStaticCheckTest`、`test_security_requirements.py`（workflow実ファイルを直接検証するassertionのみ更新、`SECURITY_REQUIREMENTS.md`本文はVersion 1.3のまま変更なし）、`test_security_operations.py`・`test_ui_spec.py`（STATUS.md Active work／Next candidates連動assertion）。production workflowとworkflow_dispatchは未実行。PR #51／#52への操作（commit／push／rebase／comment／review／close／merge／ignore command／label変更）は行っていない。[Pull Request CI run 30143743247](https://github.com/matkei31/security-digest/actions/runs/30143743247)が成功し、GitHub-hosted runner上でv7 Action（checkout・setup-python）の起動が実証された。
+- **ロールバック:** v7でrunner、checkout、credential、setup-python、commit／pushの問題が確認された場合は、承認済みの次のSHAへ戻す。
+  - `actions/checkout` v4.4.0: `11d5960a326750d5838078e36cf38b85af677262`
+  - `actions/setup-python` v5.6.0: `a26af69be951a213d495a4c3e4e4022e16d87065`
+- **ユーザー受入証跡:** ユーザーが独立レビュー済みのDraft PR #54のhead `d7461b9adfe474793a60f61cd6fe8b219153b499`に対して「ok」と個別実装受入した。受入対象は、`actions/checkout` v7.0.1（full SHA `3d3c42e5aac5ba805825da76410c181273ba90b1`）へのmajor upgrade、`actions/setup-python` v7.0.0（full SHA `5fda3b95a4ea91299a34e894583c3862153e4b97`）へのmajor upgrade、両workflowで同一version／SHAの使用、exact-SHA／version契約testの更新、PR CI安全境界の維持、production workflowのcommit／push処理・credential設定・concurrencyを変更しないこと、PR #51／#52を直接mergeせずPR #54で置換すること、PR #54 merge後にPR #51／#52をsuperseded closeすること、手動`workflow_dispatch`を使わず次回の通常schedule runでproduction経路を確認すること、production検証成功後にSECURITY_REQUIREMENTS Version 1.4とBL-027 closureを行うことである。この受入は、今後のAction update、Dependabot PRの自動merge、新しいthird-party Action、runtime dependency、`workflow_dispatch`、手動production実行、Pages操作、GitHub設定変更、production検証前のBL-027完了扱いを包括承認するものではない。受入時点の[Pull Request CI run 30143743247](https://github.com/matkei31/security-digest/actions/runs/30143743247)は成功している。
+- **残作業:** merge前なのでBL-027は未完了。残作業はPR #54のReady化とmerge、PR #51／#52のsuperseded close、次回通常scheduleによるproduction commit／push経路の検証、検証成功後の[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.4更新とBL-027 closure。
+- **注記:** production commit／push経路の検証は、ユーザー承認方針どおりmerge後の次回通常schedule run（手動`workflow_dispatch`は使用しない）で行う。scheduled runが変更なしの日は、push経路検証は未完了のまま次の変更発生runまで持ち越す。branch `claude/bl027-actions-v7-upgrade`。
+
 ## 完了済み参照
 
 これらの参照記録は、完了済みの作業が誤って未完了バックログとして再オープンされることを防ぐためだけに存在する。

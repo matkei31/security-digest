@@ -2705,6 +2705,19 @@ class WorkflowStaticCheckTest(unittest.TestCase):
         self.assertIn("timeout-minutes: 20", text)
         self.assertIn("python-version: '3.12'", text)
 
+    def test_production_checkout_and_setup_python_are_pinned_to_v7(self):
+        # BL-027: combined major upgrade, both Actions pinned to the same
+        # verified full commit SHA used in pr-ci.yml.
+        text = self._workflow_text()
+        self.assertIn(
+            "uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1",
+            text,
+        )
+        self.assertIn(
+            "uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0",
+            text,
+        )
+
     def test_production_has_workflow_level_serialized_concurrency(self):
         # BL-026 / GAP-004: scheduled and manual production runs must not race,
         # and an in-flight production run must not be cancelled by a new one.
@@ -2961,12 +2974,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         kept = [ch for ch in lowered if ch.isalnum() or ch in (" ", "-", "_")]
         return "".join(kept).replace(" ", "-")
 
-    def test_bl_ids_are_unique_and_cover_bl001_to_bl026(self):
+    def test_bl_ids_are_unique_and_cover_bl001_to_bl027(self):
         text = self._read("BACKLOG.md")
         bl_headings = [h for h in self._headings(text) if re.match(r"^BL-\d{3}\b", h)]
         ids = [re.match(r"^(BL-\d{3})", h).group(1) for h in bl_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
-        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 27)})
+        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 28)})
 
     def test_sd_ids_are_unique_and_cover_sd001_to_sd025(self):
         text = self._read("DECISIONS.md")
@@ -3062,7 +3075,8 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertNotRegex(next_candidates, r"(?m)^1\. \[BL-026\]")
         self.assertIn("[BL-026]", next_candidates)
         self.assertIn("is complete", next_candidates)
-        self.assertIn("no ranked next candidate is named here", next_candidates)
+        self.assertIn("no new ranked next candidate is named here", next_candidates)
+        self.assertIn("[BL-027]", next_candidates)
         self.assertNotIn("[BL-025]", next_candidates)
 
     def test_bl_018_completion_status_and_evidence(self):

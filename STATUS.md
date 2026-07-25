@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- None.
+- [BL-027](BACKLOG.md#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする) GitHub Actions checkout／setup-python combined major upgrade to v7 — implementation accepted with 「ok」 at [PR #54](https://github.com/matkei31/security-digest/pull/54) head `d7461b9adfe474793a60f61cd6fe8b219153b499`; merge is pending. Accepted scope: `actions/checkout` pinned to v7.0.1 (`3d3c42e5aac5ba805825da76410c181273ba90b1`) and `actions/setup-python` pinned to v7.0.0 (`5fda3b95a4ea91299a34e894583c3862153e4b97`) at the same full commit SHAs in both `.github/workflows/fetch.yml` and `.github/workflows/pr-ci.yml`, with matching exact-SHA contract tests. [Pull Request CI run 30143743247](https://github.com/matkei31/security-digest/actions/runs/30143743247) succeeded, validating hosted-runner/Action-startup compatibility for both Actions; production `git commit`/`git push` under v7 remains unvalidated and is deferred to the next ordinary schedule run after merge — `workflow_dispatch` is not authorized for this validation. Dependabot PRs [#51](https://github.com/matkei31/security-digest/pull/51) and [#52](https://github.com/matkei31/security-digest/pull/52) are not used directly and will be closed as superseded once PR #54 merges. No production run or `workflow_dispatch` occurred. [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) remains Version 1.3; ARTICLE／BRIEF contracts, daily schema, runtime, `data/`, and `docs/` are unchanged.
 
 ## 5. Recently completed work
 
@@ -79,7 +79,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-[BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する) is complete; see [Recently completed work](#5-recently-completed-work) above. BACKLOG.md records no explicit ordering for what follows it, so no ranked next candidate is named here; the next Ticket is determined by re-evaluating BACKLOG.md.
+[BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する) is complete; see [Recently completed work](#5-recently-completed-work) above. [BL-027](BACKLOG.md#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする), the Dependabot-prompted checkout／setup-python v7 major upgrade, is active work — see [Active work](#active-work) above. BACKLOG.md records no explicit ordering for what follows BL-027, so no new ranked next candidate is named here.
 
 [BL-023](BACKLOG.md#bl-023--article編集品質改善) is on hold after the v9 and fixed-v10 prompt-only No-Go evaluations and is not ranked in this short priority list. Reconsider it only through a separately designed structured ARTICLE-field contract or facts-based limited deterministic composition.
 
