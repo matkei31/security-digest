@@ -27,10 +27,10 @@ class UiSpecDocumentTest(unittest.TestCase):
 
     def test_ui_spec_exists_with_approved_version_metadata(self):
         self.assertTrue(self.spec_path.is_file())
-        self.assertIn("# Security Digest UI Specification", self.spec)
-        self.assertIn("- **バージョン:** 1.3", self.spec)
+        self.assertIn("# Monomi Digest UI Specification", self.spec)
+        self.assertIn("- **バージョン:** 1.4", self.spec)
         self.assertIn("- **状態:** 承認済み", self.spec)
-        self.assertIn("将来のMonomi Digestへの名称変更はBL-006の範囲", self.spec)
+        self.assertIn("BL-006でSecurity Digestからのブランド名変更を実装し", self.spec)
 
     def test_all_required_chapters_exist_in_order(self):
         chapters = (
@@ -79,7 +79,7 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("現行UIへAI利用を明示する専用注記は追加しない", self.spec)
         self.assertIn("記事カード単位・分析区分単位の注記も採用しない", self.spec)
         self.assertIn("600px以下でも現在のstickyとpaddingを維持し、圧縮案は採用しない", self.spec)
-        self.assertIn("現行Security Digestでは`🔐`を維持", self.spec)
+        self.assertIn("`🔐`を維持する。BL-006のMonomi Digestへのブランド移行後も置換していない", self.spec)
         self.assertIn("英語原題に行数制限やclampを設けず、原題の一部を省略しない", self.spec)
         self.assertIn("現行の`.kev-badge`はアンバー系の小さいpillとして維持", self.spec)
         self.assertIn("各セクション別の空状態を確定仕様として維持", self.spec)

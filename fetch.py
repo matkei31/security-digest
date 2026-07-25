@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Security Digest — サイバーセキュリティニュースを収集してindex.htmlを生成する
+Monomi Digest — サイバーセキュリティニュースを収集してindex.htmlを生成する
 """
 
 import sys, json, datetime, time, re, os, tempfile, unicodedata, math
@@ -4209,7 +4209,7 @@ def build_html(
     items,
     brief=None,
     *,
-    page_title="🔐 Security Digest",
+    page_title="🔐 Monomi Digest",
     subtitle=None,
     generated_at=None,
     archive_nav_html=None,
@@ -4509,7 +4509,7 @@ def build_html(
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🔐 Security Digest</title>
+  <title>{esc(page_title)}</title>
   <style>
     *{{margin:0;padding:0;box-sizing:border-box}}
     :root{{--anchor-offset:112px}}
@@ -4713,7 +4713,7 @@ def build_daily_archive_html(digest, previous_date=None, next_date=None):
     return build_html(
         items,
         brief,
-        page_title="Security Digest",
+        page_title="🔐 Monomi Digest",
         subtitle=subtitle,
         generated_at=generated_at or digest.get("generated_at"),
         archive_nav_html=top_nav,
@@ -4762,7 +4762,7 @@ def build_archive_index_html(summaries, generated_at=None):
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>過去のダイジェスト - Security Digest</title>
+  <title>過去のダイジェスト - Monomi Digest</title>
   <style>
     *{{margin:0;padding:0;box-sizing:border-box}}
     body{{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:40px}}

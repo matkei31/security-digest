@@ -1,4 +1,4 @@
-# Security Digest Status
+# Monomi Digest Status
 
 ## 1. As of
 
@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- None.
+- [BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更) Monomi Digestへのブランド変更 — Draft PR implemented on branch `claude/bl006-brand-monomi`. Following the joint BL-006/BL-007 preflight, Option B (brand first, custom domain later) was approved. Current published brand text ("Security Digest") is switched to "Monomi Digest" in `fetch.py`'s generated HTML (top page, archive index, all daily archive pages), `README.md`, `AGENTS.md`, `STATUS.md`, `DECISIONS.md` (including [SD-010](DECISIONS.md#sd-010--use-monomi-digest-as-the-future-public-brand)), `SECURITY_OPERATIONS.md`, `SECURITY_REQUIREMENTS.md`, and `UI_SPEC.md` (now Version 1.4); the `🔐` header emoji is kept, and the prior title/H1 emoji inconsistency is resolved. `docs/index.html`, `docs/archive/index.html`, and all 15 daily archive HTML files were regenerated offline from existing daily JSON only (no external HTTP/Gemini/RSS/NVD/CISA KEV calls); the diff is limited to brand text and emoji unification. `data/` is unchanged. `generator.application` (`"security-digest"`), the repository name, and the workflow's display name/concurrency group are unchanged. custom domain/CNAME/DNS/canonical (BL-007) and meta description/OG/Twitter Card/favicon/manifest/sitemap/robots.txt/About/analytics (BL-009) are out of scope and unchanged. Pre-merge PC 1280px／390px visual acceptance and post-merge Pages confirmation are pending. No production run or `workflow_dispatch` occurred.
 
 ## 5. Recently completed work
 

@@ -1,4 +1,4 @@
-# Security Digest Security Requirements
+# Monomi Digest Security Requirements
 
 - **Version:** 1.4
 - **Status:** Approved
@@ -48,7 +48,7 @@ standing `workflow_dispatch` authorization.
 
 ## 1. Purpose and proportionality
 
-Security Digest collects public cybersecurity information, produces daily JSON, and publishes
+Monomi Digest collects public cybersecurity information, produces daily JSON, and publishes
 static HTML. The repository contains no application login, form submission, payment flow, or
 personal-information database. Its risk profile is therefore different from an interactive
 service that stores customer data.

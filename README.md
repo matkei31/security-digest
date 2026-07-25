@@ -1,6 +1,6 @@
-# Security Digest
+# Monomi Digest
 
-Security Digestは、金融機関のサイバーセキュリティ担当者・管理者・担当役員向けに、国内外のサイバーセキュリティニュースを整理して公開する日次ニュースダイジェストです。
+Monomi Digestは、金融機関のサイバーセキュリティ担当者・管理者・担当役員向けに、国内外のサイバーセキュリティニュースを整理して公開する日次ニュースダイジェストです。
 
 公開サイト: https://matkei31.github.io/security-digest/
 
