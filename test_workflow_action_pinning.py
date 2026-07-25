@@ -7,8 +7,8 @@ ROOT = Path(__file__).resolve().parent
 FETCH_WORKFLOW_PATH = ROOT / ".github" / "workflows" / "fetch.yml"
 PR_CI_WORKFLOW_PATH = ROOT / ".github" / "workflows" / "pr-ci.yml"
 
-CHECKOUT_SHA = "34e114876b0b11c390a56381ad16ebd13914f8d5"
-CHECKOUT_VERSION_COMMENT = "# v4.3.1"
+CHECKOUT_SHA = "11d5960a326750d5838078e36cf38b85af677262"
+CHECKOUT_VERSION_COMMENT = "# v4.4.0"
 SETUP_PYTHON_SHA = "a26af69be951a213d495a4c3e4e4022e16d87065"
 SETUP_PYTHON_VERSION_COMMENT = "# v5.6.0"
 
@@ -46,7 +46,7 @@ class WorkflowActionPinningTest(unittest.TestCase):
                     self.assertEqual(len(sha), 40, f"{sha!r} in {name} is not 40 chars")
                     self.assertRegex(sha, r"^[0-9a-f]{40}$")
 
-    def test_checkout_sha_matches_approved_v4_3_1(self):
+    def test_checkout_sha_matches_approved_v4_4_0(self):
         for name, text in self.workflows.items():
             with self.subTest(workflow=name):
                 self.assertIn(

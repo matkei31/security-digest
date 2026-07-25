@@ -29,7 +29,7 @@ class PullRequestCIWorkflowTest(unittest.TestCase):
 
     def test_checkout_and_python_are_pinned_safely(self):
         self.assertIn(
-            "uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4.3.1",
+            "uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0",
             self.workflow,
         )
         self.assertRegex(self.workflow, r"(?m)^\s+fetch-depth: 0$")

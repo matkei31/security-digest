@@ -427,7 +427,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         pull_request = (ROOT / ".github/workflows/pr-ci.yml").read_text(encoding="utf-8")
         self.assertRegex(
             production + pull_request,
-            r"uses:\s*actions/checkout@[0-9a-f]{40} # v4\.3\.1",
+            r"uses:\s*actions/checkout@[0-9a-f]{40} # v4\.4\.0",
         )
         self.assertRegex(
             production + pull_request,
@@ -624,7 +624,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         )
         self.assertIn("**優先度:** P2", bl026)
         self.assertIn("**状態:** 進行中 / 実装済みDraft PR / ユーザー受入待ち", bl026)
-        self.assertIn("34e114876b0b11c390a56381ad16ebd13914f8d5", bl026)
+        self.assertIn("11d5960a326750d5838078e36cf38b85af677262", bl026)
         self.assertIn("a26af69be951a213d495a4c3e4e4022e16d87065", bl026)
         self.assertIn("cancel-in-progress: false", bl026)
         self.assertIn("dependabot.yml", bl026)
