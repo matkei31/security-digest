@@ -3061,7 +3061,8 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertNotIn("[BL-022]", next_candidates)
         self.assertNotRegex(next_candidates, r"(?m)^1\. \[BL-026\]")
         self.assertIn("[BL-026]", next_candidates)
-        self.assertIn("moved from next candidate to active work", next_candidates)
+        self.assertIn("is complete", next_candidates)
+        self.assertIn("no ranked next candidate is named here", next_candidates)
         self.assertNotIn("[BL-025]", next_candidates)
 
     def test_bl_018_completion_status_and_evidence(self):

@@ -43,15 +43,15 @@ class SecurityRequirementsTest(unittest.TestCase):
     def _section(self, start, end):
         return self.requirements.split(start, 1)[1].split(end, 1)[0]
 
-    def test_document_is_approved_version_12_maintenance_update(self):
+    def test_document_is_approved_version_13_maintenance_update(self):
         self.assertTrue(REQUIREMENTS_PATH.is_file())
         self.assertIn("# Security Digest Security Requirements", self.requirements)
-        self.assertIn("**Version:** 1.2", self.requirements)
+        self.assertIn("**Version:** 1.3", self.requirements)
         self.assertIn("**Status:** Approved", self.requirements)
         self.assertIn("no Critical or High findings", self.requirements)
         self.assertIn("accepted and modified findings", self.requirements)
         self.assertIn("rejected F-004 consolidation was not applied", self.requirements)
-        self.assertIn("Version 1.2 is approved as a maintenance update", self.requirements)
+        self.assertIn("Version 1.3 is approved as a maintenance update", self.requirements)
         self.assertIn("answered 「ok」 to the complete decision brief", self.requirements)
         self.assertIn("not blanket preapproval", self.requirements)
         self.assertIn("Completed by documentation", self.requirements)
@@ -182,7 +182,6 @@ class SecurityRequirementsTest(unittest.TestCase):
         }
         self.assertEqual({gap_id: row[1] for gap_id, row in rows.items()}, expected)
         allowed_dispositions = {
-            "Approved for implementation ticket",
             "Completed by documentation",
             "Implemented",
             "Accepted current state",
@@ -194,9 +193,9 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertEqual({row[2] for row in rows.values()}, allowed_dispositions)
         expected_dispositions = {
             "GAP-001": "Implemented",
-            "GAP-002": "Approved for implementation ticket",
-            "GAP-003": "Approved for implementation ticket",
-            "GAP-004": "Approved for implementation ticket",
+            "GAP-002": "Implemented",
+            "GAP-003": "Implemented",
+            "GAP-004": "Implemented",
             "GAP-005": "Accepted current state",
             "GAP-006": "Completed by documentation",
             "GAP-007": "Deferred until trigger",
@@ -269,7 +268,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         )
         self.assertEqual(
             mapping_rows["GitHub Actions"][5],
-            "Met 4 / Partial 2 / Not met 0 / Unverified 0",
+            "Met 5 / Partial 1 / Not met 0 / Unverified 0",
+        )
+        self.assertEqual(
+            mapping_rows["Dependencies and supply chain"][5],
+            "Met 3 / Partial 0 / Not met 0 / Unverified 0",
         )
         self.assertEqual(
             mapping_rows["Logging and artifacts"][5],
@@ -418,11 +421,9 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("approve follow-up scope, not implementation", review)
 
     def test_workflows_and_dependabot_reflect_bl026_implementation(self):
-        # BL-026 implements the GAP-002/003/004 roadmap this section approved.
-        # SECURITY_REQUIREMENTS.md itself is not updated until user acceptance,
-        # so its SR-028/SR-029/GAP rows remain "Partially met" /
-        # "Approved for implementation ticket" in text even though the
-        # workflows below are now pinned and hardened. See BL-026.
+        # BL-026 implements the GAP-002/003/004 roadmap this section approved,
+        # and Version 1.3 records SR-025/SR-028/SR-029 as Met and
+        # GAP-002/003/004 as Implemented following user acceptance and merge.
         production = (ROOT / ".github/workflows/fetch.yml").read_text(encoding="utf-8")
         pull_request = (ROOT / ".github/workflows/pr-ci.yml").read_text(encoding="utf-8")
         self.assertRegex(
@@ -439,9 +440,53 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("cancel-in-progress: false", production)
         self.assertTrue((ROOT / ".github/dependabot.yml").exists())
         self.assertIn(
-            "Runtime security-control implementation beyond the accepted BL-025",
+            "the accepted BL-026 workflow hardening",
             self.requirements,
         )
+        self.assertRegex(
+            self.requirements,
+            r"\| SR-025 \|.*\| Met \|",
+        )
+        self.assertRegex(
+            self.requirements,
+            r"\| SR-028 \|.*\| Met \|",
+        )
+        self.assertRegex(
+            self.requirements,
+            r"\| SR-029 \|.*\| Met \|",
+        )
+        self.assertRegex(
+            self.requirements,
+            r"\| GAP-002 \| Policy decision \| Implemented \| SR-028 \|",
+        )
+        self.assertRegex(
+            self.requirements,
+            r"\| GAP-003 \| Policy decision \| Implemented \| SR-029 \|",
+        )
+        self.assertRegex(
+            self.requirements,
+            r"\| GAP-004 \| Hardening candidate \| Implemented \| SR-025 \|",
+        )
+
+    def test_bl026_closure_records_pending_run_limitation_and_leaves_other_gaps_unchanged(self):
+        self.assertIn(
+            "a new pending run can replace an existing pending run",
+            self.requirements,
+        )
+        self.assertIn("independent durable queue", self.requirements)
+        self.assertRegex(
+            self.requirements,
+            r"\| GAP-007 \| Future trigger \| Deferred until trigger \| SR-029 \|",
+        )
+        self.assertRegex(
+            self.requirements,
+            r"\| GAP-009 \| Security gap \| Remains open for later prioritization \|",
+        )
+        self.assertRegex(
+            self.requirements,
+            r"\| GAP-015 \| Hardening candidate \| Deferred until trigger \| SR-034 \|",
+        )
+        self.assertNotIn("## SD-026", self.decisions)
 
     def test_current_gaps_non_required_and_triggers_are_distinct(self):
         mapping = self._section("## 7. Current control mapping", "## 8. Gap register")
@@ -587,13 +632,8 @@ class SecurityRequirementsTest(unittest.TestCase):
             "## 5. Recently completed work", 1
         )[0]
         self.assertNotIn("BL-025", active)
-        self.assertIn("BL-026", active)
-        self.assertIn("implementation accepted with 「ok」", active)
-        self.assertIn("PR #50", active)
-        self.assertIn("394dd157395b69e86928d98a376386131474b20f", active)
-        self.assertIn("merge is pending", active)
-        self.assertIn("No production run or `workflow_dispatch` occurred", active)
-        self.assertNotIn("- None.", active)
+        self.assertNotIn("BL-026", active)
+        self.assertIn("None", active)
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
@@ -604,12 +644,19 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("Pull Request CI run 30107009791", recently_completed)
         self.assertIn("2f93556532c6600a0d650c93d388a237b98e7aaa", recently_completed)
         self.assertIn("no residual work", recently_completed)
+        self.assertIn("BL-026 GitHub Actions supply-chain hardening and production concurrency", recently_completed)
+        self.assertIn("PR #50", recently_completed)
+        self.assertIn("4b1fcb3d940513e2b7407120d1953c029532f25c", recently_completed)
+        self.assertIn("Pull Request CI run 30141453440", recently_completed)
+        self.assertIn("5bfc73fcb4b814504906c0a224613426384aa144", recently_completed)
+        self.assertIn("BL-026 has no residual work", recently_completed)
         next_candidates = self.status.split("## 7. Next candidates", 1)[1].split(
             "## 8. Sources of truth", 1
         )[0]
         self.assertNotIn("1. [BL-026]", next_candidates)
         self.assertIn("[BL-026]", next_candidates)
-        self.assertIn("moved from next candidate to active work", next_candidates)
+        self.assertIn("is complete", next_candidates)
+        self.assertIn("no ranked next candidate is named here", next_candidates)
         self.assertNotIn("[BL-025]", next_candidates)
         self.assertRegex(
             self.requirements,
@@ -625,7 +672,7 @@ class SecurityRequirementsTest(unittest.TestCase):
             "GitHub Actions supply chainとproduction concurrencyを強化する", bl026
         )
         self.assertIn("**優先度:** P2", bl026)
-        self.assertIn("**状態:** 実装受入済み / PR #50 merge待ち", bl026)
+        self.assertIn("**状態:** 完了", bl026)
         self.assertIn("11d5960a326750d5838078e36cf38b85af677262", bl026)
         self.assertIn("a26af69be951a213d495a4c3e4e4022e16d87065", bl026)
         self.assertIn("cancel-in-progress: false", bl026)
@@ -633,8 +680,8 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("production workflowとworkflow_dispatchは未実行", bl026)
         self.assertIn("「ok」", bl026)
         self.assertIn("394dd157395b69e86928d98a376386131474b20f", bl026)
-        self.assertIn("merge前なのでBL-026は未完了", bl026)
-        self.assertNotIn("**状態:** 完了", bl026)
+        self.assertIn("5bfc73fcb4b814504906c0a224613426384aa144", bl026)
+        self.assertIn("**残作業:** なし", bl026)
         self.assertIn("GAP-009", self.requirements)
         self.assertIn("Remains open for later prioritization", self.requirements)
         self.assertIn("GAP-015", self.requirements)
