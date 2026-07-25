@@ -388,7 +388,8 @@ class SecurityOperationsContractTest(unittest.TestCase):
         self.assertNotIn("BL-024", active)
         self.assertNotIn("BL-025", active)
         self.assertIn("BL-026", active)
-        self.assertIn("Draft PR", active)
+        self.assertIn("implementation accepted with 「ok」", active)
+        self.assertIn("PR #50", active)
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]

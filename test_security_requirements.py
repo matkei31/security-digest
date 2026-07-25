@@ -588,9 +588,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         )[0]
         self.assertNotIn("BL-025", active)
         self.assertIn("BL-026", active)
-        self.assertIn("Draft PR", active)
-        self.assertIn("User implementation acceptance is pending", active)
-        self.assertIn("no production run or `workflow_dispatch` occurred", active)
+        self.assertIn("implementation accepted with 「ok」", active)
+        self.assertIn("PR #50", active)
+        self.assertIn("394dd157395b69e86928d98a376386131474b20f", active)
+        self.assertIn("merge is pending", active)
+        self.assertIn("No production run or `workflow_dispatch` occurred", active)
         self.assertNotIn("- None.", active)
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
@@ -623,12 +625,15 @@ class SecurityRequirementsTest(unittest.TestCase):
             "GitHub Actions supply chainとproduction concurrencyを強化する", bl026
         )
         self.assertIn("**優先度:** P2", bl026)
-        self.assertIn("**状態:** 進行中 / 実装済みDraft PR / ユーザー受入待ち", bl026)
+        self.assertIn("**状態:** 実装受入済み / PR #50 merge待ち", bl026)
         self.assertIn("11d5960a326750d5838078e36cf38b85af677262", bl026)
         self.assertIn("a26af69be951a213d495a4c3e4e4022e16d87065", bl026)
         self.assertIn("cancel-in-progress: false", bl026)
         self.assertIn("dependabot.yml", bl026)
         self.assertIn("production workflowとworkflow_dispatchは未実行", bl026)
+        self.assertIn("「ok」", bl026)
+        self.assertIn("394dd157395b69e86928d98a376386131474b20f", bl026)
+        self.assertIn("merge前なのでBL-026は未完了", bl026)
         self.assertNotIn("**状態:** 完了", bl026)
         self.assertIn("GAP-009", self.requirements)
         self.assertIn("Remains open for later prioritization", self.requirements)
