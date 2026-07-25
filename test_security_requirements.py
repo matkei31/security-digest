@@ -43,15 +43,15 @@ class SecurityRequirementsTest(unittest.TestCase):
     def _section(self, start, end):
         return self.requirements.split(start, 1)[1].split(end, 1)[0]
 
-    def test_document_is_approved_version_13_maintenance_update(self):
+    def test_document_is_approved_version_14_maintenance_update(self):
         self.assertTrue(REQUIREMENTS_PATH.is_file())
         self.assertIn("# Security Digest Security Requirements", self.requirements)
-        self.assertIn("**Version:** 1.3", self.requirements)
+        self.assertIn("**Version:** 1.4", self.requirements)
         self.assertIn("**Status:** Approved", self.requirements)
         self.assertIn("no Critical or High findings", self.requirements)
         self.assertIn("accepted and modified findings", self.requirements)
         self.assertIn("rejected F-004 consolidation was not applied", self.requirements)
-        self.assertIn("Version 1.3 is approved as a maintenance update", self.requirements)
+        self.assertIn("Version 1.4 is approved as a maintenance update", self.requirements)
         self.assertIn("answered 「ok」 to the complete decision brief", self.requirements)
         self.assertIn("not blanket preapproval", self.requirements)
         self.assertIn("Completed by documentation", self.requirements)
@@ -479,13 +479,13 @@ class SecurityRequirementsTest(unittest.TestCase):
             r"\| GAP-004 \| Hardening candidate \| Implemented \| SR-025 \|",
         )
 
-    def test_bl027_backlog_entry_records_merged_awaiting_schedule_validation(self):
+    def test_bl027_backlog_entry_records_completed_workflow_dispatch_validation(self):
         bl027 = self.backlog.split("## BL-027", 1)[1].split("\n## ", 1)[0]
         self.assertIn(
             "GitHub Actions checkout／setup-pythonをv7系へmajor upgradeする", bl027
         )
         self.assertIn("**優先度:** P2", bl027)
-        self.assertIn("**状態:** 実装merge済み / 通常schedule validation待ち", bl027)
+        self.assertIn("**状態:** 完了", bl027)
         self.assertIn("3d3c42e5aac5ba805825da76410c181273ba90b1", bl027)
         self.assertIn("5fda3b95a4ea91299a34e894583c3862153e4b97", bl027)
         self.assertIn("v7.0.1", bl027)
@@ -499,21 +499,24 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("241e7f69c9c843fc212c1c590f3a328da5946579", bl027)
         self.assertIn("69f7da859e1856beffac9fa381f0f0cc92564e36", bl027)
         self.assertIn("superseded close", bl027)
-        self.assertIn(
-            "production commit／push経路の次回通常schedule validationが未達のため、BL-027は未完了",
-            bl027,
-        )
-        self.assertNotIn("**状態:** 完了", bl027)
+        self.assertIn("workflow_dispatch", bl027)
+        self.assertIn("30147337332", bl027)
+        self.assertIn("226db6285021d9daf98fe2941248b7f5b20ba143", bl027)
+        self.assertIn("30147402699", bl027)
+        self.assertIn("**残作業:** なし。", bl027)
+        self.assertNotIn("通常scheduleで検証した", bl027)
         active = self.status.split("## Active work", 1)[1].split(
             "## 5. Recently completed work", 1
         )[0]
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
-        self.assertIn("BL-027", active)
-        self.assertIn("implementation merged", active)
-        self.assertIn("ordinary schedule validation pending", active)
-        self.assertNotIn("BL-027", recently_completed)
+        self.assertNotIn("BL-027", active)
+        self.assertIn("None", active)
+        self.assertIn("BL-027", recently_completed)
+        self.assertIn("workflow_dispatch", recently_completed)
+        self.assertIn("30147337332", recently_completed)
+        self.assertNotIn("通常scheduleで検証した", recently_completed)
 
     def test_bl026_closure_records_pending_run_limitation_and_leaves_other_gaps_unchanged(self):
         self.assertIn(
@@ -680,7 +683,8 @@ class SecurityRequirementsTest(unittest.TestCase):
         )[0]
         self.assertNotIn("BL-025", active)
         self.assertNotIn("BL-026", active)
-        self.assertIn("BL-027", active)
+        self.assertNotIn("BL-027", active)
+        self.assertIn("None", active)
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
@@ -697,12 +701,19 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("Pull Request CI run 30141453440", recently_completed)
         self.assertIn("5bfc73fcb4b814504906c0a224613426384aa144", recently_completed)
         self.assertIn("BL-026 has no residual work", recently_completed)
+        self.assertIn("BL-027 GitHub Actions checkout／setup-python combined major upgrade to v7", recently_completed)
+        self.assertIn("PR #54", recently_completed)
+        self.assertIn("241e7f69c9c843fc212c1c590f3a328da5946579", recently_completed)
+        self.assertIn("69f7da859e1856beffac9fa381f0f0cc92564e36", recently_completed)
+        self.assertIn("30147337332", recently_completed)
+        self.assertIn("226db6285021d9daf98fe2941248b7f5b20ba143", recently_completed)
+        self.assertIn("BL-027 has no residual work", recently_completed)
         next_candidates = self.status.split("## 7. Next candidates", 1)[1].split(
             "## 8. Sources of truth", 1
         )[0]
         self.assertNotIn("1. [BL-026]", next_candidates)
         self.assertIn("[BL-026]", next_candidates)
-        self.assertIn("is complete", next_candidates)
+        self.assertIn("are both complete", next_candidates)
         self.assertIn("[BL-027]", next_candidates)
         self.assertIn("no new ranked next candidate is named here", next_candidates)
         self.assertNotIn("[BL-025]", next_candidates)
