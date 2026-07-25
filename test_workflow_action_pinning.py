@@ -7,15 +7,16 @@ ROOT = Path(__file__).resolve().parent
 FETCH_WORKFLOW_PATH = ROOT / ".github" / "workflows" / "fetch.yml"
 PR_CI_WORKFLOW_PATH = ROOT / ".github" / "workflows" / "pr-ci.yml"
 
-CHECKOUT_SHA = "11d5960a326750d5838078e36cf38b85af677262"
-CHECKOUT_VERSION_COMMENT = "# v4.4.0"
-SETUP_PYTHON_SHA = "a26af69be951a213d495a4c3e4e4022e16d87065"
-SETUP_PYTHON_VERSION_COMMENT = "# v5.6.0"
+CHECKOUT_SHA = "3d3c42e5aac5ba805825da76410c181273ba90b1"
+CHECKOUT_VERSION_COMMENT = "# v7.0.1"
+SETUP_PYTHON_SHA = "5fda3b95a4ea91299a34e894583c3862153e4b97"
+SETUP_PYTHON_VERSION_COMMENT = "# v7.0.0"
 
 
 class WorkflowActionPinningTest(unittest.TestCase):
-    """BL-026: both workflows must pin actions/checkout and actions/setup-python
-    to a verified full commit SHA, not a mutable major-version tag."""
+    """BL-026/BL-027: both workflows must pin actions/checkout and
+    actions/setup-python to a verified full commit SHA, not a mutable
+    major-version tag. BL-027 moved the pinned versions to v7.0.1/v7.0.0."""
 
     @classmethod
     def setUpClass(cls):
@@ -46,7 +47,7 @@ class WorkflowActionPinningTest(unittest.TestCase):
                     self.assertEqual(len(sha), 40, f"{sha!r} in {name} is not 40 chars")
                     self.assertRegex(sha, r"^[0-9a-f]{40}$")
 
-    def test_checkout_sha_matches_approved_v4_4_0(self):
+    def test_checkout_sha_matches_approved_v7_0_1(self):
         for name, text in self.workflows.items():
             with self.subTest(workflow=name):
                 self.assertIn(
@@ -54,7 +55,7 @@ class WorkflowActionPinningTest(unittest.TestCase):
                     text,
                 )
 
-    def test_setup_python_sha_matches_approved_v5_6_0(self):
+    def test_setup_python_sha_matches_approved_v7_0_0(self):
         for name, text in self.workflows.items():
             with self.subTest(workflow=name):
                 self.assertIn(
