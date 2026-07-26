@@ -66,6 +66,9 @@
     .brief-list{list-style:none;display:grid;gap:6px}
     .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
     .brief-list li::before{content:"・";position:absolute;left:0}
+    .brief-priority-list{list-style:none;display:grid;gap:12px;margin:0;padding:0}
+    .brief-priority-item{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;display:grid;gap:4px}
+    .brief-priority-summary,.brief-priority-impact{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word;margin:0}
     .dashboard{max-width:680px;margin:12px auto 0;padding:0 12px}
     .dashboard-head{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
     .dashboard-head h2{font-size:13px;font-weight:700;color:#e6edf3}
@@ -126,14 +129,14 @@
     <div class="brief-box">
       <h2>本日の要点</h2>
       <div class="brief-section">
-      <h3 class="brief-section-title">本日の概況</h3>
+      <h3 class="brief-section-title">概況</h3>
       <p class="brief-status-line">掲載10件｜重要度「高」0件｜本日確認0件｜今週確認6件</p>
       <p class="brief-overview">本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が6件あり、計画的な確認が必要です。今週は、UEFIブートローダーや主要なブラウザ・ソフトウェア製品の脆弱性、ランサムウェアの主要な感染経路の変化、サーバーレスアプリケーションの設定不備リスクなど、多岐にわたるセキュリティ情報が確認されました。</p>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の注目論点</h3>
-      <ul class="brief-list"><li>サーバーレスアプリケーションの利用拡大に伴い、認証を欠く公開されたアプリケーションがクラウド環境全体の侵害につながるリスクが指摘されています。自社および委託先でのサーバーレスアプリケーションの利用状況とセキュリティ設定について、改めて評価・議論することが重要です。</li><li>LLMの支援を受けて開発された可能性のあるIoTボットネットフレームワークの事例が報告されており、AIの悪用に関する将来的な脅威動向として注目されます。AI技術の進化がサイバー攻撃に与える影響について、中長期的なリスク評価の観点から議論を深める必要があるでしょう。</li></ul>
+      <h3 class="brief-section-title">重要・優先事項</h3>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">約12個の脆弱で失効済みのUEFI shimブートローダーが長年信頼されたままであり、攻撃者がセキュアブートをバイパスする経路を提供していたことが判明しました。</p><p class="brief-priority-impact">金融機関で当該のUEFI shimブートローダーを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">昨年、ランサムウェアの主要な根本原因がエクスプロイトからメール攻撃へと変化しました。クレデンシャルベースの攻撃の97%で多要素認証(MFA)が導入されていたにもかかわらず、侵害を防ぐことができませんでした。</p><p class="brief-priority-impact">金融機関においても、IDベースの攻撃はランサムウェア感染の主要な経路となり得るため、認証・アクセス管理の強化は継続的な課題です。MFAが導入されていても侵害が発生している点に注意が必要です。</p></li></ul>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の確認事項</h3>
+      <h3 class="brief-section-title">確認事項</h3>
       <ul class="brief-list"><li>自社および委託先で、UEFI shimブートローダー、Firefox、Chrome、Adobe、VMware、Microsoft製品、サーバーレスアプリケーション（特にGoogle Cloud Run）の利用有無と影響バージョンを確認し、ベンダーの公開情報を参照して最新のセキュリティアップデート適用状況や推奨される緩和策を評価してください。</li><li>MFA導入済み環境における認証情報の窃取やMFA回避手法への対策状況を評価し、IDベースの攻撃に対する防御策が十分か確認するとともに、顧客がハードウェアウォレットを利用している場合の注意喚起について検討してください。</li></ul>
     </div>
     </div>
@@ -175,11 +178,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>約12個の脆弱で失効済みのUEFI shimブートローダーが長年信頼されたままであり、攻撃者がセキュアブートをバイパスする経路を提供していたことが判明しました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関で当該のUEFI shimブートローダーを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。</p>
         </section>
         <section class="article-section">
@@ -197,11 +200,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>昨年、ランサムウェアの主要な根本原因がエクスプロイトからメール攻撃へと変化しました。クレデンシャルベースの攻撃の97%で多要素認証(MFA)が導入されていたにもかかわらず、侵害を防ぐことができませんでした。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関においても、IDベースの攻撃はランサムウェア感染の主要な経路となり得るため、認証・アクセス管理の強化は継続的な課題です。MFAが導入されていても侵害が発生している点に注意が必要です。</p>
         </section>
         <section class="article-section">
@@ -219,11 +222,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>OkoBotマルウェアフレームワークが2025年4月からWindowsマシン上で活動しており、そのモジュールの一つがハードウェアウォレット所有者からリカバリーフレーズを詐取するように設計されています。感染したPCでは、ウォレットのデスクトップソフトウェア内部から不正な要求が表示され、デバイスが接続されるまで待機することもあります。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関が直接的な標的となる情報ではありませんが、顧客がハードウェアウォレットを利用している場合、このマルウェアによる資産の盗難リスクが存在します。顧客への注意喚起や情報提供の検討材料となります。</p>
         </section>
         <section class="article-section">
@@ -241,11 +244,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Mandiantは、認証を欠く公開されたサーバーレスアプリケーションが、ファイルインクルージョンやコマンドインジェクションなどのアプリケーションレベル攻撃の標的となり、クラウド環境全体の侵害につながるリスクがあると警告しています。特にGoo</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がサーバーレスアプリケーション（特にGoogle Cloud Run）を業務システムやAIワークフローで利用している場合に関係します。設定不備による情報漏えいやシステム侵害のリスクがあります。</p>
         </section>
         <section class="article-section">
@@ -263,7 +266,7 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Mozillaは、Firefoxの2つの重大な脆弱性（CVE-2026-15718、CVE-2026-15719）に対処するアップデートをリリースしました。これらの脆弱性については、エクスプロイトコードが公開されていると警告しています。</p>
         </section>
         <section class="vulnerability-facts">
@@ -271,7 +274,7 @@
         <ul class="vulnerability-list"><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15718" target="_blank" rel="noopener noreferrer">CVE-2026-15718</a><span class="vulnerability-cvss">CVSS 4.3 / Medium（v3.1・他機関）</span></li><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-15719" target="_blank" rel="noopener noreferrer">CVE-2026-15719</a><span class="vulnerability-cvss">CVSS 5.4 / Medium（v3.1・他機関）</span></li></ul>
       </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関でFirefox、Chrome、Adobe、VMware製品を利用している場合に限り、適用性確認の対象になります。</p>
         </section>
         <section class="article-section">
@@ -289,11 +292,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>JPCERT/CCは、2026年7月のマイクロソフトセキュリティ更新プログラムに関する注意喚起を公開しました。この更新プログラムには複数の脆弱性に対する修正が含まれています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>多くの金融機関でマイクロソフト製品が利用されているため、適用性確認の対象になります。個々の脆弱性の影響度は記事からは確認できません。</p>
         </section>
         <section class="article-section">
@@ -311,11 +314,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>サイバーセキュリティ研究者が、LLMの支援を受けて開発された可能性のあるIoTボットネットフレームワーク「TuxBot v3 Evolution」の詳細を公開しました。AIはボットネットコードの生成要求に応じたものの、開発者が削除し忘れた安全に関する免責事項が含まれていました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関が直接的な標的となる可能性は低いですが、IoTデバイスの利用状況によっては間接的な影響が生じる可能性があります。LLMの悪用に関する動向として、中長期的なリスク評価の参考になります。</p>
         </section>
       </div>
@@ -329,11 +332,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Microsoftは、脅威インテリジェンスを実用的なアクションへ転換するための新サービス「Microsoft Defender Experts Threat Intelligence」と、サードパーティおよびマルチクラウド対応を強化した「Microsoft Defender Experts MDR」を発表しました。これにより、攻撃が到達する前と環境内で進行中の両局面で、専門家による支援を通じて「インテリジェンスからアクションへのギャップ」を埋めることを目指します。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がMicrosoft Defender製品群を利用している場合、これらの新サービスは脅威対応能力の強化に貢献する可能性があります。ただし、導入にはコストと運用体制の検討が必要です。</p>
         </section>
       </div>
@@ -347,11 +350,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Dark Readingは、北米以外の地域に特化したサイバーセキュリティ情報を提供する「DR Global」セクションを刷新したことを発表しました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関への直接的な影響は限定的です。サイバーセキュリティ情報の収集源の一つとして参考になる可能性があります。</p>
         </section>
       </div>
@@ -364,11 +367,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>NCSCのサイバーアドバイザーが、中小企業向けにサイバーセキュリティ対策の開始を支援するため、30分間の無料コンサルティングを提供しています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関への直接的な影響は限定的です。中小企業のサイバーセキュリティ強化はサプライチェーン全体のレジリエンス向上に寄与する可能性がありますが、本記事は一般的な啓発情報にとどまります。</p>
         </section>
       </div>

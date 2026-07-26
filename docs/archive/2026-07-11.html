@@ -66,6 +66,9 @@
     .brief-list{list-style:none;display:grid;gap:6px}
     .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
     .brief-list li::before{content:"・";position:absolute;left:0}
+    .brief-priority-list{list-style:none;display:grid;gap:12px;margin:0;padding:0}
+    .brief-priority-item{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;display:grid;gap:4px}
+    .brief-priority-summary,.brief-priority-impact{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word;margin:0}
     .dashboard{max-width:680px;margin:12px auto 0;padding:0 12px}
     .dashboard-head{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
     .dashboard-head h2{font-size:13px;font-weight:700;color:#e6edf3}
@@ -126,14 +129,14 @@
     <div class="brief-box">
       <h2>本日の要点</h2>
       <div class="brief-section">
-      <h3 class="brief-section-title">本日の概況</h3>
+      <h3 class="brief-section-title">概況</h3>
       <p class="brief-status-line">掲載6件｜重要度「高」1件｜本日確認1件｜今週確認2件</p>
       <p class="brief-overview">本日は、広く利用されているSaaS製品の重大な脆弱性に関する緊急の注意喚起が報告されており、金融機関における即時対応の必要性が高い情報が含まれています。また、メールクライアントの脆弱性や暗号資産関連プロジェクトにおけるサプライチェーン攻撃事例も確認され、これらはシステム運用や開発におけるリスク評価の重要性を示唆しています。全体として、サプライチェーンを介した脅威への警戒と、利用製品の脆弱性管理の徹底が求められる一日です。</p>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の注目論点</h3>
-      <ul class="brief-list"><li>広く利用されるSaaS製品のベンダーから緊急のシャットダウン指示が出された事例は、金融機関におけるSaaS利用時のリスク評価とインシデント対応計画の有効性について再検討する契機となります。特に、委託先が利用するSaaS製品のセキュリティリスクに対する可視性と管理体制をどのように強化すべきか議論が必要です。</li><li>メールクライアントや開発用パッケージにおける脆弱性・サプライチェーン攻撃の事例は、日常的に利用されるソフトウェアや開発コンポーネントのセキュリティ管理の重要性を改めて浮き彫りにしています。これらのリスクに対して、継続的な脆弱性スキャン、パッチ適用管理、そしてサプライチェーン全体のセキュリティ検証をどのように強化していくべきか、組織全体での議論が求められます。</li><li>暗号資産関連プロジェクトにおけるGitHub侵害は、特定の技術領域におけるサプライチェーン攻撃の具体的な脅威を示しています。金融機関が新たな技術やサービスを導入する際、そのサプライチェーンに潜む特有のリスクをどのように評価し、管理していくべきか、リスクアセスメントのプロセスを見直す必要があるかもしれません。</li></ul>
+      <h3 class="brief-section-title">重要・優先事項</h3>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">Progress Softwareは、ShareFileの顧客に対し、セキュリティ上の脅威に対応するため、Storage Zone Controllersを実行しているWindowsサーバーをシャットダウンするよう指示しました。同社は「信頼できる外部セキュリティ脅威」に対応中であり、影響を受けるアカウントへのアクセスを一時的に無効化しています。</p><p class="brief-priority-impact">ShareFileは多くの企業で利用されている可能性があり、金融機関が直接または委託先を通じて利用している場合、業務停止や情報漏えいのリスクに直結する可能性があります。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">ZimbraのClassic Web Clientに、細工されたメールによって悪意のあるコードがユーザーセッションで実行される可能性のある重大なクロスサイトスクリプティング（XSS）脆弱性が発見されました。Zimbraは顧客に対し、この脆弱性に対処するためのアップデート適用を促しています。</p><p class="brief-priority-impact">金融機関でZimbra Classic Web Clientを利用している場合に限り、本脆弱性の影響を受ける可能性があります。利用状況を確認し、必要に応じて対応を検討する必要があります。</p></li></ul>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の確認事項</h3>
+      <h3 class="brief-section-title">確認事項</h3>
       <ul class="brief-list"><li>ShareFileのStorage Zone Controllersを利用している場合、Progress Softwareからの指示に従い、速やかに該当サーバーのシャットダウンと公式発表の確認を行ってください。</li><li>Zimbra Classic Web Clientを利用している場合、ベンダーが提供するアップデートの適用状況を今週中に確認し、必要に応じて対応を検討してください。</li><li>自社または委託先でInjective LabsのSDKや関連するnpmパッケージを利用している場合、影響を受けたバージョン（@injectivelabs/sdk-ts@1.20.21）が使用されていないか確認してください。</li><li>開発環境におけるnpmパッケージのサプライチェーンリスクについて、利用しているパッケージの整合性検証や信頼できるソースからの取得に関する管理策を見直してください。</li></ul>
     </div>
     </div>
@@ -181,11 +184,11 @@
       <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item is-accent">確認目安 本日確認</span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Progress Softwareは、ShareFileの顧客に対し、セキュリティ上の脅威に対応するため、Storage Zone Controllersを実行しているWindowsサーバーをシャットダウンするよう指示しました。同社は「信頼できる外部セキュリティ脅威」に対応中であり、影響を受けるアカウントへのアクセスを一時的に無効化しています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>ShareFileは多くの企業で利用されている可能性があり、金融機関が直接または委託先を通じて利用している場合、業務停止や情報漏えいのリスクに直結する可能性があります。</p>
         </section>
         <section class="article-section">
@@ -203,11 +206,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>ZimbraのClassic Web Clientに、細工されたメールによって悪意のあるコードがユーザーセッションで実行される可能性のある重大なクロスサイトスクリプティング（XSS）脆弱性が発見されました。Zimbraは顧客に対し、この脆弱性に対処するためのアップデート適用を促しています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関でZimbra Classic Web Clientを利用している場合に限り、本脆弱性の影響を受ける可能性があります。利用状況を確認し、必要に応じて対応を検討する必要があります。</p>
         </section>
         <section class="article-section">
@@ -225,11 +228,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Injective LabsのGitHubリポジトリが侵害され、攻撃者が暗号通貨ウォレットの秘密鍵やニーモニックフレーズを窃取する悪意のあるnpmパッケージを公開しました。このパッケージは、偽のテレメトリー機能を通じてデータを外部に送信するよう設計されていました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>暗号通貨関連のプロジェクトにおけるサプライチェーン攻撃の事例であり、金融機関が暗号資産関連サービスを提供している場合や、関連技術を開発・利用している場合に、同様のリスクがないか確認する上で参考になります。</p>
         </section>
         <section class="article-section">
@@ -247,11 +250,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>サイバーセキュリティ分野の専門家であるJen Ellis氏の功績と、セキュリティ研究者の擁護活動に焦点を当てた人物紹介記事です。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関への直接的な影響は限定的であり、サイバーセキュリティ業界の動向や人物に関する一般的な参考情報にとどまります。</p>
         </section>
       </div>
@@ -264,11 +267,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>2026年上半期、病院や診療所へのサイバー攻撃は緩やかな増加にとどまった一方、医療サービスプロバイダーやその他の医療関連企業への攻撃が2倍以上に急増しました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>医療業界のサービスプロバイダーへの攻撃増加に関する記事であり、金融機関への直接的な関係は確認できません。他業界のサプライチェーンリスク事例として参考情報にとどまります。</p>
         </section>
       </div>
@@ -282,11 +285,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Microsoftは、Secure Future Initiativeの2026年7月進捗レポートを公開し、セキュアな基盤、AIを活用した防御、将来を見据えたサイバーセキュリティに関する取り組みの進捗状況を説明しました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>Microsoft製品を広く利用する金融機関にとって、ベンダーのセキュリティ強化への取り組み状況を把握する上で参考となる情報です。直接的な影響や具体的な対応を求めるものではありません。</p>
         </section>
       </div>

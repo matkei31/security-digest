@@ -456,10 +456,10 @@ class BriefTest(unittest.TestCase):
     def test_extractive_composition_metadata_is_saved(self):
         digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
         self.assertEqual(digest["brief"]["model"], "deterministic-extractive")
-        self.assertEqual(digest["brief"]["prompt_version"], "today-brief-extractive-v1")
-        self.assertEqual(digest["generator"]["brief_prompt_version"], "today-brief-extractive-v1")
+        self.assertEqual(digest["brief"]["prompt_version"], "today-brief-extractive-v2")
+        self.assertEqual(digest["generator"]["brief_prompt_version"], "today-brief-extractive-v2")
         self.assertEqual(dj.BRIEF_MODEL, "deterministic-extractive")
-        self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-extractive-v1")
+        self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-extractive-v2")
 
     def test_schema_version_stays_1(self):
         digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)

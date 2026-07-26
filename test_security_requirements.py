@@ -543,11 +543,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         )
         self.assertNotIn("BL-006 closure直後", bl028)
 
-    def test_bl029_is_recorded_verbatim_with_spec_deferred_to_kickoff(self):
+    def test_bl029_is_recorded_verbatim_with_confirmed_spec(self):
         bl029 = self.backlog.split("## BL-029", 1)[1].split("\n## ", 1)[0]
         self.assertIn("「金融機関との関連」とARTICLE見出しの情報設計を再検討する", bl029)
         self.assertIn("**優先度:** P1", bl029)
-        self.assertIn("**状態:** 記録済み / 仕様未確定 / 未実装", bl029)
+        self.assertIn("**状態:** 仕様確定 / 実装済みDraft PR / ユーザー受入待ち", bl029)
         self.assertIn(
             "「『金融機関との関連』のところは、どういった事項について関連を記載しているのかが不明。"
             "このままだったら消した方がいい。使うなら、本文側の『何が起きた』『なぜ金融機関に関係する』"
@@ -560,21 +560,25 @@ class SecurityRequirementsTest(unittest.TestCase):
             bl029,
         )
         self.assertIn(
-            "現在の問題認識と検討方向のみを記録し、"
-            "具体的なfield構成・文章生成方法・見出し・完了条件は着手時にユーザーと詰める。",
+            "「重要・優先事項」は、現行`discussion_points`の対象条件（`importance==\"高\"`"
+            "または`urgency`が`\"本日確認\"`／`\"今週確認\"`）を維持して選定する。",
+            bl029,
+        )
+        self.assertIn(
+            "選定された記事ごとに同一記事の`analysis.summary`と`analysis.financial_impact`をverbatimで使用し、"
+            "一項目一`<li>`・summaryとfinancial_impactを別`<p>`として表示する。",
             bl029,
         )
         self.assertIn("完了済みBL-021を再オープンしない", bl029)
         self.assertIn("prompt-only改善No-GoのBL-023とも統合せず", bl029)
-        self.assertIn("**実装証跡:** 未実装。", bl029)
-        self.assertIn("**ユーザー受入証跡:** 記録なし。", bl029)
+        self.assertIn("**ユーザー受入証跡:** 記録なし。merge前のPC 1280px／390px目視受入が必要。", bl029)
         self.assertNotIn("**状態:** 完了", bl029)
         self.assertIn(
             "**出所:** 2026-07-26 プロジェクト会話（BL-006実装着手後、ユーザー受入・closure前）。",
             bl029,
         )
         self.assertNotIn("BL-006 closure直後", bl029)
-        self.assertNotIn("実装済み", bl029)
+        self.assertIn("implementation branch `claude/bl029-priority-items`", bl029)
 
     def test_bl028_bl029_registration_does_not_reopen_or_merge_other_tickets(self):
         # This record-only registration must not touch DECISIONS.md, UI_SPEC.md,
@@ -586,9 +590,8 @@ class SecurityRequirementsTest(unittest.TestCase):
         active = self.status.split("## Active work", 1)[1].split(
             "## 5. Recently completed work", 1
         )[0]
-        self.assertIn("- None.", active)
         self.assertNotIn("BL-028", active)
-        self.assertNotIn("BL-029", active)
+        self.assertIn("BL-029", active)
         next_candidates = self.status.split("## 7. Next candidates", 1)[1].split(
             "## 8. Sources of truth", 1
         )[0]
@@ -651,7 +654,7 @@ class SecurityRequirementsTest(unittest.TestCase):
             "## 6. Known issues and limitations", 1
         )[0]
         self.assertNotIn("BL-027", active)
-        self.assertIn("- None.", active)
+        self.assertIn("BL-029", active)
         self.assertIn("BL-006", recently_completed)
         self.assertIn("BL-027", recently_completed)
         self.assertIn("workflow_dispatch", recently_completed)
@@ -676,7 +679,6 @@ class SecurityRequirementsTest(unittest.TestCase):
             self.requirements,
             r"\| GAP-015 \| Hardening candidate \| Deferred until trigger \| SR-034 \|",
         )
-        self.assertNotIn("## SD-026", self.decisions)
 
     def test_current_gaps_non_required_and_triggers_are_distinct(self):
         mapping = self._section("## 7. Current control mapping", "## 8. Gap register")
@@ -824,7 +826,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertNotIn("BL-025", active)
         self.assertNotIn("BL-026", active)
         self.assertNotIn("BL-027", active)
-        self.assertIn("- None.", active)
+        self.assertIn("BL-029", active)
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
@@ -869,7 +871,6 @@ class SecurityRequirementsTest(unittest.TestCase):
             self.requirements,
             r"\| GAP-001 \| Security gap \| Implemented \| SR-003 \|",
         )
-        self.assertNotIn("## SD-026", self.decisions)
         bl026 = self.backlog.split("## BL-026", 1)[1].split("\n## ", 1)[0]
         self.assertIn(
             "GitHub Actions supply chainとproduction concurrencyを強化する", bl026

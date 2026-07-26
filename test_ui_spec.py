@@ -28,8 +28,8 @@ class UiSpecDocumentTest(unittest.TestCase):
     def test_ui_spec_exists_with_version_metadata(self):
         self.assertTrue(self.spec_path.is_file())
         self.assertIn("# Monomi Digest UI Specification", self.spec)
-        self.assertIn("- **バージョン:** 1.4", self.spec)
-        self.assertIn("- **状態:** 承認済み", self.spec)
+        self.assertIn("- **バージョン:** 1.5", self.spec)
+        self.assertIn("- **状態:** Draft／ユーザー受入待ち", self.spec)
         self.assertIn(
             "2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、"
             "Version 1.4として承認済みである",
@@ -48,8 +48,17 @@ class UiSpecDocumentTest(unittest.TestCase):
             "GitHub Pagesでの公開反映を確認済みである。",
             self.spec,
         )
-        self.assertNotIn("Draft／ユーザー受入待ち", self.spec)
-        self.assertNotIn("確定仕様として扱わない", self.spec)
+        self.assertIn(
+            "Version 1.5はBL-029の「本日の要点」子見出し・記事カード見出しの再設計を反映するDraftであり、"
+            "ユーザーのPC 1280px／390px目視受入までは確定仕様として扱わない。",
+            self.spec,
+        )
+        self.assertIn(
+            "Version 1.5は、BL-029でユーザーと確定した仕様に基づき、"
+            "「本日の要点」の子見出しを概況／重要・優先事項／確認事項へ、"
+            "記事カードの見出しを概要／金融機関との関連／確認すべきことへ統一するDraftである。",
+            self.spec,
+        )
 
     def test_all_required_chapters_exist_in_order(self):
         chapters = (

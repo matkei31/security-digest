@@ -25,7 +25,10 @@ SCHEMA_VERSION = 1
 ARTICLE_PROMPT_VERSION = "article-analysis-v8"
 # BL-021: 後方互換のためprompt_versionという既存フィールド名を維持するが、
 # 新値はLLM promptではなくToday's Brief composition contractのversionを表す。
-BRIEF_PROMPT_VERSION = "today-brief-extractive-v1"
+# BL-029: 「重要・優先事項」をARTICLE analysis.summary/financial_impactの
+# 同一記事ペアから構成するcomposition contractへ更新し、v2へbumpした。
+# 過去daily JSON(today-brief-extractive-v1／today-brief-v3等)は書き換えない。
+BRIEF_PROMPT_VERSION = "today-brief-extractive-v2"
 BRIEF_MODEL = "deterministic-extractive"
 CATEGORY_VERSION = "v1"
 

@@ -66,6 +66,9 @@
     .brief-list{list-style:none;display:grid;gap:6px}
     .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
     .brief-list li::before{content:"・";position:absolute;left:0}
+    .brief-priority-list{list-style:none;display:grid;gap:12px;margin:0;padding:0}
+    .brief-priority-item{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;display:grid;gap:4px}
+    .brief-priority-summary,.brief-priority-impact{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word;margin:0}
     .dashboard{max-width:680px;margin:12px auto 0;padding:0 12px}
     .dashboard-head{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
     .dashboard-head h2{font-size:13px;font-weight:700;color:#e6edf3}
@@ -126,14 +129,14 @@
     <div class="brief-box">
       <h2>本日の要点</h2>
       <div class="brief-section">
-      <h3 class="brief-section-title">本日の概況</h3>
+      <h3 class="brief-section-title">概況</h3>
       <p class="brief-status-line">掲載11件｜重要度「高」0件｜本日確認0件｜今週確認7件</p>
       <p class="brief-overview">本日は、AIコーディングプラットフォームの脆弱性やLinux UEFI Shimの脆弱性など、サプライチェーンに関連する技術的リスク情報が複数報告されました。また、仮想通貨ウォレットのプライバシーリスクやSaaSアプリケーションを標的とした攻撃動向、Microsoft Entra IDの認証方法変更など、クラウドサービスや認証に関する確認事項も含まれています。全体として、特定の緊急性の高い脅威は少ないものの、中長期的な視点でのリスク評価や設定確認が求められる情報が中心です。</p>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の注目論点</h3>
-      <ul class="brief-list"><li>AI技術の導入が進む中で、AIコーディングプラットフォームの脆弱性やAIセキュリティエージェントの活用に関する情報が示されており、金融機関におけるAI利用時のセキュリティリスク評価と管理態勢について議論が必要です。</li><li>Pythonパッケージのライフサイクル分析やSaaSアプリケーションを標的とした攻撃動向、CISAのGitHub情報漏えい事例など、サプライチェーンおよびクラウド環境における認証情報管理や委託先管理の重要性が改めて浮き彫りになっています。これらのリスクに対する統制強化について検討すべきです。</li><li>仮想通貨ウォレット拡張機能のプライバシーリスクやMicrosoft Entra IDの認証方法変更は、金融機関における認証基盤や従業員のIT利用ポリシー、顧客資産保護の観点から、セキュリティ対策の現状と将来的な方向性について議論するきっかけとなります。</li></ul>
+      <h3 class="brief-section-title">重要・優先事項</h3>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">AIコーディングプラットフォーム「Cursor IDE」に、汚染されたリポジトリから悪意のあるコードを自動実行する脆弱性が報告されました。この脆弱性は昨年12月に報告されましたが、依然として修正されていません。</p><p class="brief-priority-impact">金融機関でCursor IDEを利用している場合に、サプライチェーンリスクとして関係します。利用有無は記事から確認できないため断定はできません。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">サイバーセキュリティ研究者が、Microsoft署名済みの古いLinux UEFIアプリケーション11件に脆弱性を発見しました。これにより、最新のファームウェア標準を使用するほとんどのシステムでセキュアブートが迂回される可能性があります。</p><p class="brief-priority-impact">金融機関でLinux UEFI Shimを使用しているシステムがある場合に関係します。攻撃者がこれらの脆弱なアプリケーションを悪用すると、システム起動時に信頼されていないコードが実行され、悪意のあるUEFIブートキットなどが展開される可能性があります。</p></li></ul>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の確認事項</h3>
+      <h3 class="brief-section-title">確認事項</h3>
       <ul class="brief-list"><li>自社および委託先でAIコーディングプラットフォーム「Cursor IDE」やLinux UEFI Shimを使用しているシステムがないか棚卸しし、該当する場合はベンダーからの修正情報や緩和策を確認する。</li><li>自社および委託先におけるSaaSベースアプリケーションのOAuth認証設定とゲストアクセス設定の状況を確認し、音声フィッシング（vishing）に対する従業員への注意喚起と教育を強化する。</li><li>Microsoft Entra IDの利用有無と、今回の認証方法変更が自社の認証ポリシーや運用に与える影響を確認し、パスキー導入およびSMS/音声認証の新モデルへの移行計画を評価する。</li><li>自社および委託先におけるPythonパッケージの利用状況と、その入手経路・管理体制を確認し、サプライチェーンリスク評価を実施する。</li></ul>
     </div>
     </div>
@@ -175,11 +178,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>AIコーディングプラットフォーム「Cursor IDE」に、汚染されたリポジトリから悪意のあるコードを自動実行する脆弱性が報告されました。この脆弱性は昨年12月に報告されましたが、依然として修正されていません。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関でCursor IDEを利用している場合に、サプライチェーンリスクとして関係します。利用有無は記事から確認できないため断定はできません。</p>
         </section>
         <section class="article-section">
@@ -197,11 +200,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>サイバーセキュリティ研究者が、Microsoft署名済みの古いLinux UEFIアプリケーション11件に脆弱性を発見しました。これにより、最新のファームウェア標準を使用するほとんどのシステムでセキュアブートが迂回される可能性があります。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関でLinux UEFI Shimを使用しているシステムがある場合に関係します。攻撃者がこれらの脆弱なアプリケーションを悪用すると、システム起動時に信頼されていないコードが実行され、悪意のあるUEFIブートキットなどが展開される可能性があります。</p>
         </section>
         <section class="article-section">
@@ -219,11 +222,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>KU Leuvenの研究者らが85種類の人気仮想通貨ウォレットブラウザ拡張機能を調査した結果、ウォレット自体がユーザーを紐付け、追跡するのに十分な情報を漏洩していることが判明しました。ウォレットとウェブサイト・ブロックチェーンサーバー間の通信により、個人の複数のアドレスが関連付けられ、外部からサイトを横断して追跡される可能性があります。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関が仮想通貨関連サービスを提供している場合、または従業員が業務で仮想通貨ウォレット拡張機能を利用している場合に、情報漏洩や追跡のリスクに関係します。直接的な影響は限定的ですが、顧客資産の保護や情報セキュリティポリシーの観点から確認が必要です。</p>
         </section>
         <section class="article-section">
@@ -240,11 +243,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>本ブログ記事は、PyPIなどのリポジトリからカスタムWebサーバーでのホスティング、ソースおよびwheel形式での配布、そして仮想環境またはシステム全体のPython環境への最終的なインストールに至るまで、Pythonパッケージの完全なライフサイクルを分析しています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がPythonを利用したシステム開発や運用を行っている場合、サプライチェーンリスクとして関係します。特に、外部のPythonパッケージを利用している場合は、その信頼性を確認する必要があります。</p>
         </section>
         <section class="article-section">
@@ -262,11 +265,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Microsoft Threat Intelligenceは、ShinyHuntersに関連する音声フィッシング（vishing）、サプライチェーン侵害、SaaSベースアプリケーションを標的としたゲストアクセス設定不備を含む脅威アクターの活動を特定しました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がSaaSベースのアプリケーションを利用し、OAuth認証やゲストアクセス設定を行っている場合に、攻撃の対象となる可能性があります。</p>
         </section>
         <section class="article-section">
@@ -284,11 +287,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>英国とEUは、ロシアの個人および団体に対し、サイバー攻撃と偽情報キャンペーンを理由に初の共同制裁を課しました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関への直接的な影響は限定的ですが、ロシア関連のサイバー脅威動向を把握する上で参考になります。制裁対象となる個人・団体との取引有無を確認する必要がある場合があります。</p>
         </section>
       </div>
@@ -302,11 +305,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Microsoft Entra IDにおいて、パスキーがデフォルトのサインインエクスペリエンスとなり、SMSおよび音声認証の新しいモデルが導入されました。この変更への準備について説明されています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>Microsoft Entra IDを利用している金融機関は、認証方法の変更がユーザーエクスペリエンスやセキュリティポリシーに影響を与える可能性があるため、確認が必要です。</p>
         </section>
         <section class="article-section">
@@ -324,11 +327,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>AIセキュリティエージェントがセキュリティの意思決定に影響を与え始めており、発見の要約、修復の優先順位付け、次のステップの推奨、チームの迅速化に貢献しています。しかし、ほとんどはスキャナー出力、脅威インテリジェンス、設定情報などの断片的なリスクシグナルに依存しています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関におけるAIセキュリティエージェントの導入や活用を検討する際の参考情報となります。直接的な影響は限定的です。</p>
         </section>
       </div>
@@ -342,11 +345,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>一部の企業では、エンジニアがサイバーセキュリティにおける人工知能の可能性と脅威をテストするために、防御および攻撃ツールを構築しています。これは「イエローチーム」と呼ばれ、AIのセキュリティを定義する新たな動きです。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がAI技術を導入・活用する際に、そのセキュリティリスク評価や防御策検討の参考情報となります。直接的な影響は限定的です。</p>
         </section>
       </div>
@@ -360,11 +363,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>CISAは、契約業者がAWS Govcloudキーを含む数十の内部認証情報を約6ヶ月間パブリックなGitHubリポジトリに公開していたデータ漏えいについて事後分析を公表しました。この事案は、セキュリティチームが学ぶべき重要な教訓を提供しています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関への直接的な影響は限定的ですが、クラウド環境における認証情報管理や委託先管理の重要性について参考となる事例です。</p>
         </section>
         <section class="article-section">
@@ -382,11 +385,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Cisco Talos Intelligence Integrationsが、最新の脅威インテリジェンスをCiscoテクノロジー全体にわたるプロアクティブな保護に変換し、不確実性を低減する方法について解説しています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関への直接的な影響は限定的です。Cisco製品を利用している場合に、脅威インテリジェンス活用の参考情報となります。</p>
         </section>
       </div>

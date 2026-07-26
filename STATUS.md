@@ -11,7 +11,7 @@ This file records the current, changeable project state. Incomplete, partially a
 | Contract | Current value |
 |---|---|
 | ARTICLE prompt | `article-analysis-v8` |
-| BRIEF composition contract on `main` | `today-brief-extractive-v1` |
+| BRIEF composition contract on `main` | `today-brief-extractive-v2` |
 | BRIEF model on `main` | `deterministic-extractive` |
 | Latest published daily JSON | `today-brief-extractive-v1`／`deterministic-extractive`（2026-07-24 07:58 JST生成） |
 | Daily JSON `schema_version` | `1` |
@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- None.
+- [BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する) 「金融機関との関連」とARTICLE見出しの情報設計再検討 — implemented on branch `claude/bl029-priority-items`, Draft PR, user visual acceptance pending. Public headings unified: 「本日の要点」の子見出しは概況／重要・優先事項／確認事項、記事カードは概要／金融機関との関連／確認すべきこと。「重要・優先事項」は現行`discussion_points`の対象条件（importance=="高" または urgency∈{本日確認,今週確認}）を維持し、同一記事の`analysis.summary`と`analysis.financial_impact`をverbatimで2段落表示する。ARTICLE prompt／response schema／`ARTICLE_PROMPT_VERSION`／public daily JSON schemaは変更していない。新規生成分のinternal identifierは`today-brief-extractive-v2`（過去daily JSONは書き換えない）。過去Archiveは原則offline再生成で新仕様を適用し、再構成不能な日だけ「注目論点」の互換表示を使う。production未実行。
 
 ## 5. Recently completed work
 

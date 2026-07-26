@@ -727,6 +727,155 @@ class ArrayOverrideTest(unittest.TestCase):
         self.assertIn(VALID_BRIEF_RESPONSE["overview"], applied["overview"])
 
 
+# ── select_priority_items 構成契約 (BL-029) ────────────────────────────────
+
+class SelectPriorityItemsTest(unittest.TestCase):
+    def _item(self, item_id, *, importance="中", urgency="参考",
+              summary=None, impact=None, status="success"):
+        item = make_brief_item(
+            title=item_id,
+            status=status,
+            importance=importance,
+            urgency=urgency,
+            summary=summary,
+            financial_impact=impact,
+            recommended_actions=[],
+        )
+        item["id"] = item_id
+        return item
+
+    def test_pairs_summary_and_financial_impact_from_same_article(self):
+        item = self._item(
+            "a1", importance="高", urgency="今週確認",
+            summary="A1のsummary", impact="A1のimpact",
+        )
+        priority_items, provenance = fetch.select_priority_items([item])
+        self.assertEqual(len(priority_items), 1)
+        entry = priority_items[0]
+        self.assertEqual(entry["source_id"], "a1")
+        self.assertEqual(entry["summary"], "A1のsummary")
+        self.assertEqual(entry["financial_impact"], "A1のimpact")
+        self.assertEqual(entry["combined_text"], "A1のsummary\nA1のimpact")
+        self.assertEqual(len(provenance), 2)
+        self.assertTrue(all(p["source_id"] == "a1" for p in provenance))
+        self.assertTrue(all(p["selection_rank"] == 1 for p in provenance))
+        self.assertTrue(all(p["priority_item_rank"] == 1 for p in provenance))
+        summary_rec = next(p for p in provenance if p["article_field"] == "analysis.summary")
+        impact_rec = next(p for p in provenance if p["article_field"] == "analysis.financial_impact")
+        self.assertEqual(summary_rec["component_order"], 1)
+        self.assertEqual(impact_rec["component_order"], 2)
+        self.assertEqual(summary_rec["source_text"], "A1のsummary")
+        self.assertEqual(impact_rec["source_text"], "A1のimpact")
+        self.assertTrue(all(p["section"] == "priority_items" for p in provenance))
+
+    def test_summary_only_when_financial_impact_missing(self):
+        item = self._item(
+            "a1", importance="高", urgency="今週確認",
+            summary="A1のsummaryのみ", impact="",
+        )
+        priority_items, provenance = fetch.select_priority_items([item])
+        self.assertEqual(len(priority_items), 1)
+        entry = priority_items[0]
+        self.assertEqual(entry["summary"], "A1のsummaryのみ")
+        self.assertIsNone(entry["financial_impact"])
+        self.assertEqual(entry["combined_text"], "A1のsummaryのみ")
+        self.assertEqual(len(provenance), 1)
+        self.assertEqual(provenance[0]["article_field"], "analysis.summary")
+
+    def test_financial_impact_only_when_summary_missing(self):
+        item = self._item(
+            "a1", importance="高", urgency="今週確認",
+            summary="   ", impact="A1のimpactのみ",
+        )
+        priority_items, provenance = fetch.select_priority_items([item])
+        self.assertEqual(len(priority_items), 1)
+        entry = priority_items[0]
+        self.assertIsNone(entry["summary"])
+        self.assertEqual(entry["financial_impact"], "A1のimpactのみ")
+        self.assertEqual(entry["combined_text"], "A1のimpactのみ")
+        self.assertEqual(len(provenance), 1)
+        self.assertEqual(provenance[0]["article_field"], "analysis.financial_impact")
+
+    def test_article_excluded_when_both_fields_missing(self):
+        item = self._item("a1", importance="高", urgency="今週確認", summary=None, impact="")
+        priority_items, provenance = fetch.select_priority_items([item])
+        self.assertEqual(priority_items, [])
+        self.assertEqual(provenance, [])
+
+    def test_ineligible_article_is_not_selected(self):
+        item = self._item(
+            "a1", importance="低", urgency="参考",
+            summary="対象外summary", impact="対象外impact",
+        )
+        priority_items, _ = fetch.select_priority_items([item])
+        self.assertEqual(priority_items, [])
+
+    def test_exact_pair_duplicate_is_removed_but_partial_match_is_kept(self):
+        items = [
+            self._item("a1", importance="高", urgency="今週確認",
+                       summary="共通summary", impact="共通impact"),
+            self._item("a2", importance="高", urgency="今週確認",
+                       summary="共通summary", impact="共通impact"),
+            self._item("a3", importance="高", urgency="今週確認",
+                       summary="共通summary", impact="異なるimpact"),
+            self._item("a4", importance="高", urgency="今週確認",
+                       summary="別のsummary", impact="共通impact"),
+        ]
+        priority_items, _ = fetch.select_priority_items(items, max_items=10)
+        combined = [entry["combined_text"] for entry in priority_items]
+        # a2はa1と完全一致するpairのため除外され、a3・a4は片方だけ一致のため維持される
+        self.assertEqual(
+            combined,
+            [
+                "共通summary\n共通impact",
+                "共通summary\n異なるimpact",
+                "別のsummary\n共通impact",
+            ],
+        )
+
+    def test_does_not_cross_wire_fields_between_different_articles(self):
+        items = [
+            self._item("a1", importance="高", urgency="今週確認",
+                       summary="A1summary", impact="A1impact"),
+            self._item("a2", importance="高", urgency="今週確認",
+                       summary="A2summary", impact="A2impact"),
+        ]
+        priority_items, _ = fetch.select_priority_items(items, max_items=10)
+        expected = {
+            "a1": ("A1summary", "A1impact"),
+            "a2": ("A2summary", "A2impact"),
+        }
+        for entry in priority_items:
+            expected_summary, expected_impact = expected[entry["source_id"]]
+            self.assertEqual(entry["summary"], expected_summary)
+            self.assertEqual(entry["financial_impact"], expected_impact)
+
+    def test_respects_max_items_and_stable_order(self):
+        items = [
+            self._item(f"a{i}", importance="高", urgency="今週確認",
+                       summary=f"summary{i}", impact=f"impact{i}")
+            for i in range(5)
+        ]
+        priority_items, _ = fetch.select_priority_items(items, max_items=2)
+        self.assertEqual(len(priority_items), 2)
+        self.assertEqual([entry["source_id"] for entry in priority_items], ["a0", "a1"])
+
+    def test_public_projection_has_no_provenance_keys(self):
+        item = self._item(
+            "a1", importance="高", urgency="今週確認",
+            summary="verbatim summary", impact="verbatim impact",
+        )
+        priority_items, _ = fetch.select_priority_items([item])
+        serialized = json.dumps(
+            [entry["combined_text"] for entry in priority_items], ensure_ascii=False,
+        )
+        self.assertNotIn("article_field", serialized)
+        self.assertNotIn("source_id", serialized)
+        self.assertNotIn("selection_rank", serialized)
+        self.assertIn("verbatim summary", serialized)
+        self.assertIn("verbatim impact", serialized)
+
+
 # ── build_todays_brief extractive統合 (BL-021) ─────────────────────────────
 
 class ExtractiveBriefIntegrationTest(unittest.TestCase):
@@ -793,7 +942,7 @@ class ExtractiveBriefIntegrationTest(unittest.TestCase):
         )
         self.assertEqual(
             brief["discussion_points"],
-            ["本日低 impact", "週高 impact"],
+            ["本日低 summary\n本日低 impact", "週高 summary\n週高 impact"],
         )
         highlight_sources = [
             entry["source_id"]
@@ -803,10 +952,10 @@ class ExtractiveBriefIntegrationTest(unittest.TestCase):
         discussion_sources = [
             entry["source_id"]
             for entry in composition["provenance"]
-            if entry["section"] == "discussion_points"
+            if entry["section"] == "priority_items"
         ]
         self.assertEqual(highlight_sources, ["today-low", "week-high", "reference-high"])
-        self.assertEqual(discussion_sources, ["today-low", "week-high"])
+        self.assertEqual(discussion_sources, ["today-low", "today-low", "week-high", "week-high"])
 
     def test_article_strings_are_preserved_byte_for_byte(self):
         summary = "  要約の前後空白も保持する。  "
@@ -818,7 +967,7 @@ class ExtractiveBriefIntegrationTest(unittest.TestCase):
         )
         result = fetch.build_todays_brief([item])
         self.assertEqual(result["important_highlights"], [summary])
-        self.assertEqual(result["discussion_points"], [impact])
+        self.assertEqual(result["discussion_points"], [summary + "\n" + impact])
         self.assertEqual(result["check_items"], [action])
 
     def test_exact_duplicates_only_are_removed(self):
@@ -836,7 +985,10 @@ class ExtractiveBriefIntegrationTest(unittest.TestCase):
         ]
         result = fetch.build_todays_brief(items)
         self.assertEqual(result["important_highlights"], ["同じ要約"])
-        self.assertEqual(result["discussion_points"], ["同じ影響", "同じ影響 "])
+        self.assertEqual(
+            result["discussion_points"],
+            ["同じ要約\n同じ影響", "同じ要約\n同じ影響 "],
+        )
         self.assertEqual(result["check_items"], ["同じ確認", "別の確認"])
 
     def test_check_items_use_today_then_week_and_never_reference(self):
@@ -932,7 +1084,10 @@ class ExtractiveBriefIntegrationTest(unittest.TestCase):
         )
         result = fetch.build_todays_brief([item])
         self.assertEqual(result["important_highlights"], ["high-reference summary"])
-        self.assertEqual(result["discussion_points"], ["high-reference impact"])
+        self.assertEqual(
+            result["discussion_points"],
+            ["high-reference summary\nhigh-reference impact"],
+        )
         self.assertEqual(result["check_items"], [])
 
     def test_invalid_source_id_is_excluded_before_public_projection(self):
@@ -965,7 +1120,7 @@ class ExtractiveBriefIntegrationTest(unittest.TestCase):
         result = fetch.build_todays_brief([self._item("week", urgency="今週確認")])
         self.assertEqual(result["status"], "success")
         self.assertEqual(result["model"], "deterministic-extractive")
-        self.assertEqual(result["prompt_version"], "today-brief-extractive-v1")
+        self.assertEqual(result["prompt_version"], "today-brief-extractive-v2")
         self.assertIsNone(result["error_type"])
         self.assertEqual(dj.BRIEF_EXTRACTIVE_MAX_DISCUSSION_POINTS, 2)
         self.assertEqual(dj.SCHEMA_VERSION, 1)
@@ -986,7 +1141,7 @@ class ExtractiveBriefIntegrationTest(unittest.TestCase):
         self.assertEqual(result["discussion_points"], [])
         self.assertEqual(result["check_items"], [])
         self.assertEqual(result["model"], "deterministic-extractive")
-        self.assertEqual(result["prompt_version"], "today-brief-extractive-v1")
+        self.assertEqual(result["prompt_version"], "today-brief-extractive-v2")
 
     def test_zero_published_stays_not_attempted(self):
         result = fetch.build_todays_brief([])

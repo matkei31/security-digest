@@ -381,28 +381,39 @@ class ArchiveGenerationTest(unittest.TestCase):
         self.assertNotIn("None", html)
         self.assertNotIn(">null<", html)
 
-    def test_v3_archive_keeps_old_heading_and_digest_is_unchanged(self):
+    def test_v3_archive_with_evaluable_analysis_reconstructs_new_priority_heading(self):
+        # BL-029: HTML描画はitems[].ai_analysisから常に重要・優先事項を再構成し、
+        # 保存済みprompt_version(旧today-brief-v3)には依存しない。make_digest()の
+        # 記事は有効なanalysisを持つため、旧v3タグのままでも新見出しへ移行する。
         digest = make_digest(total_items=2, high_count=1)
         digest["brief"]["prompt_version"] = "today-brief-v3"
         before = json.dumps(digest, ensure_ascii=False, sort_keys=True)
 
         html = fetch.build_daily_archive_html(digest)
+        brief_html = html[html.index('<div class="todays-brief">'):html.index('<section class="important-items">')]
 
-        self.assertIn("本日の注目論点", html)
-        self.assertNotIn("金融機関との関連", html)
+        self.assertIn('<h3 class="brief-section-title">重要・優先事項</h3>', brief_html)
+        self.assertNotIn("本日の注目論点", brief_html)
+        self.assertNotIn("金融機関との関連", brief_html)
         self.assertEqual(
             json.dumps(digest, ensure_ascii=False, sort_keys=True),
             before,
         )
 
-    def test_extractive_archive_uses_financial_relevance_heading(self):
+    def test_extractive_archive_reconstructs_new_priority_heading(self):
+        # BL-029: prompt_versionがtoday-brief-extractive-v1でも、items[].ai_analysis
+        # から重要・優先事項を再構成する(バージョン非依存の再構成)。
         digest = make_digest(total_items=2, high_count=1)
         digest["brief"]["prompt_version"] = "today-brief-extractive-v1"
 
         html = fetch.build_daily_archive_html(digest)
+        brief_html = html[html.index('<div class="todays-brief">'):html.index('<section class="important-items">')]
 
+        self.assertIn('<h3 class="brief-section-title">重要・優先事項</h3>', brief_html)
+        self.assertNotIn("本日の注目論点", brief_html)
+        self.assertNotIn("金融機関との関連", brief_html)
+        # article card自体の見出しとしては引き続き表示される
         self.assertIn("金融機関との関連", html)
-        self.assertNotIn("本日の注目論点", html)
 
     def test_internal_and_external_links_are_safe(self):
         digest = make_digest(total_items=1)

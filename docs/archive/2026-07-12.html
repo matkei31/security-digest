@@ -66,6 +66,9 @@
     .brief-list{list-style:none;display:grid;gap:6px}
     .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
     .brief-list li::before{content:"・";position:absolute;left:0}
+    .brief-priority-list{list-style:none;display:grid;gap:12px;margin:0;padding:0}
+    .brief-priority-item{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;display:grid;gap:4px}
+    .brief-priority-summary,.brief-priority-impact{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word;margin:0}
     .dashboard{max-width:680px;margin:12px auto 0;padding:0 12px}
     .dashboard-head{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
     .dashboard-head h2{font-size:13px;font-weight:700;color:#e6edf3}
@@ -126,14 +129,14 @@
     <div class="brief-box">
       <h2>本日の要点</h2>
       <div class="brief-section">
-      <h3 class="brief-section-title">本日の概況</h3>
+      <h3 class="brief-section-title">概況</h3>
       <p class="brief-status-line">掲載3件｜重要度「高」1件｜本日確認1件｜今週確認1件</p>
       <p class="brief-overview">本日は、開発サプライチェーンにおける情報窃取マルウェアの拡散と、メールクライアントの脆弱性に関する情報が中心です。特に、広く利用される可能性のある開発関連パッケージのサプライチェーン侵害は、金融機関の開発環境やCI/CDパイプラインに直接的な影響を及ぼす可能性があるため、本日中の確認が求められます。また、メールクライアントの脆弱性も、利用状況によっては対応が必要となる重要な情報です。他国の法執行機関を標的としたサイバースパイ活動の事例も報告されていますが、金融機関への直接的な影響は限定的とみられます。</p>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の注目論点</h3>
-      <ul class="brief-list"><li>開発サプライチェーンにおけるソフトウェアパッケージの信頼性確保と、それに伴う情報窃取リスクへの対応策について、改めて組織全体での管理態勢や運用プロセスの見直しが必要ではないでしょうか。</li><li>広く利用される可能性のある開発関連パッケージの侵害は、自組織だけでなく、委託先の開発環境にも影響を及ぼす可能性があるため、サプライチェーン全体のセキュリティ対策について、どのように連携・確認していくべきか議論が必要です。</li><li>メールクライアントの脆弱性対応は、利用している製品に依存しますが、定期的な脆弱性情報の収集と、迅速なパッチ適用プロセスの確立が重要です。自組織および委託先における利用状況の把握と、対応状況の確認をどのように進めるべきでしょうか。</li></ul>
+      <h3 class="brief-section-title">重要・優先事項</h3>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">jscrambler npmパッケージのバージョン8.14.0が侵害され、インストール時に情報窃取マルウェアが実行される事態が発生しました。この悪意あるバージョンは2026年7月11日に公開され、Windows、macOS、Linux向けのネイティブバイナリをドロップ・実行するpreinstallフックを含んでいます。</p><p class="brief-priority-impact">金融機関が開発プロセスでjscrambler npmパッケージを利用している場合、開発環境やCI/CDパイプラインが侵害され、機密情報が窃取されるリスクがあります。サプライチェーンリスクとして、委託先の開発環境への影響も考慮する必要があります。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">ZimbraのClassic Web Clientに、細工されたメールによって悪意のあるスクリプトが実行される可能性のある重大なクロスサイトスクリプティング（XSS）脆弱性が発見されました。Zimbraは顧客に対し、この脆弱性に対処するためのアップデート適用を促しています。</p><p class="brief-priority-impact">金融機関でZimbra Classic Web Clientを利用している場合に限り、本脆弱性の影響を受ける可能性があります。現時点では、金融機関におけるZimbraの利用状況に関する具体的な情報はありません。</p></li></ul>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の確認事項</h3>
+      <h3 class="brief-section-title">確認事項</h3>
       <ul class="brief-list"><li>jscrambler npmパッケージのバージョン8.14.0を利用している場合、直ちに利用を停止し、影響範囲を調査してください。</li><li>開発環境やCI/CDパイプラインにおいて、npmパッケージのサプライチェーンセキュリティ対策が適切に講じられているか確認してください。</li><li>Zimbra Classic Web Clientを利用している場合、ベンダーの指示に従い、速やかにアップデートを適用してください。</li><li>Zimbraの利用状況について、社内システムおよび委託先を含めて確認してください。</li></ul>
     </div>
     </div>
@@ -181,11 +184,11 @@
       <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item is-accent">確認目安 本日確認</span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>jscrambler npmパッケージのバージョン8.14.0が侵害され、インストール時に情報窃取マルウェアが実行される事態が発生しました。この悪意あるバージョンは2026年7月11日に公開され、Windows、macOS、Linux向けのネイティブバイナリをドロップ・実行するpreinstallフックを含んでいます。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関が開発プロセスでjscrambler npmパッケージを利用している場合、開発環境やCI/CDパイプラインが侵害され、機密情報が窃取されるリスクがあります。サプライチェーンリスクとして、委託先の開発環境への影響も考慮する必要があります。</p>
         </section>
         <section class="article-section">
@@ -203,11 +206,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>ZimbraのClassic Web Clientに、細工されたメールによって悪意のあるスクリプトが実行される可能性のある重大なクロスサイトスクリプティング（XSS）脆弱性が発見されました。Zimbraは顧客に対し、この脆弱性に対処するためのアップデート適用を促しています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関でZimbra Classic Web Clientを利用している場合に限り、本脆弱性の影響を受ける可能性があります。現時点では、金融機関におけるZimbraの利用状況に関する具体的な情報はありません。</p>
         </section>
         <section class="article-section">
@@ -225,11 +228,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>2024年2月から2026年4月にかけて、中国およびインド系の脅威アクターがパキスタンの法執行機関に対し、持続的なサイバースパイ活動を展開していたことが判明しました。特にバロチスタン警察のポータルサイトが武器化され、警察や市民のデータが管理されるウェブアプリケーションをホストするサーバーが侵害されました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関への直接的な関係は確認できず、他国の法執行機関を標的としたサイバースパイ活動の事例として参考情報にとどまります。</p>
         </section>
       </div>

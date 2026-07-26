@@ -66,6 +66,9 @@
     .brief-list{list-style:none;display:grid;gap:6px}
     .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
     .brief-list li::before{content:"・";position:absolute;left:0}
+    .brief-priority-list{list-style:none;display:grid;gap:12px;margin:0;padding:0}
+    .brief-priority-item{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;display:grid;gap:4px}
+    .brief-priority-summary,.brief-priority-impact{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word;margin:0}
     .dashboard{max-width:680px;margin:12px auto 0;padding:0 12px}
     .dashboard-head{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
     .dashboard-head h2{font-size:13px;font-weight:700;color:#e6edf3}
@@ -126,14 +129,14 @@
     <div class="brief-box">
       <h2>本日の要点</h2>
       <div class="brief-section">
-      <h3 class="brief-section-title">本日の概況</h3>
+      <h3 class="brief-section-title">概況</h3>
       <p class="brief-status-line">掲載6件｜重要度「高」2件｜本日確認1件｜今週確認3件</p>
       <p class="brief-overview">本日中に適用性または初動要否を確認する記事が1件あります。本日は、WordPressの脆弱性が公開後すぐに広範な攻撃に悪用されている状況が確認されており、金融機関においてもウェブサイトや内部システムでの利用状況の確認が急務です。また、Microsoft 365の正規機能を悪用する新たなマルウェアの出現も報告されており、クラウド環境における脅威への警戒を強める必要があります。</p>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の注目論点</h3>
-      <ul class="brief-list"><li>AI技術の導入が進む中で、CISOがAIリスク管理のプレッシャーに直面していることが示されており、金融機関におけるAIリスク管理体制の構築やCISOの役割・責任の明確化について議論が必要です。</li><li>LLMを活用した脆弱性修復の自動化が初期段階で有効性を示しているものの、コストや人間による介入の課題も指摘されており、金融機関が新たな技術をセキュリティ運用に導入する際の評価基準や導入戦略について検討する論点となり得ます。</li></ul>
+      <h3 class="brief-section-title">重要・優先事項</h3>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">公開からわずか3日後、攻撃者はCVE-2026-60137とCVE-2026-63030を組み合わせて、インターネット上で最も広範な攻撃対象の一つであるWordPressサイトに対するエクスプロイトを広く試みています。</p><p class="brief-priority-impact">金融機関がWordPressをウェブサイトや内部システムで利用している場合、これらの脆弱性が悪用されると情報漏えいや業務停止のリスクに直面する可能性があります。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">新たに発見されたHollowGraphと呼ばれるスパイマルウェアは、乗っ取ったMicrosoft 365カレンダーをコマンド&amp;コントロール(C2)チャネルとして利用し、2050年のカレンダーイベントの添付ファイルとして指示や窃取ファイルを隠蔽していました。この手法により、正規のMicrosoft Graph APIトラフィック内に悪意のある活動を隠蔽します。</p><p class="brief-priority-impact">多くの金融機関で利用されているMicrosoft 365の正規機能を悪用する攻撃手法であり、情報漏えいや業務停止につながる可能性があるため、関連部署は脅威動向として把握し、自社環境への影響有無を確認する必要があります。</p></li></ul>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の確認事項</h3>
+      <h3 class="brief-section-title">確認事項</h3>
       <ul class="brief-list"><li>自社および委託先でWordPressの利用有無、影響を受けるバージョン、および外部公開状況を確認し、ベンダーから提供される修正パッチまたは緩和策の適用を検討してください。また、攻撃の兆候がないかWordPressのアクセスログやセキュリティログを監視してください。</li><li>Microsoft 365環境における不審なカレンダーイベントやGraph APIトラフィックの有無を監視・確認し、監査ログを定期的に調査して異常なアクセスや設定変更がないか確認してください。HollowGraphマルウェアに関する最新の脅威インテリジェンスも確認し、自社環境への適用性を評価してください。</li></ul>
     </div>
     </div>
@@ -187,7 +190,7 @@
       <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item is-accent">確認目安 本日確認</span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>公開からわずか3日後、攻撃者はCVE-2026-60137とCVE-2026-63030を組み合わせて、インターネット上で最も広範な攻撃対象の一つであるWordPressサイトに対するエクスプロイトを広く試みています。</p>
         </section>
         <section class="vulnerability-facts">
@@ -195,7 +198,7 @@
         <ul class="vulnerability-list"><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-60137" target="_blank" rel="noopener noreferrer">CVE-2026-60137</a><span class="vulnerability-cvss">CVSS 9.1 / Critical（v3.1・他機関）</span></li><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-63030" target="_blank" rel="noopener noreferrer">CVE-2026-63030</a><span class="vulnerability-cvss">CVSS 7.5 / High（v3.1・他機関）</span></li></ul>
       </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がWordPressをウェブサイトや内部システムで利用している場合、これらの脆弱性が悪用されると情報漏えいや業務停止のリスクに直面する可能性があります。</p>
         </section>
         <section class="article-section">
@@ -213,11 +216,11 @@
       <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>新たに発見されたHollowGraphと呼ばれるスパイマルウェアは、乗っ取ったMicrosoft 365カレンダーをコマンド&amp;コントロール(C2)チャネルとして利用し、2050年のカレンダーイベントの添付ファイルとして指示や窃取ファイルを隠蔽していました。この手法により、正規のMicrosoft Graph APIトラフィック内に悪意のある活動を隠蔽します。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>多くの金融機関で利用されているMicrosoft 365の正規機能を悪用する攻撃手法であり、情報漏えいや業務停止につながる可能性があるため、関連部署は脅威動向として把握し、自社環境への影響有無を確認する必要があります。</p>
         </section>
         <section class="article-section">
@@ -235,11 +238,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>サイバーセキュリティ研究者らは、約7,600の悪意あるGitHubリポジトリを発見しました。そのうち800以上がAIスキルやModel Context Protocol (MCP)サーバーを装い、「FakeGit」と名付けられたキャンペーンの一環としてSmartLoaderマルウェアを配布しています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がGitHubを開発リポジトリとして利用している場合、または開発者が個人アカウントでGitHubを利用している場合に、マルウェア感染のリスクが生じる可能性があります。</p>
         </section>
         <section class="article-section">
@@ -257,11 +260,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>マルウェア運用者が配信サーバーを公開状態にしたことで、AI支援型フィッシングツールキットが露呈しました。このツールキットは、おとりテンプレート、ファイル名偽装テスト、実行実験、ドロッパーなど1,048ファイルを含み、メキシコのWindowsユーザーを標的とした情報窃取マルウェアのWebDAV経由での配信に利用されていました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関が直接的な標的とされているとの記述はなく、特定の製品やサービスへの影響も不明です。一般的な脅威動向として、フィッシングや情報窃取型マルウェアへの警戒を継続する上で参考になります。</p>
         </section>
       </div>
@@ -275,11 +278,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>IvantiのCSOであるDaniel Spicer氏によると、同社はLLMを活用した脆弱性修復の自動化を推進しており、初期段階では驚くべき有効性を示しているものの、コストと人間による介入の実現可能性が課題として残っているとのことです。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がIvanti製品を利用しており、かつLLMを活用した脆弱性管理ソリューションの導入を検討している場合に、参考情報として関係します。</p>
         </section>
       </div>
@@ -293,11 +296,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>企業がAI導入に突き進む中、CISOの職務上のプレッシャーが増大しており、トップセキュリティ幹部の26%が退職を検討していることが明らかになりました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関においてもAI導入が進む中で、CISOが同様のプレッシャーに直面する可能性があり、AIリスク管理体制の構築やCISOの役割・責任の明確化が関係します。</p>
         </section>
       </div>

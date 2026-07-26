@@ -66,6 +66,9 @@
     .brief-list{list-style:none;display:grid;gap:6px}
     .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
     .brief-list li::before{content:"・";position:absolute;left:0}
+    .brief-priority-list{list-style:none;display:grid;gap:12px;margin:0;padding:0}
+    .brief-priority-item{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;display:grid;gap:4px}
+    .brief-priority-summary,.brief-priority-impact{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word;margin:0}
     .dashboard{max-width:680px;margin:12px auto 0;padding:0 12px}
     .dashboard-head{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
     .dashboard-head h2{font-size:13px;font-weight:700;color:#e6edf3}
@@ -126,14 +129,14 @@
     <div class="brief-box">
       <h2>本日の要点</h2>
       <div class="brief-section">
-      <h3 class="brief-section-title">本日の概況</h3>
+      <h3 class="brief-section-title">概況</h3>
       <p class="brief-status-line">掲載9件｜重要度「高」2件｜本日確認3件｜今週確認4件</p>
       <p class="brief-overview">本日中に適用性または初動要否を確認する記事が3件あります。本日は、実悪用が確認されたWordPressの脆弱性がCISA KEVに追加され、リモートコード実行に繋がる可能性が指摘されており、早急な確認が求められます。また、AIモデルの悪用リスクや、AIを活用した脆弱性診断の課題に関する情報も複数報告されており、AI技術の進展に伴う新たな脅威と機会の両面を注視する必要があります。</p>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の注目論点</h3>
-      <ul class="brief-list"><li>AI技術の急速な発展に伴い、その悪用リスクとセキュリティ対策への活用可能性の両面について、金融機関におけるAI利用のガバナンスとリスク管理のあり方を議論する必要があります。</li><li>広く利用されているオープンソースソフトウェア（WordPressなど）の脆弱性が実悪用されるケースが継続的に発生しており、サプライチェーン全体での脆弱性管理と迅速なパッチ適用体制の強化が重要です。</li></ul>
+      <h3 class="brief-section-title">重要・優先事項</h3>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">CISAは2026年7月21日、実悪用が確認されたとしてWordPress CoreのSQLインジェクション脆弱性CVE-2026-60137をKEVカタログへ追加しました。この脆弱性は、プラグインやテーマが信頼できない入力をパラメータに渡す際に発生し、CVE-2026-63030と組み合わせることで、認証されていない攻撃者がデフォルトのWordPressインストール上でリモートコード実行を可能にする可能性があります。</p><p class="brief-priority-impact">金融機関でWordPressをウェブサイトやブログ、その他コンテンツ管理システムとして利用している場合に関係します。特に外部公開している場合は、悪用のリスクが高まります。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">CISAは2026年7月21日、実悪用が確認されたとしてCVE-2026-63030およびCVE-2026-60137をKEVカタログへ追加しました。WordPress Coreの解釈競合の脆弱性(CVE-2026-63030)は、SQLインジェクションやリモートコード実行(RCE)を可能にする可能性があり、CVE-2026-60137と組み合わせて悪用される可能性があります。</p><p class="brief-priority-impact">金融機関でWordPressをウェブサイトやコンテンツ管理システムとして利用している場合に関係します。特に外部公開されているWordPress環境は、悪用のリスクが高まる可能性があります。</p></li></ul>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の確認事項</h3>
+      <h3 class="brief-section-title">確認事項</h3>
       <ul class="brief-list"><li>自社および委託先でWordPressの利用有無、影響を受けるバージョン、および外部露出の状況を確認し、CISA KEVに登録された脆弱性（CVE-2026-60137, CVE-2026-63030）に対するパッチ適用や緩和策の実施を検討してください。</li><li>自社で利用しているAIモデルやAI関連システム、特にAWS KiroやLangflowなどの開発ツールの利用状況を確認し、セキュリティ設定や最新の修正が適用されているかを検証してください。</li></ul>
     </div>
     </div>
@@ -193,7 +196,7 @@
       <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item is-accent">確認目安 本日確認</span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>CISAは2026年7月21日、実悪用が確認されたとしてWordPress CoreのSQLインジェクション脆弱性CVE-2026-60137をKEVカタログへ追加しました。この脆弱性は、プラグインやテーマが信頼できない入力をパラメータに渡す際に発生し、CVE-2026-63030と組み合わせることで、認証されていない攻撃者がデフォルトのWordPressインストール上でリモートコード実行を可能にする可能性があります。</p>
         </section>
         <section class="vulnerability-facts">
@@ -201,7 +204,7 @@
         <ul class="vulnerability-list"><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-60137" target="_blank" rel="noopener noreferrer">CVE-2026-60137</a><span class="vulnerability-cvss">CVSS 9.1 / Critical（v3.1・他機関）</span><span class="kev-badge">CISA KEV掲載</span></li><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-63030" target="_blank" rel="noopener noreferrer">CVE-2026-63030</a><span class="vulnerability-cvss">CVSS 7.5 / High（v3.1・他機関）</span><span class="kev-badge">CISA KEV掲載</span></li></ul>
       </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関でWordPressをウェブサイトやブログ、その他コンテンツ管理システムとして利用している場合に関係します。特に外部公開している場合は、悪用のリスクが高まります。</p>
         </section>
         <section class="article-section">
@@ -219,7 +222,7 @@
       <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item is-accent">確認目安 本日確認</span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>CISAは2026年7月21日、実悪用が確認されたとしてCVE-2026-63030およびCVE-2026-60137をKEVカタログへ追加しました。WordPress Coreの解釈競合の脆弱性(CVE-2026-63030)は、SQLインジェクションやリモートコード実行(RCE)を可能にする可能性があり、CVE-2026-60137と組み合わせて悪用される可能性があります。</p>
         </section>
         <section class="vulnerability-facts">
@@ -227,7 +230,7 @@
         <ul class="vulnerability-list"><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-63030" target="_blank" rel="noopener noreferrer">CVE-2026-63030</a><span class="vulnerability-cvss">CVSS 7.5 / High（v3.1・他機関）</span><span class="kev-badge">CISA KEV掲載</span></li><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-60137" target="_blank" rel="noopener noreferrer">CVE-2026-60137</a><span class="vulnerability-cvss">CVSS 9.1 / Critical（v3.1・他機関）</span><span class="kev-badge">CISA KEV掲載</span></li></ul>
       </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関でWordPressをウェブサイトやコンテンツ管理システムとして利用している場合に関係します。特に外部公開されているWordPress環境は、悪用のリスクが高まる可能性があります。</p>
         </section>
         <section class="article-section">
@@ -245,7 +248,7 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item is-accent">確認目安 本日確認</span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>CISAは2026年7月21日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Langflowに信頼できない制御領域からの機能組み込みの脆弱性があり、リモートの攻撃者が任意のコードを実行できる可能性があります。</p>
         </section>
         <section class="vulnerability-facts">
@@ -253,7 +256,7 @@
         <ul class="vulnerability-list"><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-0770" target="_blank" rel="noopener noreferrer">CVE-2026-0770</a><span class="vulnerability-cvss">CVSS 9.8 / Critical（v3.0・他機関）</span><span class="kev-badge">CISA KEV掲載</span></li></ul>
       </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>LangflowはAIアプリケーション開発ツールであり、金融機関での利用状況は記事からは確認できません。もし利用している場合は、適用性確認の対象となります。</p>
         </section>
         <section class="article-section">
@@ -271,11 +274,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>ランサムウェア攻撃が加速しているものの、その原因はAIではなく、ランサムウェアエコシステムの細分化、新たな攻撃者の出現、そして防御が手薄な組織への攻撃拡大にあると研究者が指摘しています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関もランサムウェア攻撃の標的となる可能性があり、脅威動向として状況を把握しておくことが重要です。</p>
         </section>
       </div>
@@ -289,11 +292,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Appleは、同社の「メールを非公開」サービスに存在したセキュリティバグを修正しました。このバグにより、ユーザーの実際のメールアドレスがメールログに露出する可能性があり、プライバシー保護機能が損なわれる恐れがありました。この問題は2026年7月3日に修正が展開されました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がApple製品や「メールを非公開」サービスを業務で利用している場合、従業員のプライバシー保護に影響する可能性があります。ただし、記事からは金融機関での具体的な利用状況や影響は確認できません。</p>
         </section>
         <section class="article-section">
@@ -311,11 +314,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>「Trim」と名乗るロシア語話者のハッカーが、公開されている最先端のAIモデルを分解し、攻撃的なセキュリティツールと統合したことが報告されました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がAIモデルを業務に利用している場合、AIの悪用リスクが高まる可能性があります。特に、顧客対応やデータ分析にAIを導入している場合は、そのセキュリティ対策を見直す必要が生じる可能性があります。</p>
         </section>
         <section class="article-section">
@@ -333,11 +336,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>AWSのAIエージェント型コーディングIDE「Kiro」に脆弱性が発見されました。悪意のあるウェブページ上の隠しテキストにより、Kiroが自身の設定ファイルを書き換え、開発者のマシン上で攻撃者のコードを実行できる状態でした。AWSはこの問題を修正済みです。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がAWS Kiroを開発環境で利用している場合に限り関係します。記事からは金融機関での利用状況は確認できません。</p>
         </section>
         <section class="article-section">
@@ -355,11 +358,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>最新の大規模言語モデル（LLM）を脆弱性スキャンに利用すると、誤検知率が高く、スキャンのコンテキストを考慮しないため、アプリケーションセキュリティ担当者の作業が増加するという課題が指摘されています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がLLMを脆弱性診断やセキュリティ業務に導入する際の課題とリスクに関する情報であり、導入を検討している場合に参考になります。</p>
         </section>
       </div>
@@ -373,11 +376,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Google DeepMindは、ソフトウェアの脆弱性を迅速かつ効率的に発見、検証、パッチ適用するために設計された特殊なAIモデル「Gemini 3.5 Flash Cyber」を発表しました。このモデルは、限定的なアクセスパイロットプログラムの一環として、政府機関および信頼できるパートナーにのみ提供されます。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関への直接的な影響は現時点では限定的です。将来的にこの技術が広く利用されるようになれば、ソフトウェア開発やセキュリティ運用におけるリスク評価や効率化の観点から関係する可能性があります。</p>
         </section>
       </div>
