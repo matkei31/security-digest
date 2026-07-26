@@ -2974,12 +2974,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         kept = [ch for ch in lowered if ch.isalnum() or ch in (" ", "-", "_")]
         return "".join(kept).replace(" ", "-")
 
-    def test_bl_ids_are_unique_and_cover_bl001_to_bl027(self):
+    def test_bl_ids_are_unique_and_cover_bl001_to_bl029(self):
         text = self._read("BACKLOG.md")
         bl_headings = [h for h in self._headings(text) if re.match(r"^BL-\d{3}\b", h)]
         ids = [re.match(r"^(BL-\d{3})", h).group(1) for h in bl_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
-        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 28)})
+        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 30)})
 
     def test_sd_ids_are_unique_and_cover_sd001_to_sd025(self):
         text = self._read("DECISIONS.md")
@@ -3074,8 +3074,8 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertNotIn("[BL-022]", next_candidates)
         self.assertNotRegex(next_candidates, r"(?m)^1\. \[BL-026\]")
         self.assertIn("[BL-026]", next_candidates)
-        self.assertIn("are both complete", next_candidates)
-        self.assertIn("no new ranked next candidate is named here", next_candidates)
+        self.assertIn("are all complete", next_candidates)
+        self.assertIn("none is named as the ranked next candidate here", next_candidates)
         self.assertIn("[BL-027]", next_candidates)
         self.assertNotIn("[BL-025]", next_candidates)
 

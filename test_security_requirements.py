@@ -519,6 +519,72 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertNotIn("final head `802781b", bl006)
         self.assertNotIn("merge commit `802781b", bl006)
 
+    def test_bl028_is_recorded_verbatim_with_spec_deferred_to_kickoff(self):
+        bl028 = self.backlog.split("## BL-028", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("ダイジェストナビゲーションの配置を再設計する", bl028)
+        self.assertIn("**優先度:** P2", bl028)
+        self.assertIn("**状態:** 記録済み / 仕様未確定 / 未実装", bl028)
+        self.assertIn(
+            "「『前のダイジェスト』『最新のダイジェスト』を右に持っていってもらったけど、"
+            "実際見ると違和感あるね。左側で二段で表示するとか、何かイケてるUI考えてほしい」",
+            bl028,
+        )
+        self.assertIn(
+            "現在の問題認識と検討方向のみを記録し、具体的なUI・文言・完了条件は着手時にユーザーと詰める。",
+            bl028,
+        )
+        self.assertIn("BL-022やSD-021を未完了扱いに戻さず", bl028)
+        self.assertIn("**実装証跡:** 未実装。", bl028)
+        self.assertIn("**ユーザー受入証跡:** 記録なし。", bl028)
+        self.assertNotIn("**状態:** 完了", bl028)
+
+    def test_bl029_is_recorded_verbatim_with_spec_deferred_to_kickoff(self):
+        bl029 = self.backlog.split("## BL-029", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("「金融機関との関連」とARTICLE見出しの情報設計を再検討する", bl029)
+        self.assertIn("**優先度:** P1", bl029)
+        self.assertIn("**状態:** 記録済み / 仕様未確定 / 未実装", bl029)
+        self.assertIn(
+            "「『金融機関との関連』のところは、どういった事項について関連を記載しているのかが不明。"
+            "このままだったら消した方がいい。使うなら、本文側の『何が起きた』『なぜ金融機関に関係する』"
+            "をまとめた文章にする必要がある。」",
+            bl029,
+        )
+        self.assertIn(
+            "「あと、『何が起きた』『なぜ金融機関に関係する』というタイトルはダサい。"
+            "他の文言を提案してほしい」",
+            bl029,
+        )
+        self.assertIn(
+            "現在の問題認識と検討方向のみを記録し、"
+            "具体的なfield構成・文章生成方法・見出し・完了条件は着手時にユーザーと詰める。",
+            bl029,
+        )
+        self.assertIn("完了済みBL-021を再オープンしない", bl029)
+        self.assertIn("prompt-only改善No-GoのBL-023とも統合せず", bl029)
+        self.assertIn("**実装証跡:** 未実装。", bl029)
+        self.assertIn("**ユーザー受入証跡:** 記録なし。", bl029)
+        self.assertNotIn("**状態:** 完了", bl029)
+        self.assertNotIn("実装済み", bl029)
+
+    def test_bl028_bl029_registration_does_not_reopen_or_merge_other_tickets(self):
+        # This record-only registration must not touch DECISIONS.md, UI_SPEC.md,
+        # or the completed/on-hold state of BL-021/BL-022/BL-023.
+        bl021 = self.backlog.split("## BL-021", 1)[1].split("\n## ", 1)[0]
+        bl022 = self.backlog.split("## BL-022", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("**状態:** 完了", bl021)
+        self.assertIn("**状態:** 完了", bl022)
+        active = self.status.split("## Active work", 1)[1].split(
+            "## 5. Recently completed work", 1
+        )[0]
+        self.assertIn("- None.", active)
+        self.assertNotIn("BL-028", active)
+        self.assertNotIn("BL-029", active)
+        next_candidates = self.status.split("## 7. Next candidates", 1)[1].split(
+            "## 8. Sources of truth", 1
+        )[0]
+        self.assertIn("BL-028", next_candidates)
+        self.assertIn("BL-029", next_candidates)
+
     def test_bl027_acceptance_head_is_distinct_from_pr54_final_head(self):
         # The explicit 「ok」 was given at PR #54 head d7461b9..., not at the
         # later final head 241e7f69... produced by the acceptance-recording
@@ -779,9 +845,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         )[0]
         self.assertNotIn("1. [BL-026]", next_candidates)
         self.assertIn("[BL-026]", next_candidates)
-        self.assertIn("are both complete", next_candidates)
+        self.assertIn("are all complete", next_candidates)
         self.assertIn("[BL-027]", next_candidates)
-        self.assertIn("no new ranked next candidate is named here", next_candidates)
+        self.assertIn(
+            "none is named as the ranked next candidate here", next_candidates
+        )
         self.assertNotIn("[BL-025]", next_candidates)
         self.assertRegex(
             self.requirements,

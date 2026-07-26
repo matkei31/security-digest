@@ -582,6 +582,75 @@
 - **残作業:** なし。
 - **注記:** production commit／push経路の検証は、ユーザーが明示的に変更・承認した一回限りの`workflow_dispatch`（[run 30147337332](https://github.com/matkei31/security-digest/actions/runs/30147337332)）により実施し、次回の通常schedule runでの検証は行っていない。この`workflow_dispatch`使用は本Ticket限りの承認であり、将来のAction更新やその他のTicketに対する標準的な検証手段としての包括承認ではない。implementation branch `claude/bl027-actions-v7-upgrade`（merge済み）；記録用branch `claude/bl027-await-schedule-validation`（merge済み）；closure branch `claude/bl027-close`。
 
+## BL-028 — ダイジェストナビゲーションの配置を再設計する
+
+- **ID:** BL-028
+- **タイトル:** ダイジェストナビゲーションの配置を再設計する
+- **優先度:** P2
+- **状態:** 記録済み / 仕様未確定 / 未実装
+- **出所種別:** ユーザー原文
+- **ユーザー原文:** 「『前のダイジェスト』『最新のダイジェスト』を右に持っていってもらったけど、実際見ると違和感あるね。左側で二段で表示するとか、何かイケてるUI考えてほしい」
+- **出所:** 2026-07-26 プロジェクト会話（BL-006 closure直後）。
+- **解釈:**
+  - BL-022／[SD-021](DECISIONS.md#sd-021--unify-digest-navigation-labels-and-separate-direction-from-global-navigation)で実装した左右分離ナビゲーションについて、公開後の実画面確認で新たな違和感が判明した。
+  - BL-022やSD-021を未完了扱いに戻さず、公開後の新しいユーザー評価に基づく別Ticketとして扱う。
+  - 左寄せ二段構成は候補の一つであり、現時点では採用決定ではない。
+  - 前後移動と全体導線の意味上のグルーピング、PC／390px、折返し、視線移動、アクセシビリティを含めて再検討する。
+- **完了条件:** 未定義。着手時にユーザーと次を詰める。
+  1. 比較するレイアウト案
+  2. 左寄せ一段／二段等のグルーピング
+  3. PC 1280px／390pxでの挙動
+  4. リンク順序と文言
+  5. keyboard focus・aria-label
+  6. screenshotによる目視受入
+  7. UI_SPEC／DECISIONSのSupersedes要否
+
+  現在の問題認識と検討方向のみを記録し、具体的なUI・文言・完了条件は着手時にユーザーと詰める。
+- **依存関係:** BL-022（前日ダイジェスト直接リンク、実装済み）、[SD-021](DECISIONS.md#sd-021--unify-digest-navigation-labels-and-separate-direction-from-global-navigation)（現行ナビゲーション契約）。
+- **実装証跡:** 未実装。
+- **ユーザー受入証跡:** 記録なし。
+- **残作業:** 着手時の仕様確定（レイアウト案比較、PC／390px挙動、文言、focus／aria-label、screenshot受入、Supersedes要否）。実装は未着手。
+- **注記:** BL-022／SD-021を再オープンしない。BL-007（custom domain移行）との実施順序は本Ticket登録時点では未決定。
+
+## BL-029 — 「金融機関との関連」とARTICLE見出しの情報設計を再検討する
+
+- **ID:** BL-029
+- **タイトル:** 「金融機関との関連」とARTICLE見出しの情報設計を再検討する
+- **優先度:** P1
+- **状態:** 記録済み / 仕様未確定 / 未実装
+- **出所種別:** ユーザー原文
+- **ユーザー原文:** 「『金融機関との関連』のところは、どういった事項について関連を記載しているのかが不明。このままだったら消した方がいい。使うなら、本文側の『何が起きた』『なぜ金融機関に関係する』をまとめた文章にする必要がある。」
+- **追加のユーザー原文:** 「あと、『何が起きた』『なぜ金融機関に関係する』というタイトルはダサい。他の文言を提案してほしい」
+- **出所:** 2026-07-26 プロジェクト会話（BL-006 closure直後）。
+- **解釈:**
+  - 現在の「金融機関との関連」は、記事全体との関連、金融機関への影響、確認理由、横断的論点のどれを示す欄か判然としない。
+  - 意味を明確化できない場合は削除も選択肢とする。
+  - 維持する場合は、事象の概要と金融機関にとっての意味を結びつけた文章として再設計する。
+  - 現在の`financial_impact`を単に名称変更または再掲するだけでは対応完了としない。
+  - 「何が起きた」「なぜ金融機関に関係する」という見出しも再検討する。
+  - 代替見出しは現時点で確定しない。
+  - ARTICLE、deterministic BRIEF、重複表示、source忠実性、daily JSON field、prompt／runtime境界を確認してから仕様化する。
+  - 完了済みBL-021を再オープンしない。
+  - prompt-only改善No-GoのBL-023とも統合せず、関係を整理した上で別Ticketとして扱う。
+- **完了条件:** 未定義。着手時にユーザーと次を詰める。
+  1. 「金融機関との関連」を削除するか維持するか
+  2. 維持する場合の情報単位と文章構成
+  3. ARTICLEとBRIEFの役割分担
+  4. 同一内容の重複防止
+  5. source忠実性とprovenance
+  6. daily JSON schema変更の要否
+  7. prompt変更／deterministic composition／表示変更の境界
+  8. 代替見出し案
+  9. PC／390px screenshotによる目視受入
+  10. UI_SPEC／DECISIONS更新の要否
+
+  現在の問題認識と検討方向のみを記録し、具体的なfield構成・文章生成方法・見出し・完了条件は着手時にユーザーと詰める。
+- **依存関係:** BL-021（Today's Briefの意味忠実性・semantic validation再設計、完了済み・再オープンしない）、BL-023（ARTICLE編集品質改善、prompt-only改善No-Go・統合しない別Ticket）、ARTICLE／BRIEF prompt、daily JSON schema。
+- **実装証跡:** 未実装。
+- **ユーザー受入証跡:** 記録なし。
+- **残作業:** 着手時の仕様確定（削除／維持判断、情報単位、ARTICLE／BRIEF役割分担、重複防止、provenance、schema変更要否、prompt／runtime境界、代替見出し、screenshot受入、UI_SPEC／DECISIONS更新要否）。実装は未着手。
+- **注記:** BL-021・BL-023を再オープンまたは統合しない。BL-007（custom domain移行）との実施順序は本Ticket登録時点では未決定。
+
 ## 完了済み参照
 
 これらの参照記録は、完了済みの作業が誤って未完了バックログとして再オープンされることを防ぐためだけに存在する。

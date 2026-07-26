@@ -81,7 +81,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-[BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する) and [BL-027](BACKLOG.md#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする) are both complete; see [Recently completed work](#5-recently-completed-work) above. BACKLOG.md records no explicit ordering for what follows BL-027, so no new ranked next candidate is named here.
+[BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更), [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する), and [BL-027](BACKLOG.md#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする) are all complete; see [Recently completed work](#5-recently-completed-work) above. [BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する) (P1, "金融機関との関連"／ARTICLE見出しの情報設計再検討) and [BL-028](BACKLOG.md#bl-028--ダイジェストナビゲーションの配置を再設計する) (P2, ダイジェストナビゲーションの配置再設計) are recorded as ユーザー原文 with spec undecided pending kickoff; BACKLOG.md records no explicit ordering among these and BL-007, so none is named as the ranked next candidate here.
 
 [BL-023](BACKLOG.md#bl-023--article編集品質改善) is on hold after the v9 and fixed-v10 prompt-only No-Go evaluations and is not ranked in this short priority list. Reconsider it only through a separately designed structured ARTICLE-field contract or facts-based limited deterministic composition.
 
