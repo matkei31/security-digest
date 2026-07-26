@@ -30,7 +30,18 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("# Monomi Digest UI Specification", self.spec)
         self.assertIn("- **バージョン:** 1.4", self.spec)
         self.assertIn("- **状態:** Draft／ユーザー受入待ち", self.spec)
-        self.assertIn("BL-006でSecurity Digestからのブランド名変更を実装し", self.spec)
+        self.assertIn("BL-006のPR #57 headにあるMonomi Digestブランド変更Draft", self.spec)
+        self.assertIn("現時点のmainと公開Pagesはまだ`Security Digest`である", self.spec)
+        self.assertIn(
+            "Version 1.0〜1.3の受入済み仕様・現在の`main`実装・回帰テストと、"
+            "PR #57 headで提案するVersion 1.4 Draftを一つにまとめる",
+            self.spec,
+        )
+        self.assertIn(
+            "Version 1.4 Draftで追加・変更したブランド名およびtitle／H1絵文字統一に関する記述は、"
+            "ユーザーの目視受入までは確定仕様として扱わない。",
+            self.spec,
+        )
 
     def test_all_required_chapters_exist_in_order(self):
         chapters = (
