@@ -1,4 +1,4 @@
-# Security Digest Decisions
+# Monomi Digest Decisions
 
 This file records stable project decisions in an ADR-lite format. Current versions and temporary operating state belong in [STATUS.md](STATUS.md), not here. When historical PR text differs from the merged implementation, the merged code and completion record are authoritative.
 
@@ -105,10 +105,10 @@ This file records stable project decisions in an ADR-lite format. Current versio
 
 - **ID:** SD-010
 - **Date:** 2026-07-17
-- **Status:** Accepted / Not implemented
+- **Status:** Accepted
 - **Context:** The future public brand direction was reconfirmed, while the current site and repository still display `Security Digest` and the migration scope remains undefined.
 - **Decision:** Use `Monomi Digest` as the future public brand. Do not return the choice between `Security Digest` and `Monomi Digest` to an undecided state.
-- **Consequences:** Migrate current display in a separate ticket. [BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更) manages the scope for README, site, metadata, repository name, About, domain, old-name treatment, and user acceptance. This PR does not change the displayed brand.
+- **Consequences:** [BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更) manages the scope for the brand-change implementation across README, site, metadata, current-state documentation, and user acceptance. Repository rename, custom domain/DNS (BL-007), and About/meta description/analytics (BL-009) are explicitly out of scope of this decision. Implementation-completion evidence below is updated when BL-006 closes.
 - **Evidence:** [BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更)
 - **Supersedes:** None
 

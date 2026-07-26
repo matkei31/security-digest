@@ -33,7 +33,7 @@ class SecurityOperationsContractTest(unittest.TestCase):
 
     def test_version_10_identity_review_record_and_user_approval(self):
         self.assertTrue(OPERATIONS_PATH.exists())
-        self.assertIn("# Security Digest Security Operations", self.operations)
+        self.assertIn("# Monomi Digest Security Operations", self.operations)
         self.assertIn("**Version:** 1.0", self.operations)
         self.assertIn("**Status:** Approved", self.operations)
         approval = self.section("## 12. Approval and maintenance", "\nReview this runbook")
@@ -389,7 +389,7 @@ class SecurityOperationsContractTest(unittest.TestCase):
         self.assertNotIn("BL-025", active)
         self.assertNotIn("BL-026", active)
         self.assertNotIn("BL-027", active)
-        self.assertIn("None", active)
+        self.assertIn("BL-006", active)
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]

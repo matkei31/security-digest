@@ -2,7 +2,7 @@
 
 ## Project
 
-Security Digest is a daily cybersecurity news digest for cybersecurity practitioners, managers, and executives at financial institutions. It generates structured daily JSON and static HTML published through GitHub Pages.
+Monomi Digest is a daily cybersecurity news digest for cybersecurity practitioners, managers, and executives at financial institutions. It generates structured daily JSON and static HTML published through GitHub Pages.
 
 Current prompt versions, schema version, source status, and known limitations are recorded in [STATUS.md](STATUS.md). The code-level sources of truth remain `daily_json.py`, `source_definitions.json`, and the prompt-building code in `fetch.py`.
 

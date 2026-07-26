@@ -331,7 +331,7 @@ class ArchiveGenerationTest(unittest.TestCase):
         digest = make_digest(total_items=2, high_count=1)
         html = fetch.build_daily_archive_html(digest)
 
-        self.assertIn("Security Digest", html)
+        self.assertIn("Monomi Digest", html)
         self.assertIn("日次ダイジェスト：2026年07月11日", html)
         self.assertIn("最終更新: 2026年07月11日 07:30", html)
         self.assertIn("本日の要点", html)

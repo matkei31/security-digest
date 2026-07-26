@@ -1,4 +1,4 @@
-# Security Digest Security Operations
+# Monomi Digest Security Operations
 
 - **Version:** 1.0
 - **Status:** Approved
@@ -25,7 +25,7 @@ and the approval boundaries in [AGENTS.md](AGENTS.md).
 
 ## 1. Purpose and operating principles
 
-Security Digest does not handle life-safety operations, payments, or customer data. Its
+Monomi Digest does not handle life-safety operations, payments, or customer data. Its
 public-information accuracy, repository integrity, credentials, and published Pages still have
 protection value.
 
