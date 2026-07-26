@@ -479,12 +479,13 @@ class SecurityRequirementsTest(unittest.TestCase):
             r"\| GAP-004 \| Hardening candidate \| Implemented \| SR-025 \|",
         )
 
-    def test_bl006_backlog_entry_records_user_accepted_brand_migration(self):
+    def test_bl006_backlog_entry_records_completed_brand_migration(self):
         bl006 = self.backlog.split("## BL-006", 1)[1].split("\n## ", 1)[0]
         self.assertIn("Monomi Digestへのブランド変更", bl006)
         self.assertIn("**優先度:** P2", bl006)
-        self.assertIn("**状態:** 実装受入済み / merge待ち", bl006)
+        self.assertIn("**状態:** 完了", bl006)
         self.assertIn("claude/bl006-brand-monomi", bl006)
+        self.assertIn("claude/bl006-close", bl006)
         self.assertIn("B案", bl006)
         self.assertIn("`generator.application`は内部識別子として`\"security-digest\"`を維持する", bl006)
         self.assertIn("repository名`matkei31/security-digest`は変更しない", bl006)
@@ -496,16 +497,13 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("BL-007の範囲", bl006)
         self.assertIn("BL-009の範囲", bl006)
         self.assertIn("PC 1280px／390pxでのトップページ", bl006)
-        self.assertIn("merge後、GitHub Pagesでの公開反映を客観確認し、ユーザー受入をもって完了とする", bl006)
-        self.assertNotIn("**状態:** 完了", bl006)
+        self.assertIn("残作業:** なし。", bl006)
 
-    def test_bl006_acceptance_records_accepted_head_without_premature_final_or_merge_sha(self):
-        # The acceptance-recording commit records the implementation head the
-        # user actually reviewed (802781b...), not this commit's own (not-yet-
-        # known) SHA, and does not invent a PR-final-head or merge-commit SHA
-        # before those exist — those are recorded separately at PR #57's final
-        # head and at BL-006 closure, mirroring the BL-027 accepted-head vs
-        # final-head distinction.
+    def test_bl006_accepted_head_final_head_and_merge_commit_are_distinct(self):
+        # Mirrors the BL-027 accepted-head vs final-head distinction: the head
+        # the user actually reviewed (802781b...) must stay recorded as the
+        # acceptance target, separate from PR #57's post-acceptance final head
+        # (0bd70c4...) and the merge commit (ea79ae1...) produced by closure.
         bl006 = self.backlog.split("## BL-006", 1)[1].split("\n## ", 1)[0]
         self.assertIn("**受入日:** 2026-07-26", bl006)
         self.assertIn(
@@ -514,9 +512,12 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn(
             "**受入対象の実装head:** `802781b31b5cc381a5bc4438d025f9af1c3a32e4`", bl006
         )
+        self.assertIn("final head `0bd70c4c22cb27c2705bf87e01fcbf0bb6c0362b`", bl006)
+        self.assertIn("merge commit `ea79ae12f5ddca2b241420f0c06cdfe3c6badf27`", bl006)
         self.assertIn("[PR #57](https://github.com/matkei31/security-digest/pull/57)", bl006)
-        self.assertNotIn("merge commit", bl006.lower())
-        self.assertNotIn("final head", bl006.lower())
+        self.assertNotIn("受入対象の実装head:** `0bd70c4", bl006)
+        self.assertNotIn("final head `802781b", bl006)
+        self.assertNotIn("merge commit `802781b", bl006)
 
     def test_bl027_acceptance_head_is_distinct_from_pr54_final_head(self):
         # The explicit 「ok」 was given at PR #54 head d7461b9..., not at the
@@ -574,7 +575,8 @@ class SecurityRequirementsTest(unittest.TestCase):
             "## 6. Known issues and limitations", 1
         )[0]
         self.assertNotIn("BL-027", active)
-        self.assertIn("BL-006", active)
+        self.assertIn("- None.", active)
+        self.assertIn("BL-006", recently_completed)
         self.assertIn("BL-027", recently_completed)
         self.assertIn("workflow_dispatch", recently_completed)
         self.assertIn("30147337332", recently_completed)
@@ -746,10 +748,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertNotIn("BL-025", active)
         self.assertNotIn("BL-026", active)
         self.assertNotIn("BL-027", active)
-        self.assertIn("BL-006", active)
+        self.assertIn("- None.", active)
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
+        self.assertIn("BL-006", recently_completed)
         self.assertIn("BL-025 source collection URL scheme validation", recently_completed)
         self.assertIn("「ok」", recently_completed)
         self.assertIn("PR #48", recently_completed)
