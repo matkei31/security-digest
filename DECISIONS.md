@@ -108,8 +108,8 @@ This file records stable project decisions in an ADR-lite format. Current versio
 - **Status:** Accepted
 - **Context:** The future public brand direction was reconfirmed, while the current site and repository still display `Security Digest` and the migration scope remains undefined.
 - **Decision:** Use `Monomi Digest` as the future public brand. Do not return the choice between `Security Digest` and `Monomi Digest` to an undecided state.
-- **Consequences:** [BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更) manages the scope for the brand-change implementation across README, site, metadata, current-state documentation, and user acceptance. Repository rename, custom domain/DNS (BL-007), and About/meta description/analytics (BL-009) are explicitly out of scope of this decision. Implementation-completion evidence below is updated when BL-006 closes.
-- **Evidence:** [BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更)
+- **Consequences:** [BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更) managed the scope for the brand-change implementation across README, site, metadata, current-state documentation, and user acceptance, and is complete. Repository rename, custom domain/DNS (BL-007), and About/meta description/analytics (BL-009) remain explicitly out of scope of this decision and are tracked as separate tickets.
+- **Evidence:** [BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更) — published brand text switched to `Monomi Digest` (`🔐` retained) in generated HTML and project documentation; user-accepted 2026-07-26; merged via [PR #57](https://github.com/matkei31/security-digest/pull/57) (merge commit `ea79ae12f5ddca2b241420f0c06cdfe3c6badf27`); public GitHub Pages confirmed live with the new brand.
 - **Supersedes:** None
 
 ## SD-011 — Use monomidigest.com as the primary domain

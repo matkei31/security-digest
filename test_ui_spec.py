@@ -36,11 +36,16 @@ class UiSpecDocumentTest(unittest.TestCase):
             self.spec,
         )
         self.assertIn(
-            "本書は、Version 1.0〜1.4の受入済み仕様、安定した意思決定、回帰テストを一つにまとめる。",
+            "本書は、Version 1.0〜1.4の受入済み仕様、安定した意思決定、現在の`main`実装と回帰テストを一つにまとめる。",
             self.spec,
         )
         self.assertIn(
             "2026-07-26、ユーザーがトップページ・Archive一覧・日別ArchiveのPC 1280px／390px計6画面を目視確認し受入した。",
+            self.spec,
+        )
+        self.assertIn(
+            "[PR #57](https://github.com/matkei31/security-digest/pull/57)はmainへmergeされ、"
+            "GitHub Pagesでの公開反映を確認済みである。",
             self.spec,
         )
         self.assertNotIn("Draft／ユーザー受入待ち", self.spec)
