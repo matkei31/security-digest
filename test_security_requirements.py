@@ -537,6 +537,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("**実装証跡:** 未実装。", bl028)
         self.assertIn("**ユーザー受入証跡:** 記録なし。", bl028)
         self.assertNotIn("**状態:** 完了", bl028)
+        self.assertIn(
+            "**出所:** 2026-07-26 プロジェクト会話（BL-006実装着手後、ユーザー受入・closure前）。",
+            bl028,
+        )
+        self.assertNotIn("BL-006 closure直後", bl028)
 
     def test_bl029_is_recorded_verbatim_with_spec_deferred_to_kickoff(self):
         bl029 = self.backlog.split("## BL-029", 1)[1].split("\n## ", 1)[0]
@@ -564,6 +569,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("**実装証跡:** 未実装。", bl029)
         self.assertIn("**ユーザー受入証跡:** 記録なし。", bl029)
         self.assertNotIn("**状態:** 完了", bl029)
+        self.assertIn(
+            "**出所:** 2026-07-26 プロジェクト会話（BL-006実装着手後、ユーザー受入・closure前）。",
+            bl029,
+        )
+        self.assertNotIn("BL-006 closure直後", bl029)
         self.assertNotIn("実装済み", bl029)
 
     def test_bl028_bl029_registration_does_not_reopen_or_merge_other_tickets(self):
