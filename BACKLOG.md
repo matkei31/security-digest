@@ -138,7 +138,7 @@
 - **ID:** BL-006
 - **タイトル:** Monomi Digestへのブランド変更
 - **優先度:** P2
-- **状態:** 方針承認済み / 実装済みDraft PR / ユーザー受入待ち
+- **状態:** 実装受入済み / merge待ち
 - **出所種別:** ユーザー確認済み要約
 - **ユーザー原文:** 原文未回収。
 - **ユーザー確認済み要約:** 将来のサービス名は`Monomi Digest`とする。`Security Digest`と`Monomi Digest`のどちらにするかという未決定事項へ戻さない。
@@ -159,8 +159,13 @@
   13. merge後、GitHub Pagesでの公開反映を客観確認し、ユーザー受入をもって完了とする。
 - **依存関係:** [SD-010](DECISIONS.md#sd-010--use-monomi-digest-as-the-future-public-brand)、BL-007（custom domain移行、別Ticket・別scope）、BL-009（SEO、本Ticketの完了後に前提条件を再評価）；About、SEO、公開ナビゲーション、リポジトリおよび公開物の命名決定。
 - **実装証跡:** `fetch.py`のブランド文字列4箇所（トップページtitle・H1既定値、日別Archive H1呼び出し引数、Archive一覧title）を`Monomi Digest`へ変更し、`<title>`タグを`page_title`引数に連動させてtitle／H1間の絵文字不整合を解消した（`🔐 Monomi Digest`で統一）。`README.md`・`AGENTS.md`・`STATUS.md`・`DECISIONS.md`（表題および[SD-010](DECISIONS.md#sd-010--use-monomi-digest-as-the-future-public-brand)のStatus／Consequences）・`SECURITY_OPERATIONS.md`・`SECURITY_REQUIREMENTS.md`・`UI_SPEC.md`（Version 1.4）の現行・将来を語る記述を更新した。過去のユーザー原文・過去PR／workflow runへのリンク・SD-007等の履歴決定記録・`generator.application`（`daily_json.py`）・repository名・workflow display name／concurrency groupは変更していない。既存`data/*.json`は無変更（`git diff origin/main...HEAD -- data/`で確認。`origin/main`の定期実行が追加した2026-07-26分の日次JSON・`data/index.json`・`vulnerability_facts_cache.json`・`docs/translate_cache.json`は内容を変更せず通常mergeで取り込んだ）。`docs/index.html`・`docs/archive/index.html`・全16件の日別Archive HTML（2026-07-26分を含む）は、外部HTTP／Gemini／RSS／NVD／CISA KEVを呼ばず、既存daily JSONのみを用いてoffline再生成し、生成差分はブランド表示・title／H1絵文字統一に限定した（`最終更新`表示等の他フィールドは元のdaily JSON由来の値のまま変更なし）。関連test更新: `test_archive.py`、`test_security_operations.py`、`test_security_requirements.py`、`test_ui_spec.py`。custom domain・CNAME・DNS・canonical・meta description・OG・Twitter Card・favicon・manifest・sitemap・robots.txt・Aboutは追加・変更していない。production workflowとworkflow_dispatchは未実行。
-- **ユーザー受入証跡:** 方向性は2026-07-17のプロジェクト会話で再確認され、BL-006／BL-007合同preflightの結果を受けてB案と本Ticketの実装方針が承認された。Draft PRに対する個別実装受入（PC 1280px／390px目視、merge、Pages公開確認）は未実施。
-- **残作業:** Draft PRのPC 1280px／390px目視受入、merge、merge後のGitHub Pages公開反映確認、ユーザー受入の取得。受入後、本Ticketに閉じた残作業はない（custom domain移行はBL-007、SEOはBL-009で別途扱う）。
+- **ユーザー受入証跡:** 方向性は2026-07-17のプロジェクト会話で再確認され、BL-006／BL-007合同preflightの結果を受けてB案と本Ticketの実装方針が承認された。実装受入は2026-07-26に取得済み。
+  - **受入日:** 2026-07-26
+  - **ユーザー原文:** 「6枚とも確認した。ブランド変更の表示は問題なし。BL-006として受入。」
+  - **受入対象の実装head:** `802781b31b5cc381a5bc4438d025f9af1c3a32e4`（[PR #57](https://github.com/matkei31/security-digest/pull/57)）
+  - **受入対象:** トップページ、Archive一覧、2026-07-26日別Archive、PC 1280px／390px、`🔐 Monomi Digest`表示、title／H1絵文字統一。
+  - **受入対象外:** BL-007（custom domain移行）、BL-009（SEO）、repository rename、ナビゲーション再設計、ARTICLE／BRIEF情報設計再検討（別途BL-028／BL-029として記録予定）。
+- **残作業:** merge、merge後のGitHub Pages公開反映確認。完了はmerge後のclosure PRで記録する（custom domain移行はBL-007、SEOはBL-009で別途扱う）。
 - **注記:** repository rename、custom domain、meta description等のBL-007／BL-009範囲の判断は本Ticketに含めない。BL-006／BL-007合同preflight調査の詳細（ブランド接点棚卸し、URL/custom domainリスク、A/B/C案比較）はセッション記録を参照。implementation branch `claude/bl006-brand-monomi`。
 
 ## BL-007 — monomidigest.comへの移行

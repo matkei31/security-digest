@@ -2,16 +2,16 @@
 
 - **文書名:** Monomi Digest UI Specification
 - **バージョン:** 1.4
-- **状態:** Draft／ユーザー受入待ち
-- **適用対象:** BL-006のPR #57 headにあるMonomi Digestブランド変更Draft。ユーザー受入、merge、Pages公開反映後に現行UIの正本となる。現時点のmainと公開Pagesはまだ`Security Digest`である。
+- **状態:** 承認済み
+- **適用対象:** 現行Monomi Digest。BL-006のブランド名変更（Security Digest→Monomi Digest、`🔐`維持、title／H1絵文字統一）は、2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、Version 1.4として承認済みである。mergeとGitHub Pages公開反映の状態はBACKLOG.md／STATUS.mdで管理する。
 
 ## 1. 文書の目的と対象読者
 
-本書は、Version 1.0〜1.3の受入済み仕様・現在の`main`実装・回帰テストと、PR #57 headで提案するVersion 1.4 Draftを一つにまとめる。将来のUI変更で参照するリポジトリ常駐の正本とし、同じ論点を都度推測し直すこと、受入済みの判断を未決へ戻すこと、Fable 5提案を無条件に再採用することを防ぐ。
+本書は、Version 1.0〜1.4の受入済み仕様、安定した意思決定、回帰テストを一つにまとめる。Version 1.4はユーザー受入済みであり、`main`へのmergeとGitHub Pages公開反映の状態はBACKLOG.md／STATUS.mdの記録に従う。将来のUI変更で参照するリポジトリ常駐の正本とし、同じ論点を都度推測し直すこと、受入済みの判断を未決へ戻すこと、Fable 5提案を無条件に再採用することを防ぐ。
 
 対象読者は、UIの設計・実装・レビュー・受入を行うユーザー、実装担当者、レビュー担当者である。本書は表示仕様を扱い、ARTICLE／BRIEF prompt、daily JSON schema、生成・公開workflow、ブランド名変更の仕様書ではない。
 
-Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた7項目のユーザー裁定を反映した承認済み文書である。Version 1.1は、BL-022で明示されたトップページの直前公開ダイジェストリンクを追加した。Version 1.2は、トップページと日別Archiveのナビゲーション用語を統一し、日付をリンク文言から除き、方向移動と全体導線を左右の別グループへ整理した。Version 1.3は、BL-020で収集元フッターの取得元別カラーとpill表現を廃止し、無彩色・低強調のプレーンテキスト一覧へ置き換えた。Version 1.4は、BL-006でブランド名をSecurity DigestからMonomi Digestへ変更し、`🔐`は維持したままtitle／H1の絵文字表記を統一したDraftであり、PC 1280px／390pxの目視によるユーザー受入を待っている。
+Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた7項目のユーザー裁定を反映した承認済み文書である。Version 1.1は、BL-022で明示されたトップページの直前公開ダイジェストリンクを追加した。Version 1.2は、トップページと日別Archiveのナビゲーション用語を統一し、日付をリンク文言から除き、方向移動と全体導線を左右の別グループへ整理した。Version 1.3は、BL-020で収集元フッターの取得元別カラーとpill表現を廃止し、無彩色・低強調のプレーンテキスト一覧へ置き換えた。Version 1.4は、BL-006でブランド名をSecurity DigestからMonomi Digestへ変更し、`🔐`は維持したままtitle／H1の絵文字表記を統一した。2026-07-26、ユーザーがトップページ・Archive一覧・日別ArchiveのPC 1280px／390px計6画面を目視確認し受入した。
 
 ## 2. 正本と優先順位
 
@@ -98,8 +98,6 @@ Brief、優先確認、dashboardはそれぞれ「概況」「短い索引」「
 ## 6. ページヘッダー
 
 ### 6.1 確定仕様
-
-Version 1.4 Draftで追加・変更したブランド名およびtitle／H1絵文字統一に関する記述は、ユーザーの目視受入までは確定仕様として扱わない。
 
 - トップページの可視見出しは`🔐 Monomi Digest`、日別Archiveも`🔐 Monomi Digest`、Archive一覧は`過去のダイジェスト`である。`🔐`はBL-004・SD-016の決定どおりBL-006のブランド移行後も維持し、BL-006で従来title/H1間にあった絵文字表記の不整合（日別Archiveのtitleには`🔐`があるがH1になかった）も解消した。
 - トップページは「最終更新」「記事件数」「過去のダイジェスト」を表示し、直前の公開日がある場合だけ「← 前のダイジェスト」も表示する。
@@ -389,7 +387,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 5. UI実装の受入では、少なくともPCと390px、優先確認0件／あり、分析欠損、KEVあり、Archive境界日と中間日を確認する。
 6. `docs/`の再生成、daily JSON変更、prompt／schema／workflow変更は、UI仕様書更新だけを理由に行わない。各変更の承認範囲に従う。
 7. Version 1.3は承認済みの確定仕様である。今回解消した7項目、ナビゲーション統一仕様、収集元フッターのプレーン表示を再び未決として扱わず、変更には新しいユーザー判断とSupersedes記録を必要とする。
-8. Version 1.4はBL-006のブランド名変更（Security Digest→Monomi Digest、`🔐`維持、title／H1絵文字統一）をDraftとして記録したものであり、PC 1280px／390pxの目視によるユーザー受入後に確定仕様へ格上げする。custom domain・DNS・canonical等（BL-007）およびAbout・meta description・analytics等（BL-009）は本書の対象外であり、Version 1.4では変更していない。
+8. Version 1.4はBL-006のブランド名変更（Security Digest→Monomi Digest、`🔐`維持、title／H1絵文字統一）を、2026-07-26のユーザーPC 1280px／390px目視受入により確定仕様とした。custom domain・DNS・canonical等（BL-007）およびAbout・meta description・analytics等（BL-009）は本書の対象外であり、Version 1.4では変更していない。
 
 ### 20.1 版履歴
 
@@ -400,4 +398,4 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 | 1.1 | 承認済み | BL-022の直前公開ダイジェストリンク、日付欠落時の選択、ラベル、responsive配置を追加 |
 | 1.2 | 承認済み | ナビゲーションの4用語を統一し、リンク文言の日付を廃止し、方向移動と全体導線を左右の別グループへ整理 |
 | 1.3 | 承認済み | 収集元フッターの取得元別カラーとpill表現を廃止し、PC 3列／600px以下1列のプレーンテキスト一覧へ変更 |
-| 1.4 | Draft／ユーザー受入待ち | BL-006でSecurity DigestからMonomi Digestへブランド名を変更し、`🔐`は維持したまま、トップページと日別Archiveのtitle／H1の絵文字表記を統一した |
+| 1.4 | 承認済み | BL-006でSecurity DigestからMonomi Digestへブランド名を変更し、`🔐`は維持したまま、トップページと日別Archiveのtitle／H1の絵文字表記を統一した |

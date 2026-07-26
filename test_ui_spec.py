@@ -29,19 +29,22 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertTrue(self.spec_path.is_file())
         self.assertIn("# Monomi Digest UI Specification", self.spec)
         self.assertIn("- **バージョン:** 1.4", self.spec)
-        self.assertIn("- **状態:** Draft／ユーザー受入待ち", self.spec)
-        self.assertIn("BL-006のPR #57 headにあるMonomi Digestブランド変更Draft", self.spec)
-        self.assertIn("現時点のmainと公開Pagesはまだ`Security Digest`である", self.spec)
+        self.assertIn("- **状態:** 承認済み", self.spec)
         self.assertIn(
-            "Version 1.0〜1.3の受入済み仕様・現在の`main`実装・回帰テストと、"
-            "PR #57 headで提案するVersion 1.4 Draftを一つにまとめる",
+            "2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、"
+            "Version 1.4として承認済みである",
             self.spec,
         )
         self.assertIn(
-            "Version 1.4 Draftで追加・変更したブランド名およびtitle／H1絵文字統一に関する記述は、"
-            "ユーザーの目視受入までは確定仕様として扱わない。",
+            "本書は、Version 1.0〜1.4の受入済み仕様、安定した意思決定、回帰テストを一つにまとめる。",
             self.spec,
         )
+        self.assertIn(
+            "2026-07-26、ユーザーがトップページ・Archive一覧・日別ArchiveのPC 1280px／390px計6画面を目視確認し受入した。",
+            self.spec,
+        )
+        self.assertNotIn("Draft／ユーザー受入待ち", self.spec)
+        self.assertNotIn("確定仕様として扱わない", self.spec)
 
     def test_all_required_chapters_exist_in_order(self):
         chapters = (
