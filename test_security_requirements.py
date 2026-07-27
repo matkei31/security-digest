@@ -519,23 +519,30 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertNotIn("final head `802781b", bl006)
         self.assertNotIn("merge commit `802781b", bl006)
 
-    def test_bl028_is_recorded_verbatim_with_spec_deferred_to_kickoff(self):
+    def test_bl028_is_recorded_verbatim_with_confirmed_spec(self):
         bl028 = self.backlog.split("## BL-028", 1)[1].split("\n## ", 1)[0]
         self.assertIn("ダイジェストナビゲーションの配置を再設計する", bl028)
         self.assertIn("**優先度:** P2", bl028)
-        self.assertIn("**状態:** 記録済み / 仕様未確定 / 未実装", bl028)
+        self.assertIn("**状態:** 仕様確定 / 実装済みDraft PR / ユーザー受入待ち", bl028)
         self.assertIn(
             "「『前のダイジェスト』『最新のダイジェスト』を右に持っていってもらったけど、"
             "実際見ると違和感あるね。左側で二段で表示するとか、何かイケてるUI考えてほしい」",
             bl028,
         )
         self.assertIn(
-            "現在の問題認識と検討方向のみを記録し、具体的なUI・文言・完了条件は着手時にユーザーと詰める。",
+            "ユーザーと確定した仕様(A案「左寄せ二段・ラベルなし」)は次のとおり。",
+            bl028,
+        )
+        self.assertIn(
+            "日別Archiveの2段目は`過去のダイジェスト`／`最新のダイジェスト`の順とする"
+            "(左側を過去方向、右側を新しい方向へ統一)。",
             bl028,
         )
         self.assertIn("BL-022やSD-021を未完了扱いに戻さず", bl028)
-        self.assertIn("**実装証跡:** 未実装。", bl028)
-        self.assertIn("**ユーザー受入証跡:** 記録なし。", bl028)
+        self.assertIn("implementation branch `claude/bl028-nav-two-row-left`", bl028)
+        self.assertIn(
+            "**ユーザー受入証跡:** 記録なし。merge前のPC 1280px／390px目視受入が必要。", bl028
+        )
         self.assertNotIn("**状態:** 完了", bl028)
         self.assertIn(
             "**出所:** 2026-07-26 プロジェクト会話（BL-006実装着手後、ユーザー受入・closure前）。",
@@ -598,7 +605,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         active = self.status.split("## Active work", 1)[1].split(
             "## 5. Recently completed work", 1
         )[0]
-        self.assertNotIn("BL-028", active)
+        self.assertIn("BL-028", active)
         self.assertNotIn("BL-029", active)
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
@@ -609,6 +616,48 @@ class SecurityRequirementsTest(unittest.TestCase):
         )[0]
         self.assertIn("BL-028", next_candidates)
         self.assertIn("[BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する) are all complete", next_candidates)
+
+    def test_sd027_partially_supersedes_sd021_and_preserves_its_other_contracts(self):
+        decisions = self.decisions
+        sd027 = decisions[decisions.index("## SD-027"):]
+        self.assertIn(
+            "SD-027 — Redesign digest navigation to a left-aligned two-row layout "
+            "shared by PC and 390px",
+            sd027,
+        )
+        self.assertIn("- **Status:** Accepted", sd027)
+        self.assertNotIn("Draft PR implemented, user acceptance pending", sd027)
+        self.assertIn("A案「左寄せ二段・ラベルなし」", sd027)
+        self.assertIn(
+            "Supersedes:** [SD-021](#sd-021--unify-digest-navigation-labels-and-separate-direction-from-global-navigation) "
+            "only for (a) placing the direction-movement group on the left and the "
+            "global-navigation group on the right in a single PC row, and (b) the "
+            "daily-Archive global-navigation link order",
+            sd027,
+        )
+        self.assertIn("the four exact navigation labels", sd027)
+        self.assertIn("no dates in navigation-link text", sd027)
+        self.assertIn(
+            "leaving hrefs, `aria-label`, and the validated date-selection/broken-link-prevention "
+            "rules from [SD-020]",
+            sd027,
+        )
+
+        sd021 = decisions[decisions.index("## SD-021"):decisions.index("## SD-022")]
+        self.assertIn(
+            "- **Status:** Accepted / Implemented and verified in production", sd021
+        )
+        self.assertNotIn("superseded by SD-027", sd021)
+
+    def test_bl028_kickoff_does_not_reopen_bl007_bl017_or_bl022(self):
+        bl007 = self.backlog.split("## BL-007", 1)[1].split("\n## ", 1)[0]
+        bl017 = self.backlog.split("## BL-017", 1)[1].split("\n## ", 1)[0]
+        bl022 = self.backlog.split("## BL-022", 1)[1].split("\n## ", 1)[0]
+        bl029 = self.backlog.split("## BL-029", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("- **状態:** 方針承認済み / 未実装", bl007)
+        self.assertIn("- **状態:** 完了", bl017)
+        self.assertIn("- **状態:** 完了", bl022)
+        self.assertIn("- **状態:** 完了", bl029)
 
     def test_bl027_acceptance_head_is_distinct_from_pr54_final_head(self):
         # The explicit 「ok」 was given at PR #54 head d7461b9..., not at the
@@ -874,7 +923,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("are all complete", next_candidates)
         self.assertIn("[BL-027]", next_candidates)
         self.assertIn(
-            "none is named as the ranked next candidate here", next_candidates
+            "is not named as the ranked next candidate purely by priority number", next_candidates
         )
         self.assertNotIn("[BL-025]", next_candidates)
         self.assertRegex(

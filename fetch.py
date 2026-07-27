@@ -1654,12 +1654,12 @@ def render_archive_nav_groups(
     classes = "archive-nav"
     if extra_class:
         classes += f" {extra_class}"
-    return (
-        f'<nav class="{classes}" aria-label="{esc(aria_label)}">'
-        f'<div class="archive-nav-group archive-direction-nav">{direction_links}</div>'
-        f'<div class="archive-nav-group archive-global-nav">{global_links}</div>'
-        "</nav>"
-    )
+    groups = ""
+    if direction_links:
+        groups += f'<div class="archive-nav-group archive-direction-nav">{direction_links}</div>'
+    if global_links:
+        groups += f'<div class="archive-nav-group archive-global-nav">{global_links}</div>'
+    return f'<nav class="{classes}" aria-label="{esc(aria_label)}">{groups}</nav>'
 
 
 def render_top_archive_nav_html(current_digest_date, published_dates):
@@ -4625,16 +4625,15 @@ def build_html(
   <title>{esc(page_title)}</title>
   <style>
     *{{margin:0;padding:0;box-sizing:border-box}}
-    :root{{--anchor-offset:112px}}
-    @media (max-width:600px){{:root{{--anchor-offset:168px}}}}
+    :root{{--anchor-offset:218px}}
+    @media (max-width:600px){{:root{{--anchor-offset:226px}}}}
     body{{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:40px}}
     header{{background:#161b22;border-bottom:1px solid #21262d;padding:20px 16px 16px;position:sticky;top:0;z-index:10}}
     header h1{{font-size:18px;font-weight:600;letter-spacing:.02em}}
     .sub{{font-size:12px;color:#8b949e;margin-top:4px}}
     .count{{font-size:12px;color:#58a6ff;margin-top:2px}}
-    .archive-nav{{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;column-gap:24px;row-gap:8px;margin-top:8px}}
+    .archive-nav{{display:flex;flex-direction:column;align-items:flex-start;row-gap:8px;margin-top:8px}}
     .archive-nav-group{{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;min-width:0}}
-    .archive-global-nav{{margin-left:auto}}
     .archive-bottom-nav{{max-width:680px;margin:20px auto 0;padding:0 12px}}
     .archive-link{{display:inline-flex;align-items:center;min-height:32px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
     .archive-link:hover{{text-decoration:underline}}
@@ -4709,9 +4708,6 @@ def build_html(
     .dashboard-category-item strong{{color:#8b949e;font-weight:600}}
     .dashboard-empty{{list-style:none;font-size:12px;color:#8b949e;line-height:1.5}}
     @media (max-width:600px){{
-      .archive-nav{{align-items:stretch}}
-      .archive-nav-group{{width:100%}}
-      .archive-global-nav{{margin-left:0}}
       .dashboard-axes{{grid-template-columns:1fr}}
       .dashboard-axis+.dashboard-axis{{border-left:none;border-top:1px solid #21262d}}
     }}
@@ -4810,10 +4806,10 @@ def build_daily_archive_html(digest, previous_date=None, next_date=None):
     generated_at = parse_archive_datetime(digest.get("generated_at"))
     adjacent_links = render_archive_adjacent_links(previous_date, next_date)
     global_links = (
-        '<a class="archive-link" href="../index.html">'
-        f"{esc(LATEST_DIGEST_LABEL)}</a>"
         '<a class="archive-link" href="index.html">'
         f"{esc(ARCHIVE_INDEX_LABEL)}</a>"
+        '<a class="archive-link" href="../index.html">'
+        f"{esc(LATEST_DIGEST_LABEL)}</a>"
     )
     top_nav = render_archive_nav_groups(
         adjacent_links,

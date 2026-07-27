@@ -28,8 +28,8 @@ class UiSpecDocumentTest(unittest.TestCase):
     def test_ui_spec_exists_with_version_metadata(self):
         self.assertTrue(self.spec_path.is_file())
         self.assertIn("# Monomi Digest UI Specification", self.spec)
-        self.assertIn("- **バージョン:** 1.5", self.spec)
-        self.assertIn("- **状態:** 承認済み", self.spec)
+        self.assertIn("- **バージョン:** 1.6", self.spec)
+        self.assertIn("- **状態:** Draft／ユーザー受入待ち", self.spec)
         self.assertIn(
             "2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、"
             "Version 1.4として承認済みである",
@@ -67,6 +67,22 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn(
             "2026-07-27、ユーザーがトップページ・日別Archive（記事あり2日・0記事1日）の"
             "PC 1280px／390px計8画面を目視確認し受入した。",
+            self.spec,
+        )
+        self.assertIn(
+            "Version 1.6はBL-028のダイジェストナビゲーション配置再設計"
+            "（A案「左寄せ二段・ラベルなし」）を反映するDraftであり、"
+            "ユーザーのPC 1280px／390px目視受入までは確定仕様として扱わない。",
+            self.spec,
+        )
+        self.assertIn(
+            "Version 1.6は、BL-028でユーザーと確定したA案「左寄せ二段・ラベルなし」に基づき、"
+            "ダイジェストナビゲーションをPC／390px共通の左寄せ縦二段構造"
+            "（1段目が方向移動、2段目が全体導線）へ再設計するDraftである。",
+            self.spec,
+        )
+        self.assertIn(
+            "日別Archiveの全体導線は`過去のダイジェスト`→`最新のダイジェスト`の順へ変更する。",
             self.spec,
         )
 
@@ -132,10 +148,12 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("表示文言は「← 前のダイジェスト」", self.spec)
         self.assertIn("日付を含めない", self.spec)
         self.assertIn("「過去のダイジェスト」は維持", self.spec)
-        self.assertIn("方向移動グループを左、全体導線グループを右", self.spec)
-        self.assertIn("グループのDOM順と区別を保ったまま`flex-wrap`", self.spec)
+        # BL-028 (Version 1.6 Draft): PC/390px share a left-aligned two-row
+        # layout instead of the old PC left/right split.
+        self.assertIn("PC／390pxともに方向移動グループを1段目、全体導線グループを2段目とする左寄せの縦二段構造", self.spec)
+        self.assertIn("### 6.4 ナビゲーション配置(BL-028, Version 1.6 Draft)", self.spec)
         self.assertIn("「次のダイジェスト →」", self.spec)
-        self.assertIn("「最新のダイジェスト」「過去のダイジェスト」", self.spec)
+        self.assertIn("「過去のダイジェスト」「最新のダイジェスト」", self.spec)
         self.assertIn("| 1.1 | 承認済み | BL-022", self.spec)
         self.assertIn("| 1.2 | 承認済み | ナビゲーションの4用語を統一", self.spec)
         self.assertIn("| 1.3 | 承認済み | 収集元フッターの取得元別カラーとpill表現を廃止", self.spec)
@@ -237,7 +255,7 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertNotRegex(next_candidates, r"(?m)^1\. \[BL-026\]")
         self.assertIn("[BL-026]", next_candidates)
         self.assertIn("are all complete", next_candidates)
-        self.assertIn("none is named as the ranked next candidate here", next_candidates)
+        self.assertIn("is not named as the ranked next candidate purely by priority number", next_candidates)
         self.assertIn("[BL-027]", next_candidates)
         self.assertNotIn("[BL-025]", next_candidates)
         self.assertIn("BL-021 deterministic-extractive Today's Brief", recently_completed)
