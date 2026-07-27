@@ -397,7 +397,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 6. `docs/`の再生成、daily JSON変更、prompt／schema／workflow変更は、UI仕様書更新だけを理由に行わない。各変更の承認範囲に従う。
 7. Version 1.3は承認済みの確定仕様である。今回解消した7項目、ナビゲーション統一仕様、収集元フッターのプレーン表示を再び未決として扱わず、変更には新しいユーザー判断とSupersedes記録を必要とする。
 8. Version 1.4はBL-006のブランド名変更（Security Digest→Monomi Digest、`🔐`維持、title／H1絵文字統一）を、2026-07-26のユーザーPC 1280px／390px目視受入により確定仕様とした。custom domain・DNS・canonical等（BL-007）およびAbout・meta description・analytics等（BL-009）は本書の対象外であり、Version 1.4では変更していない。
-9. Version 1.5はBL-029の「本日の要点」子見出し（概況／重要・優先事項／確認事項）と記事カード見出し（概要／金融機関との関連／確認すべきこと）の再設計を記録したものであり、2026-07-27にユーザーがPC 1280px／390px計8画面を目視受入した（「8枚とも確認した。BL-029の見出し、重要・優先事項の2段落表示、過去Archiveへの適用、0記事日の表示に問題なし。BL-029として受入。」）。ARTICLE prompt・response schema・`ARTICLE_PROMPT_VERSION`・public daily JSON schemaは変更していない。
+9. Version 1.5はBL-029の「本日の要点」子見出し（概況／重要・優先事項／確認事項）と記事カード見出し（概要／金融機関との関連／確認すべきこと）の再設計を記録したものであり、2026-07-27にユーザーがPC 1280px／390px計8画面を目視受入した（「8枚とも確認した。BL-029の見出し、重要・優先事項の2段落表示、過去Archiveへの適用、0記事日の表示に問題なし。BL-029として受入。」）。ARTICLE prompt・response schema・`ARTICLE_PROMPT_VERSION`・public daily JSON schemaは変更していない。[PR #60](https://github.com/matkei31/security-digest/pull/60) final head `a458888f45ff1521a0eb59117994ac3122fb2b83` は[Pull Request CI run 30231386446](https://github.com/matkei31/security-digest/actions/runs/30231386446)通過後、通常merge（squash・rebase不使用）でmerge commit `2a191828462731bf5204cdd83e867c0d29aec6e8`としてmainへ統合され、自動[Pages deployment run 30231414580](https://github.com/matkei31/security-digest/actions/runs/30231414580)が成功し、公開トップページ・記事あり日別Archive・0記事日別Archiveで新見出しの表示を客観確認した。
 
 ### 20.1 版履歴
 
