@@ -6,16 +6,15 @@
   <title>🔐 Monomi Digest</title>
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    :root{--anchor-offset:112px}
-    @media (max-width:600px){:root{--anchor-offset:168px}}
+    :root{--anchor-offset:218px}
+    @media (max-width:600px){:root{--anchor-offset:226px}}
     body{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:40px}
     header{background:#161b22;border-bottom:1px solid #21262d;padding:20px 16px 16px;position:sticky;top:0;z-index:10}
     header h1{font-size:18px;font-weight:600;letter-spacing:.02em}
     .sub{font-size:12px;color:#8b949e;margin-top:4px}
     .count{font-size:12px;color:#58a6ff;margin-top:2px}
-    .archive-nav{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;column-gap:24px;row-gap:8px;margin-top:8px}
+    .archive-nav{display:flex;flex-direction:column;align-items:flex-start;row-gap:8px;margin-top:8px}
     .archive-nav-group{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;min-width:0}
-    .archive-global-nav{margin-left:auto}
     .archive-bottom-nav{max-width:680px;margin:20px auto 0;padding:0 12px}
     .archive-link{display:inline-flex;align-items:center;min-height:32px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}
     .archive-link:hover{text-decoration:underline}
@@ -90,9 +89,6 @@
     .dashboard-category-item strong{color:#8b949e;font-weight:600}
     .dashboard-empty{list-style:none;font-size:12px;color:#8b949e;line-height:1.5}
     @media (max-width:600px){
-      .archive-nav{align-items:stretch}
-      .archive-nav-group{width:100%}
-      .archive-global-nav{margin-left:0}
       .dashboard-axes{grid-template-columns:1fr}
       .dashboard-axis+.dashboard-axis{border-left:none;border-top:1px solid #21262d}
     }
@@ -123,7 +119,7 @@
     <div class="sub">日次ダイジェスト：2026年07月16日</div>
     <div class="sub">最終更新: 2026年07月16日 11:15</div>
     <div class="count">10 件</div>
-    <nav class="archive-nav" aria-label="日別ダイジェスト上部ナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link archive-prev-link" href="2026-07-15.html">← 前のダイジェスト</a><a class="archive-link archive-next-link" href="2026-07-17.html">次のダイジェスト →</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="../index.html">最新のダイジェスト</a><a class="archive-link" href="index.html">過去のダイジェスト</a></div></nav>
+    <nav class="archive-nav" aria-label="日別ダイジェスト上部ナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link archive-prev-link" href="2026-07-15.html">← 前のダイジェスト</a><a class="archive-link archive-next-link" href="2026-07-17.html">次のダイジェスト →</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="index.html">過去のダイジェスト</a><a class="archive-link" href="../index.html">最新のダイジェスト</a></div></nav>
   </header>
   <div class="todays-brief">
     <div class="brief-box">
@@ -383,6 +379,6 @@
       <ul><li>金融庁</li><li>JPCERT/CC</li><li>IPA</li><li>NIST</li><li>Microsoft Security</li><li>Mandiant</li><li>CrowdStrike</li><li>Google TAG</li><li>NCSC</li><li>Krebs on Security</li><li>Dark Reading</li><li>The Hacker News</li><li>Cisco Talos</li><li>Cloudflare</li><li>CISA KEV</li></ul>
     </details>
   </div>
-  <nav class="archive-nav archive-bottom-nav" aria-label="日別ダイジェスト下部ナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link archive-prev-link" href="2026-07-15.html">← 前のダイジェスト</a><a class="archive-link archive-next-link" href="2026-07-17.html">次のダイジェスト →</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="../index.html">最新のダイジェスト</a><a class="archive-link" href="index.html">過去のダイジェスト</a></div></nav>
+  <nav class="archive-nav archive-bottom-nav" aria-label="日別ダイジェスト下部ナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link archive-prev-link" href="2026-07-15.html">← 前のダイジェスト</a><a class="archive-link archive-next-link" href="2026-07-17.html">次のダイジェスト →</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="index.html">過去のダイジェスト</a><a class="archive-link" href="../index.html">最新のダイジェスト</a></div></nav>
 </body>
 </html>

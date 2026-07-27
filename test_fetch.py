@@ -1843,8 +1843,9 @@ class ImportantItemsTest(unittest.TestCase):
 
         self.assertIn('href="#article-1"', important)
         self.assertIn('id="article-1"', cards)
-        self.assertIn("--anchor-offset:112px", html)
-        self.assertIn("--anchor-offset:168px", html)
+        # BL-028: anchor-offset raised for the two-row nav on both PC and 390px.
+        self.assertIn("--anchor-offset:218px", html)
+        self.assertIn("--anchor-offset:226px", html)
         self.assertIn("scroll-margin-top:var(--anchor-offset)", html)
 
     def test_important_items_section_precedes_all_cards(self):
@@ -3006,12 +3007,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
         self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 30)})
 
-    def test_sd_ids_are_unique_and_cover_sd001_to_sd026(self):
+    def test_sd_ids_are_unique_and_cover_sd001_to_sd027(self):
         text = self._read("DECISIONS.md")
         sd_headings = [h for h in self._headings(text) if re.match(r"^SD-\d{3}\b", h)]
         ids = [re.match(r"^(SD-\d{3})", h).group(1) for h in sd_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
-        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 27)})
+        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 28)})
 
     def test_bl_001_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -3100,7 +3101,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertNotRegex(next_candidates, r"(?m)^1\. \[BL-026\]")
         self.assertIn("[BL-026]", next_candidates)
         self.assertIn("are all complete", next_candidates)
-        self.assertIn("none is named as the ranked next candidate here", next_candidates)
+        self.assertIn("is not named as the ranked next candidate purely by priority number", next_candidates)
         self.assertIn("[BL-027]", next_candidates)
         self.assertNotIn("[BL-025]", next_candidates)
 

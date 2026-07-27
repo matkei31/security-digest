@@ -7,6 +7,7 @@
 import copy
 import datetime
 import json
+import re
 import tempfile
 import unittest
 from html.parser import HTMLParser
@@ -429,9 +430,10 @@ class ArchiveGenerationTest(unittest.TestCase):
         article_links = [a for a in parser.anchors if a.get("class") in ("article-title-link", "article-source-link")]
         self.assertEqual(article_links, [])
         internal = [a for a in parser.anchors if a.get("class") == "archive-link"]
+        # BL-028: the daily-archive global-nav link order is 過去→最新.
         self.assertEqual(
             [a.get("href") for a in internal],
-            ["../index.html", "index.html", "../index.html", "index.html"],
+            ["index.html", "../index.html", "index.html", "../index.html"],
         )
         self.assertTrue(all("target" not in a and "rel" not in a for a in internal))
         self.assertFalse(parser.nested_anchor)
@@ -967,7 +969,10 @@ class TopPageArchiveLinkTest(unittest.TestCase):
         self.assertNotIn("← 前", html)
         self.assertIn('href="archive/index.html"', html)
         self.assertIn(">過去のダイジェスト</a>", html)
-        self.assertIn("archive-direction-nav", html)
+        # BL-028: with no direction link to show, the direction-nav group is
+        # omitted entirely rather than rendered empty; the global-nav group
+        # is promoted to the top.
+        self.assertNotIn("archive-direction-nav", html)
         self.assertIn("archive-global-nav", html)
 
     def test_irregular_index_order_is_compared_by_date(self):
@@ -1003,14 +1008,22 @@ class TopPageArchiveLinkTest(unittest.TestCase):
             ),
         )
 
+        # BL-028: PC and 390px share the same left-aligned two-row layout;
+        # there is no longer a right-aligned single-row PC variant or a
+        # mobile-only override that stretches groups to full width.
         self.assertIn(
-            ".archive-nav{display:flex;align-items:center;"
-            "justify-content:space-between;flex-wrap:wrap;",
+            ".archive-nav{display:flex;flex-direction:column;"
+            "align-items:flex-start;row-gap:8px;",
             html,
         )
         self.assertIn(".archive-nav-group{display:flex;", html)
-        self.assertIn(".archive-nav-group{width:100%}", html)
-        self.assertIn(".archive-global-nav{margin-left:0}", html)
+        self.assertNotIn(
+            ".archive-nav{display:flex;align-items:center;justify-content:space-between",
+            html,
+        )
+        self.assertNotIn(".archive-global-nav{margin-left:auto}", html)
+        self.assertNotIn(".archive-nav-group{width:100%}", html)
+        self.assertNotIn(".archive-global-nav{margin-left:0}", html)
         self.assertIn("min-height:32px", html)
         self.assertNotIn(".archive-nav{white-space:nowrap", html)
         self.assertNotIn("overflow-x:scroll", html)
@@ -1242,9 +1255,12 @@ class TopPageArchiveLinkTest(unittest.TestCase):
         self.assertNotIn("archive-next-link", html)
         self.assertEqual(html.count(">最新のダイジェスト</a>"), 2)
         self.assertEqual(html.count(">過去のダイジェスト</a>"), 2)
+        # BL-028: no direction links means the direction-nav group itself is
+        # omitted (not rendered empty), so the global-nav group is promoted
+        # to the top of the (now single-row) nav.
         self.assertEqual(
             html.count('<div class="archive-nav-group archive-direction-nav">'),
-            2,
+            0,
         )
         self.assertEqual(
             html.count('<div class="archive-nav-group archive-global-nav">'),
@@ -1356,6 +1372,109 @@ class SourceFooterConsistencyTest(unittest.TestCase):
         self.assertNotIn("CISA Advisory", footer)
         self.assertNotIn(">NIST NVD<", footer)
         self.assertNotIn("NVD vulnerability facts", footer)
+
+
+class Bl028NavigationLayoutTest(unittest.TestCase):
+    """BL-028: 左寄せ二段・ラベルなしナビゲーション配置契約。"""
+
+    def _text_order(self, html, needles):
+        positions = [html.index(n) for n in needles]
+        return positions == sorted(positions)
+
+    def test_daily_archive_top_nav_reads_prev_next_then_past_latest_in_order(self):
+        html = fetch.build_daily_archive_html(
+            make_digest("2026-07-22"), previous_date="2026-07-21", next_date="2026-07-23"
+        )
+        top_nav = html[html.index("<nav"):html.index("</nav>") + len("</nav>")]
+        self.assertTrue(
+            self._text_order(
+                top_nav,
+                [
+                    fetch.PREVIOUS_DIGEST_LABEL,
+                    fetch.NEXT_DIGEST_LABEL,
+                    fetch.ARCHIVE_INDEX_LABEL,
+                    fetch.LATEST_DIGEST_LABEL,
+                ],
+            )
+        )
+
+    def test_daily_archive_bottom_nav_reads_prev_next_then_past_latest_in_order(self):
+        html = fetch.build_daily_archive_html(
+            make_digest("2026-07-22"), previous_date="2026-07-21", next_date="2026-07-23"
+        )
+        bottom_nav = html[html.index('<nav class="archive-nav archive-bottom-nav"'):]
+        bottom_nav = bottom_nav[:bottom_nav.index("</nav>") + len("</nav>")]
+        self.assertTrue(
+            self._text_order(
+                bottom_nav,
+                [
+                    fetch.PREVIOUS_DIGEST_LABEL,
+                    fetch.NEXT_DIGEST_LABEL,
+                    fetch.ARCHIVE_INDEX_LABEL,
+                    fetch.LATEST_DIGEST_LABEL,
+                ],
+            )
+        )
+
+    def test_daily_archive_global_nav_group_lists_past_before_latest(self):
+        html = fetch.build_daily_archive_html(
+            make_digest("2026-07-22"), previous_date="2026-07-21", next_date="2026-07-23"
+        )
+        global_groups = re.findall(
+            r'<div class="archive-nav-group archive-global-nav">(.*?)</div>', html
+        )
+        self.assertEqual(len(global_groups), 2)
+        for group in global_groups:
+            self.assertLess(group.index(fetch.ARCHIVE_INDEX_LABEL), group.index(fetch.LATEST_DIGEST_LABEL))
+
+    def test_top_page_nav_row_order_is_prev_then_archive_index_only(self):
+        html = fetch.render_top_archive_nav_html("2026-07-23", ["2026-07-22"])
+        self.assertTrue(
+            self._text_order(html, [fetch.PREVIOUS_DIGEST_LABEL, fetch.ARCHIVE_INDEX_LABEL])
+        )
+        self.assertNotIn(fetch.LATEST_DIGEST_LABEL, html)
+        self.assertNotIn(fetch.NEXT_DIGEST_LABEL, html)
+
+    def test_archive_index_single_link_has_no_right_alignment_css(self):
+        html = fetch.build_archive_index_html([])
+        nav_css = html[html.index(".archive-nav{"):html.index(".archive-nav{") + 120]
+        self.assertNotIn("justify-content", nav_css)
+        self.assertNotIn("margin-left:auto", html)
+        self.assertIn(f'<a class="archive-link" href="../index.html">{fetch.LATEST_DIGEST_LABEL}</a>', html)
+
+    def test_shared_css_is_two_row_left_aligned_with_no_pc_only_split_variant(self):
+        html = fetch.build_html([])
+        self.assertIn(
+            ".archive-nav{display:flex;flex-direction:column;align-items:flex-start;row-gap:8px;",
+            html,
+        )
+        # No PC-only right-split rule and no 390px-only override remain.
+        self.assertNotIn(
+            ".archive-nav{display:flex;align-items:center;justify-content:space-between", html
+        )
+        self.assertNotIn(".archive-nav-group{width:100%}", html)
+        self.assertNotIn(".archive-global-nav{margin-left:0}", html)
+        self.assertNotIn(".archive-global-nav{margin-left:auto}", html)
+        # The single .archive-nav rule applies identically regardless of viewport
+        # width; there is exactly one such rule (no @media (max-width:600px)
+        # variant redefining its layout).
+        self.assertEqual(html.count(".archive-nav{display:flex;flex-direction:column"), 1)
+
+    def test_both_directions_absent_omits_direction_group_but_keeps_global_group(self):
+        html = fetch.build_daily_archive_html(make_digest("2026-07-22"))
+        self.assertNotIn('<div class="archive-nav-group archive-direction-nav">', html)
+        self.assertEqual(html.count('<div class="archive-nav-group archive-global-nav">'), 2)
+
+    def test_single_direction_link_sits_alone_with_no_reserved_space_for_missing_one(self):
+        html = fetch.build_daily_archive_html(make_digest("2026-07-22"), next_date="2026-07-23")
+        direction_groups = re.findall(
+            r'<div class="archive-nav-group archive-direction-nav">(.*?)</div>', html
+        )
+        self.assertEqual(len(direction_groups), 2)
+        for group in direction_groups:
+            self.assertIn(fetch.NEXT_DIGEST_LABEL, group)
+            self.assertNotIn(fetch.PREVIOUS_DIGEST_LABEL, group)
+        self.assertNotIn("archive-prev-link", html)
 
 
 if __name__ == "__main__":

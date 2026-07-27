@@ -587,7 +587,7 @@
 - **ID:** BL-028
 - **タイトル:** ダイジェストナビゲーションの配置を再設計する
 - **優先度:** P2
-- **状態:** 記録済み / 仕様未確定 / 未実装
+- **状態:** ユーザー受入済み / merge待ち
 - **出所種別:** ユーザー原文
 - **ユーザー原文:** 「『前のダイジェスト』『最新のダイジェスト』を右に持っていってもらったけど、実際見ると違和感あるね。左側で二段で表示するとか、何かイケてるUI考えてほしい」
 - **出所:** 2026-07-26 プロジェクト会話（BL-006実装着手後、ユーザー受入・closure前）。
@@ -596,21 +596,26 @@
   - BL-022やSD-021を未完了扱いに戻さず、公開後の新しいユーザー評価に基づく別Ticketとして扱う。
   - 左寄せ二段構成は候補の一つであり、現時点では採用決定ではない。
   - 前後移動と全体導線の意味上のグルーピング、PC／390px、折返し、視線移動、アクセシビリティを含めて再検討する。
-- **完了条件:** 未定義。着手時にユーザーと次を詰める。
-  1. 比較するレイアウト案
-  2. 左寄せ一段／二段等のグルーピング
-  3. PC 1280px／390pxでの挙動
-  4. リンク順序と文言
-  5. keyboard focus・aria-label
-  6. screenshotによる目視受入
-  7. UI_SPEC／DECISIONSのSupersedes要否
-
-  現在の問題認識と検討方向のみを記録し、具体的なUI・文言・完了条件は着手時にユーザーと詰める。
-- **依存関係:** BL-022（前日ダイジェスト直接リンク、実装済み）、[SD-021](DECISIONS.md#sd-021--unify-digest-navigation-labels-and-separate-direction-from-global-navigation)（現行ナビゲーション契約）。
-- **実装証跡:** 未実装。
-- **ユーザー受入証跡:** 記録なし。
-- **残作業:** 着手時の仕様確定（レイアウト案比較、PC／390px挙動、文言、focus／aria-label、screenshot受入、Supersedes要否）。実装は未着手。
-- **注記:** BL-022／SD-021を再オープンしない。BL-007（custom domain移行）との実施順序は本Ticket登録時点では未決定。
+- **完了条件:** ユーザーと確定した仕様(A案「左寄せ二段・ラベルなし」)は次のとおり。
+  1. PC／390pxともに、ナビゲーションを左寄せの縦二段構造とする。方向移動グループを1段目、全体導線グループを2段目とする。
+  2. 日別Archiveの1段目は`← 前のダイジェスト`／`次のダイジェスト →`の順とする。
+  3. 日別Archiveの2段目は`過去のダイジェスト`／`最新のダイジェスト`の順とする(左側を過去方向、右側を新しい方向へ統一)。
+  4. トップページは1段目に利用可能な場合だけ`← 前のダイジェスト`、2段目に`過去のダイジェスト`を置く。
+  5. Archive一覧は単独の全体導線`最新のダイジェスト`を左寄せで表示する(右端配置は維持しない)。
+  6. 日別Archiveの上部ナビゲーションと下部ナビゲーションへ同じDOM順・配置契約を適用する。
+  7. PCと390pxで情報構造とDOM順を変えない。
+  8. 説明ラベル、囲み、背景色、区切り線、追加アイコンを導入しない。
+  9. リンクが一つもないグループ(方向移動グループなど)は描画せず、空の`div`による余白を残さない。一方向だけ存在する場合はそのリンクを左端へ置く。
+  10. 4文言(`← 前のダイジェスト`／`次のダイジェスト →`／`最新のダイジェスト`／`過去のダイジェスト`)、リンク文言への日付非表示、前後日付の選定ロジック、欠落日をまたぐ既存日探索、daily JSON／`data/index.json`の検証、現在日・未来日・不正日付の除外、存在しない方向リンクだけを省略する挙動、各リンクのhref、`aria-label`、keyboard操作、browser default focus、sticky header、上部／下部ナビゲーションの存在は変更しない。
+  11. sticky headerが二段ナビゲーションで高くなることに合わせ、`--anchor-offset`をPC・390pxそれぞれ実測に基づき調整する。
+  12. 全Archiveへ遡及適用する。
+  13. merge前にPC 1280px／390pxでの目視受入をユーザーから得る。
+  14. BL-022・BL-017を再オープンしない。BL-029・BL-007は本Ticketのscopeに含めない。
+- **依存関係:** BL-022（前日ダイジェスト直接リンク、実装済み・再オープンしない）、BL-017（過去ダイジェストの回遊性、実装済み・再オープンしない）、[SD-021](DECISIONS.md#sd-021--unify-digest-navigation-labels-and-separate-direction-from-global-navigation)（部分的にsupersede）、BL-029（完了済み・scope外）、BL-007（custom domain移行、別Ticket・scope外）。
+- **実装証跡:** `fetch.py`の`render_archive_nav_groups()`を、リンクが空のグループを描画しないよう変更した(方向移動グループが無い場合は全体導線グループを上へ詰める)。`build_daily_archive_html()`の`global_links`を`過去のダイジェスト`→`最新のダイジェスト`の順へ入れ替えた(既存の`render_archive_adjacent_links()`が生成する`前→次`の順は変更していない)。共有CSS`.archive-nav`をPC専用の`justify-content:space-between`(左右端分離・単一行)から、PC／390px共通の`flex-direction:column;align-items:flex-start`(左寄せ二段)へ変更し、390px専用だった`align-items:stretch`／`.archive-nav-group{width:100%}`／`.archive-global-nav{margin-left:0}`のmedia query上書きを削除した(PCと390pxで同一構造になったため不要)。Archive一覧(`build_archive_index_html()`)の単独リンクは元々右端寄せのCSSを持たず、変更なしで左寄せ契約を満たしていることを確認した。sticky headerがPC/390pxとも一段から二段ナビゲーションへ変わり実高が112px前提から202pxへ増えたため、`--anchor-offset`をPC 112px→218px(実測header高202px+16px)、390px 168px→226px(実測header高202px+24px)へ調整し、記事カードへのアンカー遷移でheading全体が隠れないことをbrowser実測で確認した。既存daily JSON全17日分をoffline再生成し(外部HTTP／Gemini／RSS／NVD／CISA KEV呼び出しなし、`data/`・`docs/translate_cache.json`は無変更)、全日で新ナビゲーション配置を適用した。関連test更新: `test_archive.py`(新規`Bl028NavigationLayoutTest`8件含む)。full unittest 1250件 OK、`git diff --check` clean、Markdown内部リンク全件成功、BL／SD ID一意性確認済み。
+- **ユーザー受入証跡:** ユーザー原文「10枚とも確認した。BL-028の左寄せ二段配置、前→次／過去→最新の順序、上部・下部ナビゲーション、単一方向ケース、PC 1280px／390pxの表示に問題なし。BL-028として受入。」。受入対象は、A案「左寄せ二段・ラベルなし」、日別Archive上段(`← 前のダイジェスト`／`次のダイジェスト →`)、日別Archive下段(`過去のダイジェスト`／`最新のダイジェスト`)、日別Archive上部・下部ナビゲーション、トップページ、Archive一覧、最古日の単一方向ケース、PC 1280px／390pxの計10画面(`top-page-nav-1280px.png`、`top-page-nav-390px.png`、`daily-archive-top-nav-1280px.png`、`daily-archive-top-nav-390px.png`、`daily-archive-bottom-nav-1280px.png`、`daily-archive-bottom-nav-390px.png`、`archive-index-nav-1280px.png`、`archive-index-nav-390px.png`、`daily-archive-oldest-single-direction-1280px.png`、`daily-archive-oldest-single-direction-390px.png`)。accepted head `77b4106618c29b9220012fd10e9ff616d773fa56`、[PR #62](https://github.com/matkei31/security-digest/pull/62)。anchor offset(PC 218px／390px 226px)はブラウザ計測・テストによる技術確認済みであり、今回のユーザー受入対象には含まれない。merge commit／Pages deployment／公開反映確認はmerge後に別途記録する。BL-022・BL-017・SD-021は本受入によって再オープンしない。BL-029(完了済み)・BL-007は本Ticketのscopeに含めない。
+- **残作業:** merge、merge後のGitHub Pages公開反映確認。
+- **注記:** BL-022・BL-017・SD-021を再オープンしない。BL-007(custom domain移行)・BL-029(完了済み)は本Ticketのscopeに含めない。implementation branch `claude/bl028-nav-two-row-left`。
 
 ## BL-029 — 「金融機関との関連」とARTICLE見出しの情報設計を再検討する
 

@@ -2,7 +2,7 @@
 
 ## 1. As of
 
-2026-07-25
+2026-07-27
 
 This file records the current, changeable project state. Incomplete, partially addressed, and acceptance-pending items are recorded in [BACKLOG.md](BACKLOG.md). Stable design and operating decisions are recorded in [DECISIONS.md](DECISIONS.md).
 
@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- None.
+- [BL-028](BACKLOG.md#bl-028--ダイジェストナビゲーションの配置を再設計する) ダイジェストナビゲーションの配置再設計 — implemented on branch `claude/bl028-nav-two-row-left`, user visual acceptance complete (verbatim: 「10枚とも確認した。BL-028の左寄せ二段配置、前→次／過去→最新の順序、上部・下部ナビゲーション、単一方向ケース、PC 1280px／390pxの表示に問題なし。BL-028として受入。」), accepted head `77b4106618c29b9220012fd10e9ff616d773fa56`, [PR #62](https://github.com/matkei31/security-digest/pull/62) merge pending. Adopted A案「左寄せ二段・ラベルなし」: PC／390pxとも、方向移動グループを1段目、全体導線グループを2段目とする左寄せの縦二段構造に統一した。日別Archiveの1段目は`← 前のダイジェスト`／`次のダイジェスト →`、2段目は`過去のダイジェスト`／`最新のダイジェスト`の順(左側が過去方向、右側が新しい方向)。トップページは1段目に利用可能な場合だけ`← 前のダイジェスト`、2段目に`過去のダイジェスト`。Archive一覧は単独の`最新のダイジェスト`を左寄せで表示する。リンクが一つもないグループは描画しない。4文言・日付非表示・href・aria-label・前後日付選定ロジックは変更していない。sticky headerの二段化に伴い`--anchor-offset`をPC 112px→218px、390px 168px→226pxへ実測に基づき調整した(UI_SPEC Version 1.6 accepted candidate)。全Archiveへoffline再生成で遡及適用済み。data不変、production未実行。
 
 ## 5. Recently completed work
 
@@ -82,7 +82,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-[BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更), [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する), [BL-027](BACKLOG.md#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする), and [BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する) are all complete; see [Recently completed work](#5-recently-completed-work) above. [BL-028](BACKLOG.md#bl-028--ダイジェストナビゲーションの配置を再設計する) (P2, ダイジェストナビゲーションの配置再設計) is recorded as ユーザー原文 with spec undecided pending kickoff; BACKLOG.md records no explicit ordering among BL-028 and BL-007, so none is named as the ranked next candidate here.
+[BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更), [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する), [BL-027](BACKLOG.md#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする), and [BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する) are all complete; see [Recently completed work](#5-recently-completed-work) above. [BL-028](BACKLOG.md#bl-028--ダイジェストナビゲーションの配置を再設計する) (P2, ダイジェストナビゲーションの配置再設計) has a confirmed spec and Draft PR with user visual acceptance pending; see [Active work](#active-work) above. BACKLOG.md records no explicit ordering among BL-028 and BL-007, so BL-028 is not named as the ranked next candidate purely by priority number.
 
 [BL-023](BACKLOG.md#bl-023--article編集品質改善) is on hold after the v9 and fixed-v10 prompt-only No-Go evaluations and is not ranked in this short priority list. Reconsider it only through a separately designed structured ARTICLE-field contract or facts-based limited deterministic composition.
 
