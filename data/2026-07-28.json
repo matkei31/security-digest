@@ -1,0 +1,563 @@
+{
+  "schema_version": 1,
+  "digest_date": "2026-07-28",
+  "generated_at": "2026-07-28T08:03:14.072802+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 10,
+    "ai_attempted_count": 10,
+    "ai_success_count": 10,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0
+  },
+  "counts": {
+    "importance": {
+      "高": 1,
+      "中": 8,
+      "低": 1,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 2,
+      "今週確認": 4,
+      "参考": 4,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 3,
+      "攻撃・脅威動向": 3,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 1,
+      "AI・新技術リスク": 3,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "掲載10件｜重要度「高」1件｜本日確認2件｜今週確認4件\n本日中に適用性または初動要否を確認する記事が2件あります。",
+    "important_highlights": [
+      "CISAは2026年7月27日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Fortinet FortiOSには、認証されていないリモートの攻撃者が細工されたHTTPリクエストを介して、機微な情報を漏えいさせる脆弱性があります。",
+      "CISAは2026年7月27日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Arista VeloCloud Orchestrator On-PremにOSコマンドインジェクションの脆弱性があり、リモートの攻撃者が特権的な内部機能にアクセスし、VCOホストに影響を与える可能性があります。",
+      "Google CloudとMicrosoft Azureにおいて、「Confused Deputy」と呼ばれる種類の脆弱性が依然として存在していることが報告されました。この脆弱性を悪用されると、攻撃者は容易に管理者レベルの権限を取得し、クラウドプロバイダーのアクセス制御を回避できる可能性があります。"
+    ],
+    "discussion_points": [
+      "CISAは2026年7月27日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Fortinet FortiOSには、認証されていないリモートの攻撃者が細工されたHTTPリクエストを介して、機微な情報を漏えいさせる脆弱性があります。\n金融機関でFortinet FortiOSを利用している場合に限り、適用性確認の対象になります。悪用には、まず別の脆弱性を介してファイルシステムレベルで製品が侵害されている必要があります。",
+      "CISAは2026年7月27日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Arista VeloCloud Orchestrator On-PremにOSコマンドインジェクションの脆弱性があり、リモートの攻撃者が特権的な内部機能にアクセスし、VCOホストに影響を与える可能性があります。\n金融機関でArista VeloCloud Orchestrator On-Premを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。"
+    ],
+    "check_items": [
+      "Fortinet FortiOSの利用有無と影響バージョン・外部露出を確認する",
+      "CVE-2026-16812の影響を受けるArista VeloCloud Orchestrator On-Premの利用有無と影響バージョン・外部露出を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:c991330f722436f7d29cc43ab10faf85821a09ce2938242ee4dd832328b40da5",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/cloud-security/confused-deputy-flaws-google-cloud-microsoft-azure",
+      "canonical_url": "https://www.darkreading.com/cloud-security/confused-deputy-flaws-google-cloud-microsoft-azure",
+      "published_at": "2026-07-28T05:57:26+09:00",
+      "fetched_at": "2026-07-28T08:00:12.170027+09:00",
+      "title": "Google CloudとMicrosoft Azureに「Confused Deputy」の脆弱性が残存",
+      "raw_title": "'Confused Deputy' Flaws Persist in Google Cloud, Microsoft Azure",
+      "raw_excerpt": "This category of vulnerabilities allows an attacker to easily acquire administrative level permissions and bypass cloud providers' access controls.",
+      "content_hash": "sha256:e5f85b834104a6495d4e7a82ec691cdbd60598a10b6b22a914a0eb8e1ee4d65c",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-28T08:00:15.016893+09:00",
+        "category": "クラウド・サプライチェーン",
+        "category_version": "v1",
+        "category_reason": "記事の主題がGoogle CloudとMicrosoft Azureにおけるクラウドセキュリティの脆弱性であるため。",
+        "tags": [
+          "クラウド",
+          "IAM",
+          "サプライチェーン"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Google CloudとMicrosoft Azureにおいて、「Confused Deputy」と呼ばれる種類の脆弱性が依然として存在していることが報告されました。この脆弱性を悪用されると、攻撃者は容易に管理者レベルの権限を取得し、クラウドプロバイダーのアクセス制御を回避できる可能性があります。",
+        "financial_impact": "金融機関がGoogle CloudまたはMicrosoft Azureを利用している場合、これらのクラウド環境におけるアクセス制御のバイパスや管理者権限の不正取得のリスクに関係します。",
+        "recommended_actions": [
+          "自社および委託先におけるGoogle CloudおよびMicrosoft Azureの利用状況を確認する",
+          "クラウド環境のアクセス制御設定と権限管理について再評価し、必要に応じて強化を検討する",
+          "各クラウドプロバイダーからの公式なガイダンスや緩和策の情報を確認する"
+        ],
+        "reason": "重要度は、広く利用される主要クラウドサービスにおける管理者権限の不正取得につながる脆弱性であり、適用性評価の優先度が高いため「高」です。確認目安は、具体的な悪用事例や緊急の対応期限が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9739b8d0ff90f7ac0eb9bd17c5e0d14070cb16ada3fa230d9b70e92c1d199214",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/cybersecurity-operations/fbi-breaking-affiliate-trust-lockbit-takedown",
+      "canonical_url": "https://www.darkreading.com/cybersecurity-operations/fbi-breaking-affiliate-trust-lockbit-takedown",
+      "published_at": "2026-07-28T05:33:29+09:00",
+      "fetched_at": "2026-07-28T08:00:12.170027+09:00",
+      "title": "FBI、LockBitのテイクダウン成功はアフィリエイトの信頼破壊が加速要因と説明",
+      "raw_title": "FBI: Breaking Affiliate Trust Sped Along LockBit's Takedown",
+      "raw_excerpt": "An FBI agent explains how the mulitnational law-enforcement Operation Cronos was successful in disrupting the largest ransomware group of its time.",
+      "content_hash": "sha256:e5f5cd9ccf038761fa3bbb4cf8f927784a2786b72109f0c1147bb62c77a8a04e",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-28T08:00:31.947895+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ランサムウェアグループのテイクダウンに関するFBIの説明が主題であるため。",
+        "tags": [
+          "ランサムウェア"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "FBIは、多国籍法執行機関による「Operation Cronos」が、当時最大のランサムウェアグループであったLockBitの活動を停止させることに成功した要因として、アフィリエイト間の信頼関係を破壊したことを挙げました。",
+        "financial_impact": "金融機関がLockBitによるランサムウェア攻撃の標的となるリスクは依然として存在しますが、今回のテイクダウンは脅威の動向を理解する上で参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、LockBitのテイクダウンに関する情報であり、脅威動向の把握に資するため「中」です。確認目安は、具体的な緊急対応を要する情報ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:47607845e1cdf882b792f3f800f64a2cf75fbefff2717ecd343fe30054b0e124",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/nvidia-forms-37-member-open-secure-ai.html",
+      "canonical_url": "https://thehackernews.com/2026/07/nvidia-forms-37-member-open-secure-ai.html",
+      "published_at": "2026-07-28T03:10:05+09:00",
+      "fetched_at": "2026-07-28T08:00:12.170027+09:00",
+      "title": "NVIDIAが37の組織とOpen Secure AI Allianceを結成し、NOOAフレームワークをオープンソース化",
+      "raw_title": "NVIDIA Forms 37-Member Open Secure AI Alliance and Open-Sources NOOA Framework",
+      "raw_excerpt": "NVIDIA and 36 other organizations have formed the Open Secure AI Alliance to develop and share open technologies, techniques, and tools for securing software and artificial intelligence (AI) agents.\n\n",
+      "content_hash": "sha256:804fc0620afdd6351df75084f38dc9e53651177913e44b0649c969dc799f2799",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-28T08:00:49.025811+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "NVIDIAがAIのセキュリティ向上を目的としたアライアンスを結成し、関連フレームワークをオープンソース化したことが主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント",
+          "ガイドライン"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "NVIDIAは36の組織と共同でOpen Secure AI Allianceを結成し、ソフトウェアとAIエージェントのセキュリティを確保するためのオープンな技術、手法、ツールを開発・共有すると発表しました。このアライアンスにはMicrosoft、Cisco、Cloudflare、CrowdStrike、IBMなどが参加しています。",
+        "financial_impact": "金融機関がAI技術の導入や活用を進める上で、AIのセキュリティ確保は重要な課題です。本アライアンスの活動は、将来的に金融機関のAI利用におけるセキュリティガイドラインやツールに影響を与える可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIセキュリティに関する業界動向であり、現時点での直接的な影響や具体的な対応が不明確なため「中」です。確認目安は、具体的な脅威や対応期限が示されておらず、中長期的な情報収集が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e4b1545030ea9aee899f4cdf05a90ae6238727f9590f7cb5a9a1d8eea3e950d7",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/threat-intelligence/adversaries-do-not-need-zero-day-they-read-your-rulebook",
+      "canonical_url": "https://www.darkreading.com/threat-intelligence/adversaries-do-not-need-zero-day-they-read-your-rulebook",
+      "published_at": "2026-07-28T02:31:18+09:00",
+      "fetched_at": "2026-07-28T08:00:12.170027+09:00",
+      "title": "攻撃者はゼロデイを必要としない — 彼らはあなたのルールブックを読んでいる",
+      "raw_title": "Adversaries Don't Need a Zero-Day — They Read Your Rulebook",
+      "raw_excerpt": "Confidence in autonomous security tools is declining, and here's why.",
+      "content_hash": "sha256:68ed082ac7ac30d172202e0352e68edb2ce624a33fc2493ade695478c6205097",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-28T08:01:05.741936+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "記事は攻撃者の行動原理と脅威動向について述べているため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "自律型セキュリティツールへの信頼が低下している理由について解説しており、攻撃者がゼロデイ脆弱性ではなく、組織の既存のルールや設定の不備を悪用している現状を指摘しています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。一般的なセキュリティ対策の考え方に関する情報として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、一般的な脅威動向に関する考察であり、特定の製品やインシデントに関する情報ではないため「低」です。確認目安は、具体的なアクションを促す内容や期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a5319572253987401b7c279e8ab06ba0e5a6f5839b82974f7a853a42c7347db7",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/dysphoria-iot-botnet-adds-blockchain-c2.html",
+      "canonical_url": "https://thehackernews.com/2026/07/dysphoria-iot-botnet-adds-blockchain-c2.html",
+      "published_at": "2026-07-28T02:16:28+09:00",
+      "fetched_at": "2026-07-28T08:00:12.170027+09:00",
+      "title": "Dysphoria IoTボットネットがブロックチェーンC2と被害者リレーを追加、JackSkid摘発後に",
+      "raw_title": "Dysphoria IoT Botnet Adds Blockchain C2 and Victim Relays After JackSkid Disruption",
+      "raw_excerpt": "Dysphoria, an Internet of Things (IoT) botnet line tracked by CNCERT and XLab, has adopted blockchain-based name services and infected-device relays after a March law-enforcement operation against Jac",
+      "content_hash": "sha256:b97a6c07526a2c723b8516add00740388704dab5e2f0cc179ca7f38ca088a9d5",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-28T08:01:22.888656+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "IoTボットネットの新たな攻撃手法とインフラに関する記事であるため。",
+        "tags": [
+          "APT",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Dysphoria IoTボットネットが、JackSkidインフラに対する法執行機関の摘発後、ブロックチェーンベースの名前サービスと感染デバイスのリレー機能を導入しました。これにより、ボットネットの妨害がより困難になると研究者は指摘しています。",
+        "financial_impact": "金融機関が直接的な標的となる可能性は低いですが、IoTデバイスを広範に利用している場合、サプライチェーンリスクや間接的な脅威として関連する可能性があります。",
+        "recommended_actions": [
+          "自社および委託先におけるIoTデバイスの利用状況とセキュリティ対策状況を確認する",
+          "IoTデバイスのネットワーク分離やアクセス制御の強化を検討する"
+        ],
+        "reason": "重要度は、IoTボットネットの動向であり、金融機関への直接的な影響は限定的であるため「中」です。確認目安は、新たな攻撃手法の動向把握が目的であり、即時対応の根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:321b693c0c4da882b6bd3b660af0c5101520f1394400e12b2cef4893bc9509ca",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blogs.microsoft.com/blog/2026/07/27/rethinking-security-for-the-age-of-ai/",
+      "canonical_url": "https://blogs.microsoft.com/blog/2026/07/27/rethinking-security-for-the-age-of-ai/",
+      "published_at": "2026-07-28T01:40:00+09:00",
+      "fetched_at": "2026-07-28T08:00:12.170027+09:00",
+      "title": "AI時代のセキュリティ再考：Microsoftが「Project Perception」を発表",
+      "raw_title": "Rethinking security for the age of AI",
+      "raw_excerpt": "The physics of cybersecurity are changing. Introducing security's new cyber stack: Project Perception.\nThe post Rethinking security for the age of AI appeared first on Microsoft Security Blog.",
+      "content_hash": "sha256:a8fa4dc35411fc5a45d0879914940bde8ca4245fb698b26de5aafb137601dfdc",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-28T08:01:39.926098+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIを活用した新しいセキュリティシステムと、AI時代におけるセキュリティの考え方の再構築であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Microsoftは、AIの時代に対応するため、AIを活用してリスクを継続的に認識・推論・行動する新しいセキュリティシステム「Project Perception」を発表しました。これは、攻撃者がAIを悪用する脅威に対抗し、防御側もAIの速度で対応できるよう設計されています。",
+        "financial_impact": "金融機関がAI技術の導入を進める中で、AI関連のセキュリティリスクへの対応は重要です。本記事はMicrosoftのAIセキュリティ戦略に関する情報であり、自社のAIセキュリティ戦略を検討する上での参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI時代のセキュリティに関するMicrosoftの新しいアプローチであり、中長期的な戦略検討の参考となるため「中」です。確認目安は、具体的な脅威や緊急対応を求める内容ではなく、情報提供が主であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c7e71e255b88731215363d8797488d7d27e1bf8f6a15d35a9d6875fa5d80833e",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/07/27/enhancing-ai-security-through-global-ai-red-teaming/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/07/27/enhancing-ai-security-through-global-ai-red-teaming/",
+      "published_at": "2026-07-28T01:25:00+09:00",
+      "fetched_at": "2026-07-28T08:00:12.170027+09:00",
+      "title": "グローバルなAIレッドチームによるAIセキュリティ強化",
+      "raw_title": "Enhancing AI security through global AI red teaming",
+      "raw_excerpt": "Microsoft's External Red Team Alliance (EXTRA) is a global AI security initiative designed to advance AI safety research and red teaming. By partnering with universities, researchers, and regional exp",
+      "content_hash": "sha256:dd36a5bc4546b643af818171004db592c3e8dc18b9a770d10585d26cc439f9e1",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-28T08:01:56.921312+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIシステムのセキュリティテストと安全性向上に関する取り組みであるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Microsoftは、AIの安全性とセキュリティテストを強化するため、外部の専門知識を活用する「External Red Team Alliance (EXTRA)」を発表しました。これは、AIレッドチームの活動をグローバルに拡大し、世界中の大学研究室に資金提供することで、AIシステムの高リスクな障害モードや多様な攻撃経路に対応することを目指します。",
+        "financial_impact": "金融機関がAIシステムを導入・利用する際のセキュリティ対策やリスク評価に関する一般的な参考情報となります。直接的な影響や具体的なアクションは記事からは確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIセキュリティに関する一般的な動向と取り組みであり、特定の製品や緊急の脆弱性情報ではないため「中」です。確認目安は、具体的な短期アクションや対応期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5937bd850a8b331f12540fc30f91d8973d89d56e34e784ff61259c5c35880ed3",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/public-exploit-released-for-patched.html",
+      "canonical_url": "https://thehackernews.com/2026/07/public-exploit-released-for-patched.html",
+      "published_at": "2026-07-27T23:40:00+09:00",
+      "fetched_at": "2026-07-28T08:00:12.170027+09:00",
+      "title": "vBulletinの認証前コード実行脆弱性に対する公開エクスプロイトがリリース",
+      "raw_title": "Public Exploit Released for Patched vBulletin Pre-Auth Code Execution Flaw",
+      "raw_excerpt": "Public exploit details released on July 27 show how an unauthenticated request can reach PHP's eval() function inside vBulletin and execute code on an unpatched forum server. The attack requires no ac",
+      "content_hash": "sha256:73d068947742aa3ea4d91d5b0618a2d68fccf4296c97a983cfc073969629db0f",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-28T08:02:13.933575+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "vBulletinの認証前コード実行脆弱性と、その公開エクスプロイトのリリースが主題であるため。",
+        "tags": [
+          "パッチ",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "vBulletinの認証不要でコード実行が可能な脆弱性に対する公開エクスプロイトが7月27日にリリースされました。この脆弱性は、認証なしのリクエストがPHPのeval()関数に到達し、パッチ未適用のフォーラムサーバー上でコードを実行できるものです。",
+        "financial_impact": "金融機関でvBulletinのフォーラムサーバーを利用している場合に限り関係します。利用有無は記事から確認できません。",
+        "recommended_actions": [
+          "vBulletinのフォーラムサーバーの利用有無と、影響を受けるバージョン（6.2.1以前、6.1.6以前）の稼働状況を確認する",
+          "vBulletinのベンダーが提供するパッチや緩和策の適用状況を確認する"
+        ],
+        "reason": "重要度は、vBulletinの利用が限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、公開エクスプロイトがリリースされたものの、直ちに広範な攻撃が確認されているわけではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a7030687c0746b4be5352e2691ba5e88f30fb707edeb8d103b22ca3ed6c502fe",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-07-28T08:00:12.170027+09:00",
+      "title": "Fortinet FortiOSにおける機微な情報漏えいの脆弱性「CVE-2025-68686」",
+      "raw_title": "CVE-2025-68686 — Fortinet FortiOS Exposure of Sensitive Information to an Unauthorized Actor Vulnerability",
+      "raw_excerpt": "Fortinet FortiOS contains an exposure of sensitive information to an unauthorized actor vulnerability. This may allow a remote unauthenticated attacker to bypass the patch developed for the symbolic l",
+      "content_hash": "sha256:354e13d514d64b1eeb95c070f0e13134cb16de17546e675f3e18d01c9d5cb596",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-28T08:02:31.007050+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Fortinet FortiOSの脆弱性に関する情報が主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "本日確認",
+        "summary": "CISAは2026年7月27日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Fortinet FortiOSには、認証されていないリモートの攻撃者が細工されたHTTPリクエストを介して、機微な情報を漏えいさせる脆弱性があります。",
+        "financial_impact": "金融機関でFortinet FortiOSを利用している場合に限り、適用性確認の対象になります。悪用には、まず別の脆弱性を介してファイルシステムレベルで製品が侵害されている必要があります。",
+        "recommended_actions": [
+          "Fortinet FortiOSの利用有無と影響バージョン・外部露出を確認する",
+          "ベンダーの一次情報と緩和策を確認し、対応要否を評価する",
+          "侵害兆候が確認された場合は、提供者の指針に基づき対応を検討する"
+        ],
+        "reason": "重要度は、悪用には別の脆弱性による事前侵害が必要であり、適用範囲が限定的であるため「中」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2025-68686",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-07-27T23:00:12Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2025-68686",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-02-10T16:16:09Z",
+              "last_modified_at": "2026-07-27T19:47:07Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 5.9,
+                "base_severity": "MEDIUM",
+                "vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N",
+                "source": "psirt@fortinet.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-07-27T23:00:12Z",
+              "date_added": "2026-07-27"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:0e5e0cbf2f89c8c3f5ac3a41fbacf3d5a0b76acf0f80bbb764172fc7c31170a0",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-07-28T08:00:12.170027+09:00",
+      "title": "Arista VeloCloud Orchestrator On-PremのOSコマンドインジェクション脆弱性「CVE-2026-16812」",
+      "raw_title": "CVE-2026-16812 — Arista VeloCloud Orchestrator On-Prem OS Command Injection Vulnerability",
+      "raw_excerpt": "Arista VeloCloud Orchestrator On-Prem contains an OS command injection vulnerability that may allow a remote attacker to access privileged internal functionality and impact the VCO host. Successful ex",
+      "content_hash": "sha256:2e762a3f660aa6fe1dc6b8a08ec2cf33bfb08d8d8215e1d91d901449913a8104",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-28T08:02:48.396084+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CISA KEVに新規追加されたOSコマンドインジェクション脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "本日確認",
+        "summary": "CISAは2026年7月27日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Arista VeloCloud Orchestrator On-PremにOSコマンドインジェクションの脆弱性があり、リモートの攻撃者が特権的な内部機能にアクセスし、VCOホストに影響を与える可能性があります。",
+        "financial_impact": "金融機関でArista VeloCloud Orchestrator On-Premを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "CVE-2026-16812の影響を受けるArista VeloCloud Orchestrator On-Premの利用有無と影響バージョン・外部露出を確認する",
+          "ベンダーの一次情報（Arista Networks）を確認し、修正版や緩和策の適用要否を評価する",
+          "侵害兆候が確認された場合は、ベンダーの指針に基づき対応を検討する"
+        ],
+        "reason": "重要度は、対象製品の利用可能性が記事から確認できず、適用範囲が不確実なため「中」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-16812",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-07-27T23:00:12Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-16812",
+              "vuln_status": "Received",
+              "published_at": "2026-07-27T16:17:03Z",
+              "last_modified_at": "2026-07-27T20:16:39Z",
+              "cvss": {
+                "version": "4.0",
+                "base_score": 10.0,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:P/AU:X/R:X/V:X/RE:X/U:X",
+                "source": "psirt@arista.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-07-27T23:00:12Z",
+              "date_added": "2026-07-27"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
