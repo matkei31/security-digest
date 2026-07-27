@@ -617,7 +617,7 @@
 - **ID:** BL-029
 - **タイトル:** 「金融機関との関連」とARTICLE見出しの情報設計を再検討する
 - **優先度:** P1
-- **状態:** 記録済み / 仕様未確定 / 未実装
+- **状態:** ユーザー受入済み / merge待ち
 - **出所種別:** ユーザー原文
 - **ユーザー原文:** 「『金融機関との関連』のところは、どういった事項について関連を記載しているのかが不明。このままだったら消した方がいい。使うなら、本文側の『何が起きた』『なぜ金融機関に関係する』をまとめた文章にする必要がある。」
 - **追加のユーザー原文:** 「あと、『何が起きた』『なぜ金融機関に関係する』というタイトルはダサい。他の文言を提案してほしい」
@@ -632,24 +632,23 @@
   - ARTICLE、deterministic BRIEF、重複表示、source忠実性、daily JSON field、prompt／runtime境界を確認してから仕様化する。
   - 完了済みBL-021を再オープンしない。
   - prompt-only改善No-GoのBL-023とも統合せず、関係を整理した上で別Ticketとして扱う。
-- **完了条件:** 未定義。着手時にユーザーと次を詰める。
-  1. 「金融機関との関連」を削除するか維持するか
-  2. 維持する場合の情報単位と文章構成
-  3. ARTICLEとBRIEFの役割分担
-  4. 同一内容の重複防止
-  5. source忠実性とprovenance
-  6. daily JSON schema変更の要否
-  7. prompt変更／deterministic composition／表示変更の境界
-  8. 代替見出し案
-  9. PC／390px screenshotによる目視受入
-  10. UI_SPEC／DECISIONS更新の要否
-
-  現在の問題認識と検討方向のみを記録し、具体的なfield構成・文章生成方法・見出し・完了条件は着手時にユーザーと詰める。
-- **依存関係:** BL-021（Today's Briefの意味忠実性・semantic validation再設計、完了済み・再オープンしない）、BL-023（ARTICLE編集品質改善、prompt-only改善No-Go・統合しない別Ticket）、ARTICLE／BRIEF prompt、daily JSON schema。
-- **実装証跡:** 未実装。
-- **ユーザー受入証跡:** 記録なし。
-- **残作業:** 着手時の仕様確定（削除／維持判断、情報単位、ARTICLE／BRIEF役割分担、重複防止、provenance、schema変更要否、prompt／runtime境界、代替見出し、screenshot受入、UI_SPEC／DECISIONS更新要否）。実装は未着手。
-- **注記:** BL-021・BL-023を再オープンまたは統合しない。BL-007（custom domain移行）との実施順序は本Ticket登録時点では未決定。
+- **完了条件:** ユーザーと確定した仕様は次のとおり。
+  1. 公開見出しを「本日の要点」の子見出し3つ（概況／重要・優先事項／確認事項）、記事カードの3見出し（概要／金融機関との関連／確認すべきこと）へ統一する。
+  2. 「重要・優先事項」は、現行`discussion_points`の対象条件（`importance=="高"`または`urgency`が`"本日確認"`／`"今週確認"`）を維持して選定する。
+  3. 選定された記事ごとに同一記事の`analysis.summary`と`analysis.financial_impact`をverbatimで使用し、一項目一`<li>`・summaryとfinancial_impactを別`<p>`として表示する。
+  4. field欠損時は、両方存在→2段落、片方のみ→片方だけ、両方欠損→その記事を除外する。
+  5. 重複除外は`(summary, financial_impact)`の完全一致pair単位のみとする。
+  6. ARTICLE prompt・ARTICLE response schema・`ARTICLE_PROMPT_VERSION`・ARTICLE model・validation・fallback契約は変更しない。
+  7. public daily JSON schemaは変更しない。`overview`は単一のテキスト値（成功時は`string`、`not_attempted`等ではnullになり得る）、`important_highlights`／`discussion_points`／`check_items`は`list[str]`を維持する。`important_highlights`は表示せず現行のまま維持する。
+  8. 新規生成分のinternal composition identifierを`today-brief-extractive-v2`とする。過去daily JSON（`prompt_version`・`discussion_points`含む）は書き換えない。
+  9. 過去Archiveは原則、既存daily JSONのofflineHTML再生成で新仕様を適用する。`items[].analysis`から安全に再構成できない日だけ、見出し「注目論点」で保存済み`discussion_points`を一項目一段落のまま互換表示する。
+  10. merge前にPC 1280px／390pxでの目視受入をユーザーから得る。
+  11. BL-021を再オープンしない。BL-023を再オープン・統合しない。BL-028・BL-007は本Ticketのscopeに含めない。
+- **依存関係:** BL-021（Today's Briefの意味忠実性・semantic validation再設計、完了済み・再オープンしない）、BL-023（ARTICLE編集品質改善、prompt-only改善No-Go・統合しない別Ticket）、[SD-018](DECISIONS.md#sd-018--screen-deterministic-extractive-todays-brief-without-a-semantic-blocking-validator)（部分的にsupersede）、ARTICLE／BRIEF prompt、daily JSON schema。
+- **実装証跡:** `fetch.py`へ新しい共有helper `select_priority_items()` を追加し、新規Brief生成（`compose_extractive_brief()`）とHTML描画（`build_html()`）の両方から呼び出すことで選定ロジックを一元化した。ARTICLE分析済み記事のうち`importance=="高"`または`urgency`が`"本日確認"`／`"今週確認"`の記事を対象に、同一記事の`analysis.summary`と`analysis.financial_impact`をverbatimで`(summary, financial_impact)`ペア単位の完全一致dedupeを適用して選定し、`<li class="brief-priority-item">`内の`<p class="brief-priority-summary">`／`<p class="brief-priority-impact">`として2段落表示する。field欠損時は存在する方だけを表示し、両方欠損の記事は除外する。「本日の要点」の子見出しを概況／重要・優先事項／確認事項へ、記事カードの見出しを概要／金融機関との関連／確認すべきことへ変更した（表示順・ARTICLE field内容は変更していない）。HTML描画は`brief.prompt_version`に依存せず、`items[].ai_analysis`が有効な限り過去Archive（`today-brief-extractive-v1`、`today-brief-v3`含む）でも新見出しを再現する。再構成不能（分析済み記事なし）かつ保存済み`discussion_points`が存在する日だけ、見出し「注目論点」で一項目一段落のまま互換表示する。`daily_json.BRIEF_PROMPT_VERSION`を`today-brief-extractive-v2`へbumpした（`ARTICLE_PROMPT_VERSION`・ARTICLE response schema・daily JSON `schema_version`は変更なし）。実装後にorigin/mainが本番自動生成コミット`cfe2c97f42c2e53980594b0d7f6f83977e2f4736`（2026-07-27 07:57 JST生成、0記事）へ進んだため、通常mergeで取り込んだ（rebase・force-push不使用、`data/`はmain側をそのまま採用しPR固有の変更なし）。merge後のdataから既存daily JSON全17日分をoffline再生成した（外部HTTP／Gemini／RSS／NVD／CISA KEV呼び出しなし、`data/`・`docs/translate_cache.json`は無変更）。記事あり14日（2026-07-11・12・14〜18・20〜26）は全日で新仕様「重要・優先事項」の再構成に成功した。0記事3日（2026-07-13、2026-07-19、2026-07-27）は元々「本日の要点」非表示となる既存のempty-day挙動であり、再構成不能による互換表示とは異なる。再構成不能・互換表示（見出し「注目論点」）に該当した日は0件。関連test更新: `test_fetch.py`、`test_archive.py`、`test_todays_brief.py`（新規`SelectPriorityItemsTest`を追加）、`test_daily_json.py`、`test_article_analysis.py`、`test_article_v5.py`、`test_vulnerability_facts_prompt.py`、`test_ui_spec.py`、`test_security_requirements.py`、`test_security_operations.py`。full unittest 1240件 OK、`git diff --check` clean、Markdown内部リンク全件成功、BL／SD ID一意性確認済み。
+- **ユーザー受入証跡:** ユーザー原文「8枚とも確認した。BL-029の見出し、重要・優先事項の2段落表示、過去Archiveへの適用、0記事日の表示に問題なし。BL-029として受入。」。受入対象は、本日の要点の見出し、重要・優先事項の2段落表示、過去Archiveへの適用、0記事日の表示、PC 1280px／390pxの8画面（`top-page-2026-07-27-1280px.png`、`top-page-2026-07-27-390px.png`、`daily-archive-2026-07-27-1280px.png`、`daily-archive-2026-07-27-390px.png`、`daily-archive-2026-07-26-1280px.png`、`daily-archive-2026-07-26-390px.png`、`daily-archive-2026-07-25-1280px.png`、`daily-archive-2026-07-25-390px.png`）。accepted head `c4ca053b176c93fba3588c1f0aaf4116ab3fbc33`、[PR #60](https://github.com/matkei31/security-digest/pull/60)。merge commit／Pages deployment／公開反映確認はmerge後に別途記録する。BL-021・BL-023は本受入によって再オープンしない。BL-028・BL-007は本Ticketのscopeに含めない。
+- **残作業:** merge、merge後のGitHub Pages公開反映確認。
+- **注記:** BL-021・BL-023を再オープンまたは統合しない。BL-007（custom domain移行）・BL-028（ナビゲーション再設計）は本Ticketのscopeに含めない。implementation branch `claude/bl029-priority-items`。
 
 ## 完了済み参照
 

@@ -66,6 +66,9 @@
     .brief-list{list-style:none;display:grid;gap:6px}
     .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
     .brief-list li::before{content:"・";position:absolute;left:0}
+    .brief-priority-list{list-style:none;display:grid;gap:12px;margin:0;padding:0}
+    .brief-priority-item{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;display:grid;gap:4px}
+    .brief-priority-summary,.brief-priority-impact{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word;margin:0}
     .dashboard{max-width:680px;margin:12px auto 0;padding:0 12px}
     .dashboard-head{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
     .dashboard-head h2{font-size:13px;font-weight:700;color:#e6edf3}
@@ -126,14 +129,14 @@
     <div class="brief-box">
       <h2>本日の要点</h2>
       <div class="brief-section">
-      <h3 class="brief-section-title">本日の概況</h3>
+      <h3 class="brief-section-title">概況</h3>
       <p class="brief-status-line">掲載3件｜重要度「高」2件｜本日確認0件｜今週確認3件</p>
       <p class="brief-overview">本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が3件あり、計画的な確認が必要です。一方、重要度の高い情報が2件あるため、内容は優先的に把握する必要があります。今週は、広く利用されるウェブサーバーやVPNアプライアンスにおける重大な脆弱性が複数報告され、特に一部は公開前に悪用が確認されており、迅速な対応が求められる状況です。</p>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の注目論点</h3>
-      <ul class="brief-list"><li>外部公開されるネットワーク機器やウェブサーバーの脆弱性が、公開前に悪用される事例が継続的に発生しており、サプライチェーン全体でのセキュリティ対策と迅速な情報共有・対応体制の重要性が改めて浮き彫りになっています。自組織だけでなく、委託先の利用状況を含めた包括的なリスク評価と対策の強化が求められます。</li><li>VPNアプライアンスやウェブサーバーなど、外部からのアクセス経路となる製品の脆弱性は、内部ネットワークへの侵入の足がかりとなるため、特に高い優先度での対応が必要です。これらの製品に対する脆弱性管理プロセスや緊急時の対応計画について、改めて見直しと強化を図るべきです。</li></ul>
+      <h3 class="brief-section-title">重要・優先事項</h3>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">F5は、リモートの認証されていない攻撃者が細工されたHTTPリクエストによりNGINXのワーカープロセスでヒープバッファオーバーフローを引き起こす重大な脆弱性（CVE-2026-42533）に対する修正をリリースしました。この脆弱性はNGINX 1.30.4（stable）および1.31.3（mainline）、NGINX Plus 37.0.3.1で修正されており、以前のバージョンを使用している場合はアップグレードが必要です。</p><p class="brief-priority-impact">多くの金融機関でウェブサーバーやリバースプロキシとしてNGINXが利用されている可能性があり、本脆弱性が悪用された場合、サービス停止や情報漏えいにつながる恐れがあるため関係します。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">SonicWall Secure Mobile Access (SMA) 1000シリーズVPNアプライアンスのゼロデイ脆弱性が、2026年6月22日以前から公開前に悪用されていたことが判明しました。Volexityは、この活動を「UTA0533」と名付け、未確認の脅威アクターによるものとして追跡しています。</p><p class="brief-priority-impact">金融機関でSonicWall SMA 1000シリーズVPNアプライアンスを利用している場合に関係します。外部からのアクセス経路として利用される製品であるため、悪用されると内部ネットワークへの不正アクセスや情報漏えいにつながる可能性があります。</p></li></ul>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の確認事項</h3>
+      <h3 class="brief-section-title">確認事項</h3>
       <ul class="brief-list"><li>自社および委託先でNGINXおよびSonicWall SMA 1000シリーズVPNアプライアンスの利用有無、バージョン、外部公開状況を確認し、該当する場合はベンダーの一次情報に基づき、速やかにパッチ適用や緩和策の実施を検討してください。</li><li>SonicWall SMA 1000シリーズVPNアプライアンスを利用している場合は、過去のログを調査し、不正アクセスや侵害の兆候がないか確認してください。</li></ul>
     </div>
     </div>
@@ -187,7 +190,7 @@
       <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>F5は、リモートの認証されていない攻撃者が細工されたHTTPリクエストによりNGINXのワーカープロセスでヒープバッファオーバーフローを引き起こす重大な脆弱性（CVE-2026-42533）に対する修正をリリースしました。この脆弱性はNGINX 1.30.4（stable）および1.31.3（mainline）、NGINX Plus 37.0.3.1で修正されており、以前のバージョンを使用している場合はアップグレードが必要です。</p>
         </section>
         <section class="vulnerability-facts">
@@ -195,7 +198,7 @@
         <ul class="vulnerability-list"><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-42533" target="_blank" rel="noopener noreferrer">CVE-2026-42533</a><span class="vulnerability-cvss">CVSS 9.2 / Critical（v4.0・他機関）</span></li></ul>
       </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>多くの金融機関でウェブサーバーやリバースプロキシとしてNGINXが利用されている可能性があり、本脆弱性が悪用された場合、サービス停止や情報漏えいにつながる恐れがあるため関係します。</p>
         </section>
         <section class="article-section">
@@ -213,11 +216,11 @@
       <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>SonicWall Secure Mobile Access (SMA) 1000シリーズVPNアプライアンスのゼロデイ脆弱性が、2026年6月22日以前から公開前に悪用されていたことが判明しました。Volexityは、この活動を「UTA0533」と名付け、未確認の脅威アクターによるものとして追跡しています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関でSonicWall SMA 1000シリーズVPNアプライアンスを利用している場合に関係します。外部からのアクセス経路として利用される製品であるため、悪用されると内部ネットワークへの不正アクセスや情報漏えいにつながる可能性があります。</p>
         </section>
         <section class="article-section">
@@ -235,11 +238,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>ロシアの国家支援型脅威アクターUAC-0145（Sandwormのサブクラスター）が、ClickFix CAPTCHAを悪用してウクライナの標的を騙し、データ窃取マルウェアに感染させていることが確認されました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関への直接的な影響は記事からは確認できません。特定の攻撃手法と脅威アクターの動向として、参考情報にとどまります。</p>
         </section>
       </div>

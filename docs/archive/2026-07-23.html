@@ -66,6 +66,9 @@
     .brief-list{list-style:none;display:grid;gap:6px}
     .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
     .brief-list li::before{content:"・";position:absolute;left:0}
+    .brief-priority-list{list-style:none;display:grid;gap:12px;margin:0;padding:0}
+    .brief-priority-item{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;display:grid;gap:4px}
+    .brief-priority-summary,.brief-priority-impact{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word;margin:0}
     .dashboard{max-width:680px;margin:12px auto 0;padding:0 12px}
     .dashboard-head{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
     .dashboard-head h2{font-size:13px;font-weight:700;color:#e6edf3}
@@ -126,14 +129,14 @@
     <div class="brief-box">
       <h2>本日の要点</h2>
       <div class="brief-section">
-      <h3 class="brief-section-title">本日の概況</h3>
+      <h3 class="brief-section-title">概況</h3>
       <p class="brief-status-line">掲載9件｜重要度「高」0件｜本日確認0件｜今週確認4件</p>
       <p class="brief-overview">本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が4件あり、計画的な確認が必要です。</p>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">金融機関との関連</h3>
-      <ul class="brief-list"><li>金融機関は顧客の本人確認や取引認証において、合成ID詐欺のリスクに常に晒されています。また、機械IDの悪用は、システムへの不正アクセスやデータ漏洩に繋がり、金融サービスに重大な影響を及ぼす可能性があります。</li><li>金融機関がcPanelやWHMサーバーを直接運用している場合、またはこれらのサービスを利用している委託先が存在する場合に関係します。記事からは金融機関におけるこれらの製品の利用状況は確認できません。</li></ul>
+      <h3 class="brief-section-title">重要・優先事項</h3>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">合成ID詐欺は、実在する複数のデータと偽のデータを組み合わせて架空の人物を作り出し、そのIDを悪用する手口です。この種の詐欺は、実在の被害者がいないため検知が困難であり、今後は機械IDも標的になる可能性が指摘されています。</p><p class="brief-priority-impact">金融機関は顧客の本人確認や取引認証において、合成ID詐欺のリスクに常に晒されています。また、機械IDの悪用は、システムへの不正アクセスやデータ漏洩に繋がり、金融サービスに重大な影響を及ぼす可能性があります。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">サイバーセキュリティ研究者らは、侵害されたGitHubリポジトリを分散攻撃インフラとして利用し、cPanelおよびWebHost Manager (WHM)インスタンスを標的とする大規模キャンペーンを明らかにしました。この活動には、7月12日から13日にかけて、正規のPHPおよびDevOps開発者に関連する10個の悪意あるPackagist開発バージョンが含まれています。</p><p class="brief-priority-impact">金融機関がcPanelやWHMサーバーを直接運用している場合、またはこれらのサービスを利用している委託先が存在する場合に関係します。記事からは金融機関におけるこれらの製品の利用状況は確認できません。</p></li></ul>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の確認事項</h3>
+      <h3 class="brief-section-title">確認事項</h3>
       <ul class="brief-list"><li>機械IDの管理・認証プロセスにおける潜在的な脆弱性を評価し、対策を検討する</li><li>cPanelおよびWHMサーバーの利用有無と、関連するGitHubリポジトリやPackagistパッケージの利用状況を確認する</li></ul>
     </div>
     </div>
@@ -175,11 +178,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>合成ID詐欺は、実在する複数のデータと偽のデータを組み合わせて架空の人物を作り出し、そのIDを悪用する手口です。この種の詐欺は、実在の被害者がいないため検知が困難であり、今後は機械IDも標的になる可能性が指摘されています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関は顧客の本人確認や取引認証において、合成ID詐欺のリスクに常に晒されています。また、機械IDの悪用は、システムへの不正アクセスやデータ漏洩に繋がり、金融サービスに重大な影響を及ぼす可能性があります。</p>
         </section>
         <section class="article-section">
@@ -197,11 +200,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>サイバーセキュリティ研究者らは、侵害されたGitHubリポジトリを分散攻撃インフラとして利用し、cPanelおよびWebHost Manager (WHM)インスタンスを標的とする大規模キャンペーンを明らかにしました。この活動には、7月12日から13日にかけて、正規のPHPおよびDevOps開発者に関連する10個の悪意あるPackagist開発バージョンが含まれています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がcPanelやWHMサーバーを直接運用している場合、またはこれらのサービスを利用している委託先が存在する場合に関係します。記事からは金融機関におけるこれらの製品の利用状況は確認できません。</p>
         </section>
         <section class="article-section">
@@ -219,11 +222,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Cisco Talosは、Chaosランサムウェアグループが使用する新しいRustベースのRAT「msaRAT」を発見しました。msaRATはChrome DevTools Protocol (CDP)を介してブラウザを操作し、WebRTCデータチャネルを利用して隠れたC2通信を確立します。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がChaosランサムウェアグループの標的となる可能性があり、その攻撃手法を理解することは防御策を講じる上で重要です。特に、ブラウザを悪用したC2通信は既存のネットワーク監視ツールによる検知が困難であるため、注意が必要です。</p>
         </section>
         <section class="article-section">
@@ -241,11 +244,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>ブラジル発のバンキング型トロイの木馬が、ポルトガルで活発に拡散していることが確認されました。両国が同じ言語を話すため、ポルトガルの企業が攻撃者にとって容易な標的となっています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関を直接標的とした攻撃ではありませんが、バンキング型トロイの木馬は最終的に金融機関の顧客を狙う可能性があり、脅威動向として把握しておく必要があります。</p>
         </section>
       </div>
@@ -258,11 +261,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>機密コンピューティングの導入を妨げていた主要な課題は技術によって解決されつつあるものの、エージェントAIが新たな課題をもたらしています。専門家がいくつかの解決策を提示しています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関におけるAIの利用拡大に伴い、機密データの保護は重要な課題です。エージェントAIがもたらす新たなリスクは、将来的なセキュリティ戦略や技術選定に影響を与える可能性があります。</p>
         </section>
       </div>
@@ -276,11 +279,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Cisco Talosは、Black Hat USA 2026でのプレゼンテーション内容を公開しました。AIエージェントのセキュリティ、Warlockランサムウェア、ゼロトラスト、サイバーセキュリティ詐欺予測、脆弱性発見トレンドなど多岐にわたるテーマが予定されています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がAIエージェントを業務に導入する際のリスク管理や、最新の脅威動向を把握する上で参考となる情報です。直接的な影響は限定的ですが、将来的なリスク評価に役立ちます。</p>
         </section>
       </div>
@@ -294,11 +297,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Googleは、アカウントからロックアウトされたユーザー向けに、セルフィー動画による新しいサインイン方法を追加しました。これは既存の復旧方法（メールアドレスや電話番号など）に加えて提供されるオプションです。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がGoogleアカウントを業務で利用している場合、アカウント復旧プロセスの変更がセキュリティ運用に影響を与える可能性があります。ただし、直接的な脆弱性や攻撃に関する情報ではありません。</p>
         </section>
       </div>
@@ -312,11 +315,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>Microsoftと保険会社AXA XLは、サイバーインシデント対応における連携を発表しました。AI時代におけるインシデントの高速化に対応するため、Microsoft Defender Experts Cybersecurity Incident ResponseサービスをAXA XLのサイバー保険契約者に提供し、技術的・ビジネス的・保険上の意思決定を並行して調整することを目指します。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がMicrosoft Defender Experts Cybersecurity Incident Responseサービスを利用している場合、またはAXA XLのサイバー保険契約者である場合に、インシデント対応体制強化の参考情報となります。</p>
         </section>
       </div>
@@ -330,11 +333,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>日本の食品・物流企業がサイバー攻撃を受け、ケンタッキーフライドチキンなどの大手フランチャイズを含む数千の顧客への冷凍食品の供給が停止しました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関への直接的な関係は確認できず、他業界のインシデント事例として参考情報にとどまります。</p>
         </section>
       </div>

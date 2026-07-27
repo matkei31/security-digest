@@ -143,7 +143,7 @@ class PromptVersionPropagationTest(unittest.TestCase):
         self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v8")
 
     def test_brief_composition_contract_is_extractive_v1(self):
-        self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-extractive-v1")
+        self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-extractive-v2")
 
     def test_generator_reflects_new_article_prompt_version(self):
         digest = dj.build_daily_digest(
@@ -154,7 +154,7 @@ class PromptVersionPropagationTest(unittest.TestCase):
             datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
         )
         self.assertEqual(digest["generator"]["article_prompt_version"], "article-analysis-v8")
-        self.assertEqual(digest["generator"]["brief_prompt_version"], "today-brief-extractive-v1")
+        self.assertEqual(digest["generator"]["brief_prompt_version"], "today-brief-extractive-v2")
 
     def test_each_article_analysis_reflects_new_prompt_version(self):
         result = call_gemini_analyze(response_body=make_candidate_body(VALID_ANALYSIS_RESPONSE))

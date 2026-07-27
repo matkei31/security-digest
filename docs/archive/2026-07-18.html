@@ -66,6 +66,9 @@
     .brief-list{list-style:none;display:grid;gap:6px}
     .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
     .brief-list li::before{content:"・";position:absolute;left:0}
+    .brief-priority-list{list-style:none;display:grid;gap:12px;margin:0;padding:0}
+    .brief-priority-item{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;display:grid;gap:4px}
+    .brief-priority-summary,.brief-priority-impact{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word;margin:0}
     .dashboard{max-width:680px;margin:12px auto 0;padding:0 12px}
     .dashboard-head{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
     .dashboard-head h2{font-size:13px;font-weight:700;color:#e6edf3}
@@ -126,14 +129,14 @@
     <div class="brief-box">
       <h2>本日の要点</h2>
       <div class="brief-section">
-      <h3 class="brief-section-title">本日の概況</h3>
+      <h3 class="brief-section-title">概況</h3>
       <p class="brief-status-line">掲載8件｜重要度「高」2件｜本日確認1件｜今週確認4件</p>
       <p class="brief-overview">本日中に適用性または初動要否を確認する記事が1件あります。本日は、WordPressコアの認証なしコード実行脆弱性や、進行中の認証情報窃取キャンペーンなど、即座の対応が求められる脅威が確認されました。また、OpenSSLのメモリ枯渇脆弱性や特定の開発ツールを狙うサプライチェーン攻撃も報告されており、広範なシステムへの影響が懸念されます。</p>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の注目論点</h3>
-      <ul class="brief-list"><li>AIモデルの業務導入において、セキュリティ上の監視が適切に行われているか、また盲目的な信頼が脅威とならないよう、設計・運用面でのリスク評価と対策について議論が必要です。</li><li>Viteフロントエンドツールエコシステムを標的とした悪意のあるnpmパッケージが発見されており、開発環境におけるサプライチェーンセキュリティ対策の現状と強化策について検討するべきです。</li></ul>
+      <h3 class="brief-section-title">重要・優先事項</h3>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">WordPressコアに「wp2shell」と呼ばれる新たな脆弱性が発見されました。この脆弱性は認証されていないHTTPリクエストを通じてコード実行を可能にし、プラグインが一切ないWordPressのクリーンインストール環境でも悪用可能です</p><p class="brief-priority-impact">WordPressをウェブサイトやシステム基盤として利用している金融機関は、本脆弱性の影響を受ける可能性があります。特に外部公開されているWordPressサイトは、認証なしでコード実行されるリスクがあるため、早急な確認が必要です。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">2026年4月下旬から6月中旬にかけて、Microsoft Defender Expertsは顧客環境でACR Stealerの活動増加を観測しました。これらのキャンペーンは「ClickFix」というソーシャルエンジニアリング手法を用いて、ブラウザの認証情報、認証トークン、機密文書を窃取しています。</p><p class="brief-priority-impact">金融機関でMicrosoft製品を利用している場合、従業員がClickFixの手法に騙されることで、ブラウザの認証情報やセッショントークンが窃取され、アカウント侵害やクラウド資源への不正アクセスにつながる可能性があります。</p></li></ul>
     </div><div class="brief-section">
-      <h3 class="brief-section-title">本日の確認事項</h3>
+      <h3 class="brief-section-title">確認事項</h3>
       <ul class="brief-list"><li>自社および委託先でWordPressを利用しているか、またWordPress 6.9.5または7.0.2へのアップデートが適用されているかを確認し、未適用であれば速やかにパッチを適用してください。</li><li>従業員に対し、ClickFix型のプロンプトや偽の検証チェック、ペースト＆実行指示が不正なものであることを教育するとともに、ACR Stealerに関連する疑わしい活動の監視を強化してください。</li></ul>
     </div>
     </div>
@@ -187,11 +190,11 @@
       <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item is-accent">確認目安 本日確認</span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>WordPressコアに「wp2shell」と呼ばれる新たな脆弱性が発見されました。この脆弱性は認証されていないHTTPリクエストを通じてコード実行を可能にし、プラグインが一切ないWordPressのクリーンインストール環境でも悪用可能です</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>WordPressをウェブサイトやシステム基盤として利用している金融機関は、本脆弱性の影響を受ける可能性があります。特に外部公開されているWordPressサイトは、認証なしでコード実行されるリスクがあるため、早急な確認が必要です。</p>
         </section>
         <section class="article-section">
@@ -209,11 +212,11 @@
       <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>2026年4月下旬から6月中旬にかけて、Microsoft Defender Expertsは顧客環境でACR Stealerの活動増加を観測しました。これらのキャンペーンは「ClickFix」というソーシャルエンジニアリング手法を用いて、ブラウザの認証情報、認証トークン、機密文書を窃取しています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関でMicrosoft製品を利用している場合、従業員がClickFixの手法に騙されることで、ブラウザの認証情報やセッショントークンが窃取され、アカウント侵害やクラウド資源への不正アクセスにつながる可能性があります。</p>
         </section>
         <section class="article-section">
@@ -231,11 +234,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>OpenSSLの「HollowByte」と呼ばれる脆弱性により、未パッチのOpenSSLサーバーは11バイトのTLSリクエストで最大131KBのメモリを確保し、そのメモリはプロセスが再起動するまで解放されない可能性があります。この問題はOktaのレッドチームが報告し、OpenSSLは6月にCVEなしで修正をリリースしました。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>OpenSSLは多くの金融機関のシステムで利用されている可能性があるため、当該製品を利用している場合に限り、適用性確認の対象になります。</p>
         </section>
         <section class="article-section">
@@ -253,11 +256,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>IncランサムウェアグループがSonicWall Secure Mobile Access (SMA) 製品の2つのゼロデイ脆弱性を悪用していることが判明しました。これらの脆弱性を組み合わせることで、攻撃者はSonicWallのモバイルアクセスアプライアンス上でroot権限を取得できるとされています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関でSonicWall Secure Mobile Access (SMA) 製品を利用している場合に限り、適用性確認の対象になります。記事からは利用有無を確認できません。</p>
         </section>
         <section class="article-section">
@@ -275,11 +278,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>サイバーセキュリティ研究者が、Viteフロントエンドツールエコシステムを標的とした7つの悪意のあるnpmパッケージを発見しました。このキャンペーンは「ViteVenom」と名付けられ、Tronを含む4層のブロックチェーンベースのC2インフラを使用する「ChainVeil」の拡大と見られています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関でViteフロントエンドツールおよび関連するnpmパッケージを開発・利用している場合に、サプライチェーン攻撃のリスクとして関係します。利用有無は記事から確認できません。</p>
         </section>
         <section class="article-section">
@@ -297,11 +300,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>AIモデルがコマンドの解釈と実行の両方を担うことで、重要なサイバーセキュリティ上の監視が排除され、盲目的な信頼が真の脅威となるという指摘です。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関がAIモデルを業務に導入する際、その設計や運用においてセキュリティ上の監視が適切に行われているかを確認する必要があるため関係します。</p>
         </section>
       </div>
@@ -315,11 +318,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>MicrosoftはBlack Hat USA 2026での発表内容を公開しました。脅威アクターが信頼されたシステム、サービス、ID、ツール、開発ワークフロー、AIシステムを標的としている現状と、サプライチェーン攻撃やAI関連のリスクへの防御策について議論されます。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関への直接的な影響は限定的です。記事は一般的な脅威動向とMicrosoftの取り組みについて述べており、特定の製品や脆弱性に関する緊急の対応を求めるものではありません。</p>
         </section>
       </div>
@@ -333,11 +336,11 @@
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>ホワイトハウスは、AI時代における脆弱性対応を調整するための「Gold Eagle Clearinghouse」を立ち上げましたが、その具体的な実装方法については多くの疑問が残っています。</p>
         </section>
         <section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>金融機関への直接的な影響は記事からは確認できません。AI技術の利用拡大に伴う脆弱性対応の動向として、中長期的な情報収集の参考となります。</p>
         </section>
       </div>

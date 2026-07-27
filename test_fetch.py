@@ -231,9 +231,9 @@ class ArticleCardDisplayTest(unittest.TestCase):
             '<span class="article-tag">パッチ</span></div>',
             html,
         )
-        self.assertIn("何が起きた", html)
+        self.assertIn("概要", html)
         self.assertIn("CISAが悪用確認済み脆弱性をKEVへ追加した。", html)
-        self.assertIn("なぜ金融機関に関係する", html)
+        self.assertIn("金融機関との関連", html)
         self.assertIn("該当製品を利用する金融機関では確認が必要になり得る。", html)
         self.assertIn("確認すべきこと", html)
         self.assertIn("<ul class=\"action-list\"><li>利用有無を確認する</li><li>外部公開状況を確認する</li></ul>", html)
@@ -293,9 +293,9 @@ class ArticleCardDisplayTest(unittest.TestCase):
 
         self.assertLess(card.index("article-heading"), card.index('class="article-meta"'))
         self.assertLess(card.index('class="article-meta"'), card.index('class="article-assessment"'))
-        self.assertLess(card.index('class="article-assessment"'), card.index("何が起きた"))
-        self.assertLess(card.index("何が起きた"), card.index("なぜ金融機関に関係する"))
-        self.assertLess(card.index("なぜ金融機関に関係する"), card.index("確認すべきこと"))
+        self.assertLess(card.index('class="article-assessment"'), card.index("概要"))
+        self.assertLess(card.index("概要"), card.index("金融機関との関連"))
+        self.assertLess(card.index("金融機関との関連"), card.index("確認すべきこと"))
         self.assertLess(card.index("確認すべきこと"), card.index('class="article-tags"'))
 
     def test_empty_tags_do_not_render_tag_area(self):
@@ -652,7 +652,7 @@ class TodaysBriefHtmlTest(unittest.TestCase):
     def test_overview_heading_and_paragraph_are_shown(self):
         html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
         segment = brief_segment(html)
-        self.assertIn("本日の概況", segment)
+        self.assertIn('<h3 class="brief-section-title">概況</h3>', segment)
         self.assertIn(
             f'<p class="brief-overview">{SAMPLE_BRIEF["overview"]}</p>', segment
         )
@@ -665,32 +665,53 @@ class TodaysBriefHtmlTest(unittest.TestCase):
             self.assertNotIn(text, segment)
 
     def test_discussion_points_render_as_list(self):
+        # itemsが未評価のため、保存済みdiscussion_pointsをlegacy見出し
+        # 「注目論点」でverbatim表示する(BL-029のfallback経路)。
         html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
         segment = brief_segment(html)
-        self.assertIn("本日の注目論点", segment)
+        self.assertIn('<h3 class="brief-section-title">注目論点</h3>', segment)
         for text in SAMPLE_BRIEF["discussion_points"]:
             self.assertIn(f"<li>{text}</li>", segment)
 
     def test_extractive_brief_uses_financial_relevance_heading(self):
+        # BL-029: 重要・優先事項はitems[].ai_analysisから常に再構成するため、
+        # 保存済みprompt_versionが旧today-brief-extractive-v1でも、記事分析が
+        # 有効な限り新しい「重要・優先事項」見出しと2段落構造が再現される。
+        item = dict(
+            self._make_item(),
+            ai_analysis={
+                "status": "success", "importance": "高", "urgency": "本日確認",
+                "summary": "SUMMARY_X", "financial_impact": "IMPACT_X",
+                "recommended_actions": [],
+            },
+            ai_analysis_meta={"status": "success"},
+        )
         brief = dict(SAMPLE_BRIEF)
         brief["prompt_version"] = "today-brief-extractive-v1"
-        html = fetch.build_html([self._make_item()], brief)
+        html = fetch.build_html([item], brief)
         segment = brief_segment(html)
-        self.assertIn("金融機関との関連", segment)
+        self.assertIn('<h3 class="brief-section-title">重要・優先事項</h3>', segment)
+        self.assertIn('<p class="brief-priority-summary">SUMMARY_X</p>', segment)
+        self.assertIn('<p class="brief-priority-impact">IMPACT_X</p>', segment)
         self.assertNotIn(
-            '<h3 class="brief-section-title">本日の注目論点</h3>',
+            '<h3 class="brief-section-title">注目論点</h3>',
             segment,
         )
-        for text in brief["discussion_points"]:
-            self.assertIn(f"<li>{text}</li>", segment)
+        self.assertNotIn("金融機関との関連", segment)
 
-    def test_v3_brief_keeps_legacy_discussion_heading_without_mutation(self):
+    def test_unreconstructable_archive_falls_back_to_legacy_heading_without_mutation(self):
+        # BL-029: items[].ai_analysisが評価済みでない(=再構成不能)場合だけ、
+        # 保存済みdiscussion_pointsを見出し「注目論点」でverbatim表示する。
+        # prompt_versionの値には依存しない(v3・extractive-v1いずれでも同じ)。
         brief = dict(SAMPLE_BRIEF)
         brief["prompt_version"] = "today-brief-v3"
         before = json.dumps(brief, ensure_ascii=False, sort_keys=True)
         html = fetch.build_html([self._make_item()], brief)
         segment = brief_segment(html)
-        self.assertIn("本日の注目論点", segment)
+        self.assertIn('<h3 class="brief-section-title">注目論点</h3>', segment)
+        for text in brief["discussion_points"]:
+            self.assertIn(f"<li>{text}</li>", segment)
+        self.assertNotIn('<h3 class="brief-section-title">重要・優先事項</h3>', segment)
         self.assertNotIn("金融機関との関連", segment)
         self.assertEqual(
             json.dumps(brief, ensure_ascii=False, sort_keys=True),
@@ -700,7 +721,7 @@ class TodaysBriefHtmlTest(unittest.TestCase):
     def test_check_items_render_as_list(self):
         html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
         segment = brief_segment(html)
-        self.assertIn("本日の確認事項", segment)
+        self.assertIn('<h3 class="brief-section-title">確認事項</h3>', segment)
         for text in SAMPLE_BRIEF["check_items"]:
             self.assertIn(f"<li>{text}</li>", segment)
 
@@ -708,23 +729,25 @@ class TodaysBriefHtmlTest(unittest.TestCase):
         brief = dict(SAMPLE_BRIEF, discussion_points=[])
         html = fetch.build_html([self._make_item()], brief)
         segment = brief_segment(html)
-        self.assertNotIn("本日の注目論点", segment)
-        overview = segment[segment.index("本日の概況"):segment.index("本日の確認事項")]
+        self.assertNotIn("注目論点", segment)
+        self.assertNotIn("重要・優先事項", segment)
+        overview = segment[segment.index("概況"):segment.index("確認事項")]
         self.assertNotIn("<ul", overview)  # overviewセクションにulがないこと
 
     def test_check_items_empty_section_is_not_rendered(self):
         brief = dict(SAMPLE_BRIEF, check_items=[])
         html = fetch.build_html([self._make_item()], brief)
         segment = brief_segment(html)
-        self.assertNotIn("本日の確認事項", segment)
-        self.assertIn("本日の注目論点", segment)
+        self.assertNotIn("確認事項", segment)
+        self.assertIn('<h3 class="brief-section-title">注目論点</h3>', segment)
 
     def test_both_discussion_points_and_check_items_empty(self):
         brief = dict(SAMPLE_BRIEF, discussion_points=[], check_items=[])
         html = fetch.build_html([self._make_item()], brief)
         segment = brief_segment(html)
-        self.assertNotIn("本日の注目論点", segment)
-        self.assertNotIn("本日の確認事項", segment)
+        self.assertNotIn("注目論点", segment)
+        self.assertNotIn("重要・優先事項", segment)
+        self.assertNotIn("確認事項", segment)
         self.assertNotIn("<ul", segment)
         self.assertNotIn('<ul class="brief-list"></ul>', segment)
 
@@ -732,16 +755,17 @@ class TodaysBriefHtmlTest(unittest.TestCase):
         brief = dict(SAMPLE_BRIEF, check_items=[])
         html = fetch.build_html([self._make_item()], brief)
         segment = brief_segment(html)
-        self.assertIn("本日の注目論点", segment)
-        self.assertNotIn("本日の確認事項", segment)
+        self.assertIn('<h3 class="brief-section-title">注目論点</h3>', segment)
+        self.assertNotIn("確認事項", segment)
         self.assertEqual(segment.count("<ul"), 1)
 
     def test_only_check_items_present_discussion_points_section_absent(self):
         brief = dict(SAMPLE_BRIEF, discussion_points=[])
         html = fetch.build_html([self._make_item()], brief)
         segment = brief_segment(html)
-        self.assertNotIn("本日の注目論点", segment)
-        self.assertIn("本日の確認事項", segment)
+        self.assertNotIn("注目論点", segment)
+        self.assertNotIn("重要・優先事項", segment)
+        self.assertIn('<h3 class="brief-section-title">確認事項</h3>', segment)
         self.assertEqual(segment.count("<ul"), 1)
 
     def test_success_with_all_arrays_empty_still_shows_overview(self):
@@ -753,8 +777,9 @@ class TodaysBriefHtmlTest(unittest.TestCase):
         segment = brief_segment(html)
         self.assertIn(brief["overview"], segment)
         self.assertNotIn("重要情報ハイライト", segment)
-        self.assertNotIn("本日の注目論点", segment)
-        self.assertNotIn("本日の確認事項", segment)
+        self.assertNotIn("注目論点", segment)
+        self.assertNotIn("重要・優先事項", segment)
+        self.assertNotIn("確認事項", segment)
 
     def test_brief_none_hides_section_entirely(self):
         html = fetch.build_html([self._make_item()], None)
@@ -983,14 +1008,14 @@ class BriefStatusLineHtmlTest(unittest.TestCase):
         brief = dict(SAMPLE_BRIEF, overview="")
         html = fetch.build_html([self._make_item()], brief)
         segment = brief_segment(html)
-        self.assertNotIn("本日の概況", segment)
+        self.assertNotIn("概況", segment)
         self.assertNotIn("brief-status-line", segment)
 
     def test_none_overview_produces_no_overview_section_without_exception(self):
         brief = dict(SAMPLE_BRIEF, overview=None)
         html = fetch.build_html([self._make_item()], brief)
         segment = brief_segment(html)
-        self.assertNotIn("本日の概況", segment)
+        self.assertNotIn("概況", segment)
         self.assertNotIn("brief-status-line", segment)
 
     def test_legacy_overview_from_json_is_converted_to_current_format_in_html(self):
@@ -2048,7 +2073,7 @@ class VulnerabilityFactsIntegrationTest(unittest.TestCase):
 
         self.assertEqual(result["status"], "success")
         self.assertEqual(result["important_highlights"], ["テスト要約文です。"])
-        self.assertEqual(result["discussion_points"], ["テスト影響文です。"])
+        self.assertEqual(result["discussion_points"], ["テスト要約文です。\nテスト影響文です。"])
         self.assertEqual(result["check_items"], ["UNIQUE-RECOMMENDED-ACTION-MARKER"])
         public_result = json.dumps(result, ensure_ascii=False)
 
@@ -2981,12 +3006,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
         self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 30)})
 
-    def test_sd_ids_are_unique_and_cover_sd001_to_sd025(self):
+    def test_sd_ids_are_unique_and_cover_sd001_to_sd026(self):
         text = self._read("DECISIONS.md")
         sd_headings = [h for h in self._headings(text) if re.match(r"^SD-\d{3}\b", h)]
         ids = [re.match(r"^(SD-\d{3})", h).group(1) for h in sd_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
-        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 26)})
+        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 27)})
 
     def test_bl_001_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -3176,7 +3201,9 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("the user did not review the public site", recently_completed)
         self.assertIn("No residual work remains", recently_completed)
         self.assertIn("| ARTICLE prompt | `article-analysis-v8` |", status_text)
-        self.assertIn("| BRIEF composition contract on `main` | `today-brief-extractive-v1` |", status_text)
+        self.assertIn("| BRIEF composition contract on current `main` | `today-brief-extractive-v1` |", status_text)
+        self.assertIn("BL-029 accepted Draft candidate", status_text)
+        self.assertIn("| BL-029 accepted Draft candidate", status_text)
         self.assertIn("| BRIEF model on `main` | `deterministic-extractive` |", status_text)
 
         decisions = self._read("DECISIONS.md")
@@ -3258,10 +3285,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("user acceptance were completed on 2026-07-23", sd018)
 
         status = self._read("STATUS.md")
-        self.assertIn("| BRIEF composition contract on `main` | `today-brief-extractive-v1` |", status)
+        self.assertIn("| BRIEF composition contract on current `main` | `today-brief-extractive-v1` |", status)
+        self.assertIn("BL-029 accepted Draft candidate", status)
         self.assertIn("| BRIEF model on `main` | `deterministic-extractive` |", status)
         self.assertIn("| ARTICLE Gemini model | `gemini-2.5-flash` |", status)
         self.assertIn("| Latest published daily JSON | `today-brief-extractive-v1`／`deterministic-extractive`", status)
+        self.assertIn("2026-07-27 07:57 JST生成、0記事", status)
         self.assertIn("BL-021は2026-07-23にユーザー受入済みとして完了", status)
 
     def test_bl_022_and_bl_023_preserve_requested_scope(self):

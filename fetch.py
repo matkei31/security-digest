@@ -3885,6 +3885,111 @@ def _project_extractive_candidates(candidates, valid_source_ids, max_items):
     return texts, provenance
 
 
+def _priority_item_field(analysis, key):
+    """summary/financial_impactを「存在しないものとして扱う」判定はstripで行うが、
+    返す値は元の文字列そのまま(strip・修正しない)。空文字・空白のみ・非文字列は
+    Noneとして扱う(BL-029)。
+    """
+    value = analysis.get(key)
+    if isinstance(value, str) and value.strip():
+        return value
+    return None
+
+
+def select_priority_items(items, max_items=None):
+    """「重要・優先事項」を、ARTICLE analysis.summary/analysis.financial_impactの
+    同一記事ペアからverbatimで構成する(BL-029)。
+
+    新規Brief生成時(compose_extractive_brief)と、過去Archiveのoffline HTML
+    再描画時(build_html)の両方から呼ばれる共有helper。選定条件・順序・上限・
+    pair単位dedupeをここへ一元化し、生成経路と描画経路でロジックがずれることを
+    防ぐ。この関数はitems[].ai_analysisだけを参照し、brief.prompt_versionには
+    一切依存しない。既存の`today-brief-extractive-v1`／`today-brief-v3`等の
+    過去daily JSONでも、items[].ai_analysisが有効な限り同じ結果を再現する。
+
+    選定条件(現行discussion_pointsの対象条件を維持): 分析済み(is_article_evaluated)
+    かつ importance=="高" または urgency in ("本日確認","今週確認")。
+
+    戻り値: (priority_items, provenance)
+    priority_items: [{"source_id", "summary"(str|None), "financial_impact"(str|None),
+                       "combined_text", "selection_rank"}, ...]
+    provenance: 各priority itemにつき、存在するfieldごとに1レコード
+                (同じsource_id・selection_rank・priority_item_rankを共有し、
+                 component_orderでsummary=1/financial_impact=2を区別する)。
+    """
+    if max_items is None:
+        max_items = daily_json.BRIEF_EXTRACTIVE_MAX_DISCUSSION_POINTS
+
+    source_ids = _build_brief_source_ids(items)
+    ordered_items = sort_items_for_display(items)
+
+    priority_items = []
+    provenance = []
+    seen_pairs = set()
+
+    for item in ordered_items:
+        if not is_article_evaluated(item):
+            continue
+        analysis = item["ai_analysis"]
+        importance = analysis.get("importance")
+        urgency = analysis.get("urgency")
+        if not (importance == "高" or urgency in ("本日確認", "今週確認")):
+            continue
+
+        summary = _priority_item_field(analysis, "summary")
+        impact = _priority_item_field(analysis, "financial_impact")
+        if summary is None and impact is None:
+            continue
+
+        pair_key = (summary, impact)
+        if pair_key in seen_pairs:
+            continue
+        seen_pairs.add(pair_key)
+
+        if summary is not None and impact is not None:
+            combined_text = summary + "\n" + impact
+        elif summary is not None:
+            combined_text = summary
+        else:
+            combined_text = impact
+
+        rank = len(priority_items) + 1
+        source_id = source_ids[id(item)]
+        priority_items.append({
+            "source_id": source_id,
+            "summary": summary,
+            "financial_impact": impact,
+            "combined_text": combined_text,
+            "selection_rank": rank,
+        })
+
+        if summary is not None:
+            provenance.append({
+                "source_id": source_id,
+                "article_field": "analysis.summary",
+                "source_text": summary,
+                "section": "priority_items",
+                "selection_rank": rank,
+                "component_order": 1,
+                "priority_item_rank": rank,
+            })
+        if impact is not None:
+            provenance.append({
+                "source_id": source_id,
+                "article_field": "analysis.financial_impact",
+                "source_text": impact,
+                "section": "priority_items",
+                "selection_rank": rank,
+                "component_order": 2,
+                "priority_item_rank": rank,
+            })
+
+        if len(priority_items) >= max_items:
+            break
+
+    return priority_items, provenance
+
+
 def compose_extractive_brief(items):
     """既存ARTICLE分析を無加工で選択・配置し、内部provenanceとともに返す。
 
@@ -3908,7 +4013,6 @@ def compose_extractive_brief(items):
     ordered_items = sort_items_for_display(items)
 
     highlight_candidates = []
-    discussion_candidates = []
     for item in ordered_items:
         if not is_article_evaluated(item):
             continue
@@ -3925,24 +4029,15 @@ def compose_extractive_brief(items):
                 "section": "important_highlights",
             })
 
-        if importance == "高" or urgency in ("本日確認", "今週確認"):
-            discussion_candidates.append({
-                "source_id": source_id,
-                "article_field": "analysis.financial_impact",
-                "source_text": analysis.get("financial_impact"),
-                "section": "discussion_points",
-            })
-
     highlights, highlight_provenance = _project_extractive_candidates(
         highlight_candidates,
         valid_source_ids,
         daily_json.BRIEF_MAX_HIGHLIGHTS,
     )
-    discussion_points, discussion_provenance = _project_extractive_candidates(
-        discussion_candidates,
-        valid_source_ids,
-        daily_json.BRIEF_EXTRACTIVE_MAX_DISCUSSION_POINTS,
-    )
+    # BL-029: 「重要・優先事項」は同一記事のsummary/financial_impactペアから
+    # select_priority_items()で構成する(build_html()の描画時再構成と同じhelper)。
+    priority_items, discussion_provenance = select_priority_items(items)
+    discussion_points = [entry["combined_text"] for entry in priority_items]
 
     check_candidates = []
     if ctx["temporal_state"] != "C":
@@ -4045,7 +4140,7 @@ def build_todays_brief(items):
         print(
             f"Today's Briefを構成: 概況1件(状態:{ctx['temporal_state']}) / "
             f"ハイライト{len(result['important_highlights'])}件 / "
-            f"金融機関との関連{len(result['discussion_points'])}件 / "
+            f"重要・優先事項{len(result['discussion_points'])}件 / "
             f"確認事項{len(result['check_items'])}件"
         )
     else:
@@ -4363,17 +4458,16 @@ def build_html(
             sections = []
             if analysis["summary"]:
                 sections.append(f"""<section class="article-section">
-          <h3>何が起きた</h3>
+          <h3>概要</h3>
           <p>{esc(analysis["summary"])}</p>
         </section>""")
             if facts_html:
-                # 概要(何が起きた)の後、AI分析による解釈(なぜ金融機関に関係する・
-                # 確認すべきこと)の前に、外部機関の客観的ファクトを挿入する
-                # (Ticket 12b #4)。
+                # 概要の後、AI分析による解釈(金融機関との関連・確認すべきこと)の前に、
+                # 外部機関の客観的ファクトを挿入する(Ticket 12b #4)。
                 sections.append(facts_html)
             if analysis["financial_impact"]:
                 sections.append(f"""<section class="article-section">
-          <h3>なぜ金融機関に関係する</h3>
+          <h3>金融機関との関連</h3>
           <p>{esc(analysis["financial_impact"])}</p>
         </section>""")
             if analysis["recommended_actions"]:
@@ -4456,23 +4550,42 @@ def build_html(
             else:
                 overview_body_html = f'<p class="brief-overview">{esc(overview)}</p>'
             brief_sections.append(f"""<div class="brief-section">
-      <h3 class="brief-section-title">本日の概況</h3>
+      <h3 class="brief-section-title">概況</h3>
       {overview_body_html}
     </div>"""
             )
 
-        discussion_html = "".join(
-            f"<li>{esc(text)}</li>" for text in (brief.get("discussion_points") or [])
-        )
-        if discussion_html:
-            discussion_heading = (
-                "金融機関との関連"
-                if brief.get("prompt_version") == "today-brief-extractive-v1"
-                else "本日の注目論点"
-            )
+        # BL-029: 「重要・優先事項」はitems[].ai_analysisからselect_priority_items()で
+        # 常に再構成する。brief.prompt_versionには依存しないため、過去の
+        # today-brief-extractive-v1／today-brief-v3等のArchiveでも、記事分析が
+        # 有効な限り新UIを再現する(旧識別子ごとの分岐は行わない)。
+        priority_items, _priority_provenance = select_priority_items(items)
+        if priority_items:
+            priority_li_parts = []
+            for entry in priority_items:
+                paragraphs = ""
+                if entry["summary"] is not None:
+                    paragraphs += f'<p class="brief-priority-summary">{esc(entry["summary"])}</p>'
+                if entry["financial_impact"] is not None:
+                    paragraphs += f'<p class="brief-priority-impact">{esc(entry["financial_impact"])}</p>'
+                priority_li_parts.append(f'<li class="brief-priority-item">{paragraphs}</li>')
             brief_sections.append(f"""<div class="brief-section">
-      <h3 class="brief-section-title">{discussion_heading}</h3>
-      <ul class="brief-list">{discussion_html}</ul>
+      <h3 class="brief-section-title">重要・優先事項</h3>
+      <ul class="brief-priority-list">{"".join(priority_li_parts)}</ul>
+    </div>""")
+        else:
+            # 再構成不能(items[].ai_analysisから安全に再現できない)だが保存済み
+            # discussion_pointsが存在する場合だけ、内容を捨てずlegacy互換表示する
+            # (BL-029)。この日は新仕様適用日として扱わない。
+            legacy_points = [
+                text for text in (brief.get("discussion_points") or [])
+                if isinstance(text, str) and text.strip()
+            ]
+            if legacy_points:
+                legacy_html = "".join(f"<li>{esc(text)}</li>" for text in legacy_points)
+                brief_sections.append(f"""<div class="brief-section">
+      <h3 class="brief-section-title">注目論点</h3>
+      <ul class="brief-list">{legacy_html}</ul>
     </div>""")
 
         check_html = "".join(
@@ -4480,7 +4593,7 @@ def build_html(
         )
         if check_html:
             brief_sections.append(f"""<div class="brief-section">
-      <h3 class="brief-section-title">本日の確認事項</h3>
+      <h3 class="brief-section-title">確認事項</h3>
       <ul class="brief-list">{check_html}</ul>
     </div>""")
 
@@ -4572,6 +4685,9 @@ def build_html(
     .brief-list{{list-style:none;display:grid;gap:6px}}
     .brief-list li{{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}}
     .brief-list li::before{{content:"・";position:absolute;left:0}}
+    .brief-priority-list{{list-style:none;display:grid;gap:12px;margin:0;padding:0}}
+    .brief-priority-item{{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;display:grid;gap:4px}}
+    .brief-priority-summary,.brief-priority-impact{{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word;margin:0}}
     .dashboard{{max-width:680px;margin:12px auto 0;padding:0 12px}}
     .dashboard-head{{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}}
     .dashboard-head h2{{font-size:13px;font-weight:700;color:#e6edf3}}

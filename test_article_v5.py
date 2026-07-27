@@ -39,7 +39,7 @@ class VersionAndSchemaTest(unittest.TestCase):
         self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v8")
 
     def test_brief_prompt_version_and_schema_version_unchanged(self):
-        self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-extractive-v1")
+        self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-extractive-v2")
         self.assertEqual(dj.SCHEMA_VERSION, 1)
 
     def test_title_ja_in_schema_required_and_first_in_ordering(self):
