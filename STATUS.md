@@ -2,7 +2,7 @@
 
 ## 1. As of
 
-2026-07-25
+2026-07-27
 
 This file records the current, changeable project state. Incomplete, partially addressed, and acceptance-pending items are recorded in [BACKLOG.md](BACKLOG.md). Stable design and operating decisions are recorded in [DECISIONS.md](DECISIONS.md).
 
@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- [BL-028](BACKLOG.md#bl-028--ダイジェストナビゲーションの配置を再設計する) ダイジェストナビゲーションの配置再設計 — implemented on branch `claude/bl028-nav-two-row-left`, Draft PR, user visual acceptance pending. Adopted A案「左寄せ二段・ラベルなし」: PC／390pxとも、方向移動グループを1段目、全体導線グループを2段目とする左寄せの縦二段構造に統一した。日別Archiveの1段目は`← 前のダイジェスト`／`次のダイジェスト →`、2段目は`過去のダイジェスト`／`最新のダイジェスト`の順(左側が過去方向、右側が新しい方向)。トップページは1段目に利用可能な場合だけ`← 前のダイジェスト`、2段目に`過去のダイジェスト`。Archive一覧は単独の`最新のダイジェスト`を左寄せで表示する。リンクが一つもないグループは描画しない。4文言・日付非表示・href・aria-label・前後日付選定ロジックは変更していない。sticky headerの二段化に伴い`--anchor-offset`をPC 112px→218px、390px 168px→226pxへ実測に基づき調整した。全Archiveへoffline再生成で遡及適用済み。data不変、production未実行。
+- [BL-028](BACKLOG.md#bl-028--ダイジェストナビゲーションの配置を再設計する) ダイジェストナビゲーションの配置再設計 — implemented on branch `claude/bl028-nav-two-row-left`, user visual acceptance complete (verbatim: 「10枚とも確認した。BL-028の左寄せ二段配置、前→次／過去→最新の順序、上部・下部ナビゲーション、単一方向ケース、PC 1280px／390pxの表示に問題なし。BL-028として受入。」), accepted head `77b4106618c29b9220012fd10e9ff616d773fa56`, [PR #62](https://github.com/matkei31/security-digest/pull/62) merge pending. Adopted A案「左寄せ二段・ラベルなし」: PC／390pxとも、方向移動グループを1段目、全体導線グループを2段目とする左寄せの縦二段構造に統一した。日別Archiveの1段目は`← 前のダイジェスト`／`次のダイジェスト →`、2段目は`過去のダイジェスト`／`最新のダイジェスト`の順(左側が過去方向、右側が新しい方向)。トップページは1段目に利用可能な場合だけ`← 前のダイジェスト`、2段目に`過去のダイジェスト`。Archive一覧は単独の`最新のダイジェスト`を左寄せで表示する。リンクが一つもないグループは描画しない。4文言・日付非表示・href・aria-label・前後日付選定ロジックは変更していない。sticky headerの二段化に伴い`--anchor-offset`をPC 112px→218px、390px 168px→226pxへ実測に基づき調整した(UI_SPEC Version 1.6 accepted candidate)。全Archiveへoffline再生成で遡及適用済み。data不変、production未実行。
 
 ## 5. Recently completed work
 

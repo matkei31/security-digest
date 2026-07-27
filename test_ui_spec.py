@@ -29,7 +29,7 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertTrue(self.spec_path.is_file())
         self.assertIn("# Monomi Digest UI Specification", self.spec)
         self.assertIn("- **バージョン:** 1.6", self.spec)
-        self.assertIn("- **状態:** Draft／ユーザー受入待ち", self.spec)
+        self.assertIn("- **状態:** 承認済み", self.spec)
         self.assertIn(
             "2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、"
             "Version 1.4として承認済みである",
@@ -71,14 +71,20 @@ class UiSpecDocumentTest(unittest.TestCase):
         )
         self.assertIn(
             "Version 1.6はBL-028のダイジェストナビゲーション配置再設計"
-            "（A案「左寄せ二段・ラベルなし」）を反映するDraftであり、"
-            "ユーザーのPC 1280px／390px目視受入までは確定仕様として扱わない。",
+            "（A案「左寄せ二段・ラベルなし」）を反映する。",
             self.spec,
         )
         self.assertIn(
+            "「10枚とも確認した。BL-028の左寄せ二段配置、前→次／過去→最新の順序、"
+            "上部・下部ナビゲーション、単一方向ケース、PC 1280px／390pxの表示に問題なし。"
+            "BL-028として受入。」と受入した",
+            self.spec,
+        )
+        self.assertIn("77b4106618c29b9220012fd10e9ff616d773fa56", self.spec)
+        self.assertIn(
             "Version 1.6は、BL-028でユーザーと確定したA案「左寄せ二段・ラベルなし」に基づき、"
             "ダイジェストナビゲーションをPC／390px共通の左寄せ縦二段構造"
-            "（1段目が方向移動、2段目が全体導線）へ再設計するDraftである。",
+            "（1段目が方向移動、2段目が全体導線）へ再設計する。",
             self.spec,
         )
         self.assertIn(
@@ -151,7 +157,7 @@ class UiSpecDocumentTest(unittest.TestCase):
         # BL-028 (Version 1.6 Draft): PC/390px share a left-aligned two-row
         # layout instead of the old PC left/right split.
         self.assertIn("PC／390pxともに方向移動グループを1段目、全体導線グループを2段目とする左寄せの縦二段構造", self.spec)
-        self.assertIn("### 6.4 ナビゲーション配置(BL-028, Version 1.6 Draft)", self.spec)
+        self.assertIn("### 6.4 ナビゲーション配置(BL-028, Version 1.6)", self.spec)
         self.assertIn("「次のダイジェスト →」", self.spec)
         self.assertIn("「過去のダイジェスト」「最新のダイジェスト」", self.spec)
         self.assertIn("| 1.1 | 承認済み | BL-022", self.spec)

@@ -2,8 +2,8 @@
 
 - **文書名:** Monomi Digest UI Specification
 - **バージョン:** 1.6
-- **状態:** Draft／ユーザー受入待ち
-- **適用対象:** 現行Monomi Digest。BL-006のブランド名変更（Security Digest→Monomi Digest、`🔐`維持、title／H1絵文字統一）は、2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、Version 1.4として承認済みである。[PR #57](https://github.com/matkei31/security-digest/pull/57)はmainへmergeされ、GitHub Pagesでの公開反映を確認済みである。Version 1.5はBL-029の「本日の要点」子見出し・記事カード見出しの再設計を反映する。ユーザーは`top-page-2026-07-27-1280px.png`、`top-page-2026-07-27-390px.png`、`daily-archive-2026-07-27-1280px.png`、`daily-archive-2026-07-27-390px.png`、`daily-archive-2026-07-26-1280px.png`、`daily-archive-2026-07-26-390px.png`、`daily-archive-2026-07-25-1280px.png`、`daily-archive-2026-07-25-390px.png`の計8画面を目視確認し、「8枚とも確認した。BL-029の見出し、重要・優先事項の2段落表示、過去Archiveへの適用、0記事日の表示に問題なし。BL-029として受入。」と受入した（accepted head `c4ca053b176c93fba3588c1f0aaf4116ab3fbc33`、[PR #60](https://github.com/matkei31/security-digest/pull/60)）。Version 1.6はBL-028のダイジェストナビゲーション配置再設計（A案「左寄せ二段・ラベルなし」）を反映するDraftであり、ユーザーのPC 1280px／390px目視受入までは確定仕様として扱わない。
+- **状態:** 承認済み
+- **適用対象:** 現行Monomi Digest。BL-006のブランド名変更（Security Digest→Monomi Digest、`🔐`維持、title／H1絵文字統一）は、2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、Version 1.4として承認済みである。[PR #57](https://github.com/matkei31/security-digest/pull/57)はmainへmergeされ、GitHub Pagesでの公開反映を確認済みである。Version 1.5はBL-029の「本日の要点」子見出し・記事カード見出しの再設計を反映する。ユーザーは`top-page-2026-07-27-1280px.png`、`top-page-2026-07-27-390px.png`、`daily-archive-2026-07-27-1280px.png`、`daily-archive-2026-07-27-390px.png`、`daily-archive-2026-07-26-1280px.png`、`daily-archive-2026-07-26-390px.png`、`daily-archive-2026-07-25-1280px.png`、`daily-archive-2026-07-25-390px.png`の計8画面を目視確認し、「8枚とも確認した。BL-029の見出し、重要・優先事項の2段落表示、過去Archiveへの適用、0記事日の表示に問題なし。BL-029として受入。」と受入した（accepted head `c4ca053b176c93fba3588c1f0aaf4116ab3fbc33`、[PR #60](https://github.com/matkei31/security-digest/pull/60)）。Version 1.6はBL-028のダイジェストナビゲーション配置再設計（A案「左寄せ二段・ラベルなし」）を反映する。ユーザーは`top-page-nav-1280px.png`、`top-page-nav-390px.png`、`daily-archive-top-nav-1280px.png`、`daily-archive-top-nav-390px.png`、`daily-archive-bottom-nav-1280px.png`、`daily-archive-bottom-nav-390px.png`、`archive-index-nav-1280px.png`、`archive-index-nav-390px.png`、`daily-archive-oldest-single-direction-1280px.png`、`daily-archive-oldest-single-direction-390px.png`の計10画面を目視確認し、「10枚とも確認した。BL-028の左寄せ二段配置、前→次／過去→最新の順序、上部・下部ナビゲーション、単一方向ケース、PC 1280px／390pxの表示に問題なし。BL-028として受入。」と受入した（accepted head `77b4106618c29b9220012fd10e9ff616d773fa56`、[PR #62](https://github.com/matkei31/security-digest/pull/62)）。
 
 ## 1. 文書の目的と対象読者
 
@@ -11,7 +11,7 @@
 
 対象読者は、UIの設計・実装・レビュー・受入を行うユーザー、実装担当者、レビュー担当者である。本書は表示仕様を扱い、ARTICLE／BRIEF prompt、daily JSON schema、生成・公開workflow、ブランド名変更の仕様書ではない。
 
-Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた7項目のユーザー裁定を反映した承認済み文書である。Version 1.1は、BL-022で明示されたトップページの直前公開ダイジェストリンクを追加した。Version 1.2は、トップページと日別Archiveのナビゲーション用語を統一し、日付をリンク文言から除き、方向移動と全体導線を左右の別グループへ整理した。Version 1.3は、BL-020で収集元フッターの取得元別カラーとpill表現を廃止し、無彩色・低強調のプレーンテキスト一覧へ置き換えた。Version 1.4は、BL-006でブランド名をSecurity DigestからMonomi Digestへ変更し、`🔐`は維持したままtitle／H1の絵文字表記を統一した。2026-07-26、ユーザーがトップページ・Archive一覧・日別ArchiveのPC 1280px／390px計6画面を目視確認し受入した。Version 1.5は、BL-029でユーザーと確定した仕様に基づき、「本日の要点」の子見出しを概況／重要・優先事項／確認事項へ、記事カードの見出しを概要／金融機関との関連／確認すべきことへ統一する。「重要・優先事項」は同一記事の`summary`と`financial_impact`をverbatimで2段落表示する新しい構成契約であり、ARTICLE prompt・ARTICLE response schema・public daily JSON schemaは変更しない。2026-07-27、ユーザーがトップページ・日別Archive（記事あり2日・0記事1日）のPC 1280px／390px計8画面を目視確認し受入した。Version 1.6は、BL-028でユーザーと確定したA案「左寄せ二段・ラベルなし」に基づき、ダイジェストナビゲーションをPC／390px共通の左寄せ縦二段構造（1段目が方向移動、2段目が全体導線）へ再設計するDraftである。日別Archiveの全体導線は`過去のダイジェスト`→`最新のダイジェスト`の順へ変更する。
+Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた7項目のユーザー裁定を反映した承認済み文書である。Version 1.1は、BL-022で明示されたトップページの直前公開ダイジェストリンクを追加した。Version 1.2は、トップページと日別Archiveのナビゲーション用語を統一し、日付をリンク文言から除き、方向移動と全体導線を左右の別グループへ整理した。Version 1.3は、BL-020で収集元フッターの取得元別カラーとpill表現を廃止し、無彩色・低強調のプレーンテキスト一覧へ置き換えた。Version 1.4は、BL-006でブランド名をSecurity DigestからMonomi Digestへ変更し、`🔐`は維持したままtitle／H1の絵文字表記を統一した。2026-07-26、ユーザーがトップページ・Archive一覧・日別ArchiveのPC 1280px／390px計6画面を目視確認し受入した。Version 1.5は、BL-029でユーザーと確定した仕様に基づき、「本日の要点」の子見出しを概況／重要・優先事項／確認事項へ、記事カードの見出しを概要／金融機関との関連／確認すべきことへ統一する。「重要・優先事項」は同一記事の`summary`と`financial_impact`をverbatimで2段落表示する新しい構成契約であり、ARTICLE prompt・ARTICLE response schema・public daily JSON schemaは変更しない。2026-07-27、ユーザーがトップページ・日別Archive（記事あり2日・0記事1日）のPC 1280px／390px計8画面を目視確認し受入した。Version 1.6は、BL-028でユーザーと確定したA案「左寄せ二段・ラベルなし」に基づき、ダイジェストナビゲーションをPC／390px共通の左寄せ縦二段構造（1段目が方向移動、2段目が全体導線）へ再設計する。日別Archiveの全体導線は`過去のダイジェスト`→`最新のダイジェスト`の順へ変更する。2026-07-27、ユーザーがトップページ・日別Archive上部/下部・Archive一覧・最古日の単一方向ケースのPC 1280px／390px計10画面を目視確認し受入した。
 
 ## 2. 正本と優先順位
 
@@ -54,7 +54,7 @@ Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた
 | 通常カード | radius `10px`、padding `14px 16px`、カード間隔`10px` |
 | 小ラベル | 関連タグとKEVはradius `100px`。用途とコントラストは別契約 |
 | responsive breakpoint | `max-width: 600px` |
-| anchor offset | 通常`218px`、600px以下`226px`(BL-028のナビゲーション二段化に伴い調整、Version 1.6 Draft) |
+| anchor offset | 通常`218px`、600px以下`226px`(BL-028のナビゲーション二段化に伴い調整) |
 
 これらの値を変更する場合は、見た目の抽象表現だけでなく、変更前後の具体値、PC／390pxへの影響、既存の強調階層への影響を示す。
 
@@ -106,7 +106,7 @@ Brief、優先確認、dashboardはそれぞれ「概況」「短い索引」「
 
 ### 6.2 モバイルsticky header
 
-ヘッダーpaddingはPC／モバイルとも`20px 16px 16px`、見出しは`18px`である。600px以下でも現在のstickyとpaddingを維持し、圧縮案は採用しない。sticky headerとアンカー移動の関係は第15章のanchor offset契約に従う(BL-028のナビゲーション二段化に伴いanchor offset値は調整済み、Version 1.6 Draft)。
+ヘッダーpaddingはPC／モバイルとも`20px 16px 16px`、見出しは`18px`である。600px以下でも現在のstickyとpaddingを維持し、圧縮案は採用しない。sticky headerとアンカー移動の関係は第15章のanchor offset契約に従う(BL-028のナビゲーション二段化に伴いanchor offset値は調整済み)。
 
 ### 6.3 直前の公開ダイジェスト
 
@@ -117,7 +117,7 @@ Brief、優先確認、dashboardはそれぞれ「概況」「短い索引」「
 - トップページの全体導線は「過去のダイジェスト」である。
 - PC／390pxともに方向移動グループを1段目、全体導線グループを2段目とする左寄せの縦二段構造とする(§6.4のナビゲーション配置契約を参照)。
 
-### 6.4 ナビゲーション配置(BL-028, Version 1.6 Draft)
+### 6.4 ナビゲーション配置(BL-028, Version 1.6)
 
 - 採用案はA案「左寄せ二段・ラベルなし」である。方向移動グループ(`.archive-direction-nav`)を1段目、全体導線グループ(`.archive-global-nav`)を2段目とする縦二段構造を、PC／390pxで共通に使う。説明ラベル、囲み、背景色、区切り線、追加アイコンは導入しない。
 - 日別Archiveの1段目は`← 前のダイジェスト`／`次のダイジェスト →`の順、2段目は`過去のダイジェスト`／`最新のダイジェスト`の順とする。左側を過去・戻る方向、右側を新しい・進む方向とし、上段と下段で左右の時間的意味を揃える。
@@ -272,7 +272,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 
 ### 14.2 日別Archive
 
-- 上部と最下部の両方で、1段目の方向移動グループに「← 前のダイジェスト」「次のダイジェスト →」、2段目の全体導線グループに「過去のダイジェスト」「最新のダイジェスト」を左寄せの縦二段構造で置く(BL-028, Version 1.6 Draft; §6.4参照)。リンク文言に日付を含めない。
+- 上部と最下部の両方で、1段目の方向移動グループに「← 前のダイジェスト」「次のダイジェスト →」、2段目の全体導線グループに「過去のダイジェスト」「最新のダイジェスト」を左寄せの縦二段構造で置く(BL-028, Version 1.6; §6.4参照)。リンク文言に日付を含めない。
 - カレンダー上の前日・翌日ではなく、検証を通過したdaily JSONの日付一覧に存在する日だけをリンク対象にする。日付欠損を飛び越える。
 - 最古の日は「前」を表示せず、最新の日は「次」を表示しない。方向移動グループが空になる場合はグループ自体を描画しない。
 - 前後日が一つもない場合も全体導線グループは上部と最下部に表示する。
@@ -285,7 +285,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 - 本文ブロックは最大`680px`で中央寄せし、左右paddingは主に`12px`、カード内部は`14px 16px`とする。
 - 記事カードはPC／390pxとも1列で、タイトルは折り返し、関連タグと脆弱性情報は`flex-wrap`する。
 - 600px以下ではdashboardの重要度／確認目安を2列から1列へ変更する。
-- アンカー移動時のsticky headerとの重なりを避けるため、`scroll-margin-top`は通常`218px`、600px以下`226px`である(BL-028のナビゲーション二段化によりsticky header実高が増えたため調整、Version 1.6 Draft)。
+- アンカー移動時のsticky headerとの重なりを避けるため、`scroll-margin-top`は通常`218px`、600px以下`226px`である(BL-028のナビゲーション二段化によりsticky header実高が増えたため調整)。
 - 390pxは受入対象のviewport幅であり、CSS breakpointそのものは600pxである。
 - 現行ヘッダーは600px以下でもstickyで同じpaddingを使い、圧縮しない。
 - 現行の英語原題はモバイルでもclampせず自然に折り返し、原題の一部を省略しない。
@@ -365,7 +365,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 | 項目 | Version 1.0の決定 | 反映箇所 |
 |---|---|---|
 | AI利用注記 | 現行UIには追加せず、記事カード単位・分析区分単位の注記も採用しない。将来Aboutや公開導線を別スコープで設計する場合に改めて裁定する | 3.1 |
-| モバイルsticky header | 600px以下も現在のstickyとpaddingを維持し、圧縮しない。anchor offsetはBL-028のナビゲーション二段化に伴い調整済み(Version 1.6 Draft) | 6.2、15 |
+| モバイルsticky header | 600px以下も現在のstickyとpaddingを維持し、圧縮しない。anchor offsetはBL-028のナビゲーション二段化に伴い調整済み | 6.2、15 |
 | ヘッダー絵文字 | `🔐`を維持する。BL-006のMonomi Digestへのブランド移行後も置換していない | 6.1 |
 | モバイル英語原題clamp | 採用せず、行数制限なしの自然折返しを維持し、原題を省略しない | 11、15 |
 | KEV表示形状 | 現行のアンバー系pillを、客観的かつ重要なKEV掲載状態の例外的強調として維持する | 13 |
@@ -416,7 +416,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 7. Version 1.3は承認済みの確定仕様である。今回解消した7項目、ナビゲーション統一仕様、収集元フッターのプレーン表示を再び未決として扱わず、変更には新しいユーザー判断とSupersedes記録を必要とする。
 8. Version 1.4はBL-006のブランド名変更（Security Digest→Monomi Digest、`🔐`維持、title／H1絵文字統一）を、2026-07-26のユーザーPC 1280px／390px目視受入により確定仕様とした。custom domain・DNS・canonical等（BL-007）およびAbout・meta description・analytics等（BL-009）は本書の対象外であり、Version 1.4では変更していない。
 9. Version 1.5はBL-029の「本日の要点」子見出し（概況／重要・優先事項／確認事項）と記事カード見出し（概要／金融機関との関連／確認すべきこと）の再設計を記録したものであり、2026-07-27にユーザーがPC 1280px／390px計8画面を目視受入した（「8枚とも確認した。BL-029の見出し、重要・優先事項の2段落表示、過去Archiveへの適用、0記事日の表示に問題なし。BL-029として受入。」）。ARTICLE prompt・response schema・`ARTICLE_PROMPT_VERSION`・public daily JSON schemaは変更していない。[PR #60](https://github.com/matkei31/security-digest/pull/60) final head `a458888f45ff1521a0eb59117994ac3122fb2b83` は[Pull Request CI run 30231386446](https://github.com/matkei31/security-digest/actions/runs/30231386446)通過後、通常merge（squash・rebase不使用）でmerge commit `2a191828462731bf5204cdd83e867c0d29aec6e8`としてmainへ統合され、自動[Pages deployment run 30231414580](https://github.com/matkei31/security-digest/actions/runs/30231414580)が成功し、公開トップページ・記事あり日別Archive・0記事日別Archiveで新見出しの表示を客観確認した。
-10. Version 1.6はBL-028のダイジェストナビゲーション配置再設計（A案「左寄せ二段・ラベルなし」）をDraftとして記録したものであり、ユーザーのPC 1280px／390px目視受入後に確定仕様へ格上げする。SD-021のうち、PCで方向移動グループを左・全体導線グループを右端へ配置する契約と、日別Archiveの全体導線を`最新→過去`の順で表示する契約を部分的にsupersedeする。4文言・日付非表示・href・aria-label・前後日付選定ロジック・sticky headerの存在は変更していない。
+10. Version 1.6はBL-028のダイジェストナビゲーション配置再設計（A案「左寄せ二段・ラベルなし」）を記録したものであり、2026-07-27にユーザーがPC 1280px／390px計10画面を目視受入した（「10枚とも確認した。BL-028の左寄せ二段配置、前→次／過去→最新の順序、上部・下部ナビゲーション、単一方向ケース、PC 1280px／390pxの表示に問題なし。BL-028として受入。」）。SD-021のうち、PCで方向移動グループを左・全体導線グループを右端へ配置する契約と、日別Archiveの全体導線を`最新→過去`の順で表示する契約を部分的にsupersedeする。4文言・日付非表示・href・aria-label・前後日付選定ロジック・sticky headerの存在は変更していない。
 
 ### 20.1 版履歴
 
@@ -429,4 +429,4 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 | 1.3 | 承認済み | 収集元フッターの取得元別カラーとpill表現を廃止し、PC 3列／600px以下1列のプレーンテキスト一覧へ変更 |
 | 1.4 | 承認済み | BL-006でSecurity DigestからMonomi Digestへブランド名を変更し、`🔐`は維持したまま、トップページと日別Archiveのtitle／H1の絵文字表記を統一した |
 | 1.5 | 承認済み | BL-029で「本日の要点」子見出しと記事カード見出しを再設計し、「重要・優先事項」を同一記事のsummary／financial_impactペアから構成する契約へ更新した。2026-07-27、ユーザーがPC 1280px／390px計8画面を目視受入した |
-| 1.6 | Draft／ユーザー受入待ち | BL-028でダイジェストナビゲーションをA案「左寄せ二段・ラベルなし」へ再設計し、日別Archiveの全体導線を`過去→最新`の順へ変更した |
+| 1.6 | 承認済み | BL-028でダイジェストナビゲーションをA案「左寄せ二段・ラベルなし」へ再設計し、日別Archiveの全体導線を`過去→最新`の順へ変更した。2026-07-27、ユーザーがPC 1280px／390px計10画面を目視受入した |

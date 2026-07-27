@@ -519,11 +519,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertNotIn("final head `802781b", bl006)
         self.assertNotIn("merge commit `802781b", bl006)
 
-    def test_bl028_is_recorded_verbatim_with_confirmed_spec(self):
+    def test_bl028_is_recorded_verbatim_with_user_acceptance(self):
         bl028 = self.backlog.split("## BL-028", 1)[1].split("\n## ", 1)[0]
         self.assertIn("ダイジェストナビゲーションの配置を再設計する", bl028)
         self.assertIn("**優先度:** P2", bl028)
-        self.assertIn("**状態:** 仕様確定 / 実装済みDraft PR / ユーザー受入待ち", bl028)
+        self.assertIn("**状態:** ユーザー受入済み / merge待ち", bl028)
         self.assertIn(
             "「『前のダイジェスト』『最新のダイジェスト』を右に持っていってもらったけど、"
             "実際見ると違和感あるね。左側で二段で表示するとか、何かイケてるUI考えてほしい」",
@@ -541,8 +541,13 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("BL-022やSD-021を未完了扱いに戻さず", bl028)
         self.assertIn("implementation branch `claude/bl028-nav-two-row-left`", bl028)
         self.assertIn(
-            "**ユーザー受入証跡:** 記録なし。merge前のPC 1280px／390px目視受入が必要。", bl028
+            "「10枚とも確認した。BL-028の左寄せ二段配置、前→次／過去→最新の順序、"
+            "上部・下部ナビゲーション、単一方向ケース、PC 1280px／390pxの表示に問題なし。"
+            "BL-028として受入。」",
+            bl028,
         )
+        self.assertIn("77b4106618c29b9220012fd10e9ff616d773fa56", bl028)
+        self.assertIn("PR #62", bl028)
         self.assertNotIn("**状態:** 完了", bl028)
         self.assertIn(
             "**出所:** 2026-07-26 プロジェクト会話（BL-006実装着手後、ユーザー受入・closure前）。",
