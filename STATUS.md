@@ -11,9 +11,10 @@ This file records the current, changeable project state. Incomplete, partially a
 | Contract | Current value |
 |---|---|
 | ARTICLE prompt | `article-analysis-v8` |
-| BRIEF composition contract on `main` | `today-brief-extractive-v2` |
+| BRIEF composition contract on current `main` | `today-brief-extractive-v1` |
+| BL-029 Draft candidate（`claude/bl029-priority-items`、未merge） | `today-brief-extractive-v2` |
 | BRIEF model on `main` | `deterministic-extractive` |
-| Latest published daily JSON | `today-brief-extractive-v1`／`deterministic-extractive`（2026-07-24 07:58 JST生成） |
+| Latest published daily JSON | `today-brief-extractive-v1`／`deterministic-extractive`（2026-07-27 07:57 JST生成、0記事） |
 | Daily JSON `schema_version` | `1` |
 | ARTICLE Gemini model | `gemini-2.5-flash` |
 
