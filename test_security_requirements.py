@@ -543,11 +543,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         )
         self.assertNotIn("BL-006 closure直後", bl028)
 
-    def test_bl029_is_recorded_verbatim_with_user_acceptance(self):
+    def test_bl029_is_recorded_verbatim_as_complete(self):
         bl029 = self.backlog.split("## BL-029", 1)[1].split("\n## ", 1)[0]
         self.assertIn("「金融機関との関連」とARTICLE見出しの情報設計を再検討する", bl029)
         self.assertIn("**優先度:** P1", bl029)
-        self.assertIn("**状態:** ユーザー受入済み / merge待ち", bl029)
+        self.assertIn("**状態:** 完了", bl029)
         self.assertIn(
             "「『金融機関との関連』のところは、どういった事項について関連を記載しているのかが不明。"
             "このままだったら消した方がいい。使うなら、本文側の『何が起きた』『なぜ金融機関に関係する』"
@@ -578,7 +578,9 @@ class SecurityRequirementsTest(unittest.TestCase):
         )
         self.assertIn("c4ca053b176c93fba3588c1f0aaf4116ab3fbc33", bl029)
         self.assertIn("PR #60", bl029)
-        self.assertNotIn("**状態:** 完了", bl029)
+        self.assertIn("a458888f45ff1521a0eb59117994ac3122fb2b83", bl029)
+        self.assertIn("2a191828462731bf5204cdd83e867c0d29aec6e8", bl029)
+        self.assertIn("- **残作業:** なし。", bl029)
         self.assertIn(
             "**出所:** 2026-07-26 プロジェクト会話（BL-006実装着手後、ユーザー受入・closure前）。",
             bl029,
@@ -597,12 +599,16 @@ class SecurityRequirementsTest(unittest.TestCase):
             "## 5. Recently completed work", 1
         )[0]
         self.assertNotIn("BL-028", active)
-        self.assertIn("BL-029", active)
+        self.assertNotIn("BL-029", active)
+        recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
+            "## 6. Known issues and limitations", 1
+        )[0]
+        self.assertIn("BL-029", recently_completed)
         next_candidates = self.status.split("## 7. Next candidates", 1)[1].split(
             "## 8. Sources of truth", 1
         )[0]
         self.assertIn("BL-028", next_candidates)
-        self.assertIn("BL-029", next_candidates)
+        self.assertIn("[BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する) are all complete", next_candidates)
 
     def test_bl027_acceptance_head_is_distinct_from_pr54_final_head(self):
         # The explicit 「ok」 was given at PR #54 head d7461b9..., not at the
@@ -660,9 +666,10 @@ class SecurityRequirementsTest(unittest.TestCase):
             "## 6. Known issues and limitations", 1
         )[0]
         self.assertNotIn("BL-027", active)
-        self.assertIn("BL-029", active)
+        self.assertNotIn("BL-029", active)
         self.assertIn("BL-006", recently_completed)
         self.assertIn("BL-027", recently_completed)
+        self.assertIn("BL-029", recently_completed)
         self.assertIn("workflow_dispatch", recently_completed)
         self.assertIn("30147337332", recently_completed)
         self.assertNotIn("通常scheduleで検証した", recently_completed)
@@ -832,10 +839,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertNotIn("BL-025", active)
         self.assertNotIn("BL-026", active)
         self.assertNotIn("BL-027", active)
-        self.assertIn("BL-029", active)
+        self.assertNotIn("BL-029", active)
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
+        self.assertIn("BL-029", recently_completed)
         self.assertIn("BL-006", recently_completed)
         self.assertIn("BL-025 source collection URL scheme validation", recently_completed)
         self.assertIn("「ok」", recently_completed)

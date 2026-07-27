@@ -389,10 +389,11 @@ class SecurityOperationsContractTest(unittest.TestCase):
         self.assertNotIn("BL-025", active)
         self.assertNotIn("BL-026", active)
         self.assertNotIn("BL-027", active)
-        self.assertIn("BL-029", active)
+        self.assertNotIn("BL-029", active)
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
+        self.assertIn("BL-029", recently_completed)
         self.assertIn("BL-006", recently_completed)
         self.assertIn("BL-024 Security Operations Version 1.0", recently_completed)
         self.assertIn("BL-025 source collection URL scheme validation", recently_completed)
