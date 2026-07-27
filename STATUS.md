@@ -12,7 +12,7 @@ This file records the current, changeable project state. Incomplete, partially a
 |---|---|
 | ARTICLE prompt | `article-analysis-v8` |
 | BRIEF composition contract on current `main` | `today-brief-extractive-v1` |
-| BL-029 Draft candidate（`claude/bl029-priority-items`、未merge） | `today-brief-extractive-v2` |
+| BL-029 accepted Draft candidate（`claude/bl029-priority-items`、ユーザー受入済み・未merge） | `today-brief-extractive-v2` |
 | BRIEF model on `main` | `deterministic-extractive` |
 | Latest published daily JSON | `today-brief-extractive-v1`／`deterministic-extractive`（2026-07-27 07:57 JST生成、0記事） |
 | Daily JSON `schema_version` | `1` |
@@ -44,7 +44,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- [BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する) 「金融機関との関連」とARTICLE見出しの情報設計再検討 — implemented on branch `claude/bl029-priority-items`, Draft PR, user visual acceptance pending. Public headings unified: 「本日の要点」の子見出しは概況／重要・優先事項／確認事項、記事カードは概要／金融機関との関連／確認すべきこと。「重要・優先事項」は現行`discussion_points`の対象条件（importance=="高" または urgency∈{本日確認,今週確認}）を維持し、同一記事の`analysis.summary`と`analysis.financial_impact`をverbatimで2段落表示する。ARTICLE prompt／response schema／`ARTICLE_PROMPT_VERSION`／public daily JSON schemaは変更していない。新規生成分のinternal identifierは`today-brief-extractive-v2`（過去daily JSONは書き換えない）。過去Archiveは原則offline再生成で新仕様を適用し、再構成不能な日だけ「注目論点」の互換表示を使う。production未実行。
+- [BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する) 「金融機関との関連」とARTICLE見出しの情報設計再検討 — implemented on branch `claude/bl029-priority-items`, user visual acceptance complete (verbatim: 「8枚とも確認した。BL-029の見出し、重要・優先事項の2段落表示、過去Archiveへの適用、0記事日の表示に問題なし。BL-029として受入。」), accepted head `c4ca053b176c93fba3588c1f0aaf4116ab3fbc33`, [PR #60](https://github.com/matkei31/security-digest/pull/60) merge pending. Public headings unified: 「本日の要点」の子見出しは概況／重要・優先事項／確認事項、記事カードは概要／金融機関との関連／確認すべきこと。「重要・優先事項」は現行`discussion_points`の対象条件（importance=="高" または urgency∈{本日確認,今週確認}）を維持し、同一記事の`analysis.summary`と`analysis.financial_impact`をverbatimで2段落表示する。ARTICLE prompt／response schema／`ARTICLE_PROMPT_VERSION`／public daily JSON schemaは変更していない。current `main` composition contractはmerge前のため引き続き`today-brief-extractive-v1`であり、accepted Draft candidate（`claude/bl029-priority-items`）は`today-brief-extractive-v2`である。merge後にcurrent mainをv2へ更新する予定。production未実行。
 
 ## 5. Recently completed work
 

@@ -2,8 +2,8 @@
 
 - **文書名:** Monomi Digest UI Specification
 - **バージョン:** 1.5
-- **状態:** Draft／ユーザー受入待ち
-- **適用対象:** 現行Monomi Digest。BL-006のブランド名変更（Security Digest→Monomi Digest、`🔐`維持、title／H1絵文字統一）は、2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、Version 1.4として承認済みである。[PR #57](https://github.com/matkei31/security-digest/pull/57)はmainへmergeされ、GitHub Pagesでの公開反映を確認済みである。Version 1.5はBL-029の「本日の要点」子見出し・記事カード見出しの再設計を反映するDraftであり、ユーザーのPC 1280px／390px目視受入までは確定仕様として扱わない。
+- **状態:** 承認済み
+- **適用対象:** 現行Monomi Digest。BL-006のブランド名変更（Security Digest→Monomi Digest、`🔐`維持、title／H1絵文字統一）は、2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、Version 1.4として承認済みである。[PR #57](https://github.com/matkei31/security-digest/pull/57)はmainへmergeされ、GitHub Pagesでの公開反映を確認済みである。Version 1.5はBL-029の「本日の要点」子見出し・記事カード見出しの再設計を反映する。ユーザーは`top-page-2026-07-27-1280px.png`、`top-page-2026-07-27-390px.png`、`daily-archive-2026-07-27-1280px.png`、`daily-archive-2026-07-27-390px.png`、`daily-archive-2026-07-26-1280px.png`、`daily-archive-2026-07-26-390px.png`、`daily-archive-2026-07-25-1280px.png`、`daily-archive-2026-07-25-390px.png`の計8画面を目視確認し、「8枚とも確認した。BL-029の見出し、重要・優先事項の2段落表示、過去Archiveへの適用、0記事日の表示に問題なし。BL-029として受入。」と受入した（accepted head `c4ca053b176c93fba3588c1f0aaf4116ab3fbc33`、[PR #60](https://github.com/matkei31/security-digest/pull/60)）。
 
 ## 1. 文書の目的と対象読者
 
@@ -11,7 +11,7 @@
 
 対象読者は、UIの設計・実装・レビュー・受入を行うユーザー、実装担当者、レビュー担当者である。本書は表示仕様を扱い、ARTICLE／BRIEF prompt、daily JSON schema、生成・公開workflow、ブランド名変更の仕様書ではない。
 
-Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた7項目のユーザー裁定を反映した承認済み文書である。Version 1.1は、BL-022で明示されたトップページの直前公開ダイジェストリンクを追加した。Version 1.2は、トップページと日別Archiveのナビゲーション用語を統一し、日付をリンク文言から除き、方向移動と全体導線を左右の別グループへ整理した。Version 1.3は、BL-020で収集元フッターの取得元別カラーとpill表現を廃止し、無彩色・低強調のプレーンテキスト一覧へ置き換えた。Version 1.4は、BL-006でブランド名をSecurity DigestからMonomi Digestへ変更し、`🔐`は維持したままtitle／H1の絵文字表記を統一した。2026-07-26、ユーザーがトップページ・Archive一覧・日別ArchiveのPC 1280px／390px計6画面を目視確認し受入した。Version 1.5は、BL-029でユーザーと確定した仕様に基づき、「本日の要点」の子見出しを概況／重要・優先事項／確認事項へ、記事カードの見出しを概要／金融機関との関連／確認すべきことへ統一するDraftである。「重要・優先事項」は同一記事の`summary`と`financial_impact`をverbatimで2段落表示する新しい構成契約であり、ARTICLE prompt・ARTICLE response schema・public daily JSON schemaは変更しない。
+Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた7項目のユーザー裁定を反映した承認済み文書である。Version 1.1は、BL-022で明示されたトップページの直前公開ダイジェストリンクを追加した。Version 1.2は、トップページと日別Archiveのナビゲーション用語を統一し、日付をリンク文言から除き、方向移動と全体導線を左右の別グループへ整理した。Version 1.3は、BL-020で収集元フッターの取得元別カラーとpill表現を廃止し、無彩色・低強調のプレーンテキスト一覧へ置き換えた。Version 1.4は、BL-006でブランド名をSecurity DigestからMonomi Digestへ変更し、`🔐`は維持したままtitle／H1の絵文字表記を統一した。2026-07-26、ユーザーがトップページ・Archive一覧・日別ArchiveのPC 1280px／390px計6画面を目視確認し受入した。Version 1.5は、BL-029でユーザーと確定した仕様に基づき、「本日の要点」の子見出しを概況／重要・優先事項／確認事項へ、記事カードの見出しを概要／金融機関との関連／確認すべきことへ統一する。「重要・優先事項」は同一記事の`summary`と`financial_impact`をverbatimで2段落表示する新しい構成契約であり、ARTICLE prompt・ARTICLE response schema・public daily JSON schemaは変更しない。2026-07-27、ユーザーがトップページ・日別Archive（記事あり2日・0記事1日）のPC 1280px／390px計8画面を目視確認し受入した。
 
 ## 2. 正本と優先順位
 
@@ -119,7 +119,7 @@ Brief、優先確認、dashboardはそれぞれ「概況」「短い索引」「
 
 ## 7. 本日の要点
 
-### 7.1 表示内容（Version 1.5 Draft）
+### 7.1 表示内容（Version 1.5）
 
 表示可能なBrief内容が一つ以上ある場合だけ`.todays-brief > .brief-box`を表示し、見出しを「本日の要点」とする。内部は、値がある区分だけ次の順で表示する。
 
@@ -137,7 +137,7 @@ Brief、優先確認、dashboardはそれぞれ「概況」「短い索引」「
 
 `.brief-box`は背景`#161b22`、アンバー境界`1px solid #9e6a03`、radius `10px`、padding `14px 16px`である。状態行自体は警告色にせず、背景`#0d1117`、境界`#30363d`の控えめな行として表示する。「重要・優先事項」の各項目(`.brief-priority-item`)は背景`#0d1117`、境界`1px solid #30363d`、radius `6px`、padding `10px 12px`のカード状とし、項目内の2段落間`gap`(4px)より項目間`gap`(12px)を明確に広くする。
 
-### 7.3 重要・優先事項の構成契約（BL-029, Version 1.5 Draft）
+### 7.3 重要・優先事項の構成契約（BL-029, Version 1.5）
 
 - 対象記事は現行`discussion_points`の条件を維持する: 分析済み(`is_article_evaluated`)かつ`importance=="高"`または`urgency`が`"本日確認"`／`"今週確認"`。安定ソート・最大件数・source ID検証は既存契約を維持する。
 - 選定された記事ごとに一つの`<li class="brief-priority-item">`を作り、同一記事の`analysis.summary`と`analysis.financial_impact`をverbatimで別々の`<p>`(`.brief-priority-summary`／`.brief-priority-impact`)として表示する。再要約・言い換え・接続詞追加・語尾変更・句読点補正・短縮・clamp・省略・記事間の文章結合は行わない。
@@ -181,7 +181,7 @@ PCでは2軸を2列、600px以下では1列に積む。
 
 ### 10.2 記事カードvariant B
 
-通常カードは`<article class="card" id="article-N">`とし、次の順序を確定仕様とする。項目6・8の見出し文言はBL-029でユーザーと確定したVersion 1.5の表記であり（Draft状態）、順序自体とARTICLE field（`summary`／`financial_impact`）の内容は変更しない。
+通常カードは`<article class="card" id="article-N">`とし、次の順序を確定仕様とする。項目6・8の見出し文言はBL-029でユーザーと確定したVersion 1.5の表記であり、順序自体とARTICLE field（`summary`／`financial_impact`）の内容は変更しない。
 
 1. 記事番号
 2. 英語原題を主とするタイトル
@@ -397,7 +397,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 6. `docs/`の再生成、daily JSON変更、prompt／schema／workflow変更は、UI仕様書更新だけを理由に行わない。各変更の承認範囲に従う。
 7. Version 1.3は承認済みの確定仕様である。今回解消した7項目、ナビゲーション統一仕様、収集元フッターのプレーン表示を再び未決として扱わず、変更には新しいユーザー判断とSupersedes記録を必要とする。
 8. Version 1.4はBL-006のブランド名変更（Security Digest→Monomi Digest、`🔐`維持、title／H1絵文字統一）を、2026-07-26のユーザーPC 1280px／390px目視受入により確定仕様とした。custom domain・DNS・canonical等（BL-007）およびAbout・meta description・analytics等（BL-009）は本書の対象外であり、Version 1.4では変更していない。
-9. Version 1.5はBL-029の「本日の要点」子見出し（概況／重要・優先事項／確認事項）と記事カード見出し（概要／金融機関との関連／確認すべきこと）の再設計をDraftとして記録したものであり、ユーザーのPC 1280px／390px目視受入後に確定仕様へ格上げする。ARTICLE prompt・response schema・`ARTICLE_PROMPT_VERSION`・public daily JSON schemaは変更していない。
+9. Version 1.5はBL-029の「本日の要点」子見出し（概況／重要・優先事項／確認事項）と記事カード見出し（概要／金融機関との関連／確認すべきこと）の再設計を記録したものであり、2026-07-27にユーザーがPC 1280px／390px計8画面を目視受入した（「8枚とも確認した。BL-029の見出し、重要・優先事項の2段落表示、過去Archiveへの適用、0記事日の表示に問題なし。BL-029として受入。」）。ARTICLE prompt・response schema・`ARTICLE_PROMPT_VERSION`・public daily JSON schemaは変更していない。
 
 ### 20.1 版履歴
 
@@ -409,4 +409,4 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 | 1.2 | 承認済み | ナビゲーションの4用語を統一し、リンク文言の日付を廃止し、方向移動と全体導線を左右の別グループへ整理 |
 | 1.3 | 承認済み | 収集元フッターの取得元別カラーとpill表現を廃止し、PC 3列／600px以下1列のプレーンテキスト一覧へ変更 |
 | 1.4 | 承認済み | BL-006でSecurity DigestからMonomi Digestへブランド名を変更し、`🔐`は維持したまま、トップページと日別Archiveのtitle／H1の絵文字表記を統一した |
-| 1.5 | Draft／ユーザー受入待ち | BL-029で「本日の要点」子見出しと記事カード見出しを再設計し、「重要・優先事項」を同一記事のsummary／financial_impactペアから構成する契約へ更新した |
+| 1.5 | 承認済み | BL-029で「本日の要点」子見出しと記事カード見出しを再設計し、「重要・優先事項」を同一記事のsummary／financial_impactペアから構成する契約へ更新した。2026-07-27、ユーザーがPC 1280px／390px計8画面を目視受入した |

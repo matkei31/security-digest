@@ -543,11 +543,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         )
         self.assertNotIn("BL-006 closure直後", bl028)
 
-    def test_bl029_is_recorded_verbatim_with_confirmed_spec(self):
+    def test_bl029_is_recorded_verbatim_with_user_acceptance(self):
         bl029 = self.backlog.split("## BL-029", 1)[1].split("\n## ", 1)[0]
         self.assertIn("「金融機関との関連」とARTICLE見出しの情報設計を再検討する", bl029)
         self.assertIn("**優先度:** P1", bl029)
-        self.assertIn("**状態:** 仕様確定 / 実装済みDraft PR / ユーザー受入待ち", bl029)
+        self.assertIn("**状態:** ユーザー受入済み / merge待ち", bl029)
         self.assertIn(
             "「『金融機関との関連』のところは、どういった事項について関連を記載しているのかが不明。"
             "このままだったら消した方がいい。使うなら、本文側の『何が起きた』『なぜ金融機関に関係する』"
@@ -571,7 +571,13 @@ class SecurityRequirementsTest(unittest.TestCase):
         )
         self.assertIn("完了済みBL-021を再オープンしない", bl029)
         self.assertIn("prompt-only改善No-GoのBL-023とも統合せず", bl029)
-        self.assertIn("**ユーザー受入証跡:** 記録なし。merge前のPC 1280px／390px目視受入が必要。", bl029)
+        self.assertIn(
+            "「8枚とも確認した。BL-029の見出し、重要・優先事項の2段落表示、"
+            "過去Archiveへの適用、0記事日の表示に問題なし。BL-029として受入。」",
+            bl029,
+        )
+        self.assertIn("c4ca053b176c93fba3588c1f0aaf4116ab3fbc33", bl029)
+        self.assertIn("PR #60", bl029)
         self.assertNotIn("**状態:** 完了", bl029)
         self.assertIn(
             "**出所:** 2026-07-26 プロジェクト会話（BL-006実装着手後、ユーザー受入・closure前）。",

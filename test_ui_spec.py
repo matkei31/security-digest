@@ -29,7 +29,7 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertTrue(self.spec_path.is_file())
         self.assertIn("# Monomi Digest UI Specification", self.spec)
         self.assertIn("- **バージョン:** 1.5", self.spec)
-        self.assertIn("- **状態:** Draft／ユーザー受入待ち", self.spec)
+        self.assertIn("- **状態:** 承認済み", self.spec)
         self.assertIn(
             "2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、"
             "Version 1.4として承認済みである",
@@ -49,14 +49,24 @@ class UiSpecDocumentTest(unittest.TestCase):
             self.spec,
         )
         self.assertIn(
-            "Version 1.5はBL-029の「本日の要点」子見出し・記事カード見出しの再設計を反映するDraftであり、"
-            "ユーザーのPC 1280px／390px目視受入までは確定仕様として扱わない。",
+            "Version 1.5はBL-029の「本日の要点」子見出し・記事カード見出しの再設計を反映する。",
             self.spec,
         )
         self.assertIn(
+            "「8枚とも確認した。BL-029の見出し、重要・優先事項の2段落表示、"
+            "過去Archiveへの適用、0記事日の表示に問題なし。BL-029として受入。」と受入した",
+            self.spec,
+        )
+        self.assertIn("c4ca053b176c93fba3588c1f0aaf4116ab3fbc33", self.spec)
+        self.assertIn(
             "Version 1.5は、BL-029でユーザーと確定した仕様に基づき、"
             "「本日の要点」の子見出しを概況／重要・優先事項／確認事項へ、"
-            "記事カードの見出しを概要／金融機関との関連／確認すべきことへ統一するDraftである。",
+            "記事カードの見出しを概要／金融機関との関連／確認すべきことへ統一する。",
+            self.spec,
+        )
+        self.assertIn(
+            "2026-07-27、ユーザーがトップページ・日別Archive（記事あり2日・0記事1日）の"
+            "PC 1280px／390px計8画面を目視確認し受入した。",
             self.spec,
         )
 

@@ -3202,8 +3202,8 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("No residual work remains", recently_completed)
         self.assertIn("| ARTICLE prompt | `article-analysis-v8` |", status_text)
         self.assertIn("| BRIEF composition contract on current `main` | `today-brief-extractive-v1` |", status_text)
-        self.assertIn("BL-029 Draft candidate", status_text)
-        self.assertIn("| BL-029 Draft candidate", status_text)
+        self.assertIn("BL-029 accepted Draft candidate", status_text)
+        self.assertIn("| BL-029 accepted Draft candidate", status_text)
         self.assertIn("| BRIEF model on `main` | `deterministic-extractive` |", status_text)
 
         decisions = self._read("DECISIONS.md")
@@ -3286,7 +3286,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
 
         status = self._read("STATUS.md")
         self.assertIn("| BRIEF composition contract on current `main` | `today-brief-extractive-v1` |", status)
-        self.assertIn("BL-029 Draft candidate", status)
+        self.assertIn("BL-029 accepted Draft candidate", status)
         self.assertIn("| BRIEF model on `main` | `deterministic-extractive` |", status)
         self.assertIn("| ARTICLE Gemini model | `gemini-2.5-flash` |", status)
         self.assertIn("| Latest published daily JSON | `today-brief-extractive-v1`／`deterministic-extractive`", status)
