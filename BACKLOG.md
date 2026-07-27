@@ -639,7 +639,7 @@
   4. field欠損時は、両方存在→2段落、片方のみ→片方だけ、両方欠損→その記事を除外する。
   5. 重複除外は`(summary, financial_impact)`の完全一致pair単位のみとする。
   6. ARTICLE prompt・ARTICLE response schema・`ARTICLE_PROMPT_VERSION`・ARTICLE model・validation・fallback契約は変更しない。
-  7. public daily JSON schema（`overview`／`important_highlights`／`discussion_points`／`check_items`のlist[str]構造）は変更しない。`important_highlights`は表示せず現行のまま維持する。
+  7. public daily JSON schemaは変更しない。`overview`は単一のテキスト値（成功時は`string`、`not_attempted`等ではnullになり得る）、`important_highlights`／`discussion_points`／`check_items`は`list[str]`を維持する。`important_highlights`は表示せず現行のまま維持する。
   8. 新規生成分のinternal composition identifierを`today-brief-extractive-v2`とする。過去daily JSON（`prompt_version`・`discussion_points`含む）は書き換えない。
   9. 過去Archiveは原則、既存daily JSONのofflineHTML再生成で新仕様を適用する。`items[].analysis`から安全に再構成できない日だけ、見出し「注目論点」で保存済み`discussion_points`を一項目一段落のまま互換表示する。
   10. merge前にPC 1280px／390pxでの目視受入をユーザーから得る。
