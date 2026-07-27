@@ -519,11 +519,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertNotIn("final head `802781b", bl006)
         self.assertNotIn("merge commit `802781b", bl006)
 
-    def test_bl028_is_recorded_verbatim_with_user_acceptance(self):
+    def test_bl028_is_recorded_verbatim_as_complete(self):
         bl028 = self.backlog.split("## BL-028", 1)[1].split("\n## ", 1)[0]
         self.assertIn("ダイジェストナビゲーションの配置を再設計する", bl028)
         self.assertIn("**優先度:** P2", bl028)
-        self.assertIn("**状態:** ユーザー受入済み / merge待ち", bl028)
+        self.assertIn("**状態:** 完了", bl028)
         self.assertIn(
             "「『前のダイジェスト』『最新のダイジェスト』を右に持っていってもらったけど、"
             "実際見ると違和感あるね。左側で二段で表示するとか、何かイケてるUI考えてほしい」",
@@ -548,7 +548,9 @@ class SecurityRequirementsTest(unittest.TestCase):
         )
         self.assertIn("77b4106618c29b9220012fd10e9ff616d773fa56", bl028)
         self.assertIn("PR #62", bl028)
-        self.assertNotIn("**状態:** 完了", bl028)
+        self.assertIn("a723dadaa4282db98060e83ef981b776b5742445", bl028)
+        self.assertIn("fae9b682c97106c4ff9b45507aebf18db09fd77a", bl028)
+        self.assertIn("- **残作業:** なし。", bl028)
         self.assertIn(
             "**出所:** 2026-07-26 プロジェクト会話（BL-006実装着手後、ユーザー受入・closure前）。",
             bl028,
@@ -610,11 +612,12 @@ class SecurityRequirementsTest(unittest.TestCase):
         active = self.status.split("## Active work", 1)[1].split(
             "## 5. Recently completed work", 1
         )[0]
-        self.assertIn("BL-028", active)
+        self.assertNotIn("BL-028", active)
         self.assertNotIn("BL-029", active)
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
+        self.assertIn("BL-028", recently_completed)
         self.assertIn("BL-029", recently_completed)
         next_candidates = self.status.split("## 7. Next candidates", 1)[1].split(
             "## 8. Sources of truth", 1
@@ -928,7 +931,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("are all complete", next_candidates)
         self.assertIn("[BL-027]", next_candidates)
         self.assertIn(
-            "is not named as the ranked next candidate purely by priority number", next_candidates
+            "so none is named as the ranked next candidate purely by priority number", next_candidates
         )
         self.assertNotIn("[BL-025]", next_candidates)
         self.assertRegex(

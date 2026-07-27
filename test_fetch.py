@@ -3101,7 +3101,7 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertNotRegex(next_candidates, r"(?m)^1\. \[BL-026\]")
         self.assertIn("[BL-026]", next_candidates)
         self.assertIn("are all complete", next_candidates)
-        self.assertIn("is not named as the ranked next candidate purely by priority number", next_candidates)
+        self.assertIn("so none is named as the ranked next candidate purely by priority number", next_candidates)
         self.assertIn("[BL-027]", next_candidates)
         self.assertNotIn("[BL-025]", next_candidates)
 
