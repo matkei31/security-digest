@@ -199,7 +199,7 @@
   9. `docs/CNAME`を新設し、内容は`monomidigest.com`の1行のみ・末尾改行ありとする。URL scheme・path・`www`を含めない。
   10. 日次production生成・全Archive offline再生成のいずれでも`docs/CNAME`が削除されないことを保証する。
   11. `data/`・daily JSON・記事内容・ARTICLE／BRIEF prompt・schema・versionは変更しない。workflowは原則変更せず、repository renameも行わない。
-  12. cutoverの順序は次のとおりとする(repository準備 → PR merge → repository Custom domain設定 → XServer DNS設定 → DNS伝播・TLS発行確認 → 公開確認 → closure)。DNS実設定とrepository Custom domain設定は、PR #64のmerge後にユーザー作業として行う。DNSをrepository Custom domain設定より先に伝播させることで、Custom domain設定直後に旧github.io URLが未伝播の新ドメインへredirectされることによる停止時間を避ける。
+  12. cutoverの順序は、repository準備 → PR #64 merge → repository Custom domain設定 → 直ちにXServer DNS設定 → DNS伝播・TLS発行確認 → 公開確認 → closureとする。DNS実設定とrepository Custom domain設定はPR #64のmerge後に行う。
   13. `docs/CNAME`をmergeしただけでは、repository SettingsのCustom domain設定作業が別途必要である。Custom domain設定をSaveした直後、GitHubが`main`へ追加commitを作成する場合があるため、その有無・内容(`docs/CNAME`以外の意図しない差分がないか)を確認する。
   14. production生成・real Gemini・外部記事取得は本Ticketの実装に不要とする。
   15. BL-009(SEO・閲覧者増加策)はmeta description／canonical／OG／Twitter Card／favicon／manifest／sitemap／robots.txt／analytics／Search Console／Aboutコンテンツを扱う別Ticketとし、本Ticketでは扱わない。現時点でこれらはいずれも未実装であり、ドメイン移行で壊れる既存metadataはない。

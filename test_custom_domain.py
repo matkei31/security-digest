@@ -330,6 +330,18 @@ class RunbookOrderingTest(unittest.TestCase):
         self.assertLess(merge_pos, custom_domain_pos)
         self.assertLess(custom_domain_pos, dns_pos)
 
+    def test_bl007_backlog_does_not_retain_dns_before_custom_domain_wording(self):
+        bl007 = self._section(self.backlog, "## BL-007")
+        self.assertNotIn("DNSをrepository Custom domain設定より先に伝播", bl007)
+
+    def test_bl007_backlog_records_merge_then_custom_domain_then_dns(self):
+        bl007 = self._section(self.backlog, "## BL-007")
+        merge_pos = bl007.index("PR #64 merge")
+        custom_domain_pos = bl007.index("repository Custom domain設定", merge_pos)
+        dns_pos = bl007.index("XServer DNS設定", custom_domain_pos)
+        self.assertLess(merge_pos, custom_domain_pos)
+        self.assertLess(custom_domain_pos, dns_pos)
+
 
 class TicketIdTypoTest(unittest.TestCase):
     """正式なTicket IDは常にBL-007であり、BL_007という誤記が残っていないこと。"""
