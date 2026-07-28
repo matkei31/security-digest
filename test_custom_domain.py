@@ -241,5 +241,119 @@ class Bl007DocumentationTest(unittest.TestCase):
         self.assertIn("BL-029", recently_completed)
 
 
+class ReadmePublicUrlTest(unittest.TestCase):
+    """READMEは現在の公開状態とだけ一致させ、切替完了を先取りしない。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.readme = (REPOSITORY_ROOT / "README.md").read_text(encoding="utf-8")
+
+    def test_readme_states_the_current_live_url(self):
+        self.assertIn("公開サイト: https://matkei31.github.io/security-digest/", self.readme)
+
+    def test_readme_states_the_planned_domain_without_claiming_it_is_live(self):
+        self.assertIn("切替予定ドメイン: https://monomidigest.com/", self.readme)
+        self.assertNotIn("公開サイト: https://monomidigest.com/", self.readme)
+
+    def test_readme_does_not_assert_the_switch_is_complete(self):
+        self.assertNotIn("正規URLとなり", self.readme)
+        self.assertNotIn("切替後", self.readme)
+        self.assertNotIn("redirectされる", self.readme)
+
+    def test_readme_does_not_embed_runbook_or_dns_details(self):
+        for forbidden in (
+            "185.199.108.153",
+            "185.199.109.153",
+            "185.199.110.153",
+            "185.199.111.153",
+            "ns1.xdomain.ne.jp",
+            "Custom domain",
+            "dig +short",
+            "runbook",
+        ):
+            self.assertNotIn(forbidden, self.readme)
+
+    def test_readme_has_no_ticket_id_typo(self):
+        self.assertNotIn("BL_007", self.readme)
+
+
+class RunbookOrderingTest(unittest.TestCase):
+    """cutover runbookの記述順序(文字列の出現順)を検証する。"""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.backlog = (REPOSITORY_ROOT / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.decisions = (REPOSITORY_ROOT / "DECISIONS.md").read_text(encoding="utf-8")
+
+    def _section(self, text, marker, next_marker="\n## "):
+        start = text.index(marker)
+        rest = text[start + len(marker):]
+        end = rest.find(next_marker)
+        return rest if end == -1 else rest[:end]
+
+    def test_bl007_merge_is_ordered_before_custom_domain_and_dns_setup(self):
+        bl007 = self._section(self.backlog, "## BL-007")
+        merge_pos = bl007.index("PR #64 Ready化・通常merge")
+        custom_domain_pos = bl007.index("repository Custom domain設定", merge_pos)
+        dns_pos = bl007.index("XServer A×4追加", custom_domain_pos)
+        self.assertLess(merge_pos, custom_domain_pos)
+        self.assertLess(custom_domain_pos, dns_pos)
+
+    def test_bl007_checks_for_github_generated_commit_after_custom_domain_save(self):
+        bl007 = self._section(self.backlog, "## BL-007")
+        self.assertIn("設定直後のGitHub生成commit有無確認", bl007)
+
+    def test_bl007_retains_ownership_txt_and_forbids_wildcard(self):
+        bl007 = self._section(self.backlog, "## BL-007")
+        self.assertIn("ownership TXT保持", bl007)
+        self.assertIn("wildcard禁止", bl007)
+
+    def test_bl007_does_not_claim_dns_or_https_or_redirect_as_complete(self):
+        bl007 = self._section(self.backlog, "## BL-007")
+        self.assertIn("DNS切替待ち", bl007)
+        self.assertNotIn("**状態:** 完了", bl007)
+
+    def test_sd028_does_not_disable_enforce_https_proactively(self):
+        sd028 = self._section(self.decisions, "## SD-028")
+        self.assertIn("is not disabled proactively", sd028)
+        self.assertIn("not yet enabled until GitHub issues the certificate", sd028)
+
+    def test_sd028_records_dns_tls_https_redirect_as_unconfirmed(self):
+        sd028 = self._section(self.decisions, "## SD-028")
+        self.assertIn("are all unconfirmed and not represented as complete", sd028)
+
+    def test_sd028_orders_merge_before_custom_domain_before_dns(self):
+        sd028 = self._section(self.decisions, "## SD-028")
+        merge_pos = sd028.index("merge")
+        custom_domain_pos = sd028.index("Custom domain setting to", merge_pos)
+        dns_pos = sd028.index("adds the XServer DNS records", custom_domain_pos)
+        self.assertLess(merge_pos, custom_domain_pos)
+        self.assertLess(custom_domain_pos, dns_pos)
+
+
+class TicketIdTypoTest(unittest.TestCase):
+    """正式なTicket IDは常にBL-007であり、BL_007という誤記が残っていないこと。"""
+
+    def test_no_bl007_underscore_typo_anywhere_in_tracked_markdown_or_python(self):
+        # Excludes this test file itself: its own assertion strings
+        # intentionally search for "BL_007" as the typo pattern to detect,
+        # which is not a use of it as a real Ticket ID.
+        for filename in (
+            "README.md",
+            "BACKLOG.md",
+            "STATUS.md",
+            "DECISIONS.md",
+            "UI_SPEC.md",
+            "fetch.py",
+            "daily_json.py",
+        ):
+            path = REPOSITORY_ROOT / filename
+            if not path.exists():
+                continue
+            text = path.read_text(encoding="utf-8")
+            with self.subTest(filename=filename):
+                self.assertNotIn("BL_007", text)
+
+
 if __name__ == "__main__":
     unittest.main()

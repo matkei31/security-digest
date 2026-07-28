@@ -2,7 +2,7 @@
 
 ## 1. As of
 
-2026-07-27
+2026-07-28
 
 This file records the current, changeable project state. Incomplete, partially addressed, and acceptance-pending items are recorded in [BACKLOG.md](BACKLOG.md). Stable design and operating decisions are recorded in [DECISIONS.md](DECISIONS.md).
 
@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行) monomidigest.comへの移行 — implemented on branch `claude/bl007-custom-domain`, Draft PR, repository-side preparation only. `monomidigest.com`をXServerドメインで取得・GitHub Pages所有権確認TXTでVerified済みだが、DNS records(apex A×4、www CNAME)はまだ未追加であり、custom domainは公開されていない。`docs/CNAME`(`monomidigest.com`の1行)を新設し、日次production生成・全Archive offline再生成のいずれでもCNAMEが維持されることを確認した。正規URLは`https://monomidigest.com/`、`www`はapexへredirect、GitHub Pages継続、DNS管理はXServer、検証用TXTは保持、wildcard DNSは使用しない。`data/`・ARTICLE／BRIEF契約・workflow・repository名は変更していない。BL-009(SEO)は別Ticket・scope外。production未実行。merge前にユーザーのDNS切替準備確認が必要。
+- [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行) monomidigest.comへの移行 — implemented on branch `claude/bl007-custom-domain`, [PR #64](https://github.com/matkei31/security-digest/pull/64) Draft, repository-side preparation only, current head `fcf2ad03e7b9e3539ad7494769f7958aa0ae6b91`。`docs/CNAME`(`monomidigest.com`の1行)を新設し、日次production生成・全Archive offline再生成のいずれでもCNAMEが維持されることを確認した。**現在の公開URLは引き続き`https://matkei31.github.io/security-digest/`であり、`https://monomidigest.com/`はまだ公開URLではない(切替予定ドメイン)。** XServer A／CNAMEは未設定、repository Custom domainも未設定。確定したcutover順序は、PR #64をmerge → merge-triggered Pages成功確認 → repository Custom domain設定 → XServer A×4／www CNAME×1追加 → DNS伝播確認 → GitHub Pages DNS check → TLS証明書発行待ち → Enforce HTTPS確認 → apex／www／旧URL公開確認 → closure、の順であり、DNS実設定・repository Custom domain設定はPR #64のmerge後にユーザー作業として行う。DNS check／TLS証明書発行／Enforce HTTPS／redirect挙動はいずれも未確認。`data/`・ARTICLE／BRIEF契約・workflow・repository名は変更していない。BL-009(SEO)は別Ticket・scope外。production未実行、`workflow_dispatch`未実行。
 
 ## 5. Recently completed work
 
