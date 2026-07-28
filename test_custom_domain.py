@@ -179,9 +179,9 @@ class Bl007DocumentationTest(unittest.TestCase):
         end = rest.find(next_marker)
         return rest if end == -1 else rest[:end]
 
-    def test_bl007_is_recorded_with_confirmed_spec_and_draft_pr(self):
+    def test_bl007_is_recorded_as_complete_with_confirmed_policy(self):
         bl007 = self._section(self.backlog, "## BL-007")
-        self.assertIn("仕様化済み / 実装済みDraft PR / DNS切替待ち", bl007)
+        self.assertIn("- **状態:** 完了", bl007)
         self.assertIn("正規URLは`https://monomidigest.com/`とする", bl007)
         self.assertIn(
             "`https://www.monomidigest.com/`は正規URLへリダイレクトさせる", bl007
@@ -193,7 +193,8 @@ class Bl007DocumentationTest(unittest.TestCase):
         self.assertIn("検証TXTは保持する", bl007)
         self.assertIn("検証用TXTは削除せず維持する", bl007)
         self.assertIn("implementation branch `claude/bl007-custom-domain`", bl007)
-        self.assertNotIn("**状態:** 完了", bl007)
+        self.assertIn("616d58e8a924338f596c54f9717f0ff96f48d9e6", bl007)
+        self.assertIn("**残作業:** なし", bl007)
 
     def test_bl007_does_not_infer_domain_as_unacquired(self):
         bl007 = self._section(self.backlog, "## BL-007")
@@ -228,10 +229,18 @@ class Bl007DocumentationTest(unittest.TestCase):
         self.assertNotIn("*.monomidigest.com", bl007)
         self.assertIn("wildcard DNSは使用しない", bl007)
 
-    def test_status_active_work_records_bl007_dns_pending(self):
+    def test_status_active_work_is_empty_after_bl007_closure(self):
         active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
-        self.assertIn("BL-007", active)
-        self.assertIn("DNS", active)
+        self.assertIn("None.", active)
+        self.assertNotIn("BL-007", active)
+
+    def test_status_records_bl007_as_recently_completed(self):
+        recently_completed = self._section(
+            self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
+        )
+        self.assertIn("BL-007", recently_completed)
+        self.assertIn("616d58e8a924338f596c54f9717f0ff96f48d9e6", recently_completed)
+        self.assertIn("monomidigest.com", recently_completed)
 
     def test_bl028_and_bl029_completion_states_are_unchanged(self):
         recently_completed = self._section(
@@ -242,23 +251,18 @@ class Bl007DocumentationTest(unittest.TestCase):
 
 
 class ReadmePublicUrlTest(unittest.TestCase):
-    """READMEは現在の公開状態とだけ一致させ、切替完了を先取りしない。"""
+    """READMEは切替完了後の現在の公開状態と一致させる。"""
 
     @classmethod
     def setUpClass(cls):
         cls.readme = (REPOSITORY_ROOT / "README.md").read_text(encoding="utf-8")
 
-    def test_readme_states_the_current_live_url(self):
-        self.assertIn("公開サイト: https://matkei31.github.io/security-digest/", self.readme)
+    def test_readme_states_monomidigest_com_as_the_current_public_site(self):
+        self.assertIn("公開サイト: https://monomidigest.com/", self.readme)
 
-    def test_readme_states_the_planned_domain_without_claiming_it_is_live(self):
-        self.assertIn("切替予定ドメイン: https://monomidigest.com/", self.readme)
-        self.assertNotIn("公開サイト: https://monomidigest.com/", self.readme)
-
-    def test_readme_does_not_assert_the_switch_is_complete(self):
-        self.assertNotIn("正規URLとなり", self.readme)
-        self.assertNotIn("切替後", self.readme)
-        self.assertNotIn("redirectされる", self.readme)
+    def test_readme_notes_the_old_url_redirects_here(self):
+        self.assertIn("https://matkei31.github.io/security-digest/", self.readme)
+        self.assertIn("redirect", self.readme)
 
     def test_readme_does_not_embed_runbook_or_dns_details(self):
         for forbidden in (
@@ -277,8 +281,8 @@ class ReadmePublicUrlTest(unittest.TestCase):
         self.assertNotIn("BL_007", self.readme)
 
 
-class RunbookOrderingTest(unittest.TestCase):
-    """cutover runbookの記述順序(文字列の出現順)を検証する。"""
+class Bl007ClosureRecordTest(unittest.TestCase):
+    """closure後のBACKLOG／SD-028の記録内容(cutover順序の履歴・観測事実・現状)を検証する。"""
 
     @classmethod
     def setUpClass(cls):
@@ -291,56 +295,53 @@ class RunbookOrderingTest(unittest.TestCase):
         end = rest.find(next_marker)
         return rest if end == -1 else rest[:end]
 
-    def test_bl007_merge_is_ordered_before_custom_domain_and_dns_setup(self):
-        bl007 = self._section(self.backlog, "## BL-007")
-        merge_pos = bl007.index("PR #64 Ready化・通常merge")
-        custom_domain_pos = bl007.index("repository Custom domain設定", merge_pos)
-        dns_pos = bl007.index("XServer A×4追加", custom_domain_pos)
-        self.assertLess(merge_pos, custom_domain_pos)
-        self.assertLess(custom_domain_pos, dns_pos)
-
-    def test_bl007_checks_for_github_generated_commit_after_custom_domain_save(self):
-        bl007 = self._section(self.backlog, "## BL-007")
-        self.assertIn("設定直後のGitHub生成commit有無確認", bl007)
-
-    def test_bl007_retains_ownership_txt_and_forbids_wildcard(self):
-        bl007 = self._section(self.backlog, "## BL-007")
-        self.assertIn("ownership TXT保持", bl007)
-        self.assertIn("wildcard禁止", bl007)
-
-    def test_bl007_does_not_claim_dns_or_https_or_redirect_as_complete(self):
-        bl007 = self._section(self.backlog, "## BL-007")
-        self.assertIn("DNS切替待ち", bl007)
-        self.assertNotIn("**状態:** 完了", bl007)
-
-    def test_sd028_does_not_disable_enforce_https_proactively(self):
-        sd028 = self._section(self.decisions, "## SD-028")
-        self.assertIn("is not disabled proactively", sd028)
-        self.assertIn("not yet enabled until GitHub issues the certificate", sd028)
-
-    def test_sd028_records_dns_tls_https_redirect_as_unconfirmed(self):
-        sd028 = self._section(self.decisions, "## SD-028")
-        self.assertIn("are all unconfirmed and not represented as complete", sd028)
-
-    def test_sd028_orders_merge_before_custom_domain_before_dns(self):
-        sd028 = self._section(self.decisions, "## SD-028")
-        merge_pos = sd028.index("merge")
-        custom_domain_pos = sd028.index("Custom domain setting to", merge_pos)
-        dns_pos = sd028.index("adds the XServer DNS records", custom_domain_pos)
-        self.assertLess(merge_pos, custom_domain_pos)
-        self.assertLess(custom_domain_pos, dns_pos)
-
-    def test_bl007_backlog_does_not_retain_dns_before_custom_domain_wording(self):
-        bl007 = self._section(self.backlog, "## BL-007")
-        self.assertNotIn("DNSをrepository Custom domain設定より先に伝播", bl007)
-
-    def test_bl007_backlog_records_merge_then_custom_domain_then_dns(self):
+    def test_bl007_records_the_confirmed_cutover_order_as_history(self):
         bl007 = self._section(self.backlog, "## BL-007")
         merge_pos = bl007.index("PR #64 merge")
         custom_domain_pos = bl007.index("repository Custom domain設定", merge_pos)
-        dns_pos = bl007.index("XServer DNS設定", custom_domain_pos)
+        dns_pos = bl007.index("直ちにXServer DNS設定", custom_domain_pos)
         self.assertLess(merge_pos, custom_domain_pos)
         self.assertLess(custom_domain_pos, dns_pos)
+
+    def test_bl007_records_no_unintended_commit_from_custom_domain_activation(self):
+        bl007 = self._section(self.backlog, "## BL-007")
+        self.assertIn("mainへの意図しない追加commitは発生していない", bl007)
+
+    def test_bl007_retains_ownership_txt_and_forbids_wildcard(self):
+        bl007 = self._section(self.backlog, "## BL-007")
+        self.assertIn("GitHub所有権確認用TXTは維持されている", bl007)
+        self.assertNotIn("*.monomidigest.com", bl007)
+
+    def test_bl007_does_not_retain_stale_pre_closure_wording(self):
+        bl007 = self._section(self.backlog, "## BL-007")
+        self.assertNotIn("DNS切替待ち", bl007)
+        self.assertNotIn("DNSをrepository Custom domain設定より先に伝播", bl007)
+
+    def test_sd028_records_https_enforced_and_certificate_approved(self):
+        sd028 = self._section(self.decisions, "## SD-028")
+        self.assertIn("Enforce HTTPS", sd028)
+        self.assertIn("is enabled", sd028)
+        self.assertIn("TLS certificate covers both", sd028)
+
+    def test_sd028_records_cname_merge_activation_as_an_observation_not_a_guarantee(self):
+        sd028 = self._section(self.decisions, "## SD-028")
+        self.assertIn("Observed behavior for this repository", sd028)
+        self.assertIn("not asserted as a universal GitHub Pages guarantee", sd028)
+
+    def test_sd028_records_the_transient_dns_error_and_its_resolution(self):
+        sd028 = self._section(self.decisions, "## SD-028")
+        self.assertIn("InvalidDNSError", sd028)
+        self.assertIn("resolved", sd028)
+
+    def test_sd028_records_minimal_dns_with_no_wildcard(self):
+        sd028 = self._section(self.decisions, "## SD-028")
+        self.assertIn("no AAAA records were added and no wildcard DNS is used", sd028)
+
+    def test_sd028_evidence_records_merge_commit_and_public_state(self):
+        sd028 = self._section(self.decisions, "## SD-028")
+        self.assertIn("616d58e8a924338f596c54f9717f0ff96f48d9e6", sd028)
+        self.assertIn("protected_domain_state: verified", sd028)
+        self.assertIn("https_enforced: true", sd028)
 
 
 class TicketIdTypoTest(unittest.TestCase):
