@@ -2,7 +2,7 @@
 
 ## 1. As of
 
-2026-07-27
+2026-07-28
 
 This file records the current, changeable project state. Incomplete, partially addressed, and acceptance-pending items are recorded in [BACKLOG.md](BACKLOG.md). Stable design and operating decisions are recorded in [DECISIONS.md](DECISIONS.md).
 
@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- None.
+- [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行) monomidigest.comへの移行 — implemented on branch `claude/bl007-custom-domain`, [PR #64](https://github.com/matkei31/security-digest/pull/64) Draft, repository-side preparation only。`docs/CNAME`(`monomidigest.com`の1行)を新設し、日次production生成・全Archive offline再生成のいずれでもCNAMEが維持されることを確認した。**現在の公開URLは引き続き`https://matkei31.github.io/security-digest/`であり、`https://monomidigest.com/`はまだ公開URLではない(切替予定ドメイン)。** XServer A／CNAMEは未設定、repository Custom domainも未設定。確定したcutover順序は、PR #64をmerge → merge-triggered Pages成功確認 → repository Custom domain設定 → XServer A×4／www CNAME×1追加 → DNS伝播確認 → GitHub Pages DNS check → TLS証明書発行待ち → Enforce HTTPS確認 → apex／www／旧URL公開確認 → closure、の順であり、DNS実設定・repository Custom domain設定はPR #64のmerge後にユーザー作業として行う。DNS check／TLS証明書発行／Enforce HTTPS／redirect挙動はいずれも未確認。`data/`・ARTICLE／BRIEF契約・workflow・repository名は変更していない。BL-009(SEO)は別Ticket・scope外。production未実行、`workflow_dispatch`未実行。
 
 ## 5. Recently completed work
 
@@ -83,7 +83,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-[BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更), [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する), [BL-027](BACKLOG.md#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする), [BL-028](BACKLOG.md#bl-028--ダイジェストナビゲーションの配置を再設計する), and [BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する) are all complete; see [Recently completed work](#5-recently-completed-work) above. BACKLOG.md records no explicit ordering among the remaining open items and BL-007, so none is named as the ranked next candidate purely by priority number.
+[BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更), [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する), [BL-027](BACKLOG.md#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする), [BL-028](BACKLOG.md#bl-028--ダイジェストナビゲーションの配置を再設計する), and [BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する) are all complete; see [Recently completed work](#5-recently-completed-work) above. [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行) (P2, monomidigest.comへの移行) has a confirmed spec and Draft PR with DNS switchover pending; see [Active work](#active-work) above. BACKLOG.md records no explicit ordering among the remaining open items, so none is named as the ranked next candidate purely by priority number.
 
 [BL-023](BACKLOG.md#bl-023--article編集品質改善) is on hold after the v9 and fixed-v10 prompt-only No-Go evaluations and is not ranked in this short priority list. Reconsider it only through a separately designed structured ARTICLE-field contract or facts-based limited deterministic composition.
 

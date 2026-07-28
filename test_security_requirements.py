@@ -657,12 +657,12 @@ class SecurityRequirementsTest(unittest.TestCase):
         )
         self.assertNotIn("superseded by SD-027", sd021)
 
-    def test_bl028_kickoff_does_not_reopen_bl007_bl017_or_bl022(self):
-        bl007 = self.backlog.split("## BL-007", 1)[1].split("\n## ", 1)[0]
+    def test_bl028_kickoff_does_not_reopen_bl017_or_bl022(self):
+        # BL-007 was implemented separately in its own ticket after this
+        # snapshot, so it is no longer asserted frozen here.
         bl017 = self.backlog.split("## BL-017", 1)[1].split("\n## ", 1)[0]
         bl022 = self.backlog.split("## BL-022", 1)[1].split("\n## ", 1)[0]
         bl029 = self.backlog.split("## BL-029", 1)[1].split("\n## ", 1)[0]
-        self.assertIn("- **状態:** 方針承認済み / 未実装", bl007)
         self.assertIn("- **状態:** 完了", bl017)
         self.assertIn("- **状態:** 完了", bl022)
         self.assertIn("- **状態:** 完了", bl029)

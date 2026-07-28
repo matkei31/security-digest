@@ -4,6 +4,8 @@ Monomi Digestは、金融機関のサイバーセキュリティ担当者・管�
 
 公開サイト: https://matkei31.github.io/security-digest/
 
+切替予定ドメイン: https://monomidigest.com/
+
 ## 概要
 
 本システムは、設定されたRSSや構造化データの取得元から記事を収集し、Geminiで各記事の分析（ARTICLE）と当日全体の要点（BRIEF）を生成します。生成結果は、機械可読なdaily JSONとGitHub Pages向けの静的HTMLとして保存・公開されます。
