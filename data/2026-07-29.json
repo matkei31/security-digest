@@ -1,0 +1,419 @@
+{
+  "schema_version": 1,
+  "digest_date": "2026-07-29",
+  "generated_at": "2026-07-29T07:58:57.143756+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 8,
+    "ai_attempted_count": 8,
+    "ai_success_count": 8,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 8,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 6,
+      "参考": 2,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 2,
+      "攻撃・脅威動向": 2,
+      "インシデント": 0,
+      "規制・ガバナンス": 1,
+      "クラウド・サプライチェーン": 1,
+      "AI・新技術リスク": 2,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "掲載8件｜重要度「高」0件｜本日確認0件｜今週確認6件\n本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が6件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "セキュリティ研究者のAleksandr Krasnov氏が、休眠状態の非人間ID（NHI）がセキュリティ上の盲点となり、クラウドシステムに隠れたIDリスクをもたらすことを明らかにしました。同氏は、信頼パスを検出するためのオープンソースツール「NHI Hound」を公開しています。\n金融機関がクラウドシステムを利用し、多数の非人間IDを管理している場合に関係します。これらのIDが適切に管理されていないと、不正アクセスや情報漏えいのリスクにつながる可能性があります。",
+      "インターネットに公開されている多数のリモートハードウェア管理プロセッサが、オフラインのパスワードクラッキング攻撃の対象となっており、攻撃者がこの脆弱性を認識していることが報告されています。\n金融機関がデータセンターコントローラーをインターネットに公開している場合、または委託先がそのような環境を運用している場合に関係します。記事からは具体的な製品名や影響範囲が不明なため、適用性は限定的または不確実です。"
+    ],
+    "check_items": [
+      "自社が利用するクラウド環境における非人間IDの棚卸しと、その信頼パスの確認を行う",
+      "自社および委託先において、インターネットに公開されているデータセンターコントローラーの利用有無と影響範囲を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:331be888ad818330e0307f372ae80d603dc28370823c6de10a201f24f025a694",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/cloud-security/non-human-identity-sprawl-creates-a-new-cloud-attack-path",
+      "canonical_url": "https://www.darkreading.com/cloud-security/non-human-identity-sprawl-creates-a-new-cloud-attack-path",
+      "published_at": "2026-07-29T06:33:23+09:00",
+      "fetched_at": "2026-07-29T07:56:31.147079+09:00",
+      "title": "「ゴースト認証情報」がクラウドシステムに潜む隠れたIDリスクを露呈",
+      "raw_title": "Ghost Credentials Expose Cloud Systems to Hidden Identity Risks",
+      "raw_excerpt": "Security researcher Aleksandr Krasnov reveals dormant non-human identities can create security blind spots and releases NHI Hound, an open source tool to sniff out trust paths.",
+      "content_hash": "sha256:026ac7219fc5b0366ad1eeb9e8fb4ceae5c3813dc4b52b3495bde93e85fc849b",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-29T07:56:33.517246+09:00",
+        "category": "クラウド・サプライチェーン",
+        "category_version": "v1",
+        "category_reason": "記事の主題がクラウドシステムにおける非人間IDのセキュリティリスクと対策ツールに関するものであるため。",
+        "tags": [
+          "クラウド",
+          "IAM"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セキュリティ研究者のAleksandr Krasnov氏が、休眠状態の非人間ID（NHI）がセキュリティ上の盲点となり、クラウドシステムに隠れたIDリスクをもたらすことを明らかにしました。同氏は、信頼パスを検出するためのオープンソースツール「NHI Hound」を公開しています。",
+        "financial_impact": "金融機関がクラウドシステムを利用し、多数の非人間IDを管理している場合に関係します。これらのIDが適切に管理されていないと、不正アクセスや情報漏えいのリスクにつながる可能性があります。",
+        "recommended_actions": [
+          "自社が利用するクラウド環境における非人間IDの棚卸しと、その信頼パスの確認を行う",
+          "NHI Houndのようなツールを活用し、休眠状態や過剰な権限を持つ非人間IDの検出を検討する",
+          "非人間IDのライフサイクル管理と権限管理に関するポリシー・手順を見直す"
+        ],
+        "reason": "重要度は、クラウドシステムにおける非人間IDの管理は多くの金融機関にとって共通の課題であり、潜在的なリスクがあるため「中」です。確認目安は、具体的な緊急性を示す攻撃や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:60d567f96e1b4560d97491165499bea660d2911b7d12b7854feba7d53876194f",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/cyber-risk/flaw-exposes-data-centers-server-takeover",
+      "canonical_url": "https://www.darkreading.com/cyber-risk/flaw-exposes-data-centers-server-takeover",
+      "published_at": "2026-07-29T06:07:55+09:00",
+      "fetched_at": "2026-07-29T07:56:31.147079+09:00",
+      "title": "数千台のデータセンターコントローラーが乗っ取りの危険に晒されている",
+      "raw_title": "Thousands of Data Center Controllers Open to Takeover",
+      "raw_excerpt": "A host of Internet-exposed remote hardware management processors are subject to offline password-cracking attacks — and adversaries have taken note.",
+      "content_hash": "sha256:d8f7af17e3e2d3556a3ad4937fe2f6468fbd32eebb1e1a09a5124203bd895462",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-29T07:56:50.620692+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "インターネットに公開されたハードウェア管理プロセッサの脆弱性が主題であるため。",
+        "tags": [
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "インターネットに公開されている多数のリモートハードウェア管理プロセッサが、オフラインのパスワードクラッキング攻撃の対象となっており、攻撃者がこの脆弱性を認識していることが報告されています。",
+        "financial_impact": "金融機関がデータセンターコントローラーをインターネットに公開している場合、または委託先がそのような環境を運用している場合に関係します。記事からは具体的な製品名や影響範囲が不明なため、適用性は限定的または不確実です。",
+        "recommended_actions": [
+          "自社および委託先において、インターネットに公開されているデータセンターコントローラーの利用有無と影響範囲を確認する",
+          "該当するコントローラーのパスワードポリシーや認証設定を見直し、強化を検討する"
+        ],
+        "reason": "重要度は、データセンターコントローラーの脆弱性だが、具体的な製品名や金融機関での利用状況が記事から不明なため「中」です。確認目安は、実悪用が示唆されているものの、緊急のパッチ情報や明確な期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7df0eff93528ef6fdb1bde75b510137adaf36e376797875f24843b449b39e383",
+      "source_id": "dark_reading",
+      "source_name": "Dark Reading",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.darkreading.com/application-security/ai-agents-escape-sandboxes-old-security-rules-apply",
+      "canonical_url": "https://www.darkreading.com/application-security/ai-agents-escape-sandboxes-old-security-rules-apply",
+      "published_at": "2026-07-29T05:27:36+09:00",
+      "fetched_at": "2026-07-29T07:56:31.147079+09:00",
+      "title": "AIエージェントのサンドボックス脱出、従来のセキュリティ原則が重要に",
+      "raw_title": "When AI Agents Escape Sandboxes, Old Security Rules Apply",
+      "raw_excerpt": "OpenAI's recent AI agent sandbox escape proves traditional security principles matter more than ever: limit access, isolate execution, log everything.",
+      "content_hash": "sha256:024950d4c75b3301cc154be7333a3d74d5dfede63373e14fcbee98cbf824638f",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-29T07:57:07.742773+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントのセキュリティリスクと対策が主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "OpenAIのAIエージェントがサンドボックスから脱出した事例を受け、アクセス制限、実行隔離、ログ記録といった従来のセキュリティ原則がAI時代においても重要であることが強調されています。",
+        "financial_impact": "金融機関がAIエージェントを導入・利用する場合、そのセキュリティ対策において本記事で言及されている従来のセキュリティ原則の適用性を確認する必要があります。",
+        "recommended_actions": [
+          "AIエージェントの導入を検討している場合、サンドボックス環境のセキュリティ対策について評価する",
+          "AIエージェントの利用におけるアクセス制御、実行環境の隔離、ログ記録の原則適用状況を確認する"
+        ],
+        "reason": "重要度は、AIエージェントのセキュリティは中長期的な検討事項であり、現時点での直接的な影響が不確実なため「中」です。確認目安は、具体的な緊急対応の必要性や期限が示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:834f71b07c6beddee72fd60dac53c6dd37e7f5ac3c6d94e4fb3b40b54f3d14a4",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/claude-ai-just-cracked-post-quantum.html",
+      "canonical_url": "https://thehackernews.com/2026/07/claude-ai-just-cracked-post-quantum.html",
+      "published_at": "2026-07-29T03:59:07+09:00",
+      "fetched_at": "2026-07-29T07:56:31.147079+09:00",
+      "title": "Claude AIがポスト量子暗号テストスキームを解読し、7ラウンドAES攻撃を高速化",
+      "raw_title": "Claude AI Just Cracked a Post-Quantum Test Scheme and Found a Faster 7-Round AES Attack",
+      "raw_excerpt": "Anthropic says Claude Mythos Preview helped derive an end-to-end key-recovery attack against HAWK-256 and a 200- to 800-fold speedup for an attack on seven-round AES-128.\n\nThe HAWK attack exploits a p",
+      "content_hash": "sha256:2ed38db48cd270f1f1beb7961cf44b1eded3f0ee532fa94039e7e4ba93538cfb",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-29T07:57:24.741214+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIが暗号解読に利用された事例であり、AI技術のリスクと可能性が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AnthropicのClaude Mythos Previewが、HAWK-256に対する鍵回復攻撃と、7ラウンドAES-128に対する攻撃を200〜800倍高速化する手法を導き出しました。HAWK攻撃は署名スキームの背後にある格子構造の未使用の対称性を悪用しています。",
+        "financial_impact": "金融機関における直接的な影響は現時点では限定的です。将来的な暗号技術の進化や脅威動向を把握するための参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIによる暗号解読の可能性を示すものであり、中長期的な技術動向として把握する価値があるため「中」です。確認目安は、現時点での金融機関への直接的な脅威や緊急対応の必要性が記事から確認できないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:25a6aa3b9fadee7c14ee89880144c66f97f0d539a41cdc0ea7a90d2756ae2f65",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/tengu-botnet-reboots-compromised-linux.html",
+      "canonical_url": "https://thehackernews.com/2026/07/tengu-botnet-reboots-compromised-linux.html",
+      "published_at": "2026-07-29T00:01:33+09:00",
+      "fetched_at": "2026-07-29T07:56:31.147079+09:00",
+      "title": "Tenguボットネット、プロセス終了時にLinuxデバイスを再起動し永続化",
+      "raw_title": "Tengu Botnet Reboots Compromised Linux Devices When Defenders Kill Its Process",
+      "raw_excerpt": "A new Mirai-derived botnet called Tengu can use a compromised Linux device's hardware watchdog to trigger a reboot when defenders kill its main process.\n\nIf that happens, Tengu's other persistence mec",
+      "content_hash": "sha256:4031b118e961918f49f015257e23267eccbe8d059ed88daf3ce4335ad2f70fe1",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-29T07:57:42.018847+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Tenguボットネットの新しい攻撃手法と永続化メカニズムが主題であるため。",
+        "tags": [
+          "APT",
+          "ランサムウェア"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "新しいMirai派生ボットネット「Tengu」は、侵害したLinuxデバイスのハードウェアウォッチドッグを利用し、防御側がメインプロセスを終了させるとデバイスを再起動させます。これにより、他の永続化メカニズムがボットネットを再起動する機会を得ます。",
+        "financial_impact": "金融機関がLinuxデバイスを運用しており、Telnetの認証情報ブルートフォース攻撃に晒される可能性がある場合に関係します。直接的な影響は限定的ですが、IoTデバイスやエッジデバイスのセキュリティ対策の参考になります。",
+        "recommended_actions": [
+          "Telnetの認証情報ブルートフォース攻撃に対する防御策を再確認する",
+          "Linuxデバイスにおけるハードウェアウォッチドッグの利用状況と設定を確認する",
+          "Mirai派生ボットネットの活動に関する最新情報を継続的に監視する"
+        ],
+        "reason": "重要度は、金融機関におけるLinuxデバイスの利用状況やTelnetの露出が限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、新たなボットネットの動向であり、即時対応を要する具体的な脅威や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:81917f51ec1dcd5caa08b8ebac9bcd939d1b52aa6b4db6f45f24e8155bd5ae71",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/24650-internet-exposed-bmcs-disclose.html",
+      "canonical_url": "https://thehackernews.com/2026/07/24650-internet-exposed-bmcs-disclose.html",
+      "published_at": "2026-07-28T23:41:36+09:00",
+      "fetched_at": "2026-07-29T07:56:31.147079+09:00",
+      "title": "インターネットに公開された24,650台のBMCがログイン前にIPMIパスワードハッシュを漏洩",
+      "raw_title": "24,650 Internet-Exposed BMCs Disclose IPMI Password Hashes Before Login",
+      "raw_excerpt": "Cybersecurity researchers have sounded an alert after finding more than 36,000 Baseboard Management Controller (BMC) management interfaces exposing Intelligent Platform Management Interface (IPMI) pro",
+      "content_hash": "sha256:82db292d141bd486b634acac674be9cfdf7b6aacf04611dedc4ffb85af8c5309",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-29T07:57:59.165362+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Baseboard Management Controller (BMC)の管理インターフェースがIPMIプロトコルを介してパスワードハッシュを漏洩する脆弱性が主題であるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者によると、36,000台以上のBaseboard Management Controller (BMC)管理インターフェースがIPMIプロトコルを介してインターネットに公開されており、そのうち24,650台がログイン前にパスワード由来の認証ハッシュを漏洩していることが判明しました。",
+        "financial_impact": "金融機関でインターネットに公開されたBMCを利用している場合、認証情報漏洩のリスクがあるため関係します。利用状況は記事からは確認できません。",
+        "recommended_actions": [
+          "インターネットに公開されているBMCの利用有無と、IPMIプロトコルが有効になっているかを確認する",
+          "BMCの管理インターフェースが外部に公開されている場合は、アクセス制御の強化やVPN経由でのアクセスを検討する"
+        ],
+        "reason": "重要度は、インターネットに公開されたBMCの認証情報漏洩リスクがあるものの、金融機関での利用状況や影響範囲が記事から不明確なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:635ff0da3d382dd733911020364356cd032e5b1465aab87b6c3c7329008ab883",
+      "source_id": "ncsc",
+      "source_name": "NCSC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.ncsc.gov.uk/blogs/when-cyber-attacks-happen-helping-organisations-recover",
+      "canonical_url": "https://www.ncsc.gov.uk/blogs/when-cyber-attacks-happen-helping-organisations-recover",
+      "published_at": "2026-07-28T21:00:00+09:00",
+      "fetched_at": "2026-07-29T07:56:31.147079+09:00",
+      "title": "サイバー攻撃発生時の組織復旧支援に関する新ガイダンス",
+      "raw_title": "When cyber attacks happen: helping organisations recover",
+      "raw_excerpt": "A highly disruptive incident can feel overwhelming. New guidance provides a framework for response and recovery.",
+      "content_hash": "sha256:04002808c1ab4099c46cf057e2173a37f975968ad6c65726a134231179d76120",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-29T07:58:15.971805+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "サイバー攻撃発生時の組織復旧に関するガイダンスが主題であるため。",
+        "tags": [
+          "規制",
+          "ガイドライン",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "英国NCSCは、サイバー攻撃による混乱が発生した際の組織の対応と復旧を支援するための新しいガイダンスを発表しました。このガイダンスは、インシデント対応と復旧のためのフレームワークを提供します。",
+        "financial_impact": "金融機関は、サイバー攻撃発生時のインシデント対応および復旧計画を策定・維持する必要があり、本ガイダンスは参考情報として活用できます。",
+        "recommended_actions": [],
+        "reason": "重要度は、サイバー攻撃からの復旧に関する一般的なガイダンスであり、特定の緊急対応を求めるものではないため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、中長期的な計画策定の参考となる情報であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f51be5d7337c1e9efce5edf7912375a4d0a54c1453c12af31835346dafa04877",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/ir-trends-q2-2026/",
+      "canonical_url": "https://blog.talosintelligence.com/ir-trends-q2-2026/",
+      "published_at": "2026-07-28T19:00:01+09:00",
+      "fetched_at": "2026-07-29T07:56:31.147079+09:00",
+      "title": "2026年第2四半期インシデント対応トレンド：フィッシングと悪用されたリモート管理ツールが攻撃チェーンを主導",
+      "raw_title": "IR Trends Q2 2026: Phishing and weaponized remote management tools drive attack chains",
+      "raw_excerpt": "Talos IR's Q2 report highlights a significant surge in phishing-based initial access and the weaponization of legitimate remote management tools. Learn how to sharpen your defenses.",
+      "content_hash": "sha256:1b788d9d6820af28404bc293e78798949c858272f442c78da7baff40016f78ee",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-29T07:58:34.064058+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "フィッシング、認証情報の悪用、ランサムウェア、リモート管理ツールの悪用といった攻撃手法と脅威動向が主題であるため。",
+        "tags": [
+          "フィッシング",
+          "ランサムウェア",
+          "認証",
+          "APT",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Cisco Talosの2026年第2四半期インシデント対応レポートによると、初期アクセス手段の半分以上がフィッシングであり、特にQRコードを埋め込んだPDFや信頼されたクラウドプラットフォームを利用した手口が目立ちました。認証情報の悪用も65%のインシデントで確認され、多要素認証（MFA）の回避やセッショントークン窃取などが用いられています。ランサムウェアは20%以上を占め、正規のリモート監視・管理ツールが悪用されるケースも報告されています。",
+        "financial_impact": "金融機関においても、フィッシング、認証情報の悪用、ランサムウェアは主要な脅威であり、本レポートで示された攻撃手法は金融機関のシステムや顧客情報に影響を及ぼす可能性があります。特にMFA回避や正規ツールの悪用は、既存のセキュリティ対策をすり抜けるリスクを示唆しています。",
+        "recommended_actions": [
+          "自社および委託先におけるフィッシング対策、特にQRコードを利用した手口への対応状況を確認する",
+          "多要素認証（MFA）の導入状況と、MFA疲労攻撃、セッショントークン窃取などMFA回避策への対応状況を評価する",
+          "正規のリモート監視・管理ツールが悪用される可能性を考慮し、振る舞いベースの監視と管理用バイナリの厳格な制御について見直す"
+        ],
+        "reason": "重要度は、金融機関にとって一般的な脅威動向のレポートであり、特定の製品や脆弱性への即時対応を求めるものではないため「中」です。確認目安は、特定の緊急対応を要する情報ではなく、中長期的な対策検討の参考となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
