@@ -2,7 +2,7 @@
 
 Monomi Digestは、金融機関のサイバーセキュリティ担当者・管理者・担当役員向けに、国内外のサイバーセキュリティニュースを整理して公開する日次ニュースダイジェストです。
 
-公開サイト: https://matkei31.github.io/security-digest/
+公開サイト: https://monomidigest.com/（`www.monomidigest.com`は正規URLへリダイレクト。DNS切替はBL-007のrunbookに従いユーザー作業として実施する。旧URL: https://matkei31.github.io/security-digest/）
 
 ## 概要
 

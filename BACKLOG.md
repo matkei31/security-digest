@@ -174,18 +174,40 @@
 - **ID:** BL-007
 - **タイトル:** monomidigest.comへの移行
 - **優先度:** P2
-- **状態:** 方針承認済み / 未実装
+- **状態:** 仕様化済み / 実装済みDraft PR / DNS切替待ち
 - **出所種別:** ユーザー原文 / ユーザー確認済み要約
 - **ユーザー原文:** 「URLがgithubのユーザー名なのが気になる」
 - **出所:** 2026-07-09 プロジェクト会話。
 - **ユーザー確認済み要約:** 主ドメインは`monomidigest.com`とし、`monomi.jp`は不要とする。
 - **解釈:** 主ドメインとして`monomidigest.com`を使用する。記録された決定では`monomi.jp`は不要とされている。
-- **完了条件:** 未定義。実装前にドメインの所有権とDNSの状態を検証する必要がある。
-- **依存関係:** [SD-011](DECISIONS.md#sd-011--use-monomidigestcom-as-the-primary-domain)、BL-006、Aboutコンテンツ、SEO、canonical URL、公開ナビゲーション。
-- **実装証跡:** 未実装。ドメイン取得とDNS設定は未検証である。
-- **ユーザー受入証跡:** 方向性は2026-07-17のプロジェクト会話で再確認された。ドメイン取得、設定、実装受入は記録されていない。
-- **残作業:** 所有権の検証、DNS/Pages設定とredirectの定義、公開metadataの更新、テスト、ユーザー受入の取得。
-- **注記:** ドメインが購入または設定済みであると推定しない。
+- **外部状態(ユーザー確認済み):**
+  - `monomidigest.com`をXServerドメインで取得済み(契約期間1年、初年度0円、WHOIS代理公開有効、自動更新1年ごと・クレジットカード、ドメインプロテクション有効)。
+  - XServerアカウントの二段階認証・SMS認証・SMS通知は設定済み。
+  - ネームサーバーは`ns1.xdomain.ne.jp`／`ns2.xdomain.ne.jp`／`ns3.xdomain.ne.jp`。
+  - GitHub Pages所有権確認用TXTをXServer DNSへ登録済みで、GitHub個人アカウントのPagesで`monomidigest.com`がVerifiedになった。検証用TXTは削除せず維持する。
+  - A／AAAA／www CNAMEはまだ未設定。repository側Custom domainはまだ未設定。
+  - production／workflow_dispatchは実行していない。
+- **完了条件:** ユーザーと確定した方針は次のとおり。
+  1. 正規URLは`https://monomidigest.com/`とする。
+  2. `https://www.monomidigest.com/`は正規URLへリダイレクトさせる。
+  3. GitHub Pagesを継続使用する。XServerレンタルサーバーは使用しない。
+  4. DNS管理はXServerドメインで行う。
+  5. repository名`security-digest`は変更しない。
+  6. GitHub Pagesの公開元は引き続き`main` branchの`/docs`とする。
+  7. wildcard DNSは使用しない。
+  8. GitHub Pages所有権確認用の検証TXTは保持する。
+  9. `docs/CNAME`を新設し、内容は`monomidigest.com`の1行のみ・末尾改行ありとする。URL scheme・path・`www`を含めない。
+  10. 日次production生成・全Archive offline再生成のいずれでも`docs/CNAME`が削除されないことを保証する。
+  11. `data/`・daily JSON・記事内容・ARTICLE／BRIEF prompt・schema・versionは変更しない。workflowは原則変更せず、repository renameも行わない。
+  12. 旧GitHub Pages URL(`https://matkei31.github.io/security-digest/`)から新ドメインへの挙動を確認し、HTTPS必須・apex正規URL・www redirectを受入条件とする。
+  13. production生成・real Gemini・外部記事取得は本Ticketの実装に不要とする。
+  14. BL-009(SEO・閲覧者増加策)はmeta description／canonical／OG／Twitter Card／favicon／manifest／sitemap／robots.txt／analytics／Search Console／Aboutコンテンツを扱う別Ticketとし、本Ticketでは扱わない。現時点でこれらはいずれも未実装であり、ドメイン移行で壊れる既存metadataはない。
+  15. merge前に、ユーザーのDNS切替準備確認(Xserver側のA／CNAME追加、repository Custom domain設定)を得る。
+- **依存関係:** [SD-011](DECISIONS.md#sd-011--use-monomidigestcom-as-the-primary-domain)(実装Decisionを新設し部分的に補完)、BL-006(完了済み・ブランド名)、BL-009(SEO、別Ticket・scope外)。
+- **実装証跡:** `docs/CNAME`を新設し、内容を`monomidigest.com`の1行(末尾改行あり、URL scheme・path・`www`なし)とした。`fetch.py`のHTML生成関数(`atomic_write_text`)は対象パスのみを原子的に書き換え、`docs/`ディレクトリ全体のクリアや削除を一切行わないため、日次production生成・全Archive offline再生成のいずれでも`docs/CNAME`は自然に維持されることを確認した(コード変更は不要)。`README.md`の公開サイト記載を`https://monomidigest.com/`へ更新し、`www`リダイレクトとDNS切替がユーザー作業である旨・旧URLを併記した。`data/`・daily JSON・記事内容・ARTICLE／BRIEF prompt・schema・versionは変更していない。workflowは変更していない。repository renameは行っていない。関連test追加。
+- **ユーザー受入証跡:** 記録なし。merge前にユーザーのDNS切替準備確認が必要。
+- **残作業:** ユーザーによるXServer DNS切替(A×4・www CNAME×1)、repository Custom domain設定、Enforce HTTPS有効化、公開確認、merge、merge後のGitHub Pages公開反映確認。
+- **注記:** ドメインは取得・Verified済みであり未取得と推定しない。DNS実切替・repository Custom domain設定はユーザー作業であり、本PRのmergeだけでは有効化されない。implementation branch `claude/bl007-custom-domain`。
 
 ## BL-008 — Fable 5による全体コードレビュー
 

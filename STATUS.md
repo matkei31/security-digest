@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- None.
+- [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行) monomidigest.comへの移行 — implemented on branch `claude/bl007-custom-domain`, Draft PR, repository-side preparation only. `monomidigest.com`をXServerドメインで取得・GitHub Pages所有権確認TXTでVerified済みだが、DNS records(apex A×4、www CNAME)はまだ未追加であり、custom domainは公開されていない。`docs/CNAME`(`monomidigest.com`の1行)を新設し、日次production生成・全Archive offline再生成のいずれでもCNAMEが維持されることを確認した。正規URLは`https://monomidigest.com/`、`www`はapexへredirect、GitHub Pages継続、DNS管理はXServer、検証用TXTは保持、wildcard DNSは使用しない。`data/`・ARTICLE／BRIEF契約・workflow・repository名は変更していない。BL-009(SEO)は別Ticket・scope外。production未実行。merge前にユーザーのDNS切替準備確認が必要。
 
 ## 5. Recently completed work
 
@@ -83,7 +83,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-[BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更), [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する), [BL-027](BACKLOG.md#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする), [BL-028](BACKLOG.md#bl-028--ダイジェストナビゲーションの配置を再設計する), and [BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する) are all complete; see [Recently completed work](#5-recently-completed-work) above. BACKLOG.md records no explicit ordering among the remaining open items and BL-007, so none is named as the ranked next candidate purely by priority number.
+[BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更), [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する), [BL-027](BACKLOG.md#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする), [BL-028](BACKLOG.md#bl-028--ダイジェストナビゲーションの配置を再設計する), and [BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する) are all complete; see [Recently completed work](#5-recently-completed-work) above. [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行) (P2, monomidigest.comへの移行) has a confirmed spec and Draft PR with DNS switchover pending; see [Active work](#active-work) above. BACKLOG.md records no explicit ordering among the remaining open items, so none is named as the ranked next candidate purely by priority number.
 
 [BL-023](BACKLOG.md#bl-023--article編集品質改善) is on hold after the v9 and fixed-v10 prompt-only No-Go evaluations and is not ranked in this short priority list. Reconsider it only through a separately designed structured ARTICLE-field contract or facts-based limited deterministic composition.
 
