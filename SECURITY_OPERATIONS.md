@@ -1,8 +1,8 @@
 # Monomi Digest Security Operations
 
-- **Version:** 1.0
-- **Status:** Approved
-- **As of:** 2026-07-24
+- **Version:** 1.1
+- **Status:** Draft
+- **As of:** 2026-07-29
 
 ## Scope
 
@@ -120,10 +120,11 @@ time permits.
 
 Within 24 hours of a direct public hotfix, create an after-action branch and pull request that
 reviews and, when needed, corrects the daily JSON; restores JSON/HTML consistency through
-deterministic offline regeneration; checks the translation cache; runs relevant tests, the
-full unittest suite, and `git diff --check`; records the incident and correction; receives an
-independent review; and confirms the public Pages result. The exception is not a permanent
-bypass.
+deterministic offline regeneration; runs relevant tests, the full unittest suite, and
+`git diff --check`; records the incident and correction; receives an independent review; and
+confirms the public Pages result. The exception is not a permanent bypass. (BL-030 removed the
+unofficial translation endpoint and `docs/translate_cache.json`; no translation cache exists to
+check in the current architecture.)
 
 ## 5. Secret, credential, and account response
 
@@ -225,7 +226,6 @@ Treat these as separate assets:
 - `docs/index.html`;
 - `docs/archive/YYYY-MM-DD.html`;
 - `docs/archive/index.html`;
-- public and committed `docs/translate_cache.json`;
 - Git repository history; and
 - repository-external screenshots and evaluation artifacts.
 
@@ -250,8 +250,8 @@ The default is:
 
 When a supported replacement is available, correct the affected `data/YYYY-MM-DD.json`, keep
 `data/index.json` consistent, run daily JSON validation, and regenerate every derived HTML
-surface from the corrected data offline. Review the translation cache, run relevant tests and
-the full unittest suite, run `git diff --check`, and after an authorized merge confirm Pages.
+surface from the corrected data offline. Run relevant tests and the full unittest suite, run
+`git diff --check`, and after an authorized merge confirm Pages.
 For a material correction, directly verify the public result. Because manual changes to
 generated output are a separate approval boundary, the correction pull request must identify
 the exact affected date and files.
@@ -285,19 +285,46 @@ schema or UI contract if withdrawals recur.
 5. Do not run the production workflow.
 6. Do not call Gemini, RSS, NVD, or other external HTTP.
 
-### Translation cache
+### Source suspension (added in Version 1.1, from BL-030/BL-031)
 
-1. Check whether `docs/translate_cache.json` contains an entry for each corrected source text
-   or translation.
-2. In the same correction pull request, remove an erroneous, contaminated, prompt-derived, or
-   provider-abnormal entry, or replace it with a source-supported value.
-3. Confirm consistency among the cache, affected daily JSON, and derived HTML.
-4. Do not leave a contaminated entry available for reuse on a later day.
+BL-030 removed the unofficial translation endpoint and `docs/translate_cache.json`; no
+translation-cache correction step applies to the current architecture.
 
-If provider behavior is the root cause, deleting an entry may allow the same response to return
-and is not complete remediation by itself. Provider suspension, a runtime guard, or cache
-validation requires a separately approved ticket. This document changes no runtime or cache
-processing.
+Use this procedure when a source's official terms, license, robots.txt, or AI-provider
+data-use condition changes, or when a new issue with an already-enabled source is identified
+(distinct from the incident path in sections 5–6, which covers credentials and account
+compromise, not source-terms review):
+
+1. Confirm the specific term, license clause, robots.txt rule, or AI-provider condition that
+   changed or was newly identified, and record its official URL and the date checked.
+2. Set the affected source's `enabled` to `false` in `source_definitions.json` and record a
+   specific `activation_condition` describing what must be confirmed before re-enabling it.
+   Record `terms_url`, `checked_at`, and the recheck trigger in
+   [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) alongside it.
+3. This is a temporary, precautionary pause, not a determination that the source's terms were
+   in fact violated. Do not represent it as a legal conclusion in the commit, pull request, or
+   BACKLOG/STATUS/DECISIONS record.
+4. Do not modify, delete, or regenerate any past `data/*.json` or `docs/archive/*.html` as part
+   of a source suspension. Stopping future collection from a source and correcting or removing
+   its past published articles are separate decisions; the latter follows the published-output
+   correction/withdrawal procedure above (section 7) and requires its own explicit trigger and
+   approval — suspending a source alone is never sufficient justification to rewrite or delete
+   its past output.
+5. Confirm the source is excluded from `RSS_FEEDS`/`build_footer_sources()` (via the
+   `enabled` filter) and, for a JSON-API source, from its non-RSS collection path.
+6. Do not call the source's live feed, API, or robots.txt to verify the suspension; rely on the
+   already-recorded official information and read-only repository verification (tests, `enabled`
+   state) instead.
+7. Record the suspension in the same governance documents used for other tickets (BACKLOG.md,
+   STATUS.md; DECISIONS.md only if the user separately accepts a Stable Decision), following the
+   normal branch/PR/test/review path — not as a direct public hotfix under section 4 unless its
+   emergency conditions are independently met.
+
+If a takedown or correction request is received for a source's already-published articles
+(from the source's publisher, a reader, or another party), route it through section 7
+(published-output correction/withdrawal), not through this source-suspension procedure alone;
+suspending future collection does not by itself satisfy a takedown request for existing
+publication.
 
 ### Validation
 
@@ -413,6 +440,28 @@ The user approved the following Version 1.0 decisions:
    incidents, secret rotation, and published-output correction or withdrawal to this runbook;
    do not change existing operation-specific approval boundaries.
 
+Version 1.1 (Draft) adds:
+
+7. **Translation-cache removal:** the "Translation cache" correction subsection is removed; it
+   no longer applies after BL-030 deleted the unofficial translation endpoint and
+   `docs/translate_cache.json`.
+8. **Source suspension:** a source-terms change or newly identified issue is handled by
+   temporarily setting `enabled: false` with a specific `activation_condition` and a
+   [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) record, without asserting a legal
+   determination, without calling the source's live feed/API/robots.txt to verify, and without
+   modifying past `data/*.json` or `docs/archive/*.html` as a side effect. Correcting or
+   withdrawing a source's already-published articles remains a separate decision under section
+   7's published-output procedure.
+9. **Gemini Paid/Unpaid Services verification:** the owner may confirm only a non-confidential
+   yes/no ("is there an active Cloud Billing account associated with the Gemini API key's
+   Project") to support BL-032's future content-usage-mode enforcement; API keys, billing
+   amounts, account identifiers, and screenshots of billing/account screens must never be
+   recorded in the repository, following the unconditional secret prohibition in section 9.
+10. **BL-031 audit boundary:** the read-only official-terms audit recorded in
+    [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1 does not itself change runtime
+    behavior beyond the Dark Reading suspension it also records; BL-032 remains the separate,
+    later-approved implementation of any production content-usage-mode enforcement.
+
 ## 12. Approval and maintenance
 
 Version 1.0 is approved. External Fable 5 review is complete:
@@ -426,6 +475,14 @@ schema or UI change now, the artifact-retention rule, and the minimal AGENTS ref
 review and Version update make no runtime, workflow, schema, prompt, model, validation,
 generated-output, or production change. [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md)
 Version 1.1 records the documentation completion of GAP-006, GAP-008, GAP-013, and GAP-014.
+
+**Version 1.1 is a Draft, not an approved maintenance update.** It records the removal of the
+translation-cache correction step (BL-030) and adds the source-suspension procedure, the
+Gemini Paid/Unpaid Services owner-verification boundary, and the BL-031/BL-032 audit-versus-
+enforcement boundary described above. It makes no runtime, workflow, schema, prompt, model,
+validation, generated-output, or production change; `source_definitions.json`'s `enabled`
+field for CrowdStrike, Cloudflare, and Dark Reading was changed by BL-030/BL-031 themselves,
+not by this document. This Version remains Draft until the user reviews and accepts it.
 
 Review this runbook when an incident or architecture change exposes a missing boundary. A
 mechanical annual update is not required.

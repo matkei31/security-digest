@@ -707,6 +707,31 @@
 - **残作業:** BL-030の実装上の残作業はなし。次回通常scheduled production runで確認する事項は、BL-030の完了条件ではなく追加の運用証跡として区別する: (1) CrowdStrike・Cloudflareが収集されないこと、(2) enabled sourceが13であること、(3) 過去Archiveの記事カード・daily JSONが維持されること、(4) 全Archiveの「収集元」footerが13ソースへ更新されること、(5) `docs/translate_cache.json`が再生成されないこと。BL-031（全取得元規約監査、`SECURITY_REQUIREMENTS.md`／`SECURITY_OPERATIONS.md`整合化を含む）・BL-032（取得元別ポリシー実装）・BL-009（About／出典／免責／訂正窓口）は後続Ticketであり、BL-030自体の残作業ではない。
 - **注記:** 本暫定停止はrollback可能で、rollbackはsourceの再有効化（`enabled: true`へ戻す）と、承認済みの正式翻訳経路を別途実装することを想定する。本PRの直接差分として過去の`data/*.json`・`docs/archive/*.html`（CrowdStrike・Cloudflare記事を含む）は変更していないが、merge後最初の通常production runでのArchive全件再生成により、各Archiveの「収集元」footerが13ソースへ更新される（記事カード・daily JSON自体は維持される）。`SECURITY_REQUIREMENTS.md`／`SECURITY_OPERATIONS.md`は非公式翻訳経路・`docs/translate_cache.json`を現行構成として記載したままであり、本PRのmerge後は実装と不整合になる既知の文書上の残課題としてBL-031の最初の工程で対応する。implementation branch `fix/bl030-source-risk-containment`。
 
+## BL-031 — 全取得元の公式規約監査とセキュリティ文書整合化
+
+- **ID:** BL-031
+- **タイトル:** 全取得元の公式規約監査とセキュリティ文書整合化
+- **優先度:** P1
+- **状態:** 監査・文書Draft PR／レビュー待ち
+- **出所種別:** ユーザー指示（BL-030完了条件11で明示的に予約された後続チケット）
+- **解釈:** 現行17 sourceすべてについて、公式に確認できる利用規約・ライセンス・robots.txt・AI提供者データ利用条件を監査し、`SOURCE_USAGE_POLICY.md`として記録する。あわせて、BL-030（非公式翻訳経路・cache削除）とmonomidigest.comカスタムドメイン稼働を反映するよう`SECURITY_REQUIREMENTS.md`／`SECURITY_OPERATIONS.md`を整合化する。本Ticketは監査・ポリシー文書・文書整合化のみを scope とし、`source_definitions.json`への`content_usage_mode`等のfield追加やfetch.pyでの共通enforcement実装は行わない（**BL-032へ明示的に委譲**）。production・`workflow_dispatch`・Gemini API・RSS/記事ページ/robots.txt等への外部アクセスは行わない。
+- **完了条件:**
+  1. `SOURCE_USAGE_POLICY.md`（Version 0.1、Status Draft、As of 2026-07-29）を新設し、目的・法的位置づけ・4つのcontent usage mode定義・17 source監査表・Gemini data-use gate・attribution要件・output-similarity/quotation control要件（BL-032実装事項）・recheck trigger・unknowns・BL-032/BL-009との関係を記載する。
+  2. 4つのcontent usage mode（`structured_open`5 source、`feed_summary`4 source、`metadata_only`4 source、`disabled_legal_review`4 source、計17）を、許可・禁止事項を明記して定義する。全17 sourceで`allow_rich_content=false`とする。
+  3. `nist_nvd`は`structured_open`に分類するが、standalone記事収集の`enabled`は`false`のまま変更しない（既存のNVD CVE facts経路である`vulnerability_facts.py`のみを許可する既存状態を維持）。`cisa`は`cisa_kev`と別に`disabled`のまま維持する。
+  4. Dark Reading（`dark_reading`）を`source_definitions.json`で`enabled: false`・`planned_phase: "保留"`へ変更し、Informa TechTarget Termsの確認結果を根拠とする`activation_condition`・`notes`（法的違反を確定したものではない旨を明記）を追加する。CrowdStrike・Cloudflareを含む他16 sourceの設定は変更しない。結果として総数17、enabled 12、disabled 5（`cisa`、`crowdstrike`、`cloudflare`、`dark_reading`、`nist_nvd`）となる。
+  5. Gemini data-use gateとして`gemini_data_use_status`（`paid_verified`/`unpaid`/`unknown`、現状`unknown`）の概念を記録し、`feed_summary` sourceの発行者由来descriptionは`paid_verified`確認まで実質的に`metadata_only`として扱う契約を明記する。所有者確認は非機密のyes/no（billing有無）に限定し、APIキー・課金額・アカウント情報は一切記録しない。本確認はBL-031のmerge条件ではない。
+  6. `SECURITY_REQUIREMENTS.md`をVersion 1.5（Status Draft）へ更新し、非公式翻訳経路・`docs/translate_cache.json`の現行アーキテクチャ記載を削除し、稼働中のカスタムドメイン（`monomidigest.com`）を記録し、`SOURCE_USAGE_POLICY.md`への参照を追加し、取得元別policy enforcementを「Met」と記載しない（BL-032未実装）新規SR-044〜SR-046・GAP-016・GAP-017を追加する。既存のSR/GAP IDは変更・欠番にしない。
+  7. `SECURITY_OPERATIONS.md`をVersion 1.1（Status Draft）へ更新し、`docs/translate_cache.json`関連の記載を削除し、取得元規約変更時の暫定停止手順を追加し、source停止が過去`data/*.json`・`docs/archive/*.html`を遡って書き換えないことを明記する。
+  8. `BACKLOG.md`（本エントリ）・`STATUS.md`のActive workへBL-031を追加する。`DECISIONS.md`へ新規Accepted decision（SD-030相当）は本PRでは追加しない（ユーザー受入前のため）。
+  9. `SOURCE_USAGE_POLICY.md`の構造的contract、`source_definitions.json`のDark Reading/件数contract、両セキュリティ文書のVersion/Draft/現行アーキテクチャ記載に関するtestを追加する。
+  10. Ready化・mergeは行わず、Draft PRのまま停止する。
+- **依存関係:** [BL-030](BACKLOG.md#bl-030--取得元翻訳経路の緊急リスク低減)完了条件11で予約された後続チケット。後続候補: **BL-032**（`content_usage_mode`等のfield実装とfetch.pyでの取得元別policy enforcement、output-similarity/quotation detection含む）、**BL-009**（About／出典／免責／訂正窓口）。
+- **実装証跡:** 新規`SOURCE_USAGE_POLICY.md`(Version 0.1、Status Draft)を作成し、目的・法的位置づけ・4 content usage mode定義・17 source監査表(structured_open 5／feed_summary 4／metadata_only 4／disabled_legal_review 4、全17でallow_rich_content=false)・Gemini data-use gate(`gemini_data_use_status: unknown`)・attribution要件・output-similarity/quotation control要件(BL-032実装事項)・recheck trigger・unknowns・BL-032/BL-009関係を記録した。`source_definitions.json`のDark Reading(`dark_reading`)を`enabled: false`・`planned_phase: "保留"`へ変更し、Informa TechTarget Terms(公式URL・確認日2026-07-29・具体的な禁止事項・「法的違反を確定したものではなく」の明記)を根拠とする`activation_condition`・`notes`を追加した。他16 source(CrowdStrike・Cloudflareを含む)の設定は変更していない。結果、総数17・enabled 12・disabled 5(`cisa`、`crowdstrike`、`cloudflare`、`dark_reading`、`nist_nvd`)。`SECURITY_REQUIREMENTS.md`をVersion 1.5(Status Draft)へ更新し、非公式翻訳経路・`docs/translate_cache.json`の現行アーキテクチャ記載を削除し、稼働中のカスタムドメイン(`monomidigest.com`)記録・`SOURCE_USAGE_POLICY.md`参照を追加し、新規SR-044〜SR-046・GAP-016・GAP-017を追加した(既存SR/GAP IDは変更・欠番なし)。GAP-011の記述も稼働中の状態に合わせて更新した。`SECURITY_OPERATIONS.md`をVersion 1.1(Status Draft)へ更新し、「Translation cache」節を「Source suspension」節へ置き換え、`docs/translate_cache.json`関連の記載を削除した。`BACKLOG.md`(本エントリ)・`STATUS.md`のActive workへBL-031を追加した。`DECISIONS.md`は変更していない(SD-030は追加せず)。新規`test_source_usage_policy.py`(14 tests)、`test_source_definitions.py`への`Bl031SourceTermsAuditTest`(8 tests)、`test_security_requirements.py`への`Bl031SecurityRequirementsReconciliationTest`(7 tests)、`test_security_operations.py`への`Bl031SecurityOperationsReconciliationTest`(4 tests)を追加し、既存test(`test_archive.py`のfooter件数13→12、`test_fetch.py`のBL ID範囲、`test_security_requirements.py`／`test_security_operations.py`の既存GAP-012・Version 1.4/1.0関連の既存assertion)を現状へ整合させた。`fetch.py`／`daily_json.py`／`vulnerability_facts.py`／`data/*.json`／`docs/index.html`／`docs/archive/*.html`／`.github/workflows/`は変更していない。production・`workflow_dispatch`・Gemini API・外部アクセスは行っていない。
+- **ユーザー受入証跡:** （未受入。本エントリはDraft PR作成時点の記録であり、ユーザー受入は別途行われる。）
+- **残作業:** BL-032による`content_usage_mode`実装とfetch.py enforcement、BL-009によるAbout/出典/訂正窓口の実装、Google TAG利用規約の2026-07-30改定後の再確認、Gemini API課金状況のowner確認。
+- **注記:** 本Ticketは監査・ポリシー文書の作成と既存2文書の整合化に限定される。取得元別のcontent usage mode enforcementをproduction code（`source_definitions.json`のfield追加、`fetch.py`の共通処理）へ反映することは、本Ticketでは実施せず、BL-032として明示的に委譲する。
+
 ## 完了済み参照
 
 これらの参照記録は、完了済みの作業が誤って未完了バックログとして再オープンされることを防ぐためだけに存在する。

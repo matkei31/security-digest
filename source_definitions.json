@@ -184,13 +184,13 @@
       "language": "en",
       "source_type": "報道・メディア",
       "source_tier": "Tier 2",
-      "enabled": true,
-      "planned_phase": "Phase 1",
-      "activation_condition": "",
+      "enabled": false,
+      "planned_phase": "保留",
+      "activation_condition": "Informa TechTargetからの書面による明示的な許諾、または利用可能な公式API・ライセンスを確認する。RSS自動取得・外部AI処理・公開要約・保存の各用途について利用可能であることを確認する。取得元別ポリシー実装(BL-032)後に再評価する。これらの条件を満たすまで再有効化しない。",
       "collection_frequency": "daily",
       "color": "#555",
       "trusted_cyber_source": true,
-      "notes": "旧SOURCE_COLORSに個別エントリがなく#555(デフォルト色)が使われていたため、その値をそのまま明示している。"
+      "notes": "旧SOURCE_COLORSに個別エントリがなく#555(デフォルト色)が使われていたため、その値をそのまま明示している。BL-031: 2026-07-29確認。Informa TechTarget Terms(https://www.informatechtarget.com/terms-of-use/)がdata mining・robots等の抽出方法、derivative works、無断copy・distributionを制限しているため暫定停止。法的違反を確定したものではなく、包括的な取得元規約監査(BL-031)に基づく安全側の一時的措置。"
     },
     {
       "id": "the_hacker_news",

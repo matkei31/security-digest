@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- None.
+- BL-031 全取得元の公式規約監査とセキュリティ文書整合化 — 17 sourceの公式規約監査を[SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md)（Version 0.1、Status Draft）として記録し、`SECURITY_REQUIREMENTS.md`（Version 1.5、Status Draft）／`SECURITY_OPERATIONS.md`（Version 1.1、Status Draft）を直前の非公式翻訳経路除去・稼働中のカスタムドメインへ整合化する作業。branch `policy/bl031-source-terms-audit`。Ready化・mergeは行わずDraft PRのまま停止する。production・Gemini API・外部アクセスは行わない。`source_definitions.json`への`content_usage_mode`等のfield追加やfetch.pyでの共通enforcement実装は行わない(後続チケットへ委譲)。詳細は[BL-031](BACKLOG.md#bl-031--全取得元の公式規約監査とセキュリティ文書整合化)を参照。
 
 ## 5. Recently completed work
 
@@ -86,7 +86,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-[BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更), [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行), [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する), [BL-027](BACKLOG.md#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする), [BL-028](BACKLOG.md#bl-028--ダイジェストナビゲーションの配置を再設計する), [BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する), and [BL-030](BACKLOG.md#bl-030--取得元翻訳経路の緊急リスク低減) are all complete; see [Recently completed work](#5-recently-completed-work) above. Active work is currently empty. BACKLOG.md records no explicit ordering among the remaining open items, so none is named as the ranked next candidate purely by priority number.
+[BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更), [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行), [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する), [BL-027](BACKLOG.md#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする), [BL-028](BACKLOG.md#bl-028--ダイジェストナビゲーションの配置を再設計する), [BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する), and [BL-030](BACKLOG.md#bl-030--取得元翻訳経路の緊急リスク低減) are all complete; see [Recently completed work](#5-recently-completed-work) above. [BL-031](BACKLOG.md#bl-031--全取得元の公式規約監査とセキュリティ文書整合化) is the current Active work item (see above), pending Draft PR review. BACKLOG.md records no explicit ordering among the remaining open items, so none is named as the ranked next candidate purely by priority number.
 
 [BL-023](BACKLOG.md#bl-023--article編集品質改善) is on hold after the v9 and fixed-v10 prompt-only No-Go evaluations and is not ranked in this short priority list. Reconsider it only through a separately designed structured ARTICLE-field contract or facts-based limited deterministic composition.
 

@@ -50,9 +50,15 @@ BASELINE_RSS_FEEDS = [
 # されている(Bl030SourceRiskContainmentTest参照)。両source自体の定義は
 # source_definitions.json上に削除されず残り、trusted_cyber_source・色等の
 # 履歴的メタデータも維持される。
+#
+# BL-031(全取得元の公式規約監査とセキュリティ文書整合化)により、Dark Reading
+# (id="dark_reading")も、Informa TechTarget Termsの確認結果に基づく暫定停止
+# として意図的に無効化(enabled=false)され、active RSS一覧から除外されている
+# (Bl031SourceTermsAuditTest参照)。source自体の定義はsource_definitions.json
+# 上に削除されず残り、trusted_cyber_source・色等の履歴的メタデータも維持される。
 EXPECTED_ACTIVE_RSS_FEEDS = [
     entry for entry in BASELINE_RSS_FEEDS
-    if entry[0] not in ("CISA", "CrowdStrike", "Cloudflare")
+    if entry[0] not in ("CISA", "CrowdStrike", "Cloudflare", "Dark Reading")
 ]
 
 BASELINE_SOURCE_COLORS = {
@@ -477,21 +483,23 @@ class CisaDeliberatelyExcludedFromActiveRssTest(unittest.TestCase):
         expected_names = [name for name, _, _ in EXPECTED_ACTIVE_RSS_FEEDS]
         self.assertEqual(names, expected_names)
 
-    def test_diff_between_ticket2_baseline_and_current_active_rss_is_cisa_and_bl030_only(self):
+    def test_diff_between_ticket2_baseline_and_current_active_rss_is_cisa_and_bl030_and_bl031_only(self):
         # Ticket 2当時の履歴的baseline(BASELINE_RSS_FEEDS)と、現在のfetch.RSS_FEEDS
-        # との差分が、CISAの除外(「CISA取得経路の整理」チケット)とBL-030による
-        # CrowdStrike・Cloudflareの暫定停止だけであることを明示的に検証する
-        # (他ソースが意図せず増減・変更されていないことの保証)。
+        # との差分が、CISAの除外(「CISA取得経路の整理」チケット)、BL-030による
+        # CrowdStrike・Cloudflareの暫定停止、BL-031によるDark Readingの暫定停止
+        # だけであることを明示的に検証する(他ソースが意図せず増減・変更されて
+        # いないことの保証)。
         baseline_names = [name for name, _, _ in BASELINE_RSS_FEEDS]
         current_names = [name for name, _, _ in fetch.RSS_FEEDS]
         removed = set(baseline_names) - set(current_names)
         added = set(current_names) - set(baseline_names)
-        self.assertEqual(removed, {"CISA", "CrowdStrike", "Cloudflare"})
+        self.assertEqual(removed, {"CISA", "CrowdStrike", "Cloudflare", "Dark Reading"})
         self.assertEqual(added, set())
-        # CISA・CrowdStrike・Cloudflareを除けば、残りのソースの順序・内容も完全一致する。
+        # CISA・CrowdStrike・Cloudflare・Dark Readingを除けば、残りのソースの
+        # 順序・内容も完全一致する。
         self.assertEqual(
             [name for name in baseline_names
-             if name not in ("CISA", "CrowdStrike", "Cloudflare")],
+             if name not in ("CISA", "CrowdStrike", "Cloudflare", "Dark Reading")],
             current_names,
         )
 
@@ -812,14 +820,18 @@ class Bl030SourceRiskContainmentTest(unittest.TestCase):
     def test_source_total_count_is_17(self):
         self.assertEqual(len(fetch.SOURCE_DEFINITIONS), 17)
 
-    def test_enabled_13_disabled_4(self):
+    def test_enabled_12_disabled_5(self):
+        # BL-031がDark Readingを追加で暫定停止したため、BL-030完了直後の
+        # 13 enabled/4 disabledから12 enabled/5 disabledに変わっている。
+        # このクラスはBL-030固有の契約(CrowdStrike・Cloudflareの暫定停止)を
+        # 検証するものだが、総数はfetch.SOURCE_DEFINITIONSの現在値に追従する。
         enabled = [s for s in fetch.SOURCE_DEFINITIONS if s["enabled"]]
         disabled = [s for s in fetch.SOURCE_DEFINITIONS if not s["enabled"]]
-        self.assertEqual(len(enabled), 13)
-        self.assertEqual(len(disabled), 4)
+        self.assertEqual(len(enabled), 12)
+        self.assertEqual(len(disabled), 5)
         self.assertEqual(
             {s["id"] for s in disabled},
-            {"cisa", "crowdstrike", "cloudflare", "nist_nvd"},
+            {"cisa", "crowdstrike", "cloudflare", "nist_nvd", "dark_reading"},
         )
 
     def test_crowdstrike_is_disabled_with_documented_activation_condition(self):
@@ -904,6 +916,92 @@ class Bl030SourceRiskContainmentTest(unittest.TestCase):
         self.assertFalse(hasattr(fetch, "CACHE_PATH"))
 
 
+class Bl031SourceTermsAuditTest(unittest.TestCase):
+    """BL-031: 全取得元の公式規約監査によるDark Reading暫定停止と、
+    source総数・enabled/disabled件数・他sourceの不変性を検証する。監査・文書
+    整合化のみが本Ticketのscopeであり、`content_usage_mode`等のfield追加や
+    fetch.py側のenforcement実装は行わない(BL-032へ委譲)ことを前提とする。
+    """
+
+    def _def(self, source_id):
+        return fetch.get_source_definition(fetch.SOURCE_DEFINITIONS, source_id)
+
+    def test_source_total_count_is_17(self):
+        self.assertEqual(len(fetch.SOURCE_DEFINITIONS), 17)
+
+    def test_enabled_12_disabled_5(self):
+        enabled = [s for s in fetch.SOURCE_DEFINITIONS if s["enabled"]]
+        disabled = [s for s in fetch.SOURCE_DEFINITIONS if not s["enabled"]]
+        self.assertEqual(len(enabled), 12)
+        self.assertEqual(len(disabled), 5)
+        self.assertEqual(
+            {s["id"] for s in disabled},
+            {"cisa", "crowdstrike", "cloudflare", "nist_nvd", "dark_reading"},
+        )
+
+    def test_dark_reading_is_disabled_with_documented_activation_condition(self):
+        dark_reading = self._def("dark_reading")
+        self.assertFalse(dark_reading["enabled"])
+        self.assertEqual(dark_reading["planned_phase"], "保留")
+        condition = dark_reading["activation_condition"]
+        self.assertTrue(condition.strip())
+        self.assertIn("Informa TechTarget", condition)
+        self.assertIn("再有効化しない", condition)
+
+    def test_dark_reading_notes_cite_bl031_terms_url_and_not_a_legal_determination(self):
+        notes = self._def("dark_reading")["notes"]
+        self.assertIn("BL-031", notes)
+        self.assertIn("2026-07-29確認", notes)
+        self.assertIn("informatechtarget.com/terms-of-use", notes)
+        self.assertIn("法的違反を確定したものではなく", notes)
+
+    def test_dark_reading_excluded_from_rss_feeds_and_footer(self):
+        names = [name for name, _, _ in fetch.RSS_FEEDS]
+        self.assertNotIn("Dark Reading", names)
+        footer_ids = [s["id"] for s in fetch.build_footer_sources(fetch.SOURCE_DEFINITIONS)]
+        self.assertNotIn("dark_reading", footer_ids)
+
+    def test_dark_reading_unrelated_fields_are_unchanged(self):
+        # BL-031はenabled／planned_phase／activation_condition／notesの追加のみを
+        # 変更する。trusted_cyber_source・color・source_tier・urlは無効化に不要
+        # なため変更していない。
+        dark_reading = self._def("dark_reading")
+        self.assertTrue(dark_reading["trusted_cyber_source"])
+        self.assertEqual(dark_reading["color"], "#555")
+        self.assertEqual(dark_reading["source_tier"], "Tier 2")
+        self.assertEqual(dark_reading["url"], "https://www.darkreading.com/rss.xml")
+
+    def test_other_16_sources_enabled_field_is_unchanged_by_bl031(self):
+        # Dark Reading以外の16 sourceについて、BL-031前後でenabled状態が
+        # 変わっていないことを確認する(CrowdStrike・Cloudflareの暫定停止は
+        # BL-030由来であり、BL-031で新たに変更したものではない)。
+        expected_enabled_by_id = {
+            "fsa": True,
+            "jpcert_cc": True,
+            "ipa": True,
+            "cisa": False,
+            "nist": True,
+            "microsoft_security": True,
+            "mandiant": True,
+            "crowdstrike": False,
+            "google_tag": True,
+            "ncsc": True,
+            "krebs_on_security": True,
+            "the_hacker_news": True,
+            "cisco_talos": True,
+            "cloudflare": False,
+            "cisa_kev": True,
+            "nist_nvd": False,
+        }
+        for source_id, expected in expected_enabled_by_id.items():
+            with self.subTest(source_id=source_id):
+                self.assertEqual(self._def(source_id)["enabled"], expected)
+
+    def test_cisa_kev_still_enabled_and_nist_nvd_still_disabled(self):
+        self.assertTrue(self._def("cisa_kev")["enabled"])
+        self.assertFalse(self._def("nist_nvd")["enabled"])
+
+
 class Bl030AcceptanceRecordTest(unittest.TestCase):
     """BL-030: ユーザー受入・完了記録(BACKLOG／STATUS／DECISIONS SD-029)の検証。"""
 
@@ -931,9 +1029,12 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
         self.assertIn("9757ae98c2f5ef9f13da667be5677d870a6e2cd1", bl030)
         self.assertIn("30428514818", bl030)
 
-    def test_status_active_work_is_empty_and_bl030_is_recently_completed(self):
+    def test_status_active_work_lists_bl031_and_bl030_is_recently_completed(self):
+        # BL-031がActive workへ追加されたため、以前の「None.」(BL-030完了直後の
+        # 空状態)はもう成立しない。BL-030がActive workへ戻っていないことと
+        # Recently completed workに残っていることだけを検証する。
         active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
-        self.assertIn("None.", active)
+        self.assertIn("BL-031", active)
         self.assertNotIn("BL-030", active)
         recently_completed = self._section(
             self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"

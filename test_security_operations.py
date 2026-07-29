@@ -32,10 +32,12 @@ class SecurityOperationsContractTest(unittest.TestCase):
         return self.operations.split(start, 1)[1].split(end, 1)[0]
 
     def test_version_10_identity_review_record_and_user_approval(self):
+        # Version 1.1 (Draft, BL-030/BL-031) is the current header, but the frozen
+        # Version 1.0 approval record (section 12) must remain byte-identical below it.
         self.assertTrue(OPERATIONS_PATH.exists())
         self.assertIn("# Monomi Digest Security Operations", self.operations)
-        self.assertIn("**Version:** 1.0", self.operations)
-        self.assertIn("**Status:** Approved", self.operations)
+        self.assertIn("**Version:** 1.1", self.operations)
+        self.assertIn("**Status:** Draft", self.operations)
         approval = self.section("## 12. Approval and maintenance", "\nReview this runbook")
         for contract in (
             "Critical 0",
@@ -209,22 +211,34 @@ class SecurityOperationsContractTest(unittest.TestCase):
         self.assertIn("History rewrite is not the normal default", compact)
         self.assertIn("incident-specific explicit approval", compact)
 
-    def test_translation_cache_correction_handles_recontamination(self):
+    def test_source_suspension_procedure_is_recorded(self):
         correction = self.section(
             "## 7. Published-output correction, withdrawal, and regeneration",
             "## 8. Repository-external artifact handling",
         )
-        cache = correction.split("### Translation cache", 1)[1].split("### Validation", 1)[0]
-        compact = compact_whitespace(cache)
-        self.assertIn("`docs/translate_cache.json`", correction)
-        self.assertIn("remove an erroneous, contaminated", compact)
-        self.assertIn("source-supported value", compact)
-        self.assertIn("cache, affected daily JSON, and derived HTML", compact)
-        self.assertIn("Do not leave a contaminated entry", compact)
-        self.assertIn("deleting an entry", compact)
-        self.assertIn("not complete remediation by itself", compact)
-        self.assertIn("separately approved ticket", compact)
-        self.assertIn("changes no runtime or cache processing", compact)
+        suspension = correction.split(
+            "### Source suspension", 1
+        )[1].split("### Validation", 1)[0]
+        compact = compact_whitespace(suspension)
+        self.assertNotIn("### Translation cache", correction)
+        self.assertIn("BL-030 removed the unofficial translation endpoint", compact)
+        self.assertIn("`docs/translate_cache.json`", compact)
+        self.assertIn("translation-cache correction step applies", compact)
+        self.assertIn("`activation_condition`", compact)
+        self.assertIn("SOURCE_USAGE_POLICY.md", compact)
+        self.assertIn("not a determination that the source's terms were", compact)
+        self.assertIn("in fact violated", compact)
+        self.assertIn("Do not modify, delete, or regenerate any past", compact)
+        self.assertIn("separate decisions", compact)
+        self.assertIn("own explicit trigger and", compact)
+        self.assertIn("`RSS_FEEDS`/`build_footer_sources()`", compact)
+        self.assertIn("Do not call the source's live feed", compact)
+        self.assertIn("normal branch/PR/test/review path", compact)
+        self.assertIn("route it through section 7", suspension)
+        self.assertIn(
+            "suspending future collection does not by itself satisfy a takedown request",
+            compact,
+        )
 
     def test_closure_conditions_are_conditional(self):
         closure = self.section(
@@ -337,7 +351,7 @@ class SecurityOperationsContractTest(unittest.TestCase):
             "does not add a schema field, UI component, temporary ARTICLE text",
             "`data/index.json` consistent",
             "deterministic offline regeneration",
-            "translation cache",
+            "no translation-cache correction step applies",
             "Do not force-push or rewrite history",
             "canonical evidence",
             "does not add a dedicated `INCIDENTS.md`",
@@ -454,6 +468,54 @@ class SecurityOperationsContractTest(unittest.TestCase):
                     self.assertTrue(target_path.exists(), f"Missing link target: {target_name}")
                     if anchor:
                         self.assertIn(anchor, headings[target_name])
+
+
+class Bl031SecurityOperationsReconciliationTest(unittest.TestCase):
+    """BL-031: SECURITY_OPERATIONS.md Version 1.1 (Draft)がBL-030の翻訳経路削除
+    を反映し、source停止手順が過去data/docsを遡って書き換えないことを明記して
+    いることを検証する。
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.operations = OPERATIONS_PATH.read_text(encoding="utf-8")
+
+    def section(self, start, end):
+        return self.operations.split(start, 1)[1].split(end, 1)[0]
+
+    def test_version_and_status_are_11_draft(self):
+        self.assertIn("**Version:** 1.1", self.operations)
+        self.assertIn("**Status:** Draft", self.operations)
+        self.assertIn("**As of:** 2026-07-29", self.operations)
+
+    def test_correction_section_no_longer_lists_translate_cache_as_published_asset(self):
+        correction = self.section(
+            "## 7. Published-output correction, withdrawal, and regeneration",
+            "## 8. Repository-external artifact handling",
+        )
+        assets_and_correction = correction.split("### Withdrawal", 1)[0]
+        self.assertNotIn("translate_cache.json", assets_and_correction)
+
+    def test_source_suspension_does_not_rewrite_past_published_output(self):
+        correction = self.section(
+            "## 7. Published-output correction, withdrawal, and regeneration",
+            "## 8. Repository-external artifact handling",
+        )
+        suspension = correction.split("### Source suspension", 1)[1].split(
+            "### Validation", 1
+        )[0]
+        self.assertIn("Do not modify, delete, or regenerate any past", suspension)
+        self.assertIn("`data/*.json`", suspension)
+        self.assertIn("`docs/archive/*.html`", suspension)
+        self.assertIn("separate decisions", suspension)
+
+    def test_gemini_owner_verification_records_no_confidential_information(self):
+        approved = self.section(
+            "## 11. Approved operational decisions", "## 12. Approval and maintenance"
+        )
+        self.assertIn("Gemini", approved)
+        self.assertIn("Paid", approved)
+        self.assertIn("Unpaid", approved)
 
 
 if __name__ == "__main__":

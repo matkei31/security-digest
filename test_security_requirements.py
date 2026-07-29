@@ -44,10 +44,12 @@ class SecurityRequirementsTest(unittest.TestCase):
         return self.requirements.split(start, 1)[1].split(end, 1)[0]
 
     def test_document_is_approved_version_14_maintenance_update(self):
+        # Version 1.5 (Draft, BL-030/BL-031) is the current header, but the frozen
+        # Version 1.4 approval record (section 12) must remain byte-identical below it.
         self.assertTrue(REQUIREMENTS_PATH.is_file())
         self.assertIn("# Monomi Digest Security Requirements", self.requirements)
-        self.assertIn("**Version:** 1.4", self.requirements)
-        self.assertIn("**Status:** Approved", self.requirements)
+        self.assertIn("**Version:** 1.5", self.requirements)
+        self.assertIn("**Status:** Draft", self.requirements)
         self.assertIn("no Critical or High findings", self.requirements)
         self.assertIn("accepted and modified findings", self.requirements)
         self.assertIn("rejected F-004 consolidation was not applied", self.requirements)
@@ -83,13 +85,16 @@ class SecurityRequirementsTest(unittest.TestCase):
             with self.subTest(heading=heading):
                 self.assertIn(heading, self.requirements)
 
-    def test_sr_ids_are_stable_unique_and_contiguous_through_043(self):
+    def test_sr_ids_are_stable_unique_and_contiguous_through_046(self):
         ids = re.findall(r"(?m)^\|\s*(SR-\d{3})\s*\|", self.requirements)
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SR IDs: {ids}")
-        self.assertEqual(ids, [f"SR-{number:03d}" for number in range(1, 44)])
+        self.assertEqual(ids, [f"SR-{number:03d}" for number in range(1, 47)])
         self.assertLess(self.requirements.index("| SR-030 |"), self.requirements.index("| SR-031 |"))
         self.assertLess(self.requirements.index("| SR-031 |"), self.requirements.index("| SR-032 |"))
         self.assertLess(self.requirements.index("| SR-042 |"), self.requirements.index("| SR-043 |"))
+        self.assertLess(self.requirements.index("| SR-043 |"), self.requirements.index("| SR-044 |"))
+        self.assertLess(self.requirements.index("| SR-044 |"), self.requirements.index("| SR-045 |"))
+        self.assertLess(self.requirements.index("| SR-045 |"), self.requirements.index("| SR-046 |"))
 
     def test_published_output_correction_requirement_and_gap_are_recorded(self):
         self.assertRegex(
@@ -151,7 +156,7 @@ class SecurityRequirementsTest(unittest.TestCase):
             for row in self._markdown_rows(gaps)
             if re.fullmatch(r"GAP-\d{3}", row[0])
         }
-        expected_ids = [f"GAP-{number:03d}" for number in range(1, 16)]
+        expected_ids = [f"GAP-{number:03d}" for number in range(1, 18)]
         self.assertEqual(list(rows), expected_ids)
         self.assertEqual(len(rows), len(set(rows)))
 
@@ -179,16 +184,18 @@ class SecurityRequirementsTest(unittest.TestCase):
             "GAP-013": "Policy decision",
             "GAP-014": "Security gap",
             "GAP-015": "Hardening candidate",
+            "GAP-016": "Security gap",
+            "GAP-017": "Owner verification",
         }
         self.assertEqual({gap_id: row[1] for gap_id, row in rows.items()}, expected)
         allowed_dispositions = {
             "Completed by documentation",
             "Implemented",
             "Accepted current state",
-            "Accepted residual risk",
             "Deferred until trigger",
             "Completed owner verification",
             "Remains open for later prioritization",
+            "Resolved by BL-030",
         }
         self.assertEqual({row[2] for row in rows.values()}, allowed_dispositions)
         expected_dispositions = {
@@ -203,10 +210,12 @@ class SecurityRequirementsTest(unittest.TestCase):
             "GAP-009": "Remains open for later prioritization",
             "GAP-010": "Completed owner verification",
             "GAP-011": "Deferred until trigger",
-            "GAP-012": "Accepted residual risk",
+            "GAP-012": "Resolved by BL-030",
             "GAP-013": "Completed by documentation",
             "GAP-014": "Completed by documentation",
             "GAP-015": "Deferred until trigger",
+            "GAP-016": "Remains open for later prioritization",
+            "GAP-017": "Deferred until trigger",
         }
         self.assertEqual(
             {gap_id: row[2] for gap_id, row in rows.items()},
@@ -367,7 +376,13 @@ class SecurityRequirementsTest(unittest.TestCase):
             self.requirements,
             r"\| GAP-011 \| Future trigger \| Deferred until trigger \|",
         )
+        # BL-031: the domain is now live (BL-007/SD-028); GAP-011 no longer claims
+        # it is "not implemented" and instead records the preflight as repeatable.
         self.assertIn(
+            "not a current-site security gap because the custom domain is now live",
+            self.requirements,
+        )
+        self.assertNotIn(
             "not a current-site security gap because the custom domain is not implemented",
             self.requirements,
         )
@@ -382,7 +397,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("Dedicated SAST product", non_required)
         self.assertNotIn("SAST/DAST", non_required)
 
-    def test_translation_cache_persistence_risk_is_recorded(self):
+    def test_translation_cache_gap_is_resolved_by_bl030(self):
         gap_012 = next(
             row
             for row in self._markdown_rows(
@@ -395,12 +410,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         )
         text = " ".join(gap_012)
         self.assertIn("`docs/translate_cache.json`", text)
-        self.assertIn("repository and Pages across days", text)
-        self.assertIn("no cache TTL", text)
-        self.assertIn("provider-response integrity validation", text)
-        self.assertIn("confidentiality impact is low", text)
-        self.assertIn("Accepted residual risk", text)
-        self.assertIn("private/confidential input", text)
+        self.assertIn("BL-030", text)
+        self.assertIn("Resolved by BL-030", text)
+        self.assertIn("#66", text)
+        self.assertIn("SD-029", text)
+        self.assertNotIn("Accepted residual risk", text)
 
     def test_approved_roadmap_decisions_are_bounded_and_not_implemented(self):
         review = self._section(
@@ -779,11 +793,9 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("adding forms, authentication, sessions", triggers)
 
     def test_future_components_are_not_misstated_as_current(self):
-        self.assertIn("the future `monomidigest.com` custom domain", self.requirements)
-        self.assertRegex(
-            self.requirements,
-            r"which is not implemented in this\s+repository",
-        )
+        # BL-007 completed and the custom domain is live; BL-031 removed the stale
+        # "future ... not implemented" phrasing (see GAP-011) and records it as live.
+        self.assertIn("the live `monomidigest.com` custom domain (completed by", self.requirements)
         self.assertIn(
             "No component for forms, authentication, sessions, a database, payments",
             self.requirements,
@@ -792,6 +804,7 @@ class SecurityRequirementsTest(unittest.TestCase):
             "Forms, authentication, database, and payments",
             self.requirements,
         )
+        self.assertNotIn("the future `monomidigest.com` custom domain", self.requirements)
         self.assertNotIn("custom domain is implemented", self.requirements)
         self.assertNotIn("forms are currently implemented", self.requirements)
 
@@ -1055,6 +1068,93 @@ class SecurityRequirementsTest(unittest.TestCase):
                 if anchor:
                     self.assertIn(target, anchors, f"Cannot resolve anchor in {target}")
                     self.assertIn(anchor, anchors[target], f"Missing anchor {target}#{anchor}")
+
+
+class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
+    """BL-031: SECURITY_REQUIREMENTS.md Version 1.5 (Draft)がBL-030の変更・稼働中
+    のカスタムドメイン・SOURCE_USAGE_POLICY.mdを整合的に反映していることを検証する。
+    per-source policy enforcementは本Ticketでは実装されないため「Met」と記載
+    されていないことも確認する。
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.requirements = REQUIREMENTS_PATH.read_text(encoding="utf-8")
+        cls.backlog = (ROOT / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (ROOT / "STATUS.md").read_text(encoding="utf-8")
+        cls.decisions = (ROOT / "DECISIONS.md").read_text(encoding="utf-8")
+
+    def _section(self, start, end):
+        return self.requirements.split(start, 1)[1].split(end, 1)[0]
+
+    def test_version_and_status_are_15_draft(self):
+        self.assertIn("**Version:** 1.5", self.requirements)
+        self.assertIn("**Status:** Draft", self.requirements)
+        self.assertIn("**As of:** 2026-07-29", self.requirements)
+
+    def test_no_current_architecture_mention_of_removed_translation_path(self):
+        scope = self._section(
+            "## 2. System scope and components", "## 3. Data flow"
+        )
+        self.assertNotIn("translate.googleapis.com", scope)
+        self.assertNotIn("translate_cache.json", scope)
+        assets = self._section(
+            "## 4. Assets and data classification", "## 5. Trust boundaries"
+        )
+        self.assertNotIn("translate_cache.json", assets)
+        # GAP-012 may still mention the removed endpoint/cache historically
+        # ("Previously: ..."), so only assert it is marked resolved there.
+        gaps = self._section(
+            "## 8. Gap register",
+            "## 9. Explicitly non-required controls for the current architecture",
+        )
+        self.assertIn("docs/translate_cache.json", gaps)
+        self.assertIn("Resolved by BL-030", gaps)
+
+    def test_monomidigest_com_is_recorded_as_the_current_domain(self):
+        scope = self._section(
+            "## 2. System scope and components", "## 3. Data flow"
+        )
+        self.assertIn("the live `monomidigest.com` custom domain", scope)
+        self.assertNotIn("the future `monomidigest.com` custom domain", scope)
+        self.assertIn("Verified — configured as `monomidigest.com`", self.requirements)
+
+    def test_source_usage_policy_is_referenced_as_audit_only(self):
+        self.assertIn("SOURCE_USAGE_POLICY.md", self.requirements)
+        scope = self._section(
+            "## 2. System scope and components", "## 3. Data flow"
+        )
+        self.assertIn("SOURCE_USAGE_POLICY.md", scope)
+        self.assertIn("audit-only", scope)
+
+    def test_per_source_enforcement_is_not_marked_met(self):
+        self.assertNotRegex(
+            self.requirements,
+            r"SR-04[456][^\n|]*\|\s*Met\s*\|",
+        )
+        gaps = self._section(
+            "## 8. Gap register",
+            "## 9. Explicitly non-required controls for the current architecture",
+        )
+        self.assertIn(
+            "Do not treat the BL-031 audit alone as closing this gap", gaps
+        )
+        self.assertIn("BL-032 implementation", gaps)
+
+    def test_bl031_is_recorded_in_status_active_work(self):
+        self.assertIn(
+            "BL-031",
+            self.status.split("## Active work", 1)[1].split(
+                "## 5. Recently completed work", 1
+            )[0],
+        )
+
+    def test_bl_and_sd_ids_referenced_are_unique_in_their_documents(self):
+        bl_headings = re.findall(r"^## (BL-\d{3})\b", self.backlog, flags=re.MULTILINE)
+        self.assertEqual(len(bl_headings), len(set(bl_headings)))
+        sd_headings = re.findall(r"^## (SD-\d{3})\b", self.decisions, flags=re.MULTILINE)
+        self.assertEqual(len(sd_headings), len(set(sd_headings)))
+        self.assertNotIn("SD-030", self.decisions)
 
 
 if __name__ == "__main__":
