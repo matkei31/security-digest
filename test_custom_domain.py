@@ -288,12 +288,34 @@ class Bl007ClosureRecordTest(unittest.TestCase):
     def setUpClass(cls):
         cls.backlog = (REPOSITORY_ROOT / "BACKLOG.md").read_text(encoding="utf-8")
         cls.decisions = (REPOSITORY_ROOT / "DECISIONS.md").read_text(encoding="utf-8")
+        cls.status = (REPOSITORY_ROOT / "STATUS.md").read_text(encoding="utf-8")
 
     def _section(self, text, marker, next_marker="\n## "):
         start = text.index(marker)
         rest = text[start + len(marker):]
         end = rest.find(next_marker)
         return rest if end == -1 else rest[:end]
+
+    def test_status_latest_published_daily_json_reflects_the_2026_07_29_run(self):
+        row = self._section(self.status, "| Latest published daily JSON |", "\n|")
+        self.assertIn("today-brief-extractive-v2", row)
+        self.assertIn("2026-07-29 07:58 JST", row)
+        self.assertIn("8記事", row)
+
+    def test_bl007_distinguishes_its_own_work_from_the_scheduled_run(self):
+        bl007 = self._section(self.backlog, "## BL-007")
+        self.assertIn("本Ticketの実装・cutover・closure作業", bl007)
+        self.assertIn("通常scheduleによって独立して実行された", bl007)
+        self.assertNotIn("production／workflow_dispatchは実行していない。", bl007)
+
+    def test_bl007_records_the_scheduled_run_commit_sha(self):
+        bl007 = self._section(self.backlog, "## BL-007")
+        self.assertIn("b8463c0f10734097c4a431ce69be808d371e4e3b", bl007)
+
+    def test_sd028_context_is_historical_not_current(self):
+        sd028 = self._section(self.decisions, "## SD-028")
+        self.assertIn("At the time this decision was accepted", sd028)
+        self.assertIn("had not yet been configured", sd028)
 
     def test_bl007_records_the_approved_plan_as_a_separate_history_item(self):
         bl007 = self._section(self.backlog, "## BL-007")
