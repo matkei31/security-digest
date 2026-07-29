@@ -174,7 +174,7 @@
 - **ID:** BL-007
 - **タイトル:** monomidigest.comへの移行
 - **優先度:** P2
-- **状態:** 仕様化済み / 実装済みDraft PR / DNS切替待ち
+- **状態:** 完了
 - **出所種別:** ユーザー原文 / ユーザー確認済み要約
 - **ユーザー原文:** 「URLがgithubのユーザー名なのが気になる」
 - **出所:** 2026-07-09 プロジェクト会話。
@@ -185,8 +185,9 @@
   - XServerアカウントの二段階認証・SMS認証・SMS通知は設定済み。
   - ネームサーバーは`ns1.xdomain.ne.jp`／`ns2.xdomain.ne.jp`／`ns3.xdomain.ne.jp`。
   - GitHub Pages所有権確認用TXTをXServer DNSへ登録済みで、GitHub個人アカウントのPagesで`monomidigest.com`がVerifiedになった。検証用TXTは削除せず維持する。
-  - A／AAAA／www CNAMEはまだ未設定。repository側Custom domainはまだ未設定。
-  - production／workflow_dispatchは実行していない。
+  - apex A×4はGitHub Pages公式4 IP、www CNAMEは`matkei31.github.io`へ設定済み。repository側Custom domainは`monomidigest.com`(`protected_domain_state: verified`)。
+  - GitHub PagesのHTTPS証明書は`https_certificate.state: approved`(対象ドメイン: `monomidigest.com`／`www.monomidigest.com`)、`https_enforced: true`。
+  - 本Ticketの実装・cutover・closure作業自体はproduction生成・`workflow_dispatch`を新たに起動していない。独自ドメイン切替後、最初の通常scheduled production run(digest: 2026-07-29 07:58 JST、commit `b8463c0f10734097c4a431ce69be808d371e4e3b`)は、本Ticket作業とは独立して通常scheduleにより実行され、success(8記事、AI success 8、fallback 0、failed 0)となった。
 - **完了条件:** ユーザーと確定した方針は次のとおり。
   1. 正規URLは`https://monomidigest.com/`とする。
   2. `https://www.monomidigest.com/`は正規URLへリダイレクトさせる。
@@ -199,16 +200,16 @@
   9. `docs/CNAME`を新設し、内容は`monomidigest.com`の1行のみ・末尾改行ありとする。URL scheme・path・`www`を含めない。
   10. 日次production生成・全Archive offline再生成のいずれでも`docs/CNAME`が削除されないことを保証する。
   11. `data/`・daily JSON・記事内容・ARTICLE／BRIEF prompt・schema・versionは変更しない。workflowは原則変更せず、repository renameも行わない。
-  12. cutoverの順序は、repository準備 → PR #64 merge → repository Custom domain設定 → 直ちにXServer DNS設定 → DNS伝播・TLS発行確認 → 公開確認 → closureとする。DNS実設定とrepository Custom domain設定はPR #64のmerge後に行う。
-  13. `docs/CNAME`をmergeしただけでは、repository SettingsのCustom domain設定作業が別途必要である。Custom domain設定をSaveした直後、GitHubが`main`へ追加commitを作成する場合があるため、その有無・内容(`docs/CNAME`以外の意図しない差分がないか)を確認する。
-  14. production生成・real Gemini・外部記事取得は本Ticketの実装に不要とする。
-  15. BL-009(SEO・閲覧者増加策)はmeta description／canonical／OG／Twitter Card／favicon／manifest／sitemap／robots.txt／analytics／Search Console／Aboutコンテンツを扱う別Ticketとし、本Ticketでは扱わない。現時点でこれらはいずれも未実装であり、ドメイン移行で壊れる既存metadataはない。
-  16. merge前に、ユーザーによるPR #64の最終内容確認とrunbookの最終確認を得る。DNS実設定とrepository Custom domain設定はPR #64のmerge後に行う。
-- **依存関係:** [SD-011](DECISIONS.md#sd-011--use-monomidigestcom-as-the-primary-domain)(実装Decisionを新設し部分的に補完)、BL-006(完了済み・ブランド名)、BL-009(SEO、別Ticket・scope外)。
-- **実装証跡:** `docs/CNAME`を新設し、内容を`monomidigest.com`の1行(末尾改行あり、URL scheme・path・`www`なし)とした。`fetch.py`のHTML生成関数(`atomic_write_text`)は対象パスのみを原子的に書き換え、`docs/`ディレクトリ全体のクリアや削除を一切行わないため、日次production生成・全Archive offline再生成のいずれでも`docs/CNAME`は自然に維持されることを確認した(コード変更は不要)。`README.md`の公開サイト記載は現状どおり`https://matkei31.github.io/security-digest/`のままとし、`切替予定ドメイン: https://monomidigest.com/`を追記した(`monomidigest.com`はまだ公開されていないため、現在の公開サイトとして断定しない)。`data/`・daily JSON・記事内容・ARTICLE／BRIEF prompt・schema・versionは変更していない。workflowは変更していない。repository renameは行っていない。関連test追加。
-- **ユーザー受入証跡:** 記録なし。merge前にユーザーによるPR #64最終内容確認とcutover runbookの最終確認が必要。
-- **残作業:** (1) ユーザーによるPR #64最終確認、(2) PR #64 Ready化・通常merge、(3) merge-triggered Pages deployment成功確認、(4) main上の`docs/CNAME`確認、(5) 現行github.io URL確認、(6) repository Custom domain設定、(7) 設定直後のGitHub生成commit有無確認、(8) XServer A×4追加、(9) XServer www CNAME×1追加(ownership TXT保持・wildcard禁止)、(10) DNS伝播確認、(11) GitHub Pages DNS check完了待ち、(12) TLS証明書発行待ち、(13) Enforce HTTPS確認、(14) apex／www／旧URL公開確認、(15) closure PR作成・README最終更新・完了記録。
-- **注記:** ドメインは取得・Verified済みであり未取得と推定しない。DNS実設定・repository Custom domain設定はPR #64のmerge後にユーザー作業として行う。本PRのmergeだけではcustom domainは有効化されない。現在の公開URLは引き続き`https://matkei31.github.io/security-digest/`であり、`https://monomidigest.com/`はまだ公開されていない。implementation branch `claude/bl007-custom-domain`。
+  12. **承認済みの計画:** cutoverの順序は、repository準備 → PR #64 merge → merge-triggered Pages確認 → repository Custom domain設定 → XServer DNS設定 → DNS伝播・TLS発行確認 → Enforce HTTPS確認 → closureとする。
+  13. **実際に観測された順序:** PR #64をmergeし、`docs/CNAME`を含むmerge-triggered Pages deploymentが成功した時点で、手動のrepository Settings操作を待たずにCustom domainが`monomidigest.com`として自動的に有効化され、旧URL(`matkei31.github.io/security-digest`)のredirectも同時に開始された。この時点ではXServer DNSがまだ設定されておらず、一時的に新旧いずれのURLも到達不能な状態(`InvalidDNSError`)となった。その後、ユーザーがXServer DNS(apex A×4・www CNAME×1)を設定し、DNS伝播・GitHub PagesのDNS check・TLS証明書発行(`approved`)を経て、この一時的な`InvalidDNSError`は解消し、Enforce HTTPSを有効化し、apex／www／旧URLの公開状態を確認した。計画どおりの順序で実施したとは記録しない。この差異は誤りや失敗ではなく、`docs/CNAME`を含むmergeとPages deploymentだけでrepositoryのCustom domainが自動的に有効化されるという、本repositoryで観測されたGitHub Pagesの挙動として記録する(GitHub Pages全体の普遍的仕様とは断定しない)。mainへの意図しない追加commitは発生していない(`docs/CNAME`以外の差分なし)。詳細は[SD-028](DECISIONS.md#sd-028--migrate-github-pages-to-monomidigestcom-as-the-primary-custom-domain)を参照。
+  14. 本Ticketの実装・cutover・closure作業では、production生成・`workflow_dispatch`・real Gemini・外部記事取得を新たに起動していない。2026-07-29のproduction runは通常scheduleによって独立して実行されたものである。
+  15. BL-009(SEO・閲覧者増加策)はmeta description／canonical／OG／Twitter Card／favicon／manifest／sitemap／robots.txt／analytics／Search Console／Aboutコンテンツを扱う別Ticketとし、本Ticketでは扱わない。現時点でこれらはいずれも未実装であり(`sitemap.xml`／`robots.txt`／`favicon.ico`はいずれも404)、ドメイン移行によって壊れた既存metadataはない。BL-009は本closureにより着手・完了したものではなく、引き続き別スコープ・未着手のまま残す。
+  16. PR #64は、ユーザーによる最終内容確認とrunbookの最終確認を得たうえで、通常merge(merge commit、squash/rebaseなし)された。
+- **依存関係:** [SD-011](DECISIONS.md#sd-011--use-monomidigestcom-as-the-primary-domain)(実装Decisionを新設し部分的に補完)、BL-006(完了済み・ブランド名)、BL-009(SEO、別Ticket・scope外・未着手のまま)。
+- **実装証跡:** `docs/CNAME`を新設し、内容を`monomidigest.com`の1行(末尾改行あり、URL scheme・path・`www`なし)とした。`fetch.py`のHTML生成関数(`atomic_write_text`)は対象パスのみを原子的に書き換え、`docs/`ディレクトリ全体のクリアや削除を一切行わないため、日次production生成・全Archive offline再生成のいずれでも`docs/CNAME`は自然に維持されることを確認した(コード変更は不要)。`README.md`の公開サイト記載を`https://monomidigest.com/`へ更新し、旧URL`https://matkei31.github.io/security-digest/`が本ドメインへ自動redirectされる旨を明記した。`data/`・daily JSON・記事内容・ARTICLE／BRIEF prompt・schema・versionは変更していない。workflowは変更していない。repository renameは行っていない。関連test追加・更新。
+- **ユーザー受入証跡:** ユーザーがPR #64の最終内容とrunbookを確認し、本メッセージをmerge承認として明示した。PR #64は通常merge(merge commit `616d58e8a924338f596c54f9717f0ff96f48d9e6`)され、merge-triggered Pages deployment(`pages-build-deployment`)が成功した。ユーザーから提供・確認された公開後の外部状態: apex `https://monomidigest.com/`が200、`http://monomidigest.com/`・`https://www.monomidigest.com/`・旧URL`https://matkei31.github.io/security-digest/`がいずれもapexへ301 redirect、GitHub Pages API `status: built` / `cname: monomidigest.com` / `protected_domain_state: verified` / `https_certificate.state: approved`(対象ドメイン`monomidigest.com`・`www.monomidigest.com`) / `https_enforced: true`。トップページ・archive一覧・日別archiveの内容はrepository上の`docs/`と一致し、`/security-digest/`絶対パスや旧ドメインの残存参照はない。
+- **残作業:** なし。BL-007は完了。BL-009(SEO・閲覧者増加策)は別Ticketとして引き続き未着手のまま残る。
+- **注記:** 現在の公開URLは`https://monomidigest.com/`であり、`https://matkei31.github.io/security-digest/`・`https://www.monomidigest.com/`はいずれもこのapexへredirectされる。DNS(apex A×4・www CNAME×1)・repository Custom domain・Enforce HTTPS・TLS証明書はすべて設定・発行済み。GitHub所有権確認用TXTは維持されている。独自ドメイン切替後、最初の通常scheduled production run(digest: 2026-07-29 07:58 JST、commit [`b8463c0f10734097c4a431ce69be808d371e4e3b`](https://github.com/matkei31/security-digest/commit/b8463c0f10734097c4a431ce69be808d371e4e3b)、total_items 8、AI success 8／fallback 0／failed 0)成功後も、`docs/CNAME`・repository Custom domain・redirect・Enforce HTTPSはいずれも維持された。このrunは本Ticket作業による手動実行ではなく、通常scheduleによって独立して実行されたものである。implementation branch `claude/bl007-custom-domain`、closure branch `claude/bl007-close`。
 
 ## BL-008 — Fable 5による全体コードレビュー
 

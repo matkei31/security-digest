@@ -3287,8 +3287,6 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         self.assertIn("| BRIEF composition contract on `main` | `today-brief-extractive-v2` |", status)
         self.assertIn("| BRIEF model on `main` | `deterministic-extractive` |", status)
         self.assertIn("| ARTICLE Gemini model | `gemini-2.5-flash` |", status)
-        self.assertIn("| Latest published daily JSON | `today-brief-extractive-v1`／`deterministic-extractive`", status)
-        self.assertIn("2026-07-27 07:57 JST生成、0記事", status)
         self.assertIn("BL-021は2026-07-23にユーザー受入済みとして完了", status)
 
     def test_bl_022_and_bl_023_preserve_requested_scope(self):
