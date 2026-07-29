@@ -6,6 +6,7 @@ source_definitions.json の読み込み・検証・互換レイヤーの回帰�
 
 import json
 import os
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -42,8 +43,16 @@ BASELINE_RSS_FEEDS = [
 # あり、単なるテストのバイパスではない(CisaDeliberatelyExcludedFromActiveRssTest
 # 参照)。CISA自体のsource定義はsource_definitions.json上に削除されず残り、
 # trusted_cyber_source・色等の履歴的メタデータも維持される。
+#
+# BL-030(取得元・翻訳経路の緊急リスク低減)により、CrowdStrike(id="crowdstrike")・
+# Cloudflare(id="cloudflare")も、公式規約の適用範囲・許諾が確認できるまでの
+# 暫定停止として意図的に無効化(enabled=false)され、active RSS一覧から除外
+# されている(Bl030SourceRiskContainmentTest参照)。両source自体の定義は
+# source_definitions.json上に削除されず残り、trusted_cyber_source・色等の
+# 履歴的メタデータも維持される。
 EXPECTED_ACTIVE_RSS_FEEDS = [
-    entry for entry in BASELINE_RSS_FEEDS if entry[0] != "CISA"
+    entry for entry in BASELINE_RSS_FEEDS
+    if entry[0] not in ("CISA", "CrowdStrike", "Cloudflare")
 ]
 
 BASELINE_SOURCE_COLORS = {
@@ -468,19 +477,21 @@ class CisaDeliberatelyExcludedFromActiveRssTest(unittest.TestCase):
         expected_names = [name for name, _, _ in EXPECTED_ACTIVE_RSS_FEEDS]
         self.assertEqual(names, expected_names)
 
-    def test_diff_between_ticket2_baseline_and_current_active_rss_is_cisa_only(self):
-        # Ticket 2当時の履歴的baseline(BASELINE_RSS_FEEDS、CISAを含む)と、
-        # 現在のfetch.RSS_FEEDSとの差分が、CISAの除外だけであることを明示的に
-        # 検証する(他ソースが意図せず増減・変更されていないことの保証)。
+    def test_diff_between_ticket2_baseline_and_current_active_rss_is_cisa_and_bl030_only(self):
+        # Ticket 2当時の履歴的baseline(BASELINE_RSS_FEEDS)と、現在のfetch.RSS_FEEDS
+        # との差分が、CISAの除外(「CISA取得経路の整理」チケット)とBL-030による
+        # CrowdStrike・Cloudflareの暫定停止だけであることを明示的に検証する
+        # (他ソースが意図せず増減・変更されていないことの保証)。
         baseline_names = [name for name, _, _ in BASELINE_RSS_FEEDS]
         current_names = [name for name, _, _ in fetch.RSS_FEEDS]
         removed = set(baseline_names) - set(current_names)
         added = set(current_names) - set(baseline_names)
-        self.assertEqual(removed, {"CISA"})
+        self.assertEqual(removed, {"CISA", "CrowdStrike", "Cloudflare"})
         self.assertEqual(added, set())
-        # CISAを除けば、残りのソースの順序・内容も完全一致する。
+        # CISA・CrowdStrike・Cloudflareを除けば、残りのソースの順序・内容も完全一致する。
         self.assertEqual(
-            [name for name in baseline_names if name != "CISA"],
+            [name for name in baseline_names
+             if name not in ("CISA", "CrowdStrike", "Cloudflare")],
             current_names,
         )
 
@@ -787,6 +798,180 @@ class NonRssSourceSpecificValidationTest(unittest.TestCase):
         with self.assertRaises(fetch.SourceDefinitionError) as ctx:
             fetch.collect_non_rss_items(fetch.datetime.datetime.utcnow(), sources)
         self.assertIn("nist_nvd", str(ctx.exception))
+
+
+class Bl030SourceRiskContainmentTest(unittest.TestCase):
+    """BL-030: 取得元・翻訳経路の緊急リスク低減。CrowdStrike・Cloudflareの暫定停止と
+    source総数・enabled/disabled件数の契約を検証する。最終的な法的判断ではなく、
+    公式規約確認までの暫定的なリスク低減であることを前提とする。
+    """
+
+    def _def(self, source_id):
+        return fetch.get_source_definition(fetch.SOURCE_DEFINITIONS, source_id)
+
+    def test_source_total_count_is_17(self):
+        self.assertEqual(len(fetch.SOURCE_DEFINITIONS), 17)
+
+    def test_enabled_13_disabled_4(self):
+        enabled = [s for s in fetch.SOURCE_DEFINITIONS if s["enabled"]]
+        disabled = [s for s in fetch.SOURCE_DEFINITIONS if not s["enabled"]]
+        self.assertEqual(len(enabled), 13)
+        self.assertEqual(len(disabled), 4)
+        self.assertEqual(
+            {s["id"] for s in disabled},
+            {"cisa", "crowdstrike", "cloudflare", "nist_nvd"},
+        )
+
+    def test_crowdstrike_is_disabled_with_documented_activation_condition(self):
+        crowdstrike = self._def("crowdstrike")
+        self.assertFalse(crowdstrike["enabled"])
+        self.assertEqual(crowdstrike["planned_phase"], "保留")
+        condition = crowdstrike["activation_condition"]
+        self.assertTrue(condition.strip())
+        self.assertIn("許諾", condition)
+        self.assertIn("再有効化しない", condition)
+
+    def test_cloudflare_is_disabled_with_documented_activation_condition(self):
+        cloudflare = self._def("cloudflare")
+        self.assertFalse(cloudflare["enabled"])
+        self.assertEqual(cloudflare["planned_phase"], "保留")
+        condition = cloudflare["activation_condition"]
+        self.assertTrue(condition.strip())
+        self.assertIn("robots.txt", condition)
+        self.assertIn("再有効化しない", condition)
+
+    def test_cloudflare_activation_condition_requires_both_robots_allow_and_ai_only_user_agent(self):
+        # BL-030修正: 書面許諾がない限り、(1) robots.txtでの明示的allowと
+        # (2) AI用途bot専用(多目的でない)User-Agentの両方を要求する。
+        condition = self._def("cloudflare")["activation_condition"]
+        self.assertIn("robots.txtで明示的にallowed", condition)
+        self.assertIn("AI用途botの識別だけに使用", condition)
+        self.assertIn("多目的User-Agentではなく", condition)
+        self.assertIn("書面による明示的な許諾", condition)
+
+    def test_crowdstrike_and_cloudflare_notes_state_it_is_not_a_final_legal_determination(self):
+        for source_id in ("crowdstrike", "cloudflare"):
+            with self.subTest(source_id=source_id):
+                notes = self._def(source_id)["notes"]
+                self.assertIn("法的違反を確定したものではなく", notes)
+                self.assertIn("BL-030", notes)
+
+    def test_crowdstrike_and_cloudflare_unrelated_fields_are_unchanged(self):
+        # trusted_cyber_source・color・source_tier・source_type・language・urlは、
+        # 無効化に不要なためBL-030では変更していない。
+        crowdstrike = self._def("crowdstrike")
+        self.assertTrue(crowdstrike["trusted_cyber_source"])
+        self.assertEqual(crowdstrike["color"], "#cc0000")
+        self.assertEqual(crowdstrike["source_tier"], "Tier 2")
+        self.assertEqual(crowdstrike["url"], "https://www.crowdstrike.com/blog/feed/")
+
+        cloudflare = self._def("cloudflare")
+        self.assertFalse(cloudflare["trusted_cyber_source"])
+        self.assertEqual(cloudflare["color"], "#f38020")
+        self.assertEqual(cloudflare["source_tier"], "Tier 2")
+        self.assertEqual(cloudflare["url"], "https://blog.cloudflare.com/rss/")
+
+    def test_crowdstrike_and_cloudflare_excluded_from_rss_feeds(self):
+        names = [name for name, _, _ in fetch.RSS_FEEDS]
+        self.assertNotIn("CrowdStrike", names)
+        self.assertNotIn("Cloudflare", names)
+
+    def test_crowdstrike_and_cloudflare_excluded_from_footer_sources(self):
+        footer_ids = [s["id"] for s in fetch.build_footer_sources(fetch.SOURCE_DEFINITIONS)]
+        self.assertNotIn("crowdstrike", footer_ids)
+        self.assertNotIn("cloudflare", footer_ids)
+
+    def test_cisa_kev_still_enabled(self):
+        self.assertTrue(self._def("cisa_kev")["enabled"])
+
+    def test_cisa_and_nist_nvd_unchanged_by_bl030(self):
+        self.assertFalse(self._def("cisa")["enabled"])
+        self.assertFalse(self._def("nist_nvd")["enabled"])
+
+    def test_no_unofficial_translation_endpoint_string_remains_in_fetch_py(self):
+        text = Path(fetch.__file__).read_text(encoding="utf-8")
+        self.assertNotIn("translate.googleapis.com/translate_a/single", text)
+        self.assertNotIn("client=gtx", text)
+
+    def test_translate_cache_json_does_not_exist_in_docs(self):
+        repo_root = Path(fetch.__file__).resolve().parent
+        self.assertFalse((repo_root / "docs" / "translate_cache.json").exists())
+
+    def test_translate_and_cache_functions_are_removed(self):
+        self.assertFalse(hasattr(fetch, "translate"))
+        self.assertFalse(hasattr(fetch, "load_cache"))
+        self.assertFalse(hasattr(fetch, "save_cache"))
+        self.assertFalse(hasattr(fetch, "CACHE_PATH"))
+
+
+class Bl030AcceptanceRecordTest(unittest.TestCase):
+    """BL-030: ユーザー受入・完了記録(BACKLOG／STATUS／DECISIONS SD-029)の検証。"""
+
+    REPO_ROOT = Path(__file__).resolve().parent
+
+    @classmethod
+    def setUpClass(cls):
+        cls.backlog = (cls.REPO_ROOT / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (cls.REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
+        cls.decisions = (cls.REPO_ROOT / "DECISIONS.md").read_text(encoding="utf-8")
+
+    def _section(self, text, marker, next_marker="\n## "):
+        start = text.index(marker)
+        rest = text[start + len(marker):]
+        end = rest.find(next_marker)
+        return rest if end == -1 else rest[:end]
+
+    def test_bl030_is_recorded_as_complete(self):
+        bl030 = self._section(self.backlog, "## BL-030")
+        self.assertIn("- **状態:** 完了", bl030)
+
+    def test_bl030_user_acceptance_evidence_records_pr_head_and_ci(self):
+        bl030 = self._section(self.backlog, "## BL-030")
+        self.assertIn("PR #66", bl030)
+        self.assertIn("9757ae98c2f5ef9f13da667be5677d870a6e2cd1", bl030)
+        self.assertIn("30428514818", bl030)
+
+    def test_status_active_work_is_empty_and_bl030_is_recently_completed(self):
+        active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
+        self.assertIn("None.", active)
+        self.assertNotIn("BL-030", active)
+        recently_completed = self._section(
+            self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
+        )
+        self.assertIn("BL-030", recently_completed)
+
+    def test_sd029_is_unique(self):
+        headings = re.findall(r"^## (SD-\d{3})\b", self.decisions, flags=re.MULTILINE)
+        self.assertEqual(headings.count("SD-029"), 1)
+
+    def test_sd029_records_date_status_decision_consequences_evidence(self):
+        sd029 = self._section(self.decisions, "## SD-029")
+        self.assertIn("- **Date:** 2026-07-29", sd029)
+        self.assertIn("- **Status:** Accepted", sd029)
+        self.assertIn("- **Decision:**", sd029)
+        self.assertIn("- **Consequences:**", sd029)
+        self.assertIn("- **Evidence:**", sd029)
+        self.assertIn("PR #66", sd029)
+        self.assertIn("9757ae98c2f5ef9f13da667be5677d870a6e2cd1", sd029)
+
+    def test_sd029_does_not_assert_terms_violation(self):
+        sd029 = self._section(self.decisions, "## SD-029")
+        self.assertIn(
+            "does not determine that CrowdStrike or Cloudflare's terms were in fact violated",
+            sd029,
+        )
+
+    def test_bl030_residual_work_excludes_followup_tickets(self):
+        bl030 = self._section(self.backlog, "## BL-030")
+        self.assertIn("BL-030の実装上の残作業はなし", bl030)
+        self.assertIn("BL-031", bl030)
+        self.assertIn("後続Ticketであり、BL-030自体の残作業ではない", bl030)
+
+    def test_bl031_scope_includes_security_doc_reconciliation(self):
+        bl030 = self._section(self.backlog, "## BL-030")
+        self.assertIn("SECURITY_REQUIREMENTS.md", bl030)
+        self.assertIn("SECURITY_OPERATIONS.md", bl030)
+        self.assertIn("BL-031", bl030)
 
 
 if __name__ == "__main__":

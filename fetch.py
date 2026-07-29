@@ -37,7 +37,6 @@ NAMESPACES = {
     "content": "http://purl.org/rss/1.0/modules/content/",
 }
 
-CACHE_PATH = Path(__file__).parent / "docs" / "translate_cache.json"
 DOCS_DIR = Path(__file__).parent / "docs"
 ARCHIVE_DIR = DOCS_DIR / "archive"
 
@@ -263,57 +262,22 @@ SOURCE_DEFINITIONS = load_source_definitions()
 RSS_FEEDS = build_rss_feeds(SOURCE_DEFINITIONS)
 TRUSTED_CYBER_SOURCES = build_trusted_cyber_sources(SOURCE_DEFINITIONS)
 
-# ── 翻訳 (Google Translate 非公式エンドポイント + キャッシュ) ────────────────
+# ── 表示用タイトルの解決 ─────────────────────────────────────────────────────
+# BL-030: 非公式Google翻訳エンドポイント(translate.googleapis.com)と
+# docs/translate_cache.jsonへの永続化は廃止した。表示用タイトルはGemini生成の
+# title_ja、またはfallback時は取得済みの原題(raw_title)のみを用いる。
 
-def load_cache():
-    if CACHE_PATH.exists():
-        try:
-            return json.loads(CACHE_PATH.read_text(encoding="utf-8"))
-        except Exception:
-            pass
-    return {}
-
-def save_cache(cache):
-    CACHE_PATH.parent.mkdir(exist_ok=True)
-    CACHE_PATH.write_text(json.dumps(cache, ensure_ascii=False, indent=2), encoding="utf-8")
-
-def translate(text, cache):
-    if not text or len(text.strip()) < 4:
-        return text
-    key = text[:300]
-    if key in cache:
-        return cache[key]
-    params = urllib.parse.urlencode({
-        "client": "gtx", "sl": "en", "tl": "ja", "dt": "t", "q": text[:500],
-    })
-    req = urllib.request.Request(
-        f"https://translate.googleapis.com/translate_a/single?{params}",
-        headers={"User-Agent": "Mozilla/5.0"},
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=6) as res:
-            data = json.loads(res.read())
-            result = "".join(p[0] for p in data[0] if p[0])
-            cache[key] = result
-            time.sleep(0.08)
-            return result
-    except Exception as e:
-        print(f"[WARN] 翻訳失敗: {e}", file=sys.stderr)
-        return text
-
-
-def resolve_display_title(item, cache):
-    """Ticket 15a: 表示用タイトルを決める。
+def resolve_display_title(item):
+    """表示用タイトルを決める。
     AI分析が成功しtitle_ja(Gemini生成の日本語見出し)があればそれを使う。
-    無い場合(fallback/failed)は、既存translate_cacheの完全一致→raw_titleの順で
-    決める。いずれの経路でもtranslate()(非公式Google翻訳)は呼ばず、
-    タイトルへ新規の外部翻訳を発生させない。
+    無い場合(fallback/failed/not_attempted)は、取得時の原題(raw_title)を
+    そのまま表示する。外部翻訳・translate cacheのいずれも参照しない
+    (BL-030: 非公式翻訳経路の廃止)。
     """
     title_ja = (item.get("ai_analysis") or {}).get("title_ja")
     if title_ja:
         return title_ja
-    raw = item.get("raw_title", item.get("title", ""))
-    return cache.get(raw, raw)
+    return item.get("raw_title", item.get("title", ""))
 
 # ── 日付パーサー ─────────────────────────────────────────────────────────────
 
@@ -5021,8 +4985,8 @@ def main():
     items = collect_recent(kev_catalog_memo=kev_catalog_memo)
     print(f"  {len(items)} 件取得")
 
-    # 日次JSON(Ticket 3)向けに、翻訳で上書きされる前の原文タイトル・概要を
-    # 収集直後のこの時点でスナップショットしておく(翻訳処理自体は変更しない)。
+    # 日次JSON(Ticket 3)向けに、表示用に上書きされる前の原文タイトル・概要を
+    # 収集直後のこの時点でスナップショットしておく。
     fetched_at = datetime.datetime.now(JST)
     for item in items:
         item["raw_title"] = item["title"]
@@ -5054,17 +5018,15 @@ def main():
     brief_result = build_todays_brief(items)
     brief_for_html = brief_result if brief_result["status"] == "success" else None
 
-    cache = load_cache()
-    print("タイトルを日本語化中...")
+    print("表示用タイトルを解決中...")
     for item in items:
         if item["lang"] == "en":
-            # Ticket 15a: タイトルはGemini生成のtitle_ja(AI成功時)を使い、
-            # 非公式Google翻訳のtranslate()はタイトルには一切呼ばない。
-            item["title"] = resolve_display_title(item, cache)
-            # summaryは従来どおり翻訳する(本Ticketの対象はタイトルのみ)。
-            item["summary"] = translate(strip_html(item["summary"])[:200], cache)
-    save_cache(cache)
-    print(f"  翻訳キャッシュ: {len(cache)} 件")
+            # BL-030: 非公式Google翻訳(translate())経路を廃止した。タイトルは
+            # 引き続きGemini生成のtitle_ja(AI成功時)を使い、無い場合は
+            # 取得時の原題(raw_title)をそのまま英語で表示する。summaryは
+            # 翻訳せず、取得済み英語descriptionのままとする(表示上限は
+            # 既存のHTML生成側の切り詰めに委ねる)。
+            item["title"] = resolve_display_title(item)
 
     generated_at = datetime.datetime.now(JST)
     published_dates = load_validated_published_digest_dates(

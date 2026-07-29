@@ -1179,8 +1179,6 @@ class TopPageArchiveLinkTest(unittest.TestCase):
                     "fetch.build_todays_brief",
                     return_value={"status": "not_attempted"},
                 ),
-                mock.patch("fetch.load_cache", return_value={}),
-                mock.patch("fetch.save_cache"),
                 mock.patch(
                     "fetch.load_validated_published_digest_dates",
                     return_value=["2026-07-23"],
@@ -1357,8 +1355,8 @@ class SourceFooterConsistencyTest(unittest.TestCase):
         html = fetch.build_html([])
         footer = source_footer_segment(html)
 
-        self.assertEqual(len(expected), 15)
-        self.assertIn("収集元 (15ソース)", footer)
+        self.assertEqual(len(expected), 13)
+        self.assertIn("収集元 (13ソース)", footer)
         self.assertEqual(footer.count("<li>"), len(expected))
         positions = []
         for source in expected:
@@ -1372,6 +1370,65 @@ class SourceFooterConsistencyTest(unittest.TestCase):
         self.assertNotIn("CISA Advisory", footer)
         self.assertNotIn(">NIST NVD<", footer)
         self.assertNotIn("NVD vulnerability facts", footer)
+        # BL-030: CrowdStrike・Cloudflareは規約確認までの暫定停止でfooterから除外される。
+        self.assertNotIn(">CrowdStrike<", footer)
+        self.assertNotIn(">Cloudflare<", footer)
+
+
+class Bl030ArchiveRegenerationCurrentFooterTest(unittest.TestCase):
+    """BL-030: 過去daily digestにCrowdStrike／Cloudflare記事が含まれる場合でも、
+    Archive全件再生成(generate_archive_outputs())は記事カード自体を削除・改変
+    せず、「収集元」footerだけが実行時点のenabled source一覧(13ソース)を
+    反映することを、外部アクセスなし・一時ディレクトリ内で決定論的に検証する。
+    これはdaily JSON・記事内容の削除や履歴改変ではなく、既存のArchive全件
+    再生成・current-source footer仕様による結果であることの回帰確認。
+    """
+
+    def _digest_with_crowdstrike_and_cloudflare_articles(self, digest_date):
+        digest = make_digest(digest_date=digest_date, title="過去記事", total_items=2)
+        digest["items"][0]["source_id"] = "crowdstrike"
+        digest["items"][0]["source_name"] = "CrowdStrike"
+        digest["items"][1]["source_id"] = "cloudflare"
+        digest["items"][1]["source_name"] = "Cloudflare"
+        return digest
+
+    def test_archive_card_and_source_name_survive_regeneration_while_footer_updates(self):
+        digest_date = "2026-07-11"
+        with tempfile.TemporaryDirectory() as tmp:
+            data_dir = Path(tmp) / "data"
+            docs_dir = Path(tmp) / "docs"
+            data_dir.mkdir()
+            docs_dir.mkdir()
+
+            digest = self._digest_with_crowdstrike_and_cloudflare_articles(digest_date)
+            digest_path = write_digest(data_dir, digest)
+            original_digest_bytes = digest_path.read_bytes()
+
+            fetch.generate_archive_outputs(
+                data_dir, docs_dir, datetime.datetime(2026, 7, 11, 8, 0, tzinfo=JST)
+            )
+
+            archive_html = (docs_dir / "archive" / f"{digest_date}.html").read_text(encoding="utf-8")
+
+            # 記事カード自体・source名は削除・改変されず残る。
+            self.assertIn("CrowdStrike", archive_html)
+            self.assertIn("Cloudflare", archive_html)
+            self.assertIn("過去記事1", archive_html)
+            self.assertIn("過去記事2", archive_html)
+
+            # 「収集元」footerは実行時点のenabled source一覧(13ソース)を反映し、
+            # CrowdStrike・Cloudflareは含まれない。
+            footer = source_footer_segment(archive_html)
+            self.assertIn("収集元 (13ソース)", footer)
+            self.assertNotIn(">CrowdStrike<", footer)
+            self.assertNotIn(">Cloudflare<", footer)
+
+            # daily JSON自体(記事内容・AI分析結果)はArchive再生成によって
+            # 変更されない。
+            self.assertEqual(digest_path.read_bytes(), original_digest_bytes)
+
+            # docs/translate_cache.jsonはこの経路では生成されない。
+            self.assertFalse((docs_dir / "translate_cache.json").exists())
 
 
 class Bl028NavigationLayoutTest(unittest.TestCase):

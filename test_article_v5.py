@@ -882,44 +882,47 @@ class VerifiedContextTest(unittest.TestCase):
 # ── 表示タイトルフロー(translateを呼ばない・日本語記事はraw) ──────────────
 
 class DisplayTitleFlowTest(unittest.TestCase):
+    """BL-030: 非公式Google翻訳(translate())とtranslate cacheを廃止した後の
+    resolve_display_title()契約。cache引数は無く、fallbackはraw_titleのみ。"""
+
     def test_title_ja_used_on_ai_success(self):
         item = {"ai_analysis": {"title_ja": "日本語見出し"}, "raw_title": "English", "title": "English"}
-        self.assertEqual(fetch.resolve_display_title(item, {}), "日本語見出し")
+        self.assertEqual(fetch.resolve_display_title(item), "日本語見出し")
 
-    def test_cache_exact_match_used_when_no_title_ja(self):
-        item = {"ai_analysis": {"importance": "高"}, "raw_title": "English Title", "title": "English Title"}
-        self.assertEqual(fetch.resolve_display_title(item, {"English Title": "キャッシュ済み日本語"}),
-                         "キャッシュ済み日本語")
-
-    def test_raw_title_used_when_no_title_ja_and_no_cache(self):
+    def test_raw_title_used_when_no_title_ja(self):
         item = {"ai_analysis": None, "raw_title": "English Title", "title": "English Title"}
-        self.assertEqual(fetch.resolve_display_title(item, {}), "English Title")
+        self.assertEqual(fetch.resolve_display_title(item), "English Title")
+
+    def test_raw_title_used_on_ai_fallback_without_title_ja(self):
+        item = {"ai_analysis": {"importance": "高"}, "raw_title": "English Title", "title": "English Title"}
+        self.assertEqual(fetch.resolve_display_title(item), "English Title")
 
     def test_csharp_title_ja_used(self):
         item = {"ai_analysis": {"title_ja": "C#アプリを狙う新たな攻撃"}, "raw_title": "New attack on C# apps"}
-        self.assertEqual(fetch.resolve_display_title(item, {}), "C#アプリを狙う新たな攻撃")
+        self.assertEqual(fetch.resolve_display_title(item), "C#アプリを狙う新たな攻撃")
 
     def test_japanese_article_keeps_raw_title(self):
         # main()はlang=="en"のみtitleを差し替える。日本語記事はraw titleのまま。
         item = {"lang": "ja", "title": "日本語の原題", "raw_title": "日本語の原題",
                 "ai_analysis": {"title_ja": "別の日本語見出し"}}
         if item["lang"] == "en":  # main()と同じガード
-            item["title"] = fetch.resolve_display_title(item, {})
+            item["title"] = fetch.resolve_display_title(item)
         self.assertEqual(item["title"], "日本語の原題")
 
-    def test_translate_not_called_for_titles(self):
-        called = []
+    def test_no_external_translation_function_exists(self):
+        # BL-030: 非公式Google翻訳(translate())・load_cache()・save_cache()・
+        # CACHE_PATHはいずれも廃止し、fetch.pyに存在しない。
+        self.assertFalse(hasattr(fetch, "translate"))
+        self.assertFalse(hasattr(fetch, "load_cache"))
+        self.assertFalse(hasattr(fetch, "save_cache"))
+        self.assertFalse(hasattr(fetch, "CACHE_PATH"))
 
-        def fake_translate(text, cache):
-            called.append(text)
-            return "SHOULD-NOT-BE-USED"
-
-        with patch("fetch.translate", side_effect=fake_translate):
-            t1 = fetch.resolve_display_title({"ai_analysis": {"title_ja": "見出し"}, "raw_title": "X"}, {})
-            t2 = fetch.resolve_display_title({"ai_analysis": None, "raw_title": "X"}, {"X": "cached"})
+    def test_resolve_display_title_takes_no_cache_argument(self):
+        # 新契約: raw_titleのみへfallbackし、cache引数は取らない。
+        t1 = fetch.resolve_display_title({"ai_analysis": {"title_ja": "見出し"}, "raw_title": "X"})
+        t2 = fetch.resolve_display_title({"ai_analysis": None, "raw_title": "X"})
         self.assertEqual(t1, "見出し")
-        self.assertEqual(t2, "cached")
-        self.assertEqual(called, [])  # translate()はタイトルに一切呼ばれない
+        self.assertEqual(t2, "X")
 
 
 if __name__ == "__main__":
