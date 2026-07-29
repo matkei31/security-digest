@@ -202,14 +202,55 @@ class SourceUsagePolicyTest(unittest.TestCase):
         self.assertIn("paid_verified", gate)
         self.assertIn("`unpaid`または`unknown`の場合、`feed_summary`は`metadata_only`と同じ挙動", gate)
 
-    def test_gemini_data_use_status_is_currently_unknown(self):
+    def test_gemini_data_use_status_is_paid_verified(self):
         gate = self.policy.split("## 5. Gemini data-use gate", 1)[1].split(
             "## 6. Attribution requirements", 1
         )[0]
-        self.assertIn("gemini_data_use_status: unknown", gate)
+        self.assertIn("gemini_data_use_status: paid_verified", gate)
+        self.assertNotIn("gemini_data_use_status: unknown", gate)
         self.assertIn("paid_verified", gate)
         self.assertIn("unpaid", gate)
         self.assertIn("API key、請求情報、金額、アカウント画面のスクリーンショット", gate)
+
+    def test_gemini_owner_verification_is_recorded_without_secrets(self):
+        gate = self.policy.split("## 5. Gemini data-use gate", 1)[1].split(
+            "## 6. Attribution requirements", 1
+        )[0]
+        self.assertIn("checked_at:** 2026-07-29", gate)
+        self.assertIn("checked_by:** repository owner", gate)
+        self.assertIn("security-digest", gate)
+        self.assertIn("active billing", gate)
+        self.assertIn("Tier 1", gate)
+        self.assertIn(
+            "APIキー名・APIキー末尾・APIキー値・Project ID・請求先アカウントID・課金額・画面のスクリーンショットはいずれもrepositoryへ保存していない",
+            gate,
+        )
+        # No actual secret-shaped values (Gemini/Google API keys) anywhere in the document.
+        self.assertNotRegex(self.policy, r"AIza[0-9A-Za-z_-]{20,}")
+
+    def test_gemini_gate_no_longer_lists_unknown_as_current_unresolved_issue(self):
+        unknowns = self.policy.split("## 9. Unknowns and owner verification", 1)[1].split(
+            "## 10. Relationship to BL-032 and BL-009", 1
+        )[0]
+        self.assertIn("Owner-verified", unknowns)
+        self.assertIn("paid_verified", unknowns)
+        self.assertIn("2026-07-29", unknowns)
+        # Still-open items must remain.
+        self.assertIn("Cisco Talos", unknowns)
+        self.assertIn("Krebs on Security", unknowns)
+        self.assertIn("2026-07-30", unknowns)
+        self.assertIn("CISA", unknowns)
+
+    def test_feed_summary_production_enforcement_still_deferred_to_bl032(self):
+        # The gate being satisfied does not mean per-source enforcement is
+        # implemented; that remains BL-032 scope.
+        gate = self.policy.split("## 5. Gemini data-use gate", 1)[1].split(
+            "## 6. Attribution requirements", 1
+        )[0]
+        self.assertIn("BL-032", gate)
+        self.assertIn(
+            "この文書更新だけで現在のproduction挙動が変わるものではない", gate
+        )
 
     def test_google_terms_2026_07_30_recheck_trigger_is_recorded(self):
         self.assertIn("2026-07-30", self.policy)

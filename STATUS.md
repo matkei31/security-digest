@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- BL-031 全取得元の公式規約監査とセキュリティ文書整合化 — 17 sourceの公式規約監査を[SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md)（Version 0.1、Status Draft）として記録し、`SECURITY_REQUIREMENTS.md`（Version 1.5、Status Draft）／`SECURITY_OPERATIONS.md`（Version 1.1、Status Draft）を直前の非公式翻訳経路除去・稼働中のカスタムドメインへ整合化する作業。branch `policy/bl031-source-terms-audit`。Ready化・mergeは行わずDraft PRのまま停止する。production・Gemini API・外部アクセスは行わない。`source_definitions.json`への`content_usage_mode`等のfield追加やfetch.pyでの共通enforcement実装は行わない(後続チケットへ委譲)。詳細は[BL-031](BACKLOG.md#bl-031--全取得元の公式規約監査とセキュリティ文書整合化)を参照。
+- BL-031 全取得元の公式規約監査とセキュリティ文書整合化 — 17 sourceの公式規約監査を[SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md)（Version 0.1、Status Draft）として記録し、`SECURITY_REQUIREMENTS.md`（Version 1.5、Status Draft）／`SECURITY_OPERATIONS.md`（Version 1.1、Status Draft）を直前の非公式翻訳経路除去・稼働中のカスタムドメインへ整合化する作業。branch `policy/bl031-source-terms-audit`。Ready化・mergeは行わずDraft PRのまま停止する。production・Gemini API・外部アクセスは行わない。`source_definitions.json`への`content_usage_mode`等のfield追加やfetch.pyでの共通enforcement実装は行わない(後続チケットへ委譲)。2026-07-29、repository ownerがGoogle AI Studioで`security-digest` Projectのactive billing(Tier 1・前払い)を確認したことを受け、`gemini_data_use_status`を`paid_verified`へ更新した(APIキー・Project ID・billing識別子・金額・画像は未記録)。Google TAG／Mandiantの規約再確認(2026-07-30発効後)はpendingのまま維持する。詳細は[BL-031](BACKLOG.md#bl-031--全取得元の公式規約監査とセキュリティ文書整合化)を参照。
 
 ## 5. Recently completed work
 

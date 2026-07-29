@@ -457,6 +457,14 @@ Version 1.1 (Draft) adds:
    Project") to support BL-032's future content-usage-mode enforcement; API keys, billing
    amounts, account identifiers, and screenshots of billing/account screens must never be
    recorded in the repository, following the unconditional secret prohibition in section 9.
+   **Completed 2026-07-29:** the owner confirmed, via the Google AI Studio API Keys screen,
+   that the `security-digest` Google Cloud Project used for the Gemini API key has active
+   Cloud Billing (Tier 1, pay-as-you-go); `gemini_data_use_status` is recorded as
+   `paid_verified` in [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) section 5 and
+   [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) SR-045/GAP-017. No API key, Project ID,
+   billing account ID, amount, or screenshot was recorded. If the billing association is later
+   cancelled, the Project changes, or the API key migrates to a different Project, this
+   verification must be repeated before continuing to rely on `paid_verified`.
 10. **BL-031 audit boundary:** the read-only official-terms audit recorded in
     [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1 does not itself change runtime
     behavior beyond the Dark Reading suspension it also records; BL-032 remains the separate,

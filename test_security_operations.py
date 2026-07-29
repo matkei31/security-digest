@@ -517,6 +517,19 @@ class Bl031SecurityOperationsReconciliationTest(unittest.TestCase):
         self.assertIn("Paid", approved)
         self.assertIn("Unpaid", approved)
 
+    def test_gemini_owner_verification_is_completed_as_paid_verified(self):
+        approved = self.section(
+            "## 11. Approved operational decisions", "## 12. Approval and maintenance"
+        )
+        self.assertIn("Completed 2026-07-29", approved)
+        self.assertIn("security-digest", approved)
+        self.assertIn("active", approved)
+        self.assertIn("Cloud Billing", approved)
+        self.assertIn("Tier 1", approved)
+        self.assertIn("paid_verified", approved)
+        self.assertIn("billing association is later", approved)
+        self.assertNotRegex(approved, r"AIza[0-9A-Za-z_-]{20,}")
+
 
 if __name__ == "__main__":
     unittest.main()

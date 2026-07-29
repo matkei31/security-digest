@@ -215,7 +215,7 @@ class SecurityRequirementsTest(unittest.TestCase):
             "GAP-014": "Completed by documentation",
             "GAP-015": "Deferred until trigger",
             "GAP-016": "Remains open for later prioritization",
-            "GAP-017": "Deferred until trigger",
+            "GAP-017": "Completed owner verification",
         }
         self.assertEqual(
             {gap_id: row[2] for gap_id, row in rows.items()},
@@ -1197,6 +1197,32 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
             )[0],
         )
 
+    def test_bl031_gemini_billing_confirmation_removed_from_backlog_residual_work(self):
+        bl031 = self.backlog.split("## BL-031", 1)[1].split("\n## ", 1)[0]
+        residual = bl031.split("**残作業:**", 1)[1].split("\n- **注記:**", 1)[0]
+        self.assertNotIn("Gemini API課金状況のowner確認", residual)
+        self.assertIn("Google TAG利用規約の2026-07-30改定後の再確認", residual)
+        self.assertIn("Cisco Talos", residual)
+        self.assertIn("Krebs on Security", residual)
+        self.assertIn("BL-032", bl031)
+        self.assertIn("BL-009", bl031)
+
+    def test_bl031_backlog_records_paid_verified_owner_confirmation(self):
+        bl031 = self.backlog.split("## BL-031", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("paid_verified", bl031)
+        self.assertIn("2026-07-29", bl031)
+        self.assertIn("security-digest", bl031)
+        self.assertIn("Tier 1", bl031)
+        self.assertNotRegex(bl031, r"AIza[0-9A-Za-z_-]{20,}")
+
+    def test_bl031_status_active_work_records_paid_verified(self):
+        active = self.status.split("## Active work", 1)[1].split(
+            "## 5. Recently completed work", 1
+        )[0]
+        self.assertIn("paid_verified", active)
+        self.assertIn("2026-07-29", active)
+        self.assertIn("2026-07-30発効後", active)
+
     def test_sr_046_is_partially_met_not_met(self):
         # nist_nvd is disabled but its activation_condition field is an empty
         # string; SR-046 must not claim it is fully Met while that gap exists.
@@ -1217,14 +1243,66 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         self.assertIn("nist_nvd", " ".join(sr046_row))
         self.assertIn("empty string", " ".join(sr046_row))
 
-    def test_control_mapping_reflects_sr046_partial_state(self):
+    def test_sr_045_is_met_after_gemini_owner_verification(self):
+        self.assertRegex(
+            self.requirements,
+            r"\| SR-045 \|.*\| Met \|",
+        )
+        sr045_row = next(
+            row for row in self._markdown_rows(
+                self._section("## 6. Security requirements", "## 7. Current control mapping")
+            )
+            if row[0] == "SR-045"
+        )
+        joined = " ".join(sr045_row)
+        self.assertIn("paid_verified", joined)
+        self.assertIn("2026-07-29", joined)
+        self.assertIn("security-digest", joined)
+        self.assertIn("Tier 1", joined)
+        self.assertIn("GAP-017", joined)
+        self.assertNotIn("Unverified outside repository", joined)
+
+    def test_gap_017_is_completed_owner_verification_with_no_secrets(self):
+        self.assertRegex(
+            self.requirements,
+            r"\| GAP-017 \| Owner verification \| Completed owner verification \|",
+        )
+        gaps = self._section(
+            "## 8. Gap register",
+            "## 9. Explicitly non-required controls for the current architecture",
+        )
+        gap017_row = next(
+            row for row in self._markdown_rows(gaps) if row[0] == "GAP-017"
+        )
+        joined = " ".join(gap017_row)
+        self.assertIn("2026-07-29", joined)
+        self.assertIn("security-digest", joined)
+        self.assertIn("active Cloud Billing", joined)
+        self.assertIn("Tier 1", joined)
+        self.assertNotIn("AIza", joined)
+        self.assertNotIn("Deferred until trigger", joined)
+
+    def test_section_13_gemini_row_is_verified_paid_verified(self):
+        section13 = self.requirements.split("## 13. Repository-owner verification", 1)[1]
+        gemini_row = next(
+            line for line in section13.splitlines() if "gemini_data_use_status" in line
+        )
+        self.assertIn("Verified — `paid_verified`", gemini_row)
+        self.assertIn("2026-07-29", gemini_row)
+        self.assertNotIn("Unverified — owner access required", gemini_row)
+
+    def test_control_mapping_reflects_sr046_partial_state_and_sr045_owner_verified(self):
+        # SR-046 stays Partially met (nist_nvd's empty activation_condition);
+        # SR-045 became Met once the Gemini owner verification completed
+        # (GAP-017), so the tally is 1 Met / 2 Partial / 0 Unverified.
         mapping = self._section(
             "## 7. Current control mapping", "## 8. Gap register"
         )
         self.assertIn(
             "Source content-usage policy and AI provider data-use boundary", mapping
         )
-        self.assertIn("Met 0 / Partial 2 / Not met 0 / Unverified 1", mapping)
+        self.assertIn("Met 1 / Partial 2 / Not met 0 / Unverified 0", mapping)
+        self.assertNotIn("Met 0 / Partial 2 / Not met 0 / Unverified 1", mapping)
 
     def test_intro_clarifies_version_14_approved_and_version_15_draft(self):
         intro = self._section(

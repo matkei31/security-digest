@@ -109,7 +109,7 @@ Monomi Digestの取得元は、次の4つのcontent usage modeのいずれかへ
 | mandiant | Mandiant | feed_summary | true | true | true | false | conditional(gate) | false | conditional(gate) | 6章参照 | https://policies.google.com/terms?hl=en-US ； https://policies.google.com/terms/update/embedded ； https://cloud.google.com/blog/topics/threat-intelligence | terms(primary) ； terms_update_notice(supporting) ； rss_usage_guidance(supporting) | 2026-07-29 | medium | Google全体利用規約のmachine-readable instructions条件の具体適用範囲。1・2番目のURL(Google Terms本文・更新案内)が利用条件そのものの証跡であり、3番目のURL(Threat Intelligenceページ)はRSS提供を示す証跡にすぎず、それ自体はterms文書ではない(両者を混同しない) | Google Cloud blogのterms変更、またはGoogle Termsの変更 |
 | google_tag | Google TAG | feed_summary | true | true | true | false | conditional(gate) | false | conditional(gate) | 6章参照 | https://policies.google.com/terms?hl=en-US ； https://policies.google.com/terms/update/embedded | terms | 2026-07-29 | medium | 2026-07-30発効の新規約の最終内容が未確認 | **2026-07-30以降、Google Terms(新規約発効後)の公式再確認が必須** |
 
-**注記(feed_summary共通):** `allow_ai_processing`／`allow_public_summary`はいずれも5章のGemini data-use gateに従属する。`gemini_data_use_status`が`paid_verified`になるまでは、実運用上は`metadata_only`と同じ挙動として扱う(3章B参照)。
+**注記(feed_summary共通):** `allow_ai_processing`／`allow_public_summary`はいずれも5章のGemini data-use gateに従属する。`gemini_data_use_status`は2026-07-29にowner verificationにより`paid_verified`となったため、このGemini側の条件自体は満たされた。ただし`gemini_data_use_status`が`unpaid`または`unknown`へ戻った場合は、実運用上`metadata_only`と同じ挙動として扱う(3章B参照)。取得元自身の規約条件(各sourceの`unresolved_issue`、`google_tag`／`mandiant`のGoogle Terms再確認pending等)はこの確認と無関係に別途維持され、production enforcement自体はBL-032まで未実装のままである。
 
 ### metadata_only (4件)
 
@@ -140,20 +140,26 @@ Gemini APIの公式Terms(https://ai.google.dev/gemini-api/terms)より:
 - **Unpaid Services:** submitted contentおよびgenerated responsesが、Google製品・機械学習技術の改善に使用され得る。human reviewerがinput/outputを読む・注釈する場合がある。
 - **Paid Services:** active Cloud Billing accountに関連付けられたCloud Project経由でGemini APIを利用する場合、prompts／responsesは製品改善に使用されない。
 
-**現在のMonomi Digestの状態:** `gemini_data_use_status: unknown`
+**現在のMonomi Digestの状態:** `gemini_data_use_status: paid_verified`
 
 **owner verificationの許容値:**
 - `paid_verified` — active Cloud Billing accountに関連付けられたProject経由での利用が確認された。
 - `unpaid` — Unpaid Servicesとして利用されていることが確認された。
-- `unknown` — 未確認(現状)。
+- `unknown` — 未確認。
+
+**owner verification記録:**
+- **checked_at:** 2026-07-29
+- **checked_by:** repository owner
+- **verification method:** Google AI StudioのAPI Keys画面で、Monomi Digest productionで使用するAPIキーが属する`security-digest` Google Cloud Projectにactive billingが関連付けられ、「Tier 1・前払い」と表示されていることを確認した。
+- **記録した情報:** 「`security-digest` Project」「active billing確認」「Tier 1・前払い」「owner確認日」のみ。APIキー名・APIキー末尾・APIキー値・Project ID・請求先アカウントID・課金額・画面のスクリーンショットはいずれもrepositoryへ保存していない。
 
 **契約:**
-- `gemini_data_use_status`が`paid_verified`になるまで、`feed_summary`分類のsourceのpublisher由来descriptionをGeminiへ送らない。
-- `unpaid`または`unknown`の場合、`feed_summary`は`metadata_only`と同じ挙動として動作させる。
+- `gemini_data_use_status`が`paid_verified`になるまで、`feed_summary`分類のsourceのpublisher由来descriptionをGeminiへ送らない。上記owner verificationにより、この条件自体は満たされた。
+- `unpaid`または`unknown`の場合、`feed_summary`は`metadata_only`と同じ挙動として動作させる。この`paid_verified`確認は、Gemini側のdata-use gateによる`feed_summary`→`metadata_only`強制を解除できることを意味するが、取得元自身の規約条件(各sourceの`official_evidence_url`／`evidence_type`／`unresolved_issue`、および`google_tag`／`mandiant`の2026-07-30 Google Terms再確認pending)は本確認と無関係に別途維持される。
 - API key、請求情報、金額、アカウント画面のスクリーンショット等の機微情報はrepositoryへ一切保存しない。
 - ownerは「active billingの有無」という非機密情報のみを回答すればよい(具体的な金額・アカウントID・契約詳細は不要)。
 
-**この確認は本PR(BL-031)のmerge条件にはしない。** BL-032の実装・有効化判断の入力として扱う。
+**本Ticket(BL-031)は監査・方針文書の更新にとどまり、このowner verification結果をproductionコードのenforcementへ反映する実装(`source_definitions.json`への`content_usage_mode`等のfield追加、`fetch.py`側の共通処理)は行わない。** この文書更新だけで現在のproduction挙動が変わるものではない。BL-032が、この確認結果を`feed_summary`有効化判断の入力として使用する。
 
 ---
 
@@ -198,14 +204,18 @@ BL-032の実装時に、次の状態を検出し、拒否またはfallbackする
 | CISAの4条件充足確認 | `cisa` |
 | NVD API Termsの変更 | `nist_nvd`、`nist` |
 | Gemini APIのUnpaid/Paid Services規約変更 | 全`feed_summary`分類source |
+| `security-digest` Projectのbilling解除・Project変更・APIキー移行(`paid_verified`の再確認要) | 全`feed_summary`分類source |
 | 各sourceの利用規約・ライセンス・FAQ・robots.txtの実際の変更 | 該当source |
 
 ## 9. Unknowns and owner verification
 
-- **Gemini `gemini_data_use_status`**: `unknown`。ownerによる「active billingの有無」の非機密情報回答が必要(5章参照)。
+**Owner-verified(未解決事項から除外):**
+- **Gemini `gemini_data_use_status`**: 2026-07-29、repository ownerがGoogle AI StudioのAPI Keys画面で確認し、`paid_verified`として記録した(5章参照)。将来billing状態・Project・APIキーが変更された場合は再確認が必要。
+
+**未解決のまま維持する事項:**
 - **Cisco Talos**: Cisco Site Content利用規約(internal use限定)がブログドメイン(`blog.talosintelligence.com`)へ直接適用されるかどうか、書面での確認またはTalos固有の利用規約発見が必要。
 - **Krebs on Security**: 公式の包括的な再利用条件が見つからなかった。禁止と断定せず、`metadata_only`(保守的な側)として扱い、要確認として記録する。
-- **Google TAG / Mandiant(Google Cloud blog)**: 2026-07-30発効の新しいGoogle利用規約の内容が最終確認されていない。発効後の再確認が必須。
+- **Google TAG / Mandiant(Google Cloud blog)**: 2026-07-30発効の新しいGoogle利用規約の内容が最終確認されていない。発効後の再確認が必須(pendingのまま)。
 - **CISA(通常RSS、`cisa_kev`とは別)**: 広範な公式機械可読アドバイザリー取得経路自体が未確定(既存`activation_condition`参照)。
 
 ## 10. Relationship to BL-032 and BL-009
