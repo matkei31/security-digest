@@ -839,6 +839,15 @@ class Bl030SourceRiskContainmentTest(unittest.TestCase):
         self.assertIn("robots.txt", condition)
         self.assertIn("再有効化しない", condition)
 
+    def test_cloudflare_activation_condition_requires_both_robots_allow_and_ai_only_user_agent(self):
+        # BL-030修正: 書面許諾がない限り、(1) robots.txtでの明示的allowと
+        # (2) AI用途bot専用(多目的でない)User-Agentの両方を要求する。
+        condition = self._def("cloudflare")["activation_condition"]
+        self.assertIn("robots.txtで明示的にallowed", condition)
+        self.assertIn("AI用途botの識別だけに使用", condition)
+        self.assertIn("多目的User-Agentではなく", condition)
+        self.assertIn("書面による明示的な許諾", condition)
+
     def test_crowdstrike_and_cloudflare_notes_state_it_is_not_a_final_legal_determination(self):
         for source_id in ("crowdstrike", "cloudflare"):
             with self.subTest(source_id=source_id):

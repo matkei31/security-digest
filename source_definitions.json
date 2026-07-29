@@ -234,7 +234,7 @@
       "source_tier": "Tier 2",
       "enabled": false,
       "planned_phase": "保留",
-      "activation_condition": "Cloudflare Website Terms Section 8のAI用途bot条件を確認し、robots.txtで専用User-Agentが明示的に許可される、または書面許諾が得られ、AI処理・公開要約の利用条件が確認できるまで再有効化しない。",
+      "activation_condition": "書面による明示的な許諾が得られる場合を除き、再有効化には次の両方を満たすこと: (1) AI用途のbot User-AgentがCloudflareのrobots.txtで明示的にallowedとされている、(2) そのUser-Agentが検索等との多目的User-Agentではなく、AI用途botの識別だけに使用されている。加えて、RSS自動取得・外部AI処理・公開要約・保存の利用条件が確認できるまで再有効化しない。",
       "collection_frequency": "daily",
       "color": "#f38020",
       "trusted_cyber_source": false,
