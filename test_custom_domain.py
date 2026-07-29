@@ -262,7 +262,7 @@ class ReadmePublicUrlTest(unittest.TestCase):
 
     def test_readme_notes_the_old_url_redirects_here(self):
         self.assertIn("https://matkei31.github.io/security-digest/", self.readme)
-        self.assertIn("redirect", self.readme)
+        self.assertIn("リダイレクト", self.readme)
 
     def test_readme_does_not_embed_runbook_or_dns_details(self):
         for forbidden in (
@@ -295,17 +295,56 @@ class Bl007ClosureRecordTest(unittest.TestCase):
         end = rest.find(next_marker)
         return rest if end == -1 else rest[:end]
 
-    def test_bl007_records_the_confirmed_cutover_order_as_history(self):
+    def test_bl007_records_the_approved_plan_as_a_separate_history_item(self):
         bl007 = self._section(self.backlog, "## BL-007")
-        merge_pos = bl007.index("PR #64 merge")
+        self.assertIn("**承認済みの計画:**", bl007)
+        plan_pos = bl007.index("**承認済みの計画:**")
+        merge_pos = bl007.index("PR #64 merge", plan_pos)
         custom_domain_pos = bl007.index("repository Custom domain設定", merge_pos)
-        dns_pos = bl007.index("直ちにXServer DNS設定", custom_domain_pos)
+        dns_pos = bl007.index("XServer DNS設定", custom_domain_pos)
         self.assertLess(merge_pos, custom_domain_pos)
         self.assertLess(custom_domain_pos, dns_pos)
+
+    def test_bl007_records_the_actual_automatic_activation_order_separately(self):
+        bl007 = self._section(self.backlog, "## BL-007")
+        self.assertIn("**実際に観測された順序:**", bl007)
+        observed_pos = bl007.index("**実際に観測された順序:**")
+        merge_pos = bl007.index("PR #64をmerge", observed_pos)
+        activation_pos = bl007.index("手動のrepository Settings操作を待たずに", merge_pos)
+        dns_pos = bl007.index("ユーザーがXServer DNS", activation_pos)
+        self.assertLess(merge_pos, activation_pos)
+        self.assertLess(activation_pos, dns_pos)
+
+    def test_bl007_does_not_claim_the_plan_was_executed_as_planned(self):
+        bl007 = self._section(self.backlog, "## BL-007")
+        self.assertNotIn("この順で実施した", bl007)
+        self.assertIn("計画どおりの順序で実施したとは記録しない", bl007)
 
     def test_bl007_records_no_unintended_commit_from_custom_domain_activation(self):
         bl007 = self._section(self.backlog, "## BL-007")
         self.assertIn("mainへの意図しない追加commitは発生していない", bl007)
+
+    def test_bl007_records_the_transient_dns_error_resolved(self):
+        bl007 = self._section(self.backlog, "## BL-007")
+        self.assertIn("InvalidDNSError", bl007)
+        self.assertIn("解消し", bl007)
+
+    def test_bl007_and_sd028_observed_facts_do_not_contradict(self):
+        bl007 = self._section(self.backlog, "## BL-007")
+        sd028 = self._section(self.decisions, "## SD-028")
+        for fact in (
+            "InvalidDNSError",
+            "手動",
+        ):
+            with self.subTest(fact=fact):
+                self.assertIn(fact, bl007)
+                self.assertIn(fact if fact != "手動" else "manual", sd028)
+        # both records must agree the custom domain activated without a manual Settings step
+        self.assertIn("手動のrepository Settings操作を待たずに", bl007)
+        self.assertIn("without any separate manual Settings action", sd028)
+        # both records must agree no unintended commit resulted from that activation
+        self.assertIn("mainへの意図しない追加commitは発生していない", bl007)
+        self.assertIn("No unintended additional commit was produced on `main`", sd028)
 
     def test_bl007_retains_ownership_txt_and_forbids_wildcard(self):
         bl007 = self._section(self.backlog, "## BL-007")
