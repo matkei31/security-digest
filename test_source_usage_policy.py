@@ -57,6 +57,27 @@ class SourceUsagePolicyTest(unittest.TestCase):
         cls.rows = parse_rows(cls.matrix)
         cls.rows_by_id = {row["source_id"]: row for row in cls.rows}
 
+    def test_gemini_gate_references_point_to_chapter_5(self):
+        self.assertIn("後述5章のGemini Paid Service確認", self.policy)
+        self.assertIn("conditional(5章Gemini Paid Service gate)", self.policy)
+        self.assertIn("いずれも5章のGemini data-use gateに従属する", self.policy)
+        self.assertNotIn("後述6章のGemini Paid Service確認", self.policy)
+        self.assertNotIn("conditional(6章Gemini Paid Service gate)", self.policy)
+        self.assertNotIn("いずれも6章のGemini data-use gateに従属する", self.policy)
+
+    def test_attribution_references_point_to_chapter_6(self):
+        self.assertIn("source固有のattribution(下記6章)", self.policy)
+        self.assertEqual(self.policy.count("6章参照"), 13)
+        self.assertNotIn("下記7章", self.policy)
+
+    def test_no_stale_chapter_7_attribution_references_remain(self):
+        self.assertNotIn("7章参照(PDL", self.policy)
+        self.assertNotIn("7章参照(NIST source credit)", self.policy)
+        self.assertNotIn("7章参照(OGL", self.policy)
+        self.assertNotIn("7章参照(CC0)", self.policy)
+        self.assertNotIn("7章参照(NVD notice)", self.policy)
+        self.assertNotIn("7章参照(source名", self.policy)
+
     def test_document_is_draft_01(self):
         self.assertTrue(POLICY_PATH.is_file())
         self.assertIn("# Monomi Digest — Source Usage Policy", self.policy)
@@ -231,33 +252,78 @@ class SourceUsagePolicyTest(unittest.TestCase):
         self.assertNotIn("規約違反であることが確定した", self.policy)
         self.assertNotIn("法的に禁止されていると断定", self.policy)
 
+    @staticmethod
+    def _split_cell(value):
+        return [part.strip() for part in value.split("；") if part.strip()]
+
+    def test_official_evidence_url_contains_only_urls_or_a_bare_dash(self):
+        for row in self.rows:
+            for url in self._split_cell(row["official_evidence_url"]):
+                with self.subTest(source_id=row["source_id"], token=url):
+                    self.assertTrue(
+                        url == "—" or url.startswith("http://") or url.startswith("https://"),
+                        f"{row['source_id']}: non-URL token in official_evidence_url: {url!r}",
+                    )
+
+    def test_official_evidence_url_has_no_descriptive_text_mixed_in(self):
+        forbidden_substrings = (
+            "証跡",
+            "supporting:",
+            "URL未特定",
+            "見つからなかった",
+            "terms文書ではなく",
+        )
+        for row in self.rows:
+            for forbidden in forbidden_substrings:
+                with self.subTest(source_id=row["source_id"], forbidden=forbidden):
+                    self.assertNotIn(forbidden, row["official_evidence_url"])
+
+    def test_multi_url_rows_have_matching_evidence_type_count_when_types_differ(self):
+        # When evidence_type lists more than one distinct type, the URL count
+        # and type count must match 1:1 in the same order. A single shared
+        # type may legitimately cover multiple URLs (e.g. two RSS-guidance
+        # pages), so that case is exempt from the count-matching rule.
+        for row in self.rows:
+            urls = self._split_cell(row["official_evidence_url"])
+            types = self._split_cell(row["evidence_type"])
+            with self.subTest(source_id=row["source_id"]):
+                if len(types) > 1:
+                    self.assertEqual(
+                        len(urls),
+                        len(types),
+                        f"{row['source_id']}: {len(urls)} URLs vs {len(types)} evidence_types",
+                    )
+
     def test_krebs_about_page_is_recorded_as_supporting_source_page_not_a_terms_url(self):
         krebs = self.rows_by_id["krebs_on_security"]
-        self.assertIn("terms_not_found", krebs["evidence_type"])
-        self.assertIn("source_page", krebs["evidence_type"])
-        self.assertIn("supporting", krebs["evidence_type"])
-        self.assertIn("about-this-blog", krebs["official_evidence_url"])
-        self.assertIn("supporting", krebs["official_evidence_url"])
-        self.assertIn("terms文書ではなく", krebs["official_evidence_url"])
+        self.assertEqual(self._split_cell(krebs["evidence_type"]), ["terms_not_found", "source_page(supporting)"])
+        urls = self._split_cell(krebs["official_evidence_url"])
+        self.assertEqual(urls[0], "—")
+        self.assertIn("about-this-blog", urls[1])
+        self.assertIn("terms文書ではなく", krebs["unresolved_issue"])
+        self.assertIn("source page", krebs["unresolved_issue"])
 
     def test_cisa_has_no_url_in_official_evidence_url_and_is_terms_not_identified(self):
         cisa = self.rows_by_id["cisa"]
         self.assertEqual(cisa["evidence_type"], "terms_not_identified")
-        self.assertNotIn("http://", cisa["official_evidence_url"])
-        self.assertNotIn("https://", cisa["official_evidence_url"])
-        self.assertNotIn("activation_condition", cisa["official_evidence_url"])
+        self.assertEqual(cisa["official_evidence_url"], "—")
+        self.assertIn("URLが特定できていない", cisa["unresolved_issue"])
 
     def test_mandiant_distinguishes_rss_evidence_from_terms_evidence(self):
         mandiant = self.rows_by_id["mandiant"]
-        self.assertIn("terms", mandiant["evidence_type"])
-        self.assertIn("rss_usage_guidance", mandiant["evidence_type"])
-        self.assertIn("supporting", mandiant["evidence_type"])
-        self.assertIn("policies.google.com/terms", mandiant["official_evidence_url"])
-        self.assertIn("cloud.google.com/blog/topics/threat-intelligence", mandiant["official_evidence_url"])
-        self.assertIn("それ自体はterms文書ではない", mandiant["official_evidence_url"])
-        self.assertIn(
-            "両者を混同しない", mandiant["unresolved_issue"]
-        )
+        urls = self._split_cell(mandiant["official_evidence_url"])
+        types = self._split_cell(mandiant["evidence_type"])
+        self.assertEqual(len(urls), 3)
+        self.assertEqual(len(types), 3)
+        self.assertIn("policies.google.com/terms", urls[0])
+        self.assertTrue(types[0].startswith("terms("))
+        self.assertIn("policies.google.com/terms/update/embedded", urls[1])
+        self.assertTrue(types[1].startswith("terms_update_notice"))
+        self.assertIn("cloud.google.com/blog/topics/threat-intelligence", urls[2])
+        self.assertTrue(types[2].startswith("rss_usage_guidance"))
+        self.assertIn("supporting", types[2])
+        self.assertIn("それ自体はterms文書ではない", mandiant["unresolved_issue"])
+        self.assertIn("両者を混同しない", mandiant["unresolved_issue"])
 
     def test_output_similarity_controls_are_recorded_as_bl032_scope_not_implemented(self):
         controls = self.policy.split(
