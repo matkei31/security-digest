@@ -84,48 +84,50 @@ Monomi Digestの取得元は、次の4つのcontent usage modeのいずれかへ
 
 ## 4. Source-by-source audit matrix
 
-`checked_at`はいずれも2026-07-29(ChatGPTによる公式情報確認日)。以下の全17件で`allow_rich_content`は`false`とする(現行の`content:encoded`／Atom content共通処理自体は変更しない。BL-032でsource別強制を実装する際の入力とする)。
+`checked_at`は各source行に個別列として記録する(現時点ではいずれも2026-07-29、ChatGPTによる公式情報確認日)。今後sourceごとに再確認日が異なり得るため、全件同じ日という表外の一括記述だけを正本とせず、行単位の`checked_at`列を正本とする。以下の全17件で`allow_rich_content`は`false`とする(現行の`content:encoded`／Atom content共通処理自体は変更しない。BL-032でsource別強制を実装する際の入力とする)。
+
+`official_evidence_url`は公式に確認できた証跡そのもの(規約・ライセンス・FAQ等)のURLを記録し、`evidence_type`はその性質を次のいずれかで明示する: `terms`(利用規約)、`license`(ライセンス)、`copyright_policy`(著作権ポリシー)、`faq`(公式FAQ)、`rss_usage_guidance`(RSS利用案内)、`source_page`(規約文書ではない参考ページ)、`terms_not_found`(包括的な公式terms文書が見つからなかった)、`terms_not_identified`(terms文書自体が特定できていない)。複数の証跡がある場合はセル内に`;`区切りで並べ、主たる証跡でないものには`(supporting)`を付す。`official_evidence_url`欄には、URLではない説明文(例:「既存activation_condition参照」)を単独では入れない。
 
 ### structured_open (5件)
 
-| source_id | source_name | current_enabled | allow_network_fetch | allow_description | allow_rich_content | allow_ai_processing | allow_excerpt_storage | allow_public_summary | attribution_requirement | official_terms_url | confidence | unresolved_issue | recheck_trigger |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| fsa | 金融庁 | true | true | true | false | true | true | true | 7章参照(PDL 1.0) | https://www.fsa.go.jp/rules/index.html | high | なし | 個別資料でPDL以外のライセンスが明記された場合 |
-| nist | NIST | true | true | true | false | true | true | true | 7章参照(NIST source credit) | https://www.nist.gov/copyrights-disclaimers | high | 個別資料にcopyright表示がある場合の除外運用の具体化 | NIST copyright policyの変更 |
-| ncsc | NCSC | true | true | true | false | true | true | true | 7章参照(OGL v3) | https://www.ncsc.gov.uk/section/about-this-website/terms-and-conditions | high | なし | OGLのversion変更 |
-| cisa_kev | CISA KEV | true | true | true(shortDescriptionのみ) | false | true | true | true | 7章参照(CC0) | https://github.com/cisagov/kev-data | high | なし | ライセンスファイル(LICENSE)の変更 |
-| nist_nvd | NIST NVD | **false**(standalone article collection) | **false**(standalone) | – | false | – | – | – | 7章参照(NVD notice) | https://nvd.nist.gov/developers/terms-of-use | high | standalone記事収集の再有効化は本Ticketの対象外。現行のNVD CVE facts経路(`vulnerability_facts.py`)のみをpolicy上許可対象とし、`nist_nvd`のstandalone article collection自体の`enabled`は変更しない | NVD API Termsの変更 |
+| source_id | source_name | proposed_mode | current_enabled | allow_network_fetch | allow_description | allow_rich_content | allow_ai_processing | allow_excerpt_storage | allow_public_summary | attribution_requirement | official_evidence_url | evidence_type | checked_at | confidence | unresolved_issue | recheck_trigger |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| fsa | 金融庁 | structured_open | true | true | true | false | true | true | true | 7章参照(PDL 1.0) | https://www.fsa.go.jp/rules/index.html | license | 2026-07-29 | high | なし | 個別資料でPDL以外のライセンスが明記された場合 |
+| nist | NIST | structured_open | true | true | true | false | true | true | true | 7章参照(NIST source credit) | https://www.nist.gov/copyrights-disclaimers | copyright_policy | 2026-07-29 | high | 個別資料にcopyright表示がある場合の除外運用の具体化 | NIST copyright policyの変更 |
+| ncsc | NCSC | structured_open | true | true | true | false | true | true | true | 7章参照(OGL v3) | https://www.ncsc.gov.uk/section/about-this-website/terms-and-conditions | terms | 2026-07-29 | high | なし | OGLのversion変更 |
+| cisa_kev | CISA KEV | structured_open | true | true | true(shortDescriptionのみ) | false | true | true | true | 7章参照(CC0) | https://github.com/cisagov/kev-data | license | 2026-07-29 | high | なし | ライセンスファイル(LICENSE)の変更 |
+| nist_nvd | NIST NVD | structured_open | **false**(standalone article collection) | **false**(standalone) | – | false | – | – | – | 7章参照(NVD notice) | https://nvd.nist.gov/developers/terms-of-use | terms | 2026-07-29 | high | standalone記事収集の再有効化は本Ticketの対象外。現行のNVD CVE facts経路(`vulnerability_facts.py`)のみをpolicy上許可対象とし、`nist_nvd`のstandalone article collection自体の`enabled`は変更しない | NVD API Termsの変更 |
 
 **注記(nist_nvd):** policy分類上は`structured_open`(NVD API Termsがsearch/display/analyze/retrieve等のサービス開発を想定しているため)だが、これは`nist_nvd`の`enabled`を`true`へ戻すことを意味しない。現状すでに稼働しているCVE facts取得経路(`vulnerability_facts.py`の`fetch_nvd_batch`等)は、この監査によって新たに許可されるものではなく、既存のまま変更しない。
 
 ### feed_summary (4件)
 
-| source_id | source_name | current_enabled | allow_network_fetch | allow_description | allow_rich_content | allow_ai_processing | allow_excerpt_storage | allow_public_summary | attribution_requirement | official_terms_url | confidence | unresolved_issue | recheck_trigger |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| jpcert_cc | JPCERT/CC | true | true | true | false | conditional(6章Gemini Paid Service gate) | false | conditional(gate) | 7章参照 | https://www.jpcert.or.jp/rss/index.html ／ https://www.jpcert.or.jp/guide.html | high | 転載・再配布時の連絡要否の具体運用 | JPCERT/CC利用ガイドの改定 |
-| ipa | IPA | true | true | true | false | conditional(gate) | false | conditional(gate) | 7章参照 | https://www.ipa.go.jp/publish/faq.html ／ https://www.ipa.go.jp/siteinfo.html | medium | 個別資料ごとの利用条件が本ポリシーと優先関係を持つ場合の具体運用 | IPA著作権FAQの改定 |
-| mandiant | Mandiant | true | true | true | false | conditional(gate) | false | conditional(gate) | 7章参照 | https://cloud.google.com/blog/topics/threat-intelligence | medium | Google全体利用規約のmachine-readable instructions条件の具体適用範囲 | Google Cloud blogのterms変更 |
-| google_tag | Google TAG | true | true | true | false | conditional(gate) | false | conditional(gate) | 7章参照 | https://policies.google.com/terms?hl=en-US ／ https://policies.google.com/terms/update/embedded | medium | 2026-07-30発効の新規約の最終内容が未確認 | **2026-07-30以降、Google Terms(新規約発効後)の公式再確認が必須** |
+| source_id | source_name | proposed_mode | current_enabled | allow_network_fetch | allow_description | allow_rich_content | allow_ai_processing | allow_excerpt_storage | allow_public_summary | attribution_requirement | official_evidence_url | evidence_type | checked_at | confidence | unresolved_issue | recheck_trigger |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| jpcert_cc | JPCERT/CC | feed_summary | true | true | true | false | conditional(6章Gemini Paid Service gate) | false | conditional(gate) | 7章参照 | https://www.jpcert.or.jp/rss/index.html ／ https://www.jpcert.or.jp/guide.html | rss_usage_guidance | 2026-07-29 | high | 転載・再配布時の連絡要否の具体運用 | JPCERT/CC利用ガイドの改定 |
+| ipa | IPA | feed_summary | true | true | true | false | conditional(gate) | false | conditional(gate) | 7章参照 | https://www.ipa.go.jp/publish/faq.html ／ https://www.ipa.go.jp/siteinfo.html | faq | 2026-07-29 | medium | 個別資料ごとの利用条件が本ポリシーと優先関係を持つ場合の具体運用 | IPA著作権FAQの改定 |
+| mandiant | Mandiant | feed_summary | true | true | true | false | conditional(gate) | false | conditional(gate) | 7章参照 | https://policies.google.com/terms?hl=en-US ／ https://policies.google.com/terms/update/embedded(利用条件の証跡) ； https://cloud.google.com/blog/topics/threat-intelligence(RSS提供の証跡・supporting、それ自体はterms文書ではない) | terms ； rss_usage_guidance(supporting) | 2026-07-29 | medium | Google全体利用規約のmachine-readable instructions条件の具体適用範囲。Threat Intelligenceページ自体はRSS提供を示す証跡であり、利用条件そのものはGoogle Termsを参照する必要がある(両者を混同しない) | Google Cloud blogのterms変更、またはGoogle Termsの変更 |
+| google_tag | Google TAG | feed_summary | true | true | true | false | conditional(gate) | false | conditional(gate) | 7章参照 | https://policies.google.com/terms?hl=en-US ／ https://policies.google.com/terms/update/embedded | terms | 2026-07-29 | medium | 2026-07-30発効の新規約の最終内容が未確認 | **2026-07-30以降、Google Terms(新規約発効後)の公式再確認が必須** |
 
 **注記(feed_summary共通):** `allow_ai_processing`／`allow_public_summary`はいずれも6章のGemini data-use gateに従属する。`gemini_data_use_status`が`paid_verified`になるまでは、実運用上は`metadata_only`と同じ挙動として扱う(3章B参照)。
 
 ### metadata_only (4件)
 
-| source_id | source_name | current_enabled | allow_network_fetch | allow_description | allow_rich_content | allow_ai_processing | allow_excerpt_storage | allow_public_summary | attribution_requirement | official_terms_url | confidence | unresolved_issue | recheck_trigger |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| microsoft_security | Microsoft Security | true | true | false | false | false | false | false | 7章参照(source名・URLのみ) | https://www.microsoft.com/en-us/legal/terms-of-use | medium | RSS配信自体が本文再利用・AI公開要約の別段の許諾となるかは未確認 | Microsoft Terms of Useの改定 |
-| cisco_talos | Cisco Talos | true | true | false | false | false | false | false | 7章参照 | https://www.cisco.com/c/en/us/about/legal/terms-conditions.html | low〜medium | **この規約が`blog.talosintelligence.com`へ直接適用されるかどうか不明** | 書面確認、またはTalos固有のterms発見 |
-| the_hacker_news | The Hacker News | true | true | false | false | false | false | false | 7章参照 | https://thehackernews.com/p/copyright-policy.html | medium | All Rights Reserved明記のため、RSS提供のみを根拠に本文再利用・AI要約を許可とは解釈しない | copyright policyの変更 |
-| krebs_on_security | Krebs on Security | true | true | false | false | false | false | false | 7章参照 | https://krebsonsecurity.com/about-this-blog/ | low | **公式の包括的な再利用条件を確認できなかった(terms_not_found)。「禁止」と断定せず要確認として記録** | 公式terms発見時 |
+| source_id | source_name | proposed_mode | current_enabled | allow_network_fetch | allow_description | allow_rich_content | allow_ai_processing | allow_excerpt_storage | allow_public_summary | attribution_requirement | official_evidence_url | evidence_type | checked_at | confidence | unresolved_issue | recheck_trigger |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| microsoft_security | Microsoft Security | metadata_only | true | true | false | false | false | false | false | 7章参照(source名・URLのみ) | https://www.microsoft.com/en-us/legal/terms-of-use | terms | 2026-07-29 | medium | RSS配信自体が本文再利用・AI公開要約の別段の許諾となるかは未確認 | Microsoft Terms of Useの改定 |
+| cisco_talos | Cisco Talos | metadata_only | true | true | false | false | false | false | false | 7章参照 | https://www.cisco.com/c/en/us/about/legal/terms-conditions.html | terms | 2026-07-29 | low〜medium | **この規約が`blog.talosintelligence.com`へ直接適用されるかどうか不明** | 書面確認、またはTalos固有のterms発見 |
+| the_hacker_news | The Hacker News | metadata_only | true | true | false | false | false | false | false | 7章参照 | https://thehackernews.com/p/copyright-policy.html | copyright_policy | 2026-07-29 | medium | All Rights Reserved明記のため、RSS提供のみを根拠に本文再利用・AI要約を許可とは解釈しない | copyright policyの変更 |
+| krebs_on_security | Krebs on Security | metadata_only | true | true | false | false | false | false | false | 7章参照 | —(公式terms文書は見つからなかった) ； https://krebsonsecurity.com/about-this-blog/(supporting: source page。terms文書ではなくAboutページであることを明示し、terms URLとしては扱わない) | terms_not_found ； source_page(supporting) | 2026-07-29 | low | **公式の包括的な再利用条件を確認できなかった(terms_not_found)。「禁止」と断定せず要確認として記録** | 公式terms発見時 |
 
 ### disabled_legal_review (4件)
 
-| source_id | source_name | current_enabled | allow_network_fetch | allow_description | allow_rich_content | allow_ai_processing | allow_excerpt_storage | allow_public_summary | attribution_requirement | official_terms_url | confidence | unresolved_issue | recheck_trigger |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| cisa | CISA | false | false | false | false | false | false | false | n/a(非公開) | (既存`activation_condition`参照) | n/a | 広範な公式取得経路・利用条件が未確定。HTTP 403の技術的理由に加え、CISA KEVとは別sourceとして扱う | 既存`activation_condition`の4条件(BACKLOG.md BL-007等参照は不要、`source_definitions.json`の`cisa`定義を参照) |
-| crowdstrike | CrowdStrike | false | false | false | false | false | false | false | n/a(非公開) | https://www.crowdstrike.com/en-au/legal/website-terms-of-use/ | high | なし(automated device/robot/spiderによるmonitor/copy、derivative works、public display、republish、download、store、transmitを明確に制限) | `source_definitions.json`の`crowdstrike.activation_condition`(BL-030で記録済み) |
-| cloudflare | Cloudflare | false | false | false | false | false | false | false | n/a(非公開) | https://www.cloudflare.com/policies/terms/ (Section 8) | high | なし(AI用途botはrobots.txtで明示的allowed、かつAI用途bot専用User-Agentの両方が必要だが未充足) | `source_definitions.json`の`cloudflare.activation_condition`(BL-030で記録済み) |
-| dark_reading | Dark Reading | **false(本PRで変更)** | false | false | false | false | false | false | n/a(非公開) | https://www.informatechtarget.com/terms-of-use/ ／ https://www.darkreading.com/ | high | なし(Informa TechTarget Termsがdata mining／robots等の抽出方法、derivative works、無断copy／distributionを明確に禁止) | `source_definitions.json`の`dark_reading.activation_condition`(本PRで新設) |
+| source_id | source_name | proposed_mode | current_enabled | allow_network_fetch | allow_description | allow_rich_content | allow_ai_processing | allow_excerpt_storage | allow_public_summary | attribution_requirement | official_evidence_url | evidence_type | checked_at | confidence | unresolved_issue | recheck_trigger |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| cisa | CISA | disabled_legal_review | false | false | false | false | false | false | false | n/a(非公開) | —(URL未特定。`official_evidence_url`欄にURLではない説明文は入れない) | terms_not_identified | 2026-07-29 | n/a | 広範な公式取得経路・利用条件が未確定。HTTP 403の技術的理由に加え、CISA KEVとは別sourceとして扱う。既存`activation_condition`は`source_definitions.json`の`cisa`定義を参照(本表のURL欄には転記しない) | 既存`activation_condition`の4条件(`source_definitions.json`の`cisa`定義を参照) |
+| crowdstrike | CrowdStrike | disabled_legal_review | false | false | false | false | false | false | false | n/a(非公開) | https://www.crowdstrike.com/en-au/legal/website-terms-of-use/ | terms | 2026-07-29 | high | なし(automated device/robot/spiderによるmonitor/copy、derivative works、public display、republish、download、store、transmitを明確に制限) | `source_definitions.json`の`crowdstrike.activation_condition`(BL-030で記録済み) |
+| cloudflare | Cloudflare | disabled_legal_review | false | false | false | false | false | false | false | n/a(非公開) | https://www.cloudflare.com/policies/terms/ (Section 8) | terms | 2026-07-29 | high | なし(AI用途botはrobots.txtで明示的allowed、かつAI用途bot専用User-Agentの両方が必要だが未充足) | `source_definitions.json`の`cloudflare.activation_condition`(BL-030で記録済み) |
+| dark_reading | Dark Reading | disabled_legal_review | **false(本PRで変更)** | false | false | false | false | false | false | n/a(非公開) | https://www.informatechtarget.com/terms-of-use/ ； https://www.darkreading.com/(supporting: source page) | terms ； source_page(supporting) | 2026-07-29 | high | なし(Informa TechTarget Termsがdata mining／robots等の抽出方法、derivative works、無断copy／distributionを明確に禁止) | `source_definitions.json`の`dark_reading.activation_condition`(本PRで新設) |
 
 **件数集計:** structured_open 5、feed_summary 4、metadata_only 4、disabled_legal_review 4、**合計17**(`source_definitions.json`の定義総数と一致)。
 

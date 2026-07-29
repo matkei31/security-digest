@@ -334,9 +334,10 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("No explicit traceback-printing helper", self.requirements)
 
     def test_external_response_size_audit_and_gap_are_recorded(self):
+        # BL-031 removed the Translation row (BL-030 deleted the code path it
+        # described); the audit table now covers only current code paths.
         for response in (
             "RSS / Atom",
-            "Translation",
             "ARTICLE Gemini",
             "Legacy BRIEF Gemini",
             "Standalone NIST NVD",
@@ -345,6 +346,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         ):
             with self.subTest(response=response):
                 self.assertIn(f"| {response} |", self.requirements)
+        self.assertNotIn("| Translation |", self.requirements)
         self.assertRegex(
             self.requirements,
             r"\| SR-034 \|.*resource-consumption limits.*\| Partially met \|",
@@ -1087,6 +1089,12 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
     def _section(self, start, end):
         return self.requirements.split(start, 1)[1].split(end, 1)[0]
 
+    @staticmethod
+    def _markdown_rows(section):
+        for line in section.splitlines():
+            if line.startswith("| ") and not line.startswith("|---"):
+                yield [cell.strip() for cell in line.strip().strip("|").split("|")]
+
     def test_version_and_status_are_15_draft(self):
         self.assertIn("**Version:** 1.5", self.requirements)
         self.assertIn("**Status:** Draft", self.requirements)
@@ -1110,6 +1118,46 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         )
         self.assertIn("docs/translate_cache.json", gaps)
         self.assertIn("Resolved by BL-030", gaps)
+
+    def test_current_state_sections_1_through_7_have_no_stale_translation_text(self):
+        # Sections 1-7 describe the CURRENT architecture/requirements/control
+        # mapping; they must not retain text describing the removed
+        # translation endpoint as if it still exists. Historical mentions
+        # (Version 1.5 history in the intro, GAP-012's "Previously: ..."
+        # record, SD-029/PR #66 references in section 11/12) are explicitly
+        # out of scope for this check and are covered by
+        # test_no_current_architecture_mention_of_removed_translation_path
+        # and test_translation_cache_gap_is_resolved_by_bl030 instead.
+        current_state = self._section(
+            "## 1. Purpose and proportionality", "## 8. Gap register"
+        )
+        self.assertNotIn("| Translation |", current_state)
+        self.assertNotIn("Request text is limited to 500 characters", current_state)
+        self.assertNotIn("cache keys to 300 characters", current_state)
+        self.assertNotIn(
+            "structured-source, translation, and API response content", current_state
+        )
+        self.assertNotIn(
+            "external RSS, Atom, JSON, translation, NVD, KEV", current_state
+        )
+        self.assertNotIn("Translation and general Gemini exception paths", current_state)
+        self.assertNotIn(
+            "not consistently used by translation and Gemini", current_state
+        )
+
+    def test_historical_sections_may_still_reference_the_removed_translation_path(self):
+        # Confirms the previous test's scrub was scoped correctly: the intro
+        # (Version 1.5 history) and GAP-012 are allowed to describe the
+        # removed translation path in the past tense, and still do.
+        intro = self._section(
+            "# Monomi Digest Security Requirements", "## 1. Purpose and proportionality"
+        )
+        self.assertIn("translation-endpoint removal", intro)
+        gaps = self._section(
+            "## 8. Gap register",
+            "## 9. Explicitly non-required controls for the current architecture",
+        )
+        self.assertIn("the unofficial translation endpoint", gaps)
 
     def test_monomidigest_com_is_recorded_as_the_current_domain(self):
         scope = self._section(
@@ -1148,6 +1196,44 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
                 "## 5. Recently completed work", 1
             )[0],
         )
+
+    def test_sr_046_is_partially_met_not_met(self):
+        # nist_nvd is disabled but its activation_condition field is an empty
+        # string; SR-046 must not claim it is fully Met while that gap exists.
+        self.assertRegex(
+            self.requirements,
+            r"\| SR-046 \|.*\| Partially met \|",
+        )
+        self.assertNotRegex(
+            self.requirements,
+            r"\| SR-046 \|.*\| Met \|",
+        )
+        sr046_row = next(
+            row for row in self._markdown_rows(
+                self._section("## 6. Security requirements", "## 7. Current control mapping")
+            )
+            if row[0] == "SR-046"
+        )
+        self.assertIn("nist_nvd", " ".join(sr046_row))
+        self.assertIn("empty string", " ".join(sr046_row))
+
+    def test_control_mapping_reflects_sr046_partial_state(self):
+        mapping = self._section(
+            "## 7. Current control mapping", "## 8. Gap register"
+        )
+        self.assertIn(
+            "Source content-usage policy and AI provider data-use boundary", mapping
+        )
+        self.assertIn("Met 0 / Partial 2 / Not met 0 / Unverified 1", mapping)
+
+    def test_intro_clarifies_version_14_approved_and_version_15_draft(self):
+        intro = self._section(
+            "# Monomi Digest Security Requirements", "## 1. Purpose and proportionality"
+        )
+        self.assertIn("Version 1.4 is the most recent **Approved**", intro)
+        self.assertIn("Version 1.5", intro)
+        self.assertIn("**Draft** maintenance update", intro)
+        self.assertIn("only Version 1.4 is approved", intro)
 
     def test_bl_and_sd_ids_referenced_are_unique_in_their_documents(self):
         bl_headings = re.findall(r"^## (BL-\d{3})\b", self.backlog, flags=re.MULTILINE)

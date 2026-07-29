@@ -7,6 +7,9 @@ BL-031は全17取得元の公式規約監査を`SOURCE_USAGE_POLICY.md`として
 `fetch.py`側の共通処理)はBL-032へ明示的に委譲される。本ファイルは文書の構造的
 contract(17 source id一致、mode件数、allow_*の整合性等)のみを検証し、実装済み
 enforcementの有無は検証しない。
+
+列はheader名で解決する(固定column indexに依存しない)。表へ列を追加・並び替え
+しても、対応する列名を参照しているテストは影響を受けない。
 """
 
 import json
@@ -18,13 +21,26 @@ POLICY_PATH = ROOT / "SOURCE_USAGE_POLICY.md"
 SOURCE_DEFINITIONS_PATH = ROOT / "source_definitions.json"
 
 
-def markdown_rows(section):
+def parse_rows(section):
+    """Parse every markdown table row in `section` into header-keyed dicts.
+
+    A row whose first cell is "source_id" is treated as a header row that
+    applies to subsequent rows until the next header row is seen (the audit
+    matrix contains four separate tables, one per mode).
+    """
+    header = None
+    rows = []
     for line in section.splitlines():
-        if line.startswith("| ") and not line.startswith("|---"):
-            row = [cell.strip() for cell in line.strip().strip("|").split("|")]
-            if row[0] == "source_id":
-                continue
-            yield row
+        if not line.startswith("| ") or line.startswith("|---"):
+            continue
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if cells and cells[0] == "source_id":
+            header = cells
+            continue
+        if header is None:
+            continue
+        rows.append(dict(zip(header, cells)))
+    return rows
 
 
 class SourceUsagePolicyTest(unittest.TestCase):
@@ -38,9 +54,8 @@ class SourceUsagePolicyTest(unittest.TestCase):
         cls.matrix = cls.policy.split(
             "## 4. Source-by-source audit matrix", 1
         )[1].split("## 5. Gemini data-use gate", 1)[0]
-
-    def _mode_rows(self, heading, next_marker):
-        return list(markdown_rows(self.matrix.split(heading, 1)[1].split(next_marker, 1)[0]))
+        cls.rows = parse_rows(cls.matrix)
+        cls.rows_by_id = {row["source_id"]: row for row in cls.rows}
 
     def test_document_is_draft_01(self):
         self.assertTrue(POLICY_PATH.is_file())
@@ -71,60 +86,89 @@ class SourceUsagePolicyTest(unittest.TestCase):
                 self.assertIn(heading, self.policy)
 
     def test_17_source_ids_match_source_definitions_exactly(self):
-        # Collect every source_id cell across all four mode tables directly.
-        ids_in_doc = [row[0] for row in markdown_rows(self.matrix)]
+        ids_in_doc = [row["source_id"] for row in self.rows]
         self.assertEqual(len(ids_in_doc), len(set(ids_in_doc)), f"duplicate source_id: {ids_in_doc}")
         self.assertEqual(set(ids_in_doc), self.source_ids)
         self.assertEqual(len(ids_in_doc), 17)
 
-    def test_mode_counts_are_5_4_4_4(self):
-        structured_open = self._mode_rows("### structured_open (5件)", "### feed_summary (4件)")
-        feed_summary = self._mode_rows("### feed_summary (4件)", "### metadata_only (4件)")
-        metadata_only = self._mode_rows("### metadata_only (4件)", "### disabled_legal_review (4件)")
-        disabled = list(markdown_rows(self.matrix.split("### disabled_legal_review (4件)", 1)[1]))
+    def test_every_table_has_proposed_mode_and_checked_at_columns(self):
+        for row in self.rows:
+            with self.subTest(source_id=row["source_id"]):
+                self.assertIn("proposed_mode", row)
+                self.assertIn("checked_at", row)
+                self.assertTrue(row["proposed_mode"])
+                self.assertTrue(row["checked_at"])
 
-        self.assertEqual(len(structured_open), 5)
-        self.assertEqual(len(feed_summary), 4)
-        self.assertEqual(len(metadata_only), 4)
-        self.assertEqual(len(disabled), 4)
-        self.assertIn("合計17", self.matrix)
+    def test_all_17_checked_at_is_2026_07_29(self):
+        for row in self.rows:
+            with self.subTest(source_id=row["source_id"]):
+                self.assertEqual(row["checked_at"], "2026-07-29")
+
+    def test_mode_counts_are_5_4_4_4_by_proposed_mode_column(self):
+        # Group by the proposed_mode column itself, not by which physical
+        # table the row appears in, so the test does not silently pass if a
+        # row is ever moved into the wrong table without updating its value.
+        by_mode = {}
+        for row in self.rows:
+            by_mode.setdefault(row["proposed_mode"], []).append(row["source_id"])
 
         self.assertEqual(
-            {row[0] for row in structured_open},
+            set(by_mode.get("structured_open", [])),
             {"fsa", "nist", "ncsc", "cisa_kev", "nist_nvd"},
         )
         self.assertEqual(
-            {row[0] for row in feed_summary},
+            set(by_mode.get("feed_summary", [])),
             {"jpcert_cc", "ipa", "mandiant", "google_tag"},
         )
         self.assertEqual(
-            {row[0] for row in metadata_only},
+            set(by_mode.get("metadata_only", [])),
             {"microsoft_security", "cisco_talos", "the_hacker_news", "krebs_on_security"},
         )
         self.assertEqual(
-            {row[0] for row in disabled},
+            set(by_mode.get("disabled_legal_review", [])),
             {"cisa", "crowdstrike", "cloudflare", "dark_reading"},
         )
+        self.assertEqual(len(by_mode), 4)
+        self.assertIn("合計17", self.matrix)
+
+    def test_proposed_mode_matches_the_table_the_row_appears_in(self):
+        # Cross-check: every row's own proposed_mode value must equal the
+        # physical table section (structured_open/feed_summary/metadata_only/
+        # disabled_legal_review) it was parsed from.
+        section_markers = [
+            ("structured_open", "### structured_open (5件)", "### feed_summary (4件)"),
+            ("feed_summary", "### feed_summary (4件)", "### metadata_only (4件)"),
+            ("metadata_only", "### metadata_only (4件)", "### disabled_legal_review (4件)"),
+        ]
+        for mode, start, end in section_markers:
+            section_rows = parse_rows(self.matrix.split(start, 1)[1].split(end, 1)[0])
+            for row in section_rows:
+                with self.subTest(source_id=row["source_id"], expected_mode=mode):
+                    self.assertEqual(row["proposed_mode"], mode)
+        disabled_rows = parse_rows(self.matrix.split("### disabled_legal_review (4件)", 1)[1])
+        for row in disabled_rows:
+            with self.subTest(source_id=row["source_id"], expected_mode="disabled_legal_review"):
+                self.assertEqual(row["proposed_mode"], "disabled_legal_review")
 
     def test_all_17_sources_disallow_rich_content(self):
-        # allow_rich_content is column index 5 in every mode table.
-        rows = list(markdown_rows(self.matrix))
-        self.assertEqual(len(rows), 17)
-        for row in rows:
-            with self.subTest(source_id=row[0]):
-                self.assertEqual(row[5], "false")
+        self.assertEqual(len(self.rows), 17)
+        for row in self.rows:
+            with self.subTest(source_id=row["source_id"]):
+                self.assertEqual(row["allow_rich_content"], "false")
 
     def test_metadata_only_disallows_ai_processing(self):
-        metadata_only = self._mode_rows("### metadata_only (4件)", "### disabled_legal_review (4件)")
-        for row in metadata_only:
-            with self.subTest(source_id=row[0]):
-                self.assertEqual(row[6], "false")  # allow_ai_processing
+        for row in self.rows:
+            if row["proposed_mode"] != "metadata_only":
+                continue
+            with self.subTest(source_id=row["source_id"]):
+                self.assertEqual(row["allow_ai_processing"], "false")
 
     def test_disabled_legal_review_disallows_network_fetch(self):
-        disabled = list(markdown_rows(self.matrix.split("### disabled_legal_review (4件)", 1)[1]))
-        for row in disabled:
-            with self.subTest(source_id=row[0]):
-                self.assertEqual(row[3], "false")  # allow_network_fetch
+        for row in self.rows:
+            if row["proposed_mode"] != "disabled_legal_review":
+                continue
+            with self.subTest(source_id=row["source_id"]):
+                self.assertEqual(row["allow_network_fetch"], "false")
 
     def test_feed_summary_is_gated_by_gemini_paid_service_confirmation(self):
         feed_summary_section = self.matrix.split(
@@ -172,12 +216,12 @@ class SourceUsagePolicyTest(unittest.TestCase):
                 self.assertIn(marker, attribution)
 
     def test_cisco_talos_and_krebs_uncertainty_is_not_asserted_as_definitive(self):
-        metadata_only_section = self.matrix.split(
-            "### metadata_only (4件)", 1
-        )[1].split("### disabled_legal_review (4件)", 1)[0]
-        self.assertIn("不明", metadata_only_section)
-        self.assertIn("terms_not_found", metadata_only_section)
-        self.assertIn("断定せず", metadata_only_section)
+        cisco_talos = self.rows_by_id["cisco_talos"]
+        krebs = self.rows_by_id["krebs_on_security"]
+        self.assertIn("不明", cisco_talos["unresolved_issue"])
+        self.assertTrue(krebs["evidence_type"].startswith("terms_not_found"))
+        self.assertIn("terms_not_found", krebs["unresolved_issue"])
+        self.assertIn("断定せず", krebs["unresolved_issue"])
         unknowns = self.policy.split("## 9. Unknowns and owner verification", 1)[1].split(
             "## 10. Relationship to BL-032 and BL-009", 1
         )[0]
@@ -186,6 +230,34 @@ class SourceUsagePolicyTest(unittest.TestCase):
         self.assertIn("禁止と断定せず", unknowns)
         self.assertNotIn("規約違反であることが確定した", self.policy)
         self.assertNotIn("法的に禁止されていると断定", self.policy)
+
+    def test_krebs_about_page_is_recorded_as_supporting_source_page_not_a_terms_url(self):
+        krebs = self.rows_by_id["krebs_on_security"]
+        self.assertIn("terms_not_found", krebs["evidence_type"])
+        self.assertIn("source_page", krebs["evidence_type"])
+        self.assertIn("supporting", krebs["evidence_type"])
+        self.assertIn("about-this-blog", krebs["official_evidence_url"])
+        self.assertIn("supporting", krebs["official_evidence_url"])
+        self.assertIn("terms文書ではなく", krebs["official_evidence_url"])
+
+    def test_cisa_has_no_url_in_official_evidence_url_and_is_terms_not_identified(self):
+        cisa = self.rows_by_id["cisa"]
+        self.assertEqual(cisa["evidence_type"], "terms_not_identified")
+        self.assertNotIn("http://", cisa["official_evidence_url"])
+        self.assertNotIn("https://", cisa["official_evidence_url"])
+        self.assertNotIn("activation_condition", cisa["official_evidence_url"])
+
+    def test_mandiant_distinguishes_rss_evidence_from_terms_evidence(self):
+        mandiant = self.rows_by_id["mandiant"]
+        self.assertIn("terms", mandiant["evidence_type"])
+        self.assertIn("rss_usage_guidance", mandiant["evidence_type"])
+        self.assertIn("supporting", mandiant["evidence_type"])
+        self.assertIn("policies.google.com/terms", mandiant["official_evidence_url"])
+        self.assertIn("cloud.google.com/blog/topics/threat-intelligence", mandiant["official_evidence_url"])
+        self.assertIn("それ自体はterms文書ではない", mandiant["official_evidence_url"])
+        self.assertIn(
+            "両者を混同しない", mandiant["unresolved_issue"]
+        )
 
     def test_output_similarity_controls_are_recorded_as_bl032_scope_not_implemented(self):
         controls = self.policy.split(
