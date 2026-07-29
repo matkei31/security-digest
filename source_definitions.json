@@ -120,13 +120,13 @@
       "language": "en",
       "source_type": "脅威インテリジェンス",
       "source_tier": "Tier 2",
-      "enabled": true,
-      "planned_phase": "Phase 1",
-      "activation_condition": "",
+      "enabled": false,
+      "planned_phase": "保留",
+      "activation_condition": "CrowdStrike公式Website Termsの適用範囲を再確認し、RSS自動取得・外部AI処理・公開要約・保存について書面または明示的な許諾を確認する。許諾または利用可能な公式API・再利用条件が確認できるまで再有効化しない。",
       "collection_frequency": "daily",
       "color": "#cc0000",
       "trusted_cyber_source": true,
-      "notes": ""
+      "notes": "BL-030: 2026-07-29時点の公式Website Terms(https://www.crowdstrike.com/en-us/legal/website-terms-of-use/)を根拠に暫定停止。自動アクセス・コピー・保存・再出版等に制限があるため。法的違反を確定したものではなく、包括的な取得元規約監査(BL-031候補)までの安全側の一時的措置。"
     },
     {
       "id": "google_tag",
@@ -232,13 +232,13 @@
       "language": "en",
       "source_type": "ベンダー情報",
       "source_tier": "Tier 2",
-      "enabled": true,
-      "planned_phase": "Phase 1",
-      "activation_condition": "",
+      "enabled": false,
+      "planned_phase": "保留",
+      "activation_condition": "Cloudflare Website Terms Section 8のAI用途bot条件を確認し、robots.txtで専用User-Agentが明示的に許可される、または書面許諾が得られ、AI処理・公開要約の利用条件が確認できるまで再有効化しない。",
       "collection_frequency": "daily",
       "color": "#f38020",
       "trusted_cyber_source": false,
-      "notes": ""
+      "notes": "BL-030: 2026-07-29時点の公式Website Terms(https://www.cloudflare.com/website-terms/)を根拠に暫定停止。現行実装は汎用User-Agentかつrobots.txt確認処理を持たないため。法的違反を確定したものではなく、包括的な取得元規約監査(BL-031候補)までの安全側の一時的措置。"
     },
     {
       "id": "cisa_kev",

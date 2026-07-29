@@ -229,9 +229,11 @@ class Bl007DocumentationTest(unittest.TestCase):
         self.assertNotIn("*.monomidigest.com", bl007)
         self.assertIn("wildcard DNSは使用しない", bl007)
 
-    def test_status_active_work_is_empty_after_bl007_closure(self):
+    def test_status_active_work_no_longer_lists_bl007(self):
+        # BL-007のclosure後、Active workは一時的に空(None.)になったが、その後
+        # BL-030がActive workへ追加された。BL-007自体がActive workへ戻って
+        # いないことだけを検証する(Active work自体が空である必要はない)。
         active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
-        self.assertIn("None.", active)
         self.assertNotIn("BL-007", active)
 
     def test_status_records_bl007_as_recently_completed(self):

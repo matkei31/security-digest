@@ -1179,8 +1179,6 @@ class TopPageArchiveLinkTest(unittest.TestCase):
                     "fetch.build_todays_brief",
                     return_value={"status": "not_attempted"},
                 ),
-                mock.patch("fetch.load_cache", return_value={}),
-                mock.patch("fetch.save_cache"),
                 mock.patch(
                     "fetch.load_validated_published_digest_dates",
                     return_value=["2026-07-23"],
@@ -1357,8 +1355,8 @@ class SourceFooterConsistencyTest(unittest.TestCase):
         html = fetch.build_html([])
         footer = source_footer_segment(html)
 
-        self.assertEqual(len(expected), 15)
-        self.assertIn("収集元 (15ソース)", footer)
+        self.assertEqual(len(expected), 13)
+        self.assertIn("収集元 (13ソース)", footer)
         self.assertEqual(footer.count("<li>"), len(expected))
         positions = []
         for source in expected:
@@ -1372,6 +1370,9 @@ class SourceFooterConsistencyTest(unittest.TestCase):
         self.assertNotIn("CISA Advisory", footer)
         self.assertNotIn(">NIST NVD<", footer)
         self.assertNotIn("NVD vulnerability facts", footer)
+        # BL-030: CrowdStrike・Cloudflareは規約確認までの暫定停止でfooterから除外される。
+        self.assertNotIn(">CrowdStrike<", footer)
+        self.assertNotIn(">Cloudflare<", footer)
 
 
 class Bl028NavigationLayoutTest(unittest.TestCase):

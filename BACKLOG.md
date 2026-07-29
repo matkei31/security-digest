@@ -681,6 +681,31 @@
 - **残作業:** なし。
 - **注記:** BL-021・BL-023を再オープンまたは統合しない。BL-007（custom domain移行）・BL-028（ナビゲーション再設計）は本Ticketのscopeに含めない。implementation branch `claude/bl029-priority-items`はmerge済み。
 
+## BL-030 — 取得元・翻訳経路の緊急リスク低減
+
+- **ID:** BL-030
+- **タイトル:** 取得元・翻訳経路の緊急リスク低減
+- **優先度:** P1
+- **状態:** 実装済みDraft PR／レビュー待ち
+- **出所種別:** ユーザー指示（包括的な取得元規約監査に先立つ暫定措置）
+- **解釈:** 包括的な取得元規約監査（BL-031候補）に先立ち、現行実装で確認された高優先度のリスクだけを、小さく可逆的な変更で一時的に低減する。**これは最終的な法的判断ではなく、公式条件の精査・許可確認までの暫定的なリスク低減である。**
+- **完了条件:**
+  1. 非公式Google翻訳経路（`translate.googleapis.com/translate_a/single`、`client=gtx`、`load_cache()`／`save_cache()`／`translate()`）を`fetch.py`から完全に削除する。
+  2. `resolve_display_title()`を、AI成功時の`title_ja`表示、それ以外はraw_titleまたは取得時の原題への表示という契約へ単純化し、外部翻訳・translate cacheのいずれも参照しない。
+  3. AI分析が無い／failedの場合のsummary表示は、取得済みRSS descriptionのプレーンテキストを既存表示上限内で英語のまま表示する（空欄にしない）。
+  4. `docs/translate_cache.json`を現在のrepository treeから削除する。git history rewriteはしない。日次生成・Archive再生成・テスト実行で再作成されないことを保証する。docs配下・data配下等へ翻訳cacheや原文抜粋cacheを別名で新設・移動しない。
+  5. `source_definitions.json`のCrowdStrike（`crowdstrike`）を`enabled: false`・`planned_phase: "保留"`へ変更し、公式Website Termsの適用範囲・許諾確認を条件とする`activation_condition`を記録する。
+  6. `source_definitions.json`のCloudflare（`cloudflare`）を`enabled: false`・`planned_phase: "保留"`へ変更し、Website Terms Section 8のAI用途bot条件・robots.txt許可・書面許諾を条件とする`activation_condition`を記録する。
+  7. CrowdStrike・Cloudflare以外の全source設定（Microsoft Security、Mandiant、Google TAG、Cisco Talos、Dark Reading、The Hacker News、Krebs on Security、公共機関等）は変更しない。
+  8. `content:encoded`／Atom contentの共通処理、ARTICLE prompt、response schema、`ARTICLE_PROMPT_VERSION`、Gemini入力上限（4000文字）は変更しない。
+  9. production、`workflow_dispatch`、Gemini API、RSS/API/記事ページ/robots.txt等への外部アクセスは行わない。DNS・GitHub Pages・Custom domain・Enforce HTTPSは変更しない。
+  10. 過去の`data/*.json`・`docs/archive/*.html`（CrowdStrike・Cloudflare記事を含む）は変更しない。過去公開分は履歴としてそのまま維持する。
+- **依存関係:** 情報取得・AI入力・保存・公開データフローのread-only棚卸し(本Ticket着手直前にユーザーへ提供済み、repositoryへは非コミット)。後続候補: **BL-031**（全取得元の公式規約監査・`source_definitions.json`への`content_usage_mode`等の設定項目実装）、**BL-032**（取得元別ポリシーの実装反映）。About／出典／免責／訂正窓口は[BL-009](BACKLOG.md#bl-009--seoと閲覧者増加策)へ連携する（本Ticketでは実装しない）。
+- **実装証跡:** `fetch.py`から`CACHE_PATH`定数・`load_cache()`・`save_cache()`・`translate()`を削除し、`resolve_display_title()`をcache引数なしの単純な`title_ja`→`raw_title`fallback契約へ書き換えた。`main()`の翻訳ループから`translate()`呼び出しと`cache`の読み書きを削除し、summaryは取得済み英語descriptionのまま保持する（既存のHTML生成側120文字fallback表示は変更していない）。`docs/translate_cache.json`をrepository treeから削除した（`git rm`、history rewriteなし）。`source_definitions.json`のCrowdStrike・Cloudflareを`enabled: false`へ変更し、`activation_condition`・`notes`（公式Website Terms URL・暫定停止の根拠・「法的違反を確定したものではなく…BL-030」の記載）を追加した。両sourceの`trusted_cyber_source`／`color`／`source_tier`／`url`等は変更していない。`RSS_FEEDS`・`build_footer_sources()`はいずれも`enabled`フィルタ経由で自動的にCrowdStrike・Cloudflareを除外する（コード変更不要）。`content:encoded`／Atom content処理、ARTICLE prompt、response schema、`ARTICLE_PROMPT_VERSION`、Gemini入力上限は変更していない。関連test更新: `test_article_v5.py`（`DisplayTitleFlowTest`をcacheなし契約へ書き換え）、`test_archive.py`（footer件数を15→13、CrowdStrike・Cloudflare不在assertion追加、`load_cache`/`save_cache`のmock削除）、`test_source_definitions.py`（`EXPECTED_ACTIVE_RSS_FEEDS`からCrowdStrike・Cloudflareを除外、新規`Bl030SourceRiskContainmentTest`追加）。
+- **ユーザー受入証跡:** 記録なし。Draft PRのままレビュー待ち。
+- **残作業:** ユーザーによるPR最終確認、Ready化・merge、後続BL-031（全取得元規約監査）・BL-032（取得元別ポリシー実装）・BL-009（About／出典／免責／訂正窓口）の着手判断。
+- **注記:** 本暫定停止はrollback可能で、rollbackはsourceの再有効化（`enabled: true`へ戻す）と、承認済みの正式翻訳経路を別途実装することを想定する。過去の`data/*.json`・`docs/archive/*.html`（CrowdStrike・Cloudflare記事を含む）は変更していない。implementation branch `fix/bl030-source-risk-containment`。
+
 ## 完了済み参照
 
 これらの参照記録は、完了済みの作業が誤って未完了バックログとして再オープンされることを防ぐためだけに存在する。
