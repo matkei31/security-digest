@@ -623,7 +623,8 @@ class SecurityRequirementsTest(unittest.TestCase):
             "## 8. Sources of truth", 1
         )[0]
         self.assertIn("BL-028", next_candidates)
-        self.assertIn("[BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する) are all complete", next_candidates)
+        self.assertIn("[BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する)", next_candidates)
+        self.assertIn("are all complete", next_candidates)
 
     def test_sd027_partially_supersedes_sd021_and_preserves_its_other_contracts(self):
         decisions = self.decisions

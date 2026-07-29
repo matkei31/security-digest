@@ -6,6 +6,7 @@ source_definitions.json の読み込み・検証・互換レイヤーの回帰�
 
 import json
 import os
+import re
 import tempfile
 import unittest
 from pathlib import Path
@@ -901,6 +902,76 @@ class Bl030SourceRiskContainmentTest(unittest.TestCase):
         self.assertFalse(hasattr(fetch, "load_cache"))
         self.assertFalse(hasattr(fetch, "save_cache"))
         self.assertFalse(hasattr(fetch, "CACHE_PATH"))
+
+
+class Bl030AcceptanceRecordTest(unittest.TestCase):
+    """BL-030: ユーザー受入・完了記録(BACKLOG／STATUS／DECISIONS SD-029)の検証。"""
+
+    REPO_ROOT = Path(__file__).resolve().parent
+
+    @classmethod
+    def setUpClass(cls):
+        cls.backlog = (cls.REPO_ROOT / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (cls.REPO_ROOT / "STATUS.md").read_text(encoding="utf-8")
+        cls.decisions = (cls.REPO_ROOT / "DECISIONS.md").read_text(encoding="utf-8")
+
+    def _section(self, text, marker, next_marker="\n## "):
+        start = text.index(marker)
+        rest = text[start + len(marker):]
+        end = rest.find(next_marker)
+        return rest if end == -1 else rest[:end]
+
+    def test_bl030_is_recorded_as_complete(self):
+        bl030 = self._section(self.backlog, "## BL-030")
+        self.assertIn("- **状態:** 完了", bl030)
+
+    def test_bl030_user_acceptance_evidence_records_pr_head_and_ci(self):
+        bl030 = self._section(self.backlog, "## BL-030")
+        self.assertIn("PR #66", bl030)
+        self.assertIn("9757ae98c2f5ef9f13da667be5677d870a6e2cd1", bl030)
+        self.assertIn("30428514818", bl030)
+
+    def test_status_active_work_is_empty_and_bl030_is_recently_completed(self):
+        active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
+        self.assertIn("None.", active)
+        self.assertNotIn("BL-030", active)
+        recently_completed = self._section(
+            self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
+        )
+        self.assertIn("BL-030", recently_completed)
+
+    def test_sd029_is_unique(self):
+        headings = re.findall(r"^## (SD-\d{3})\b", self.decisions, flags=re.MULTILINE)
+        self.assertEqual(headings.count("SD-029"), 1)
+
+    def test_sd029_records_date_status_decision_consequences_evidence(self):
+        sd029 = self._section(self.decisions, "## SD-029")
+        self.assertIn("- **Date:** 2026-07-29", sd029)
+        self.assertIn("- **Status:** Accepted", sd029)
+        self.assertIn("- **Decision:**", sd029)
+        self.assertIn("- **Consequences:**", sd029)
+        self.assertIn("- **Evidence:**", sd029)
+        self.assertIn("PR #66", sd029)
+        self.assertIn("9757ae98c2f5ef9f13da667be5677d870a6e2cd1", sd029)
+
+    def test_sd029_does_not_assert_terms_violation(self):
+        sd029 = self._section(self.decisions, "## SD-029")
+        self.assertIn(
+            "does not determine that CrowdStrike or Cloudflare's terms were in fact violated",
+            sd029,
+        )
+
+    def test_bl030_residual_work_excludes_followup_tickets(self):
+        bl030 = self._section(self.backlog, "## BL-030")
+        self.assertIn("BL-030の実装上の残作業はなし", bl030)
+        self.assertIn("BL-031", bl030)
+        self.assertIn("後続Ticketであり、BL-030自体の残作業ではない", bl030)
+
+    def test_bl031_scope_includes_security_doc_reconciliation(self):
+        bl030 = self._section(self.backlog, "## BL-030")
+        self.assertIn("SECURITY_REQUIREMENTS.md", bl030)
+        self.assertIn("SECURITY_OPERATIONS.md", bl030)
+        self.assertIn("BL-031", bl030)
 
 
 if __name__ == "__main__":
