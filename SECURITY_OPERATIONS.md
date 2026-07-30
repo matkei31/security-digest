@@ -326,6 +326,43 @@ If a takedown or correction request is received for a source's already-published
 suspending future collection does not by itself satisfy a takedown request for existing
 publication.
 
+### Content usage mode downgrade (`limited_feed_analysis`, added in Version 1.1, from BL-031)
+
+`limited_feed_analysis` (defined in [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) section 3C)
+is an explicit, bounded risk acceptance for a small number of sources, not a determination that
+their terms permit reuse. Use this procedure to downgrade a `limited_feed_analysis` source when
+any of the following occurs: its official terms or license change; the machine-readable
+instructions (e.g. robots.txt) governing it change; its feed path or availability changes; the
+source's publisher, a rightsholder, or another party submits a correction, removal, or stop
+request; a confirmed output-similarity/quotation-control violation or attribution failure is
+found in generated output; or source-specific terms are discovered where none were previously
+identified.
+
+1. Record the specific trigger (which of the above occurred), its official URL where
+   applicable, and the date checked.
+2. Update the source's `proposed_mode` in [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) to
+   `metadata_only` or `disabled_legal_review`, whichever the trigger and its severity warrant,
+   and record the reason in `unresolved_issue`/`recheck_trigger`.
+3. If downgrading to `disabled_legal_review`, also follow the source-suspension procedure above
+   (set `enabled: false` in `source_definitions.json` with a specific `activation_condition`).
+   If downgrading only to `metadata_only`, no `source_definitions.json` change is required or
+   implied by this procedure alone, since neither mode has production enforcement until BL-032;
+   the downgrade is a policy-document change now, and becomes a behavior change only once BL-032
+   implements per-source enforcement.
+4. This is a precautionary downgrade, not a legal determination that the source's terms were in
+   fact violated; do not represent it as a legal conclusion in the commit, pull request, or
+   BACKLOG/STATUS/DECISIONS record.
+5. Do not modify, delete, or regenerate any past `data/*.json` or `docs/archive/*.html` as a
+   side effect of a mode downgrade; a takedown or correction request for already-published
+   articles is handled separately through section 7, following the same principle as the
+   source-suspension procedure above.
+6. Do not call the source's live feed, API, or robots.txt to verify the downgrade trigger; rely
+   on the already-recorded official information, the reported trigger, and read-only repository
+   verification instead.
+7. Record the downgrade through the normal branch/PR/test/review path (BACKLOG.md, STATUS.md;
+   DECISIONS.md only if the user separately accepts a Stable Decision) — not as a direct public
+   hotfix under section 4 unless its emergency conditions are independently met.
+
 ### Validation
 
 Confirm daily JSON validation, HTML escaping, safe URLs, Archive consistency, top/Archive
@@ -469,6 +506,14 @@ Version 1.1 (Draft) adds:
     [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1 does not itself change runtime
     behavior beyond the Dark Reading suspension it also records; BL-032 remains the separate,
     later-approved implementation of any production content-usage-mode enforcement.
+11. **`limited_feed_analysis` content usage mode:** a new fifth content usage mode is recorded
+    for `the_hacker_news` and `krebs_on_security` — an explicit, bounded risk acceptance, not a
+    determination that their terms permit reuse. A terms/machine-readable-instruction/feed-path
+    change, a rightsholder correction/removal/stop request, a confirmed output-policy violation,
+    or discovery of source-specific terms triggers a downgrade to `metadata_only` or
+    `disabled_legal_review` under the new "Content usage mode downgrade" procedure in section 7,
+    without asserting a legal determination and without modifying past `data/*.json` or
+    `docs/archive/*.html` as a side effect.
 
 ## 12. Approval and maintenance
 
@@ -486,11 +531,13 @@ Version 1.1 records the documentation completion of GAP-006, GAP-008, GAP-013, a
 
 **Version 1.1 is a Draft, not an approved maintenance update.** It records the removal of the
 translation-cache correction step (BL-030) and adds the source-suspension procedure, the
-Gemini Paid/Unpaid Services owner-verification boundary, and the BL-031/BL-032 audit-versus-
-enforcement boundary described above. It makes no runtime, workflow, schema, prompt, model,
-validation, generated-output, or production change; `source_definitions.json`'s `enabled`
-field for CrowdStrike, Cloudflare, and Dark Reading was changed by BL-030/BL-031 themselves,
-not by this document. This Version remains Draft until the user reviews and accepts it.
+Gemini Paid/Unpaid Services owner-verification boundary (including its 2026-07-29 completion),
+the `limited_feed_analysis` content-usage-mode downgrade procedure, and the BL-031/BL-032
+audit-versus-enforcement boundary described above. It makes no runtime, workflow, schema,
+prompt, model, validation, generated-output, or production change; `source_definitions.json`'s
+`enabled` field for CrowdStrike, Cloudflare, and Dark Reading was changed by BL-030/BL-031
+themselves, not by this document. This Version remains Draft until the user reviews and
+accepts it.
 
 Review this runbook when an incident or architecture change exposes a missing boundary. A
 mechanical annual update is not required.

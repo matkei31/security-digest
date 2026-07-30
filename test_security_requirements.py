@@ -1085,6 +1085,7 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         cls.backlog = (ROOT / "BACKLOG.md").read_text(encoding="utf-8")
         cls.status = (ROOT / "STATUS.md").read_text(encoding="utf-8")
         cls.decisions = (ROOT / "DECISIONS.md").read_text(encoding="utf-8")
+        cls.policy = (ROOT / "SOURCE_USAGE_POLICY.md").read_text(encoding="utf-8")
 
     def _section(self, start, end):
         return self.requirements.split(start, 1)[1].split(end, 1)[0]
@@ -1201,7 +1202,9 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         bl031 = self.backlog.split("## BL-031", 1)[1].split("\n## ", 1)[0]
         residual = bl031.split("**残作業:**", 1)[1].split("\n- **注記:**", 1)[0]
         self.assertNotIn("Gemini API課金状況のowner確認", residual)
-        self.assertIn("Google TAG利用規約の2026-07-30改定後の再確認", residual)
+        # Google TAG's post-effective-date recheck completed this round; it is
+        # no longer residual work, so it must not still be listed here.
+        self.assertNotIn("Google TAG利用規約の2026-07-30改定後の再確認", residual)
         self.assertIn("Cisco Talos", residual)
         self.assertIn("Krebs on Security", residual)
         self.assertIn("BL-032", bl031)
@@ -1221,7 +1224,55 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         )[0]
         self.assertIn("paid_verified", active)
         self.assertIn("2026-07-29", active)
-        self.assertIn("2026-07-30発効後", active)
+        # The Google Terms 2026-07-30 recheck is now completed (not pending).
+        self.assertIn("2026-07-30発効", active)
+        self.assertIn("limited_feed_analysis", active)
+
+    def test_5_mode_restructuring_is_consistent_across_requirements_backlog_status(self):
+        # SR-044/GAP-016 (SECURITY_REQUIREMENTS.md), the BL-031 entry
+        # (BACKLOG.md), and the Active-work summary (STATUS.md) must all
+        # reflect the same 5-mode model, not the earlier 4-mode one.
+        self.assertIn("limited_feed_analysis", self.requirements)
+        sr044_row = next(
+            row for row in self._markdown_rows(
+                self._section("## 6. Security requirements", "## 7. Current control mapping")
+            )
+            if row[0] == "SR-044"
+        )
+        self.assertIn("limited_feed_analysis", " ".join(sr044_row))
+
+        bl031 = self.backlog.split("## BL-031", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("limited_feed_analysis", bl031)
+        self.assertIn("structured_open 5", bl031)
+        self.assertIn("feed_summary 4", bl031)
+        self.assertIn("limited_feed_analysis 2", bl031)
+        self.assertIn("metadata_only 2", bl031)
+        self.assertIn("disabled_legal_review 4", bl031)
+
+        active = self.status.split("## Active work", 1)[1].split(
+            "## 5. Recently completed work", 1
+        )[0]
+        self.assertIn("the_hacker_news", active)
+        self.assertIn("krebs_on_security", active)
+        self.assertIn("microsoft_security", active)
+        self.assertIn("運用上のリスク受容", active)
+
+    def test_bl031_backlog_no_longer_references_old_4_mode_pending_wording(self):
+        bl031 = self.backlog.split("## BL-031", 1)[1].split("\n## ", 1)[0]
+        self.assertNotIn("metadata_only 4 source", bl031)
+        self.assertNotIn("Google TAG利用規約の2026-07-30改定後の再確認", bl031)
+
+    def test_no_secret_shaped_values_across_bl031_documents(self):
+        for name, text in (
+            ("SOURCE_USAGE_POLICY.md", self.policy),
+            ("SECURITY_REQUIREMENTS.md", self.requirements),
+            ("BACKLOG.md", self.backlog),
+            ("STATUS.md", self.status),
+        ):
+            with self.subTest(document=name):
+                self.assertNotRegex(text, r"AIza[0-9A-Za-z_-]{20,}")
+                self.assertNotRegex(text, r"ghp_[0-9A-Za-z]{20,}")
+                self.assertNotIn("/Users/", text)
 
     def test_sr_046_is_partially_met_not_met(self):
         # nist_nvd is disabled but its activation_condition field is an empty

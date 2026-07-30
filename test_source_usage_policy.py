@@ -83,7 +83,7 @@ class SourceUsagePolicyTest(unittest.TestCase):
         self.assertIn("# Monomi Digest — Source Usage Policy", self.policy)
         self.assertIn("**Version:** 0.1", self.policy)
         self.assertIn("**Status:** Draft", self.policy)
-        self.assertIn("**As of:** 2026-07-29", self.policy)
+        self.assertIn("**As of:** 2026-07-30", self.policy)
         self.assertIn("本文書は法律意見ではない", self.policy)
         self.assertIn(
             "特定の取得元が現行実装によって規約違反を犯していると断定するものではない",
@@ -120,12 +120,17 @@ class SourceUsagePolicyTest(unittest.TestCase):
                 self.assertTrue(row["proposed_mode"])
                 self.assertTrue(row["checked_at"])
 
-    def test_all_17_checked_at_is_2026_07_29(self):
+    def test_checked_at_is_2026_07_29_except_google_terms_sources(self):
+        # google_tag/mandiant were rechecked on 2026-07-30 against the newly
+        # effective Google Terms; every other source keeps its original
+        # 2026-07-29 ChatGPT confirmation date.
+        updated = {"google_tag", "mandiant"}
         for row in self.rows:
             with self.subTest(source_id=row["source_id"]):
-                self.assertEqual(row["checked_at"], "2026-07-29")
+                expected = "2026-07-30" if row["source_id"] in updated else "2026-07-29"
+                self.assertEqual(row["checked_at"], expected)
 
-    def test_mode_counts_are_5_4_4_4_by_proposed_mode_column(self):
+    def test_mode_counts_are_5_4_2_2_4_by_proposed_mode_column(self):
         # Group by the proposed_mode column itself, not by which physical
         # table the row appears in, so the test does not silently pass if a
         # row is ever moved into the wrong table without updating its value.
@@ -142,24 +147,28 @@ class SourceUsagePolicyTest(unittest.TestCase):
             {"jpcert_cc", "ipa", "mandiant", "google_tag"},
         )
         self.assertEqual(
+            set(by_mode.get("limited_feed_analysis", [])),
+            {"the_hacker_news", "krebs_on_security"},
+        )
+        self.assertEqual(
             set(by_mode.get("metadata_only", [])),
-            {"microsoft_security", "cisco_talos", "the_hacker_news", "krebs_on_security"},
+            {"microsoft_security", "cisco_talos"},
         )
         self.assertEqual(
             set(by_mode.get("disabled_legal_review", [])),
             {"cisa", "crowdstrike", "cloudflare", "dark_reading"},
         )
-        self.assertEqual(len(by_mode), 4)
+        self.assertEqual(len(by_mode), 5)
         self.assertIn("合計17", self.matrix)
 
     def test_proposed_mode_matches_the_table_the_row_appears_in(self):
         # Cross-check: every row's own proposed_mode value must equal the
-        # physical table section (structured_open/feed_summary/metadata_only/
-        # disabled_legal_review) it was parsed from.
+        # physical table section it was parsed from.
         section_markers = [
             ("structured_open", "### structured_open (5件)", "### feed_summary (4件)"),
-            ("feed_summary", "### feed_summary (4件)", "### metadata_only (4件)"),
-            ("metadata_only", "### metadata_only (4件)", "### disabled_legal_review (4件)"),
+            ("feed_summary", "### feed_summary (4件)", "### limited_feed_analysis (2件)"),
+            ("limited_feed_analysis", "### limited_feed_analysis (2件)", "### metadata_only (2件)"),
+            ("metadata_only", "### metadata_only (2件)", "### disabled_legal_review (4件)"),
         ]
         for mode, start, end in section_markers:
             section_rows = parse_rows(self.matrix.split(start, 1)[1].split(end, 1)[0])
@@ -194,13 +203,16 @@ class SourceUsagePolicyTest(unittest.TestCase):
     def test_feed_summary_is_gated_by_gemini_paid_service_confirmation(self):
         feed_summary_section = self.matrix.split(
             "### feed_summary (4件)", 1
-        )[1].split("### metadata_only (4件)", 1)[0]
+        )[1].split("### limited_feed_analysis (2件)", 1)[0]
         self.assertIn("Gemini Paid Service", feed_summary_section)
         gate = self.policy.split("## 5. Gemini data-use gate", 1)[1].split(
             "## 6. Attribution requirements", 1
         )[0]
         self.assertIn("paid_verified", gate)
-        self.assertIn("`unpaid`または`unknown`の場合、`feed_summary`は`metadata_only`と同じ挙動", gate)
+        self.assertIn(
+            "`unpaid`または`unknown`の場合、`feed_summary`および`limited_feed_analysis`は`metadata_only`と同じ挙動",
+            gate,
+        )
 
     def test_gemini_data_use_status_is_paid_verified(self):
         gate = self.policy.split("## 5. Gemini data-use gate", 1)[1].split(
@@ -252,13 +264,33 @@ class SourceUsagePolicyTest(unittest.TestCase):
             "この文書更新だけで現在のproduction挙動が変わるものではない", gate
         )
 
-    def test_google_terms_2026_07_30_recheck_trigger_is_recorded(self):
+    def test_google_terms_2026_07_30_recheck_is_recorded_as_completed(self):
         self.assertIn("2026-07-30", self.policy)
         recheck = self.policy.split("## 8. Recheck triggers", 1)[1].split(
             "## 9. Unknowns and owner verification", 1
         )[0]
-        self.assertIn("2026-07-30以降、Google Terms", recheck)
+        self.assertIn("Google Terms(2026-07-30発効版)のさらなる改定", recheck)
         self.assertIn("google_tag", recheck)
+        # The recheck itself is completed, not still pending.
+        self.assertIn("Google Terms再確認(2026-07-30発効版、完了)", recheck)
+        self.assertIn("checked_at:** 2026-07-30", recheck)
+        self.assertIn("一部の取得環境", recheck)
+        self.assertIn("旧2024年版", recheck)
+        self.assertIn(
+            "規約が2026-07-30に発効し、その内容を確認できたという事実を否定するものではない",
+            recheck,
+        )
+        self.assertNotIn("2026-07-30以降、Google Terms(新規約発効後)の公式再確認", recheck)
+
+    def test_google_terms_recheck_moved_to_confirmed_in_unknowns_section(self):
+        unknowns = self.policy.split("## 9. Unknowns and owner verification", 1)[1].split(
+            "## 10. Relationship to BL-032 and BL-009", 1
+        )[0]
+        self.assertIn("確認完了(未解決事項から除外)", unknowns)
+        self.assertIn("Google TAG / Mandiant", unknowns)
+        self.assertNotIn(
+            "2026-07-30発効の新しいGoogle利用規約の内容が最終確認されていない", unknowns
+        )
 
     def test_attribution_requirements_are_recorded_for_each_group(self):
         attribution = self.policy.split("## 6. Attribution requirements", 1)[1].split(
@@ -271,11 +303,68 @@ class SourceUsagePolicyTest(unittest.TestCase):
             "`ncsc`",
             "`cisa_kev`",
             "jpcert_cc",
+            "limited_feed_analysis",
             "metadata_only",
             "disabled_legal_review",
         ):
             with self.subTest(marker=marker):
                 self.assertIn(marker, attribution)
+        self.assertIn("the_hacker_news", attribution)
+        self.assertIn("krebs_on_security", attribution)
+        self.assertIn("2source", attribution)
+
+    def test_limited_feed_analysis_mode_definition_is_present(self):
+        modes = self.policy.split("## 3. Content usage modes", 1)[1].split(
+            "## 4. Source-by-source audit matrix", 1
+        )[0]
+        self.assertIn("### C. `limited_feed_analysis`", modes)
+        self.assertIn("明示的な運用上のリスク受容分類", modes)
+        self.assertIn("取得元が利用を明示的に許諾したと判断したものではない", modes)
+        self.assertIn("記事ページへの追加HTTP取得(scraping)は禁止する", modes)
+        self.assertIn("長い直接引用は禁止する", modes)
+        self.assertIn("原見出しの日本語翻訳表示", modes)
+
+    def test_limited_feed_analysis_rows_have_expected_allow_flags(self):
+        for source_id in ("the_hacker_news", "krebs_on_security"):
+            row = self.rows_by_id[source_id]
+            with self.subTest(source_id=source_id):
+                self.assertEqual(row["proposed_mode"], "limited_feed_analysis")
+                self.assertEqual(row["allow_network_fetch"], "true")
+                self.assertEqual(row["allow_description"], "true")
+                self.assertEqual(row["allow_rich_content"], "false")
+                self.assertIn("conditional", row["allow_ai_processing"])
+                self.assertEqual(row["allow_excerpt_storage"], "false")
+
+    def test_risk_acceptance_rationale_is_recorded_and_not_asserted_as_permission(self):
+        modes = self.policy.split("## 3. Content usage modes", 1)[1].split(
+            "## 4. Source-by-source audit matrix", 1
+        )[0]
+        self.assertIn("採用理由(リスク受容の明示)", modes)
+        self.assertIn("the_hacker_news", modes)
+        self.assertIn("krebs_on_security", modes)
+        self.assertIn("microsoft_security", modes)
+        self.assertIn("cisco_talos", modes)
+        self.assertIn("利用条件を確認し許諾を得た", modes)
+        self.assertIn("運用上のリスク受容", modes)
+        self.assertIn(
+            "この2 sourceについて規約上問題がないと断定するものではない", modes
+        )
+        self.assertNotIn("利用が許可されていることを確認した", modes)
+
+    def test_metadata_only_does_not_prohibit_human_browsing(self):
+        modes = self.policy.split("## 3. Content usage modes", 1)[1].split(
+            "## 4. Source-by-source audit matrix", 1
+        )[0]
+        self.assertIn(
+            "「利用を禁止された」区分ではなく", modes
+        )
+        self.assertIn(
+            "人によるページ閲覧、当該source自体の独自報道・論評を禁止する趣旨ではない",
+            modes,
+        )
+        self.assertIn("Today's Brief", modes)
+        self.assertIn("未判定", modes)
+        self.assertIn("AI処理の失敗", modes)
 
     def test_cisco_talos_and_krebs_uncertainty_is_not_asserted_as_definitive(self):
         cisco_talos = self.rows_by_id["cisco_talos"]
