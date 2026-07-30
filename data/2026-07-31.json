@@ -1,0 +1,489 @@
+{
+  "schema_version": 1,
+  "digest_date": "2026-07-31",
+  "generated_at": "2026-07-31T08:07:28.810517+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 9,
+    "ai_attempted_count": 9,
+    "ai_success_count": 9,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 5,
+      "低": 2,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 5,
+      "参考": 4,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 2,
+      "攻撃・脅威動向": 4,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "掲載9件｜重要度「高」2件｜本日確認0件｜今週確認5件\n本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が5件あり、計画的な確認が必要です。一方、重要度の高い情報が2件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "MandiantとGoogle Threat Intelligence Group (GTIG)は、オープンソースソフトウェアリポジトリを標的としたサプライチェーン侵害の増加傾向について報告し、緩和策と強化策の推奨事項を提供しています。2025年から2026年前半にかけて大規模なオープンソースサプライチェーン侵害キャンペーンが確認されており、その中には14億ドル相当の仮想通貨盗難につながった事例も含まれます。",
+      "Azure Cosmos DBに存在する脆弱性により、攻撃者がGremlinクエリサンドボックスを回避し、顧客テナント全体のデータベースに対して完全な読み書きアクセス権を取得する可能性があったことがWizによって報告されました。この脆弱性は既に修正済みです。"
+    ],
+    "discussion_points": [
+      "MandiantとGoogle Threat Intelligence Group (GTIG)は、オープンソースソフトウェアリポジトリを標的としたサプライチェーン侵害の増加傾向について報告し、緩和策と強化策の推奨事項を提供しています。2025年から2026年前半にかけて大規模なオープンソースサプライチェーン侵害キャンペーンが確認されており、その中には14億ドル相当の仮想通貨盗難につながった事例も含まれます。\n金融機関がオープンソースソフトウェアを開発・利用している場合、または委託先が利用している場合に、サプライチェーン侵害のリスクが高まります。特に、スマートコントラクト機能への悪意あるコード注入による仮想通貨盗難事例は、決済や資産管理への直接的な影響を示唆しています。",
+      "Azure Cosmos DBに存在する脆弱性により、攻撃者がGremlinクエリサンドボックスを回避し、顧客テナント全体のデータベースに対して完全な読み書きアクセス権を取得する可能性があったことがWizによって報告されました。この脆弱性は既に修正済みです。\nAzure Cosmos DBを利用している金融機関は、本脆弱性の影響範囲と対応状況を確認する必要があります。クラウドサービスの基盤に関わるため、広範な影響が懸念されます。"
+    ],
+    "check_items": [
+      "自社および委託先におけるオープンソースソフトウェアの利用状況とサプライチェーンリスクを棚卸しする",
+      "自社および委託先におけるAzure Cosmos DBの利用有無と、影響を受ける可能性のあるGremlinデータベースの有無を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:e63683e834969b44f44a9b2ef7d1f01fddd13c6bbecd2a90b026e9098096a2a1",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/dprk-linked-macos-malvertising-uses.html",
+      "canonical_url": "https://thehackernews.com/2026/07/dprk-linked-macos-malvertising-uses.html",
+      "published_at": "2026-07-31T03:18:24+09:00",
+      "fetched_at": "2026-07-31T08:04:53.796432+09:00",
+      "title": "北朝鮮関連のmacOSマルバタイジング、偽アップデートで仮想通貨窃取マルウェアを配布",
+      "raw_title": "DPRK-Linked macOS Malvertising Uses Fake Updates to Deliver Crypto-Stealing Malware",
+      "raw_excerpt": "Threat actors with ties to North Korea have been attributed to a sophisticated macOS malvertising campaign that involves redirecting users to fake web pages displaying a full-screen non-existent updat",
+      "content_hash": "sha256:3888920d0d03ac421e4416eb08384d73f34e8ae8f416d650dfe4eb1bb819164d",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-31T08:04:56.236776+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "北朝鮮関連の攻撃グループによるマルバタイジングキャンペーンとマルウェア配布の手法が主題であるため。",
+        "tags": [
+          "APT",
+          "フィッシング",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "北朝鮮に関連する脅威アクターが、macOSユーザーを偽のウェブページにリダイレクトし、存在しないフルスクリーンアップデート画面を表示してマルウェアを配布する、巧妙なマルバタイジングキャンペーンを展開しています。これは「Contagious Interview」キャンペーンの新たな展開であり、仮想通貨を窃取するマルウェアが密かにインストールされます。",
+        "financial_impact": "金融機関でmacOS端末を利用している場合、従業員が標的となる可能性があります。特に仮想通貨関連業務を行っている場合は、情報窃取のリスクが高まります。",
+        "recommended_actions": [
+          "macOS端末の利用状況とセキュリティ設定を確認する",
+          "従業員に対し、不審なソフトウェアアップデート要求や広告に対する注意喚起を行う"
+        ],
+        "reason": "重要度は、特定のOSを標的とした攻撃であり、金融機関での利用状況により影響が異なるため「中」です。確認目安は、新たな攻撃キャンペーンの報告であり、即時対応を要する具体的な期限や脆弱性情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2b4182e0d0410181e3275553f817abf53e5efa25989b70d863d2c371601ccc4f",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/you-were-onto-something-with-its-the-climb-miley/",
+      "canonical_url": "https://blog.talosintelligence.com/you-were-onto-something-with-its-the-climb-miley/",
+      "published_at": "2026-07-31T03:00:35+09:00",
+      "fetched_at": "2026-07-31T08:04:53.796432+09:00",
+      "title": "Cisco Talos、2026年第2四半期のインシデント対応トレンドレポートを公開",
+      "raw_title": "You were onto something with “It’s the Climb,” Miley",
+      "raw_excerpt": "Amy hikes Virginia’s most difficult trail and muses on the persistent challenges of cybersecurity. The two aren't dissimilar.",
+      "content_hash": "sha256:765d0fa6120874d0630ac0001400a2801083acfbd7d016c6cb030b2cee3695dc",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-31T08:05:13.790693+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "記事はCisco Talosの脅威インテリジェンスレポートの内容を主題としており、攻撃手法や脅威動向に関する情報が中心であるため。",
+        "tags": [
+          "フィッシング",
+          "認証",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Cisco Talosは2026年第2四半期のインシデント対応トレンドレポートを公開し、認証情報の不正利用と高度なフィッシング戦術が大幅に増加していることを示しました。フィッシングがインシデントの半分以上を占め、QRコードを利用した攻撃も確認されています。",
+        "financial_impact": "金融機関は認証情報の不正利用やフィッシング攻撃の主要な標的となるため、これらの脅威動向は直接的な関係があります。特に、従業員や顧客の認証情報が狙われるリスクが高いです。",
+        "recommended_actions": [
+          "Cisco TalosのQ2 2026インシデント対応トレンドレポートを確認し、自社の脅威対策と比較評価する",
+          "認証情報の不正利用や高度なフィッシング攻撃に対する従業員への注意喚起と教育を強化する",
+          "QRコードを利用したフィッシング攻撃への対策状況を確認し、必要に応じて強化を検討する"
+        ],
+        "reason": "重要度は、金融機関が標的となりやすい認証情報の不正利用やフィッシングの動向に関する情報であるため「中」です。確認目安は、具体的な緊急対応を要する期限や脆弱性情報がなく、動向把握が主目的であるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f62495d0751849763ca637311b830ff7e21d677b36a03c0f84e21435daa92bf2",
+      "source_id": "krebs_on_security",
+      "source_name": "Krebs on Security",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://krebsonsecurity.com/2026/07/read-this-before-you-buy-that-tv-streaming-stick/",
+      "canonical_url": "https://krebsonsecurity.com/2026/07/read-this-before-you-buy-that-tv-streaming-stick/",
+      "published_at": "2026-07-31T01:49:00+09:00",
+      "fetched_at": "2026-07-31T08:04:53.796432+09:00",
+      "title": "安価なTVストリーミングデバイスが広告詐欺とプロキシサービスに悪用される実態",
+      "raw_title": "Read This Before You Buy That TV Streaming Stick",
+      "raw_excerpt": "Security experts have been sounding the alarm for years about the risks of using generic TV boxes that promise unlimited content streaming for a one-time fee, warning that they secretly rent the user'",
+      "content_hash": "sha256:38839d135739738b6216fd977b63fe1f6dac611833f67cef80019282c4f3c955",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-31T08:05:31.120692+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "安価なTVストリーミングデバイスが悪意のある活動に利用されているという攻撃手法と脅威の実態が主題であるため。",
+        "tags": [
+          "AI",
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "安価なTVストリーミングデバイス「H96」が、ユーザーのインターネット接続を秘密裏にプロキシサービスとして貸し出すだけでなく、AI生成ウェブサイト上でモバイルデバイスを装い広告詐欺を行っていることが判明しました。このデバイスは、中国の企業「Zhejiang Fengwo IoT Technology Ltd」が開発したアプリを通じて、ハードウェア情報やインストール済みアプリのリストを収集し、偽の広告クリックを調整しています。",
+        "financial_impact": "金融機関が直接的に影響を受ける可能性は低いですが、従業員が個人利用しているデバイスが意図せずサイバー犯罪のインフラの一部となるリスクは存在します。また、広告詐欺の動向はオンライン広告を利用する金融機関にとって間接的な影響を持つ可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関の直接的な業務システムへの影響は限定的であり、主に個人利用デバイスに関する情報であるため「中」です。確認目安は、具体的な期限や緊急対応の必要性が記事から確認できないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d21e7341a1e3b684e9281057327553f523577c403b9d89e209f3c864fa2afc8a",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/07/30/whats-new-in-microsoft-security-july-2026/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/07/30/whats-new-in-microsoft-security-july-2026/",
+      "published_at": "2026-07-31T01:00:00+09:00",
+      "fetched_at": "2026-07-31T08:04:53.796432+09:00",
+      "title": "Microsoft Securityの2026年7月アップデート: AIセキュリティ強化と新機能",
+      "raw_title": "​​​​What’s new in Microsoft Security: July 2026",
+      "raw_excerpt": "This month’s updates help security and IT teams secure their AI environments, use AI to defend, and strengthen the foundations that AI-powered operations depend on.\nThe post ​​​​What’s new in Microsof",
+      "content_hash": "sha256:f65fb6957f92f43dd21a2e9d4b997c2ad7d91a1f8e6650d06b6f4be840493f47",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-31T08:05:48.121887+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAI環境のセキュリティ強化、AIを活用した防御、AIに依存する基盤の強化など、AIとセキュリティの関連性に焦点を当てているため。",
+        "tags": [
+          "AI",
+          "クラウド"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Microsoftは2026年7月のセキュリティアップデートで、AI環境の保護、AIを活用した防御、AI時代の運用基盤強化に焦点を当てた新機能「Project Perception」や「Microsoft Defender」の拡張を発表しました。これには、プロンプトインジェクション保護やクラウドエージェントの統合セキュリティなどが含まれます。",
+        "financial_impact": "多くの金融機関でMicrosoft製品が利用されている可能性があり、AI関連のセキュリティ強化は中長期的なリスク管理において参考となります。ただし、具体的な脆弱性や緊急対応を要する内容は含まれていません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIセキュリティに関するMicrosoftの広範なアップデートであり、中長期的な戦略立案の参考となるため「中」です。確認目安は、具体的な脆弱性や緊急対応を要する内容、明確な期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c6d3aa7464e49af64f8ae73ef789cbc4ea51b42864278a95096acf5b852ecd04",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/threatsday-ai-powered-hacking-370.html",
+      "canonical_url": "https://thehackernews.com/2026/07/threatsday-ai-powered-hacking-370.html",
+      "published_at": "2026-07-31T00:25:57+09:00",
+      "fetched_at": "2026-07-31T08:04:53.796432+09:00",
+      "title": "ThreatsDay: AIを活用したハッキング、370件のChromeの欠陥、SonicWallへの攻撃、DNSハイジャックなど",
+      "raw_title": "ThreatsDay: AI-Powered Hacking, 370 Chrome Flaws, SonicWall Attacks, DNS Hijacking + 22 More Stories",
+      "raw_excerpt": "A lot of security still comes down to trusting the wrong screen.\n\nThis week, that screen might be a login page, an install guide, a recruiter call, or a familiar service behaving slightly wrong. Behin",
+      "content_hash": "sha256:feaafdf9891e9c23006e69eb39047484b5d1024eca2385a618149a167d63c16e",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-31T08:06:04.751244+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "AIを活用したハッキング、Chromeの脆弱性、SonicWallへの攻撃、DNSハイジャックなど、複数の脅威動向をまとめた記事であるため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、AIを活用したハッキング、370件のChromeの欠陥、SonicWallへの攻撃、DNSハイジャックなど、複数のサイバーセキュリティ脅威動向をまとめた週次レポートです。",
+        "financial_impact": "金融機関への直接的な影響は限定的であり、一般的な脅威動向の参考情報として位置づけられます。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や具体的なアクションを伴わない週次まとめ記事のため「低」です。確認目安は、短期的な対応を求める具体的な期限や脅威がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:459f40727e656d26d406191459c27af0b92ef02aa4e53e4bf6d69b510dc099b1",
+      "source_id": "mandiant",
+      "source_name": "Mandiant",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://cloud.google.com/blog/topics/threat-intelligence/mitigation-guidance-for-supply-chain-compromise/",
+      "canonical_url": "https://cloud.google.com/blog/topics/threat-intelligence/mitigation-guidance-for-supply-chain-compromise/",
+      "published_at": "2026-07-30T23:00:00+09:00",
+      "fetched_at": "2026-07-31T08:04:53.796432+09:00",
+      "title": "パッケージを厳重に管理: サプライチェーン侵害に対する緩和策ガイダンス",
+      "raw_title": "Batten Down Your Packages: Mitigation Guidance for Supply Chain Compromise",
+      "raw_excerpt": "Written by: Kelli Vanderlee, Stuart Carrera\n\nFor years, the cybersecurity industry's understanding of software supply chain compromise has been anchored by a few watershed events, including Russian cy",
+      "content_hash": "sha256:349801342f30cc144edb324ee7476556d461f48fed48e5a4fb95911e29eea963",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-31T08:06:22.724892+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "オープンソースソフトウェアサプライチェーンへの攻撃動向と対策が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "委託先管理",
+          "インシデント",
+          "情報漏えい",
+          "決済"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "MandiantとGoogle Threat Intelligence Group (GTIG)は、オープンソースソフトウェアリポジトリを標的としたサプライチェーン侵害の増加傾向について報告し、緩和策と強化策の推奨事項を提供しています。2025年から2026年前半にかけて大規模なオープンソースサプライチェーン侵害キャンペーンが確認されており、その中には14億ドル相当の仮想通貨盗難につながった事例も含まれます。",
+        "financial_impact": "金融機関がオープンソースソフトウェアを開発・利用している場合、または委託先が利用している場合に、サプライチェーン侵害のリスクが高まります。特に、スマートコントラクト機能への悪意あるコード注入による仮想通貨盗難事例は、決済や資産管理への直接的な影響を示唆しています。",
+        "recommended_actions": [
+          "自社および委託先におけるオープンソースソフトウェアの利用状況とサプライチェーンリスクを棚卸しする",
+          "Google SLSA、NIST SP 800-161 Rev. 1、NSAの推奨事項に基づき、ソフトウェアサプライチェーンのセキュリティ対策を評価・強化する",
+          "静的な長期個人アクセストークン(PAT)から、GitHub AppsやフェデレーションOpenID Connect (OIDC)を介した短命なシステムトークンへの移行を検討する"
+        ],
+        "reason": "重要度は、オープンソースソフトウェアサプライチェーンへの攻撃が大規模化しており、金融機関のシステムや資産に直接影響を与える可能性があるため「高」です。確認目安は、具体的な期限や緊急対応の指示はないものの、継続的な脅威動向であるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c286bac49280d314b3ca26c4f6153c498f802a2dcd9530c48a1653469ef2102d",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/azure-cosmos-db-flaw-exposed-platform.html",
+      "canonical_url": "https://thehackernews.com/2026/07/azure-cosmos-db-flaw-exposed-platform.html",
+      "published_at": "2026-07-30T22:34:09+09:00",
+      "fetched_at": "2026-07-31T08:04:53.796432+09:00",
+      "title": "Azure Cosmos DBの脆弱性によりプラットフォーム全体のキーが露呈し、任意のデータベースにアクセス可能に",
+      "raw_title": "Azure Cosmos DB Flaw Exposed Platform-Wide Key That Could Access Any Database",
+      "raw_excerpt": "A now-patched vulnerability in Azure Cosmos DB could have let an attacker escape the service's Gremlin query sandbox and obtain full read and write access to databases across customer tenants, accordi",
+      "content_hash": "sha256:0d66564e34d197d11fa9e146042d808fe882551317f32881f3d500119f9e6016",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-31T08:06:39.997834+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Azure Cosmos DBの脆弱性が主題であり、その影響について報じられているため。",
+        "tags": [
+          "クラウド",
+          "SaaS",
+          "サプライチェーン",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Azure Cosmos DBに存在する脆弱性により、攻撃者がGremlinクエリサンドボックスを回避し、顧客テナント全体のデータベースに対して完全な読み書きアクセス権を取得する可能性があったことがWizによって報告されました。この脆弱性は既に修正済みです。",
+        "financial_impact": "Azure Cosmos DBを利用している金融機関は、本脆弱性の影響範囲と対応状況を確認する必要があります。クラウドサービスの基盤に関わるため、広範な影響が懸念されます。",
+        "recommended_actions": [
+          "自社および委託先におけるAzure Cosmos DBの利用有無と、影響を受ける可能性のあるGremlinデータベースの有無を確認する",
+          "Microsoftからの公式情報やパッチ適用状況を確認し、必要な対応が完了しているかを評価する"
+        ],
+        "reason": "重要度は、広く利用されるクラウドデータベースサービスにおけるプラットフォーム全体のキー露呈という重大な脆弱性であるため「高」です。確認目安は、脆弱性は既に修正済みであり、直ちに緊急対応を要する進行中の攻撃やKEV新規追加の根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6f14a0ffb27d098cc0f8dbd63d45b327287324e3a6a13b1ba2a294f4fe11b226",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/black-hat-special-rewind-and-revisit/",
+      "canonical_url": "https://blog.talosintelligence.com/black-hat-special-rewind-and-revisit/",
+      "published_at": "2026-07-30T19:00:08+09:00",
+      "fetched_at": "2026-07-31T08:04:53.796432+09:00",
+      "title": "Black Hat特別版: Talosの脅威インテリジェンス専門家たちの軌跡を振り返る",
+      "raw_title": "Black Hat special: Rewind and revisit",
+      "raw_excerpt": "Amy looks back at the incredible journeys that brought past guests to the world of threat intelligence.",
+      "content_hash": "sha256:787cfdc65b3bc52a617ca684494842f306f67eace4d19f50f64a339a24f105d7",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-31T08:06:56.765056+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "Black Hatカンファレンスに関連する、脅威インテリジェンス専門家のキャリアパスを振り返る記事であり、特定の脆弱性や攻撃、規制等に該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Cisco TalosがBlack Hatカンファレンス特別版として、過去の「Humans of Talos」ゲストたちが脅威インテリジェンスの世界に至った多様なキャリアパスを振り返る記事を公開しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。サイバーセキュリティ業界の専門家に関する一般的な情報として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や脆弱性に関する情報ではなく、業界の専門家紹介記事であるため「低」です。確認目安は、短期的な対応を要する情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ea7fb951ef393a24a6edaf009b97204d2871def9aea346e1ef5d6812cfd24663",
+      "source_id": "jpcert_cc",
+      "source_name": "JPCERT/CC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.jpcert.or.jp/at/2026/at260021.html",
+      "canonical_url": "https://www.jpcert.or.jp/at/2026/at260021.html",
+      "published_at": "2026-07-30T17:03:00+09:00",
+      "fetched_at": "2026-07-31T08:04:53.796432+09:00",
+      "title": "注意喚起: Ruby on RailsのActive Storageにおけるリモートコード実行につながる脆弱性（CVE-2026-66066）に関する注意喚起  (公開)",
+      "raw_title": "注意喚起: Ruby on RailsのActive Storageにおけるリモートコード実行につながる脆弱性（CVE-2026-66066）に関する注意喚起  (公開)",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6b05863a70a22b1bdcb9bbba15e81d87ec9994e400200a11663d8b0739514c1a",
+      "rule_flags": [],
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-07-31T08:07:13.809945+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CVEが特定され、製品の脆弱性に関する注意喚起が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "JPCERT/CCは、Ruby on RailsのActive Storageコンポーネントにリモートコード実行（RCE）につながる脆弱性（CVE-2026-66066）が存在することについて注意喚起を行いました。",
+        "financial_impact": "金融機関でRuby on RailsのActive Storageを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Ruby on RailsのActive Storageの利用有無と影響バージョンを確認する",
+          "JPCERT/CCおよびRuby on Railsのベンダーが公開する一次情報を確認し、修正パッチや緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、Ruby on Railsの利用状況が金融機関によって異なるため適用範囲が不確実なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-66066",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-07-30T23:04:53Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-66066",
+              "vuln_status": "Received",
+              "published_at": "2026-07-30T19:18:35Z",
+              "last_modified_at": "2026-07-30T20:18:13Z",
+              "cvss": {
+                "version": "4.0",
+                "base_score": 9.5,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                "source": "security-advisories@github.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "not_listed",
+              "retrieval": "live",
+              "fetched_at": "2026-07-30T23:04:53Z",
+              "date_added": null
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
