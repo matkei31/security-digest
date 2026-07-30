@@ -1099,7 +1099,7 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
     def test_version_and_status_are_15_draft(self):
         self.assertIn("**Version:** 1.5", self.requirements)
         self.assertIn("**Status:** Draft", self.requirements)
-        self.assertIn("**As of:** 2026-07-29", self.requirements)
+        self.assertIn("**As of:** 2026-07-30", self.requirements)
 
     def test_no_current_architecture_mention_of_removed_translation_path(self):
         scope = self._section(
@@ -1228,6 +1228,21 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         self.assertIn("2026-07-30発効", active)
         self.assertIn("limited_feed_analysis", active)
 
+    def test_status_as_of_and_bl030_run_evidence_are_2026_07_30(self):
+        self.assertIn("## 1. As of\n\n2026-07-30", self.status)
+        recently_completed = self.status.split(
+            "## 5. Recently completed work", 1
+        )[1].split("## 6. Known issues and limitations", 1)[0]
+        bl030 = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-030 ")
+        )
+        # The scheduled run's outcome is recorded as a confirmed past event
+        # (it happened before BL-031 merged), not a future-tense prediction.
+        self.assertIn("This actually occurred once, confirmed", bl030)
+        self.assertIn("ran, and did so **before**", bl030)
+        self.assertIn("pre-BL-031 13-source list", bl030)
+        self.assertNotIn("the first ordinary scheduled production run after merge will", bl030)
+
     def test_5_mode_restructuring_is_consistent_across_requirements_backlog_status(self):
         # SR-044/GAP-016 (SECURITY_REQUIREMENTS.md), the BL-031 entry
         # (BACKLOG.md), and the Active-work summary (STATUS.md) must all
@@ -1243,11 +1258,11 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
 
         bl031 = self.backlog.split("## BL-031", 1)[1].split("\n## ", 1)[0]
         self.assertIn("limited_feed_analysis", bl031)
-        self.assertIn("structured_open 5", bl031)
-        self.assertIn("feed_summary 4", bl031)
-        self.assertIn("limited_feed_analysis 2", bl031)
-        self.assertIn("metadata_only 2", bl031)
-        self.assertIn("disabled_legal_review 4", bl031)
+        self.assertIn("`structured_open`5", bl031)
+        self.assertIn("`feed_summary`4", bl031)
+        self.assertIn("`limited_feed_analysis`2", bl031)
+        self.assertIn("`metadata_only`2", bl031)
+        self.assertIn("`disabled_legal_review`4", bl031)
 
         active = self.status.split("## Active work", 1)[1].split(
             "## 5. Recently completed work", 1
@@ -1354,6 +1369,30 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         )
         self.assertIn("Met 1 / Partial 2 / Not met 0 / Unverified 0", mapping)
         self.assertNotIn("Met 0 / Partial 2 / Not met 0 / Unverified 1", mapping)
+
+    def test_sr_045_no_longer_describes_google_terms_recheck_as_pending(self):
+        sr045_row = next(
+            row for row in self._markdown_rows(
+                self._section("## 6. Security requirements", "## 7. Current control mapping")
+            )
+            if row[0] == "SR-045"
+        )
+        joined = " ".join(sr045_row)
+        self.assertNotIn("pending 2026-07-30 Google Terms", joined)
+        self.assertIn("confirmed effective 2026-07-30", joined)
+
+    def test_trust_boundary_audit_date_follows_per_row_checked_at(self):
+        boundaries = self._section("## 5. Trust boundaries", "## 6. Security requirements")
+        compact = re.sub(r"\s+", " ", boundaries)
+        self.assertIn("recorded per source", compact)
+        self.assertIn("row-level `checked_at` column", compact)
+        self.assertIn("2026-07-30 for `google_tag`/`mandiant`", compact)
+        self.assertNotIn("point-in-time audit (2026-07-29)", compact)
+        self.assertNotIn("the 2026-07-30 Google Terms re-confirmation", compact)
+        self.assertIn(
+            "any future Google Terms revision beyond the 2026-07-30 version already reviewed",
+            compact,
+        )
 
     def test_intro_clarifies_version_14_approved_and_version_15_draft(self):
         intro = self._section(

@@ -89,16 +89,18 @@ Monomi Digestの取得元は、次の5つのcontent usage modeのいずれかへ
 
 ### D. `metadata_only`
 
-**分類の意味:** 「利用を禁止された」区分ではなく、「Monomi Digestの自動取得・外部AI処理・自動公開について、十分な利用根拠を現時点で確認できていないため、production上の自動処理を原題・取得元・公開日時・原記事リンクに限定する区分」である。人によるページ閲覧、当該source自体の独自報道・論評を禁止する趣旨ではない。
+**分類の意味:** 公式Feedからの原題・取得元・公開日時・原記事URLという最小メタデータの取得・リンク掲載は継続する。一方、description等の内容利用、外部AI処理、AI評価・要約の公開について十分な根拠を確認できていないため、production上の処理を最小メタデータに限定する区分である。`metadata_only`は自動処理を完全に行わない区分ではなく(最小メタデータの自動取得は継続する)、また人によるページ閲覧や当該source自体の独自の報道・論評を禁止する趣旨でもない。
 
 **許可:**
-- title、published date、source name、original URL
+- title、published date、source name、original URLという最小メタデータの自動取得・保存・リンク掲載。
 
 **禁止:**
 - description、summary、`content:encoded`、Atom contentのGeminiへの送信。
 - ARTICLE分析(importance／urgency／financial_impact／recommended_actions等の生成)。
 - publisher由来の本文・抜粋の保存。
 - 原文に基づく日本語タイトル翻訳(Gemini生成の`title_ja`を含む)。
+
+**Cisco Talosの残余リスク:** Cisco Site Content利用規約(internal use限定)がブログドメイン(`blog.talosintelligence.com`)へ直接適用されるかどうかは未解決であり(9章参照)、この分類が許可する最小メタデータの自動取得自体にも残余リスクが残る。適用が確認された場合は、`metadata_only`にとどまらず`disabled_legal_review`への降格を含めて再評価する。
 
 **将来表示(BL-032検討事項):**
 - 通常の記事一覧(AI評価済み記事)へ公開日時順で混在させ、AI分析カードとは異なる簡易リンクカード(原題・取得元・公開日時・原記事リンクのみ、description・AI翻訳・importance・urgency・category・tags・financial_impact・recommended_actions・factsを表示しない)として表示する。
@@ -147,8 +149,8 @@ Monomi Digestの取得元は、次の5つのcontent usage modeのいずれかへ
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | jpcert_cc | JPCERT/CC | feed_summary | true | true | true | false | conditional(5章Gemini Paid Service gate) | false | conditional(gate) | 6章参照 | https://www.jpcert.or.jp/rss/index.html ； https://www.jpcert.or.jp/guide.html | rss_usage_guidance | 2026-07-29 | high | 転載・再配布時の連絡要否の具体運用 | JPCERT/CC利用ガイドの改定 |
 | ipa | IPA | feed_summary | true | true | true | false | conditional(gate) | false | conditional(gate) | 6章参照 | https://www.ipa.go.jp/publish/faq.html ； https://www.ipa.go.jp/siteinfo.html | faq | 2026-07-29 | medium | 個別資料ごとの利用条件が本ポリシーと優先関係を持つ場合の具体運用 | IPA著作権FAQの改定 |
-| mandiant | Mandiant | feed_summary | true | true | true | false | conditional(gate) | false | conditional(gate) | 6章参照 | https://policies.google.com/terms?hl=en-US ； https://policies.google.com/terms/update/embedded ； https://cloud.google.com/blog/topics/threat-intelligence | terms(primary) ； terms_update_notice(supporting) ； rss_usage_guidance(supporting) | 2026-07-30 | medium | Google全体利用規約のmachine-readable instructions条件の具体適用範囲。1・2番目のURL(Google Terms本文・更新案内)が利用条件そのものの証跡であり、3番目のURL(Threat Intelligenceページ)はRSS提供を示す証跡にすぎず、それ自体はterms文書ではない(両者を混同しない)。2026-07-30発効版の内容を確認済みだが、一般規約のみでAI公開要約の包括的許諾があるとは断定しない(8章参照) | Google Cloud blogのterms変更、またはGoogle Terms(2026-07-30発効版)のさらなる改定 |
-| google_tag | Google TAG | feed_summary | true | true | true | false | conditional(gate) | false | conditional(gate) | 6章参照 | https://policies.google.com/terms?hl=en-US ； https://policies.google.com/terms/update/embedded | terms | 2026-07-30 | medium | 2026-07-30発効の新規約の内容を確認済み(8章参照)。machine-readable instructionsに反する自動収集を禁止する条件は継続しており、一般規約のみでAI公開要約の包括的許諾があるとは断定しない | Google Terms(2026-07-30発効版)のさらなる改定 |
+| mandiant | Mandiant | feed_summary | true | true | true | false | conditional(gate) | false | conditional(gate) | 6章参照 | https://policies.google.com/terms?hl=en-US ； https://policies.google.com/terms/update/embedded ； https://cloud.google.com/blog/topics/threat-intelligence | terms(primary) ； terms_update_notice(supporting) ； rss_usage_guidance(supporting) | 2026-07-30 | medium | Google全体利用規約のmachine-readable instructions条件の具体適用範囲。1・2番目のURL(Google Terms本文・更新案内)が利用条件そのものの証跡であり、3番目のURL(Threat Intelligenceページ)はRSS提供を示す証跡にすぎず、それ自体はterms文書ではない(両者を混同しない)。2026-07-30発効版の内容を確認済みだが、一般規約のみでAI公開要約の包括的許諾があるとは断定しない(8章参照) | Google Terms(2026-07-30発効版)のさらなる改定; 公式Feed URL／Feed経路の変更; Google Cloud Threat Intelligence固有の利用条件の変更; robots.txt等machine-readable instructionsの変更; 公式RSS案内の変更・終了 |
+| google_tag | Google TAG | feed_summary | true | true | true | false | conditional(gate) | false | conditional(gate) | 6章参照 | https://policies.google.com/terms?hl=en-US ； https://policies.google.com/terms/update/embedded | terms | 2026-07-30 | medium | 2026-07-30発効の新規約の内容を確認済み(8章参照)。machine-readable instructionsに反する自動収集を禁止する条件は継続しており、一般規約のみでAI公開要約の包括的許諾があるとは断定しない | Google Terms(2026-07-30発効版)のさらなる改定; 公式Feed URL／Feed経路の変更; Google Security Blog/Blogger固有の利用条件の変更; robots.txt等machine-readable instructionsの変更; 公式RSS案内の変更・終了 |
 
 **注記(feed_summary共通):** `allow_ai_processing`／`allow_public_summary`はいずれも5章のGemini data-use gateに従属する。`gemini_data_use_status`は2026-07-29にowner verificationにより`paid_verified`となったため、このGemini側の条件自体は満たされた。ただし`gemini_data_use_status`が`unpaid`または`unknown`へ戻った場合は、実運用上`metadata_only`と同じ挙動として扱う(3章B参照)。取得元自身の規約条件(各sourceの`unresolved_issue`、`google_tag`／`mandiant`の2026-07-30発効Google Termsの内容等)はこの確認と無関係に別途維持され、production enforcement自体はBL-032まで未実装のままである。
 
@@ -229,14 +231,39 @@ Gemini APIの公式Terms(https://ai.google.dev/gemini-api/terms)より:
 
 ## 7. Output-similarity and quotation controls (BL-032必須要件・本PRでは実装しない)
 
-BL-032の実装時に、次の状態を検出し、拒否またはfallbackする仕組みを必須要件として記録する。
+このcontrolは、決定論的な仕組みで機械的に強制できる要件と、追加のモデルなしでは完全な自動検出を約束できない意味的な残余リスクとを区別して記録する。両者を同列に「すべて自動検出する」と扱わない。
 
-- 原文との長い連続一致(verbatim long match)。
-- 原文見出しの近接翻訳(直訳に近いタイトル生成)。
-- 長い直接引用。
-- lead paragraph(冒頭段落)の近接言い換え。
-- 原記事を読まなくても済んでしまう代替的要約(記事の代替物になり得る詳細さ)。
-- source attributionの欠落。
+### A. 機械的に強制可能なBL-032要件
+
+次は、決定論的な処理(文字数制限、文字列一致検出、必須フィールド検証)で機械的に強制できる要件として記録する。
+
+- rich content(`content:encoded`／Atom content)を`feed_summary`／`limited_feed_analysis`分類のsourceで使用しない。
+- 記事ページへの追加HTTP取得(scraping)を行わない。
+- `feed_summary`／`limited_feed_analysis`のGemini入力を最大1000文字のtransient inputに限定する。
+- 出力field(summary、financial_impact、recommended_actions等)ごとに文字数上限を設ける。
+- publisher由来のdescription／excerptを永続保存しない。
+- `limited_feed_analysis`分類のsourceで、原見出しの日本語翻訳タイトルを公開しない。
+- 原文との長い連続完全一致(verbatim long match)を検出する。
+- source名・original title・original URLがattributionとして出力に含まれることを必須検証する。
+- 上記いずれかへの機械的な違反を検出した場合、`metadata_only`相当の簡易表示へ自動的に降格する。
+
+### B. 自動的な完全検出を約束しない残余リスク
+
+次は、意味内容の評価を要するため、追加のモデルを伴わない決定論的処理だけでは完全な自動検出を約束できない。
+
+- 異言語間の近接翻訳(直訳に近いタイトル・文章生成)。
+- lead paragraph(冒頭段落)の意味的な近接言い換え。
+- 生成物が原記事の代替物になり得るかという意味的評価。
+
+これらの残余リスクは、次によって低減する契約とし、自動検出のみに依存しない。
+
+- bounded input／bounded output(文字数上限、上記A参照)による絶対的な生成量の制限。
+- prompt上で近接翻訳・言い換え・原文代替的な詳細さを明示的に禁止する指示。
+- 原題・出典・原記事リンクの必須表示(「詳細と正確性は元記事で確認」等の限界注記を含む)。
+- 生成内容が原文を代替するものではない旨の表示。
+- 定期的なspot review(抜き取り確認)による人的な事後チェック。
+- 権利者・読者からの訂正・削除申出窓口(`SECURITY_OPERATIONS.md`参照)。
+- 違反が発見された場合の降格・訂正手順(`SECURITY_OPERATIONS.md`のcontent usage mode downgrade手順、および published-output correction手順)。
 
 具体的な閾値(文字数・類似度スコア等)は、BL-032でテストとともに決定する。本PR(BL-031)では実装しない。
 
@@ -260,7 +287,7 @@ BL-032の実装時に、次の状態を検出し、拒否またはfallbackする
 
 - **checked_at:** 2026-07-30
 - **確認方法:** Google公式のTerms of Serviceアーカイブページで、2026-07-30版が最新版として掲載されていることを確認した。あわせて、repository ownerの通常ブラウザでも、日本向け現行規約ページの表示が2026年版へ切り替わったことを確認した。
-- **一部環境での表示差:** 一部の取得環境(cache・CDNエッジ等)では、確認時点で旧2024年版の表示が一時的に残っていたことを事実として記録する。この表示差は、規約が2026-07-30に発効し、その内容を確認できたという事実を否定するものではない。
+- **一部環境での表示差:** 一部の取得環境では、確認時点で旧2024年版の表示が一時的に残っていたことを事実として記録する。原因は特定していない(cache・CDNエッジ等を含め、断定的な原因は未確認)。この表示差は、規約が2026-07-30に発効し、その内容を確認できたという事実を否定するものではない。
 - **確認した内容:** 新規約は、引き続きrobots.txt等のmachine-readable instructionsに反する自動収集を禁止する条件を含む。一般的なGoogle利用規約のみをもって、AI要約・公開再利用が包括的に許諾されたとは断定しない。
 - **反映:** `google_tag`・`mandiant`の`checked_at`を2026-07-30へ更新し、confidence(medium)・分類(`feed_summary`, conditional)は変更していない。BL-032は、公式Feedのみの利用、記事ページ追加取得の禁止、rich content不使用、machine-readable instructionsの変更をrecheck triggerとする実装を予定する(本PRでは実装しない)。
 - **機密情報:** この確認にAPI key・billing情報等は関係しない。記録した情報はいずれも公開されている規約ページの内容と確認日のみである。

@@ -298,11 +298,14 @@ class Bl007ClosureRecordTest(unittest.TestCase):
         end = rest.find(next_marker)
         return rest if end == -1 else rest[:end]
 
-    def test_status_latest_published_daily_json_reflects_the_2026_07_29_run(self):
+    def test_status_latest_published_daily_json_reflects_the_latest_run(self):
+        # This row tracks whichever ordinary production run is most recent;
+        # it has since advanced past the 2026-07-29 run this test originally
+        # checked, to the 2026-07-30 08:00 JST run recorded by BL-031.
         row = self._section(self.status, "| Latest published daily JSON |", "\n|")
         self.assertIn("today-brief-extractive-v2", row)
-        self.assertIn("2026-07-29 07:58 JST", row)
-        self.assertIn("8記事", row)
+        self.assertIn("2026-07-30 08:00 JST", row)
+        self.assertIn("9記事", row)
 
     def test_bl007_distinguishes_its_own_work_from_the_scheduled_run(self):
         bl007 = self._section(self.backlog, "## BL-007")

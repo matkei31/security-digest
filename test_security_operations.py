@@ -232,7 +232,9 @@ class SecurityOperationsContractTest(unittest.TestCase):
         self.assertIn("separate decisions", compact)
         self.assertIn("own explicit trigger and", compact)
         self.assertIn("`RSS_FEEDS`/`build_footer_sources()`", compact)
-        self.assertIn("Do not call the source's live feed", compact)
+        self.assertIn(
+            "Do not run production, the Gemini API, or routine automated collection", compact
+        )
         self.assertIn("normal branch/PR/test/review path", compact)
         self.assertIn("route it through section 7", suspension)
         self.assertIn(
@@ -486,7 +488,7 @@ class Bl031SecurityOperationsReconciliationTest(unittest.TestCase):
     def test_version_and_status_are_11_draft(self):
         self.assertIn("**Version:** 1.1", self.operations)
         self.assertIn("**Status:** Draft", self.operations)
-        self.assertIn("**As of:** 2026-07-29", self.operations)
+        self.assertIn("**As of:** 2026-07-30", self.operations)
 
     def test_correction_section_no_longer_lists_translate_cache_as_published_asset(self):
         correction = self.section(
@@ -516,6 +518,28 @@ class Bl031SecurityOperationsReconciliationTest(unittest.TestCase):
         self.assertIn("Gemini", approved)
         self.assertIn("Paid", approved)
         self.assertIn("Unpaid", approved)
+
+    def test_verification_step_allows_readonly_official_page_check_not_blanket_ban(self):
+        correction = self.section(
+            "## 7. Published-output correction, withdrawal, and regeneration",
+            "## 8. Repository-external artifact handling",
+        )
+        suspension = correction.split("### Source suspension", 1)[1].split(
+            "### Content usage mode downgrade", 1
+        )[0]
+        downgrade = correction.split("### Content usage mode downgrade", 1)[1].split(
+            "### Validation", 1
+        )[0]
+        for section_name, section_text in (("suspension", suspension), ("downgrade", downgrade)):
+            compact = compact_whitespace(section_text)
+            with self.subTest(section=section_name):
+                self.assertIn("Do not run production, the Gemini API, or routine automated collection", compact)
+                self.assertIn("do not scrape article bodies or perform bulk retrieval", compact)
+                self.assertIn("is permitted as an approved investigation step", compact)
+                self.assertIn("record the date checked, the official URL, and what was confirmed", compact)
+                self.assertIn("do not make re-checking the source a precondition", compact)
+                # The old blanket "never call live feed/API/robots.txt" ban is gone.
+                self.assertNotIn("Do not call the source's live feed, API, or robots.txt", compact)
 
     def test_gemini_owner_verification_is_completed_as_paid_verified(self):
         approved = self.section(

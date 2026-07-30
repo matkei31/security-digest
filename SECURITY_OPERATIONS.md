@@ -2,7 +2,7 @@
 
 - **Version:** 1.1
 - **Status:** Draft
-- **As of:** 2026-07-29
+- **As of:** 2026-07-30
 
 ## Scope
 
@@ -312,9 +312,14 @@ compromise, not source-terms review):
    its past output.
 5. Confirm the source is excluded from `RSS_FEEDS`/`build_footer_sources()` (via the
    `enabled` filter) and, for a JSON-API source, from its non-RSS collection path.
-6. Do not call the source's live feed, API, or robots.txt to verify the suspension; rely on the
-   already-recorded official information and read-only repository verification (tests, `enabled`
-   state) instead.
+6. Do not run production, the Gemini API, or routine automated collection against the source to
+   verify the suspension, and do not scrape article bodies or perform bulk retrieval. A
+   read-only check of the source's official terms, license, robots.txt, or official feed-
+   guidance page is permitted as an approved investigation step to confirm the specific
+   condition in step 1 — record the date checked, the official URL, and what was confirmed
+   alongside the already-recorded official information and read-only repository verification
+   (tests, `enabled` state). If the trigger is a rightsholder correction/removal/stop request,
+   do not make re-checking the source a precondition of responding to it.
 7. Record the suspension in the same governance documents used for other tickets (BACKLOG.md,
    STATUS.md; DECISIONS.md only if the user separately accepts a Stable Decision), following the
    normal branch/PR/test/review path — not as a direct public hotfix under section 4 unless its
@@ -356,9 +361,14 @@ identified.
    side effect of a mode downgrade; a takedown or correction request for already-published
    articles is handled separately through section 7, following the same principle as the
    source-suspension procedure above.
-6. Do not call the source's live feed, API, or robots.txt to verify the downgrade trigger; rely
-   on the already-recorded official information, the reported trigger, and read-only repository
-   verification instead.
+6. Do not run production, the Gemini API, or routine automated collection against the source to
+   verify the downgrade trigger, and do not scrape article bodies or perform bulk retrieval. A
+   read-only check of the source's official terms, license, robots.txt, or official feed-
+   guidance page is permitted as an approved investigation step to confirm the specific trigger
+   in step 1 — record the date checked, the official URL, and what was confirmed alongside the
+   already-recorded official information, the reported trigger, and read-only repository
+   verification. If the trigger is a rightsholder correction/removal/stop request, do not make
+   re-checking the source a precondition of responding to it.
 7. Record the downgrade through the normal branch/PR/test/review path (BACKLOG.md, STATUS.md;
    DECISIONS.md only if the user separately accepts a Stable Decision) — not as a direct public
    hotfix under section 4 unless its emergency conditions are independently met.

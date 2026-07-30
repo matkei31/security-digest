@@ -281,6 +281,23 @@ class SourceUsagePolicyTest(unittest.TestCase):
             recheck,
         )
         self.assertNotIn("2026-07-30以降、Google Terms(新規約発効後)の公式再確認", recheck)
+        # The display-discrepancy note must not assert an unconfirmed cause.
+        self.assertIn("原因は特定していない", recheck)
+        self.assertNotIn("一部の取得環境(cache・CDNエッジ等)では", recheck)
+
+    def test_mandiant_and_google_tag_recheck_triggers_are_specific(self):
+        mandiant = self.rows_by_id["mandiant"]
+        google_tag = self.rows_by_id["google_tag"]
+        for row, source_specific in (
+            (mandiant, "Google Cloud Threat Intelligence固有の利用条件の変更"),
+            (google_tag, "Google Security Blog/Blogger固有の利用条件の変更"),
+        ):
+            trigger = row["recheck_trigger"]
+            self.assertIn("Google Terms(2026-07-30発効版)のさらなる改定", trigger)
+            self.assertIn("公式Feed URL／Feed経路の変更", trigger)
+            self.assertIn(source_specific, trigger)
+            self.assertIn("robots.txt等machine-readable instructionsの変更", trigger)
+            self.assertIn("公式RSS案内の変更・終了", trigger)
 
     def test_google_terms_recheck_moved_to_confirmed_in_unknowns_section(self):
         unknowns = self.policy.split("## 9. Unknowns and owner verification", 1)[1].split(
@@ -351,17 +368,25 @@ class SourceUsagePolicyTest(unittest.TestCase):
         )
         self.assertNotIn("利用が許可されていることを確認した", modes)
 
-    def test_metadata_only_does_not_prohibit_human_browsing(self):
+    def test_metadata_only_allows_metadata_fetch_and_does_not_prohibit_human_browsing(self):
         modes = self.policy.split("## 3. Content usage modes", 1)[1].split(
             "## 4. Source-by-source audit matrix", 1
         )[0]
+        # allow_network_fetch=true for metadata_only sources (min-metadata
+        # fetch continues); the definition must not contradict that by
+        # claiming automated fetch itself is prohibited.
         self.assertIn(
-            "「利用を禁止された」区分ではなく", modes
+            "最小メタデータの取得・リンク掲載は継続する", modes
         )
         self.assertIn(
-            "人によるページ閲覧、当該source自体の独自報道・論評を禁止する趣旨ではない",
+            "自動処理を完全に行わない区分ではなく", modes
+        )
+        self.assertIn(
+            "人によるページ閲覧や当該source自体の独自の報道・論評を禁止する趣旨でもない",
             modes,
         )
+        self.assertIn("Cisco Talosの残余リスク", modes)
+        self.assertIn("`disabled_legal_review`への降格を含めて再評価する", modes)
         self.assertIn("Today's Brief", modes)
         self.assertIn("未判定", modes)
         self.assertIn("AI処理の失敗", modes)
@@ -459,8 +484,41 @@ class SourceUsagePolicyTest(unittest.TestCase):
         controls = self.policy.split(
             "## 7. Output-similarity and quotation controls", 1
         )[1].split("## 8. Recheck triggers", 1)[0]
-        self.assertIn("BL-032の実装時に", controls)
         self.assertIn("本PR(BL-031)では実装しない", controls)
+        self.assertIn("具体的な閾値", controls)
+
+    def test_output_similarity_controls_distinguish_mechanical_from_residual_risk(self):
+        controls = self.policy.split(
+            "## 7. Output-similarity and quotation controls", 1
+        )[1].split("## 8. Recheck triggers", 1)[0]
+        self.assertIn("### A. 機械的に強制可能なBL-032要件", controls)
+        self.assertIn("### B. 自動的な完全検出を約束しない残余リスク", controls)
+        mechanical = controls.split("### A. 機械的に強制可能なBL-032要件", 1)[1].split(
+            "### B. 自動的な完全検出を約束しない残余リスク", 1
+        )[0]
+        residual = controls.split("### B. 自動的な完全検出を約束しない残余リスク", 1)[1]
+        # Mechanically enforceable: deterministic, field/length/string checks.
+        self.assertIn("rich content", mechanical)
+        self.assertIn("記事ページへの追加HTTP取得", mechanical)
+        self.assertIn("最大1000文字", mechanical)
+        self.assertIn("文字数上限", mechanical)
+        self.assertIn("永続保存しない", mechanical)
+        self.assertIn("limited_feed_analysis", mechanical)
+        self.assertIn("日本語翻訳タイトルを公開しない", mechanical)
+        self.assertIn("長い連続完全一致", mechanical)
+        self.assertIn("attributionとして出力に含まれることを必須検証する", mechanical)
+        self.assertIn("metadata_only`相当の簡易表示へ自動的に降格する", mechanical)
+        # Residual: semantic evaluation that isn't fully automatable.
+        self.assertIn("近接翻訳", residual)
+        self.assertIn("lead paragraph", residual)
+        self.assertIn("意味的評価", residual)
+        self.assertIn("自動検出のみに依存しない", residual)
+        self.assertIn("spot review", residual)
+        self.assertIn("訂正・削除申出窓口", residual)
+        self.assertIn("降格・訂正手順", residual)
+        # The doc explicitly disclaims full automatic detection (quoted and
+        # negated), rather than asserting it as a capability.
+        self.assertIn("と扱わない", controls)
 
     def test_relationship_section_defers_enforcement_to_bl032(self):
         relationship = self.policy.split("## 10. Relationship to BL-032 and BL-009", 1)[1]
