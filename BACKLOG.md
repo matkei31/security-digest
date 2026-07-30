@@ -747,7 +747,7 @@
   3. `metadata_only`分類のsourceは、原題・取得元・公開日時・original URLという最小メタデータの取得・保存・リンク掲載のみを行い、Geminiへの送信、AI評価(importance／urgency／financial_impact／recommended_actions等の生成)、AI翻訳(`title_ja`生成を含む)、publisher由来description／excerptの保存のいずれも行わない。
   4. `feed_summary`／`limited_feed_analysis`分類のsourceは、5章のGemini `paid_verified` gateを実装上も強制し、`gemini_data_use_status`が`unpaid`または`unknown`の場合は自動的に`metadata_only`相当の挙動へfallbackする。
   5. `feed_summary`／`limited_feed_analysis`分類のGemini description inputは最大1000文字・transient(永続保存しない)とする契約を実装・テストする。
-  6. 全17 sourceについて、`content:encoded`／Atom contentなどrich contentを使用しないことを、source別に機械的に強制する(現行の共通rich content処理自体は本Ticketで変更しない)。
+  6. BL-032の実装で、[SD-002](DECISIONS.md#sd-002--use-feed-native-rich-content-without-additional-article-http-requests)に基づく現行の共通rich-content利用(`content:encoded`／Atom content等をfeed-native richとしてGemini入力へ用いる処理)を変更または無効化し、全17 sourceについてrich contentがGemini入力・保存・公開のいずれにも使用されないことを機械的に保証する。具体的な実装方式(共通処理の削除、無効化、またはsource-policyによる迂回／gateの追加等のいずれか)は、本PR(documentation-only)では決定・実装せず、BL-032の実装PRでコードとテストとともに決定する。
   7. 記事ページへの追加HTTP取得(scraping)を、いずれの分類でも行わない。
   8. `limited_feed_analysis`分類のsourceでは、原見出しの日本語翻訳タイトル(直訳に近いタイトル生成)を公開しない。
   9. output field(summary、financial_impact、recommended_actions等)ごとの文字数上限、原文との長い連続完全一致(verbatim long match)検出、機械的な違反を検出した場合の`metadata_only`相当表示への自動fallbackを実装する。
