@@ -1,8 +1,8 @@
 # Monomi Digest Security Operations
 
 - **Version:** 1.1
-- **Status:** Draft
-- **As of:** 2026-07-30
+- **Status:** Approved
+- **As of:** 2026-07-31
 
 ## Scope
 
@@ -487,7 +487,7 @@ The user approved the following Version 1.0 decisions:
    incidents, secret rotation, and published-output correction or withdrawal to this runbook;
    do not change existing operation-specific approval boundaries.
 
-Version 1.1 (Draft) adds:
+Version 1.1 adds:
 
 7. **Translation-cache removal:** the "Translation cache" correction subsection is removed; it
    no longer applies after BL-030 deleted the unofficial translation endpoint and
@@ -517,9 +517,10 @@ Version 1.1 (Draft) adds:
    cancelled, the Project changes, or the API key migrates to a different Project, this
    verification must be repeated before continuing to rely on `paid_verified`.
 10. **BL-031 audit boundary:** the read-only official-terms audit recorded in
-    [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1 does not itself change runtime
-    behavior beyond the Dark Reading suspension it also records; BL-032 remains the separate,
-    later-approved implementation of any production content-usage-mode enforcement.
+    [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Approved 0.1 does not itself change runtime
+    behavior beyond the Dark Reading suspension it also records; [BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)
+    (registered, 要件定義済み／未着手) remains the separate, later-approved implementation of any
+    production content-usage-mode enforcement.
 11. **`limited_feed_analysis` content usage mode:** a new fifth content usage mode is recorded
     for `the_hacker_news` and `krebs_on_security` — an explicit, bounded risk acceptance, not a
     determination that their terms permit reuse. A terms/machine-readable-instruction/feed-path
@@ -543,15 +544,25 @@ review and Version update make no runtime, workflow, schema, prompt, model, vali
 generated-output, or production change. [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md)
 Version 1.1 records the documentation completion of GAP-006, GAP-008, GAP-013, and GAP-014.
 
-**Version 1.1 is a Draft, not an approved maintenance update.** It records the removal of the
-translation-cache correction step (BL-030) and adds the source-suspension procedure, the
-Gemini Paid/Unpaid Services owner-verification boundary (including its 2026-07-29 completion),
-the `limited_feed_analysis` content-usage-mode downgrade procedure, and the BL-031/BL-032
-audit-versus-enforcement boundary described above. It makes no runtime, workflow, schema,
-prompt, model, validation, generated-output, or production change; `source_definitions.json`'s
-`enabled` field for CrowdStrike, Cloudflare, and Dark Reading was changed by BL-030/BL-031
-themselves, not by this document. This Version remains Draft until the user reviews and
-accepts it.
+**Version 1.1 is an Approved maintenance update, recorded by
+[SD-030](DECISIONS.md#sd-030--approve-source-usage-policy-version-01-and-defer-runtime-enforcement-to-bl-032).**
+It records the removal of the translation-cache correction step (BL-030) and adds the
+source-suspension procedure, the Gemini Paid/Unpaid Services owner-verification boundary
+(including its 2026-07-29 completion), the `limited_feed_analysis` content-usage-mode downgrade
+procedure, and the BL-031/BL-032 audit-versus-enforcement boundary described above. It makes no
+runtime, workflow, schema, prompt, model, validation, generated-output, or production change;
+`source_definitions.json`'s `enabled` field for CrowdStrike, Cloudflare, and Dark Reading was
+changed by BL-030/BL-031 themselves, not by this document. [PR #67](https://github.com/matkei31/security-digest/pull/67)
+accepted head `897fc9db365e890318fc694a7fbf9cd8eab65ae1` received a final ChatGPT independent
+review with no remaining implementation or documentation blockers; [Pull Request CI run
+30557479373](https://github.com/matkei31/security-digest/actions/runs/30557479373) succeeded;
+full unittest was 1391 tests OK; unresolved review threads were 0. The user approved BL-031's
+acceptance, Ready status, and a regular merge-commit merge (merge commit
+`61feb679fad6bd2252c58cd8acb4696294032629`), and on 2026-07-31 approved this Version's own
+Approved status. **This approval makes no additional runtime, workflow, schema, prompt, model,
+validation, generated-output, or production change beyond what BL-030/BL-031 already made; it
+is not a pre-approval of BL-032's runtime enforcement implementation, of production execution,
+of `workflow_dispatch`, or of any GitHub-side setting change.**
 
 Review this runbook when an incident or architecture change exposes a missing boundary. A
 mechanical annual update is not required.

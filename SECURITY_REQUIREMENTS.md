@@ -1,16 +1,16 @@
 # Monomi Digest Security Requirements
 
 - **Version:** 1.5
-- **Status:** Draft
-- **As of:** 2026-07-30
+- **Status:** Approved
+- **As of:** 2026-07-31
 - **Scope:** Current static GitHub Pages site and its repository-backed generation pipeline
 - **Out of scope:** Runtime and platform hardening beyond the accepted BL-025 loader-boundary change, the accepted BL-026 workflow hardening (Action pinning, GitHub Actions Dependabot, and production concurrency), the accepted BL-027 Action major-version upgrade (`actions/checkout` v7.0.1, `actions/setup-python` v7.0.0), and the production enforcement of per-source content usage modes (deferred to BL-032, not implemented by this Version)
 
-Version 1.4 is the most recent **Approved** architecture security-requirements baseline, not
-the GitHub vulnerability-reporting policy normally placed in a `SECURITY.md` file. Version 1.5
-(this Version) is a **Draft** maintenance update layered on top of that Approved Version 1.4
-baseline; until a future version records the user's approval, only Version 1.4 is approved
-policy, and Version 1.5's new or changed material (see below) is not. Version 1.4 retains
+Version 1.5 (this Version) is the most recent **Approved** architecture security-requirements
+baseline, not the GitHub vulnerability-reporting policy normally placed in a `SECURITY.md` file.
+It is an **Approved** maintenance update layered on top of the previously Approved Version 1.4
+baseline, with its own approval recorded by [SD-030](DECISIONS.md#sd-030--approve-source-usage-policy-version-01-and-defer-runtime-enforcement-to-bl-032).
+Version 1.4 retains
 requirements, repository evidence, register entries, proportional exclusions, owner-check
 results, and approved roadmap decisions; records the approved Security Operations
 documentation completed by BL-024; records the accepted BL-025 collection-URL validator;
@@ -24,14 +24,16 @@ rather than the originally planned next ordinary schedule run. BL-027 is limited
 version upgrade and its one-time production validation; it does not implement any broader
 runtime or platform hardening, does not establish `workflow_dispatch` as a standing validation
 method for future Action changes, and no GitHub-side setting change was made as part of it.
-Version 1.5 is a Draft maintenance update. It records the completed BL-030 (unofficial
+Version 1.5 is an Approved maintenance update. It records the completed BL-030 (unofficial
 translation-endpoint removal, `docs/translate_cache.json` deletion, and the CrowdStrike/
-Cloudflare temporary suspension) and the in-progress BL-031 (a read-only official-terms audit
-of all 17 sources, recorded in [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1, and
-the resulting Dark Reading temporary suspension). It does not record production enforcement of
-any per-source content usage mode; that implementation is deferred to BL-032. This Version
-remains a Draft pending user review and is not approved policy until a future version records
-that approval.
+Cloudflare temporary suspension) and the completed BL-031 (a read-only official-terms audit
+of all 17 sources, recorded in [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Approved 0.1,
+and the resulting Dark Reading temporary suspension). It does not record production enforcement
+of any per-source content usage mode; that implementation is deferred to the registered
+[BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement) ticket (要件定義済み／未着手).
+This Version's approval is the audit-and-policy approval described above; it is not a
+pre-approval of BL-032's runtime enforcement, of production execution, of `workflow_dispatch`,
+or of any GitHub-side setting change.
 
 Fable 5 reviewed Draft 0.1 as proportional to the current architecture and suitable for
 continued review, with no Critical or High findings. Draft 0.2 incorporated the user's
@@ -107,7 +109,7 @@ The current repository-backed system comprises:
   served via `docs/CNAME`, with `https://www.monomidigest.com/` and the prior
   `matkei31.github.io/security-digest/` URL both redirecting to the apex;
 - a documented content-usage policy for external sources
-  ([SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1), which this Version records as
+  ([SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Approved 0.1), which this Version records as
   audit-only; per-source enforcement in production code is deferred to BL-032.
 
 No component for forms, authentication, sessions, a database, payments, inbound webhooks, or
@@ -188,7 +190,7 @@ screenshots only under the separate artifact-handling requirements below.
 | Repository-external evaluation artifacts | Review-sensitive; may include raw request/response data | Prohibited unless separately approved for the repository | Store outside the repository, exclude credentials and local paths from committed documents, and define access/retention per evaluation |
 | Public source URLs | Public configuration/provenance | Allowed | May be published after URL validation where rendered as a link |
 | Live DNS and domain ownership (`monomidigest.com`) | Administrative security asset | `docs/CNAME` is the repository-side source of truth | XServer registrar account, DNS records, and GitHub Pages Custom domain/Enforce HTTPS settings are outside current repository evidence; re-evaluate before any further DNS or Pages change (see GAP-011) |
-| Source-terms audit and content-usage policy | Trusted configuration / public | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1 | Public and versioned; records per-source official terms, confidence, and unresolved issues; does not itself enforce production behavior (see GAP-016) |
+| Source-terms audit and content-usage policy | Trusted configuration / public | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Approved 0.1 | Public and versioned; records per-source official terms, confidence, and unresolved issues; does not itself enforce production behavior (see GAP-016) |
 
 ## 5. Trust boundaries
 
@@ -365,7 +367,7 @@ GAP-015 records the hardening candidate. No response-reader implementation is ch
 
 | ID | Requirement | Rationale | Current state | Evidence | Gap / exception | Re-evaluation trigger |
 |---|---|---|---|---|---|---|
-| SR-044 | Audit each configured source's official terms, license, or FAQ, and record a proposed content usage mode (`structured_open`, `feed_summary`, `limited_feed_analysis`, `metadata_only`, `disabled_legal_review`), confidence, unresolved issues, and a recheck trigger before assuming broader reuse than description/metadata is permitted. | Feed availability does not by itself authorize AI processing, public summarization, or content storage. | Partially met | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1 records the audit for all 17 configured sources, including official evidence URLs/types, confidence, and recheck triggers. `limited_feed_analysis` (`the_hacker_news`, `krebs_on_security`) is an explicit, bounded risk acceptance, not a determination that reuse is permitted. | This is an audit and policy record only; `source_definitions.json` has no `content_usage_mode` field and `fetch.py` does not enforce any mode in production. See GAP-016; enforcement is deferred to BL-032. | Any source-terms, license, or FAQ change; addition of a new source; BL-032 implementation. |
+| SR-044 | Audit each configured source's official terms, license, or FAQ, and record a proposed content usage mode (`structured_open`, `feed_summary`, `limited_feed_analysis`, `metadata_only`, `disabled_legal_review`), confidence, unresolved issues, and a recheck trigger before assuming broader reuse than description/metadata is permitted. | Feed availability does not by itself authorize AI processing, public summarization, or content storage. | Partially met | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Approved 0.1 records the audit for all 17 configured sources, including official evidence URLs/types, confidence, and recheck triggers. `limited_feed_analysis` (`the_hacker_news`, `krebs_on_security`) is an explicit, bounded risk acceptance, not a determination that reuse is permitted. | This is an audit and policy record only; `source_definitions.json` has no `content_usage_mode` field and `fetch.py` does not enforce any mode in production. See GAP-016; enforcement is deferred to BL-032. | Any source-terms, license, or FAQ change; addition of a new source; BL-032 implementation. |
 | SR-045 | Do not send publisher-derived article content to the Gemini API for AI processing or public summarization unless the Gemini API's data-use terms for the request path (`paid_verified` Cloud Billing-linked Project) have been owner-confirmed; treat `unpaid` or `unknown` status as requiring metadata-only handling for sources whose own terms do not clearly authorize AI processing. | Google's Gemini API terms treat Unpaid Services differently from Paid Services with respect to using submitted content for product/model improvement. | Met | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) section 5 (Gemini data-use gate) records `gemini_data_use_status: paid_verified`, owner-confirmed 2026-07-29 via the Google AI Studio API Keys screen (the `security-digest` Google Cloud Project has active Cloud Billing, Tier 1 pay-as-you-go); no API key, Project ID, billing account ID, amount, or screenshot is recorded. | The Gemini-side data-use gate condition is satisfied. Per-source production enforcement of content usage modes remains deferred to BL-032 (see SR-044, GAP-016), and each source's own terms conditions (e.g. `google_tag`/`mandiant`'s classification under the Google Terms version confirmed effective 2026-07-30, see [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) section 8) are unaffected by this confirmation. See GAP-017. | Owner confirms a billing/Project/API-key change; Gemini API terms change. |
 | SR-046 | Track each disabled source's re-enablement condition (`activation_condition`) explicitly, including any robots.txt, User-Agent-scope, or written-permission condition, and do not re-enable a source until its recorded condition is satisfied. | Ad hoc re-enablement without re-checking terms would undo the audit's purpose. | Partially met | [`source_definitions.json`](source_definitions.json): non-empty `activation_condition` for `cisa`, `crowdstrike`, `cloudflare`, and `dark_reading`; [`test_source_definitions.py`](test_source_definitions.py) | `nist_nvd` is disabled but its `activation_condition` field is an empty string; only its `notes` field records why standalone collection is off (a historical, pre-BL-030 note), not a re-enablement condition in the `activation_condition` field this requirement tracks. This Version does not add a `nist_nvd.activation_condition` value, since doing so would change a `source_definitions.json` field for a source other than Dark Reading, which is outside this Version's scope. | BL-032, or a future ticket that reconsiders standalone `nist_nvd` collection and records its `activation_condition`. |
 
@@ -382,7 +384,7 @@ GAP-015 records the hardening candidate. No response-reader implementation is ch
 | Logging and artifacts | SR-030–SR-033 | Bounded feed errors, no raw response persistence, documented external-artifact handling, and owner-verified default platform retention | [`fetch.py`](fetch.py), related logging tests, [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md), section 13 | Partially met | Met 1 / Partial 3 / Not met 0 / Unverified 0 |
 | Availability and recovery | SR-034–SR-037 | Bounded timeouts/retries, explicit statuses, atomic writes, repository history, and offline regeneration; response-size limits remain open | [`fetch.py`](fetch.py), [`daily_json.py`](daily_json.py), related tests | Partially met | Met 2 / Partial 2 / Not met 0 / Unverified 0 |
 | Change and review control | SR-038–SR-043 | Dedicated branches/PRs, full unittest and diff CI, scope review, separate production authorization, contract-specific tests, and documented published-output correction | [`AGENTS.md`](AGENTS.md), [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md), [`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml), [`test_pr_ci_workflow.py`](test_pr_ci_workflow.py) | Partially met | Met 5 / Partial 1 / Not met 0 / Unverified 0 |
-| Source content-usage policy and AI provider data-use boundary | SR-044–SR-046 | Read-only official-terms audit of all 17 sources with proposed content usage modes ([SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1); owner-confirmed Gemini Paid Services gate (`paid_verified`); documented per-source `activation_condition` for disabled sources, except `nist_nvd` (empty `activation_condition`) | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md), [`source_definitions.json`](source_definitions.json), [`test_source_definitions.py`](test_source_definitions.py) | Partially met | Met 1 / Partial 2 / Not met 0 / Unverified 0 |
+| Source content-usage policy and AI provider data-use boundary | SR-044–SR-046 | Read-only official-terms audit of all 17 sources with proposed content usage modes ([SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Approved 0.1); owner-confirmed Gemini Paid Services gate (`paid_verified`); documented per-source `activation_condition` for disabled sources, except `nist_nvd` (empty `activation_condition`) | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md), [`source_definitions.json`](source_definitions.json), [`test_source_definitions.py`](test_source_definitions.py) | Partially met | Met 1 / Partial 2 / Not met 0 / Unverified 0 |
 | Forms, authentication, database, and payments | Re-evaluation triggers only | No such component exists in the current repository | [`AGENTS.md`](AGENTS.md), current static generator and HTML | Not applicable now | No current SR count |
 | GitHub/Pages/DNS settings outside the repository | SR-019, SR-024, SR-026, SR-033, SR-037 | Version 1.0 records the non-sensitive repository-owner settings verified in section 13; owner-specific delivery and rotation evidence remain limited | Repository-owner read-only checklist in section 13 | Partially met | Cross-cutting owner checks; not counted again in domain totals |
 
@@ -412,8 +414,8 @@ it does not mean the underlying control is implemented.
 | GAP-013 | Policy decision | Completed by documentation | SR-020, SR-033 | The Version 1.0 baseline lacked a compact security-incident/credential-leakage response procedure. | Containment and evidence preservation may be improvised if the documented procedure is not followed. | A minimal procedure is proportionate. | [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.0 defines assessment, containment, credential paths, sanitized evidence, closure, and the limited emergency exception. | [BL-024](BACKLOG.md#bl-024--最小security-operationsと公開済み生成物の訂正手順を定義する); [SD-025](DECISIONS.md#sd-025--approve-security-operations-version-10-and-the-minimal-incident-and-correction-policy) | Completed by documentation; apply immediately after an incident. |
 | GAP-014 | Security gap | Completed by documentation | SR-043 | The Version 1.0 baseline lacked a published-output correction, withdrawal, regeneration, and repository-history procedure. | A major factual error or unsupported output can harm readers and trust. | A discovery-time procedure is proportionate; 24/7 monitoring is not required. | [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.0 defines HTML/daily-JSON/history treatment, withdrawal priority, offline regeneration, reason/scope evidence, SD-014 alignment, and the first-use schema/UI boundary. | [BL-024](BACKLOG.md#bl-024--最小security-operationsと公開済み生成物の訂正手順を定義する); [SD-025](DECISIONS.md#sd-025--approve-security-operations-version-10-and-the-minimal-incident-and-correction-policy) | Completed by documentation; apply if an issue is confirmed and reevaluate the contract on recurrence. |
 | GAP-015 | Hardening candidate | Deferred until trigger | SR-034 | External responses have no common network byte cap before parsing. | Oversized responses can increase memory use or delay generation. | The audit records that no incident was found; endpoint-specific limits need separate design. | Defer until a new source/provider, oversized response, or memory/time failure. | Not yet | New source/provider, oversized response, or observed memory/time failure. |
-| GAP-016 | Security gap | Remains open for later prioritization | SR-044 | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1 assigns a content usage mode (including the new `limited_feed_analysis` risk-acceptance mode) to each of the 17 sources, but `source_definitions.json` has no `content_usage_mode` (or equivalent) field, and `fetch.py`'s common `content:encoded`/Atom-content selection, Gemini input, storage, and public-summary paths do not enforce any per-source mode. | A `feed_summary`, `limited_feed_analysis`, or `metadata_only` source is currently processed the same as a `structured_open` source in production code; the audit's proposed restrictions are not technically enforced. | The Draft 0.1 audit itself is a proportionate first step; enforcement is a larger, separately reviewable implementation. | Keep open until BL-032 implements `content_usage_mode` fields and enforcement in `fetch.py`, with its own tests. Do not treat the BL-031 audit alone as closing this gap. | [BL-032](BACKLOG.md) (candidate; not yet registered as of this Version) | BL-032 implementation; any confirmed production processing of a `feed_summary`/`limited_feed_analysis`/`metadata_only` source beyond its recorded mode. |
-| GAP-017 | Owner verification | Completed owner verification | SR-045 | `gemini_data_use_status` was `unknown`; the repository owner has confirmed, via the Google AI Studio API Keys screen on 2026-07-29, that the `security-digest` Google Cloud Project used for the Gemini API key has active Cloud Billing (Tier 1, pay-as-you-go). | Resolved for the Gemini-side data-use question: submitted content is not subject to Unpaid Services product/model-improvement use for this Project, as owner-verified. | Owner confirmation was proportionate: a non-confidential yes/no on active billing, without recording API keys, billing amounts, account IDs, or screenshots. | Confirmed 2026-07-29: `security-digest` Project, active Cloud Billing, Tier 1 pay-as-you-go. This confirms the Gemini-side condition only; per-source production enforcement of content usage modes and each source's own terms conditions are unaffected and remain governed by SR-044/GAP-016 and [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) respectively. | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) section 5; [BL-032](BACKLOG.md) (candidate) | Billing cancellation, Project change, or API key migration; re-verify if any occurs. |
+| GAP-016 | Security gap | Remains open for later prioritization | SR-044 | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Approved 0.1 assigns a content usage mode (including the new `limited_feed_analysis` risk-acceptance mode) to each of the 17 sources, but `source_definitions.json` has no `content_usage_mode` (or equivalent) field, and `fetch.py`'s common `content:encoded`/Atom-content selection, Gemini input, storage, and public-summary paths do not enforce any per-source mode. | A `feed_summary`, `limited_feed_analysis`, or `metadata_only` source is currently processed the same as a `structured_open` source in production code; the audit's proposed restrictions are not technically enforced. | The Approved 0.1 audit itself is a proportionate first step; enforcement is a larger, separately reviewable implementation. | Keep open until BL-032 implements `content_usage_mode` fields and enforcement in `fetch.py`, with its own tests. Do not treat the BL-031 audit alone as closing this gap. | [BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement) (registered; 要件定義済み／未着手) | BL-032 implementation; any confirmed production processing of a `feed_summary`/`limited_feed_analysis`/`metadata_only` source beyond its recorded mode. |
+| GAP-017 | Owner verification | Completed owner verification | SR-045 | `gemini_data_use_status` was `unknown`; the repository owner has confirmed, via the Google AI Studio API Keys screen on 2026-07-29, that the `security-digest` Google Cloud Project used for the Gemini API key has active Cloud Billing (Tier 1, pay-as-you-go). | Resolved for the Gemini-side data-use question: submitted content is not subject to Unpaid Services product/model-improvement use for this Project, as owner-verified. | Owner confirmation was proportionate: a non-confidential yes/no on active billing, without recording API keys, billing amounts, account IDs, or screenshots. | Confirmed 2026-07-29: `security-digest` Project, active Cloud Billing, Tier 1 pay-as-you-go. This confirms the Gemini-side condition only; per-source production enforcement of content usage modes and each source's own terms conditions are unaffected and remain governed by SR-044/GAP-016 and [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) respectively. | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) section 5; [BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement) (registered) | Billing cancellation, Project change, or API key migration; re-verify if any occurs. |
 
 ## 9. Explicitly non-required controls for the current architecture
 
@@ -493,9 +495,9 @@ Version 1.5 additionally records these new roadmap items from BL-030/BL-031:
   (`enabled: false`) pending confirmation of their documented `activation_condition`, not as a
   final legal determination that they violated terms;
 - record a per-source content usage mode audit for all 17 configured sources in
-  [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1, without implementing production
-  enforcement of any mode (deferred to BL-032, a candidate ticket not yet registered as of this
-  Version);
+  [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Approved 0.1, without implementing production
+  enforcement of any mode (deferred to [BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement),
+  registered as a 要件定義済み／未着手 ticket);
 - require owner confirmation of Gemini API Paid/Unpaid Services status before sending
   publisher-derived content from `feed_summary`-classified sources to Gemini (GAP-017), without
   making that confirmation a condition of this Version's own approval;
@@ -559,20 +561,30 @@ Version 1.5 additionally records these new roadmap items from BL-030/BL-031:
   implementation-agent boundaries. Version 1.2 was the BL-025 maintenance update, Version 1.3
   was the BL-026 maintenance update, and Version 1.4 is the BL-027 maintenance update, all under
   the already-approved SD-024 roadmap; none creates a new Stable Decision.
-- **Version 1.5 is a Draft, not an approved maintenance update.** It records: (1) the
-  user-accepted [BL-030](BACKLOG.md#bl-030--取得元翻訳経路の緊急リスク低減) at
+- **Version 1.5 is an Approved maintenance update, recorded by
+  [SD-030](DECISIONS.md#sd-030--approve-source-usage-policy-version-01-and-defer-runtime-enforcement-to-bl-032).**
+  It records: (1) the user-accepted [BL-030](BACKLOG.md#bl-030--取得元翻訳経路の緊急リスク低減) at
   [PR #66](https://github.com/matkei31/security-digest/pull/66), which removed the unofficial
   translation endpoint and `docs/translate_cache.json` (GAP-012 now `Resolved by BL-030`; see
   [SD-029](DECISIONS.md#sd-029--temporarily-remove-the-unofficial-translation-path-and-suspend-crowdstrike-and-cloudflare-pending-source-terms-review));
-  and (2) the in-progress [BL-031](BACKLOG.md#bl-031--全取得元の公式規約監査とセキュリティ文書整合化)
-  read-only audit of all 17 configured sources against their official terms, recorded in the new
-  [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1 (new SR-044–SR-046, new
+  and (2) the completed [BL-031](BACKLOG.md#bl-031--全取得元の公式規約監査とセキュリティ文書整合化)
+  read-only audit of all 17 configured sources against their official terms, recorded in
+  [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Approved 0.1 (new SR-044–SR-046, new
   GAP-016–GAP-017), together with the resulting temporary suspension of Dark Reading. BL-031
-  does not implement any production enforcement of a content usage mode; that remains a
-  candidate for BL-032. This Version does not itself carry a stable, approved SD entry; it
-  remains Draft until the user reviews and accepts it, at which point a future version will
-  record that approval (as Version 1.0 through 1.4 each did for their own scope) without
-  reopening SD-024, SD-025, SD-028, or SD-029.
+  does not implement any production enforcement of a content usage mode; that remains the scope
+  of the registered [BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement) ticket
+  (要件定義済み／未着手). [PR #67](https://github.com/matkei31/security-digest/pull/67) accepted head
+  `897fc9db365e890318fc694a7fbf9cd8eab65ae1` received a final ChatGPT independent review with no
+  remaining implementation or documentation blockers; [Pull Request CI run
+  30557479373](https://github.com/matkei31/security-digest/actions/runs/30557479373) succeeded;
+  full unittest was 1391 tests OK; unresolved review threads were 0. The user then approved BL-031's
+  acceptance, Ready status, and a regular merge-commit merge (merge commit
+  `61feb679fad6bd2252c58cd8acb4696294032629`), and on 2026-07-31 approved this Version's own
+  Approved status via [SD-030](DECISIONS.md#sd-030--approve-source-usage-policy-version-01-and-defer-runtime-enforcement-to-bl-032),
+  without reopening SD-024, SD-025, SD-028, or SD-029. **This approval covers the audit and policy
+  record described above; it is not a pre-approval of BL-032's runtime enforcement implementation,
+  of production execution, of `workflow_dispatch`, or of any GitHub-side setting change** — those
+  remain subject to their own separate review and acceptance when BL-032 is implemented.
 
 ## 13. Repository-owner verification
 

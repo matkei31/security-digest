@@ -37,7 +37,7 @@ class SecurityOperationsContractTest(unittest.TestCase):
         self.assertTrue(OPERATIONS_PATH.exists())
         self.assertIn("# Monomi Digest Security Operations", self.operations)
         self.assertIn("**Version:** 1.1", self.operations)
-        self.assertIn("**Status:** Draft", self.operations)
+        self.assertIn("**Status:** Approved", self.operations)
         approval = self.section("## 12. Approval and maintenance", "\nReview this runbook")
         for contract in (
             "Critical 0",
@@ -485,10 +485,10 @@ class Bl031SecurityOperationsReconciliationTest(unittest.TestCase):
     def section(self, start, end):
         return self.operations.split(start, 1)[1].split(end, 1)[0]
 
-    def test_version_and_status_are_11_draft(self):
+    def test_version_and_status_are_11_approved(self):
         self.assertIn("**Version:** 1.1", self.operations)
-        self.assertIn("**Status:** Draft", self.operations)
-        self.assertIn("**As of:** 2026-07-30", self.operations)
+        self.assertIn("**Status:** Approved", self.operations)
+        self.assertIn("**As of:** 2026-07-31", self.operations)
 
     def test_correction_section_no_longer_lists_translate_cache_as_published_asset(self):
         correction = self.section(

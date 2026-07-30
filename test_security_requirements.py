@@ -49,7 +49,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertTrue(REQUIREMENTS_PATH.is_file())
         self.assertIn("# Monomi Digest Security Requirements", self.requirements)
         self.assertIn("**Version:** 1.5", self.requirements)
-        self.assertIn("**Status:** Draft", self.requirements)
+        self.assertIn("**Status:** Approved", self.requirements)
         self.assertIn("no Critical or High findings", self.requirements)
         self.assertIn("accepted and modified findings", self.requirements)
         self.assertIn("rejected F-004 consolidation was not applied", self.requirements)
@@ -1096,10 +1096,10 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
             if line.startswith("| ") and not line.startswith("|---"):
                 yield [cell.strip() for cell in line.strip().strip("|").split("|")]
 
-    def test_version_and_status_are_15_draft(self):
+    def test_version_and_status_are_15_approved(self):
         self.assertIn("**Version:** 1.5", self.requirements)
-        self.assertIn("**Status:** Draft", self.requirements)
-        self.assertIn("**As of:** 2026-07-30", self.requirements)
+        self.assertIn("**Status:** Approved", self.requirements)
+        self.assertIn("**As of:** 2026-07-31", self.requirements)
 
     def test_no_current_architecture_mention_of_removed_translation_path(self):
         scope = self._section(
@@ -1190,13 +1190,16 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         )
         self.assertIn("BL-032 implementation", gaps)
 
-    def test_bl031_is_recorded_in_status_active_work(self):
-        self.assertIn(
-            "BL-031",
-            self.status.split("## Active work", 1)[1].split(
-                "## 5. Recently completed work", 1
-            )[0],
-        )
+    def test_bl031_is_recorded_in_status_recently_completed_work(self):
+        active = self.status.split("## Active work", 1)[1].split(
+            "## 5. Recently completed work", 1
+        )[0]
+        self.assertNotIn("BL-031", active)
+        self.assertIn("BL-032", active)
+        recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
+            "## 6. Known issues and limitations", 1
+        )[0]
+        self.assertIn("BL-031", recently_completed)
 
     def test_bl031_gemini_billing_confirmation_removed_from_backlog_residual_work(self):
         bl031 = self.backlog.split("## BL-031", 1)[1].split("\n## ", 1)[0]
@@ -1218,18 +1221,21 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         self.assertIn("Tier 1", bl031)
         self.assertNotRegex(bl031, r"AIza[0-9A-Za-z_-]{20,}")
 
-    def test_bl031_status_active_work_records_paid_verified(self):
-        active = self.status.split("## Active work", 1)[1].split(
-            "## 5. Recently completed work", 1
+    def test_bl031_status_recently_completed_records_paid_verified(self):
+        recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
+            "## 6. Known issues and limitations", 1
         )[0]
-        self.assertIn("paid_verified", active)
-        self.assertIn("2026-07-29", active)
+        bl031 = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-031 ")
+        )
+        self.assertIn("paid_verified", bl031)
+        self.assertIn("2026-07-29", bl031)
         # The Google Terms 2026-07-30 recheck is now completed (not pending).
-        self.assertIn("2026-07-30発効", active)
-        self.assertIn("limited_feed_analysis", active)
+        self.assertIn("2026-07-30発効", bl031)
+        self.assertIn("limited_feed_analysis", bl031)
 
-    def test_status_as_of_and_bl030_run_evidence_are_2026_07_30(self):
-        self.assertIn("## 1. As of\n\n2026-07-30", self.status)
+    def test_status_as_of_and_bl030_run_evidence_are_2026_07_31(self):
+        self.assertIn("## 1. As of\n\n2026-07-31", self.status)
         recently_completed = self.status.split(
             "## 5. Recently completed work", 1
         )[1].split("## 6. Known issues and limitations", 1)[0]
@@ -1264,13 +1270,17 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         self.assertIn("`metadata_only`2", bl031)
         self.assertIn("`disabled_legal_review`4", bl031)
 
-        active = self.status.split("## Active work", 1)[1].split(
-            "## 5. Recently completed work", 1
+        recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
+            "## 6. Known issues and limitations", 1
         )[0]
-        self.assertIn("the_hacker_news", active)
-        self.assertIn("krebs_on_security", active)
-        self.assertIn("microsoft_security", active)
-        self.assertIn("運用上のリスク受容", active)
+        bl031_status = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-031 ")
+        )
+        self.assertIn("limited_feed_analysis", bl031_status)
+        self.assertIn(
+            "structured_open 5／feed_summary 4／limited_feed_analysis 2／metadata_only 2／disabled_legal_review 4",
+            bl031_status,
+        )
 
     def test_bl031_backlog_no_longer_references_old_4_mode_pending_wording(self):
         bl031 = self.backlog.split("## BL-031", 1)[1].split("\n## ", 1)[0]
@@ -1394,21 +1404,25 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
             compact,
         )
 
-    def test_intro_clarifies_version_14_approved_and_version_15_draft(self):
+    def test_intro_clarifies_version_15_is_the_current_approved_baseline(self):
         intro = self._section(
             "# Monomi Digest Security Requirements", "## 1. Purpose and proportionality"
         )
-        self.assertIn("Version 1.4 is the most recent **Approved**", intro)
-        self.assertIn("Version 1.5", intro)
-        self.assertIn("**Draft** maintenance update", intro)
-        self.assertIn("only Version 1.4 is approved", intro)
+        self.assertIn("Version 1.5 (this Version) is the most recent **Approved**", intro)
+        self.assertIn("**Approved** maintenance update", intro)
+        self.assertIn(
+            "SD-030](DECISIONS.md#sd-030--approve-source-usage-policy-version-01-and-defer-runtime-enforcement-to-bl-032)",
+            intro,
+        )
+        self.assertNotIn("only Version 1.4 is approved", intro)
+        self.assertNotIn("**Draft** maintenance update", intro)
 
     def test_bl_and_sd_ids_referenced_are_unique_in_their_documents(self):
         bl_headings = re.findall(r"^## (BL-\d{3})\b", self.backlog, flags=re.MULTILINE)
         self.assertEqual(len(bl_headings), len(set(bl_headings)))
         sd_headings = re.findall(r"^## (SD-\d{3})\b", self.decisions, flags=re.MULTILINE)
         self.assertEqual(len(sd_headings), len(set(sd_headings)))
-        self.assertNotIn("SD-030", self.decisions)
+        self.assertIn("SD-030", sd_headings)
 
     def test_section_11_google_terms_roadmap_item_is_a_completed_record_not_future_tense(self):
         # The 2026-07-30 Google Terms recheck already happened; section 11's
@@ -1433,6 +1447,168 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
                        compact)
         self.assertIn("revision, or on the source-specific recheck triggers recorded in", compact)
         self.assertIn("[SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md)", compact)
+
+
+class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
+    """BL-031's acceptance/merge is recorded as Completed, the three security
+    documents are Approved, SD-030 records the approval/enforcement-deferral
+    boundary without marking SD-002 as already superseded, BL-032 is
+    registered exactly once and not started, and per-source `checked_at`
+    values were not bulk-changed by this approval round.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.requirements = REQUIREMENTS_PATH.read_text(encoding="utf-8")
+        cls.operations = (ROOT / "SECURITY_OPERATIONS.md").read_text(encoding="utf-8")
+        cls.backlog = (ROOT / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (ROOT / "STATUS.md").read_text(encoding="utf-8")
+        cls.decisions = (ROOT / "DECISIONS.md").read_text(encoding="utf-8")
+        cls.policy = (ROOT / "SOURCE_USAGE_POLICY.md").read_text(encoding="utf-8")
+        cls.source_definitions = (ROOT / "source_definitions.json").read_text(encoding="utf-8")
+        cls.fetch_source = (ROOT / "fetch.py").read_text(encoding="utf-8")
+
+    def test_three_documents_are_approved_as_of_20260731(self):
+        for doc, version_marker in (
+            (self.policy, "**Version:** 0.1"),
+            (self.requirements, "**Version:** 1.5"),
+            (self.operations, "**Version:** 1.1"),
+        ):
+            with self.subTest(version_marker=version_marker):
+                self.assertIn(version_marker, doc)
+                self.assertIn("**Status:** Approved", doc)
+                self.assertIn("**As of:** 2026-07-31", doc)
+
+    def test_bl031_backlog_status_is_completed(self):
+        bl031 = self.backlog.split("## BL-031", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("- **状態:** 完了", bl031)
+        self.assertNotIn("監査・文書Draft PR／レビュー待ち", bl031)
+        self.assertNotIn("未受入", bl031)
+        self.assertNotIn("まだCompletedではない", bl031)
+
+    def test_bl031_backlog_acceptance_evidence_is_recorded(self):
+        bl031 = self.backlog.split("## BL-031", 1)[1].split("\n## ", 1)[0]
+        acceptance = bl031.split("**ユーザー受入証跡:**", 1)[1].split("\n- **残作業:**", 1)[0]
+        self.assertIn("PR #67", acceptance)
+        self.assertIn("897fc9db365e890318fc694a7fbf9cd8eab65ae1", acceptance)
+        self.assertIn("61feb679fad6bd2252c58cd8acb4696294032629", acceptance)
+        self.assertIn("30557479373", acceptance)
+        self.assertIn("1391 tests", acceptance)
+        self.assertIn("ok進もう", acceptance)
+
+    def test_bl032_is_registered_exactly_once_and_not_started(self):
+        bl032_headings = re.findall(r"^## (BL-032)\b", self.backlog, flags=re.MULTILINE)
+        self.assertEqual(len(bl032_headings), 1)
+        bl032 = self.backlog.split("## BL-032", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("- **状態:** 要件定義済み／未着手", bl032)
+        self.assertIn("取得元別content usage policy enforcement", bl032)
+
+    def test_sd030_is_unique_and_records_approval_deferral_boundary(self):
+        sd_headings = re.findall(r"^## (SD-030)\b", self.decisions, flags=re.MULTILINE)
+        self.assertEqual(len(sd_headings), 1)
+        sd030 = self.decisions.split("## SD-030", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("Policy approved; runtime enforcement deferred", sd030)
+        self.assertIn("BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)", sd030)
+        self.assertIn("this decision itself does not implement any enforcement", sd030)
+
+    def test_sd030_does_not_mark_sd002_as_implemented_superseded(self):
+        sd030 = self.decisions.split("## SD-030", 1)[1].split("\n## ", 1)[0]
+        supersedes = sd030.split("- **Supersedes:**", 1)[1]
+        self.assertNotIn("SD-002", supersedes)
+        sd002 = self.decisions.split("## SD-002", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("- **Status:** Accepted / Implemented", sd002)
+
+    def test_source_usage_policy_checked_at_dates_are_not_bulk_changed(self):
+        checked_at_values = set(re.findall(r"\| (2026-07-\d\d) \|", self.policy))
+        self.assertTrue(checked_at_values)
+        self.assertNotIn("2026-07-31", checked_at_values)
+        self.assertEqual(checked_at_values, {"2026-07-29", "2026-07-30"})
+
+    def test_bl032_registration_pr_does_not_touch_production_enforcement_files(self):
+        # The registration PR is documentation-only: source_definitions.json
+        # must not yet carry a per-source content-usage-mode field, and
+        # fetch.py must not yet reference one.
+        self.assertNotIn("content_usage_mode", self.source_definitions)
+        self.assertNotIn("content_usage_mode", self.fetch_source)
+
+    def test_bl032_completion_condition_6_requires_changing_rich_content_not_preserving_it(self):
+        # Condition 6 must not simultaneously require "no rich content for any
+        # of the 17 sources" and "the current common rich-content processing
+        # is unchanged by this ticket" -- those two claims contradict each
+        # other, since the current common processing is what applies rich
+        # content in the first place (SD-002). BL-032 must change or disable
+        # that common processing; the concrete mechanism is decided in the
+        # BL-032 implementation PR, not here.
+        bl032 = self.backlog.split("## BL-032", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("全17 sourceについてrich contentがGemini入力・保存・公開のいずれにも使用されない", bl032)
+        self.assertNotIn("現行の共通rich content処理自体は本Ticketで変更しない", bl032)
+        self.assertIn("現行の共通rich-content利用", bl032)
+        self.assertTrue(
+            "変更または無効化" in bl032 or "変更・無効化" in bl032,
+            "BL-032 entry must record that BL-032 changes or disables the "
+            "current common rich-content usage, not merely leaves it as-is.",
+        )
+        self.assertIn(
+            "具体的な実装方式", bl032, "the concrete implementation approach must be deferred"
+        )
+        self.assertIn("BL-032の実装PRでコードとテストとともに決定する", bl032)
+
+    def test_pr68_registration_remains_documentation_only_for_rich_content(self):
+        # Even though condition 6 now requires BL-032 to eventually change or
+        # disable the common rich-content path, this documentation-only
+        # registration PR itself must not have touched fetch.py or
+        # source_definitions.json.
+        self.assertNotIn("content_usage_mode", self.fetch_source)
+        self.assertNotIn("content_usage_mode", self.source_definitions)
+
+    def test_sd030_records_that_mode_restrictions_are_not_yet_enforced_in_production(self):
+        sd030 = self.decisions.split("## SD-030", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("because BL-032 is not yet implemented", sd030)
+        self.assertIn("none of these mode-specific restrictions are enforced in current production", sd030)
+        self.assertIn("as recorded in GAP-016", sd030)
+        self.assertIn(
+            "an enabled `metadata_only` or `limited_feed_analysis` source is currently "
+            "processed through the same common pipeline as a `structured_open` source",
+            sd030,
+        )
+
+    def test_sd030_describes_metadata_only_and_limited_feed_analysis_as_policy_requirements(self):
+        sd030 = self.decisions.split("## SD-030", 1)[1].split("\n## ", 1)[0]
+        consequences = sd030.split("- **Consequences:**", 1)[1].split("\n- **Evidence:**", 1)[0]
+        self.assertIn("under the now-Approved policy, `metadata_only`", consequences)
+        self.assertIn(
+            "`limited_feed_analysis` (`the_hacker_news`, `krebs_on_security`) requires",
+            consequences,
+        )
+        self.assertNotIn("continue to have only minimal metadata", consequences)
+        self.assertNotIn("are approved to continue on bounded RSS description input only", consequences)
+
+    def test_sd002_remains_accepted_implemented_and_not_marked_superseded_by_sd030(self):
+        sd002 = self.decisions.split("## SD-002", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("- **Status:** Accepted / Implemented", sd002)
+        sd030 = self.decisions.split("## SD-030", 1)[1].split("\n## ", 1)[0]
+        supersedes = sd030.split("- **Supersedes:**", 1)[1]
+        self.assertNotIn("SD-002", supersedes)
+
+    def test_status_bl030_entry_no_longer_lists_bl031_as_a_follow_up_candidate(self):
+        recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
+            "## 6. Known issues and limitations", 1
+        )[0]
+        bl030 = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-030 ")
+        )
+        self.assertNotIn("follow-up candidates BL-031", bl030)
+        self.assertIn("BL-031", bl030)
+        self.assertIn("completed, approved, and merged", bl030)
+        self.assertIn("BL-032", bl030)
+        self.assertIn("registered", bl030)
+        self.assertIn("Active work item", bl030)
+        self.assertIn("BL-009", bl030)
+        self.assertIn("separate, unstarted ticket", bl030)
+        self.assertIn("None of these is BL-030 residual work", bl030)
+        # The 2026-07-30 past-tense 13-source-footer fact must still be intact.
+        self.assertIn("pre-BL-031 13-source list", bl030)
+        self.assertIn("This actually occurred once, confirmed", bl030)
 
 
 if __name__ == "__main__":
