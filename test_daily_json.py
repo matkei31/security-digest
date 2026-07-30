@@ -17,20 +17,48 @@ JST = dj.JST
 NOW = datetime.datetime(2026, 7, 11, 7, 5, 32, tzinfo=JST)
 
 
+# BL-032: 既存test fixtureはstructured_open相当の許可的なpolicyを持つものとして
+# 扱い、AI評価・raw_excerpt保存等、v1時点の既存挙動をそのまま再現する。
+_TEST_STRUCTURED_OPEN_POLICY = {
+    "content_usage_mode": "structured_open",
+    "allow_network_fetch": True,
+    "allow_description": True,
+    "allow_rich_content": False,
+    "allow_ai_processing": True,
+    "allow_excerpt_storage": True,
+    "allow_public_summary": True,
+    "attribution_requirement": "test fixture",
+    "attribution_url": None,
+    "checked_at": "2026-07-29",
+    "confidence": "high",
+    "unresolved_issue": "",
+    "recheck_trigger": "test fixture",
+    "official_evidence_url": "https://example.com/terms",
+    "evidence_type": "terms",
+}
+
 SOURCE_DEFS = [
     {
         "id": "cisa", "name": "CISA", "source_type": "CERT・注意喚起",
         "source_tier": "Tier 1", "collection_method": "rss", "language": "en",
+        "policy": _TEST_STRUCTURED_OPEN_POLICY,
     },
     {
         "id": "cisa_kev", "name": "CISA KEV", "source_type": "CERT・注意喚起",
         "source_tier": "Tier 1", "collection_method": "cisa_kev_json", "language": "en",
+        "policy": _TEST_STRUCTURED_OPEN_POLICY,
     },
     {
         "id": "fsa", "name": "金融庁", "source_type": "規制・監督",
         "source_tier": "Tier 1", "collection_method": "rss", "language": "ja",
+        "policy": _TEST_STRUCTURED_OPEN_POLICY,
     },
 ]
+
+
+def make_content_policy(source_id="cisa", configured_mode="structured_open",
+                         effective_mode="structured_open", downgrade_reason=None):
+    return dj.build_item_content_policy(source_id, configured_mode, effective_mode, downgrade_reason)
 
 
 def make_item(**overrides):
@@ -43,6 +71,7 @@ def make_item(**overrides):
         "raw_summary": "<p>raw summary</p>",
         "date": None,
         "published_at_jst": None,
+        "content_policy": make_content_policy(),
     }
     item.update(overrides)
     return item
@@ -153,10 +182,13 @@ class SchemaMetaTest(unittest.TestCase):
         digest = dj.build_daily_digest([item], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
         dj.validate_daily_digest(digest)  # 例外が出なければOK
 
-    def test_schema_version_is_1(self):
+    def test_schema_version_is_2(self):
+        # BL-032: SCHEMA_VERSION was bumped from 1 to 2 for the policy_excluded_count/
+        # ai_eligible_count contract. Past schema_version=1 daily JSON files are
+        # never rewritten and remain valid under the legacy contract.
         digest = dj.build_daily_digest([], NOT_ATTEMPTED_BRIEF_RESULT,
                                         SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
-        self.assertEqual(digest["schema_version"], 1)
+        self.assertEqual(digest["schema_version"], 2)
         self.assertIsInstance(digest["schema_version"], int)
 
     def test_digest_date_is_jst_based(self):
@@ -461,9 +493,9 @@ class BriefTest(unittest.TestCase):
         self.assertEqual(dj.BRIEF_MODEL, "deterministic-extractive")
         self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-extractive-v2")
 
-    def test_schema_version_stays_1(self):
+    def test_schema_version_is_2(self):
         digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
-        self.assertEqual(digest["schema_version"], 1)
+        self.assertEqual(digest["schema_version"], 2)
 
     def test_success_overview_is_a_string(self):
         digest = dj.build_daily_digest([], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
@@ -762,13 +794,13 @@ class FactsFieldTest(unittest.TestCase):
         with self.assertRaises(dj.DailyJsonError):
             dj.validate_daily_digest(digest)
 
-    def test_schema_version_stays_1_with_facts_present(self):
+    def test_schema_version_is_2_with_facts_present(self):
         item = make_item(
             ai_analysis=SAMPLE_ANALYSIS, ai_analysis_meta=success_meta(),
             facts={"cves": [{"cve_id": "CVE-2026-1234", "nvd": SAMPLE_NVD_FOUND, "kev": SAMPLE_KEV_LISTED}]},
         )
         digest = dj.build_daily_digest([item], SUCCESS_BRIEF_RESULT, SOURCE_DEFS, "gemini-2.5-flash", NOW, NOW)
-        self.assertEqual(digest["schema_version"], 1)
+        self.assertEqual(digest["schema_version"], 2)
 
     def test_article_prompt_version_unaffected_by_facts(self):
         item = make_item(

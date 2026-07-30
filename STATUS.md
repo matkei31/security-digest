@@ -43,7 +43,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- BL-032 取得元別content usage policy enforcement — 要件定義済み／未着手。Approved [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Version 0.1（3章・5章・6章・7章・10章）を正本として、`source_definitions.json`へのpolicy field追加と`fetch.py`での取得・Gemini入力・保存・公開の各段階でのsourceごとのcontent usage mode強制を実装するチケット。branch `docs/bl031-acceptance-bl032-registration`で本Ticketを登録した今回のPRは、`BACKLOG.md`への登録のみを行うdocumentation-only PRであり、runtime変更(`fetch.py`／`daily_json.py`／`source_definitions.json`／HTML生成／schema／prompt／workflow)は一切行わない。production・`workflow_dispatch`・実Gemini API・通常の外部収集も実行しない。詳細・完了条件は[BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)を参照。
+- BL-032 取得元別content usage policy enforcement — 実装Draft PR／レビュー待ち。branch `feature/bl032-content-usage-enforcement`。Approved [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Version 0.1を正本として、`source_definitions.json`への全17 source分`policy`オブジェクト追加、収集(`collect_recent`)・Gemini入力(`enrich_with_ai`)・vulnerability facts(`build_scoped_vulnerability_facts`)・daily JSON(schema v2、`policy_excluded_count`／`ai_eligible_count`)・Today's Brief/dashboard集計・HTML表示(metadata-only簡易カード・mode別attribution)の各段階でsourceごとのcontent usage modeを強制する実装を行った。全17 sourceでrich content利用を停止し(SD-002の共通処理をpolicy gateで置き換え)、Gemini `paid_verified` gateとlimited_feed_analysisの日本語翻訳タイトル禁止、出力文字数上限・verbatim long-match検出によるmetadata-only相当への自動downgradeを実装した。既存schema v1のdaily JSON・Archiveは遡及変更しない(read-only互換)。新規`test_content_usage_policy.py`を含むtest群で検証済み。production・`workflow_dispatch`・実Gemini API・通常の外部収集は実行していない。詳細・完了条件は[BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)を参照。
 
 ## 5. Recently completed work
 

@@ -161,7 +161,9 @@ class ArticleBriefContractUnchangedTest(unittest.TestCase):
         self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-extractive-v2")
 
     def test_daily_json_schema_version_is_unchanged(self):
-        self.assertEqual(dj.SCHEMA_VERSION, 1)
+        # BL-032 bumped SCHEMA_VERSION from 1 to 2 for the policy_excluded_count/
+        # ai_eligible_count contract; unrelated to custom-domain migration.
+        self.assertEqual(dj.SCHEMA_VERSION, 2)
 
 
 class Bl007DocumentationTest(unittest.TestCase):

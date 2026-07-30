@@ -1,4 +1,17 @@
 {
+  "gemini_data_use_status_record": {
+    "policy_version": "0.1",
+    "gemini_data_use_status": "paid_verified",
+    "checked_at": "2026-07-29",
+    "checked_by": "repository owner",
+    "verification_method": "Google AI StudioのAPI Keys画面で、Monomi Digest productionで使用するAPIキーが属するsecurity-digest Google Cloud Projectにactive billingが関連付けられ、Tier 1・前払いと表示されていることを確認した。",
+    "recorded_facts": [
+      "security-digest Project",
+      "active billing confirmed",
+      "Tier 1 pay-as-you-go",
+      "owner confirmation date 2026-07-29"
+    ]
+  },
   "sources": [
     {
       "id": "fsa",
@@ -14,7 +27,24 @@
       "collection_frequency": "daily",
       "color": "#c0392b",
       "trusted_cyber_source": false,
-      "notes": ""
+      "notes": "",
+      "policy": {
+        "content_usage_mode": "structured_open",
+        "allow_network_fetch": true,
+        "allow_description": true,
+        "allow_rich_content": false,
+        "allow_ai_processing": true,
+        "allow_excerpt_storage": true,
+        "allow_public_summary": true,
+        "attribution_requirement": "金融庁ウェブサイトをもとにMonomi Digestが加工＋原ページURL＋利用日を表示する。",
+        "attribution_url": null,
+        "checked_at": "2026-07-29",
+        "confidence": "high",
+        "unresolved_issue": "",
+        "recheck_trigger": "個別資料でPDL以外のライセンスが明記された場合",
+        "official_evidence_url": "https://www.fsa.go.jp/rules/index.html",
+        "evidence_type": "license"
+      }
     },
     {
       "id": "jpcert_cc",
@@ -30,7 +60,24 @@
       "collection_frequency": "daily",
       "color": "#2471a3",
       "trusted_cyber_source": true,
-      "notes": "RSS1.0(RDF)形式。fetch_feed()のRDF分岐で処理される。"
+      "notes": "RSS1.0(RDF)形式。fetch_feed()のRDF分岐で処理される。",
+      "policy": {
+        "content_usage_mode": "feed_summary",
+        "allow_network_fetch": true,
+        "allow_description": true,
+        "allow_rich_content": false,
+        "allow_ai_processing": true,
+        "allow_excerpt_storage": false,
+        "allow_public_summary": true,
+        "attribution_requirement": "source name、original URL、「Monomi DigestによるAI要約・分析」の表示、要約・分析に正確性の限界がある旨を表示する。",
+        "attribution_url": null,
+        "checked_at": "2026-07-29",
+        "confidence": "high",
+        "unresolved_issue": "転載・再配布時の連絡要否の具体運用",
+        "recheck_trigger": "JPCERT/CC利用ガイドの改定",
+        "official_evidence_url": "https://www.jpcert.or.jp/rss/index.html；https://www.jpcert.or.jp/guide.html",
+        "evidence_type": "rss_usage_guidance"
+      }
     },
     {
       "id": "ipa",
@@ -46,7 +93,24 @@
       "collection_frequency": "daily",
       "color": "#555",
       "trusted_cyber_source": false,
-      "notes": "RSS1.0(RDF)形式。旧SOURCE_COLORSに個別エントリがなく#555(デフォルト色)が使われていたため、その値をそのまま明示している。"
+      "notes": "RSS1.0(RDF)形式。旧SOURCE_COLORSに個別エントリがなく#555(デフォルト色)が使われていたため、その値をそのまま明示している。",
+      "policy": {
+        "content_usage_mode": "feed_summary",
+        "allow_network_fetch": true,
+        "allow_description": true,
+        "allow_rich_content": false,
+        "allow_ai_processing": true,
+        "allow_excerpt_storage": false,
+        "allow_public_summary": true,
+        "attribution_requirement": "source name、original URL、「Monomi DigestによるAI要約・分析」の表示、要約・分析に正確性の限界がある旨を表示する。",
+        "attribution_url": null,
+        "checked_at": "2026-07-29",
+        "confidence": "medium",
+        "unresolved_issue": "個別資料ごとの利用条件が本ポリシーと優先関係を持つ場合の具体運用",
+        "recheck_trigger": "IPA著作権FAQの改定",
+        "official_evidence_url": "https://www.ipa.go.jp/publish/faq.html；https://www.ipa.go.jp/siteinfo.html",
+        "evidence_type": "faq"
+      }
     },
     {
       "id": "cisa",
@@ -62,7 +126,24 @@
       "collection_frequency": "daily",
       "color": "#1e8449",
       "trusted_cyber_source": true,
-      "notes": "Ticket 13c以降の本番run(29227335674・29291354486・29374504304・29446141504)すべてでHTTP 403。保存済み2026-07-11〜16のdaily JSONに通常のCISA RSS由来記事は0件。User-Agent変更(SecurityDigest/1.0・Mozilla/5.0・一般的なSafari形式)のみでは解消しないことを確認済みのため、User-Agent変更だけを対策として採用しない。CISA KEVはcisa_kev(別の構造化JSON経路)で引き続き取得する。"
+      "notes": "Ticket 13c以降の本番run(29227335674・29291354486・29374504304・29446141504)すべてでHTTP 403。保存済み2026-07-11〜16のdaily JSONに通常のCISA RSS由来記事は0件。User-Agent変更(SecurityDigest/1.0・Mozilla/5.0・一般的なSafari形式)のみでは解消しないことを確認済みのため、User-Agent変更だけを対策として採用しない。CISA KEVはcisa_kev(別の構造化JSON経路)で引き続き取得する。",
+      "policy": {
+        "content_usage_mode": "disabled_legal_review",
+        "allow_network_fetch": false,
+        "allow_description": false,
+        "allow_rich_content": false,
+        "allow_ai_processing": false,
+        "allow_excerpt_storage": false,
+        "allow_public_summary": false,
+        "attribution_requirement": "n/a(非公開)",
+        "attribution_url": null,
+        "checked_at": "2026-07-29",
+        "confidence": "n/a",
+        "unresolved_issue": "広範な公式取得経路・利用条件が未確定なためURLが特定できていない",
+        "recheck_trigger": "既存activation_conditionの4条件(本エントリのactivation_conditionを参照)",
+        "official_evidence_url": "—",
+        "evidence_type": "terms_not_identified"
+      }
     },
     {
       "id": "nist",
@@ -78,7 +159,24 @@
       "collection_frequency": "daily",
       "color": "#555",
       "trusted_cyber_source": false,
-      "notes": "旧SOURCE_COLORSに個別エントリがなく#555(デフォルト色)が使われていたため、その値をそのまま明示している。"
+      "notes": "旧SOURCE_COLORSに個別エントリがなく#555(デフォルト色)が使われていたため、その値をそのまま明示している。",
+      "policy": {
+        "content_usage_mode": "structured_open",
+        "allow_network_fetch": true,
+        "allow_description": true,
+        "allow_rich_content": false,
+        "allow_ai_processing": true,
+        "allow_excerpt_storage": true,
+        "allow_public_summary": true,
+        "attribution_requirement": "NIST source credit。third-party copyright表示がある個別資料は対象から除外する。",
+        "attribution_url": null,
+        "checked_at": "2026-07-29",
+        "confidence": "high",
+        "unresolved_issue": "個別資料にcopyright表示がある場合の除外運用の具体化",
+        "recheck_trigger": "NIST copyright policyの変更",
+        "official_evidence_url": "https://www.nist.gov/copyrights-disclaimers",
+        "evidence_type": "copyright_policy"
+      }
     },
     {
       "id": "microsoft_security",
@@ -94,7 +192,24 @@
       "collection_frequency": "daily",
       "color": "#0078d4",
       "trusted_cyber_source": true,
-      "notes": ""
+      "notes": "",
+      "policy": {
+        "content_usage_mode": "metadata_only",
+        "allow_network_fetch": true,
+        "allow_description": false,
+        "allow_rich_content": false,
+        "allow_ai_processing": false,
+        "allow_excerpt_storage": false,
+        "allow_public_summary": false,
+        "attribution_requirement": "source name、original title、original URLのみ。AIによる要約・評価を行っていない旨を明示する。",
+        "attribution_url": null,
+        "checked_at": "2026-07-29",
+        "confidence": "medium",
+        "unresolved_issue": "RSS配信自体が本文再利用・AI公開要約の別段の許諾となるかは未確認",
+        "recheck_trigger": "Microsoft Terms of Useの改定",
+        "official_evidence_url": "https://www.microsoft.com/en-us/legal/terms-of-use",
+        "evidence_type": "terms"
+      }
     },
     {
       "id": "mandiant",
@@ -110,7 +225,24 @@
       "collection_frequency": "daily",
       "color": "#e67e22",
       "trusted_cyber_source": true,
-      "notes": "旧mandiant.com直下のRSSが機能停止したため、Google Cloudの脅威インテリジェンスブログRSSに切替済み(本チケット以前の対応)。"
+      "notes": "旧mandiant.com直下のRSSが機能停止したため、Google Cloudの脅威インテリジェンスブログRSSに切替済み(本チケット以前の対応)。",
+      "policy": {
+        "content_usage_mode": "feed_summary",
+        "allow_network_fetch": true,
+        "allow_description": true,
+        "allow_rich_content": false,
+        "allow_ai_processing": true,
+        "allow_excerpt_storage": false,
+        "allow_public_summary": true,
+        "attribution_requirement": "source name、original URL、「Monomi DigestによるAI要約・分析」の表示、要約・分析に正確性の限界がある旨を表示する。",
+        "attribution_url": null,
+        "checked_at": "2026-07-30",
+        "confidence": "medium",
+        "unresolved_issue": "Google全体利用規約のmachine-readable instructions条件の具体適用範囲。Threat Intelligenceページ自体はRSS提供を示す証跡にすぎず、terms文書ではない。",
+        "recheck_trigger": "Google Terms改定；公式Feed URL／経路変更；Threat Intelligence固有条件変更；robots.txt等machine-readable instructions変更；公式RSS案内変更・終了",
+        "official_evidence_url": "https://policies.google.com/terms?hl=en-US；https://policies.google.com/terms/update/embedded；https://cloud.google.com/blog/topics/threat-intelligence",
+        "evidence_type": "terms；terms_update_notice；rss_usage_guidance"
+      }
     },
     {
       "id": "crowdstrike",
@@ -126,7 +258,24 @@
       "collection_frequency": "daily",
       "color": "#cc0000",
       "trusted_cyber_source": true,
-      "notes": "BL-030: 2026-07-29時点の公式Website Terms(https://www.crowdstrike.com/en-us/legal/website-terms-of-use/)を根拠に暫定停止。自動アクセス・コピー・保存・再出版等に制限があるため。法的違反を確定したものではなく、包括的な取得元規約監査(BL-031候補)までの安全側の一時的措置。"
+      "notes": "BL-030: 2026-07-29時点の公式Website Terms(https://www.crowdstrike.com/en-us/legal/website-terms-of-use/)を根拠に暫定停止。自動アクセス・コピー・保存・再出版等に制限があるため。法的違反を確定したものではなく、包括的な取得元規約監査(BL-031候補)までの安全側の一時的措置。",
+      "policy": {
+        "content_usage_mode": "disabled_legal_review",
+        "allow_network_fetch": false,
+        "allow_description": false,
+        "allow_rich_content": false,
+        "allow_ai_processing": false,
+        "allow_excerpt_storage": false,
+        "allow_public_summary": false,
+        "attribution_requirement": "n/a(非公開)",
+        "attribution_url": null,
+        "checked_at": "2026-07-29",
+        "confidence": "high",
+        "unresolved_issue": "",
+        "recheck_trigger": "本エントリのactivation_condition(BL-030で記録済み)",
+        "official_evidence_url": "https://www.crowdstrike.com/en-au/legal/website-terms-of-use/",
+        "evidence_type": "terms"
+      }
     },
     {
       "id": "google_tag",
@@ -142,7 +291,24 @@
       "collection_frequency": "daily",
       "color": "#4285f4",
       "trusted_cyber_source": true,
-      "notes": ""
+      "notes": "",
+      "policy": {
+        "content_usage_mode": "feed_summary",
+        "allow_network_fetch": true,
+        "allow_description": true,
+        "allow_rich_content": false,
+        "allow_ai_processing": true,
+        "allow_excerpt_storage": false,
+        "allow_public_summary": true,
+        "attribution_requirement": "source name、original URL、「Monomi DigestによるAI要約・分析」の表示、要約・分析に正確性の限界がある旨を表示する。",
+        "attribution_url": null,
+        "checked_at": "2026-07-30",
+        "confidence": "medium",
+        "unresolved_issue": "2026-07-30発効の新規約内容を確認済み。machine-readable instructions条件は継続しており、一般規約のみでAI公開要約の包括的許諾があるとは断定しない。",
+        "recheck_trigger": "Google Terms改定；公式Feed URL／経路変更；Security Blog固有条件変更；robots.txt等machine-readable instructions変更；公式RSS案内変更・終了",
+        "official_evidence_url": "https://policies.google.com/terms?hl=en-US；https://policies.google.com/terms/update/embedded",
+        "evidence_type": "terms"
+      }
     },
     {
       "id": "ncsc",
@@ -158,7 +324,24 @@
       "collection_frequency": "daily",
       "color": "#005eb8",
       "trusted_cyber_source": true,
-      "notes": ""
+      "notes": "",
+      "policy": {
+        "content_usage_mode": "structured_open",
+        "allow_network_fetch": true,
+        "allow_description": true,
+        "allow_rich_content": false,
+        "allow_ai_processing": true,
+        "allow_excerpt_storage": true,
+        "allow_public_summary": true,
+        "attribution_requirement": "source acknowledgement + OGL v3 link。",
+        "attribution_url": null,
+        "checked_at": "2026-07-29",
+        "confidence": "high",
+        "unresolved_issue": "",
+        "recheck_trigger": "OGLのversion変更",
+        "official_evidence_url": "https://www.ncsc.gov.uk/section/about-this-website/terms-and-conditions",
+        "evidence_type": "terms"
+      }
     },
     {
       "id": "krebs_on_security",
@@ -174,7 +357,24 @@
       "collection_frequency": "daily",
       "color": "#555",
       "trusted_cyber_source": true,
-      "notes": "旧SOURCE_COLORSに個別エントリがなく#555(デフォルト色)が使われていたため、その値をそのまま明示している。"
+      "notes": "旧SOURCE_COLORSに個別エントリがなく#555(デフォルト色)が使われていたため、その値をそのまま明示している。",
+      "policy": {
+        "content_usage_mode": "limited_feed_analysis",
+        "allow_network_fetch": true,
+        "allow_description": true,
+        "allow_rich_content": false,
+        "allow_ai_processing": true,
+        "allow_excerpt_storage": false,
+        "allow_public_summary": true,
+        "attribution_requirement": "source name、original title、original URL、「Monomi Digestが公式RSSの概要をもとに生成したAI分析」の表示、「詳細と正確性は元記事で確認」の旨、AI分析であって原文の転載・代替を目的としない旨。",
+        "attribution_url": null,
+        "checked_at": "2026-07-29",
+        "confidence": "low",
+        "unresolved_issue": "公式の包括的な再利用条件を確認できなかった(terms_not_found)。限定的な運用上のリスク受容(limited_feed_analysis)として扱う。",
+        "recheck_trigger": "公式terms発見時、権利者からの訂正・削除・停止申出",
+        "official_evidence_url": "—；https://krebsonsecurity.com/about-this-blog/",
+        "evidence_type": "terms_not_found；source_page"
+      }
     },
     {
       "id": "dark_reading",
@@ -190,7 +390,24 @@
       "collection_frequency": "daily",
       "color": "#555",
       "trusted_cyber_source": true,
-      "notes": "旧SOURCE_COLORSに個別エントリがなく#555(デフォルト色)が使われていたため、その値をそのまま明示している。BL-031: 2026-07-29確認。Informa TechTarget Terms(https://www.informatechtarget.com/terms-of-use/)がdata mining・robots等の抽出方法、derivative works、無断copy・distributionを制限しているため暫定停止。法的違反を確定したものではなく、包括的な取得元規約監査(BL-031)に基づく安全側の一時的措置。"
+      "notes": "旧SOURCE_COLORSに個別エントリがなく#555(デフォルト色)が使われていたため、その値をそのまま明示している。BL-031: 2026-07-29確認。Informa TechTarget Terms(https://www.informatechtarget.com/terms-of-use/)がdata mining・robots等の抽出方法、derivative works、無断copy・distributionを制限しているため暫定停止。法的違反を確定したものではなく、包括的な取得元規約監査(BL-031)に基づく安全側の一時的措置。",
+      "policy": {
+        "content_usage_mode": "disabled_legal_review",
+        "allow_network_fetch": false,
+        "allow_description": false,
+        "allow_rich_content": false,
+        "allow_ai_processing": false,
+        "allow_excerpt_storage": false,
+        "allow_public_summary": false,
+        "attribution_requirement": "n/a(非公開)",
+        "attribution_url": null,
+        "checked_at": "2026-07-29",
+        "confidence": "high",
+        "unresolved_issue": "",
+        "recheck_trigger": "本エントリのactivation_condition(BL-031で新設)",
+        "official_evidence_url": "https://www.informatechtarget.com/terms-of-use/；https://www.darkreading.com/",
+        "evidence_type": "terms；source_page"
+      }
     },
     {
       "id": "the_hacker_news",
@@ -206,7 +423,24 @@
       "collection_frequency": "daily",
       "color": "#555",
       "trusted_cyber_source": true,
-      "notes": "旧SOURCE_COLORSに個別エントリがなく#555(デフォルト色)が使われていたため、その値をそのまま明示している。"
+      "notes": "旧SOURCE_COLORSに個別エントリがなく#555(デフォルト色)が使われていたため、その値をそのまま明示している。",
+      "policy": {
+        "content_usage_mode": "limited_feed_analysis",
+        "allow_network_fetch": true,
+        "allow_description": true,
+        "allow_rich_content": false,
+        "allow_ai_processing": true,
+        "allow_excerpt_storage": false,
+        "allow_public_summary": true,
+        "attribution_requirement": "source name、original title、original URL、「Monomi Digestが公式RSSの概要をもとに生成したAI分析」の表示、「詳細と正確性は元記事で確認」の旨、AI分析であって原文の転載・代替を目的としない旨。",
+        "attribution_url": null,
+        "checked_at": "2026-07-29",
+        "confidence": "medium",
+        "unresolved_issue": "公式RSSは存在するがAll Rights Reserved明記のため、RSS提供のみを根拠に本文再利用・AI要約の包括的許諾があるとは解釈しない。",
+        "recheck_trigger": "copyright policyの変更、権利者からの訂正・削除・停止申出",
+        "official_evidence_url": "https://thehackernews.com/p/copyright-policy.html",
+        "evidence_type": "copyright_policy"
+      }
     },
     {
       "id": "cisco_talos",
@@ -222,7 +456,24 @@
       "collection_frequency": "daily",
       "color": "#6f42c1",
       "trusted_cyber_source": true,
-      "notes": ""
+      "notes": "",
+      "policy": {
+        "content_usage_mode": "metadata_only",
+        "allow_network_fetch": true,
+        "allow_description": false,
+        "allow_rich_content": false,
+        "allow_ai_processing": false,
+        "allow_excerpt_storage": false,
+        "allow_public_summary": false,
+        "attribution_requirement": "source name、original title、original URLのみ。AIによる要約・評価を行っていない旨を明示する。",
+        "attribution_url": null,
+        "checked_at": "2026-07-29",
+        "confidence": "low",
+        "unresolved_issue": "Cisco Site Content利用規約(internal use限定)がblog.talosintelligence.comへ直接適用されるか不明。適用が確認された場合はdisabled_legal_reviewを含め再評価する。",
+        "recheck_trigger": "書面確認、またはTalos固有のtermsの発見",
+        "official_evidence_url": "https://www.cisco.com/c/en/us/about/legal/terms-conditions.html",
+        "evidence_type": "terms"
+      }
     },
     {
       "id": "cloudflare",
@@ -238,7 +489,24 @@
       "collection_frequency": "daily",
       "color": "#f38020",
       "trusted_cyber_source": false,
-      "notes": "BL-030: 2026-07-29時点の公式Website Terms(https://www.cloudflare.com/website-terms/)を根拠に暫定停止。現行実装は汎用User-Agentかつrobots.txt確認処理を持たないため。法的違反を確定したものではなく、包括的な取得元規約監査(BL-031候補)までの安全側の一時的措置。"
+      "notes": "BL-030: 2026-07-29時点の公式Website Terms(https://www.cloudflare.com/website-terms/)を根拠に暫定停止。現行実装は汎用User-Agentかつrobots.txt確認処理を持たないため。法的違反を確定したものではなく、包括的な取得元規約監査(BL-031候補)までの安全側の一時的措置。",
+      "policy": {
+        "content_usage_mode": "disabled_legal_review",
+        "allow_network_fetch": false,
+        "allow_description": false,
+        "allow_rich_content": false,
+        "allow_ai_processing": false,
+        "allow_excerpt_storage": false,
+        "allow_public_summary": false,
+        "attribution_requirement": "n/a(非公開)",
+        "attribution_url": null,
+        "checked_at": "2026-07-29",
+        "confidence": "high",
+        "unresolved_issue": "",
+        "recheck_trigger": "本エントリのactivation_condition(BL-030で記録済み)",
+        "official_evidence_url": "https://www.cloudflare.com/policies/terms/",
+        "evidence_type": "terms"
+      }
     },
     {
       "id": "cisa_kev",
@@ -255,7 +523,24 @@
       "collection_frequency": "daily",
       "color": "#e74c3c",
       "trusted_cyber_source": false,
-      "notes": "urlは取得元JSON API。display_urlは記事表示用の固定リンク(全件共通、fetch_cisa_kev()に引数として渡される)。urlはCISA公式GitHub Organization(cisagov)のkev-dataリポジトリである。公式READMEには、canonicalなCISA KEV更新後、通常数分以内に同期される旨が記載されている。GitHub上で運用するコードから利用しやすい公式経路として採用した。GitHub Actions本番での取得可否はmerge後の受入確認事項。"
+      "notes": "urlは取得元JSON API。display_urlは記事表示用の固定リンク(全件共通、fetch_cisa_kev()に引数として渡される)。urlはCISA公式GitHub Organization(cisagov)のkev-dataリポジトリである。公式READMEには、canonicalなCISA KEV更新後、通常数分以内に同期される旨が記載されている。GitHub上で運用するコードから利用しやすい公式経路として採用した。GitHub Actions本番での取得可否はmerge後の受入確認事項。",
+      "policy": {
+        "content_usage_mode": "structured_open",
+        "allow_network_fetch": true,
+        "allow_description": true,
+        "allow_rich_content": false,
+        "allow_ai_processing": true,
+        "allow_excerpt_storage": true,
+        "allow_public_summary": true,
+        "attribution_requirement": "\"CISA KEV\" + CC0の旨を表示する。",
+        "attribution_url": null,
+        "checked_at": "2026-07-29",
+        "confidence": "high",
+        "unresolved_issue": "",
+        "recheck_trigger": "ライセンスファイル(LICENSE)の変更",
+        "official_evidence_url": "https://github.com/cisagov/kev-data",
+        "evidence_type": "license"
+      }
     },
     {
       "id": "nist_nvd",
@@ -271,7 +556,24 @@
       "collection_frequency": "weekly",
       "color": "#7d3c98",
       "trusted_cyber_source": false,
-      "notes": "元実装で collect_recent() 内 `# all_items += fetch_nist_nvd(cutoff)` としてコメントアウトされ無効化中。無効化理由・再有効化条件はコード上に明記がないため、activation_conditionは空のままにしている。enabledをtrueにするとfetch_nist_nvd()が実行される(記事ごとのリンクはCVE IDから動的に組み立てられるためdisplay_urlは持たない)。"
+      "notes": "元実装で collect_recent() 内 `# all_items += fetch_nist_nvd(cutoff)` としてコメントアウトされ無効化中。無効化理由・再有効化条件はコード上に明記がないため、activation_conditionは空のままにしている。enabledをtrueにするとfetch_nist_nvd()が実行される(記事ごとのリンクはCVE IDから動的に組み立てられるためdisplay_urlは持たない)。現行のNVD CVE facts経路(vulnerability_facts.py)はこのstandalone article collectionとは別であり、本policyの対象外(変更しない)。",
+      "policy": {
+        "content_usage_mode": "structured_open",
+        "allow_network_fetch": false,
+        "allow_description": false,
+        "allow_rich_content": false,
+        "allow_ai_processing": false,
+        "allow_excerpt_storage": false,
+        "allow_public_summary": false,
+        "attribution_requirement": "\"This product uses the NVD API but is not endorsed or certified by the NVD.\" 加工した分析をNVD作成物であるかのように表示しない。",
+        "attribution_url": null,
+        "checked_at": "2026-07-29",
+        "confidence": "high",
+        "unresolved_issue": "standalone記事収集の再有効化は本Ticketの対象外。現行のNVD CVE facts経路(vulnerability_facts.py)のみをpolicy上許可対象とし、standalone article collection自体のenabledは変更しない。",
+        "recheck_trigger": "NVD API Termsの変更",
+        "official_evidence_url": "https://nvd.nist.gov/developers/terms-of-use",
+        "evidence_type": "terms"
+      }
     }
   ]
 }

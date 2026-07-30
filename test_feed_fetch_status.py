@@ -324,13 +324,24 @@ class CisaKevZeroVsFailureTest(unittest.TestCase):
     """CISA KEV: カタログ取得成功・新着0件を[OK]に、取得失敗のみ[NG]にする。"""
 
     def _sources(self):
+        policy = {
+            "content_usage_mode": "structured_open", "allow_network_fetch": True,
+            "allow_description": True, "allow_rich_content": False,
+            "allow_ai_processing": True, "allow_excerpt_storage": True,
+            "allow_public_summary": True, "attribution_requirement": "test fixture",
+            "attribution_url": None, "checked_at": "2026-07-29", "confidence": "high",
+            "unresolved_issue": "", "recheck_trigger": "test fixture",
+            "official_evidence_url": "https://example.com/terms", "evidence_type": "terms",
+        }
         return [
             {"id": "cisa_kev", "name": "CISA KEV",
              "url": "https://example.com/kev.json",
              "display_url": "https://example.com/kev-catalog",
-             "collection_method": "cisa_kev_json", "enabled": True},
+             "collection_method": "cisa_kev_json", "enabled": True,
+             "policy": dict(policy)},
             {"id": "nist_nvd", "name": "NIST NVD", "url": "https://example.com/nvd",
-             "collection_method": "nist_nvd_json", "enabled": False},
+             "collection_method": "nist_nvd_json", "enabled": False,
+             "policy": dict(policy)},
         ]
 
     def _kev_entry(self, cve, date_added):

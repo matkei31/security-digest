@@ -40,7 +40,10 @@ class VersionAndSchemaTest(unittest.TestCase):
 
     def test_brief_prompt_version_and_schema_version_unchanged(self):
         self.assertEqual(dj.BRIEF_PROMPT_VERSION, "today-brief-extractive-v2")
-        self.assertEqual(dj.SCHEMA_VERSION, 1)
+        # BL-032 bumped SCHEMA_VERSION from 1 to 2 for the policy_excluded_count/
+        # ai_eligible_count contract; LEGACY_SCHEMA_VERSION preserves the old value.
+        self.assertEqual(dj.SCHEMA_VERSION, 2)
+        self.assertEqual(dj.LEGACY_SCHEMA_VERSION, 1)
 
     def test_title_ja_in_schema_required_and_first_in_ordering(self):
         schema = get_request_body_json()["generationConfig"]["response_schema"]
@@ -107,13 +110,18 @@ class TitleJaValidationTest(unittest.TestCase):
         item = {
             "source": "CISA", "link": "https://example.com/a", "title": "t",
             "raw_title": "orig", "ai_analysis": result["analysis"],
+            "content_policy": dj.build_item_content_policy(
+                "cisa", "structured_open", "structured_open", None
+            ),
             "ai_analysis_meta": {
                 "status": result["status"], "error_type": result["error_type"],
                 "http_status": result["http_status"], "generated_at": "2026-07-14T07:00:00+09:00",
             },
         }
         source_defs = [{"id": "cisa", "name": "CISA", "source_type": "CERT・注意喚起",
-                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en"}]
+                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en",
+                        "policy": {"content_usage_mode": "structured_open",
+                                   "allow_excerpt_storage": True}}]
         entry = dj.build_article_entry(item, source_defs, "gemini-2.5-flash",
                                        _dt.datetime(2026, 7, 14, 7, 0, tzinfo=dj.JST))
         self.assertNotIn("title_ja", entry["analysis"])

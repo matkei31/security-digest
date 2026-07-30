@@ -480,12 +480,16 @@ class SourceUsagePolicyTest(unittest.TestCase):
         self.assertIn("それ自体はterms文書ではない", mandiant["unresolved_issue"])
         self.assertIn("両者を混同しない", mandiant["unresolved_issue"])
 
-    def test_output_similarity_controls_are_recorded_as_bl032_scope_not_implemented(self):
+    def test_output_similarity_controls_are_recorded_as_bl032_draft_implemented(self):
+        # BL-032's Draft implementation (pending user acceptance) now enforces
+        # these controls in daily_json.py/fetch.py, so section 7 no longer
+        # says "not implemented by this PR" — it records the Draft status.
         controls = self.policy.split(
             "## 7. Output-similarity and quotation controls", 1
         )[1].split("## 8. Recheck triggers", 1)[0]
-        self.assertIn("本PR(BL-031)では実装しない", controls)
+        self.assertIn("Draft実装済み、ユーザー受入前", controls)
         self.assertIn("具体的な閾値", controls)
+        self.assertNotIn("本PR(BL-031)では実装しない", controls)
 
     def test_output_similarity_controls_distinguish_mechanical_from_residual_risk(self):
         controls = self.policy.split(

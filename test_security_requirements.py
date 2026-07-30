@@ -44,12 +44,12 @@ class SecurityRequirementsTest(unittest.TestCase):
         return self.requirements.split(start, 1)[1].split(end, 1)[0]
 
     def test_document_is_approved_version_14_maintenance_update(self):
-        # Version 1.5 (Draft, BL-030/BL-031) is the current header, but the frozen
+        # Version 1.6 (Draft, BL-032) is the current header, but the frozen
         # Version 1.4 approval record (section 12) must remain byte-identical below it.
         self.assertTrue(REQUIREMENTS_PATH.is_file())
         self.assertIn("# Monomi Digest Security Requirements", self.requirements)
-        self.assertIn("**Version:** 1.5", self.requirements)
-        self.assertIn("**Status:** Approved", self.requirements)
+        self.assertIn("**Version:** 1.6", self.requirements)
+        self.assertIn("**Status:** Draft", self.requirements)
         self.assertIn("no Critical or High findings", self.requirements)
         self.assertIn("accepted and modified findings", self.requirements)
         self.assertIn("rejected F-004 consolidation was not applied", self.requirements)
@@ -191,6 +191,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         allowed_dispositions = {
             "Completed by documentation",
             "Implemented",
+            "Implemented (Draft, pending user acceptance)",
             "Accepted current state",
             "Deferred until trigger",
             "Completed owner verification",
@@ -214,7 +215,7 @@ class SecurityRequirementsTest(unittest.TestCase):
             "GAP-013": "Completed by documentation",
             "GAP-014": "Completed by documentation",
             "GAP-015": "Deferred until trigger",
-            "GAP-016": "Remains open for later prioritization",
+            "GAP-016": "Implemented (Draft, pending user acceptance)",
             "GAP-017": "Completed owner verification",
         }
         self.assertEqual(
@@ -1096,9 +1097,12 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
             if line.startswith("| ") and not line.startswith("|---"):
                 yield [cell.strip() for cell in line.strip().strip("|").split("|")]
 
-    def test_version_and_status_are_15_approved(self):
-        self.assertIn("**Version:** 1.5", self.requirements)
-        self.assertIn("**Status:** Approved", self.requirements)
+    def test_version_and_status_are_16_draft(self):
+        # Version 1.6 (BL-032 Draft implementation, pending user acceptance)
+        # is now the current header; Version 1.5's own Approved record is
+        # preserved in the intro body, not the header.
+        self.assertIn("**Version:** 1.6", self.requirements)
+        self.assertIn("**Status:** Draft", self.requirements)
         self.assertIn("**As of:** 2026-07-31", self.requirements)
 
     def test_no_current_architecture_mention_of_removed_translation_path(self):
@@ -1176,19 +1180,26 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         self.assertIn("SOURCE_USAGE_POLICY.md", scope)
         self.assertIn("audit-only", scope)
 
-    def test_per_source_enforcement_is_not_marked_met(self):
+    def test_per_source_enforcement_is_draft_pending_acceptance(self):
+        # BL-032's Draft implementation legitimately updates SR-044 to Met and
+        # GAP-016 to Implemented, but only as a Draft pending user acceptance —
+        # SR-046 (nist_nvd activation_condition, out of this Version's scope)
+        # must remain Partially met, and GAP-016's disposition/notes must make
+        # clear this is not yet an approved, closed control.
         self.assertNotRegex(
             self.requirements,
-            r"SR-04[456][^\n|]*\|\s*Met\s*\|",
+            r"SR-046[^\n|]*\|\s*Met\s*\|",
         )
         gaps = self._section(
             "## 8. Gap register",
             "## 9. Explicitly non-required controls for the current architecture",
         )
+        self.assertIn("pending user acceptance", gaps)
         self.assertIn(
-            "Do not treat the BL-031 audit alone as closing this gap", gaps
+            "do not treat this Draft implementation as an approved control until acceptance is recorded",
+            gaps,
         )
-        self.assertIn("BL-032 implementation", gaps)
+        self.assertIn("BL-032", gaps)
 
     def test_bl031_is_recorded_in_status_recently_completed_work(self):
         active = self.status.split("## Active work", 1)[1].split(
@@ -1370,15 +1381,18 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
     def test_control_mapping_reflects_sr046_partial_state_and_sr045_owner_verified(self):
         # SR-046 stays Partially met (nist_nvd's empty activation_condition);
         # SR-045 became Met once the Gemini owner verification completed
-        # (GAP-017), so the tally is 1 Met / 2 Partial / 0 Unverified.
+        # (GAP-017); SR-044 became Met once BL-032's Draft implementation
+        # enforced per-source content usage modes at runtime (pending user
+        # acceptance), so the tally is 2 Met / 1 Partial / 0 Unverified.
         mapping = self._section(
             "## 7. Current control mapping", "## 8. Gap register"
         )
         self.assertIn(
             "Source content-usage policy and AI provider data-use boundary", mapping
         )
-        self.assertIn("Met 1 / Partial 2 / Not met 0 / Unverified 0", mapping)
+        self.assertIn("Met 2 / Partial 1 / Not met 0 / Unverified 0", mapping)
         self.assertNotIn("Met 0 / Partial 2 / Not met 0 / Unverified 1", mapping)
+        self.assertNotIn("Met 1 / Partial 2 / Not met 0 / Unverified 0", mapping)
 
     def test_sr_045_no_longer_describes_google_terms_recheck_as_pending(self):
         sr045_row = next(
@@ -1405,17 +1419,24 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         )
 
     def test_intro_clarifies_version_15_is_the_current_approved_baseline(self):
+        # Version 1.6 (BL-032 Draft implementation) is now "this Version",
+        # layered on top of the still-Approved Version 1.5 baseline; until
+        # user acceptance, only Version 1.5 is approved policy.
         intro = self._section(
             "# Monomi Digest Security Requirements", "## 1. Purpose and proportionality"
         )
-        self.assertIn("Version 1.5 (this Version) is the most recent **Approved**", intro)
-        self.assertIn("**Approved** maintenance update", intro)
+        self.assertIn("Version 1.5 is the most recent **Approved**", intro)
+        self.assertIn(
+            "Version 1.6\n(this Version) is a **Draft** maintenance update layered on top of"
+            " that Approved Version 1.5",
+            intro,
+        )
+        self.assertIn("only Version 1.5 is approved policy", intro)
         self.assertIn(
             "SD-030](DECISIONS.md#sd-030--approve-source-usage-policy-version-01-and-defer-runtime-enforcement-to-bl-032)",
             intro,
         )
         self.assertNotIn("only Version 1.4 is approved", intro)
-        self.assertNotIn("**Draft** maintenance update", intro)
 
     def test_bl_and_sd_ids_referenced_are_unique_in_their_documents(self):
         bl_headings = re.findall(r"^## (BL-\d{3})\b", self.backlog, flags=re.MULTILINE)
@@ -1469,15 +1490,21 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
         cls.fetch_source = (ROOT / "fetch.py").read_text(encoding="utf-8")
 
     def test_three_documents_are_approved_as_of_20260731(self):
+        # SECURITY_REQUIREMENTS.md has since moved to a Draft Version 1.6
+        # (BL-032 implementation, pending user acceptance) layered on top of
+        # the still-Approved Version 1.5 baseline; only SOURCE_USAGE_POLICY.md
+        # and SECURITY_OPERATIONS.md remain Approved as of this round.
         for doc, version_marker in (
             (self.policy, "**Version:** 0.1"),
-            (self.requirements, "**Version:** 1.5"),
             (self.operations, "**Version:** 1.1"),
         ):
             with self.subTest(version_marker=version_marker):
                 self.assertIn(version_marker, doc)
                 self.assertIn("**Status:** Approved", doc)
                 self.assertIn("**As of:** 2026-07-31", doc)
+        self.assertIn("**Version:** 1.6", self.requirements)
+        self.assertIn("**Status:** Draft", self.requirements)
+        self.assertIn("**As of:** 2026-07-31", self.requirements)
 
     def test_bl031_backlog_status_is_completed(self):
         bl031 = self.backlog.split("## BL-031", 1)[1].split("\n## ", 1)[0]
@@ -1496,11 +1523,13 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
         self.assertIn("1391 tests", acceptance)
         self.assertIn("ok進もう", acceptance)
 
-    def test_bl032_is_registered_exactly_once_and_not_started(self):
+    def test_bl032_is_registered_exactly_once(self):
+        # BL-032's status has since moved on from 要件定義済み／未着手 to
+        # 実装Draft PR／レビュー待ち (feature/bl032-content-usage-enforcement);
+        # this test only locks uniqueness/title, not the now-stale status text.
         bl032_headings = re.findall(r"^## (BL-032)\b", self.backlog, flags=re.MULTILINE)
         self.assertEqual(len(bl032_headings), 1)
         bl032 = self.backlog.split("## BL-032", 1)[1].split("\n## ", 1)[0]
-        self.assertIn("- **状態:** 要件定義済み／未着手", bl032)
         self.assertIn("取得元別content usage policy enforcement", bl032)
 
     def test_sd030_is_unique_and_records_approval_deferral_boundary(self):
@@ -1524,13 +1553,6 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
         self.assertNotIn("2026-07-31", checked_at_values)
         self.assertEqual(checked_at_values, {"2026-07-29", "2026-07-30"})
 
-    def test_bl032_registration_pr_does_not_touch_production_enforcement_files(self):
-        # The registration PR is documentation-only: source_definitions.json
-        # must not yet carry a per-source content-usage-mode field, and
-        # fetch.py must not yet reference one.
-        self.assertNotIn("content_usage_mode", self.source_definitions)
-        self.assertNotIn("content_usage_mode", self.fetch_source)
-
     def test_bl032_completion_condition_6_requires_changing_rich_content_not_preserving_it(self):
         # Condition 6 must not simultaneously require "no rich content for any
         # of the 17 sources" and "the current common rich-content processing
@@ -1552,14 +1574,6 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
             "具体的な実装方式", bl032, "the concrete implementation approach must be deferred"
         )
         self.assertIn("BL-032の実装PRでコードとテストとともに決定する", bl032)
-
-    def test_pr68_registration_remains_documentation_only_for_rich_content(self):
-        # Even though condition 6 now requires BL-032 to eventually change or
-        # disable the common rich-content path, this documentation-only
-        # registration PR itself must not have touched fetch.py or
-        # source_definitions.json.
-        self.assertNotIn("content_usage_mode", self.fetch_source)
-        self.assertNotIn("content_usage_mode", self.source_definitions)
 
     def test_sd030_records_that_mode_restrictions_are_not_yet_enforced_in_production(self):
         sd030 = self.decisions.split("## SD-030", 1)[1].split("\n## ", 1)[0]
