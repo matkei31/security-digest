@@ -1410,6 +1410,30 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         self.assertEqual(len(sd_headings), len(set(sd_headings)))
         self.assertNotIn("SD-030", self.decisions)
 
+    def test_section_11_google_terms_roadmap_item_is_a_completed_record_not_future_tense(self):
+        # The 2026-07-30 Google Terms recheck already happened; section 11's
+        # roadmap item must record it as completed, not as a future action
+        # gated on the terms "taking effect" on that date.
+        roadmap = self._section(
+            "## 11. Approved roadmap decisions", "## 12. Approval and maintenance"
+        )
+        compact = re.sub(r"\s+", " ", roadmap)
+        self.assertNotIn("after the new terms take effect on 2026-07-30", compact)
+        self.assertNotIn("re-confirm Google's Terms for", compact)
+        self.assertIn(
+            "completed 2026-07-30: re-confirmed the Google Terms version that took effect"
+            " that day",
+            compact,
+        )
+        self.assertIn("`google_tag`", compact)
+        self.assertIn("`mandiant`", compact)
+        self.assertIn("classification and confidence", compact)
+        self.assertIn("were unchanged", compact)
+        self.assertIn("Further re-confirmation is required only on a subsequent Google Terms",
+                       compact)
+        self.assertIn("revision, or on the source-specific recheck triggers recorded in", compact)
+        self.assertIn("[SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md)", compact)
+
 
 if __name__ == "__main__":
     unittest.main()

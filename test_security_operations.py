@@ -541,6 +541,32 @@ class Bl031SecurityOperationsReconciliationTest(unittest.TestCase):
                 # The old blanket "never call live feed/API/robots.txt" ban is gone.
                 self.assertNotIn("Do not call the source's live feed, API, or robots.txt", compact)
 
+    def test_section_11_source_suspension_summary_matches_section_7_verification_rule(self):
+        # Section 11's "Version 1.1 (Draft) adds" summary of item 8 must match
+        # the actual boundary fixed in section 7 -- it must not restate the
+        # old blanket ban on ever calling a source's live feed/API/robots.txt,
+        # which would contradict the approved read-only official-page check.
+        approved = self.section(
+            "## 11. Approved operational decisions", "## 12. Approval and maintenance"
+        )
+        item8 = approved.split("8. **Source suspension:**", 1)[1].split(
+            "9. **Gemini Paid/Unpaid Services", 1
+        )[0]
+        compact = compact_whitespace(item8)
+        self.assertNotIn(
+            "without calling the source's live feed/API/robots.txt to verify", compact
+        )
+        self.assertIn(
+            "Verification is limited to a read-only, dated, URL-recorded check", compact
+        )
+        self.assertIn("no production run, Gemini API call, routine automated collection", compact)
+        self.assertIn("article-body scraping, or bulk retrieval", compact)
+        self.assertIn(
+            "a rightsholder correction/removal/stop request is never made contingent on"
+            " re-checking the source first",
+            compact,
+        )
+
     def test_gemini_owner_verification_is_completed_as_paid_verified(self):
         approved = self.section(
             "## 11. Approved operational decisions", "## 12. Approval and maintenance"

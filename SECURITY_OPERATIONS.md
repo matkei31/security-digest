@@ -495,10 +495,14 @@ Version 1.1 (Draft) adds:
 8. **Source suspension:** a source-terms change or newly identified issue is handled by
    temporarily setting `enabled: false` with a specific `activation_condition` and a
    [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) record, without asserting a legal
-   determination, without calling the source's live feed/API/robots.txt to verify, and without
-   modifying past `data/*.json` or `docs/archive/*.html` as a side effect. Correcting or
-   withdrawing a source's already-published articles remains a separate decision under section
-   7's published-output procedure.
+   determination and without modifying past `data/*.json` or `docs/archive/*.html` as a side
+   effect. Verification is limited to a read-only, dated, URL-recorded check of the source's
+   official terms, license, robots.txt, or official feed-guidance page as an approved
+   investigation step; no production run, Gemini API call, routine automated collection,
+   article-body scraping, or bulk retrieval is performed to verify it, and a rightsholder
+   correction/removal/stop request is never made contingent on re-checking the source first.
+   Correcting or withdrawing a source's already-published articles remains a separate decision
+   under section 7's published-output procedure.
 9. **Gemini Paid/Unpaid Services verification:** the owner may confirm only a non-confidential
    yes/no ("is there an active Cloud Billing account associated with the Gemini API key's
    Project") to support BL-032's future content-usage-mode enforcement; API keys, billing

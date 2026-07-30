@@ -499,8 +499,13 @@ Version 1.5 additionally records these new roadmap items from BL-030/BL-031:
 - require owner confirmation of Gemini API Paid/Unpaid Services status before sending
   publisher-derived content from `feed_summary`-classified sources to Gemini (GAP-017), without
   making that confirmation a condition of this Version's own approval;
-- re-confirm Google's Terms for `google_tag` (and, indirectly, `mandiant`'s Google Cloud blog)
-  after the new terms take effect on 2026-07-30.
+- completed 2026-07-30: re-confirmed the Google Terms version that took effect that day for
+  `google_tag` (and, indirectly, `mandiant`'s Google Cloud blog); classification and confidence
+  were unchanged. Further re-confirmation is required only on a subsequent Google Terms
+  revision, or on the source-specific recheck triggers recorded in
+  [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) (official Feed URL/path change,
+  Google Cloud Threat Intelligence or Security Blog/Blogger-specific condition change,
+  machine-readable-instructions change, official RSS guidance change or termination).
 
 ## 12. Approval and maintenance
 
