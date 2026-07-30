@@ -78,12 +78,12 @@ class SourceUsagePolicyTest(unittest.TestCase):
         self.assertNotIn("7章参照(NVD notice)", self.policy)
         self.assertNotIn("7章参照(source名", self.policy)
 
-    def test_document_is_draft_01(self):
+    def test_document_is_approved_01(self):
         self.assertTrue(POLICY_PATH.is_file())
         self.assertIn("# Monomi Digest — Source Usage Policy", self.policy)
         self.assertIn("**Version:** 0.1", self.policy)
-        self.assertIn("**Status:** Draft", self.policy)
-        self.assertIn("**As of:** 2026-07-30", self.policy)
+        self.assertIn("**Status:** Approved", self.policy)
+        self.assertIn("**As of:** 2026-07-31", self.policy)
         self.assertIn("本文書は法律意見ではない", self.policy)
         self.assertIn(
             "特定の取得元が現行実装によって規約違反を犯していると断定するものではない",

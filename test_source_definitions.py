@@ -1029,17 +1029,19 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
         self.assertIn("9757ae98c2f5ef9f13da667be5677d870a6e2cd1", bl030)
         self.assertIn("30428514818", bl030)
 
-    def test_status_active_work_lists_bl031_and_bl030_is_recently_completed(self):
-        # BL-031がActive workへ追加されたため、以前の「None.」(BL-030完了直後の
-        # 空状態)はもう成立しない。BL-030がActive workへ戻っていないことと
-        # Recently completed workに残っていることだけを検証する。
+    def test_status_active_work_lists_bl032_and_bl031_is_recently_completed(self):
+        # BL-031の受入・merge後、BL-032がActive workへ追加された。BL-031と
+        # BL-030がActive workへ戻っていないことと、両方がRecently completed
+        # workに残っていることだけを検証する。
         active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
-        self.assertIn("BL-031", active)
+        self.assertIn("BL-032", active)
         self.assertNotIn("BL-030", active)
+        self.assertNotIn("BL-031", active)
         recently_completed = self._section(
             self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
         )
         self.assertIn("BL-030", recently_completed)
+        self.assertIn("BL-031", recently_completed)
 
     def test_sd029_is_unique(self):
         headings = re.findall(r"^## (SD-\d{3})\b", self.decisions, flags=re.MULTILINE)

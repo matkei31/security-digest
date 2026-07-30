@@ -1,8 +1,8 @@
 # Monomi Digest — Source Usage Policy
 
 - **Version:** 0.1
-- **Status:** Draft
-- **As of:** 2026-07-30
+- **Status:** Approved
+- **As of:** 2026-07-31
 - **Scope:** Monomi Digestの外部取得元(RSS/Atom/structured JSON)、その内容のAI(Gemini)入力、`data/`・`docs/`への保存、公開要約、出典表示。
 - **免責:** 本文書は法律意見ではない。各取得元の公式に公開された利用規約・ライセンス・FAQ等をChatGPTが2026-07-29に確認した内容、および2026-07-30発効のGoogle利用規約についてChatGPTとrepository ownerが2026-07-30に確認した内容に基づく、運用上の安全側判定の記録である。最終的な法的判断は、必要に応じて別途の法務確認によって行う。本文書のいずれの記述も、特定の取得元が現行実装によって規約違反を犯していると断定するものではない。
 
@@ -307,6 +307,16 @@ Gemini APIの公式Terms(https://ai.google.dev/gemini-api/terms)より:
 
 ## 10. Relationship to BL-032 and BL-009
 
-- **BL-032(候補)**: 本文書で提案したcontent usage modeを、`source_definitions.json`への`content_usage_mode`等の設定項目追加と、`fetch.py`側の共通処理(取得・Gemini入力・保存・公開の各段階でのmode強制)として実装する。Gemini data-use gate(5章)の`paid_verified`確認結果を反映する。output-similarity/quotation controls(7章)を実装しテストする。
+- **[BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)(正式登録済み、要件定義済み／未着手)**: 本文書で提案したcontent usage modeを、`source_definitions.json`への`content_usage_mode`等の設定項目追加と、`fetch.py`側の共通処理(取得・Gemini入力・保存・公開の各段階でのmode強制)として実装する。Gemini data-use gate(5章)の`paid_verified`確認結果を反映する。output-similarity/quotation controls(7章)を実装しテストする。
 - **BL-009**: About／出典表示ページ、免責事項、訂正申出窓口の実装。本文書のattribution要件(6章)を実際のUIへ反映する。
 - 本文書(BL-031)自体は、監査結果と方針の記録にとどまり、上記いずれの実装も行わない。Dark Readingの暫定停止(`source_definitions.json`の`enabled: false`)のみを例外的にこのTicketで実施する(本文書の章番号ではなく、BL-031チケット記述内の実施phaseを指す。詳細は下記BACKLOG.mdのBL-031記載を参照)。
+
+---
+
+## 11. Approval and maintenance
+
+- Version 0.1は、2026-07-30のDraft公開後、[PR #67](https://github.com/matkei31/security-digest/pull/67)への複数回のChatGPT独立レビューと修正を経て、最終独立レビューで実装・文書上のBlockerなしと判断された。accepted head `897fc9db365e890318fc694a7fbf9cd8eab65ae1`。[Pull Request CI run 30557479373](https://github.com/matkei31/security-digest/actions/runs/30557479373) success。full unittest: 1391 tests OK。unresolved review threads: 0。
+- ユーザーが本指示をClaude Codeへ送付することで、BL-031の受入・Ready化・通常のmerge-commit方式によるmergeを承認した(merge commit `61feb679fad6bd2252c58cd8acb4696294032629`)。merge完了報告後、2026-07-31にユーザーが「ok進もう」と回答し、本文書Version 0.1をApprovedとすることを承認した([SD-030](DECISIONS.md#sd-030--approve-source-usage-policy-version-01-and-defer-runtime-enforcement-to-bl-032)参照)。
+- **この承認の範囲:** 本承認は、17 source監査結果・5つのcontent usage mode定義・Gemini data-use gate・attribution要件・output-similarity/quotation control方針(7章)という**監査結果と運用方針の承認**である。`source_definitions.json`への`content_usage_mode`等fieldの追加、`fetch.py`での取得元別enforcement実装、production・`workflow_dispatch`・実Gemini API呼び出しを本承認によって事前承認するものではない。これらの実装は[BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)として別途登録され、別途の実装・レビュー・受入を経る。
+- 4章の監査表にある`proposed_mode`列は、BL-032実装前の分類提案(このApproved監査に基づく提案値)を示す列名として維持する。BL-032の実装が完了し、当該sourceについて実際にenforcementが有効化されるまでは、提案(proposed)の位置づけのままである。
+- 各source行の`checked_at`は、本承認によって一括変更しない。将来の再確認は、8章の recheck triggers、または各source行の`recheck_trigger`列に従って個別に行う。
