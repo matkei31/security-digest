@@ -1355,8 +1355,8 @@ class SourceFooterConsistencyTest(unittest.TestCase):
         html = fetch.build_html([])
         footer = source_footer_segment(html)
 
-        self.assertEqual(len(expected), 13)
-        self.assertIn("収集元 (13ソース)", footer)
+        self.assertEqual(len(expected), 12)
+        self.assertIn("収集元 (12ソース)", footer)
         self.assertEqual(footer.count("<li>"), len(expected))
         positions = []
         for source in expected:
@@ -1373,12 +1373,14 @@ class SourceFooterConsistencyTest(unittest.TestCase):
         # BL-030: CrowdStrike・Cloudflareは規約確認までの暫定停止でfooterから除外される。
         self.assertNotIn(">CrowdStrike<", footer)
         self.assertNotIn(">Cloudflare<", footer)
+        # BL-031: Dark Readingは規約確認までの暫定停止でfooterから除外される。
+        self.assertNotIn(">Dark Reading<", footer)
 
 
 class Bl030ArchiveRegenerationCurrentFooterTest(unittest.TestCase):
     """BL-030: 過去daily digestにCrowdStrike／Cloudflare記事が含まれる場合でも、
     Archive全件再生成(generate_archive_outputs())は記事カード自体を削除・改変
-    せず、「収集元」footerだけが実行時点のenabled source一覧(13ソース)を
+    せず、「収集元」footerだけが実行時点のenabled source一覧(12ソース)を
     反映することを、外部アクセスなし・一時ディレクトリ内で決定論的に検証する。
     これはdaily JSON・記事内容の削除や履歴改変ではなく、既存のArchive全件
     再生成・current-source footer仕様による結果であることの回帰確認。
@@ -1416,10 +1418,10 @@ class Bl030ArchiveRegenerationCurrentFooterTest(unittest.TestCase):
             self.assertIn("過去記事1", archive_html)
             self.assertIn("過去記事2", archive_html)
 
-            # 「収集元」footerは実行時点のenabled source一覧(13ソース)を反映し、
+            # 「収集元」footerは実行時点のenabled source一覧(12ソース)を反映し、
             # CrowdStrike・Cloudflareは含まれない。
             footer = source_footer_segment(archive_html)
-            self.assertIn("収集元 (13ソース)", footer)
+            self.assertIn("収集元 (12ソース)", footer)
             self.assertNotIn(">CrowdStrike<", footer)
             self.assertNotIn(">Cloudflare<", footer)
 

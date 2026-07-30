@@ -1,13 +1,16 @@
 # Monomi Digest Security Requirements
 
-- **Version:** 1.4
-- **Status:** Approved
-- **As of:** 2026-07-25
+- **Version:** 1.5
+- **Status:** Draft
+- **As of:** 2026-07-30
 - **Scope:** Current static GitHub Pages site and its repository-backed generation pipeline
-- **Out of scope:** Runtime and platform hardening beyond the accepted BL-025 loader-boundary change, the accepted BL-026 workflow hardening (Action pinning, GitHub Actions Dependabot, and production concurrency), and the accepted BL-027 Action major-version upgrade (`actions/checkout` v7.0.1, `actions/setup-python` v7.0.0)
+- **Out of scope:** Runtime and platform hardening beyond the accepted BL-025 loader-boundary change, the accepted BL-026 workflow hardening (Action pinning, GitHub Actions Dependabot, and production concurrency), the accepted BL-027 Action major-version upgrade (`actions/checkout` v7.0.1, `actions/setup-python` v7.0.0), and the production enforcement of per-source content usage modes (deferred to BL-032, not implemented by this Version)
 
-This is the approved architecture security-requirements baseline, not the GitHub
-vulnerability-reporting policy normally placed in a `SECURITY.md` file. Version 1.4 retains
+Version 1.4 is the most recent **Approved** architecture security-requirements baseline, not
+the GitHub vulnerability-reporting policy normally placed in a `SECURITY.md` file. Version 1.5
+(this Version) is a **Draft** maintenance update layered on top of that Approved Version 1.4
+baseline; until a future version records the user's approval, only Version 1.4 is approved
+policy, and Version 1.5's new or changed material (see below) is not. Version 1.4 retains
 requirements, repository evidence, register entries, proportional exclusions, owner-check
 results, and approved roadmap decisions; records the approved Security Operations
 documentation completed by BL-024; records the accepted BL-025 collection-URL validator;
@@ -21,6 +24,14 @@ rather than the originally planned next ordinary schedule run. BL-027 is limited
 version upgrade and its one-time production validation; it does not implement any broader
 runtime or platform hardening, does not establish `workflow_dispatch` as a standing validation
 method for future Action changes, and no GitHub-side setting change was made as part of it.
+Version 1.5 is a Draft maintenance update. It records the completed BL-030 (unofficial
+translation-endpoint removal, `docs/translate_cache.json` deletion, and the CrowdStrike/
+Cloudflare temporary suspension) and the in-progress BL-031 (a read-only official-terms audit
+of all 17 sources, recorded in [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1, and
+the resulting Dark Reading temporary suspension). It does not record production enforcement of
+any per-source content usage mode; that implementation is deferred to BL-032. This Version
+remains a Draft pending user review and is not approved policy until a future version records
+that approval.
 
 Fable 5 reviewed Draft 0.1 as proportional to the current architecture and suitable for
 continued review, with no Critical or High findings. Draft 0.2 incorporated the user's
@@ -56,7 +67,7 @@ service that stores customer data.
 The architecture nevertheless has boundaries that need protection:
 
 - production GitHub Actions uses write permission and credentials;
-- external RSS, Atom, JSON, translation, NVD, KEV, and Gemini inputs cross trust boundaries;
+- external RSS, Atom, JSON, NVD, KEV, and Gemini inputs cross trust boundaries;
 - Gemini output and external content can reach repository history and public HTML after
   processing;
 - prompt, schema, validation, source configuration, daily JSON, and generated HTML are
@@ -77,7 +88,6 @@ The current repository-backed system comprises:
   `load_source_definitions()` in [`fetch.py`](fetch.py);
 - feed parsing, normalization, bounded retry, and feed-native rich-content selection in
   [`fetch.py`](fetch.py);
-- the summary-translation call and `docs/translate_cache.json` cache in [`fetch.py`](fetch.py);
 - ARTICLE processing with Gemini, including trusted verified context and untrusted article
   content;
 - deterministic-extractive Today's Brief composition, which does not call a BRIEF model;
@@ -91,9 +101,14 @@ The current repository-backed system comprises:
   [`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml), and GitHub Pages;
 - repository-external evaluation and review artifacts recorded by backlog and decision
   evidence but not managed by production code;
-- the future `monomidigest.com` custom domain tracked by
-  [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行), which is not implemented in this
-  repository.
+- the live `monomidigest.com` custom domain (completed by
+  [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行) and recorded in
+  [SD-028](DECISIONS.md#sd-028--migrate-github-pages-to-monomidigestcom-as-the-primary-custom-domain)),
+  served via `docs/CNAME`, with `https://www.monomidigest.com/` and the prior
+  `matkei31.github.io/security-digest/` URL both redirecting to the apex;
+- a documented content-usage policy for external sources
+  ([SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1), which this Version records as
+  audit-only; per-source enforcement in production code is deferred to BL-032.
 
 No component for forms, authentication, sessions, a database, payments, inbound webhooks, or
 an application API is present in the current repository.
@@ -114,10 +129,6 @@ The production flow is:
              v
   selected feed description or feed-native rich content
              |
-             +----> bounded public summary text ----> translation endpoint
-             |                                        |
-             |                                        v
-             |                              docs/translate_cache.json
              v
   untrusted_article_json ----------------------------+
                                                      |
@@ -155,7 +166,9 @@ The production flow is:
 Operational metadata and error messages go to Actions logs. Feed-retrieval errors use a
 bounded sanitizer; the inconsistent exception paths recorded in GAP-009 remain a gap. Raw
 Gemini responses and feed-native rich content are process-memory inputs and must not be
-written to normal logs, daily JSON, generated HTML, or the translation cache.
+written to normal logs, daily JSON, or generated HTML. BL-030 removed the unofficial
+translation endpoint and `docs/translate_cache.json`; no translation cache exists in the
+current architecture (see GAP-012).
 Repository-external screening may retain requests, responses, evaluations, manifests, or
 screenshots only under the separate artifact-handling requirements below.
 
@@ -168,18 +181,19 @@ screenshots only under the separate artifact-handling requirements below.
 | Source configuration | Trusted configuration / public | Allowed in `source_definitions.json` | Public and versioned; changes require review because they control outbound inputs |
 | Prompt, schema, validation, and fallback contracts | Integrity-sensitive source | Allowed and required | Public and versioned; changes require contract-specific review and tests |
 | Daily JSON in `data/` | Public repository data, not Pages publication data | Allowed after validation | Visible in the public repository and history; not intentionally served from the `docs/` Pages tree |
-| Generated HTML and translation cache in `docs/` | Public publication data | Allowed | Public through Pages and repository history |
-| Feed descriptions and feed-native rich content | Untrusted public input | Only bounded description-derived `raw_excerpt` and approved projections may be stored | Full rich content must not be retained in daily JSON, HTML, normal logs, or translation cache |
+| Generated HTML in `docs/` | Public publication data | Allowed | Public through Pages and repository history |
+| Feed descriptions and feed-native rich content | Untrusted public input | Only bounded description-derived `raw_excerpt` and approved projections may be stored | Full rich content must not be retained in daily JSON, HTML, or normal logs |
 | Raw Gemini responses | Untrusted transient processing data | Prohibited in production repository output | Must not be published or logged; repository-external evaluation retention requires explicit scope |
 | Normal production and CI logs | Operational metadata | Held by GitHub, not committed by repository code | Must exclude secrets and raw content; 90-day retention was owner-verified, while actual notification delivery and individual access events remain outside repository evidence |
 | Repository-external evaluation artifacts | Review-sensitive; may include raw request/response data | Prohibited unless separately approved for the repository | Store outside the repository, exclude credentials and local paths from committed documents, and define access/retention per evaluation |
 | Public source URLs | Public configuration/provenance | Allowed | May be published after URL validation where rendered as a link |
-| Future DNS and domain ownership | Administrative security asset | Not currently configured here | Re-evaluate before custom-domain activation; registrar, DNS, Pages, canonical, and redirect settings are outside current repository evidence |
+| Live DNS and domain ownership (`monomidigest.com`) | Administrative security asset | `docs/CNAME` is the repository-side source of truth | XServer registrar account, DNS records, and GitHub Pages Custom domain/Enforce HTTPS settings are outside current repository evidence; re-evaluate before any further DNS or Pages change (see GAP-011) |
+| Source-terms audit and content-usage policy | Trusted configuration / public | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1 | Public and versioned; records per-source official terms, confidence, and unresolved issues; does not itself enforce production behavior (see GAP-016) |
 
 ## 5. Trust boundaries
 
-1. **RSS, Atom, NVD, KEV, and translation responses are external.** Their content, structure,
-   error text, and availability are not trusted merely because a source is configured.
+1. **RSS, Atom, NVD, and KEV responses are external.** Their content, structure, error text, and
+   availability are not trusted merely because a source is configured.
 2. **Article content is untrusted data, not instruction.** HTML fragments and embedded prompt
    text remain article data through parsing and Gemini serialization.
 3. **Gemini output is untrusted until parsed and validated.** A successful HTTP response is not
@@ -199,6 +213,15 @@ screenshots only under the separate artifact-handling requirements below.
    repository content and Pages content.
 9. **Local and repository-external artifacts have separate ownership.** They are not production
    outputs and must not be treated as implicitly safe to commit, publish, or retain indefinitely.
+10. **A source's official terms, license, and AI-provider data-use conditions are external and
+    can change.** A source configured as enabled today is not permanently authorized; content
+    usage mode assignment in [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) is a point-in-time
+    audit recorded per source in that document's row-level `checked_at` column (2026-07-29 for
+    most sources; 2026-07-30 for `google_tag`/`mandiant`, reflecting their post-effective-date
+    Google Terms recheck), and must be re-checked on its recorded triggers (source terms/license
+    change, robots.txt or other machine-readable-instruction change, feed-path change, or any
+    future Google Terms revision beyond the 2026-07-30 version already reviewed). Neither this
+    document nor `SOURCE_USAGE_POLICY.md` makes a final legal determination.
 
 ## 6. Security requirements
 
@@ -214,10 +237,10 @@ shown in the Gap / exception column or as `Unverified outside repository`.
 
 | ID | Requirement | Rationale | Current state | Evidence | Gap / exception | Re-evaluation trigger |
 |---|---|---|---|---|---|---|
-| SR-001 | Treat feed, article, structured-source, translation, and API response content as untrusted input and fail closed or fall back at its parser boundary. | External content can be malformed, unavailable, or instruction-like. | Met | [`fetch.py`](fetch.py): `_parse_feed_items()`, `normalize_feed_body_text()`, `_fetch_feed_result()`; [`vulnerability_facts.py`](vulnerability_facts.py): normalization and cache validation; [`test_feed_fetch_status.py`](test_feed_fetch_status.py) | No current exception. | New source format, parser, provider, or article-page retrieval. |
+| SR-001 | Treat feed, article, structured-source, and API response content as untrusted input and fail closed or fall back at its parser boundary. | External content can be malformed, unavailable, or instruction-like. | Met | [`fetch.py`](fetch.py): `_parse_feed_items()`, `normalize_feed_body_text()`, `_fetch_feed_result()`; [`vulnerability_facts.py`](vulnerability_facts.py): normalization and cache validation; [`test_feed_fetch_status.py`](test_feed_fetch_status.py) | No current exception. | New source format, parser, provider, or article-page retrieval. |
 | SR-002 | Escape every external or AI-generated string before inserting it into HTML; allow only `http` and `https` rendered links through `safe_url()`; add `rel="noopener noreferrer"` to external links opened with `target="_blank"`. | Prevents markup/script injection and unsafe navigation. | Met | [`fetch.py`](fetch.py): `esc()`, `safe_url()`, `build_html()`; [`test_fetch.py`](test_fetch.py): `HtmlEscapeTest`, `SafeUrlTest`, article-link tests; [`test_archive.py`](test_archive.py): `test_internal_and_external_links_are_safe` | Internal navigation intentionally does not use external-link attributes. | New renderer, HTML field, URL source, or client-side script. |
 | SR-003 | Permit production outbound collection only to reviewed `http`/`https` endpoints and validate that scheme at the configuration boundary. | A trusted configuration error should not silently enable a non-web URL handler. | Met | [`fetch.py`](fetch.py): `URL_REQUIRED_COLLECTION_METHODS`, `ALLOWED_COLLECTION_URL_SCHEMES`, `_validate_collection_url()`, and `_validate_source_entry()`; [`test_source_definitions.py`](test_source_definitions.py); [BL-025](BACKLOG.md#bl-025--収集元urlをhttphttps-schemeへ制限する); [PR #48](https://github.com/matkei31/security-digest/pull/48), including its final head, Pull Request CI, and merge record | URL-required collection methods now require a non-empty string with no surrounding whitespace, an absolute `http`/`https` URL, and a host at loader time, including disabled sources. Hostname allowlisting, private/loopback address restrictions, DNS, redirect destinations, ports, TLS, and new `display_url` validation remain outside this requirement. See GAP-001. | Any source-definition, collection-method, collection URL field, or source-loader change. |
-| SR-004 | Do not fetch article pages for richer content. Use only feed-native content, select one bounded representation deterministically, and do not store the full rich body. | Limits new attack surface, data transfer, and unintended retention. | Met | [`fetch.py`](fetch.py): `build_article_body_text()`, `apply_article_body_char_limit()`; [`daily_json.py`](daily_json.py): `build_raw_excerpt()`; [`test_feed_rich_content.py`](test_feed_rich_content.py): `SafetyBoundaryTest`, `RawExcerptAndArticleEntryUnaffectedTest` | The separate summary translation endpoint receives a bounded public summary, not rich content. | Article-page scraping, full-content storage, or another content provider. |
+| SR-004 | Do not fetch article pages for richer content. Use only feed-native content, select one bounded representation deterministically, and do not store the full rich body. | Limits new attack surface, data transfer, and unintended retention. | Met | [`fetch.py`](fetch.py): `build_article_body_text()`, `apply_article_body_char_limit()`; [`daily_json.py`](daily_json.py): `build_raw_excerpt()`; [`test_feed_rich_content.py`](test_feed_rich_content.py): `SafetyBoundaryTest`, `RawExcerptAndArticleEntryUnaffectedTest` | No current exception. BL-030 removed the unofficial translation endpoint that previously received a bounded summary. | Article-page scraping, full-content storage, or another content provider. |
 | SR-005 | Add source-specific behavior only through an approved source contract; do not add unbounded title-, vendor-, CVE-, or article-specific exceptions. | Special cases can bypass common safety and validation paths. | Met | [`AGENTS.md`](AGENTS.md): Scope discipline; [`source_definitions.json`](source_definitions.json); [`test_feed_rich_content.py`](test_feed_rich_content.py): source/name-independence tests | Current approved source-specific behavior, such as shared CISA KEV URLs, remains explicit and tested. | A source cannot be supported without bypassing a common boundary. |
 
 ### 6.2 Prompt and AI boundary
@@ -279,19 +302,20 @@ evidence that improvement in general is impossible or that production v8 always 
 
 | ID | Requirement | Rationale | Current state | Evidence | Gap / exception | Re-evaluation trigger |
 |---|---|---|---|---|---|---|
-| SR-030 | Log bounded operational status, counts, error types, and HTTP status where useful; do not log raw feed/rich content, raw Gemini output, authorization headers, credentials, cookies, or response bodies. | Logs have a separate access and retention surface. | Partially met | [`fetch.py`](fetch.py): `_safe_fetch_error_text()` and response-length-only schema warnings; [`test_feed_rich_content.py`](test_feed_rich_content.py): rich-content log test; [`test_article_analysis.py`](test_article_analysis.py): error-body test | Translation and general Gemini exception paths print unsanitized exception text. See GAP-009. | New provider, SDK, debug mode, or tracing. |
-| SR-031 | Sanitize exception messages before logging: remove local paths, control characters, request URLs containing content, headers, and overlong text. | Exceptions can include more context than intended. | Partially met | [`fetch.py`](fetch.py): `_safe_fetch_error_text()` implements bounded feed-error logging; [`test_feed_fetch_status.py`](test_feed_fetch_status.py) | The sanitizer is not consistently used by translation and Gemini general-exception handling. See GAP-009. | Any error-handling change. |
+| SR-030 | Log bounded operational status, counts, error types, and HTTP status where useful; do not log raw feed/rich content, raw Gemini output, authorization headers, credentials, cookies, or response bodies. | Logs have a separate access and retention surface. | Partially met | [`fetch.py`](fetch.py): `_safe_fetch_error_text()` and response-length-only schema warnings; [`test_feed_rich_content.py`](test_feed_rich_content.py): rich-content log test; [`test_article_analysis.py`](test_article_analysis.py): error-body test | General Gemini exception paths print unsanitized exception text. See GAP-009. | New provider, SDK, debug mode, or tracing. |
+| SR-031 | Sanitize exception messages before logging: remove local paths, control characters, request URLs containing content, headers, and overlong text. | Exceptions can include more context than intended. | Partially met | [`fetch.py`](fetch.py): `_safe_fetch_error_text()` implements bounded feed-error logging; [`test_feed_fetch_status.py`](test_feed_fetch_status.py) | The sanitizer is not consistently used by Gemini general-exception handling. See GAP-009. | Any error-handling change. |
 | SR-032 | Treat generated JSON/HTML as intentionally public; treat screenshots and evaluation bundles according to their contents, not merely their file extension. | Visual and evaluation artifacts can capture local or raw model data. | Met | `data/` and `docs/` roles are defined in [STATUS.md](STATUS.md); [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.0 sections 8–9 define classification, access, retention, minimized evidence, and the unconditional credential ban | The documentation contract is complete; platform log retention and existing-artifact inventory remain separate. See GAP-008. | New screenshot, review bundle, external sharing destination, or artifact-inventory review. |
 | SR-033 | Confirm Actions log/artifact visibility and retention through repository-owner review; do not infer platform settings from workflow YAML. | Repository configuration does not reveal every GitHub-side control. | Partially met | No `upload-artifact` step exists in repository workflows; section 13 records public repository visibility and 90-day log/default artifact retention | Individual access events, actual notification delivery, and future per-artifact overrides remain outside recorded evidence. See GAP-010. | Repository visibility, organization policy, or workflow artifact use. |
 
 The Draft 0.2 exception-output audit covered `fetch.py`, `daily_json.py`,
 `vulnerability_facts.py`, every local module imported by the production path, and shell output
-from both workflows:
+from both workflows. This table describes the current code paths only; BL-030 removed the
+translation-endpoint row this audit previously also covered (see the Version 1.5 history above
+and GAP-012):
 
 | Path | Observed handling at the PR head |
 |---|---|
 | RSS / Atom retrieval | `_safe_fetch_error_text()` bounds common HTTP/network failures; XML parse errors are logged separately without a response body. |
-| Translation | `translate()` prints raw exception text; its request URL can contain bounded public article text in the query. |
 | Standalone NIST NVD and ARTICLE / legacy BRIEF Gemini | `fetch_nist_nvd()`, `gemini_analyze()`, and `gemini_todays_brief()` have general exception paths that print raw exception text; Gemini paths also print the exception type. |
 | Active NVD facts and KEV structured-source retrieval | `vulnerability_facts.py` prints raw network, decoding, parsing, and cache-write exception text in several paths. |
 | Source-definition loader | `load_source_definitions()` does not directly print the path-bearing error; it raises it during module initialization, so an uncaught failure can reach workflow stderr with a traceback and local path. |
@@ -311,12 +335,13 @@ boundary; this Draft adds no sanitizer.
 | SR-036 | Use atomic writes, repository history, validated daily JSON, and offline HTML regeneration as the primary recovery mechanisms for the current scale. | These controls support recovery without introducing a new stateful service. | Met | [`daily_json.py`](daily_json.py): `atomic_write_json()`; [`fetch.py`](fetch.py): `atomic_write_text()`, `generate_archive_outputs()`; [`test_daily_json.py`](test_daily_json.py), [`test_archive.py`](test_archive.py) | GitHub service recovery objectives are outside repository evidence. | Database, external object store, or non-repository publication. |
 | SR-037 | Detect scheduled-generation and Pages failures through existing Actions results and operator review; do not require 24/7 SOC monitoring for the current public static site. | Monitoring effort should reflect impact and architecture. | Partially met | Workflows have timeouts; [STATUS.md](STATUS.md) records run and Pages verification practices; section 13 verifies an Actions failure route and Pages visibility through Actions | Actual delivery success and recovery ownership remain outside recorded evidence. See GAP-010. | Paid service, confidential data, contractual uptime, forms/authentication, or critical operational dependency. |
 
-The Draft 0.2 response-size audit found no consistent byte cap at the network `read()` boundary:
+The Draft 0.2 response-size audit found no consistent byte cap at the network `read()` boundary.
+This table describes the current code paths only; BL-030 removed the translation row this
+audit previously also covered (see the Version 1.5 history above and GAP-012):
 
 | External response | Network read | Later bound, which is not a network byte cap |
 |---|---|---|
 | RSS / Atom | Entire response is read before XML parsing. | At most three feed items are selected after parsing; ARTICLE feed-native body input is then limited to 4,000 characters and stored `raw_excerpt` to 200 characters. |
-| Translation | Entire response is read before JSON parsing. | Request text is limited to 500 characters and cache keys to 300 characters; these do not cap provider response bytes. |
 | ARTICLE Gemini | Entire response is read before JSON parsing. | `maxOutputTokens` and response-schema limits constrain the provider contract, not bytes accepted from the network. |
 | Legacy BRIEF Gemini | Entire response is read before JSON parsing; this boundary is not used by current deterministic-extractive production Brief. | Provider token/schema limits are not network byte caps. |
 | Standalone NIST NVD | Entire response is read before JSON parsing; the source is currently disabled. | `resultsPerPage=3` is a server query parameter, not a local response byte cap. |
@@ -336,6 +361,14 @@ GAP-015 records the hardening candidate. No response-reader implementation is ch
 | SR-042 | Keep acceptance-pending UI, writing-quality, brand, and security-requirements work open until the required user approval is recorded without inventing or paraphrasing a quote as verbatim evidence. | Merge evidence and user acceptance answer different questions. | Met | [`AGENTS.md`](AGENTS.md): Backlog provenance and completion; [BACKLOG.md](BACKLOG.md) state/completion rules; BL-015 remains pending | Objective technical tickets may close through defined non-subjective criteria where recorded. | Change to backlog completion policy or approval owner. |
 | SR-043 | Define a correction, withdrawal, regeneration, and record procedure for published daily JSON or HTML when a major factual error, unsupported claim, subject or scope shift, or prompt-injection-derived output is confirmed. Decide in advance which HTML, daily JSON, and repository history are affected; align the procedure with SD-014; record the correction reason and impact scope. | Published generated content is durable and can affect reader decisions and trust. | Met | [SD-014](DECISIONS.md#sd-014--keep-daily-json-outside-the-github-pages-publication-tree-and-limit-stored-content) defines the storage/history boundary; [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.0 sections 4 and 7 define correction, withdrawal priority, offline regeneration, evidence, emergency limits, and after-action review; [SD-025](DECISIONS.md#sd-025--approve-security-operations-version-10-and-the-minimal-incident-and-correction-policy) | The minimum procedure is documented without adding a correction schema/UI or executing a production correction. See GAP-014. | A confirmed published-output integrity issue; reevaluate the schema/UI contract if withdrawals or corrections recur. |
 
+### 6.10 Source content-usage policy and AI provider data-use boundary
+
+| ID | Requirement | Rationale | Current state | Evidence | Gap / exception | Re-evaluation trigger |
+|---|---|---|---|---|---|---|
+| SR-044 | Audit each configured source's official terms, license, or FAQ, and record a proposed content usage mode (`structured_open`, `feed_summary`, `limited_feed_analysis`, `metadata_only`, `disabled_legal_review`), confidence, unresolved issues, and a recheck trigger before assuming broader reuse than description/metadata is permitted. | Feed availability does not by itself authorize AI processing, public summarization, or content storage. | Partially met | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1 records the audit for all 17 configured sources, including official evidence URLs/types, confidence, and recheck triggers. `limited_feed_analysis` (`the_hacker_news`, `krebs_on_security`) is an explicit, bounded risk acceptance, not a determination that reuse is permitted. | This is an audit and policy record only; `source_definitions.json` has no `content_usage_mode` field and `fetch.py` does not enforce any mode in production. See GAP-016; enforcement is deferred to BL-032. | Any source-terms, license, or FAQ change; addition of a new source; BL-032 implementation. |
+| SR-045 | Do not send publisher-derived article content to the Gemini API for AI processing or public summarization unless the Gemini API's data-use terms for the request path (`paid_verified` Cloud Billing-linked Project) have been owner-confirmed; treat `unpaid` or `unknown` status as requiring metadata-only handling for sources whose own terms do not clearly authorize AI processing. | Google's Gemini API terms treat Unpaid Services differently from Paid Services with respect to using submitted content for product/model improvement. | Met | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) section 5 (Gemini data-use gate) records `gemini_data_use_status: paid_verified`, owner-confirmed 2026-07-29 via the Google AI Studio API Keys screen (the `security-digest` Google Cloud Project has active Cloud Billing, Tier 1 pay-as-you-go); no API key, Project ID, billing account ID, amount, or screenshot is recorded. | The Gemini-side data-use gate condition is satisfied. Per-source production enforcement of content usage modes remains deferred to BL-032 (see SR-044, GAP-016), and each source's own terms conditions (e.g. `google_tag`/`mandiant`'s classification under the Google Terms version confirmed effective 2026-07-30, see [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) section 8) are unaffected by this confirmation. See GAP-017. | Owner confirms a billing/Project/API-key change; Gemini API terms change. |
+| SR-046 | Track each disabled source's re-enablement condition (`activation_condition`) explicitly, including any robots.txt, User-Agent-scope, or written-permission condition, and do not re-enable a source until its recorded condition is satisfied. | Ad hoc re-enablement without re-checking terms would undo the audit's purpose. | Partially met | [`source_definitions.json`](source_definitions.json): non-empty `activation_condition` for `cisa`, `crowdstrike`, `cloudflare`, and `dark_reading`; [`test_source_definitions.py`](test_source_definitions.py) | `nist_nvd` is disabled but its `activation_condition` field is an empty string; only its `notes` field records why standalone collection is off (a historical, pre-BL-030 note), not a re-enablement condition in the `activation_condition` field this requirement tracks. This Version does not add a `nist_nvd.activation_condition` value, since doing so would change a `source_definitions.json` field for a source other than Dark Reading, which is outside this Version's scope. | BL-032, or a future ticket that reconsiders standalone `nist_nvd` collection and records its `activation_condition`. |
+
 ## 7. Current control mapping
 
 | Area | Requirement IDs | Current implementation | Evidence | Aggregate status | SR state breakdown |
@@ -349,6 +382,7 @@ GAP-015 records the hardening candidate. No response-reader implementation is ch
 | Logging and artifacts | SR-030–SR-033 | Bounded feed errors, no raw response persistence, documented external-artifact handling, and owner-verified default platform retention | [`fetch.py`](fetch.py), related logging tests, [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md), section 13 | Partially met | Met 1 / Partial 3 / Not met 0 / Unverified 0 |
 | Availability and recovery | SR-034–SR-037 | Bounded timeouts/retries, explicit statuses, atomic writes, repository history, and offline regeneration; response-size limits remain open | [`fetch.py`](fetch.py), [`daily_json.py`](daily_json.py), related tests | Partially met | Met 2 / Partial 2 / Not met 0 / Unverified 0 |
 | Change and review control | SR-038–SR-043 | Dedicated branches/PRs, full unittest and diff CI, scope review, separate production authorization, contract-specific tests, and documented published-output correction | [`AGENTS.md`](AGENTS.md), [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md), [`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml), [`test_pr_ci_workflow.py`](test_pr_ci_workflow.py) | Partially met | Met 5 / Partial 1 / Not met 0 / Unverified 0 |
+| Source content-usage policy and AI provider data-use boundary | SR-044–SR-046 | Read-only official-terms audit of all 17 sources with proposed content usage modes ([SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1); owner-confirmed Gemini Paid Services gate (`paid_verified`); documented per-source `activation_condition` for disabled sources, except `nist_nvd` (empty `activation_condition`) | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md), [`source_definitions.json`](source_definitions.json), [`test_source_definitions.py`](test_source_definitions.py) | Partially met | Met 1 / Partial 2 / Not met 0 / Unverified 0 |
 | Forms, authentication, database, and payments | Re-evaluation triggers only | No such component exists in the current repository | [`AGENTS.md`](AGENTS.md), current static generator and HTML | Not applicable now | No current SR count |
 | GitHub/Pages/DNS settings outside the repository | SR-019, SR-024, SR-026, SR-033, SR-037 | Version 1.0 records the non-sensitive repository-owner settings verified in section 13; owner-specific delivery and rotation evidence remain limited | Repository-owner read-only checklist in section 13 | Partially met | Cross-cutting owner checks; not counted again in domain totals |
 
@@ -373,11 +407,13 @@ it does not mean the underlying control is implemented.
 | GAP-008 | Policy decision | Completed by documentation | SR-015, SR-032 | The Version 1.0 baseline lacked a common retention/access/disposal rule for repository-external evaluation artifacts. | Detailed artifacts may persist longer than intended if the documented rule is not applied. | A small default and per-evaluation exceptions are sufficient. | [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.0 sets a 90-day detailed-artifact default, sanitized long-term evidence priority, credential prohibition, and recorded longer-retention exceptions. Existing artifacts are reviewed at the next inventory; this update deletes none. | [BL-024](BACKLOG.md#bl-024--最小security-operationsと公開済み生成物の訂正手順を定義する); [SD-025](DECISIONS.md#sd-025--approve-security-operations-version-10-and-the-minimal-incident-and-correction-policy) | Completed by documentation; apply to new artifacts and the next artifact inventory. |
 | GAP-009 | Security gap | Remains open for later prioritization | SR-017, SR-030, SR-031 | Exception handling can bypass `_safe_fetch_error_text()` on several paths. | Raw exception text or uncaught tracebacks can expose paths, URLs, or validation context. | Public inputs reduce confidentiality impact, but log hygiene remains a real gap. | Keep open; do not add a sanitizer without a separately prioritized ticket. | Not yet | Debug logging, another provider, or confirmed sensitive diagnostic leak. |
 | GAP-010 | Owner verification | Completed owner verification | SR-019, SR-024, SR-026, SR-033, SR-037 | GitHub/Pages configuration required owner-side confirmation. | Repository-only evidence could overstate coverage. | Read-only confirmation is sufficient; no setting change is implied. | Required non-sensitive settings were verified and are recorded in section 13. Owner-specific delivery confirmation remains limited. | None | Relevant GitHub setting, ownership, visibility, workflow, secret inventory, or Pages change. |
-| GAP-011 | Future trigger | Deferred until trigger | SR-012, SR-037 | No approved custom-domain security preflight exists. | An unsafe rollout or withdrawal could leave a dangling binding. | This is not a current-site security gap because the custom domain is not implemented. | In BL-007, cover ownership; verified-domain/domain verification; dangling DNS and takeover prevention; safe Pages/DNS cutover and teardown order; registrar MFA, auto-renew, expiration protection, and registrar/transfer lock; repository rename impact; HTTPS, canonical URLs, redirects, rollback, and responsible ownership. | [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行) | Before any custom-domain DNS or Pages change. |
-| GAP-012 | Policy decision | Accepted residual risk | SR-001, SR-030 | The unofficial translation endpoint receives bounded public article text in a URL query, and `docs/translate_cache.json` persists provider output in the repository and Pages across days; no cache TTL or provider-response integrity validation exists. | Provider behavior, URL logging, availability, and cached accuracy can change. | Inputs are public, so confidentiality impact is low. | Continue only for public information; do not send private/confidential input. Reevaluate on provider policy/failure, private input, or translation-requirement change. | None now | Any listed reevaluation condition. |
+| GAP-011 | Future trigger | Deferred until trigger | SR-012, SR-037 | BL-007 completed the `monomidigest.com` cutover using an approved custom-domain security preflight (ownership; verified-domain/domain verification; dangling DNS and takeover prevention; safe Pages/DNS cutover and teardown order; registrar MFA, auto-renew, expiration protection, and registrar/transfer lock; repository rename impact; HTTPS, canonical URLs, redirects, rollback, and responsible ownership), exercised once for the initial rollout (see SD-028). | An unsafe future teardown, rollback, or repository-rename change could still leave a dangling binding if it does not repeat this preflight. | This is not a current-site security gap because the custom domain is now live and reflects the approved preflight; no further DNS or Pages change is planned by this Version. | Repeat the same BL-007 preflight (ownership; verified-domain/domain verification; dangling DNS and takeover prevention; safe Pages/DNS cutover and teardown order; registrar MFA, auto-renew, expiration protection, and registrar/transfer lock; repository rename impact; HTTPS, canonical URLs, redirects, rollback, and responsible ownership) before any further custom-domain DNS or Pages change. | [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行) | Before any further custom-domain DNS or Pages change (teardown, rollback, or repository rename). |
+| GAP-012 | Policy decision | Resolved by BL-030 | SR-001, SR-030 | Previously: the unofficial translation endpoint received bounded public article text in a URL query, and `docs/translate_cache.json` persisted provider output in the repository and Pages across days, with no cache TTL or provider-response integrity validation. | Resolved; no longer a live risk. | N/A (resolved). | [BL-030](BACKLOG.md#bl-030--取得元翻訳経路の緊急リスク低減) removed the unofficial translation endpoint (`load_cache()`, `save_cache()`, `translate()`) from [`fetch.py`](fetch.py) and deleted `docs/translate_cache.json` from the repository tree (no history rewrite); `resolve_display_title()` now falls back only to `raw_title`. Accepted by the user at [PR #66](https://github.com/matkei31/security-digest/pull/66) and recorded in [SD-029](DECISIONS.md#sd-029--temporarily-remove-the-unofficial-translation-path-and-suspend-crowdstrike-and-cloudflare-pending-source-terms-review). | [BL-030](BACKLOG.md#bl-030--取得元翻訳経路の緊急リスク低減) | Resolved; re-open only if an unofficial or unreviewed translation path is reintroduced. |
 | GAP-013 | Policy decision | Completed by documentation | SR-020, SR-033 | The Version 1.0 baseline lacked a compact security-incident/credential-leakage response procedure. | Containment and evidence preservation may be improvised if the documented procedure is not followed. | A minimal procedure is proportionate. | [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.0 defines assessment, containment, credential paths, sanitized evidence, closure, and the limited emergency exception. | [BL-024](BACKLOG.md#bl-024--最小security-operationsと公開済み生成物の訂正手順を定義する); [SD-025](DECISIONS.md#sd-025--approve-security-operations-version-10-and-the-minimal-incident-and-correction-policy) | Completed by documentation; apply immediately after an incident. |
 | GAP-014 | Security gap | Completed by documentation | SR-043 | The Version 1.0 baseline lacked a published-output correction, withdrawal, regeneration, and repository-history procedure. | A major factual error or unsupported output can harm readers and trust. | A discovery-time procedure is proportionate; 24/7 monitoring is not required. | [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.0 defines HTML/daily-JSON/history treatment, withdrawal priority, offline regeneration, reason/scope evidence, SD-014 alignment, and the first-use schema/UI boundary. | [BL-024](BACKLOG.md#bl-024--最小security-operationsと公開済み生成物の訂正手順を定義する); [SD-025](DECISIONS.md#sd-025--approve-security-operations-version-10-and-the-minimal-incident-and-correction-policy) | Completed by documentation; apply if an issue is confirmed and reevaluate the contract on recurrence. |
 | GAP-015 | Hardening candidate | Deferred until trigger | SR-034 | External responses have no common network byte cap before parsing. | Oversized responses can increase memory use or delay generation. | The audit records that no incident was found; endpoint-specific limits need separate design. | Defer until a new source/provider, oversized response, or memory/time failure. | Not yet | New source/provider, oversized response, or observed memory/time failure. |
+| GAP-016 | Security gap | Remains open for later prioritization | SR-044 | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1 assigns a content usage mode (including the new `limited_feed_analysis` risk-acceptance mode) to each of the 17 sources, but `source_definitions.json` has no `content_usage_mode` (or equivalent) field, and `fetch.py`'s common `content:encoded`/Atom-content selection, Gemini input, storage, and public-summary paths do not enforce any per-source mode. | A `feed_summary`, `limited_feed_analysis`, or `metadata_only` source is currently processed the same as a `structured_open` source in production code; the audit's proposed restrictions are not technically enforced. | The Draft 0.1 audit itself is a proportionate first step; enforcement is a larger, separately reviewable implementation. | Keep open until BL-032 implements `content_usage_mode` fields and enforcement in `fetch.py`, with its own tests. Do not treat the BL-031 audit alone as closing this gap. | [BL-032](BACKLOG.md) (candidate; not yet registered as of this Version) | BL-032 implementation; any confirmed production processing of a `feed_summary`/`limited_feed_analysis`/`metadata_only` source beyond its recorded mode. |
+| GAP-017 | Owner verification | Completed owner verification | SR-045 | `gemini_data_use_status` was `unknown`; the repository owner has confirmed, via the Google AI Studio API Keys screen on 2026-07-29, that the `security-digest` Google Cloud Project used for the Gemini API key has active Cloud Billing (Tier 1, pay-as-you-go). | Resolved for the Gemini-side data-use question: submitted content is not subject to Unpaid Services product/model-improvement use for this Project, as owner-verified. | Owner confirmation was proportionate: a non-confidential yes/no on active billing, without recording API keys, billing amounts, account IDs, or screenshots. | Confirmed 2026-07-29: `security-digest` Project, active Cloud Billing, Tier 1 pay-as-you-go. This confirms the Gemini-side condition only; per-source production enforcement of content usage modes and each source's own terms conditions are unaffected and remain governed by SR-044/GAP-016 and [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) respectively. | [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) section 5; [BL-032](BACKLOG.md) (candidate) | Billing cancellation, Project change, or API key migration; re-verify if any occurs. |
 
 ## 9. Explicitly non-required controls for the current architecture
 
@@ -446,7 +482,30 @@ proportionate roadmap decisions, and Version 1.1 preserves them:
 - leave GAP-009 open for later prioritization; and
 - defer a network response byte cap until its listed trigger.
 
-These decisions approve follow-up scope, not implementation or production execution.
+These decisions approve follow-up scope, not implementation or production execution. The
+"accept the unofficial translation endpoint only for bounded public information" decision above
+is a historical record of the Version 1.0 baseline; it was superseded by [BL-030](BACKLOG.md#bl-030--取得元翻訳経路の緊急リスク低減),
+which removed that endpoint and `docs/translate_cache.json` entirely (see GAP-012 and
+[SD-029](DECISIONS.md#sd-029--temporarily-remove-the-unofficial-translation-path-and-suspend-crowdstrike-and-cloudflare-pending-source-terms-review)).
+Version 1.5 additionally records these new roadmap items from BL-030/BL-031:
+
+- treat CrowdStrike, Cloudflare, and Dark Reading as temporarily suspended
+  (`enabled: false`) pending confirmation of their documented `activation_condition`, not as a
+  final legal determination that they violated terms;
+- record a per-source content usage mode audit for all 17 configured sources in
+  [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1, without implementing production
+  enforcement of any mode (deferred to BL-032, a candidate ticket not yet registered as of this
+  Version);
+- require owner confirmation of Gemini API Paid/Unpaid Services status before sending
+  publisher-derived content from `feed_summary`-classified sources to Gemini (GAP-017), without
+  making that confirmation a condition of this Version's own approval;
+- completed 2026-07-30: re-confirmed the Google Terms version that took effect that day for
+  `google_tag` (and, indirectly, `mandiant`'s Google Cloud blog); classification and confidence
+  were unchanged. Further re-confirmation is required only on a subsequent Google Terms
+  revision, or on the source-specific recheck triggers recorded in
+  [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) (official Feed URL/path change,
+  Google Cloud Threat Intelligence or Security Blog/Blogger-specific condition change,
+  machine-readable-instructions change, official RSS guidance change or termination).
 
 ## 12. Approval and maintenance
 
@@ -500,6 +559,20 @@ These decisions approve follow-up scope, not implementation or production execut
   implementation-agent boundaries. Version 1.2 was the BL-025 maintenance update, Version 1.3
   was the BL-026 maintenance update, and Version 1.4 is the BL-027 maintenance update, all under
   the already-approved SD-024 roadmap; none creates a new Stable Decision.
+- **Version 1.5 is a Draft, not an approved maintenance update.** It records: (1) the
+  user-accepted [BL-030](BACKLOG.md#bl-030--取得元翻訳経路の緊急リスク低減) at
+  [PR #66](https://github.com/matkei31/security-digest/pull/66), which removed the unofficial
+  translation endpoint and `docs/translate_cache.json` (GAP-012 now `Resolved by BL-030`; see
+  [SD-029](DECISIONS.md#sd-029--temporarily-remove-the-unofficial-translation-path-and-suspend-crowdstrike-and-cloudflare-pending-source-terms-review));
+  and (2) the in-progress [BL-031](BACKLOG.md#bl-031--全取得元の公式規約監査とセキュリティ文書整合化)
+  read-only audit of all 17 configured sources against their official terms, recorded in the new
+  [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Draft 0.1 (new SR-044–SR-046, new
+  GAP-016–GAP-017), together with the resulting temporary suspension of Dark Reading. BL-031
+  does not implement any production enforcement of a content usage mode; that remains a
+  candidate for BL-032. This Version does not itself carry a stable, approved SD entry; it
+  remains Draft until the user reviews and accepts it, at which point a future version will
+  record that approval (as Version 1.0 through 1.4 each did for their own scope) without
+  reopening SD-024, SD-025, SD-028, or SD-029.
 
 ## 13. Repository-owner verification
 
@@ -532,8 +605,8 @@ platform-internal identifier.
 | Pages | Enabled and publication mode (mandatory) | Verified — branch publication | Pages settings | Pages mode change |
 | Pages | Source branch/directory (mandatory) | Verified — `main` / `docs` | Pages settings | Branch, directory, or repository rename |
 | Pages | HTTPS enforcement (mandatory) | Verified — enforced | Pages settings | Domain or HTTPS-setting change |
-| Pages | Custom domain (mandatory) | Not configured | Pages settings | Before custom-domain work |
-| Pages | Domain verification | Not applicable | No custom domain is configured | Before custom-domain work |
+| Pages | Custom domain (mandatory) | Verified — configured as `monomidigest.com` (completed by [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行), [SD-028](DECISIONS.md#sd-028--migrate-github-pages-to-monomidigestcom-as-the-primary-custom-domain)); superseding the "Not configured" state recorded through Version 1.4 | Pages settings; `docs/CNAME` | Custom-domain, DNS, or Pages-source change |
+| Pages | Domain verification | Verified — ownership-verification TXT confirmed and domain shows Verified in Pages settings (`protected_domain_state: verified`) | Pages settings; XServer DNS TXT record | Domain-verification or DNS-provider change |
 | Pages | Visibility and public URL | Verified — public project site | Repository and Pages settings | Visibility, ownership, or repository rename |
 | Notifications | Actions failure route | Verified — failed-workflow notification route enabled | Account settings; destination and delivery success are not recorded | Notification-policy or ownership change |
 | Notifications | Pages failure recognition | Verified — Pages build/deploy appears in Actions and uses the failure route | Pages and notification settings | Pages publication-mode change |
@@ -543,8 +616,11 @@ platform-internal identifier.
 | Security | Private vulnerability reporting | Not configured | Repository security settings | Reporting-policy change |
 | Security | CodeQL default setup | Not configured | Repository security settings | Code-scanning change |
 | Security | Organization code-security configuration | Not applicable | Personal-account repository; individual repository settings were reviewed | Ownership transfer |
+| AI provider (non-mandatory, new in Version 1.5) | Gemini API Paid/Unpaid Services status (`gemini_data_use_status`) | Verified — `paid_verified` (confirmed 2026-07-29 via the Google AI Studio API Keys screen: the `security-digest` Google Cloud Project has active Cloud Billing, Tier 1 pay-as-you-go; no API key, Project ID, billing account ID, amount, or screenshot recorded) | Whether the Gemini API key used in production is associated with an active Cloud Billing account on its Project; only a yes/no is needed, not billing amounts or account identifiers (see GAP-017, [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) section 5) | Billing cancellation, Project change, or API key migration; re-verify if any occurs |
 
-Mandatory checklist items contain no `Unverified — owner access required` result. Owner-specific
-notification destination, actual delivery, credential access audit, and last-rotation evidence
-remain outside the recorded evidence boundary; this limited remainder is not a Version 1.0
-blocker.
+Mandatory checklist items contain no `Unverified — owner access required` result. The new
+AI-provider row above is explicitly non-mandatory for this Version and does not block Version
+1.5's own scope; it is recorded because BL-032 needs it before enabling `feed_summary` sources'
+AI processing. Owner-specific notification destination, actual delivery, credential access
+audit, and last-rotation evidence remain outside the recorded evidence boundary; this limited
+remainder is not a Version 1.0 blocker.
