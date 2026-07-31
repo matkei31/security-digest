@@ -1123,7 +1123,9 @@ class ExtractiveBriefIntegrationTest(unittest.TestCase):
         self.assertEqual(result["prompt_version"], "today-brief-extractive-v2")
         self.assertIsNone(result["error_type"])
         self.assertEqual(dj.BRIEF_EXTRACTIVE_MAX_DISCUSSION_POINTS, 2)
-        self.assertEqual(dj.SCHEMA_VERSION, 1)
+        # BL-032 bumped SCHEMA_VERSION from 1 to 2 for the policy_excluded_count/
+        # ai_eligible_count contract; unrelated to Brief composition.
+        self.assertEqual(dj.SCHEMA_VERSION, 2)
         self.assertEqual(dj.ARTICLE_PROMPT_VERSION, "article-analysis-v8")
 
     def test_zero_evaluated_stays_not_attempted_without_calling_gemini(self):

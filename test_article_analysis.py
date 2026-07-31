@@ -160,6 +160,9 @@ class PromptVersionPropagationTest(unittest.TestCase):
         result = call_gemini_analyze(response_body=make_candidate_body(VALID_ANALYSIS_RESPONSE))
         item = {
             "source": "CISA", "link": "https://example.com/a", "title": "t",
+            "content_policy": dj.build_item_content_policy(
+                "cisa", "structured_open", "structured_open", None
+            ),
             "ai_analysis": result["analysis"],
             "ai_analysis_meta": {
                 "status": result["status"], "error_type": result["error_type"],
@@ -167,7 +170,9 @@ class PromptVersionPropagationTest(unittest.TestCase):
             },
         }
         source_defs = [{"id": "cisa", "name": "CISA", "source_type": "CERT・注意喚起",
-                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en"}]
+                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en",
+                        "policy": {"content_usage_mode": "structured_open",
+                                   "allow_excerpt_storage": True}}]
         entry = dj.build_article_entry(item, source_defs, "gemini-2.5-flash",
                                         datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST))
         self.assertEqual(entry["analysis"]["prompt_version"], "article-analysis-v8")
@@ -185,6 +190,9 @@ class NormalAnalysisTest(unittest.TestCase):
         result = call_gemini_analyze(response_body=make_candidate_body(VALID_ANALYSIS_RESPONSE))
         item = {
             "source": "CISA", "link": "https://example.com/a", "title": "t",
+            "content_policy": dj.build_item_content_policy(
+                "cisa", "structured_open", "structured_open", None
+            ),
             "ai_analysis": result["analysis"],
             "ai_analysis_meta": {
                 "status": result["status"], "error_type": result["error_type"],
@@ -192,7 +200,9 @@ class NormalAnalysisTest(unittest.TestCase):
             },
         }
         source_defs = [{"id": "cisa", "name": "CISA", "source_type": "CERT・注意喚起",
-                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en"}]
+                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en",
+                        "policy": {"content_usage_mode": "structured_open",
+                                   "allow_excerpt_storage": True}}]
         entry = dj.build_article_entry(item, source_defs, "gemini-2.5-flash",
                                         __import__("datetime").datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST))
         self.assertEqual(entry["analysis"]["category"], "脆弱性・パッチ")
@@ -569,6 +579,9 @@ class FallbackTest(unittest.TestCase):
         result = call_gemini_analyze(response_body=make_candidate_body_from_raw(truncated))
         item = {
             "source": "CISA", "link": "https://example.com/a", "title": "t",
+            "content_policy": dj.build_item_content_policy(
+                "cisa", "structured_open", "structured_open", None
+            ),
             "ai_analysis": result["analysis"],
             "ai_analysis_meta": {
                 "status": result["status"], "error_type": result["error_type"],
@@ -576,7 +589,9 @@ class FallbackTest(unittest.TestCase):
             },
         }
         source_defs = [{"id": "cisa", "name": "CISA", "source_type": "CERT・注意喚起",
-                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en"}]
+                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en",
+                        "policy": {"content_usage_mode": "structured_open",
+                                   "allow_excerpt_storage": True}}]
         entry = dj.build_article_entry(item, source_defs, "gemini-2.5-flash",
                                         __import__("datetime").datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST))
         self.assertEqual(entry["analysis"]["status"], "failed")
@@ -617,6 +632,9 @@ class FallbackTest(unittest.TestCase):
         result = call_gemini_analyze(response_body=make_candidate_body(v1_only))
         item = {
             "source": "CISA", "link": "https://example.com/a", "title": "t",
+            "content_policy": dj.build_item_content_policy(
+                "cisa", "structured_open", "structured_open", None
+            ),
             "ai_analysis": result["analysis"],
             "ai_analysis_meta": {
                 "status": result["status"], "error_type": result["error_type"],
@@ -624,7 +642,9 @@ class FallbackTest(unittest.TestCase):
             },
         }
         source_defs = [{"id": "cisa", "name": "CISA", "source_type": "CERT・注意喚起",
-                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en"}]
+                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en",
+                        "policy": {"content_usage_mode": "structured_open",
+                                   "allow_excerpt_storage": True}}]
         entry = dj.build_article_entry(item, source_defs, "gemini-2.5-flash",
                                         __import__("datetime").datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST))
         self.assertIsNotNone(entry)
@@ -658,6 +678,9 @@ class FailedNotAttemptedTest(unittest.TestCase):
 
         item = {
             "source": "CISA", "link": "https://example.com/a", "title": "t",
+            "content_policy": dj.build_item_content_policy(
+                "cisa", "structured_open", "structured_open", None
+            ),
             "ai_analysis": result["analysis"],
             "ai_analysis_meta": {
                 "status": result["status"], "error_type": result["error_type"],
@@ -665,7 +688,9 @@ class FailedNotAttemptedTest(unittest.TestCase):
             },
         }
         source_defs = [{"id": "cisa", "name": "CISA", "source_type": "CERT・注意喚起",
-                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en"}]
+                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en",
+                        "policy": {"content_usage_mode": "structured_open",
+                                   "allow_excerpt_storage": True}}]
         entry = dj.build_article_entry(item, source_defs, "gemini-2.5-flash",
                                         __import__("datetime").datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST))
         a = entry["analysis"]
@@ -918,6 +943,9 @@ class SecurityTest(unittest.TestCase):
         result = call_gemini_analyze(response_body=make_candidate_body(VALID_ANALYSIS_RESPONSE))
         item = {
             "source": "CISA", "link": "https://example.com/a", "title": "t",
+            "content_policy": dj.build_item_content_policy(
+                "cisa", "structured_open", "structured_open", None
+            ),
             "ai_analysis": result["analysis"],
             "ai_analysis_meta": {
                 "status": result["status"], "error_type": result["error_type"],
@@ -925,7 +953,9 @@ class SecurityTest(unittest.TestCase):
             },
         }
         source_defs = [{"id": "cisa", "name": "CISA", "source_type": "CERT・注意喚起",
-                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en"}]
+                        "source_tier": "Tier 1", "collection_method": "rss", "language": "en",
+                        "policy": {"content_usage_mode": "structured_open",
+                                   "allow_excerpt_storage": True}}]
         entry = dj.build_article_entry(item, source_defs, "gemini-2.5-flash",
                                         __import__("datetime").datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST))
         serialized = json.dumps(entry, ensure_ascii=False)

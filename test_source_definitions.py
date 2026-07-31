@@ -83,6 +83,26 @@ BASELINE_TRUSTED_CYBER_SOURCES = {
 }
 
 
+# BL-032: バリデーションを通る最小構成のpolicyオブジェクト(structured_open相当)。
+_VALID_POLICY = {
+    "content_usage_mode": "structured_open",
+    "allow_network_fetch": True,
+    "allow_description": True,
+    "allow_rich_content": False,
+    "allow_ai_processing": True,
+    "allow_excerpt_storage": True,
+    "allow_public_summary": True,
+    "attribution_requirement": "test fixture attribution",
+    "attribution_url": None,
+    "checked_at": "2026-07-29",
+    "confidence": "high",
+    "unresolved_issue": "",
+    "recheck_trigger": "test fixture",
+    "official_evidence_url": "https://example.com/terms",
+    "evidence_type": "terms",
+}
+
+
 def _valid_entry(**overrides):
     """バリデーションを通る最小構成のsourceエントリを1件返す。"""
     entry = {
@@ -100,6 +120,7 @@ def _valid_entry(**overrides):
         "color": "#555",
         "trusted_cyber_source": False,
         "notes": "",
+        "policy": dict(_VALID_POLICY),
     }
     entry.update(overrides)
     return entry
@@ -578,6 +599,7 @@ class NonRssSourceDispatchTest(unittest.TestCase):
                 "display_url": "https://example.com/kev-catalog",
                 "collection_method": "cisa_kev_json",
                 "enabled": cisa_kev_enabled,
+                "policy": dict(_VALID_POLICY),
             },
             {
                 "id": "nist_nvd",
@@ -585,6 +607,7 @@ class NonRssSourceDispatchTest(unittest.TestCase):
                 "url": "https://example.com/nvd-base",
                 "collection_method": "nist_nvd_json",
                 "enabled": nist_nvd_enabled,
+                "policy": dict(_VALID_POLICY),
             },
         ]
 
@@ -601,7 +624,10 @@ class NonRssSourceDispatchTest(unittest.TestCase):
         self.assertEqual(mock_kev.call_args.kwargs["display_url"], "https://example.com/kev-catalog")
         self.assertEqual(mock_kev.call_args.kwargs["source_name"], "CISA KEV")
         mock_nvd.assert_not_called()
-        self.assertIn({"source": "CISA KEV"}, result)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["source"], "CISA KEV")
+        self.assertEqual(result[0]["source_id"], "cisa_kev")
+        self.assertTrue(result[0]["content_policy"]["ai_eligible"])
 
     @patch("fetch.fetch_nist_nvd")
     @patch("fetch.fetch_cisa_kev")
@@ -633,7 +659,10 @@ class NonRssSourceDispatchTest(unittest.TestCase):
         mock_nvd.assert_called_once()
         self.assertEqual(mock_nvd.call_args.kwargs["base_url"], "https://example.com/nvd-base")
         self.assertEqual(mock_nvd.call_args.kwargs["source_name"], "NIST NVD")
-        self.assertIn({"source": "NIST NVD"}, result)
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0]["source"], "NIST NVD")
+        self.assertEqual(result[0]["source_id"], "nist_nvd")
+        self.assertTrue(result[0]["content_policy"]["ai_eligible"])
 
     def test_real_definitions_cisa_kev_enabled_and_nist_nvd_disabled(self):
         # 実際のsource_definitions.jsonにおける現状のenabled値を確認する

@@ -12,6 +12,7 @@ import json
 import os
 import re
 import tempfile
+import unicodedata
 import urllib.parse
 from pathlib import Path
 
@@ -21,7 +22,12 @@ REPOSITORY_ROOT = Path(__file__).resolve().parent
 DATA_DIR = REPOSITORY_ROOT / "data"
 
 # ── バージョン・スキーマ定数(一元管理) ───────────────────────────────────────
-SCHEMA_VERSION = 1
+# BL-032: schema_version 1では、AI各件数・counts集計がtotal_itemsへ一致する契約
+# だったが、metadata_only相当の記事をAI成功率の分母・「未判定」集計から除外する
+# 要件と両立しないため、2へbumpする。過去のschema_version=1 daily JSONは
+# 一切書き換えず、そのままレガシー契約(このファイル内のv1専用ロジック)で読む。
+SCHEMA_VERSION = 2
+LEGACY_SCHEMA_VERSION = 1
 ARTICLE_PROMPT_VERSION = "article-analysis-v8"
 # BL-021: 後方互換のためprompt_versionという既存フィールド名を維持するが、
 # 新値はLLM promptではなくToday's Brief composition contractのversionを表す。
@@ -276,6 +282,225 @@ def resolve_source_meta(source_name, source_definitions):
     )
 
 
+# ── 取得元別content usage policy (BL-032) ────────────────────────────────
+# 正本: SOURCE_USAGE_POLICY.md Version 0.1 (Approved) 3章・5章・6章・7章・10章。
+
+CONTENT_USAGE_MODES = (
+    "structured_open",
+    "feed_summary",
+    "limited_feed_analysis",
+    "metadata_only",
+    "disabled_legal_review",
+)
+
+# AI評価(Gemini入力・facts取得・Brief/dashboard集計)の対象となるmode。
+# feed_summary/limited_feed_analysisはGemini data-use gateを満たす場合のみ
+# ここに含まれる(gate未充足時はcompute_effective_content_usage_modeが
+# metadata_onlyへdowngradeするため、この集合の判定だけで十分)。
+AI_ELIGIBLE_CONTENT_USAGE_MODES = ("structured_open", "feed_summary", "limited_feed_analysis")
+
+GEMINI_DATA_USE_STATUSES = ("paid_verified", "unpaid", "unknown")
+
+# BL-032: policy違反・gate未充足によるdowngrade理由の一元管理された識別子。
+# 秘密情報・publisher本文を含まない、machine-readableな短い文字列のみを用いる。
+DOWNGRADE_REASONS = (
+    "gemini_gate_not_paid",
+    "output_length_violation",
+    "verbatim_long_match",
+    "forbidden_translated_title",
+    "missing_attribution",
+    "forbidden_publisher_text_persistence",
+    "invalid_mode_analysis_combination",
+    "analysis_unavailable",
+    "archive_attribution_snapshot_invalid",
+)
+
+# BL-032: structured_open分類のうち、attribution表示にURLを要する(=
+# source_definitions.jsonの変更に伴い将来無効化し得る)source_idの集合。
+# この集合に属するsourceは、schema v2 daily JSON生成時に実際に使用可能
+# だったURLをpolicy.attribution_urlへsnapshotとして保存し、Archive再生成が
+# 現在のsource_definitions.jsonではなくこのsnapshotだけを参照することで、
+# source policyの後日変更に関わらず決定論的に同じ結果を再現できるようにする。
+STRUCTURED_OPEN_ATTRIBUTION_URL_SOURCE_IDS = frozenset({"ncsc"})
+
+
+def is_safe_attribution_url(url):
+    """attribution_url snapshot専用の、http(s) URLの妥当性検証。
+
+    fetch.safe_url()(記事リンク全般に対する、schemeプレフィックスだけの
+    軽量な検証)とは意図的に別のロジックを持つ――ここではNCSCのOGL v3リンクの
+    ようなactual clickable URLとしての妥当性、具体的には次のすべてを要求する:
+    * 文字列であること
+    * 前後の空白のみ許容し、ASCII制御文字(\\x00-\\x20)を含まないこと
+    * schemeが`http`または`https`であること
+    * netloc(ホスト部分)が空でないこと
+    * hostnameが解析可能かつ空でないこと
+    `https://`・`https:///missing-host`・`http://?query`のような、
+    schemeプレフィックスだけでhostを持たない値はすべて拒否する。
+    daily_json.pyはfetch.pyに依存しないため、検証ロジックをここで独立して
+    持つ(fetch.safe_url()とロジックを共有しない。記事リンク全般の検証仕様は
+    変更しない)。
+    """
+    if not isinstance(url, str):
+        return False
+    stripped = url.strip()
+    if not stripped or re.search(r"[\x00-\x20]", stripped):
+        return False
+    try:
+        parsed = urllib.parse.urlsplit(stripped)
+        hostname = parsed.hostname
+    except ValueError:
+        return False
+    if parsed.scheme.lower() not in ("http", "https"):
+        return False
+    if not parsed.netloc or not hostname:
+        return False
+    return True
+
+# BL-032: 出力fieldごとの文字数上限(一元管理、他ファイルへ複製しない)。
+# summary/financial_impact(200文字)・reason(150文字)・category_reason(100文字)は
+# 既存ARTICLE promptが既に「〜文字以内目安」として明示している値をそのまま
+# 強制上限として再利用し、新たな閾値を二重定義しない。title_ja(60文字)・
+# recommended_actionsの各要素(150文字、reasonの1文相当の粒度)は、既存prompt
+# ガイドラインに数値の明記がないため、本Ticketで新たに決定した値である
+# (簡潔な見出し・確認事項という既存の運用意図に基づく)。
+OUTPUT_FIELD_MAX_CHARS = {
+    "title_ja": 60,
+    "summary": 200,
+    "financial_impact": 200,
+    "reason": 150,
+    "category_reason": 100,
+    "recommended_action_item": 150,
+}
+
+# BL-032: 原文(Geminiへ渡したtransient input)との長い連続完全一致を検出する
+# 最小文字数。意味的近接性・異言語間の近接翻訳の完全検出は約束しない
+# (追加モデルを使わない決定論的な文字列一致のみ)。短い一般語・source名・
+# 製品名・CVE番号等の偶然一致による誤検知を避けるため、単純な短句より
+# 長い40文字を採用する(本Ticketで決定)。
+VERBATIM_LONG_MATCH_MIN_CHARS = 40
+
+# BL-032: feed_summary／limited_feed_analysisのGemini入力(transient、保存しない)
+# の最大文字数(SOURCE_USAGE_POLICY.md 3章B・C)。
+TRANSIENT_INPUT_MAX_CHARS = 1000
+
+# 検証対象field(title_jaは対象外。原文と自然に一致しない日本語見出しであり、
+# limited_feed_analysisではそもそも生成禁止のため)。
+_VERBATIM_CHECK_FIELDS = ("summary", "financial_impact", "reason", "category_reason")
+
+
+def resolve_source_policy(source_definition):
+    """source定義の`policy`オブジェクトを取り出す。存在しない、またはdictでない
+    場合はDailyJsonErrorを送出する(暗黙のdefaultで補わない)。"""
+    policy = source_definition.get("policy")
+    if not isinstance(policy, dict):
+        raise DailyJsonError(
+            f"source policyが存在しません: id={source_definition.get('id')!r}"
+        )
+    return policy
+
+
+def compute_effective_content_usage_mode(source_policy, gemini_data_use_status):
+    """configured mode(source_policy['content_usage_mode'])とGemini data-use gate
+    の状態から、実際に適用するeffective modeとdowngrade理由を決定する(BL-032)。
+
+    戻り値: (effective_mode, downgrade_reason または None)
+    """
+    configured_mode = source_policy.get("content_usage_mode")
+    if configured_mode not in CONTENT_USAGE_MODES:
+        raise DailyJsonError(f"content_usage_modeが不正です: {configured_mode!r}")
+
+    if configured_mode in ("feed_summary", "limited_feed_analysis"):
+        if gemini_data_use_status != "paid_verified":
+            return "metadata_only", "gemini_gate_not_paid"
+
+    return configured_mode, None
+
+
+def is_ai_eligible_content_usage_mode(effective_mode):
+    """このeffective modeの記事がAI評価(Gemini呼び出し・facts取得・
+    Today's Brief/dashboard集計)対象かどうかを判定する共通predicate。"""
+    return effective_mode in AI_ELIGIBLE_CONTENT_USAGE_MODES
+
+
+def normalize_for_verbatim_compare(text):
+    """verbatim long-match検出用に、Unicode正規化(NFKC)・casefold・
+    連続空白/改行の単一スペース圧縮を行う(意味解析はしない)。"""
+    if not text:
+        return ""
+    normalized = unicodedata.normalize("NFKC", text)
+    normalized = normalized.casefold()
+    normalized = re.sub(r"\s+", " ", normalized).strip()
+    return normalized
+
+
+def detect_verbatim_long_match(source_text, output_text, min_chars=VERBATIM_LONG_MATCH_MIN_CHARS):
+    """source_text(Geminiへのtransient input)とoutput_text(AI出力の公開field)の
+    間に、正規化後で長さmin_chars以上の連続完全一致があるかを決定論的に検出する。
+    追加モデルは使わない。意味的近接性・異言語間の近接翻訳の完全検出は
+    約束しない(このcontrolの限界として明示する)。
+    """
+    src = normalize_for_verbatim_compare(source_text)
+    out = normalize_for_verbatim_compare(output_text)
+    if len(out) < min_chars or not src:
+        return False
+    for start in range(len(out) - min_chars + 1):
+        if out[start:start + min_chars] in src:
+            return True
+    return False
+
+
+def validate_output_policy(effective_mode, source_text, analysis, attribution_ok=True):
+    """AI出力(analysis: normalize_article_analysis()等で正規化済みのdict)が
+    BL-032のoutput policyに違反していないか検証する。
+
+    違反があれば (False, downgrade_reason) を、なければ (True, None) を返す。
+    source_text: Geminiへ渡したtransient input(検証対象はfeed_summary/
+    limited_feed_analysisのみ。structured_openは公式ライセンス上、原文との
+    重なりを問題としない)。
+    """
+    if not isinstance(analysis, dict):
+        return False, "invalid_mode_analysis_combination"
+
+    if effective_mode == "limited_feed_analysis" and analysis.get("title_ja"):
+        return False, "forbidden_translated_title"
+
+    for field, limit in OUTPUT_FIELD_MAX_CHARS.items():
+        if field == "recommended_action_item":
+            continue
+        value = analysis.get(field)
+        if isinstance(value, str) and len(value) > limit:
+            return False, "output_length_violation"
+
+    for action in analysis.get("recommended_actions") or []:
+        if isinstance(action, str) and len(action) > OUTPUT_FIELD_MAX_CHARS["recommended_action_item"]:
+            return False, "output_length_violation"
+
+    if effective_mode in ("feed_summary", "limited_feed_analysis"):
+        candidates = [analysis.get(field) for field in _VERBATIM_CHECK_FIELDS]
+        candidates += list(analysis.get("recommended_actions") or [])
+        for value in candidates:
+            if isinstance(value, str) and detect_verbatim_long_match(source_text, value):
+                return False, "verbatim_long_match"
+
+    if not attribution_ok:
+        return False, "missing_attribution"
+
+    return True, None
+
+
+def build_item_content_policy(source_id, configured_mode, effective_mode, downgrade_reason):
+    """daily JSON item(および記事分析パイプライン内)へ付与するpolicy状態を
+    組み立てる。ai_eligibleはeffective_modeのみから機械的に決まる。"""
+    return {
+        "source_id": source_id,
+        "configured_mode": configured_mode,
+        "effective_mode": effective_mode,
+        "ai_eligible": is_ai_eligible_content_usage_mode(effective_mode),
+        "downgrade_reason": downgrade_reason,
+    }
+
+
 # ── 記事オブジェクトの構築 ─────────────────────────────────────────────────
 
 def build_analysis_section(item, model):
@@ -345,11 +570,38 @@ def compute_rule_flags(source_id):
 def build_article_entry(item, source_definitions, model, fetched_at):
     """収集済みの1記事(item)から、日次JSON用の記事オブジェクトを構築する。
     fetched_at: 収集処理完了直後の共通JST時刻(datetime、tz付き)。
+
+    BL-032: item["content_policy"]は収集時(fetch.pyの
+    annotate_item_content_policy())に設定済みの前提であり、欠落時は
+    黙って補わずDailyJsonErrorを送出する。
     """
     source_meta = resolve_source_meta(item["source"], source_definitions)
 
+    content_policy = item.get("content_policy")
+    if not isinstance(content_policy, dict):
+        raise DailyJsonError(
+            f"item['content_policy']が設定されていません: source={item.get('source')!r}"
+        )
+
+    source_def = next(
+        (s for s in source_definitions if s["id"] == source_meta["source_id"]), None
+    )
+    source_policy = resolve_source_policy(source_def) if source_def else {}
+
+    # raw_excerpt(publisher由来の抜粋)は、downgradeされておらず、かつ
+    # source policyがallow_excerpt_storageを許可する場合のみ保存する
+    # (現状はstructured_openのみがallow_excerpt_storage=trueであり、
+    # downgradeはfeed_summary/limited_feed_analysisのみに起きるため、
+    # 実質的にstructured_openのみが対象になる)。
+    allow_excerpt_storage = (
+        bool(source_policy.get("allow_excerpt_storage"))
+        and not content_policy.get("downgrade_reason")
+    )
+
     raw_title = item.get("raw_title") or ""
-    raw_excerpt = build_raw_excerpt(item.get("raw_summary"))
+    raw_excerpt = (
+        build_raw_excerpt(item.get("raw_summary")) if allow_excerpt_storage else None
+    )
 
     published_at_dt = item.get("published_at_jst")
     published_at_iso = published_at_dt.isoformat() if published_at_dt else None
@@ -367,6 +619,24 @@ def build_article_entry(item, source_definitions, model, fetched_at):
     content_hash = compute_content_hash(canonical_url, raw_title, raw_excerpt)
 
     rule_flags = compute_rule_flags(source_meta["source_id"])
+
+    # BL-032: structured_openのうちURL依存attribution(現状ncscのみ)を
+    # 要するsourceについて、生成時に実際に使用可能だった(source_definitions
+    # 側で設定済み、かつ安全なhttp(s) URL)attribution_urlだけをsnapshotとして
+    # 保存する。Archive再生成は、このsnapshotだけを参照し、将来
+    # source_definitions.jsonが変更されても保存済み結果を変えない
+    # (digest_items_for_html/render_structured_open_attribution_html参照)。
+    # 対象外のmode/source、またはURLが無効・欠落の場合はNoneのままとする
+    # (Noneを保存すること自体は許容され、Archive再生成側がfail-closedに扱う)。
+    attribution_url_snapshot = None
+    if (
+        content_policy["ai_eligible"]
+        and content_policy["effective_mode"] == "structured_open"
+        and source_meta["source_id"] in STRUCTURED_OPEN_ATTRIBUTION_URL_SOURCE_IDS
+    ):
+        candidate_url = source_policy.get("attribution_url")
+        if is_safe_attribution_url(candidate_url):
+            attribution_url_snapshot = candidate_url
 
     return {
         "id": article_id,
@@ -390,6 +660,14 @@ def build_article_entry(item, source_definitions, model, fetched_at):
         "content_hash": content_hash,
         "rule_flags": rule_flags,
 
+        "policy": {
+            "configured_mode": content_policy["configured_mode"],
+            "effective_mode": content_policy["effective_mode"],
+            "ai_eligible": content_policy["ai_eligible"],
+            "downgrade_reason": content_policy.get("downgrade_reason"),
+            "attribution_url": attribution_url_snapshot,
+        },
+
         "analysis": build_analysis_section(item, model),
 
         # Ticket 12a: vulnerability_facts.build_facts_for_items()がitem["facts"]を
@@ -404,10 +682,49 @@ def build_article_entry(item, source_definitions, model, fetched_at):
 
 # ── run / counts / brief ─────────────────────────────────────────────────
 
-def compute_run_meta(article_entries):
+def _entry_is_ai_eligible(entry):
+    """schema v2のarticle entryがAI評価対象(policy.ai_eligible)かどうかを返す。
+    v1由来のentry(policyキーがない、レガシー処理経由)は常にeligible扱いとし、
+    v1の挙動(全記事が同一の共通処理を通っていた)を変えない。"""
+    policy = entry.get("policy")
+    if not isinstance(policy, dict):
+        return True
+    return bool(policy.get("ai_eligible", True))
+
+
+def compute_run_meta(article_entries, force_schema_version=None):
+    """BL-032: policy.ai_eligible=Falseの記事(metadata_only相当)は
+    policy_excluded_countへ計上し、AI各件数(ai_attempted/success/fallback/
+    failed/not_attempted)・run.statusの算出対象からは除外する
+    (意図的なpolicy非評価と、AI処理自体の失敗を混同しないため)。
+    total_items = policy_excluded_count + ai_eligible_count。
+
+    どのentryも"policy"を持たない(過去のschema_version=1 daily JSONを
+    そのまま渡した場合等)は完全にレガシー入力とみなし、policy_excluded_count/
+    ai_eligible_countキー自体を含めない、v1と同一shapeの辞書を返す
+    (v1 daily JSONの再検証・repair toolからの呼び出しでbyte-for-byte一致を保つ)。
+    article_entriesが空の場合はentry自体から判定できないため、force_schema_version
+    (build_daily_digest等、schema_versionを確定的に把握している呼び出し元が渡す)を
+    優先する。force_schema_versionを渡さない直接呼び出しでは、空リストは
+    レガシー(v1)として扱う(既存のrepair tool呼び出しの後方互換性のため)。
+    """
     total = len(article_entries)
+    if force_schema_version is not None:
+        is_legacy_input = force_schema_version == LEGACY_SCHEMA_VERSION
+    else:
+        is_legacy_input = not any(isinstance(e.get("policy"), dict) for e in article_entries)
+
+    if is_legacy_input:
+        eligible_entries = article_entries
+        ai_eligible_count = total
+        policy_excluded_count = 0
+    else:
+        eligible_entries = [e for e in article_entries if _entry_is_ai_eligible(e)]
+        ai_eligible_count = len(eligible_entries)
+        policy_excluded_count = total - ai_eligible_count
+
     status_counts = {"success": 0, "fallback": 0, "failed": 0, "not_attempted": 0}
-    for entry in article_entries:
+    for entry in eligible_entries:
         status_counts[entry["analysis"]["status"]] += 1
 
     ai_success = status_counts["success"]
@@ -417,20 +734,20 @@ def compute_run_meta(article_entries):
     ai_attempted = ai_success + ai_fallback + ai_failed
     success_or_fallback = ai_success + ai_fallback
 
-    if total == 0 or ai_success == total:
+    if ai_eligible_count == 0 or ai_success == ai_eligible_count:
         run_status = "success"
     elif (ai_fallback > 0 or ai_failed > 0 or ai_not_attempted > 0) and success_or_fallback > 0:
         run_status = "partial"
     elif ai_attempted > 0 and success_or_fallback == 0 and ai_failed > 0:
         run_status = "failed"
-    elif ai_not_attempted == total:
+    elif ai_not_attempted == ai_eligible_count:
         run_status = "not_attempted"
     else:
         # 上記のいずれにも一致しない組み合わせは想定していないが、
         # 安全側としてpartial扱いにする
         run_status = "partial"
 
-    return {
+    result = {
         "status": run_status,
         "overwrite_policy": "replace",
         "total_items": total,
@@ -440,17 +757,27 @@ def compute_run_meta(article_entries):
         "ai_failed_count": ai_failed,
         "ai_not_attempted_count": ai_not_attempted,
     }
+    if not is_legacy_input:
+        result["policy_excluded_count"] = policy_excluded_count
+        result["ai_eligible_count"] = ai_eligible_count
+    return result
 
 
 def compute_counts(article_entries):
-    """failed/not_attempted、またはフィールド自体が不正・欠落の場合はすべて
-    「未判定」に集計する(Ticket 4以降、urgency/categoryも実際のGemini出力を集計する)。
+    """BL-032: importance/urgency/categoryの各bucketは、policy.ai_eligible=True
+    の記事(ai_eligible_count件)のみを対象に集計する。metadata_only相当の記事は
+    「未判定」にも加算せず、集計そのものから除外する(意図的なpolicy非評価と
+    AI処理の失敗を混同しない)。failed/not_attempted、またはフィールド自体が
+    不正・欠落の場合はすべて「未判定」に集計する(Ticket 4以降の既存契約)。
     """
     importance_counts = {k: 0 for k in IMPORTANCE_KEYS}
     urgency_counts = {k: 0 for k in URGENCY_KEYS}
     category_counts = {k: 0 for k in CATEGORY_KEYS}
 
     for entry in article_entries:
+        if not _entry_is_ai_eligible(entry):
+            continue
+
         analysis = entry["analysis"]
         unattempted_or_failed = analysis["status"] in ("failed", "not_attempted")
 
@@ -526,7 +853,7 @@ def build_daily_digest(items, brief_result, source_definitions, model, fetched_a
             "article_prompt_version": ARTICLE_PROMPT_VERSION,
             "brief_prompt_version": BRIEF_PROMPT_VERSION,
         },
-        "run": compute_run_meta(article_entries),
+        "run": compute_run_meta(article_entries, force_schema_version=SCHEMA_VERSION),
         "counts": compute_counts(article_entries),
         "brief": build_brief_section(brief_result, model),
         "items": article_entries,
@@ -538,10 +865,22 @@ def build_daily_digest(items, brief_result, source_definitions, model, fetched_a
 def validate_daily_digest(digest):
     """保存直前の日次JSONに対する最低限のスキーマ・件数整合性検証。
     不正があれば DailyJsonError を送出する(黙って無視しない)。
+
+    BL-032: schema_version 1(レガシー)と2(現行、policy_excluded_count/
+    ai_eligible_countによるAI評価対象の分離)を区別して検証する。
+    過去のschema_version=1 daily JSONの読み込み(scan_daily_digest_files等)は
+    この関数を経由しないため、ここでのv1分岐は主に本関数自体の後方互換性
+    (将来の再検証・修復ツール等からの呼び出し)のためのものである。
     """
-    if not isinstance(digest.get("schema_version"), int):
+    schema_version = digest.get("schema_version")
+    if not isinstance(schema_version, int):
         raise DailyJsonError(
-            f"schema_versionが整数ではありません: {digest.get('schema_version')!r}"
+            f"schema_versionが整数ではありません: {schema_version!r}"
+        )
+    if schema_version not in (LEGACY_SCHEMA_VERSION, SCHEMA_VERSION):
+        raise DailyJsonError(
+            f"schema_versionが不正です: {schema_version!r} "
+            f"(許容値: {LEGACY_SCHEMA_VERSION}, {SCHEMA_VERSION})"
         )
 
     digest_date = digest.get("digest_date")
@@ -562,13 +901,33 @@ def validate_daily_digest(digest):
             f"run.total_items({total_items!r})とitems件数({len(items)})が一致しません"
         )
 
+    if schema_version == LEGACY_SCHEMA_VERSION:
+        ai_denominator = total_items
+    else:
+        policy_excluded_count = run.get("policy_excluded_count")
+        ai_eligible_count = run.get("ai_eligible_count")
+        if not isinstance(policy_excluded_count, int) or policy_excluded_count < 0:
+            raise DailyJsonError(
+                f"run.policy_excluded_countが不正です: {policy_excluded_count!r}"
+            )
+        if not isinstance(ai_eligible_count, int) or ai_eligible_count < 0:
+            raise DailyJsonError(f"run.ai_eligible_countが不正です: {ai_eligible_count!r}")
+        if policy_excluded_count + ai_eligible_count != total_items:
+            raise DailyJsonError(
+                f"run.policy_excluded_count({policy_excluded_count})+"
+                f"run.ai_eligible_count({ai_eligible_count})がtotal_items"
+                f"({total_items})と一致しません"
+            )
+        ai_denominator = ai_eligible_count
+
     ai_sum = (
         run.get("ai_success_count", 0) + run.get("ai_fallback_count", 0)
         + run.get("ai_failed_count", 0) + run.get("ai_not_attempted_count", 0)
     )
-    if ai_sum != total_items:
+    if ai_sum != ai_denominator:
         raise DailyJsonError(
-            f"AI各件数の合計({ai_sum})がtotal_items({total_items})と一致しません"
+            f"AI各件数の合計({ai_sum})が{'total_items' if schema_version == LEGACY_SCHEMA_VERSION else 'ai_eligible_count'}"
+            f"({ai_denominator})と一致しません"
         )
 
     if run.get("status") not in VALID_RUN_STATUSES:
@@ -577,12 +936,13 @@ def validate_daily_digest(digest):
         )
 
     counts = digest.get("counts") or {}
+    counts_denominator = total_items if schema_version == LEGACY_SCHEMA_VERSION else ai_denominator
     for key in ("importance", "urgency", "category"):
         bucket = counts.get(key) or {}
         bucket_sum = sum(bucket.values())
-        if bucket_sum != total_items:
+        if bucket_sum != counts_denominator:
             raise DailyJsonError(
-                f"counts.{key}の合計({bucket_sum})がtotal_items({total_items})と一致しません"
+                f"counts.{key}の合計({bucket_sum})が{counts_denominator}と一致しません"
             )
 
     seen_ids = set()
@@ -596,6 +956,63 @@ def validate_daily_digest(digest):
 
         if not item.get("source_id"):
             raise DailyJsonError(f"items[{i}] (id={item_id!r}): source_idが空です")
+
+        if schema_version == SCHEMA_VERSION:
+            policy = item.get("policy")
+            if not isinstance(policy, dict):
+                raise DailyJsonError(f"items[{i}] (id={item_id!r}): policyが存在しません")
+            if policy.get("configured_mode") not in CONTENT_USAGE_MODES:
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): policy.configured_modeが不正です: "
+                    f"{policy.get('configured_mode')!r}"
+                )
+            if policy.get("effective_mode") not in CONTENT_USAGE_MODES:
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): policy.effective_modeが不正です: "
+                    f"{policy.get('effective_mode')!r}"
+                )
+            if not isinstance(policy.get("ai_eligible"), bool):
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): policy.ai_eligibleがboolではありません: "
+                    f"{policy.get('ai_eligible')!r}"
+                )
+            if policy.get("ai_eligible") != is_ai_eligible_content_usage_mode(
+                policy.get("effective_mode")
+            ):
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): policy.ai_eligibleがeffective_modeと矛盾しています"
+                )
+            downgrade_reason = policy.get("downgrade_reason")
+            if downgrade_reason is not None and downgrade_reason not in DOWNGRADE_REASONS:
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): policy.downgrade_reasonが不正です: "
+                    f"{downgrade_reason!r}"
+                )
+
+            # BL-032: policy.attribution_urlは、Archive再生成時にsource_definitions
+            # の後日変更へ左右されないための生成時snapshotである。全v2 entryで
+            # None|strのみ許容し(型不正は暗黙のdefaultで補わない)、URL依存
+            # attribution(現状ncscのみ)を要するsourceでai_eligible=trueの
+            # 場合は、安全なhttp(s) URLとして存在することを必須とする(欠落・
+            # 不正なsnapshotのまま保存することを許さない)。
+            attribution_url = policy.get("attribution_url")
+            if attribution_url is not None and not isinstance(attribution_url, str):
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): policy.attribution_urlが"
+                    f"None/strではありません: {attribution_url!r}"
+                )
+            if (
+                policy.get("ai_eligible")
+                and policy.get("effective_mode") == "structured_open"
+                and item.get("source_id") in STRUCTURED_OPEN_ATTRIBUTION_URL_SOURCE_IDS
+                and not is_safe_attribution_url(attribution_url)
+            ):
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): source_id="
+                    f"{item.get('source_id')!r}はpolicy.attribution_urlに安全な"
+                    f"http(s) URLのsnapshotが必要ですが、欠落または不正です: "
+                    f"{attribution_url!r}"
+                )
 
         analysis = item.get("analysis")
         if not isinstance(analysis, dict):
@@ -748,6 +1165,118 @@ def validate_daily_digest(digest):
                 )
 
     return True
+
+
+def validate_daily_digest_for_archive_read(digest):
+    """Archive読込・再生成専用のschema-version-awareなvalidator(BL-032)。
+
+    validate_daily_digest()(保存直前専用、Ticket 8時点のコメントどおり
+    scan_daily_digest_files()等の既存日次JSON走査からは経由されない前提)を
+    Archive生成の読込前チェックにもそのまま流用すると、schema v1(レガシー)の
+    実在ファイルへ現行の閾値(例: BRIEF_MAX_CHECK_ITEMS)・enum値・
+    fieldの有無を遡及適用してしまい、生成当時は正当だった実データ
+    (例: 昔のBrief件数上限で保存されたcheck_items)がArchive生成対象から
+    誤って除外される。
+
+    * schema v2(現行)は、保存直前と完全に同じstrict validation
+      (validate_daily_digest()、NCSC attribution snapshot検証を含む)を
+      そのまま適用する――現行生成物に対する検証は一切緩めない。
+    * schema v1(レガシー)は、現在の閾値・enum・field構成を遡及的に
+      適用せず、安全にHTMLへ描画するための最低限の構造だけを検証する:
+      トップレベル型、digest_dateが実在する暦日であること、items配列と
+      その要素がdictであること、brief各fieldの型(overviewはstr/null、
+      important_highlights/discussion_points/check_itemsはlist/null、
+      list要素はstr)、および archive_summary_from_digest() が参照する
+      run(dict/null、total_itemsはbool以外の0以上int/null)・
+      counts(dict/null、counts.importance[dict/null]、
+      counts.importance["高"]はbool以外の0以上int/null)の型(round 6)。
+      件数の相互整合性・enum値・件数上限は引き続き適用しない。
+    """
+    schema_version = digest.get("schema_version")
+    if not isinstance(schema_version, int):
+        raise DailyJsonError(f"schema_versionが整数ではありません: {schema_version!r}")
+    if schema_version not in (LEGACY_SCHEMA_VERSION, SCHEMA_VERSION):
+        raise DailyJsonError(
+            f"schema_versionが不正です: {schema_version!r} "
+            f"(許容値: {LEGACY_SCHEMA_VERSION}, {SCHEMA_VERSION})"
+        )
+
+    if schema_version == SCHEMA_VERSION:
+        validate_daily_digest(digest)
+        return
+
+    digest_date = digest.get("digest_date")
+    if not isinstance(digest_date, str) or not DIGEST_DATE_RE.fullmatch(digest_date):
+        raise DailyJsonError(f"digest_dateがYYYY-MM-DD形式ではありません: {digest_date!r}")
+    try:
+        datetime.date.fromisoformat(digest_date)
+    except ValueError as e:
+        raise DailyJsonError(f"digest_dateが実在する暦日ではありません: {digest_date!r}") from e
+    if not digest.get("generated_at"):
+        raise DailyJsonError("generated_atがありません")
+
+    items = digest.get("items")
+    if not isinstance(items, list):
+        raise DailyJsonError("itemsが配列ではありません")
+    for i, item in enumerate(items):
+        if not isinstance(item, dict):
+            raise DailyJsonError(f"items[{i}]がオブジェクトではありません")
+
+    # BL-032 (round 6): schema v1のrun/countsは、現行の件数整合性・enum
+    # (validate_daily_digest()相当)は遡及適用しないが、archive_summary_from_digest()
+    # 等の下流処理が前提とする最低限の型(dict / 非boolのint / 0以上)だけは
+    # ここで保証する。欠落・nullは既存fallback(run.get("total_items") or
+    # len(items)等)が安全なため、値そのものが存在する場合のみ検証する。
+    run = digest.get("run")
+    if run is not None:
+        if not isinstance(run, dict):
+            raise DailyJsonError(f"runがオブジェクトでもnullでもありません: {run!r}")
+        total_items = run.get("total_items")
+        if total_items is not None and (
+            isinstance(total_items, bool)
+            or not isinstance(total_items, int)
+            or total_items < 0
+        ):
+            raise DailyJsonError(
+                f"run.total_itemsが0以上の整数でもnullでもありません: {total_items!r}"
+            )
+
+    counts = digest.get("counts")
+    if counts is not None:
+        if not isinstance(counts, dict):
+            raise DailyJsonError(f"countsがオブジェクトでもnullでもありません: {counts!r}")
+        importance = counts.get("importance")
+        if importance is not None:
+            if not isinstance(importance, dict):
+                raise DailyJsonError(
+                    f"counts.importanceがオブジェクトでもnullでもありません: {importance!r}"
+                )
+            high_count = importance.get("高")
+            if high_count is not None and (
+                isinstance(high_count, bool)
+                or not isinstance(high_count, int)
+                or high_count < 0
+            ):
+                raise DailyJsonError(
+                    f"counts.importance['高']が0以上の整数でもnullでもありません: {high_count!r}"
+                )
+
+    brief = digest.get("brief")
+    if brief is not None and not isinstance(brief, dict):
+        raise DailyJsonError(f"briefがオブジェクトでもnullでもありません: {brief!r}")
+    if isinstance(brief, dict):
+        overview = brief.get("overview")
+        if overview is not None and not isinstance(overview, str):
+            raise DailyJsonError(f"brief.overviewが文字列でもnullでもありません: {overview!r}")
+        for key in ("important_highlights", "discussion_points", "check_items"):
+            values = brief.get(key)
+            if values is None:
+                continue
+            if not isinstance(values, list):
+                raise DailyJsonError(f"brief.{key}が配列でもnullでもありません: {values!r}")
+            for i, v in enumerate(values):
+                if not isinstance(v, str):
+                    raise DailyJsonError(f"brief.{key}[{i}]が文字列ではありません: {v!r}")
 
 
 def validate_index(index):

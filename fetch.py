@@ -168,6 +168,181 @@ def _validate_source_entry(entry, index):
             f"{where} (id={sid!r}): enabled=true の場合、display_url が必須です"
         )
 
+    _validate_source_policy(entry, where, sid)
+
+
+# BL-032: SOURCE_USAGE_POLICY.md Version 0.1 (Approved) 4章の監査表と一致させる
+# fail-closed validation。設定不備を暗黙のdefaultで補わない。
+POLICY_REQUIRED_FIELDS = (
+    "content_usage_mode", "allow_network_fetch", "allow_description",
+    "allow_rich_content", "allow_ai_processing", "allow_excerpt_storage",
+    "allow_public_summary", "attribution_requirement", "attribution_url",
+    "checked_at", "confidence", "unresolved_issue", "recheck_trigger",
+    "official_evidence_url", "evidence_type",
+)
+POLICY_BOOLEAN_FIELDS = (
+    "allow_network_fetch", "allow_description", "allow_rich_content",
+    "allow_ai_processing", "allow_excerpt_storage", "allow_public_summary",
+)
+VALID_POLICY_CONFIDENCE_VALUES = {"high", "medium", "low", "n/a"}
+VALID_POLICY_EVIDENCE_TYPES = {
+    "terms", "license", "copyright_policy", "faq", "rss_usage_guidance",
+    "source_page", "terms_not_found", "terms_not_identified", "terms_update_notice",
+}
+_POLICY_CHECKED_AT_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
+
+# SOURCE_USAGE_POLICY.md Version 0.1 (Approved) 4章の件数集計と一致させる
+# (structured_open 5, feed_summary 4, limited_feed_analysis 2, metadata_only 2,
+# disabled_legal_review 4, 計17)。
+EXPECTED_CONTENT_USAGE_MODE_COUNTS = {
+    "structured_open": 5,
+    "feed_summary": 4,
+    "limited_feed_analysis": 2,
+    "metadata_only": 2,
+    "disabled_legal_review": 4,
+}
+
+
+def _validate_source_policy(entry, where, sid):
+    policy = entry.get("policy")
+    if not isinstance(policy, dict):
+        raise SourceDefinitionError(f"{where} (id={sid!r}): policy が存在しません")
+
+    missing = [f for f in POLICY_REQUIRED_FIELDS if f not in policy]
+    if missing:
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): policy の必須項目が欠落しています: {', '.join(missing)}"
+        )
+
+    mode = policy["content_usage_mode"]
+    if mode not in daily_json.CONTENT_USAGE_MODES:
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): policy.content_usage_mode が不正です: {mode!r} "
+            f"(許容値: {daily_json.CONTENT_USAGE_MODES})"
+        )
+
+    for field in POLICY_BOOLEAN_FIELDS:
+        if not isinstance(policy[field], bool):
+            raise SourceDefinitionError(
+                f"{where} (id={sid!r}): policy.{field} は bool である必要があります "
+                f"(実際: {policy[field]!r})"
+            )
+
+    # 全17 sourceでrich contentを使用しない(SOURCE_USAGE_POLICY.md 4章)。
+    if policy["allow_rich_content"] is not False:
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): policy.allow_rich_content は全source falseである必要があります"
+        )
+
+    if mode == "disabled_legal_review":
+        if policy["allow_network_fetch"] is not False:
+            raise SourceDefinitionError(
+                f"{where} (id={sid!r}): disabled_legal_reviewはallow_network_fetch=falseである必要があります"
+            )
+        for field in ("allow_description", "allow_ai_processing",
+                       "allow_excerpt_storage", "allow_public_summary"):
+            if policy[field] is not False:
+                raise SourceDefinitionError(
+                    f"{where} (id={sid!r}): disabled_legal_reviewはpolicy.{field}=falseである必要があります"
+                )
+
+    if mode == "metadata_only":
+        for field in ("allow_description", "allow_ai_processing",
+                       "allow_excerpt_storage", "allow_public_summary"):
+            if policy[field] is not False:
+                raise SourceDefinitionError(
+                    f"{where} (id={sid!r}): metadata_onlyはpolicy.{field}=falseである必要があります"
+                )
+
+    if mode in ("feed_summary", "limited_feed_analysis") and policy["allow_ai_processing"] is not True:
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): {mode}はGemini data-use gate充足時にAI処理対象となるため、"
+            "policy.allow_ai_processing=trueである必要があります"
+        )
+
+    if not isinstance(policy["checked_at"], str) or not _POLICY_CHECKED_AT_RE.fullmatch(policy["checked_at"]):
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): policy.checked_at はYYYY-MM-DD形式である必要があります: "
+            f"{policy['checked_at']!r}"
+        )
+
+    if policy["confidence"] not in VALID_POLICY_CONFIDENCE_VALUES:
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): policy.confidence が不正です: {policy['confidence']!r} "
+            f"(許容値: {sorted(VALID_POLICY_CONFIDENCE_VALUES)})"
+        )
+
+    if not isinstance(policy["attribution_requirement"], str) or not policy["attribution_requirement"]:
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): policy.attribution_requirement は空でない文字列である必要があります"
+        )
+
+    attribution_url = policy["attribution_url"]
+    if attribution_url is not None:
+        _validate_collection_url(attribution_url, where, sid)
+
+    evidence_url = policy["official_evidence_url"]
+    if not isinstance(evidence_url, str) or not evidence_url:
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): policy.official_evidence_url は空でない文字列である必要があります"
+        )
+    url_tokens = [] if evidence_url == "—" else evidence_url.split("；")
+    for token in url_tokens:
+        if token == "—":
+            continue
+        _validate_collection_url(token, where, sid)
+
+    evidence_type = policy["evidence_type"]
+    if not isinstance(evidence_type, str) or not evidence_type:
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): policy.evidence_type は空でない文字列である必要があります"
+        )
+    type_tokens = [t.split("(")[0].strip() for t in evidence_type.split("；")]
+    invalid_types = [t for t in type_tokens if t not in VALID_POLICY_EVIDENCE_TYPES]
+    if invalid_types:
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): policy.evidence_type に不正な値があります: {invalid_types!r} "
+            f"(許容値: {sorted(VALID_POLICY_EVIDENCE_TYPES)})"
+        )
+    if len(type_tokens) != 1 and len(type_tokens) != len(url_tokens):
+        raise SourceDefinitionError(
+            f"{where} (id={sid!r}): policy.evidence_typeの個数({len(type_tokens)})が "
+            f"official_evidence_urlの個数({len(url_tokens)})と一致しません"
+        )
+
+    for field in ("unresolved_issue", "recheck_trigger"):
+        if not isinstance(policy[field], str):
+            raise SourceDefinitionError(
+                f"{where} (id={sid!r}): policy.{field} は文字列である必要があります"
+            )
+
+
+def validate_content_usage_mode_distribution(sources):
+    """SOURCE_USAGE_POLICY.md Version 0.1 (Approved) 4章の件数集計
+    (structured_open 5 / feed_summary 4 / limited_feed_analysis 2 /
+    metadata_only 2 / disabled_legal_review 4、計17)と一致することを検証する。
+
+    load_source_definitions()自体には含めない(既存testの多くが単一・少数の
+    合成source定義で個別のvalidationルールだけを検証する呼び出し方をしており、
+    このcollection全体の分布チェックとは目的が異なるため)。実運用の
+    source_definitions.json全体に対しては、モジュール読込時に別途呼び出す。
+    """
+    counts = {}
+    for s in sources:
+        mode = s["policy"]["content_usage_mode"]
+        counts[mode] = counts.get(mode, 0) + 1
+
+    if counts != EXPECTED_CONTENT_USAGE_MODE_COUNTS:
+        raise SourceDefinitionError(
+            f"content_usage_modeの件数集計がApproved policyと一致しません: "
+            f"実際={counts!r} 期待値={EXPECTED_CONTENT_USAGE_MODE_COUNTS!r}"
+        )
+    if len(sources) != sum(EXPECTED_CONTENT_USAGE_MODE_COUNTS.values()):
+        raise SourceDefinitionError(
+            f"source総数({len(sources)})がApproved policyの合計"
+            f"({sum(EXPECTED_CONTENT_USAGE_MODE_COUNTS.values())})と一致しません"
+        )
+
 
 def load_source_definitions(path=None):
     """source_definitions.json を読み込み・検証し、source定義のリストを返す。
@@ -254,13 +429,86 @@ def get_source_definition(sources, source_id):
     return None
 
 
+def get_source_definition_by_name(sources, source_name):
+    """表示名でsource定義を1件検索する(BL-032: collect_recentがRSS_FEEDS由来の
+    (表示名, URL, 言語)tupleを走査する既存互換性のためだけに使う。annotate_item_
+    content_policy自体はここで解決したsource定義をitemへ即時付与し、以降の処理
+    (Gemini入力・daily JSON構築・HTML表示)は保持済みのsource_id/content_policyを
+    参照するだけで、名前からの再解決には依存しない)。見つからなければNone。"""
+    for s in sources:
+        if s["name"] == source_name:
+            return s
+    return None
+
+
+def load_gemini_data_use_status_record(path=None):
+    """source_definitions.jsonのトップレベル`gemini_data_use_status_record`を
+    読み込み・検証する(BL-032)。APIキー・Project ID・請求先アカウントID・金額・
+    スクリーンショット等の機密情報が紛れ込んでいないことも機械的に確認する
+    (fail-closed。暗黙のdefaultで補わない)。
+    """
+    path = path or SOURCE_DEFINITIONS_PATH
+    try:
+        raw = path.read_text(encoding="utf-8")
+    except OSError as e:
+        raise SourceDefinitionError(
+            f"source_definitions.json を読み込めません ({path}): {e}"
+        ) from e
+    try:
+        data = json.loads(raw)
+    except json.JSONDecodeError as e:
+        raise SourceDefinitionError(
+            f"source_definitions.json のJSON解析に失敗しました ({path}): "
+            f"{e.msg} (line {e.lineno}, column {e.colno})"
+        ) from e
+
+    record = data.get("gemini_data_use_status_record") if isinstance(data, dict) else None
+    if not isinstance(record, dict):
+        raise SourceDefinitionError(
+            f"source_definitions.json に 'gemini_data_use_status_record' がありません ({path})"
+        )
+
+    forbidden_keys = {
+        "api_key", "api_key_suffix", "project_id", "billing_account_id",
+        "amount", "screenshot",
+    }
+    present_forbidden = forbidden_keys & set(record.keys())
+    if present_forbidden:
+        raise SourceDefinitionError(
+            f"gemini_data_use_status_record に禁止されたkeyが含まれています: {sorted(present_forbidden)}"
+        )
+
+    status = record.get("gemini_data_use_status")
+    if status not in daily_json.GEMINI_DATA_USE_STATUSES:
+        raise SourceDefinitionError(
+            f"gemini_data_use_status_record.gemini_data_use_status が不正です: {status!r} "
+            f"(許容値: {daily_json.GEMINI_DATA_USE_STATUSES})"
+        )
+
+    if not isinstance(record.get("checked_at"), str) or not _POLICY_CHECKED_AT_RE.fullmatch(
+        record["checked_at"]
+    ):
+        raise SourceDefinitionError(
+            f"gemini_data_use_status_record.checked_at はYYYY-MM-DD形式である必要があります: "
+            f"{record.get('checked_at')!r}"
+        )
+
+    return record
+
+
 SOURCE_DEFINITIONS = load_source_definitions()
+validate_content_usage_mode_distribution(SOURCE_DEFINITIONS)
 
 # 互換レイヤー: 既存コード(fetch_feed呼び出し・is_cyber_relevantフィルタ・
 # build_htmlの表示等)は従来通りこれらの名前をそのまま参照する。
 # 正本は source_definitions.json のみで、ここでの二重管理はしない。
 RSS_FEEDS = build_rss_feeds(SOURCE_DEFINITIONS)
 TRUSTED_CYBER_SOURCES = build_trusted_cyber_sources(SOURCE_DEFINITIONS)
+
+# BL-032: Gemini data-use gateの現在状態。secretsは一切保存・参照しない
+# (SOURCE_USAGE_POLICY.md 5章参照)。
+GEMINI_DATA_USE_STATUS_RECORD = load_gemini_data_use_status_record()
+GEMINI_DATA_USE_STATUS = GEMINI_DATA_USE_STATUS_RECORD["gemini_data_use_status"]
 
 # ── 表示用タイトルの解決 ─────────────────────────────────────────────────────
 # BL-030: 非公式Google翻訳エンドポイント(translate.googleapis.com)と
@@ -968,7 +1216,27 @@ def is_cyber_relevant(item):
     return any(k in text for k in keywords)
 
 
-def collect_non_rss_items(cutoff, sources, kev_catalog_memo=None):
+def annotate_item_content_policy(item, source_def, gemini_data_use_status):
+    """収集直後のitemへ、BL-032のruntime enforcementが参照するsource_id・
+    content_policy(configured_mode/effective_mode/ai_eligible/downgrade_reason)を
+    設定する。表示名からの逆引きに依存させず、収集時点でsource定義を直接
+    保持したまま呼び出すこと。
+    """
+    source_policy = daily_json.resolve_source_policy(source_def)
+    effective_mode, downgrade_reason = daily_json.compute_effective_content_usage_mode(
+        source_policy, gemini_data_use_status
+    )
+    item["source_id"] = source_def["id"]
+    item["content_policy"] = daily_json.build_item_content_policy(
+        source_def["id"],
+        source_policy["content_usage_mode"],
+        effective_mode,
+        downgrade_reason,
+    )
+
+
+def collect_non_rss_items(cutoff, sources, kev_catalog_memo=None,
+                          gemini_data_use_status=GEMINI_DATA_USE_STATUS):
     """RSS以外の取得元(CISA KEV・NIST NVD)を、source定義のenabledに従って収集する。
     URL・表示名・有効/無効はすべてsource_definitions.json(sources)由来。
     id="cisa_kev"/"nist_nvd" はこの関数が直接参照する前提の識別子であるため、
@@ -1002,6 +1270,8 @@ def collect_non_rss_items(cutoff, sources, kev_catalog_memo=None):
         else:
             reason = kev_status_out.get("error_message") or "KEVカタログの取得に失敗しました"
             print(f"  [NG] {cisa_kev_def['name']}: {reason}")
+        for item in kev_items:
+            annotate_item_content_policy(item, cisa_kev_def, gemini_data_use_status)
         all_items += kev_items
 
     nist_nvd_def = get_source_definition(sources, "nist_nvd")
@@ -1017,15 +1287,25 @@ def collect_non_rss_items(cutoff, sources, kev_catalog_memo=None):
         )
         nvd_status = "OK" if nvd_items else "NG"
         print(f"  [{nvd_status}] {nist_nvd_def['name']}: 取得 {len(nvd_items)} 件")
+        for item in nvd_items:
+            annotate_item_content_policy(item, nist_nvd_def, gemini_data_use_status)
         all_items += nvd_items
 
     return all_items
 
 
-def collect_recent(kev_catalog_memo=None):
+def collect_recent(kev_catalog_memo=None, gemini_data_use_status=GEMINI_DATA_USE_STATUS):
     """記事収集・既存フィルタまでを行う。Gemini enrichment(enrich_with_ai)は
     含まない(Ticket 12a: CVEファクト取得をenrichmentより前に置くため、
     呼び出し側(main())で収集後・enrichment前に分離して呼び出す)。
+
+    BL-032: 既存のRSS_FEEDS(表示名/URL/言語のtuple)走査は、test互換性
+    (fetch.RSS_FEEDSをpatchして単一feedだけで検証する既存パターン)のために
+    維持する。ただしRSS_FEEDS自体にはsource_idやpolicyが無いため、収集直後に
+    表示名からsource定義を解決し、各itemへsource_id・content_policyを即時
+    付与する(annotate_item_content_policy)。この解決は収集完了直後の1回限りで
+    行い、以降の処理(Gemini入力・daily JSON構築・HTML表示)はitemへ保持された
+    source_id/content_policyのみを参照する(後段での曖昧な逆引きには依存しない)。
     """
     cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=DAYS_BACK)
     all_items = []
@@ -1033,7 +1313,7 @@ def collect_recent(kev_catalog_memo=None):
     print("フィード別の取得状況:")
     rss_success = rss_zero = rss_failed = 0
     undated_skipped = older_skipped = 0
-    for name, url, lang in (f for f in RSS_FEEDS if not f[1].startswith("#")):
+    for name, url, lang in RSS_FEEDS:
         result = _fetch_feed_result(name, url, lang)
         # 取得失敗・parse失敗は[NG]。記事件数0というだけでは[NG]にしない(Ticket 13c)。
         if not result.fetch_success:
@@ -1060,11 +1340,18 @@ def collect_recent(kev_catalog_memo=None):
         else:
             rss_zero += 1
         print(f"  [OK] {name}: 取得 {len(result.items)} 件 / 直近 {len(recent)} 件")
+        source_def = get_source_definition_by_name(SOURCE_DEFINITIONS, name)
+        if source_def is not None:
+            for item in recent:
+                annotate_item_content_policy(item, source_def, gemini_data_use_status)
         all_items.extend(recent)
     print(f"  RSS sources: success={rss_success} zero={rss_zero} failed={rss_failed} "
           f"undated_skipped={undated_skipped} older_skipped={older_skipped}")
 
-    all_items += collect_non_rss_items(cutoff, SOURCE_DEFINITIONS, kev_catalog_memo=kev_catalog_memo)
+    all_items += collect_non_rss_items(
+        cutoff, SOURCE_DEFINITIONS, kev_catalog_memo=kev_catalog_memo,
+        gemini_data_use_status=gemini_data_use_status,
+    )
 
     all_items = [
         item for item in all_items
@@ -1375,8 +1662,23 @@ def _count_display_value(counts, value, allowed_values):
         counts[UNKNOWN_LABEL] += 1
 
 
+def item_is_ai_eligible(item):
+    """記事(収集直後のitem、またはHTML生成へ渡されるitem)がAI評価対象かどうかを
+    返す共通predicate(BL-032)。content_policyが無い(collect_recentを経由しない
+    古い呼び出し等)場合は、v1の既存挙動どおりeligible扱いとする。"""
+    content_policy = item.get("content_policy")
+    if content_policy is None:
+        return True
+    return bool(content_policy.get("ai_eligible", True))
+
+
 def compute_dashboard_counts(items):
-    """Dashboard表示用に、現在HTMLへ渡されたitemsを軸ごとに集計する。"""
+    """Dashboard表示用に、現在HTMLへ渡されたitemsを軸ごとに集計する。
+    BL-032: policy.ai_eligible=False(metadata_only相当)の記事は、意図的な
+    policy非評価であり、AI処理の失敗(failed/not_attempted)とは異なるため、
+    「未判定」バケットへは加算せず、importance/urgency/category集計そのものから
+    除外する(totalには引き続き含める)。
+    """
     importance_counts = {value: 0 for value in daily_json.IMPORTANCE_VALUES}
     importance_counts[UNKNOWN_LABEL] = 0
     urgency_counts = {value: 0 for value in daily_json.URGENCY_VALUES}
@@ -1385,6 +1687,9 @@ def compute_dashboard_counts(items):
     category_counts[UNKNOWN_LABEL] = 0
 
     for item in items:
+        if not item_is_ai_eligible(item):
+            continue
+
         analysis = item.get("ai_analysis")
         if not isinstance(analysis, dict) or analysis.get("status") in ("failed", "not_attempted"):
             importance_counts[UNKNOWN_LABEL] += 1
@@ -1670,7 +1975,19 @@ def load_daily_digest(path):
 
 
 def load_validated_published_digest_dates(data_dir=None, docs_dir=None):
-    """indexとdaily JSONとArchive HTMLが揃った公開済み日付だけを返す。"""
+    """indexとdaily JSONとArchive HTMLが揃った公開済み日付だけを返す。
+
+    BL-032(round 7): daily JSON自体の検証は、保存直前用のstrict validation
+    (`daily_json.validate_daily_digest()`、schema v1へも現行のBrief件数上限・
+    enum・field契約を遡及適用する)ではなく、`generate_archive_outputs()`と
+    同じschema-awareな`daily_json.validate_daily_digest_for_archive_read()`
+    (schema v2は同じstrict validationをそのまま適用、schema v1は現行の
+    閾値・enumを遡及適用しない後方互換Archive読込validation)を使う。
+    strict validationのままだと、生成当時は正当だった実データ(例:
+    `data/2026-07-14.json`の4件の`brief.check_items`)を保持するschema v1
+    digestが、日別Archive HTML・`index.json`のarchive_pathは正常に揃って
+    いてもトップページの「前回のダイジェスト」候補から誤って除外される。
+    """
     data_dir = Path(data_dir) if data_dir is not None else daily_json.DATA_DIR
     docs_dir = Path(docs_dir) if docs_dir is not None else DOCS_DIR
     index_path = data_dir / "index.json"
@@ -1698,7 +2015,7 @@ def load_validated_published_digest_dates(data_dir=None, docs_dir=None):
         digest_path = data_dir / f"{digest_date}.json"
         try:
             digest = load_daily_digest(digest_path)
-            daily_json.validate_daily_digest(digest)
+            daily_json.validate_daily_digest_for_archive_read(digest)
         except daily_json.DailyJsonError:
             continue
         internal_digest_date = digest.get("digest_date")
@@ -1719,6 +2036,53 @@ def digest_items_for_html(digest):
             or entry.get("date")
         )
         analysis = entry.get("analysis") if isinstance(entry.get("analysis"), dict) else entry.get("ai_analysis")
+
+        # BL-032: schema v2のentryはpolicyサブオブジェクトを持つ。これを
+        # item["content_policy"]へ復元し、Archive再生成でもmetadata-only相当の
+        # 簡易カード・mode別attributionが再現されるようにする。schema v1の
+        # entry(policyキーが無い)はNoneのままとし、v1へmodeを推測して
+        # 適用しない(item_is_ai_eligible/render_source_attribution_htmlは
+        # content_policy=Noneをeligible・attribution非表示として扱う既存の
+        # 後方互換default)。
+        policy = entry.get("policy")
+        content_policy = None
+        if isinstance(policy, dict):
+            content_policy = {
+                "source_id": entry.get("source_id"),
+                "configured_mode": policy.get("configured_mode"),
+                "effective_mode": policy.get("effective_mode"),
+                "ai_eligible": policy.get("ai_eligible", True),
+                "downgrade_reason": policy.get("downgrade_reason"),
+                # BL-032: 生成時に保存されたattribution_url snapshot(現状ncsc
+                # のみが使用)をそのまま復元する。render_source_attribution_html
+                # は、このキーが存在する場合、現在のsource_definitions.jsonを
+                # 参照せずこのsnapshotだけを使う(source policyの後日変更に
+                # 関わらず、既存Archiveの再生成結果を変えないため)。
+                "attribution_url": policy.get("attribution_url"),
+            }
+            # BL-032: structured_openのうちURL依存attribution(現状ncscのみ)を
+            # 要するsourceで、保存されたsnapshotが欠落・不正な場合、items由来の
+            # 派生表示(記事カード・Dashboard集計・優先確認・items由来の重要・
+            # 優先事項)をmetadata-only相当へdowngradeする。ただし、この関数
+            # (digest_items_for_html)はitemsだけを構築し、保存済みBrief
+            # (overview/discussion_points/check_items、
+            # brief_for_html_from_digest経由)には及ばない――保存済みBriefも
+            # 含めた完全なfail-closed保証は、generate_archive_outputs()が
+            # Archive生成前にdaily_json.validate_daily_digest()を実行し、
+            # このsnapshot不備を持つdigestをArchive生成対象から除外すること
+            # (validation自体による除外)で担保する。ここでの
+            # downgradeは、validationを経由しない直接呼び出し(テスト等)に
+            # 対する二次的な防御的backstopに過ぎない。
+            if (
+                content_policy["ai_eligible"]
+                and content_policy["effective_mode"] == "structured_open"
+                and content_policy["source_id"]
+                in daily_json.STRUCTURED_OPEN_ATTRIBUTION_URL_SOURCE_IDS
+                and not daily_json.is_safe_attribution_url(content_policy["attribution_url"])
+            ):
+                content_policy["ai_eligible"] = False
+                content_policy["downgrade_reason"] = "archive_attribution_snapshot_invalid"
+
         items.append({
             "id": entry.get("id"),
             "title": clean_archive_text(entry.get("title")) or clean_archive_text(entry.get("raw_title")) or "無題",
@@ -1738,6 +2102,7 @@ def digest_items_for_html(digest):
             # factsをそのまま引き継ぐ(型検証はrender_vulnerability_facts_html側で
             # 行う。factsキーの無い過去のdaily JSONではNoneのままでよい)。
             "facts": entry.get("facts"),
+            "content_policy": content_policy,
         })
     return items
 
@@ -1788,11 +2153,16 @@ def important_item_identity(item):
 
 
 def select_important_items(items):
-    """本日の重要情報へ表示する記事を抽出し、指定優先順で安定ソートする。"""
+    """本日の重要情報へ表示する記事を抽出し、指定優先順で安定ソートする。
+    BL-032: policy.ai_eligible=falseの記事は、ai_analysisが(Archive再生成時の
+    fail-closed downgrade等により)残っていても対象外とする。
+    """
     selected = []
     seen = set()
 
     for index, item in enumerate(items):
+        if not item_is_ai_eligible(item):
+            continue
         analysis = normalize_display_analysis(item.get("ai_analysis"))
         if not analysis:
             continue
@@ -3114,8 +3484,86 @@ KEV非掲載自体は根拠にしない）
     return {"analysis": None, "status": "failed", "error_type": "unknown", "http_status": None}
 
 
+def _attribution_is_available(item, content_policy):
+    """BL-032: attribution_okは、記事URL・原題の有無だけでなく、そのmode/
+    sourceに必要なattribution構成が実際に生成可能かも検証する
+    (missing_attributionの実効性を高める)。structured_openは、
+    _can_render_structured_open_attribution()(render_structured_open_
+    attribution_html()と共通の判定helper)がtrueを返すsource_idの場合のみ
+    trueとする――source_idが既知の集合に含まれるというだけでは、その
+    source固有の必須構成(例: ncscのOGL v3 URL)が実際に生成可能である
+    保証にならないため、fail-closedに判定する。他modeは固定文言テンプレート
+    が常に生成できるため、従来どおりlink・原題の有無のみで判定する。
+    """
+    if not (bool(item.get("link")) and bool(item.get("raw_title") or item.get("title"))):
+        return False
+    mode = content_policy.get("effective_mode") if content_policy else None
+    if mode == "structured_open":
+        return _can_render_structured_open_attribution(content_policy.get("source_id"))
+    return True
+
+
+def _purge_publisher_text(item):
+    """BL-032: publisher由来description(summary/raw_summary)とrich_contentを
+    itemから直ちに破棄する共通helper(purge対象の唯一の定義箇所)。
+    ai_analysis/ai_analysis_meta等、他のキーには一切触れない。呼び出し元が
+    どの経路(downgrade・収集時点除外・success/fallback後のtransient破棄)
+    であっても、この関数だけを呼べば同じ3 fieldが消去される。
+    """
+    item["summary"] = ""
+    item["raw_summary"] = ""
+    item["rich_content"] = ""
+
+
+def purge_publisher_text_for_ineligible_items(items):
+    """BL-032: 真のmetadata_only source、またはGemini data-use gate未充足に
+    より収集時点で既にmetadata-only相当(ai_eligible=False)なitemから、
+    publisher由来description・raw_summary・rich_contentを直ちに破棄する。
+    is_cyber_relevant(関連性フィルタ)がcollect_recent内で既に完了した後に
+    呼ぶ想定だが、raw_summaryが既に設定されているかどうかや呼び出し順序には
+    依存しない(_purge_publisher_textが3 fieldを無条件に消去するため)。
+    ai_eligible=Trueのitem、content_policyが無いitemは変更しない。
+    """
+    for item in items:
+        content_policy = item.get("content_policy")
+        if content_policy is not None and not content_policy.get("ai_eligible", True):
+            _purge_publisher_text(item)
+
+
+def _downgrade_to_metadata_only_and_purge(item, content_policy, reason):
+    """BL-032: policy違反・Gemini未実施・Gemini失敗のいずれかにより、記事を
+    metadata-only相当へ即時downgradeする。同時に_purge_publisher_text()で
+    publisher由来description・raw_summary・rich_contentをitemから直ちに
+    破棄し、この後のdaily JSON構築・HTML生成のいずれにも渡さない(Gemini
+    呼出し中に使ったローカル変数body_textは、この時点では既に呼出しを
+    終えているため無関係)。
+    """
+    content_policy["effective_mode"] = "metadata_only"
+    content_policy["ai_eligible"] = False
+    content_policy["downgrade_reason"] = reason
+    item["content_policy"] = content_policy
+    _purge_publisher_text(item)
+
+
 def enrich_with_ai(items, analysis_date=None):
     if not os.environ.get("GEMINI_API_KEY"):
+        # BL-032: APIキー未設定でGemini自体を一切呼ばない場合でも、
+        # feed_summary/limited_feed_analysisがGemini未試行のまま
+        # publisher由来descriptionを保持し続けないよう、この経路でも
+        # metadata-only相当へdowngradeし該当テキストを破棄する。
+        # metadata_only(既にai_eligible=False)・structured_openはこの
+        # 経路で変更しない。
+        for item in items:
+            content_policy = item.get("content_policy")
+            if (
+                content_policy is not None
+                and content_policy.get("ai_eligible", True)
+                and content_policy.get("effective_mode")
+                in ("feed_summary", "limited_feed_analysis")
+            ):
+                _downgrade_to_metadata_only_and_purge(
+                    item, content_policy, "analysis_unavailable"
+                )
         return items
 
     # Ticket 15a: analysis_dateはrun内で1回だけ決定し、全記事へ同一値を渡す
@@ -3126,8 +3574,18 @@ def enrich_with_ai(items, analysis_date=None):
     print("Geminiで重要度・要約を生成中...")
     count = 0
     attempts = 0
+    policy_skipped = 0
 
     for item in items:
+        # BL-032: policy.ai_eligible=False(metadata_only相当、またはGemini
+        # data-use gate未充足によるdowngrade)の記事はGeminiを一切呼ばない。
+        # item["content_policy"]が無い(collect_recentを経由しない古い呼び出し等)
+        # 場合は、v1の既存挙動どおり全記事を評価対象として扱う。
+        content_policy = item.get("content_policy")
+        if content_policy is not None and not content_policy.get("ai_eligible", True):
+            policy_skipped += 1
+            continue
+
         attempts += 1
 
         # enrich_with_ai()はmain()内で翻訳処理より前(CVEファクト取得の直後)に
@@ -3153,6 +3611,33 @@ def enrich_with_ai(items, analysis_date=None):
 
         raw_title = item.get("title", "")
 
+        # BL-032: configured mode別のGemini入力制御。
+        # - allow_rich_contentはApproved policy上、全17 sourceでfalseであり、
+        #   feed-native rich contentはこのGemini入力(および他のいかなる用途)
+        #   へも使用しない(SD-002の共通rich-content利用を本Ticketで変更する)。
+        #   将来policyがsource別にallow_rich_content=trueを許すことがあっても、
+        #   ここでは常にpolicy側のflagに従う(ハードコードしない)。
+        # - feed_summary／limited_feed_analysisは、bounded・transient input
+        #   (最大TRANSIENT_INPUT_MAX_CHARS文字)に限定する(永続保存しない)。
+        effective_mode = content_policy.get("effective_mode") if content_policy else "structured_open"
+        source_def = (
+            get_source_definition(SOURCE_DEFINITIONS, content_policy.get("source_id"))
+            if content_policy else None
+        )
+        source_policy = daily_json.resolve_source_policy(source_def) if source_def else {}
+        allow_rich_content = bool(source_policy.get("allow_rich_content"))
+        rich_content_input = item.get("rich_content", "") if allow_rich_content else ""
+
+        # Ticket 16a: descriptionのみだったsummaryを、feed-native rich content
+        # (RSS content:encoded / Atom content)がdescriptionを機械的な条件で
+        # 上回る場合はそちらへ差し替える(連結はしない)。追加HTTP取得は行わず、
+        # item["rich_content"](_parse_feed_itemsが取得済みfeedレスポンスから
+        # 設定)のみを参照するが、BL-032のpolicy(allow_rich_content)が許可
+        # する場合のみ実際にrich_content_inputへ渡す。
+        body_text = build_article_body_text(item.get("summary", ""), rich_content_input)
+        if effective_mode in ("feed_summary", "limited_feed_analysis"):
+            body_text = body_text[: daily_json.TRANSIENT_INPUT_MAX_CHARS]
+
         # Ticket 12c-review: システムが生成した検証済み情報(verified_context_json)と
         # 記事由来の信頼できない入力(untrusted_article_json)を、それぞれ独立した
         # compact JSONへ分離する。記事本文(summary等)に"脆弱性情報:"や
@@ -3169,12 +3654,7 @@ def enrich_with_ai(items, analysis_date=None):
             "collection_method": source_meta["collection_method"] if source_meta else "不明",
             "title": raw_title,
             "raw_title": raw_title,
-            # Ticket 16a: descriptionのみだったsummaryを、feed-native rich content
-            # (RSS content:encoded / Atom content)がdescriptionを機械的な条件で
-            # 上回る場合はそちらへ差し替える(連結はしない)。追加HTTP取得は行わず、
-            # item["rich_content"](_parse_feed_itemsが取得済みfeedレスポンスから
-            # 設定)のみを参照する。
-            "summary": build_article_body_text(item.get("summary", ""), item.get("rich_content", "")),
+            "summary": body_text,
             "published_at": published_at_str,
             "url": item.get("link", ""),
         }
@@ -3185,8 +3665,51 @@ def enrich_with_ai(items, analysis_date=None):
             + json.dumps(untrusted_article, ensure_ascii=False, separators=(",", ":"))
         )
         result = gemini_analyze(text)
+        analysis = result["analysis"]
 
-        item["ai_analysis"] = result["analysis"]
+        # BL-032: feed_summary/limited_feed_analysisでGeminiが失敗・未試行
+        # (analysis=None)だった場合、既存のraw_summary表示fallbackへ進めず
+        # metadata-only相当へdowngradeする。既存の共通fallback(raw_summary
+        # の先頭120文字表示)はstructured_openのみに残す(要件5)。
+        if (
+            analysis is None
+            and content_policy is not None
+            and effective_mode in ("feed_summary", "limited_feed_analysis")
+        ):
+            _downgrade_to_metadata_only_and_purge(
+                item, content_policy, "analysis_unavailable"
+            )
+            time.sleep(15)
+            continue
+
+        # BL-032: limited_feed_analysisでは原見出しの日本語翻訳タイトルを
+        # 公開しない。既存の共通ARTICLE promptはtitle_jaを必須項目のまま
+        # 生成するため、公開・保存前にこの分類でだけ機械的に無効化する
+        # (validate_output_policyのforbidden_translated_titleは、この
+        # 無効化に対する事後的な安全網として働く)。
+        if analysis is not None and effective_mode == "limited_feed_analysis":
+            analysis = dict(analysis)
+            analysis["title_ja"] = None
+
+        if analysis is not None and content_policy is not None:
+            attribution_ok = _attribution_is_available(item, content_policy)
+            verbatim_source_text = (
+                body_text if effective_mode in ("feed_summary", "limited_feed_analysis") else ""
+            )
+            ok, violation_reason = daily_json.validate_output_policy(
+                effective_mode, verbatim_source_text, analysis, attribution_ok=attribution_ok
+            )
+            if not ok:
+                # policy違反: この記事の分析は公開せず、metadata-only相当へ
+                # 即時downgradeする。ai_analysis/ai_analysis_metaは設定しない
+                # (daily_json側でnot_attempted相当として扱われる)。
+                _downgrade_to_metadata_only_and_purge(
+                    item, content_policy, violation_reason
+                )
+                time.sleep(15)
+                continue
+
+        item["ai_analysis"] = analysis
         item["ai_analysis_meta"] = {
             "status": result["status"],
             "error_type": result["error_type"],
@@ -3194,12 +3717,23 @@ def enrich_with_ai(items, analysis_date=None):
             "generated_at": datetime.datetime.now(JST).isoformat(),
         }
 
-        if result["analysis"]:
+        # BL-032: feed_summary/limited_feed_analysisは、policy検証を通過して
+        # 公開可能なanalysisが得られた(success/fallback)場合も、Gemini呼出し
+        # 中のローカル変数body_textだけにdescriptionを保持する契約のため、
+        # ここでpublisher由来本文(summary/raw_summary/rich_content)を直ちに
+        # 破棄する(ai_analysis/ai_analysis_metaはそのまま維持する)。
+        if content_policy is not None and effective_mode in ("feed_summary", "limited_feed_analysis"):
+            _purge_publisher_text(item)
+
+        if analysis:
             count += 1
 
         time.sleep(15)
 
-    print(f"  AI要約: {count} 件 / 試行: {attempts} 件")
+    print(
+        f"  AI要約: {count} 件 / 試行: {attempts} 件"
+        + (f" / policy対象外: {policy_skipped} 件" if policy_skipped else "")
+    )
     return items
 
 
@@ -3211,10 +3745,21 @@ def is_article_evaluated(item):
     (compute_brief_trusted_context)の両方が、この関数だけを判定基準として共用する
     (二重実装・判定基準のズレを避ける)。
 
-    判定済み条件: analysis.statusがsuccess/fallback、ai_analysisが有効なdict、
-    importance/urgencyが両方とも既存の許容値のいずれか。いずれか一方でも
-    欠落・不正なら記事全体を未判定として扱う(fallbackでも両軸有効なら判定済み)。
+    判定済み条件: policy.ai_eligibleがtrue(またはcontent_policy自体が無い
+    legacy item)、analysis.statusがsuccess/fallback、ai_analysisが有効な
+    dict、importance/urgencyが両方とも既存の許容値のいずれか。いずれか一方
+    でも欠落・不正なら記事全体を未判定として扱う(fallbackでも両軸有効なら
+    判定済み)。
+
+    BL-032: ai_eligible=falseの記事は、ai_analysis/ai_analysis_metaが
+    (Archive再生成時のfail-closed downgrade等により)残っていても判定済み
+    として扱わない。これによりis_article_evaluated()を使う全ての派生表示
+    (select_priority_items・select_brief_input_items・compute_brief_
+    trusted_context)が、記事カード表示だけでなく一貫してmetadata-only相当
+    を除外する。
     """
+    if not item_is_ai_eligible(item):
+        return False
     meta = item.get("ai_analysis_meta") or {}
     if meta.get("status") not in ("success", "fallback"):
         return False
@@ -3234,6 +3779,20 @@ def select_brief_input_items(items):
     (記事本文・raw_excerpt・Geminiの生レスポンス・前日以前の記事は使わない)。
     """
     return [item for item in items if is_article_evaluated(item)]
+
+
+def select_brief_eligible_items(items):
+    """BL-032完了条件11: Today's Brief生成が対象とする記事集合を一元的に
+    決定する共通helper。content_policyが無いlegacy itemは従来どおり対象とし
+    (item_is_ai_eligible()のdefault-True挙動)、content_policy.ai_eligible=
+    False(metadata-only相当)の記事は、Brief入力・trusted context・状態行・
+    未判定件数・source ID集合・priority item・provenanceのすべてから除外する。
+    compose_extractive_brief()内のこれらの処理は、必ずこの関数が返す同じ
+    filtered集合に対して行う(個別に`is_article_evaluated`等でだけ除外すると、
+    published_total/unclassifiedのような「掲載記事全体」を数える処理が
+    metadata-only相当を誤って含めてしまうため)。
+    """
+    return [item for item in items if item_is_ai_eligible(item)]
 
 
 def compute_brief_temporal_state(urgency_today, urgency_week):
@@ -3959,8 +4518,15 @@ def compose_extractive_brief(items):
 
     戻り値のbriefだけがpublic daily JSON/HTML経路へ進む。provenanceはoffline
     screening・テスト用であり、public projectionには含めない。
+
+    BL-032完了条件11: metadata-only相当(policy.ai_eligible=False)の記事は、
+    select_brief_eligible_items()により、掲載総数のカウント(compute_brief_
+    trusted_contextのpublished_total/unclassifiedを含む)より前の時点で
+    この関数全体から除外する(掲載総数自体にはDashboard側で引き続き含める。
+    ここで除外するのはBriefの入出力のみ)。
     """
-    brief_items = select_brief_input_items(items)
+    eligible_items = select_brief_eligible_items(items)
+    brief_items = select_brief_input_items(eligible_items)
     if not brief_items:
         return {
             "brief": {
@@ -3969,12 +4535,13 @@ def compose_extractive_brief(items):
                 "prompt_version": daily_json.BRIEF_PROMPT_VERSION,
             },
             "provenance": [],
+            "context": compute_brief_trusted_context(eligible_items),
         }
 
-    ctx = compute_brief_trusted_context(items)
-    source_ids = _build_brief_source_ids(items)
+    ctx = compute_brief_trusted_context(eligible_items)
+    source_ids = _build_brief_source_ids(eligible_items)
     valid_source_ids = set(source_ids.values())
-    ordered_items = sort_items_for_display(items)
+    ordered_items = sort_items_for_display(eligible_items)
 
     highlight_candidates = []
     for item in ordered_items:
@@ -4000,7 +4567,7 @@ def compose_extractive_brief(items):
     )
     # BL-029: 「重要・優先事項」は同一記事のsummary/financial_impactペアから
     # select_priority_items()で構成する(build_html()の描画時再構成と同じhelper)。
-    priority_items, discussion_provenance = select_priority_items(items)
+    priority_items, discussion_provenance = select_priority_items(eligible_items)
     discussion_points = [entry["combined_text"] for entry in priority_items]
 
     check_candidates = []
@@ -4088,6 +4655,7 @@ def compose_extractive_brief(items):
         "provenance": (
             highlight_provenance + discussion_provenance + check_provenance
         ),
+        "context": ctx,
     }
 
 
@@ -4100,7 +4668,10 @@ def build_todays_brief(items):
     result = composition["brief"]
 
     if result["status"] == "success":
-        ctx = compute_brief_trusted_context(items)
+        # BL-032: 二重計算によるズレを避けるため、compose_extractive_brief()が
+        # 既にmetadata-only相当除外後のitem集合で算出したcontextをそのまま使う
+        # (ここで生のitemsから再計算しない)。
+        ctx = composition["context"]
         print(
             f"Today's Briefを構成: 概況1件(状態:{ctx['temporal_state']}) / "
             f"ハイライト{len(result['important_highlights'])}件 / "
@@ -4264,6 +4835,154 @@ def render_vulnerability_facts_html(facts):
       </section>"""
 
 
+# BL-032: mode別のattribution文言(SOURCE_USAGE_POLICY.md 6章)。
+_FEED_SUMMARY_ATTRIBUTION_TEXT = (
+    "Monomi DigestによるAI要約・分析です。要約・分析には正確性の限界があります。"
+)
+_LIMITED_FEED_ANALYSIS_ATTRIBUTION_TEXT = (
+    "Monomi Digestが公式RSSの概要をもとに生成したAI分析です。"
+    "詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。"
+)
+_METADATA_ONLY_ATTRIBUTION_TEXT = "AIによる要約・評価は行っていません。"
+
+# BL-032: 固定文言だけで完結するstructured_open source_id(外部設定への
+# 依存が無く、常に生成可能)。`ncsc`はsource_definitions.jsonの
+# policy.attribution_urlに依存するため、この集合に含めず個別に判定する。
+_STRUCTURED_OPEN_FIXED_TEXT_SOURCE_IDS = frozenset(
+    {"fsa", "nist", "nist_nvd", "cisa_kev"}
+)
+
+
+# BL-032: attribution_url_snapshotパラメータの既定値として使うsentinel。
+# 「引数を省略した(=fresh生成・通常のbuild_html呼び出しであり、Archive
+# 再生成のsnapshot復元を経ていない)」ことを、有効な値になり得るNoneと
+# 区別するために使う。
+_ATTRIBUTION_URL_LIVE_LOOKUP = object()
+
+
+def _resolve_ncsc_ogl_url(attribution_url_snapshot=_ATTRIBUTION_URL_LIVE_LOOKUP):
+    """NCSCのOGL v3 URLを解決する。
+
+    attribution_url_snapshotを明示的に渡した場合(Archive再生成時、schema v2
+    daily JSONのpolicy.attribution_urlから復元したsnapshot)は、その値だけを
+    daily_json.is_safe_attribution_url()で検証して使う――現在の
+    source_definitions.jsonは一切参照しない。これにより、生成後に
+    source_definitions.jsonのNCSC設定が変更・削除されても、既存Archiveの
+    再生成結果は生成時点のsnapshotのまま変わらない。引数省略時(fresh生成・
+    通常のbuild_html呼び出し)は、source_definitions.jsonのncsc.policy.
+    attribution_urlを都度ライブ参照する。いずれの経路でも、欠落・空・
+    不正schemeの場合、またはhost部分を持たない値(`https://`単体等)の場合は
+    Noneを返す(呼び出し側はNoneを「実際にリンク化できない」と扱う)。
+    記事リンク全般に使うfetch.safe_url()とは意図的に別の、より厳密な検証
+    (netloc/hostnameの存在を要求)を使う――このattribution snapshot契約に
+    限定した強化であり、safe_url()自体の仕様は変更しない。
+    """
+    if attribution_url_snapshot is _ATTRIBUTION_URL_LIVE_LOOKUP:
+        source_def = get_source_definition(SOURCE_DEFINITIONS, "ncsc")
+        attribution_url = source_def["policy"].get("attribution_url") if source_def else None
+    else:
+        attribution_url = attribution_url_snapshot
+    if not daily_json.is_safe_attribution_url(attribution_url):
+        return None
+    return attribution_url.strip()
+
+
+def _can_render_structured_open_attribution(
+    source_id, attribution_url_snapshot=_ATTRIBUTION_URL_LIVE_LOOKUP
+):
+    """BL-032: structured_open source_id別に、実際にattribution表示を
+    生成できるかどうかをfail-closedで判定する共通helper。
+    render_structured_open_attribution_html()と_attribution_is_available()の
+    両方が、この関数だけを正本として判定する(判定ロジックの二重定義を避ける)。
+    * fsa: 利用日(digest生成日)は常に生成可能。
+    * nist/nist_nvd/cisa_kev: 固定文言は常に生成可能。
+    * ncsc: attribution_url_snapshot(省略時はsource_definitions.jsonの
+      ライブ値)が存在し、safe_url()を通過する場合のみ生成可能。
+    * 上記以外の未知source_idは生成不可。
+    """
+    if source_id in _STRUCTURED_OPEN_FIXED_TEXT_SOURCE_IDS:
+        return True
+    if source_id == "ncsc":
+        return _resolve_ncsc_ogl_url(attribution_url_snapshot) is not None
+    return False
+
+
+def render_structured_open_attribution_html(
+    source_id, generated_at_ymd, attribution_url_snapshot=_ATTRIBUTION_URL_LIVE_LOOKUP
+):
+    """structured_open分類のsource_id別に、実際のattribution表示(安全に
+    escape済みのHTML断片)を組み立てる。原ページURLは既存の元記事リンク
+    (article-source-link)で充足するため、ここでは繰り返さない。
+    generated_at_ymdは、Monomi Digestがこのcontentを利用した日付(digest
+    生成日、JST、YYYY-MM-DD形式)の正本(SOURCE_USAGE_POLICY.md 6章参照)。
+    attribution_url_snapshotはncsc専用(他source_idでは無視される)。
+    _can_render_structured_open_attribution()がfalseを返す場合(未知の
+    source_id、またはncsc用URLが生成不可の場合)は空文字列を返す
+    (リンクなし平文へのfallbackはしない――呼び出し元がattribution_ok経由で
+    missing_attribution downgradeへ回す前提)。
+    """
+    if not _can_render_structured_open_attribution(source_id, attribution_url_snapshot):
+        return ""
+    if source_id == "fsa":
+        date_part = f"利用日: {esc(generated_at_ymd)}" if generated_at_ymd else ""
+        return "金融庁ウェブサイトをもとにMonomi Digestが加工。" + date_part
+    if source_id == "nist":
+        return "出典: NIST"
+    if source_id == "ncsc":
+        safe_ogl_url = _resolve_ncsc_ogl_url(attribution_url_snapshot)
+        ogl_link = (
+            f'<a href="{esc(safe_ogl_url)}" target="_blank" '
+            'rel="noopener noreferrer">Open Government Licence v3.0</a>'
+        )
+        return f"出典: NCSC。{ogl_link}のもとで提供される情報を含みます。"
+    if source_id == "cisa_kev":
+        return "出典: CISA Known Exploited Vulnerabilities (KEV) Catalog。CC0 1.0 Universal(パブリックドメイン)。"
+    if source_id == "nist_nvd":
+        return (
+            "This product uses the NVD API but is not endorsed or certified by the NVD."
+        )
+    return ""
+
+
+def render_source_attribution_html(item, generated_at_ymd=""):
+    """記事カードへ表示するsource固有のattribution note(SOURCE_USAGE_POLICY.md
+    6章)をmode別に組み立てる。content_policyが無い(collect_recentを経由しない
+    古い呼び出し等)場合は空文字列を返す(表示なし、既存挙動を変えない)。
+    """
+    content_policy = item.get("content_policy")
+    if not content_policy:
+        return ""
+    mode = content_policy.get("effective_mode") or content_policy.get("configured_mode")
+    if mode == "structured_open":
+        # BL-032: content_policyに"attribution_url"キーが存在する場合
+        # (digest_items_for_html()がArchive再生成用に復元したsnapshot、
+        # ncsc以外ではNoneでも可)は、そのsnapshot値だけを使い、現在の
+        # source_definitions.jsonは参照しない。キー自体が無い場合(fresh
+        # 生成・通常のbuild_html呼び出し)は、従来どおりライブ参照する。
+        attribution_url_snapshot = (
+            content_policy["attribution_url"]
+            if "attribution_url" in content_policy
+            else _ATTRIBUTION_URL_LIVE_LOOKUP
+        )
+        html_fragment = render_structured_open_attribution_html(
+            content_policy.get("source_id"), generated_at_ymd, attribution_url_snapshot
+        )
+        if not html_fragment:
+            return ""
+        return f'\n      <p class="article-attribution">{html_fragment}</p>'
+    elif mode == "feed_summary":
+        text = _FEED_SUMMARY_ATTRIBUTION_TEXT
+    elif mode == "limited_feed_analysis":
+        text = _LIMITED_FEED_ANALYSIS_ATTRIBUTION_TEXT
+    elif mode == "metadata_only":
+        text = _METADATA_ONLY_ATTRIBUTION_TEXT
+    else:
+        text = ""
+    if not text:
+        return ""
+    return f'\n      <p class="article-attribution">{esc(text)}</p>'
+
+
 def build_html(
     items,
     brief=None,
@@ -4281,6 +5000,17 @@ def build_html(
         date_str = normalize_datetime_for_display(date_source).strftime("%Y年%m月%d日 %H:%M")
     else:
         date_str = clean_archive_text(date_source)
+    # BL-032: structured_open(fsa)のattribution表示に使う「利用日」の正本は
+    # digest生成日(JST、YYYY-MM-DD)とする(SOURCE_USAGE_POLICY.md 6章参照)。
+    # date_sourceがdatetimeとして解釈できない場合(legacy Archive再生成等)は
+    # 空文字列とし、日付欄自体を省略する(誤った日付を表示しない)。
+    normalized_generated_at = (
+        normalize_datetime_for_display(date_source)
+        if isinstance(date_source, datetime.datetime) else None
+    )
+    generated_at_ymd = (
+        normalized_generated_at.strftime("%Y-%m-%d") if normalized_generated_at else ""
+    )
     dashboard_html = render_dashboard_html(items)
     display_items = sort_items_for_display(items)
     article_refs = {}
@@ -4361,6 +5091,7 @@ def build_html(
         analysis = normalize_display_analysis(item.get("ai_analysis"))
         anchor_id = article_anchor_id(display_index)
         facts_html = render_vulnerability_facts_html(item.get("facts"))
+        attribution_html = render_source_attribution_html(item, generated_at_ymd)
 
         # sourceが上流で必須であっても、date_labelが欠ける場合(date未設定)に
         # 「source ・」のような不自然な末尾区切りを生成しないよう、空でない値
@@ -4370,6 +5101,33 @@ def build_html(
             f'\n      <p class="article-meta">{" ・ ".join(meta_parts)}</p>'
             if meta_parts else ""
         )
+
+        # BL-032: policy.ai_eligible=False(metadata_only相当)の記事は、
+        # AI分析・publisher由来summary・vulnerability factsのいずれも表示せず、
+        # original title/source/published date/original URLと簡潔な注記だけの
+        # 簡易カードにする(通常一覧へ公開日時順で混在させる)。
+        if not item_is_ai_eligible(item):
+            assessment_html = ""
+            tags_html = ""
+            content_html = attribution_html
+            safe_link = safe_url(item['link'])
+            if safe_link:
+                link_attrs = f'href="{esc(safe_link)}" target="_blank" rel="noopener noreferrer"'
+                title_html = render_title_stack(
+                    item, href=safe_link, external=True, heading_level=2,
+                    display_index=display_index,
+                )
+                source_link_html = f'\n      <a class="article-source-link" {link_attrs}>元記事を読む</a>'
+            else:
+                title_html = render_title_stack(
+                    item, heading_level=2, display_index=display_index,
+                )
+                source_link_html = ""
+            cards.append(f"""
+    <article class="card card-metadata-only" id="{esc(anchor_id)}">
+      {title_html}{meta_html}{content_html}{source_link_html}
+    </article>""")
+            continue
 
         if analysis:
             # 通常記事カードB案(Ticket 18): 重要度／確認目安はプレーンテキスト表示とし、
@@ -4445,15 +5203,28 @@ def build_html(
         </section>""")
 
             sections_html = "\n        ".join(sections)
-            content_html = (
+            ai_analysis_html = (
                 f'\n      <div class="ai-analysis">\n        {sections_html}\n      </div>'
                 if sections else ""
             )
+            content_html = ai_analysis_html + attribution_html
         else:
             assessment_html = ""
             tags_html = ""
+            # BL-032: raw_summary(publisher由来description)の表示fallbackは
+            # structured_open(bounded raw excerptの保存・表示が許可されている
+            # mode)、またはcontent_policy自体が無い legacy v1 itemのみに残す。
+            # feed_summary/limited_feed_analysisはenrich_with_ai側で有効な
+            # analysisが無ければ既にmetadata-only相当(ai_eligible=False)へ
+            # downgrade済みのはずであり、この分岐へは到達しないが、念のため
+            # 二重に保証する。
+            item_content_policy = item.get("content_policy")
+            allow_raw_summary_fallback = (
+                item_content_policy is None
+                or item_content_policy.get("effective_mode") == "structured_open"
+            )
             max_len = 120
-            summary = raw_summary[:max_len]
+            summary = raw_summary[:max_len] if allow_raw_summary_fallback else ""
             raw_summary_html = (
                 f'<p class="summary">{esc(summary)}'
                 f'{"…" if len(raw_summary) > max_len else ""}</p>'
@@ -4461,7 +5232,7 @@ def build_html(
             )
             # AI分析が無い場合も、概要の後に脆弱性情報を表示する(Ticket 12b #4)。
             body_html = raw_summary_html + facts_html
-            content_html = f"\n      {body_html}" if body_html else ""
+            content_html = (f"\n      {body_html}" if body_html else "") + attribution_html
 
         safe_link = safe_url(item['link'])
         if safe_link:
@@ -4763,6 +5534,19 @@ def render_archive_adjacent_links(previous_date=None, next_date=None):
 
 
 def build_daily_archive_html(digest, previous_date=None, next_date=None):
+    """指定したdigestからArchive HTMLを構築する。
+
+    契約: digestは呼び出し側が既にdaily_json.validate_daily_digest_for_archive_read()
+    を通過させた検証済みのものであること(BL-032)。schema v2は保存直前と
+    完全に同じstrict validation、schema v1は現行の閾値・enumを遡及適用しない
+    後方互換性を維持したArchive読込validationを適用する(round 5〜7)。この
+    関数自身は再検証しない――digest_items_for_html()のArchive attribution
+    snapshot fail-closed downgradeは記事カード等のitems由来の派生表示だけを
+    対象とし、digestへ保存済みのbrief(overview/discussion_points/
+    check_items、brief_for_html_from_digest()経由)には及ばない。validation
+    自体で不正なdigestをこの関数へ渡さないことが、保存済みBriefも含めた
+    fail-closedの唯一の保証点である(generate_archive_outputs()参照)。
+    """
     digest_date = digest["digest_date"]
     items = digest_items_for_html(digest)
     brief = brief_for_html_from_digest(digest)
@@ -4875,7 +5659,11 @@ def daily_digest_paths(data_dir):
     )
 
 
-def update_index_archive_paths(data_dir, summaries, generated_at=None):
+def update_index_archive_paths(data_dir, summaries, docs_dir=None, generated_at=None):
+    # BL-032: 呼び出し元が指定したdocs_dir(テスト用の一時ディレクトリ等)を
+    # 使う。省略時のみモジュールのglobal DOCS_DIRへfallbackする(既存呼び出し
+    # 元との後方互換のため)。
+    docs_dir = Path(docs_dir) if docs_dir is not None else DOCS_DIR
     data_dir = Path(data_dir)
     index_path = data_dir / "index.json"
     if index_path.exists():
@@ -4906,7 +5694,7 @@ def update_index_archive_paths(data_dir, summaries, generated_at=None):
             updated["archive_path"] = summary_by_date[digest_date]["archive_path"]
         elif updated.get("archive_path"):
             archive_rel = str(updated["archive_path"]).removeprefix("docs/")
-            if not (DOCS_DIR / archive_rel).exists():
+            if not (docs_dir / archive_rel).exists():
                 updated["archive_path"] = None
         digests.append(updated)
 
@@ -4936,12 +5724,34 @@ def generate_archive_outputs(data_dir=None, docs_dir=None, generated_at=None):
     archive_dir = docs_dir / "archive"
     digests = []
     summaries = []
+    invalid_dates = []
 
     for path in daily_digest_paths(data_dir):
         try:
             digest = load_daily_digest(path)
+            # BL-032: load_daily_digest()はJSON形式・トップレベル型・
+            # digest_date・ファイル名程度しか確認しない。schema v2の
+            # policy.attribution_url snapshot(現状ncscのみ)が欠落・不正な
+            # digestを含め、日次JSON全体の整合性はここでfull validationする。
+            # schema v2は保存直前と同じstrict validation(validate_daily_digest)
+            # を適用するが、schema v1(レガシー)は現行の閾値・enumを実在ファイル
+            # へ遡及適用しない、最小限の構造検証にとどめる
+            # (validate_daily_digest_for_archive_read参照。実在するschema v1
+            # ファイルが、生成当時は正当だった値――例: 現行のBRIEF_MAX_CHECK_ITEMS
+            # より多いcheck_items――を理由に誤ってArchive生成対象から除外
+            # されないようにするため)。
+            daily_json.validate_daily_digest_for_archive_read(digest)
         except daily_json.DailyJsonError as e:
             print(f"[WARN] アーカイブ生成をスキップ: {e}", file=sys.stderr)
+            # BL-032: 検証を通過しないdigestは、日別Archive HTML・Archive
+            # summary・index entryのいずれも生成・更新しない。加えて、この
+            # 日付に対応する既存のstale Archive HTML(以前は有効だったdigestが
+            # 後日改変・破損した場合に残り得る)があれば削除対象として記録する
+            # (ファイル名からdigest_date形式を厳密に判定できる場合のみ。
+            # 他日付・index.html等を誤って削除しない)。
+            fallback_date = path.stem
+            if daily_json.DIGEST_DATE_RE.fullmatch(fallback_date):
+                invalid_dates.append(fallback_date)
             continue
         digests.append(digest)
         summaries.append(archive_summary_from_digest(digest))
@@ -4966,12 +5776,56 @@ def generate_archive_outputs(data_dir=None, docs_dir=None, generated_at=None):
         )
         atomic_write_text(archive_path, html, validator=validate_html_document)
 
+    # BL-032: invalidと判定された日付について、過去の有効なdigestから生成
+    # されたまま残っているstaleな日別Archive HTMLを削除する。その日付と
+    # 厳密に一致するファイルだけを対象とし、他日付・archive/index.html等は
+    # 一切削除しない。
+    for digest_date in invalid_dates:
+        stale_path = archive_dir / f"{digest_date}.html"
+        if stale_path.is_file():
+            stale_path.unlink()
+
     index_html = build_archive_index_html(summaries, generated_at=generated_at)
     atomic_write_text(archive_dir / "index.html", index_html, validator=validate_html_document)
-    update_index_archive_paths(data_dir, summaries, generated_at=generated_at)
+    update_index_archive_paths(data_dir, summaries, docs_dir=docs_dir, generated_at=generated_at)
     return summaries
 
 # ── メイン ───────────────────────────────────────────────────────────────────
+
+def _facts_extraction_view(item):
+    """CVE facts抽出用のview(BL-032)。structured_open以外(feed_summary/
+    limited_feed_analysis)は、publisher description(raw_summary/summary)を
+    facts抽出へ使わず、title・linkのみを対象にする(7章のbounded input方針に
+    合わせる)。元のitemは変更しない(浅いcopyを返す)。"""
+    view = dict(item)
+    content_policy = item.get("content_policy") or {}
+    if content_policy.get("configured_mode") != "structured_open":
+        view["raw_summary"] = ""
+        view["summary"] = ""
+    return view
+
+
+def build_scoped_vulnerability_facts(items, **kwargs):
+    """vulnerability_facts.build_facts_for_items()をBL-032のpolicyに従って
+    適用する。policy.ai_eligible=False(metadata_only相当)の記事は、CVE facts
+    の外部取得・保存・表示の対象外とし、item["facts"]={"cves": []}を直接設定する
+    (外部取得自体を行わない)。ai_eligible=Trueの記事のうち、configured_modeが
+    structured_open以外(feed_summary/limited_feed_analysis)は、publisher
+    descriptionをfacts抽出へ使わず、title/linkのみを対象にする。
+    """
+    eligible_items = [it for it in items if item_is_ai_eligible(it)]
+    non_eligible_items = [it for it in items if not item_is_ai_eligible(it)]
+
+    for item in non_eligible_items:
+        item["facts"] = {"cves": []}
+
+    views = [_facts_extraction_view(it) for it in eligible_items]
+    stats = vulnerability_facts.build_facts_for_items(views, **kwargs)
+    for original, view in zip(eligible_items, views):
+        original["facts"] = view["facts"]
+
+    return stats
+
 
 def main():
     out_path = DOCS_DIR / "index.html"
@@ -4984,6 +5838,13 @@ def main():
     print("フィードを収集中...")
     items = collect_recent(kev_catalog_memo=kev_catalog_memo)
     print(f"  {len(items)} 件取得")
+
+    # BL-032: 真のmetadata_only source、またはGemini data-use gate未充足に
+    # よりこの収集時点で既にmetadata-only相当へdowngrade済みのitemは、
+    # is_cyber_relevant(関連性フィルタ、collect_recent内で既に完了済み)より
+    # 後、raw_summaryスナップショットより前にpublisher由来description・
+    # rich contentを破棄する(raw_summaryへ複製させない)。
+    purge_publisher_text_for_ineligible_items(items)
 
     # 日次JSON(Ticket 3)向けに、表示用に上書きされる前の原文タイトル・概要を
     # 収集直後のこの時点でスナップショットしておく。
@@ -5004,7 +5865,10 @@ def main():
     kev_url = cisa_kev_def["url"] if cisa_kev_def else vulnerability_facts.KEV_URL
 
     facts_cache_path = vulnerability_facts.default_cache_path(daily_json.DATA_DIR)
-    facts_stats = vulnerability_facts.build_facts_for_items(
+    # BL-032: metadata_only相当の記事はCVE facts取得の対象外とし、
+    # feed_summary/limited_feed_analysisはpublisher descriptionをfacts抽出へ
+    # 使わない(build_scoped_vulnerability_facts参照)。
+    facts_stats = build_scoped_vulnerability_facts(
         items,
         cache_path=facts_cache_path,
         nvd_api_key=os.environ.get("NVD_API_KEY") or None,
