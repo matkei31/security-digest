@@ -1,0 +1,299 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-08-01",
+  "generated_at": "2026-08-01T07:59:28.478488+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 5,
+    "ai_attempted_count": 4,
+    "ai_success_count": 4,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 1,
+    "ai_eligible_count": 4
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 4,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 4,
+      "参考": 0,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 1,
+      "攻撃・脅威動向": 3,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 0,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "掲載4件｜重要度「高」0件｜本日確認0件｜今週確認4件\n本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が4件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "2025年1月以降、中国語話者とみられる脅威アクターが、アフガニスタン、キルギス、タジキスタン、ウズベキスタン、カザフスタン、シリアなどの中央アジア政府機関を標的としたサイバー攻撃を仕掛けています。これらの攻撃では、OctLurkとSilkLurkというマルウェアが使用されています。\n記事は中央アジアの政府機関を標的とした攻撃について述べており、金融機関への直接的な関係は確認できません。一般的な脅威動向の参考情報として位置づけられます。",
+      "サイバーセキュリティ研究者が、これまで文書化されていなかったGoベースのローダーフレームワーク「HollowFrame」とRustベースのマルウェアファミリー「Matryoshka」について明らかにしました。この攻撃は、暗号化されたアーカイブへのリンクを含むスピアフィッシングメッセージから始まり、Windowsショートカット（LNK）ファイルを実行することで多段階の感染チェーンが引き起こされます。\n金融機関への直接的な影響は記事からは確認できません。しかし、スピアフィッシングは金融機関を標的とする一般的な攻撃手法であり、新たなマルウェアの動向として参考になります。"
+    ],
+    "check_items": [],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:9a096844f31d70cf18bd282db765203ef1443556f64eb123bcee9760bf8dc76b",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/07/31/captivecrunch-midnight-blizzard-targets-travelers-worldwide-for-malware-delivery-and-credential-theft/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/07/31/captivecrunch-midnight-blizzard-targets-travelers-worldwide-for-malware-delivery-and-credential-theft/",
+      "published_at": "2026-08-01T06:01:37+09:00",
+      "fetched_at": "2026-08-01T07:58:19.829298+09:00",
+      "title": "CaptiveCrunch: Midnight Blizzard targets travelers worldwide for malware delivery and credential theft",
+      "raw_title": "CaptiveCrunch: Midnight Blizzard targets travelers worldwide for malware delivery and credential theft",
+      "raw_excerpt": null,
+      "content_hash": "sha256:def1e5504dd8f5232cbe18e89857eac51bb16356c7538a03c413c254f7b7898f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:63ae4bfd895ffdf8f579a2540cf007bfaf5f1ffd006ff44811ccd5c833ba8845",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/suspected-chinese-speaking-hackers.html",
+      "canonical_url": "https://thehackernews.com/2026/08/suspected-chinese-speaking-hackers.html",
+      "published_at": "2026-08-01T03:52:04+09:00",
+      "fetched_at": "2026-08-01T07:58:19.829298+09:00",
+      "title": "Suspected Chinese-Speaking Hackers Target Central Asian Governments With OctLurk and SilkLurk",
+      "raw_title": "Suspected Chinese-Speaking Hackers Target Central Asian Governments With OctLurk and SilkLurk",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d4b80e094d06a2d9f2eeeb9d9182267ae3ac0d587a649377553211d4d7398187",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-01T07:58:21.769126+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国語話者とみられるハッカー集団による特定の攻撃手法と標的が主題であるため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "2025年1月以降、中国語話者とみられる脅威アクターが、アフガニスタン、キルギス、タジキスタン、ウズベキスタン、カザフスタン、シリアなどの中央アジア政府機関を標的としたサイバー攻撃を仕掛けています。これらの攻撃では、OctLurkとSilkLurkというマルウェアが使用されています。",
+        "financial_impact": "記事は中央アジアの政府機関を標的とした攻撃について述べており、金融機関への直接的な関係は確認できません。一般的な脅威動向の参考情報として位置づけられます。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な関連性が記事から確認できず、一般的な脅威動向の参考情報であるため「中」です。確認目安は、特定の期限や緊急対応を要する情報が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b854b6f9db795aeb0451395e51435a703c6564873a0f438fd09642b16052d97c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/hollowframe-loader-deploys-matryoshka.html",
+      "canonical_url": "https://thehackernews.com/2026/07/hollowframe-loader-deploys-matryoshka.html",
+      "published_at": "2026-08-01T01:39:31+09:00",
+      "fetched_at": "2026-08-01T07:58:19.829298+09:00",
+      "title": "HollowFrame Loader Deploys Matryoshka Backdoor in Spear-Phishing Attack on Law Firm",
+      "raw_title": "HollowFrame Loader Deploys Matryoshka Backdoor in Spear-Phishing Attack on Law Firm",
+      "raw_excerpt": null,
+      "content_hash": "sha256:53bdc85069b461dd692553ba6cbd1ed781f2cd59904393f152fa3c1384aec992",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-01T07:58:38.933955+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "スピアフィッシング攻撃の手法と新たなマルウェアの展開が主題であるため。",
+        "tags": [
+          "フィッシング",
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、これまで文書化されていなかったGoベースのローダーフレームワーク「HollowFrame」とRustベースのマルウェアファミリー「Matryoshka」について明らかにしました。この攻撃は、暗号化されたアーカイブへのリンクを含むスピアフィッシングメッセージから始まり、Windowsショートカット（LNK）ファイルを実行することで多段階の感染チェーンが引き起こされます。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。しかし、スピアフィッシングは金融機関を標的とする一般的な攻撃手法であり、新たなマルウェアの動向として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、新たなマルウェアと攻撃手法に関する情報ですが、金融機関への直接的な関連性や具体的な影響が記事から確認できないため「中」です。確認目安は、緊急の対応を要する具体的な期限や進行中の攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:8a2c99fa930a02978baef0397a48af4d92e20faadbcbd2cbbf6f7d05450ca780",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/07/cheap-android-tv-boxes-pose-as-phones.html",
+      "canonical_url": "https://thehackernews.com/2026/07/cheap-android-tv-boxes-pose-as-phones.html",
+      "published_at": "2026-07-31T23:45:01+09:00",
+      "fetched_at": "2026-08-01T07:58:19.829298+09:00",
+      "title": "Cheap Android TV Boxes Pose as Phones and Turn Owners’ Broadband Into Proxies",
+      "raw_title": "Cheap Android TV Boxes Pose as Phones and Turn Owners’ Broadband Into Proxies",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f37f30c6eb856e55c2ab2cf3194ddc6a3111c75888f93935f8fdcb89e4cec4a7",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-01T07:58:56.862196+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "安価なAndroid TVボックスを悪用した攻撃手法と脅威動向が主題であるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "一部の安価なAndroid TVボックスが、Samsungなどのスマートフォンになりすまし、広告クリック詐欺を行うアプリをプリインストールして出荷されていることが判明しました。この「Fuyao」と呼ばれる攻撃は、浙江蜂窩物聯網科技有限公司が関与しているとされています。",
+        "financial_impact": "金融機関が直接的にこのAndroid TVボックスを利用している可能性は低いですが、従業員が個人利用している場合、ネットワーク帯域の不正利用や潜在的なマルウェア感染のリスクがあります。金融機関への直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関が直接的な標的ではないものの、従業員の個人利用による潜在的なリスクがあるため「中」です。確認目安は、具体的な緊急対応の必要性や期限が記事に示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4921de5f45ed81fbefd526cf1501de1cc07b966e386a5cc70376dee5135a9a82",
+      "source_id": "jpcert_cc",
+      "source_name": "JPCERT/CC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.jpcert.or.jp/at/2026/at260020.html",
+      "canonical_url": "https://www.jpcert.or.jp/at/2026/at260020.html",
+      "published_at": "2026-07-31T18:00:00+09:00",
+      "fetched_at": "2026-08-01T07:58:19.829298+09:00",
+      "title": "注意喚起: 2026年7月マイクロソフトセキュリティ更新プログラムに関する注意喚起  (更新)",
+      "raw_title": "注意喚起: 2026年7月マイクロソフトセキュリティ更新プログラムに関する注意喚起  (更新)",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f4f297f58194fa4997e38c9ec89449931763170b2409136cb12ca7a0965e0b65",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "feed_summary",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-01T07:59:13.477980+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "マイクロソフトのセキュリティ更新プログラムに関する注意喚起が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "JPCERT/CCが2026年7月のマイクロソフトセキュリティ更新プログラムに関する注意喚起を更新しました。具体的な脆弱性や影響については記事に詳細な記述はありません。",
+        "financial_impact": "記事に具体的な脆弱性や影響を受ける製品の記述がないため、金融機関への直接的な関係は不明です。マイクロソフト製品の利用状況に応じて関係する可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、具体的な脆弱性や影響範囲が記事から不明であり、適用性が不確実なため「中」です。確認目安は、更新情報であり緊急対応を要する新たな情報が示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
