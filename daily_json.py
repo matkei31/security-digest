@@ -1182,9 +1182,15 @@ def validate_daily_digest_for_archive_read(digest):
       (validate_daily_digest()、NCSC attribution snapshot検証を含む)を
       そのまま適用する――現行生成物に対する検証は一切緩めない。
     * schema v1(レガシー)は、現在の閾値・enum・field構成を遡及的に
-      適用せず、安全にHTMLへ描画するための最低限の構造
-      (トップレベル型、digest_date形式、items配列とその要素型、
-      briefがdict化nullであること)だけを検証する。
+      適用せず、安全にHTMLへ描画するための最低限の構造だけを検証する:
+      トップレベル型、digest_dateが実在する暦日であること、items配列と
+      その要素がdictであること、brief各fieldの型(overviewはstr/null、
+      important_highlights/discussion_points/check_itemsはlist/null、
+      list要素はstr)、および archive_summary_from_digest() が参照する
+      run(dict/null、total_itemsはbool以外の0以上int/null)・
+      counts(dict/null、counts.importance[dict/null]、
+      counts.importance["高"]はbool以外の0以上int/null)の型(round 6)。
+      件数の相互整合性・enum値・件数上限は引き続き適用しない。
     """
     schema_version = digest.get("schema_version")
     if not isinstance(schema_version, int):
@@ -1202,6 +1208,10 @@ def validate_daily_digest_for_archive_read(digest):
     digest_date = digest.get("digest_date")
     if not isinstance(digest_date, str) or not DIGEST_DATE_RE.fullmatch(digest_date):
         raise DailyJsonError(f"digest_dateがYYYY-MM-DD形式ではありません: {digest_date!r}")
+    try:
+        datetime.date.fromisoformat(digest_date)
+    except ValueError as e:
+        raise DailyJsonError(f"digest_dateが実在する暦日ではありません: {digest_date!r}") from e
     if not digest.get("generated_at"):
         raise DailyJsonError("generated_atがありません")
 
@@ -1212,9 +1222,61 @@ def validate_daily_digest_for_archive_read(digest):
         if not isinstance(item, dict):
             raise DailyJsonError(f"items[{i}]がオブジェクトではありません")
 
+    # BL-032 (round 6): schema v1のrun/countsは、現行の件数整合性・enum
+    # (validate_daily_digest()相当)は遡及適用しないが、archive_summary_from_digest()
+    # 等の下流処理が前提とする最低限の型(dict / 非boolのint / 0以上)だけは
+    # ここで保証する。欠落・nullは既存fallback(run.get("total_items") or
+    # len(items)等)が安全なため、値そのものが存在する場合のみ検証する。
+    run = digest.get("run")
+    if run is not None:
+        if not isinstance(run, dict):
+            raise DailyJsonError(f"runがオブジェクトでもnullでもありません: {run!r}")
+        total_items = run.get("total_items")
+        if total_items is not None and (
+            isinstance(total_items, bool)
+            or not isinstance(total_items, int)
+            or total_items < 0
+        ):
+            raise DailyJsonError(
+                f"run.total_itemsが0以上の整数でもnullでもありません: {total_items!r}"
+            )
+
+    counts = digest.get("counts")
+    if counts is not None:
+        if not isinstance(counts, dict):
+            raise DailyJsonError(f"countsがオブジェクトでもnullでもありません: {counts!r}")
+        importance = counts.get("importance")
+        if importance is not None:
+            if not isinstance(importance, dict):
+                raise DailyJsonError(
+                    f"counts.importanceがオブジェクトでもnullでもありません: {importance!r}"
+                )
+            high_count = importance.get("高")
+            if high_count is not None and (
+                isinstance(high_count, bool)
+                or not isinstance(high_count, int)
+                or high_count < 0
+            ):
+                raise DailyJsonError(
+                    f"counts.importance['高']が0以上の整数でもnullでもありません: {high_count!r}"
+                )
+
     brief = digest.get("brief")
     if brief is not None and not isinstance(brief, dict):
         raise DailyJsonError(f"briefがオブジェクトでもnullでもありません: {brief!r}")
+    if isinstance(brief, dict):
+        overview = brief.get("overview")
+        if overview is not None and not isinstance(overview, str):
+            raise DailyJsonError(f"brief.overviewが文字列でもnullでもありません: {overview!r}")
+        for key in ("important_highlights", "discussion_points", "check_items"):
+            values = brief.get(key)
+            if values is None:
+                continue
+            if not isinstance(values, list):
+                raise DailyJsonError(f"brief.{key}が配列でもnullでもありません: {values!r}")
+            for i, v in enumerate(values):
+                if not isinstance(v, str):
+                    raise DailyJsonError(f"brief.{key}[{i}]が文字列ではありません: {v!r}")
 
 
 def validate_index(index):

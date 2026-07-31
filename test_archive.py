@@ -1106,6 +1106,113 @@ class RealSchemaV1DataArchiveEligibilityTest(unittest.TestCase):
             dj.validate_daily_digest(digest)
 
 
+class ArchiveReadValidatorTypeContractTest(unittest.TestCase):
+    """PR #69レビュー(round 6)Blocker: validate_daily_digest_for_archive_read()の
+    schema v1分岐が、現行の閾値・enumは遡及適用しない一方、下流の
+    archive_summary_from_digest()/brief_for_html_from_digest()が前提とする
+    最低限の型・構造(run/counts/brief/digest_date)を検証することを確認する
+    (BL-032)。table-driven形式で、各不正値がDailyJsonErrorとして検出される
+    ことをvalidator単体で検証する(digest_dateの暦日妥当性はfilenameとの
+    整合性チェックを経由せずここで直接検証できる)。
+    """
+
+    MUTATIONS = [
+        ("run が文字列", lambda d: d.__setitem__("run", "broken")),
+        ("run.total_items が文字列", lambda d: d["run"].__setitem__("total_items", "broken")),
+        ("run.total_items が bool", lambda d: d["run"].__setitem__("total_items", True)),
+        ("run.total_items が負の整数", lambda d: d["run"].__setitem__("total_items", -1)),
+        ("counts が文字列", lambda d: d.__setitem__("counts", "broken")),
+        ("counts.importance が文字列", lambda d: d["counts"].__setitem__("importance", "broken")),
+        ("counts.importance['高'] が文字列", lambda d: d["counts"]["importance"].__setitem__("高", "broken")),
+        ("counts.importance['高'] が bool", lambda d: d["counts"]["importance"].__setitem__("高", True)),
+        ("counts.importance['高'] が負の整数", lambda d: d["counts"]["importance"].__setitem__("高", -1)),
+        ("brief.overview が非文字列", lambda d: d["brief"].__setitem__("overview", 123)),
+        ("brief.check_items が非配列", lambda d: d["brief"].__setitem__("check_items", 123)),
+        ("brief.check_items内に非文字列", lambda d: d["brief"].__setitem__("check_items", ["valid", 123])),
+        ("digest_dateが不正な月日(2026-99-99)", lambda d: d.__setitem__("digest_date", "2026-99-99")),
+        ("digest_dateが形式上一致するが実在しない暦日(2026-02-30)", lambda d: d.__setitem__("digest_date", "2026-02-30")),
+    ]
+
+    def test_malformed_schema_v1_values_are_rejected(self):
+        for name, mutate in self.MUTATIONS:
+            with self.subTest(name):
+                digest = make_digest("2026-07-11")
+                self.assertEqual(digest["schema_version"], 1)
+                mutate(digest)
+                with self.assertRaises(dj.DailyJsonError):
+                    dj.validate_daily_digest_for_archive_read(digest)
+
+    def test_valid_schema_v1_digest_still_passes(self):
+        # 上記MUTATIONSがいずれも「元は正当」なdigestを不正化したものである
+        # ことの前提を確認する(誤って恒常的に失敗するテストになっていないか)。
+        digest = make_digest("2026-07-11")
+        dj.validate_daily_digest_for_archive_read(digest)  # 例外を送出しない
+
+
+class ArchiveInvalidTypeCleanupLifecycleTest(unittest.TestCase):
+    """PR #69レビュー(round 6)Blocker: schema v1のrun/counts/brief/digest_date
+    が型不正なdigestが、generate_archive_outputs()の全体を停止させず、その
+    日付だけskipし、stale HTML削除・Archive一覧除外・index archive_path=null
+    まで完了し、他の正常な日付には影響しないことを一連のlifecycleとして
+    検証する(BL-032)。ArchiveReadValidatorTypeContractTest.MUTATIONSと同じ
+    不正値集合を再利用する(table-driven)。
+    """
+
+    def _run_lifecycle_case(self, mutate):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+
+            target_path = data_dir / "2026-07-15.json"
+            target = make_digest("2026-07-15", title="target")
+            other = make_digest("2026-07-14", title="other-valid")
+            write_digest(data_dir, target)
+            write_digest(data_dir, other)
+            dj.save_index(data_dir, datetime.datetime(2026, 7, 15, 8, 0, tzinfo=JST))
+
+            # 1. 両日付とも正常なdigestからArchiveを生成する。
+            summaries = fetch.generate_archive_outputs(data_dir, docs_dir)
+            self.assertEqual(
+                {s["digest_date"] for s in summaries}, {"2026-07-14", "2026-07-15"}
+            )
+            self.assertTrue((docs_dir / "archive" / "2026-07-15.html").is_file())
+            self.assertTrue((docs_dir / "archive" / "2026-07-14.html").is_file())
+
+            # 2. 対象日のdigestだけを型不正へ改変する(filename自体は維持し、
+            # 既存ファイルの改変を模す)。
+            mutate(target)
+            target_path.write_text(
+                json.dumps(target, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+
+            # 3. 再度generate_archive_outputs()を実行する(例外を送出しない)。
+            summaries_after = fetch.generate_archive_outputs(data_dir, docs_dir)
+
+            # 4-a. 不正な日付だけがskipされ、他の正常な日付は生成が継続する。
+            self.assertEqual([s["digest_date"] for s in summaries_after], ["2026-07-14"])
+            # 4-b. 既存のstale Archive HTMLが削除される。
+            self.assertFalse((docs_dir / "archive" / "2026-07-15.html").exists())
+            # 4-c. 他日付のArchive HTMLは維持される。
+            self.assertTrue((docs_dir / "archive" / "2026-07-14.html").is_file())
+            # 4-d. Archive一覧HTMLから対象日付が消える。
+            index_html = (docs_dir / "archive" / "index.html").read_text(encoding="utf-8")
+            self.assertNotIn("2026-07-15", index_html)
+            # 4-e. data/index.jsonの当該archive_pathがnullになり、他日付は維持される。
+            index_after = json.loads((data_dir / "index.json").read_text(encoding="utf-8"))
+            by_date_after = {d["digest_date"]: d for d in index_after["digests"]}
+            self.assertIsNone(by_date_after["2026-07-15"]["archive_path"])
+            self.assertEqual(
+                by_date_after["2026-07-14"]["archive_path"], "docs/archive/2026-07-14.html"
+            )
+
+    def test_each_malformed_value_skips_only_that_date_without_breaking_generation(self):
+        for name, mutate in ArchiveReadValidatorTypeContractTest.MUTATIONS:
+            with self.subTest(name):
+                self._run_lifecycle_case(mutate)
+
+
 class ArchiveInvalidDigestCleanupTest(unittest.TestCase):
     """PR #69レビュー(round 5)Blocker 2: 後日invalidになったdigestについて、
     既存のstale Archive HTML・index参照が残らないことを検証する(BL-032)。
