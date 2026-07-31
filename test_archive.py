@@ -1731,6 +1731,188 @@ class TopPageArchiveLinkTest(unittest.TestCase):
         self.assertIn(fetch.ARCHIVE_INDEX_LABEL, daily_html)
 
 
+class PublishedDigestDatesSchemaCompatibilityTest(unittest.TestCase):
+    """PR #69レビュー(round 7)Blocker: generate_archive_outputs()は
+    schema-awareな daily_json.validate_daily_digest_for_archive_read() を
+    使う一方、トップページ導線用の load_validated_published_digest_dates() は
+    保存直前用のstrict validation(daily_json.validate_daily_digest())を
+    使っていたため、日別Archive HTML・data/index.jsonのarchive_pathが正常に
+    揃っているschema v1 digest(生成当時は正当だった現行upper bound超過の
+    brief.check_items等)が、トップページの「前回のダイジェスト」候補から
+    誤って除外されていた問題の回帰テスト(BL-032)。
+    """
+
+    NCSC_URL = "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+
+    def _ncsc_source_defs(self, attribution_url):
+        return [{
+            "id": "ncsc", "name": "NCSC", "url": "https://example.com/feed.xml",
+            "collection_method": "rss", "language": "en", "source_type": "その他",
+            "source_tier": "Tier 3", "enabled": True, "planned_phase": "Phase 1",
+            "activation_condition": "", "collection_frequency": "daily", "color": "#555",
+            "trusted_cyber_source": False, "notes": "",
+            "policy": {
+                "content_usage_mode": "structured_open", "allow_network_fetch": True,
+                "allow_description": True, "allow_rich_content": False,
+                "allow_ai_processing": True, "allow_excerpt_storage": True,
+                "allow_public_summary": True, "attribution_requirement": "test",
+                "attribution_url": attribution_url, "checked_at": "2026-07-29",
+                "confidence": "high", "unresolved_issue": "", "recheck_trigger": "test",
+                "official_evidence_url": "https://example.com/terms", "evidence_type": "terms",
+            },
+        }]
+
+    def _v2_digest_with_ncsc_brief(self, digest_date, attribution_url):
+        content_policy = dj.build_item_content_policy("ncsc", "structured_open", "structured_open", None)
+        item = {
+            "source": "NCSC", "raw_title": "NCSC Advisory", "title": "NCSC Advisory",
+            "raw_summary": "Official advisory.", "summary": "Official advisory.",
+            "link": "https://www.ncsc.gov.uk/advisory/example", "facts": {"cves": []},
+            "published_at_jst": None, "content_policy": content_policy,
+            "ai_analysis": {
+                "title_ja": "NCSC勧告", "category": "脆弱性・パッチ",
+                "category_reason": "テストのため。", "importance": "高",
+                "urgency": "本日確認", "summary": "テストの要約。",
+                "financial_impact": "テストの影響。",
+                "recommended_actions": ["テストを確認する。"],
+                "reason": "重要度はテストのため「高」です。確認目安は緊急性が高いため「本日確認」です。",
+                "tags": [],
+            },
+            "ai_analysis_meta": {"status": "success", "error_type": None, "http_status": None,
+                                  "generated_at": f"{digest_date}T07:20:00+09:00"},
+        }
+        brief_result = {
+            "status": "success",
+            "overview": "概況テスト",
+            "important_highlights": ["ハイライトテスト"],
+            "discussion_points": ["論点テスト"],
+            "check_items": ["確認テスト"],
+            "error_type": None, "http_status": None,
+        }
+        return dj.build_daily_digest(
+            [item], brief_result, self._ncsc_source_defs(attribution_url),
+            "gemini-2.5-flash",
+            datetime.datetime.fromisoformat(f"{digest_date}T07:00:00+09:00"),
+            datetime.datetime.fromisoformat(f"{digest_date}T07:30:00+09:00"),
+        )
+
+    def _place_published_digest(self, data_dir, docs_dir, digest):
+        digest_date = digest["digest_date"]
+        write_digest(data_dir, digest)
+        (docs_dir / "archive").mkdir(parents=True, exist_ok=True)
+        (docs_dir / "archive" / f"{digest_date}.html").write_text(
+            "<!DOCTYPE html><html><body>published</body></html>", encoding="utf-8"
+        )
+        (data_dir / "index.json").write_text(
+            json.dumps({
+                "schema_version": 1,
+                "digests": [{
+                    "digest_date": digest_date,
+                    "archive_path": f"docs/archive/{digest_date}.html",
+                }],
+            }),
+            encoding="utf-8",
+        )
+
+    def test_legacy_schema_v1_brief_over_current_limit_is_still_published(self):
+        # 実在するdata/2026-07-14.json(schema v1、現行BRIEF_MAX_CHECK_ITEMS(2)を
+        # 超える4件のcheck_itemsを保存)をread-onlyでコピーし、一時ディレクトリへ
+        # 配置する(実データ自体は変更しない)。
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+
+            digest = json.loads((REAL_DATA_DIR / "2026-07-14.json").read_text(encoding="utf-8"))
+            self.assertEqual(digest["schema_version"], 1)
+            self.assertEqual(len(digest["brief"]["check_items"]), 4)
+            self._place_published_digest(data_dir, docs_dir, digest)
+
+            self.assertEqual(
+                fetch.load_validated_published_digest_dates(data_dir, docs_dir),
+                ["2026-07-14"],
+            )
+            # 保存前用のstrict validationは、引き続きこの実データを閾値超過で
+            # 拒否する(strict validation自体は緩めていないことの確認)。
+            with self.assertRaises(dj.DailyJsonError):
+                dj.validate_daily_digest(digest)
+
+    def test_malformed_schema_v1_values_are_excluded(self):
+        mutations = [
+            ("run.total_items が文字列", lambda d: d["run"].__setitem__("total_items", "broken")),
+            ("counts.importance['高'] が文字列", lambda d: d["counts"]["importance"].__setitem__("高", "broken")),
+            ("brief.check_items が非配列", lambda d: d["brief"].__setitem__("check_items", 123)),
+        ]
+        for name, mutate in mutations:
+            with self.subTest(name):
+                with tempfile.TemporaryDirectory() as tmp:
+                    root = Path(tmp)
+                    data_dir = root / "data"
+                    docs_dir = root / "docs"
+                    data_dir.mkdir()
+
+                    digest = make_digest("2026-07-14")
+                    mutate(digest)
+                    self._place_published_digest(data_dir, docs_dir, digest)
+
+                    self.assertEqual(
+                        fetch.load_validated_published_digest_dates(data_dir, docs_dir), []
+                    )
+
+    def test_invalid_schema_v2_ncsc_attribution_snapshot_is_excluded(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+
+            digest = self._v2_digest_with_ncsc_brief("2026-07-14", self.NCSC_URL)
+            digest["items"][0]["policy"]["attribution_url"] = None
+            self._place_published_digest(data_dir, docs_dir, digest)
+
+            self.assertEqual(
+                fetch.load_validated_published_digest_dates(data_dir, docs_dir), []
+            )
+
+    def test_valid_schema_v2_digest_is_still_published(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+
+            digest = self._v2_digest_with_ncsc_brief("2026-07-14", self.NCSC_URL)
+            self._place_published_digest(data_dir, docs_dir, digest)
+
+            self.assertEqual(
+                fetch.load_validated_published_digest_dates(data_dir, docs_dir),
+                ["2026-07-14"],
+            )
+
+    def test_top_page_nav_links_to_legacy_schema_v1_only_published_date(self):
+        # schema v1の旧形式digest(実在data/2026-07-14.json)だけが直前の公開日
+        # であるケースで、トップページ導線に「前回のダイジェスト」リンクが
+        # 正しく生成されることを確認する(main()が実際に
+        # load_validated_published_digest_dates()の結果をそのまま
+        # render_top_archive_nav_html()へ渡すため)。
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+
+            digest = json.loads((REAL_DATA_DIR / "2026-07-14.json").read_text(encoding="utf-8"))
+            self._place_published_digest(data_dir, docs_dir, digest)
+
+            published_dates = fetch.load_validated_published_digest_dates(data_dir, docs_dir)
+            self.assertEqual(published_dates, ["2026-07-14"])
+
+            html = fetch.render_top_archive_nav_html("2026-07-15", published_dates)
+            self.assertIn('href="archive/2026-07-14.html"', html)
+            self.assertIn(fetch.PREVIOUS_DIGEST_LABEL, html)
+
+
 class SourceFooterConsistencyTest(unittest.TestCase):
     def test_enabled_sources_drive_top_and_restored_archive_footer(self):
         sources = [

@@ -237,6 +237,8 @@ Gemini APIの公式Terms(https://ai.google.dev/gemini-api/terms)より:
 
 除外の実際の契約は次のとおり: (1) 該当日付の日別Archive HTMLは生成しない。既に(過去の有効な生成から)同じ日付のファイルが存在する場合は削除する。(2) Archive一覧HTMLには掲載しない。(3) `data/index.json`では、当該digestのエントリ自体は残すが、`archive_path`を`null`にする(既存index契約に合わせ、記録を削除せず`archive_path:null`とする)。`digest_items_for_html()`側のitem単位のdowngrade(記事カード・Dashboard集計・優先確認等、`downgrade_reason: archive_attribution_snapshot_invalid`)は、この保存前validationを経由しない直接呼び出し(テスト等)に対する二次的な防御的backstopであり、単独では保存済みBrief(overview/discussion_points/check_items)までは保護しない――保存済みBriefも含めた完全な保護は、Archive生成対象からの除外そのものによって担保する。schema v1の既存daily JSON・Archiveの内容自体はこの仕組みの対象外であり、遡及変更しない(生成済みで現在有効なArchive HTMLの削除は行わない)。
 
+**トップページのArchive導線判定も同一validatorを使用する(round 7):** 日別Archive生成(`generate_archive_outputs()`)だけでなく、トップページの「前回のダイジェスト」リンク・Archive導線が参照する公開済み日付一覧を取得する`fetch.load_validated_published_digest_dates()`も、同じ`daily_json.validate_daily_digest_for_archive_read()`を使う。round 6まではこの関数が保存直前用のstrict validation(`daily_json.validate_daily_digest()`)を使っており、`archive_path`・日別Archive HTMLが正常に揃っているschema v1 digestであっても、現行のBrief件数上限等を理由にトップページの候補から誤って除外され得た(実在する`data/2026-07-14.json`の4件の`brief.check_items`が該当)。`load_validated_published_digest_dates()`は、daily JSON自体の型・構造検証をこのArchive読込validatorへ委ねたうえで、index/archive_path/ファイル名整合性等の既存条件(上記とは独立)を維持する。
+
 ---
 
 ## 7. Output-similarity and quotation controls (BL-032必須要件・Draft実装済み、ユーザー受入前。10章参照)

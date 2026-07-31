@@ -1975,7 +1975,19 @@ def load_daily_digest(path):
 
 
 def load_validated_published_digest_dates(data_dir=None, docs_dir=None):
-    """indexとdaily JSONとArchive HTMLが揃った公開済み日付だけを返す。"""
+    """indexとdaily JSONとArchive HTMLが揃った公開済み日付だけを返す。
+
+    BL-032(round 7): daily JSON自体の検証は、保存直前用のstrict validation
+    (`daily_json.validate_daily_digest()`、schema v1へも現行のBrief件数上限・
+    enum・field契約を遡及適用する)ではなく、`generate_archive_outputs()`と
+    同じschema-awareな`daily_json.validate_daily_digest_for_archive_read()`
+    (schema v2は同じstrict validationをそのまま適用、schema v1は現行の
+    閾値・enumを遡及適用しない後方互換Archive読込validation)を使う。
+    strict validationのままだと、生成当時は正当だった実データ(例:
+    `data/2026-07-14.json`の4件の`brief.check_items`)を保持するschema v1
+    digestが、日別Archive HTML・`index.json`のarchive_pathは正常に揃って
+    いてもトップページの「前回のダイジェスト」候補から誤って除外される。
+    """
     data_dir = Path(data_dir) if data_dir is not None else daily_json.DATA_DIR
     docs_dir = Path(docs_dir) if docs_dir is not None else DOCS_DIR
     index_path = data_dir / "index.json"
@@ -2003,7 +2015,7 @@ def load_validated_published_digest_dates(data_dir=None, docs_dir=None):
         digest_path = data_dir / f"{digest_date}.json"
         try:
             digest = load_daily_digest(digest_path)
-            daily_json.validate_daily_digest(digest)
+            daily_json.validate_daily_digest_for_archive_read(digest)
         except daily_json.DailyJsonError:
             continue
         internal_digest_date = digest.get("digest_date")
@@ -5524,13 +5536,15 @@ def render_archive_adjacent_links(previous_date=None, next_date=None):
 def build_daily_archive_html(digest, previous_date=None, next_date=None):
     """指定したdigestからArchive HTMLを構築する。
 
-    契約: digestは呼び出し側が既にdaily_json.validate_daily_digest()を
-    通過させた検証済みのものであること(BL-032)。この関数自身は再検証しない
-    ――digest_items_for_html()のArchive attribution snapshot fail-closed
-    downgradeは記事カード等のitems由来の派生表示だけを対象とし、digestへ
-    保存済みのbrief(overview/discussion_points/check_items、
-    brief_for_html_from_digest()経由)には及ばない。validation自体で
-    不正なdigestをこの関数へ渡さないことが、保存済みBriefも含めた
+    契約: digestは呼び出し側が既にdaily_json.validate_daily_digest_for_archive_read()
+    を通過させた検証済みのものであること(BL-032)。schema v2は保存直前と
+    完全に同じstrict validation、schema v1は現行の閾値・enumを遡及適用しない
+    後方互換性を維持したArchive読込validationを適用する(round 5〜7)。この
+    関数自身は再検証しない――digest_items_for_html()のArchive attribution
+    snapshot fail-closed downgradeは記事カード等のitems由来の派生表示だけを
+    対象とし、digestへ保存済みのbrief(overview/discussion_points/
+    check_items、brief_for_html_from_digest()経由)には及ばない。validation
+    自体で不正なdigestをこの関数へ渡さないことが、保存済みBriefも含めた
     fail-closedの唯一の保証点である(generate_archive_outputs()参照)。
     """
     digest_date = digest["digest_date"]
