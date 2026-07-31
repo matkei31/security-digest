@@ -1096,8 +1096,16 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
         )
 
         next_candidates = self._section(self.status, "## 7. Next candidates", "\n## 8. ")
-        self.assertIn("BL-032", next_candidates)
-        self.assertNotIn("current Active work item", next_candidates)
+        bl032_anchor = (
+            "[BL-032]"
+            "(BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)"
+        )
+        self.assertIn(bl032_anchor, next_candidates)
+        # BL-032-specific: guard against BL-032 itself being reintroduced
+        # here as the current Active work item, without banning that same
+        # ordinary phrase for some other, unrelated ticket in this section.
+        self.assertNotIn(f"{bl032_anchor} is the current Active work item", next_candidates)
+        self.assertIn(f"and {bl032_anchor} are all complete", next_candidates)
 
         bl030 = next(
             line for line in recently_completed.splitlines() if line.startswith("- BL-030 ")
