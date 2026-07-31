@@ -751,12 +751,25 @@ class StructuredOpenRealAttributionRenderingTest(unittest.TestCase):
             },
         }
 
+    @staticmethod
+    def _source_definitions_with_ncsc_attribution_url(attribution_url):
+        """実際のfetch.SOURCE_DEFINITIONSのコピーを返すが、ncsc.policy.
+        attribution_urlだけを差し替える(他16 sourceの定義はそのまま)。"""
+        defs = copy.deepcopy(fetch.SOURCE_DEFINITIONS)
+        for source in defs:
+            if source["id"] == "ncsc":
+                source["policy"]["attribution_url"] = attribution_url
+        return defs
+
     def test_ncsc_ogl_v3_link_has_correct_href(self):
-        html = fetch.build_html(
-            [self._item("ncsc", source="NCSC")],
-            generated_at=__import__("datetime").datetime(2026, 7, 31, 7, 0, tzinfo=dj.JST),
-        )
-        self.assertIn(f'href="{fetch._NCSC_OGL_V3_URL}"', html)
+        ncsc_url = "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+        with patch("fetch.SOURCE_DEFINITIONS",
+                   self._source_definitions_with_ncsc_attribution_url(ncsc_url)):
+            html = fetch.build_html(
+                [self._item("ncsc", source="NCSC")],
+                generated_at=__import__("datetime").datetime(2026, 7, 31, 7, 0, tzinfo=dj.JST),
+            )
+        self.assertIn(f'href="{ncsc_url}"', html)
         self.assertIn("Open Government Licence v3.0", html)
 
     def test_fsa_shows_real_date_not_instruction_text(self):
@@ -787,16 +800,85 @@ class StructuredOpenRealAttributionRenderingTest(unittest.TestCase):
         self.assertIn("CC0", html)
 
     def test_malformed_attribution_url_is_not_linked(self):
-        with patch("fetch._NCSC_OGL_V3_URL", "javascript:alert(1)"):
+        # PR #69レビュー(round 2)Blocker 2: 不正URLの場合、リンクなし平文へ
+        # fallbackして公開を継続してはならない(fail-closed)。
+        with patch("fetch.SOURCE_DEFINITIONS",
+                   self._source_definitions_with_ncsc_attribution_url("javascript:alert(1)")):
             fragment = fetch.render_structured_open_attribution_html("ncsc", "2026-07-31")
-        self.assertNotIn("<a ", fragment)
-        self.assertNotIn("javascript:", fragment)
-        self.assertIn("Open Government Licence v3.0", fragment)
+        self.assertEqual(fragment, "")
+
+    def test_ncsc_missing_attribution_url_renders_nothing(self):
+        with patch("fetch.SOURCE_DEFINITIONS",
+                   self._source_definitions_with_ncsc_attribution_url(None)):
+            fragment = fetch.render_structured_open_attribution_html("ncsc", "2026-07-31")
+        self.assertEqual(fragment, "")
 
     def test_unmapped_structured_open_source_id_renders_nothing(self):
         self.assertEqual(
             fetch.render_structured_open_attribution_html("unknown_source", "2026-07-31"), ""
         )
+
+    def test_ncsc_missing_attribution_url_downgrades_to_missing_attribution(self):
+        content_policy = dj.build_item_content_policy(
+            "ncsc", "structured_open", "structured_open", None
+        )
+        item, _ = make_item(content_policy, source="NCSC")
+        with patch("fetch.SOURCE_DEFINITIONS",
+                   self._source_definitions_with_ncsc_attribution_url(None)):
+            items, call_count = run_enrich_with_ai([(item, VALID_ANALYSIS_RESPONSE)])
+        self.assertEqual(call_count, 1)
+        self.assertEqual(items[0]["content_policy"]["downgrade_reason"], "missing_attribution")
+
+    def test_ncsc_malformed_attribution_url_downgrades_to_missing_attribution(self):
+        content_policy = dj.build_item_content_policy(
+            "ncsc", "structured_open", "structured_open", None
+        )
+        item, _ = make_item(content_policy, source="NCSC")
+        with patch("fetch.SOURCE_DEFINITIONS",
+                   self._source_definitions_with_ncsc_attribution_url("javascript:alert(1)")):
+            items, call_count = run_enrich_with_ai([(item, VALID_ANALYSIS_RESPONSE)])
+        self.assertEqual(call_count, 1)
+        self.assertEqual(items[0]["content_policy"]["downgrade_reason"], "missing_attribution")
+
+    def test_ncsc_valid_attribution_url_does_not_downgrade(self):
+        ncsc_url = "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+        content_policy = dj.build_item_content_policy(
+            "ncsc", "structured_open", "structured_open", None
+        )
+        item, _ = make_item(content_policy, source="NCSC")
+        with patch("fetch.SOURCE_DEFINITIONS",
+                   self._source_definitions_with_ncsc_attribution_url(ncsc_url)):
+            items, call_count = run_enrich_with_ai([(item, VALID_ANALYSIS_RESPONSE)])
+        self.assertEqual(call_count, 1)
+        self.assertIsNone(items[0]["content_policy"]["downgrade_reason"])
+        self.assertIsNotNone(items[0].get("ai_analysis"))
+
+    def test_source_id_in_known_set_alone_is_not_sufficient_for_attribution_ok(self):
+        # ncscがSTRUCTURED_OPEN_ATTRIBUTION_SOURCE_IDS的な既知集合に属して
+        # いても、attribution_urlが生成不可ならattribution_okはfalseになる
+        # ことを、_attribution_is_available()を直接呼んで確認する。
+        content_policy = {
+            "source_id": "ncsc", "configured_mode": "structured_open",
+            "effective_mode": "structured_open", "ai_eligible": True,
+            "downgrade_reason": None,
+        }
+        item = {"link": "https://example.com/a", "raw_title": "t", "title": "t"}
+        with patch("fetch.SOURCE_DEFINITIONS",
+                   self._source_definitions_with_ncsc_attribution_url(None)):
+            self.assertFalse(fetch._attribution_is_available(item, content_policy))
+
+    def test_other_four_structured_open_attributions_still_render(self):
+        for source_id, expected_text in (
+            ("fsa", "金融庁ウェブサイトをもとにMonomi Digestが加工"),
+            ("nist", "出典: NIST"),
+            ("nist_nvd", "This product uses the NVD API but is not endorsed"),
+            ("cisa_kev", "CISA Known Exploited Vulnerabilities"),
+        ):
+            with self.subTest(source_id=source_id):
+                fragment = fetch.render_structured_open_attribution_html(
+                    source_id, "2026-07-31"
+                )
+                self.assertIn(expected_text, fragment)
 
     def test_existing_feed_summary_limited_metadata_attribution_still_render(self):
         # 既存のfeed_summary/limited_feed_analysis/metadata_only attribution
@@ -1027,6 +1109,124 @@ class PublisherTextTransientPurgeTest(unittest.TestCase):
         brief = fetch.build_todays_brief([item])
         self.assertNotIn(self.MARKER, json.dumps(brief, ensure_ascii=False))
         self.assertEqual(brief["status"], "not_attempted")
+
+    # ── PR #69レビュー(round 2)Blocker 1: success/fallback後のpurge ──
+
+    _IMPERATIVE_REASON_FOR_FALLBACK = (
+        "重要度は、実悪用が確認されたため「高」です。"
+        "確認目安は、パッチを適用してくださいため「本日確認」です。"
+    )
+
+    def _run_with_status(self, mode, status):
+        """指定modeのitemを、指定status("success"/"fallback")でGemini処理した
+        後の状態を返す。実際のGemini APIへはアクセスしない。"""
+        item = self._feed_summary_or_limited_item(mode, "test_source")
+        response = dict(VALID_ANALYSIS_RESPONSE)
+        if status == "fallback":
+            response["reason"] = self._IMPERATIVE_REASON_FOR_FALLBACK
+        items, call_count = run_enrich_with_ai([(item, response)])
+        self.assertEqual(call_count, 1)
+        return items[0]
+
+    def test_feed_summary_success_purges_publisher_text(self):
+        item = self._run_with_status("feed_summary", "success")
+        self.assertEqual(item["ai_analysis_meta"]["status"], "success")
+        self.assertIsNotNone(item.get("ai_analysis"))
+        self.assertEqual(item["summary"], "")
+        self.assertEqual(item["raw_summary"], "")
+        self.assertEqual(item["rich_content"], "")
+
+    def test_feed_summary_fallback_purges_publisher_text(self):
+        item = self._run_with_status("feed_summary", "fallback")
+        self.assertEqual(item["ai_analysis_meta"]["status"], "fallback")
+        self.assertIsNotNone(item.get("ai_analysis"))
+        self.assertEqual(item["summary"], "")
+        self.assertEqual(item["raw_summary"], "")
+        self.assertEqual(item["rich_content"], "")
+
+    def test_limited_feed_analysis_success_purges_publisher_text(self):
+        item = self._run_with_status("limited_feed_analysis", "success")
+        self.assertEqual(item["ai_analysis_meta"]["status"], "success")
+        self.assertIsNotNone(item.get("ai_analysis"))
+        self.assertEqual(item["summary"], "")
+        self.assertEqual(item["raw_summary"], "")
+        self.assertEqual(item["rich_content"], "")
+
+    def test_limited_feed_analysis_fallback_purges_publisher_text(self):
+        item = self._run_with_status("limited_feed_analysis", "fallback")
+        self.assertEqual(item["ai_analysis_meta"]["status"], "fallback")
+        self.assertIsNotNone(item.get("ai_analysis"))
+        self.assertEqual(item["summary"], "")
+        self.assertEqual(item["raw_summary"], "")
+        self.assertEqual(item["rich_content"], "")
+
+    def test_marker_absent_from_full_item_json_after_success(self):
+        item = self._run_with_status("feed_summary", "success")
+        item_json = json.dumps(item, ensure_ascii=False, default=str)
+        self.assertNotIn(self.MARKER, item_json)
+
+    def test_ai_generated_summary_survives_in_html_daily_json_and_brief(self):
+        item = self._run_with_status("feed_summary", "success")
+        item["facts"] = {"cves": []}
+        ai_summary = item["ai_analysis"]["summary"]
+        html = fetch.build_html([item])
+        self.assertIn(ai_summary, html)
+        self.assertNotIn(self.MARKER, html)
+        entry = dj.build_article_entry(
+            item,
+            [make_source_def("test_source", "Test Source", content_usage_mode="feed_summary")],
+            "gemini-2.5-flash",
+            datetime.datetime(2026, 7, 30, 7, 0, tzinfo=dj.JST),
+        )
+        self.assertEqual(entry["analysis"]["summary"], ai_summary)
+        entry_json = json.dumps(entry, ensure_ascii=False)
+        self.assertNotIn(self.MARKER, entry_json)
+        brief = fetch.build_todays_brief([item])
+        self.assertNotIn(self.MARKER, json.dumps(brief, ensure_ascii=False))
+
+    def test_structured_open_success_keeps_publisher_text_and_fallback(self):
+        # "nist"は実在のstructured_open source(STRUCTURED_OPEN_ATTRIBUTION_
+        # SOURCE_IDSに含まれる)を使う。attribution表示を持たない架空の
+        # source_idだと、attribution_ok=falseによりmissing_attribution
+        # downgradeが発生し、このテストの意図(structured_openのpurge
+        # 非対象を検証すること)と無関係な理由でpurgeされてしまうため。
+        content_policy = dj.build_item_content_policy(
+            "nist", "structured_open", "structured_open", None
+        )
+        item, _ = make_item(
+            content_policy, source="Test Source", lang="en",
+            summary=self.MARKER, raw_summary=self.MARKER,
+        )
+        items, call_count = run_enrich_with_ai([(item, VALID_ANALYSIS_RESPONSE)])
+        self.assertEqual(call_count, 1)
+        self.assertEqual(items[0]["summary"], self.MARKER)
+        self.assertEqual(items[0]["raw_summary"], self.MARKER)
+        # Even without AI analysis, structured_open's raw_summary fallback
+        # must still be able to show the (unpurged) publisher text.
+        no_analysis_item = {
+            "source": "Test Source", "lang": "en", "link": "https://example.com/a",
+            "title": "t", "raw_title": "t", "summary": self.MARKER, "date": None,
+            "facts": {"cves": []}, "content_policy": content_policy,
+        }
+        html = fetch.build_html([no_analysis_item])
+        self.assertIn(self.MARKER, html)
+
+    def test_collection_time_metadata_only_item_with_preset_raw_summary_is_purged(self):
+        # purge_publisher_text_for_ineligible_items()は、raw_summaryが既に
+        # (main()の通常順序より前に、または他の呼び出し元によって)設定されて
+        # いても、呼び出し順序に頼らず必ず消去する。
+        content_policy = dj.build_item_content_policy(
+            "microsoft_security", "metadata_only", "metadata_only", None
+        )
+        item = {
+            "source": "Microsoft Security", "title": "t", "summary": self.MARKER,
+            "raw_summary": self.MARKER, "rich_content": self.MARKER,
+            "content_policy": content_policy,
+        }
+        fetch.purge_publisher_text_for_ineligible_items([item])
+        self.assertEqual(item["summary"], "")
+        self.assertEqual(item["raw_summary"], "")
+        self.assertEqual(item["rich_content"], "")
 
 
 class V1ArchiveBackwardCompatibilityTest(unittest.TestCase):

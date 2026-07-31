@@ -334,7 +334,7 @@
         "allow_excerpt_storage": true,
         "allow_public_summary": true,
         "attribution_requirement": "source acknowledgement + OGL v3 link。",
-        "attribution_url": null,
+        "attribution_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
         "checked_at": "2026-07-29",
         "confidence": "high",
         "unresolved_issue": "",

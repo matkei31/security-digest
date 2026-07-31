@@ -3443,49 +3443,61 @@ def _attribution_is_available(item, content_policy):
     """BL-032: attribution_okは、記事URL・原題の有無だけでなく、そのmode/
     sourceに必要なattribution構成が実際に生成可能かも検証する
     (missing_attributionの実効性を高める)。structured_openは、
-    render_structured_open_attribution_html()が実際の表示を持つ既知の
-    source_id(STRUCTURED_OPEN_ATTRIBUTION_SOURCE_IDS)の場合のみtrueとする。
-    他modeは固定文言テンプレートが常に生成できるため、従来どおりlink・原題の
-    有無のみで判定する。
+    _can_render_structured_open_attribution()(render_structured_open_
+    attribution_html()と共通の判定helper)がtrueを返すsource_idの場合のみ
+    trueとする――source_idが既知の集合に含まれるというだけでは、その
+    source固有の必須構成(例: ncscのOGL v3 URL)が実際に生成可能である
+    保証にならないため、fail-closedに判定する。他modeは固定文言テンプレート
+    が常に生成できるため、従来どおりlink・原題の有無のみで判定する。
     """
     if not (bool(item.get("link")) and bool(item.get("raw_title") or item.get("title"))):
         return False
     mode = content_policy.get("effective_mode") if content_policy else None
     if mode == "structured_open":
-        return content_policy.get("source_id") in STRUCTURED_OPEN_ATTRIBUTION_SOURCE_IDS
+        return _can_render_structured_open_attribution(content_policy.get("source_id"))
     return True
+
+
+def _purge_publisher_text(item):
+    """BL-032: publisher由来description(summary/raw_summary)とrich_contentを
+    itemから直ちに破棄する共通helper(purge対象の唯一の定義箇所)。
+    ai_analysis/ai_analysis_meta等、他のキーには一切触れない。呼び出し元が
+    どの経路(downgrade・収集時点除外・success/fallback後のtransient破棄)
+    であっても、この関数だけを呼べば同じ3 fieldが消去される。
+    """
+    item["summary"] = ""
+    item["raw_summary"] = ""
+    item["rich_content"] = ""
 
 
 def purge_publisher_text_for_ineligible_items(items):
     """BL-032: 真のmetadata_only source、またはGemini data-use gate未充足に
     より収集時点で既にmetadata-only相当(ai_eligible=False)なitemから、
-    publisher由来description(summary)とrich_contentを直ちに破棄する。
-    is_cyber_relevant(関連性フィルタ)がcollect_recent内で既に完了した後、
-    raw_title/raw_summaryスナップショットより前に呼ぶ想定(raw_summaryへ
-    複製させないため)。ai_eligible=Trueのitem、content_policyが無いitemは
-    変更しない。
+    publisher由来description・raw_summary・rich_contentを直ちに破棄する。
+    is_cyber_relevant(関連性フィルタ)がcollect_recent内で既に完了した後に
+    呼ぶ想定だが、raw_summaryが既に設定されているかどうかや呼び出し順序には
+    依存しない(_purge_publisher_textが3 fieldを無条件に消去するため)。
+    ai_eligible=Trueのitem、content_policyが無いitemは変更しない。
     """
     for item in items:
         content_policy = item.get("content_policy")
         if content_policy is not None and not content_policy.get("ai_eligible", True):
-            item["summary"] = ""
-            item["rich_content"] = ""
+            _purge_publisher_text(item)
 
 
 def _downgrade_to_metadata_only_and_purge(item, content_policy, reason):
     """BL-032: policy違反・Gemini未実施・Gemini失敗のいずれかにより、記事を
-    metadata-only相当へ即時downgradeする。同時にpublisher由来description
-    (summary/raw_summary)とrich_contentをitemから直ちに破棄し、この後の
-    daily JSON構築・HTML生成のいずれにも渡さない(Gemini呼出し中に使った
-    ローカル変数body_textは、この時点では既に呼出しを終えているため無関係)。
+    metadata-only相当へ即時downgradeする。同時に_purge_publisher_text()で
+    publisher由来description・raw_summary・rich_contentをitemから直ちに
+    破棄し、この後のdaily JSON構築・HTML生成のいずれにも渡さない(Gemini
+    呼出し中に使ったローカル変数body_textは、この時点では既に呼出しを
+    終えているため無関係)。
     """
     content_policy["effective_mode"] = "metadata_only"
     content_policy["ai_eligible"] = False
     content_policy["downgrade_reason"] = reason
     item["content_policy"] = content_policy
-    item["summary"] = ""
-    item["raw_summary"] = ""
-    item["rich_content"] = ""
+    _purge_publisher_text(item)
 
 
 def enrich_with_ai(items, analysis_date=None):
@@ -3659,6 +3671,14 @@ def enrich_with_ai(items, analysis_date=None):
             "http_status": result["http_status"],
             "generated_at": datetime.datetime.now(JST).isoformat(),
         }
+
+        # BL-032: feed_summary/limited_feed_analysisは、policy検証を通過して
+        # 公開可能なanalysisが得られた(success/fallback)場合も、Gemini呼出し
+        # 中のローカル変数body_textだけにdescriptionを保持する契約のため、
+        # ここでpublisher由来本文(summary/raw_summary/rich_content)を直ちに
+        # 破棄する(ai_analysis/ai_analysis_metaはそのまま維持する)。
+        if content_policy is not None and effective_mode in ("feed_summary", "limited_feed_analysis"):
+            _purge_publisher_text(item)
 
         if analysis:
             count += 1
@@ -4743,19 +4763,44 @@ _LIMITED_FEED_ANALYSIS_ATTRIBUTION_TEXT = (
 )
 _METADATA_ONLY_ATTRIBUTION_TEXT = "AIによる要約・評価は行っていません。"
 
-# BL-032: NCSCコンテンツが依拠するOpen Government Licence v3のcanonical URL。
-# source_definitions.jsonのattribution_url(現在未設定)に依存せず、この定数を
-# 正本として一元管理する(SOURCE_USAGE_POLICY.md 6章の該当記述と一致させる)。
-_NCSC_OGL_V3_URL = "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
-
-# BL-032: structured_open分類のうち、実際のattribution表示を組み立てられる
-# source_idの集合。source定義のpolicy.attribution_requirement(監査上の
-# 説明文)をそのままUI文言として表示せず、source_id別に実際の表示内容を
-# 組み立てる(6章の要件を実装として反映する)。この集合に無いsource_idは
-# 表示を生成できない(attribution_okの検証対象、7章参照)。
-STRUCTURED_OPEN_ATTRIBUTION_SOURCE_IDS = frozenset(
-    {"fsa", "nist", "ncsc", "cisa_kev", "nist_nvd"}
+# BL-032: 固定文言だけで完結するstructured_open source_id(外部設定への
+# 依存が無く、常に生成可能)。`ncsc`はsource_definitions.jsonの
+# policy.attribution_urlに依存するため、この集合に含めず個別に判定する。
+_STRUCTURED_OPEN_FIXED_TEXT_SOURCE_IDS = frozenset(
+    {"fsa", "nist", "nist_nvd", "cisa_kev"}
 )
+
+
+def _resolve_ncsc_ogl_url():
+    """source_definitions.jsonのncsc.policy.attribution_url(Open Government
+    Licence v3のcanonical URL)を取得し、safe_url()を通過した場合のみ返す。
+    欠落・空・不正schemeの場合はNoneを返す(呼び出し側はNoneを
+    「実際にリンク化できない」と扱い、平文へfallbackして公開を継続せず、
+    missing_attributionとしてmetadata-only相当へdowngradeする)。
+    """
+    source_def = get_source_definition(SOURCE_DEFINITIONS, "ncsc")
+    attribution_url = source_def["policy"].get("attribution_url") if source_def else None
+    if not attribution_url:
+        return None
+    return safe_url(attribution_url)
+
+
+def _can_render_structured_open_attribution(source_id):
+    """BL-032: structured_open source_id別に、実際にattribution表示を
+    生成できるかどうかをfail-closedで判定する共通helper。
+    render_structured_open_attribution_html()と_attribution_is_available()の
+    両方が、この関数だけを正本として判定する(判定ロジックの二重定義を避ける)。
+    * fsa: 利用日(digest生成日)は常に生成可能。
+    * nist/nist_nvd/cisa_kev: 固定文言は常に生成可能。
+    * ncsc: source_definitions.jsonのattribution_urlが存在し、safe_url()を
+      通過する場合のみ生成可能(URLが欠落・空・不正schemeの場合は不可)。
+    * 上記以外の未知source_idは生成不可。
+    """
+    if source_id in _STRUCTURED_OPEN_FIXED_TEXT_SOURCE_IDS:
+        return True
+    if source_id == "ncsc":
+        return _resolve_ncsc_ogl_url() is not None
+    return False
 
 
 def render_structured_open_attribution_html(source_id, generated_at_ymd):
@@ -4764,22 +4809,24 @@ def render_structured_open_attribution_html(source_id, generated_at_ymd):
     (article-source-link)で充足するため、ここでは繰り返さない。
     generated_at_ymdは、Monomi Digestがこのcontentを利用した日付(digest
     生成日、JST、YYYY-MM-DD形式)の正本(SOURCE_USAGE_POLICY.md 6章参照)。
-    未知のsource_idの場合は空文字列を返す。
+    _can_render_structured_open_attribution()がfalseを返す場合(未知の
+    source_id、またはncsc用URLが生成不可の場合)は空文字列を返す
+    (リンクなし平文へのfallbackはしない――呼び出し元がattribution_ok経由で
+    missing_attribution downgradeへ回す前提)。
     """
+    if not _can_render_structured_open_attribution(source_id):
+        return ""
     if source_id == "fsa":
         date_part = f"利用日: {esc(generated_at_ymd)}" if generated_at_ymd else ""
         return "金融庁ウェブサイトをもとにMonomi Digestが加工。" + date_part
     if source_id == "nist":
         return "出典: NIST"
     if source_id == "ncsc":
-        safe_ogl_url = safe_url(_NCSC_OGL_V3_URL)
-        if safe_ogl_url:
-            ogl_link = (
-                f'<a href="{esc(safe_ogl_url)}" target="_blank" '
-                'rel="noopener noreferrer">Open Government Licence v3.0</a>'
-            )
-        else:
-            ogl_link = "Open Government Licence v3.0"
+        safe_ogl_url = _resolve_ncsc_ogl_url()
+        ogl_link = (
+            f'<a href="{esc(safe_ogl_url)}" target="_blank" '
+            'rel="noopener noreferrer">Open Government Licence v3.0</a>'
+        )
         return f"出典: NCSC。{ogl_link}のもとで提供される情報を含みます。"
     if source_id == "cisa_kev":
         return "出典: CISA Known Exploited Vulnerabilities (KEV) Catalog。CC0 1.0 Universal(パブリックドメイン)。"

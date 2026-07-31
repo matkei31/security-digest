@@ -227,7 +227,7 @@ Gemini APIの公式Terms(https://ai.google.dev/gemini-api/terms)より:
 | `metadata_only`分類の2source | source name、original title、original URLのみ。AIによる要約・評価を行っていない旨を明示する。 |
 | `disabled_legal_review`分類の4source | 非公開のため表示なし。 |
 
-**実装状況(BL-032、Draft・ユーザー受入前。10章参照):** 上表は監査上の要件記述であり、UI文言そのものではない。`fetch.py`の`render_structured_open_attribution_html()`が、`fsa`/`nist`/`ncsc`/`cisa_kev`/`nist_nvd`のsource_idごとに実際の表示(実URL・実日付・実免責文)を組み立てる(監査記述である`attribution_requirement`列の文字列をそのままUI文言として表示しない)。`fsa`の「利用日」はdigest生成日(JST、YYYY-MM-DD)を正本とする。`ncsc`のOGL v3リンクは`https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/`を参照し、`safe_url()`でスキーム検証したうえでのみリンク化する。この5 source以外のstructured_open source_idが将来追加された場合、対応する表示が実装されるまでattribution_okはfalseとなり(7章参照)、`missing_attribution`としてmetadata-only相当へ自動downgradeされる。
+**実装状況(BL-032、Draft・ユーザー受入前。10章参照):** 上表は監査上の要件記述であり、UI文言そのものではない。`fetch.py`の`render_structured_open_attribution_html()`が、`fsa`/`nist`/`ncsc`/`cisa_kev`/`nist_nvd`のsource_idごとに実際の表示(実URL・実日付・実免責文)を組み立てる(監査記述である`attribution_requirement`列の文字列をそのままUI文言として表示しない)。`fsa`の「利用日」はdigest生成日(JST、YYYY-MM-DD)を正本とする。`ncsc`のOGL v3リンクは、`source_definitions.json`の`ncsc.policy.attribution_url`(`https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/`)を正本とし、`safe_url()`でスキーム検証を通過した場合にのみリンク化する。この可否判定は`fetch.py`の`_can_render_structured_open_attribution()`が一元的に行い、`attribution_ok`(実装状況、7章参照)とHTML描画の両方がこの1つの関数だけを参照する。`attribution_url`が欠落・空・不正schemeの場合、リンクなしの平文へfallbackして公開を継続することはせず、`missing_attribution`としてmetadata-only相当へ自動downgradeする(fail-closed)。`fsa`/`nist`/`nist_nvd`/`cisa_kev`は固定文言のみで完結するため常に生成可能である。この5 source以外のstructured_open source_idが将来追加された場合も、対応する表示が実装されるまでattribution_okはfalseとなり、`missing_attribution`としてmetadata-only相当へ自動downgradeされる。
 
 ---
 
