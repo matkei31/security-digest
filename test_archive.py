@@ -145,6 +145,7 @@ def make_digest(digest_date="2026-07-11", *, title="記事A", total_items=1, hig
                 "error_type": None,
                 "http_status": None,
             },
+            "facts": {"cves": []},
         })
     return {
         "schema_version": 1,
@@ -909,6 +910,159 @@ class ArchiveIndexAndPathTest(unittest.TestCase):
 
             index_json = json.loads((data_dir / "index.json").read_text(encoding="utf-8"))
             self.assertIsNone(index_json["digests"][0]["archive_path"])
+
+
+class ArchiveGenerationFullValidationTest(unittest.TestCase):
+    """PR #69レビュー(round 4)Blocker 1: generate_archive_outputs()が
+    load_daily_digest()だけでなくdaily_json.validate_daily_digest()も実行し、
+    NCSC attribution_url snapshotが欠落・不正なschema v2 digestを、保存済み
+    Brief(overview/discussion_points/check_items)を含めてArchive生成対象
+    から除外することを検証する(BL-032)。
+    """
+
+    MARKER = "UNIQUE-NCSC-BRIEF-MARKER-MUST-NOT-APPEAR"
+    NCSC_URL = "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+
+    def _ncsc_source_defs(self, attribution_url):
+        return [{
+            "id": "ncsc", "name": "NCSC", "url": "https://example.com/feed.xml",
+            "collection_method": "rss", "language": "en", "source_type": "その他",
+            "source_tier": "Tier 3", "enabled": True, "planned_phase": "Phase 1",
+            "activation_condition": "", "collection_frequency": "daily", "color": "#555",
+            "trusted_cyber_source": False, "notes": "",
+            "policy": {
+                "content_usage_mode": "structured_open", "allow_network_fetch": True,
+                "allow_description": True, "allow_rich_content": False,
+                "allow_ai_processing": True, "allow_excerpt_storage": True,
+                "allow_public_summary": True, "attribution_requirement": "test",
+                "attribution_url": attribution_url, "checked_at": "2026-07-29",
+                "confidence": "high", "unresolved_issue": "", "recheck_trigger": "test",
+                "official_evidence_url": "https://example.com/terms", "evidence_type": "terms",
+            },
+        }]
+
+    def _v2_digest_with_ncsc_brief(self, digest_date, attribution_url):
+        content_policy = dj.build_item_content_policy("ncsc", "structured_open", "structured_open", None)
+        item = {
+            "source": "NCSC", "raw_title": "NCSC Advisory", "title": "NCSC Advisory",
+            "raw_summary": "Official advisory.", "summary": "Official advisory.",
+            "link": "https://www.ncsc.gov.uk/advisory/example", "facts": {"cves": []},
+            "published_at_jst": None, "content_policy": content_policy,
+            "ai_analysis": {
+                "title_ja": "NCSC勧告", "category": "脆弱性・パッチ",
+                "category_reason": f"{self.MARKER}のため。", "importance": "高",
+                "urgency": "本日確認", "summary": f"{self.MARKER}の要約。",
+                "financial_impact": f"{self.MARKER}の影響。",
+                "recommended_actions": [f"{self.MARKER}を確認する。"],
+                "reason": f"重要度は{self.MARKER}のため「高」です。確認目安は緊急性が高いため「本日確認」です。",
+                "tags": [],
+            },
+            "ai_analysis_meta": {"status": "success", "error_type": None, "http_status": None,
+                                  "generated_at": f"{digest_date}T07:20:00+09:00"},
+        }
+        brief_result = {
+            "status": "success",
+            "overview": f"概況: {self.MARKER}",
+            "important_highlights": [f"{self.MARKER}のハイライト"],
+            "discussion_points": [f"{self.MARKER}の論点"],
+            "check_items": [f"{self.MARKER}の確認事項"],
+            "error_type": None, "http_status": None,
+        }
+        return dj.build_daily_digest(
+            [item], brief_result, self._ncsc_source_defs(attribution_url),
+            "gemini-2.5-flash",
+            datetime.datetime.fromisoformat(f"{digest_date}T07:00:00+09:00"),
+            datetime.datetime.fromisoformat(f"{digest_date}T07:30:00+09:00"),
+        )
+
+    def test_valid_snapshot_digest_generates_archive_normally(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+            digest = self._v2_digest_with_ncsc_brief("2026-07-15", self.NCSC_URL)
+            dj.validate_daily_digest(digest)  # 正常に検証を通過する(前提の再確認)
+            write_digest(data_dir, digest)
+            dj.save_index(data_dir, datetime.datetime(2026, 7, 15, 8, 0, tzinfo=JST))
+
+            summaries = fetch.generate_archive_outputs(data_dir, docs_dir)
+
+            self.assertEqual([s["digest_date"] for s in summaries], ["2026-07-15"])
+            archive_html = (docs_dir / "archive" / "2026-07-15.html").read_text(encoding="utf-8")
+            self.assertIn(self.MARKER, archive_html)
+            self.assertIn(f'href="{self.NCSC_URL}"', archive_html)
+
+    def test_missing_snapshot_digest_is_skipped_from_archive_generation(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+            digest = self._v2_digest_with_ncsc_brief("2026-07-15", self.NCSC_URL)
+            digest["items"][0]["policy"]["attribution_url"] = None  # 生成後の改変を仮定
+            write_digest(data_dir, digest)
+            dj.save_index(data_dir, datetime.datetime(2026, 7, 15, 8, 0, tzinfo=JST))
+
+            with mock.patch("builtins.print") as mocked_print:
+                summaries = fetch.generate_archive_outputs(data_dir, docs_dir)
+
+            warning_text = " ".join(str(call) for call in mocked_print.call_args_list)
+            self.assertIn("policy.attribution_url", warning_text)
+            self.assertEqual(summaries, [])
+            self.assertFalse((docs_dir / "archive" / "2026-07-15.html").exists())
+
+    def test_invalid_digest_marker_never_appears_in_any_archive_output(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+            digest = self._v2_digest_with_ncsc_brief("2026-07-15", self.NCSC_URL)
+            digest["items"][0]["policy"]["attribution_url"] = None
+            write_digest(data_dir, digest)
+            write_digest(data_dir, make_digest("2026-07-14", title="valid"))
+            dj.save_index(data_dir, datetime.datetime(2026, 7, 15, 8, 0, tzinfo=JST))
+
+            fetch.generate_archive_outputs(data_dir, docs_dir)
+
+            archive_dir = docs_dir / "archive"
+            for html_path in archive_dir.glob("*.html"):
+                self.assertNotIn(self.MARKER, html_path.read_text(encoding="utf-8"))
+            index_json = (data_dir / "index.json").read_text(encoding="utf-8")
+            self.assertNotIn(self.MARKER, index_json)
+
+    def test_other_valid_digests_still_generate_when_one_is_invalid(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+            invalid_digest = self._v2_digest_with_ncsc_brief("2026-07-15", self.NCSC_URL)
+            invalid_digest["items"][0]["policy"]["attribution_url"] = "javascript:alert(1)"
+            write_digest(data_dir, invalid_digest)
+            write_digest(data_dir, make_digest("2026-07-14", title="valid"))
+            dj.save_index(data_dir, datetime.datetime(2026, 7, 15, 8, 0, tzinfo=JST))
+
+            summaries = fetch.generate_archive_outputs(data_dir, docs_dir)
+
+            self.assertEqual([s["digest_date"] for s in summaries], ["2026-07-14"])
+            self.assertTrue((docs_dir / "archive" / "2026-07-14.html").exists())
+            self.assertFalse((docs_dir / "archive" / "2026-07-15.html").exists())
+
+    def test_schema_v1_digest_still_generates_as_before(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            data_dir = root / "data"
+            docs_dir = root / "docs"
+            data_dir.mkdir()
+            write_digest(data_dir, make_digest("2026-07-14", title="valid"))
+            dj.save_index(data_dir, datetime.datetime(2026, 7, 14, 8, 0, tzinfo=JST))
+
+            summaries = fetch.generate_archive_outputs(data_dir, docs_dir)
+
+            self.assertEqual([s["digest_date"] for s in summaries], ["2026-07-14"])
+            self.assertTrue((docs_dir / "archive" / "2026-07-14.html").exists())
 
 
 class ArchiveAtomicWriteTest(unittest.TestCase):

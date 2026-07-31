@@ -2049,18 +2049,24 @@ def digest_items_for_html(digest):
                 "attribution_url": policy.get("attribution_url"),
             }
             # BL-032: structured_openのうちURL依存attribution(現状ncscのみ)を
-            # 要するsourceで、保存されたsnapshotが欠落・不正な場合は、記事
-            # カードだけでなくDashboard集計・優先確認・Today's Brief(重要・
-            # 優先事項の再構成)を含めてmetadata-only相当へfail-closedに
-            # downgradeする(通常のgenerate_and_save_daily_digestはvalidate_
-            # daily_digest()でこの状態を事前に拒否するため、ここは改変・
-            # 破損したdaily JSONに対する防御的backstop)。
+            # 要するsourceで、保存されたsnapshotが欠落・不正な場合、items由来の
+            # 派生表示(記事カード・Dashboard集計・優先確認・items由来の重要・
+            # 優先事項)をmetadata-only相当へdowngradeする。ただし、この関数
+            # (digest_items_for_html)はitemsだけを構築し、保存済みBrief
+            # (overview/discussion_points/check_items、
+            # brief_for_html_from_digest経由)には及ばない――保存済みBriefも
+            # 含めた完全なfail-closed保証は、generate_archive_outputs()が
+            # Archive生成前にdaily_json.validate_daily_digest()を実行し、
+            # このsnapshot不備を持つdigestをArchive生成対象から除外すること
+            # (validation自体による除外)で担保する。ここでの
+            # downgradeは、validationを経由しない直接呼び出し(テスト等)に
+            # 対する二次的な防御的backstopに過ぎない。
             if (
                 content_policy["ai_eligible"]
                 and content_policy["effective_mode"] == "structured_open"
                 and content_policy["source_id"]
                 in daily_json.STRUCTURED_OPEN_ATTRIBUTION_URL_SOURCE_IDS
-                and not safe_url(content_policy["attribution_url"] or "")
+                and not daily_json.is_safe_attribution_url(content_policy["attribution_url"])
             ):
                 content_policy["ai_eligible"] = False
                 content_policy["downgrade_reason"] = "archive_attribution_snapshot_invalid"
@@ -4847,22 +4853,26 @@ def _resolve_ncsc_ogl_url(attribution_url_snapshot=_ATTRIBUTION_URL_LIVE_LOOKUP)
 
     attribution_url_snapshotを明示的に渡した場合(Archive再生成時、schema v2
     daily JSONのpolicy.attribution_urlから復元したsnapshot)は、その値だけを
-    safe_url()で検証して使う――現在のsource_definitions.jsonは一切参照しない。
-    これにより、生成後にsource_definitions.jsonのNCSC設定が変更・削除されても、
-    既存Archiveの再生成結果は生成時点のsnapshotのまま変わらない。
-    引数省略時(fresh生成・通常のbuild_html呼び出し)は、
-    source_definitions.jsonのncsc.policy.attribution_urlを都度ライブ参照する。
-    いずれの経路でも、欠落・空・不正schemeの場合はNoneを返す(呼び出し側は
-    Noneを「実際にリンク化できない」と扱う)。
+    daily_json.is_safe_attribution_url()で検証して使う――現在の
+    source_definitions.jsonは一切参照しない。これにより、生成後に
+    source_definitions.jsonのNCSC設定が変更・削除されても、既存Archiveの
+    再生成結果は生成時点のsnapshotのまま変わらない。引数省略時(fresh生成・
+    通常のbuild_html呼び出し)は、source_definitions.jsonのncsc.policy.
+    attribution_urlを都度ライブ参照する。いずれの経路でも、欠落・空・
+    不正schemeの場合、またはhost部分を持たない値(`https://`単体等)の場合は
+    Noneを返す(呼び出し側はNoneを「実際にリンク化できない」と扱う)。
+    記事リンク全般に使うfetch.safe_url()とは意図的に別の、より厳密な検証
+    (netloc/hostnameの存在を要求)を使う――このattribution snapshot契約に
+    限定した強化であり、safe_url()自体の仕様は変更しない。
     """
     if attribution_url_snapshot is _ATTRIBUTION_URL_LIVE_LOOKUP:
         source_def = get_source_definition(SOURCE_DEFINITIONS, "ncsc")
         attribution_url = source_def["policy"].get("attribution_url") if source_def else None
     else:
         attribution_url = attribution_url_snapshot
-    if not attribution_url:
+    if not daily_json.is_safe_attribution_url(attribution_url):
         return None
-    return safe_url(attribution_url)
+    return attribution_url.strip()
 
 
 def _can_render_structured_open_attribution(
@@ -5512,6 +5522,17 @@ def render_archive_adjacent_links(previous_date=None, next_date=None):
 
 
 def build_daily_archive_html(digest, previous_date=None, next_date=None):
+    """指定したdigestからArchive HTMLを構築する。
+
+    契約: digestは呼び出し側が既にdaily_json.validate_daily_digest()を
+    通過させた検証済みのものであること(BL-032)。この関数自身は再検証しない
+    ――digest_items_for_html()のArchive attribution snapshot fail-closed
+    downgradeは記事カード等のitems由来の派生表示だけを対象とし、digestへ
+    保存済みのbrief(overview/discussion_points/check_items、
+    brief_for_html_from_digest()経由)には及ばない。validation自体で
+    不正なdigestをこの関数へ渡さないことが、保存済みBriefも含めた
+    fail-closedの唯一の保証点である(generate_archive_outputs()参照)。
+    """
     digest_date = digest["digest_date"]
     items = digest_items_for_html(digest)
     brief = brief_for_html_from_digest(digest)
@@ -5689,6 +5710,13 @@ def generate_archive_outputs(data_dir=None, docs_dir=None, generated_at=None):
     for path in daily_digest_paths(data_dir):
         try:
             digest = load_daily_digest(path)
+            # BL-032: load_daily_digest()はJSON形式・トップレベル型・
+            # digest_date・ファイル名程度しか確認しない。schema v2の
+            # policy.attribution_url snapshot(現状ncscのみ)が欠落・不正な
+            # digestを含め、日次JSON全体の整合性はここでfull validationする。
+            # 検証を通過しないdigestは、日別Archive HTML・Archive summary・
+            # index entryのいずれも生成・更新しない(既存の警告・skip経路)。
+            daily_json.validate_daily_digest(digest)
         except daily_json.DailyJsonError as e:
             print(f"[WARN] アーカイブ生成をスキップ: {e}", file=sys.stderr)
             continue

@@ -324,18 +324,38 @@ DOWNGRADE_REASONS = (
 STRUCTURED_OPEN_ATTRIBUTION_URL_SOURCE_IDS = frozenset({"ncsc"})
 
 
-def _is_safe_http_scheme_url(url):
-    """URLがhttp(s)スキームの安全な文字列かどうかを検証する(fetch.safe_url()
-    と同じ規則: 前後の空白のみ許容し、ASCII制御文字を含まず、http(s)://で
-    始まる)。daily_json.pyはfetch.pyに依存しないため、検証ロジックを
-    ここで独立して持つ(fetch.safe_url()とロジックを共有しない)。
+def is_safe_attribution_url(url):
+    """attribution_url snapshot専用の、http(s) URLの妥当性検証。
+
+    fetch.safe_url()(記事リンク全般に対する、schemeプレフィックスだけの
+    軽量な検証)とは意図的に別のロジックを持つ――ここではNCSCのOGL v3リンクの
+    ようなactual clickable URLとしての妥当性、具体的には次のすべてを要求する:
+    * 文字列であること
+    * 前後の空白のみ許容し、ASCII制御文字(\\x00-\\x20)を含まないこと
+    * schemeが`http`または`https`であること
+    * netloc(ホスト部分)が空でないこと
+    * hostnameが解析可能かつ空でないこと
+    `https://`・`https:///missing-host`・`http://?query`のような、
+    schemeプレフィックスだけでhostを持たない値はすべて拒否する。
+    daily_json.pyはfetch.pyに依存しないため、検証ロジックをここで独立して
+    持つ(fetch.safe_url()とロジックを共有しない。記事リンク全般の検証仕様は
+    変更しない)。
     """
     if not isinstance(url, str):
         return False
     stripped = url.strip()
-    if re.search(r"[\x00-\x20]", stripped):
+    if not stripped or re.search(r"[\x00-\x20]", stripped):
         return False
-    return stripped.lower().startswith(("http://", "https://"))
+    try:
+        parsed = urllib.parse.urlsplit(stripped)
+        hostname = parsed.hostname
+    except ValueError:
+        return False
+    if parsed.scheme.lower() not in ("http", "https"):
+        return False
+    if not parsed.netloc or not hostname:
+        return False
+    return True
 
 # BL-032: 出力fieldごとの文字数上限(一元管理、他ファイルへ複製しない)。
 # summary/financial_impact(200文字)・reason(150文字)・category_reason(100文字)は
@@ -615,7 +635,7 @@ def build_article_entry(item, source_definitions, model, fetched_at):
         and source_meta["source_id"] in STRUCTURED_OPEN_ATTRIBUTION_URL_SOURCE_IDS
     ):
         candidate_url = source_policy.get("attribution_url")
-        if _is_safe_http_scheme_url(candidate_url):
+        if is_safe_attribution_url(candidate_url):
             attribution_url_snapshot = candidate_url
 
     return {
@@ -985,7 +1005,7 @@ def validate_daily_digest(digest):
                 policy.get("ai_eligible")
                 and policy.get("effective_mode") == "structured_open"
                 and item.get("source_id") in STRUCTURED_OPEN_ATTRIBUTION_URL_SOURCE_IDS
-                and not _is_safe_http_scheme_url(attribution_url)
+                and not is_safe_attribution_url(attribution_url)
             ):
                 raise DailyJsonError(
                     f"items[{i}] (id={item_id!r}): source_id="

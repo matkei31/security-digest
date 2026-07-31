@@ -1315,6 +1315,75 @@ _ARCHIVE_SNAPSHOT_NOT_ATTEMPTED_BRIEF_RESULT = {
     "status": "not_attempted", "error_type": None, "http_status": None,
 }
 
+_VALID_NCSC_OGL_URL = "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+
+
+class AttributionUrlValidationTest(unittest.TestCase):
+    """PR #69レビュー(round 4)Blocker 2: attribution snapshot用のURL検証が、
+    schemeプレフィックスだけでなくnetloc/hostnameの存在まで要求する(urlsplit
+    ベースの)fail-closedな判定であることを検証する。fetch.safe_url()(記事
+    リンク全般用)の仕様はこのTicketでは変更しない。
+    """
+
+    def test_valid_ncsc_url_is_accepted(self):
+        self.assertTrue(dj.is_safe_attribution_url(_VALID_NCSC_OGL_URL))
+
+    def test_none_is_rejected(self):
+        self.assertFalse(dj.is_safe_attribution_url(None))
+
+    def test_javascript_scheme_is_rejected(self):
+        self.assertFalse(dj.is_safe_attribution_url("javascript:alert(1)"))
+
+    def test_scheme_only_url_without_host_is_rejected(self):
+        self.assertFalse(dj.is_safe_attribution_url("https://"))
+
+    def test_triple_slash_missing_host_url_is_rejected(self):
+        self.assertFalse(dj.is_safe_attribution_url("https:///missing-host"))
+
+    def test_query_only_url_without_host_is_rejected(self):
+        self.assertFalse(dj.is_safe_attribution_url("http://?query"))
+
+    def test_url_with_internal_newline_is_rejected(self):
+        self.assertFalse(dj.is_safe_attribution_url("https://example.com/a\nb"))
+
+    def test_url_with_internal_whitespace_is_rejected(self):
+        self.assertFalse(dj.is_safe_attribution_url("https://example.com/a b"))
+
+    def test_build_article_entry_omits_snapshot_for_scheme_only_url(self):
+        content_policy = dj.build_item_content_policy("ncsc", "structured_open", "structured_open", None)
+        item = {
+            "source": "NCSC", "raw_title": "t", "title": "t", "raw_summary": "s", "summary": "s",
+            "link": "https://www.ncsc.gov.uk/a", "facts": {"cves": []}, "published_at_jst": None,
+            "content_policy": content_policy,
+        }
+        source_defs = [make_source_def(
+            "ncsc", "NCSC", content_usage_mode="structured_open",
+            allow_excerpt_storage=True, attribution_url="https://",
+        )]
+        entry = dj.build_article_entry(
+            item, source_defs, "gemini-2.5-flash",
+            datetime.datetime(2026, 7, 31, 7, 0, tzinfo=dj.JST),
+        )
+        self.assertIsNone(entry["policy"]["attribution_url"])
+
+    def test_validate_daily_digest_rejects_scheme_only_snapshot(self):
+        content_policy = dj.build_item_content_policy("ncsc", "structured_open", "structured_open", None)
+        item = {
+            "source": "NCSC", "raw_title": "t", "title": "t", "raw_summary": "s", "summary": "s",
+            "link": "https://www.ncsc.gov.uk/a", "facts": {"cves": []}, "published_at_jst": None,
+            "content_policy": content_policy,
+        }
+        digest = dj.build_daily_digest(
+            [item], dict(_ARCHIVE_SNAPSHOT_NOT_ATTEMPTED_BRIEF_RESULT),
+            [make_source_def("ncsc", "NCSC", content_usage_mode="structured_open",
+                              allow_excerpt_storage=True, attribution_url="https://")],
+            "gemini-2.5-flash",
+            datetime.datetime(2026, 7, 31, 7, 0, tzinfo=dj.JST),
+            datetime.datetime(2026, 7, 31, 7, 0, tzinfo=dj.JST),
+        )
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
 
 class ArchiveAttributionSnapshotTest(unittest.TestCase):
     """PR #69レビュー(round 3)Blocker 2: schema v2 daily JSONへ保存された

@@ -19,6 +19,13 @@ REPOSITORY_ROOT = Path(__file__).resolve().parent
 
 
 def make_digest(digest_date="2026-07-11", *, total_items=1, high_count=0):
+    # BL-032: このfixtureは"items"を常に空配列のまま返す(CNAME永続性の検証には
+    # 記事内容自体が不要なため)。generate_archive_outputs()がdaily_json.
+    # validate_daily_digest()でrun.total_items/countsとitems件数の一致を
+    # 検証するようになったため、total_items/high_countの引数値をrun/counts側
+    # へ反映せず、実際のitems件数(0件)と一致させる(引数は呼び出し元の可読性
+    # のためだけに残す)。
+    del total_items, high_count
     return {
         "schema_version": 1,
         "digest_date": digest_date,
@@ -32,17 +39,17 @@ def make_digest(digest_date="2026-07-11", *, total_items=1, high_count=0):
         "run": {
             "status": "success",
             "overwrite_policy": "replace",
-            "total_items": total_items,
-            "ai_attempted_count": total_items,
-            "ai_success_count": total_items,
+            "total_items": 0,
+            "ai_attempted_count": 0,
+            "ai_success_count": 0,
             "ai_fallback_count": 0,
             "ai_failed_count": 0,
             "ai_not_attempted_count": 0,
         },
         "counts": {
-            "importance": {"高": high_count, "中": 0, "低": 0, "未判定": 0},
+            "importance": {"高": 0, "中": 0, "低": 0, "未判定": 0},
             "urgency": {"本日確認": 0, "今週確認": 0, "参考": 0, "未判定": 0},
-            "category": {"脆弱性・パッチ": total_items, "未判定": 0},
+            "category": {"脆弱性・パッチ": 0, "未判定": 0},
         },
         "brief": {
             "status": "not_attempted",
