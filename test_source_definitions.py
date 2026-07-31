@@ -1073,6 +1073,18 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
         self.assertIn("BL-031", recently_completed)
         self.assertIn("BL-032", recently_completed)
 
+    def test_status_never_describes_bl032_as_currently_pending(self):
+        # These phrases described BL-032 while it was still Draft/pending
+        # merge (Active work item, 要件定義済み／未着手, Ready化・merge待ち).
+        # None of them are quoted user/reviewer text anywhere in STATUS.md
+        # (they are STATUS.md's own prose about BL-032's state), so their
+        # reappearance anywhere in the file signals the merged/completed
+        # state has gone stale again -- this is not limited to a single
+        # section on purpose.
+        self.assertNotIn("current Active work item", self.status)
+        self.assertNotIn("要件定義済み／未着手", self.status)
+        self.assertNotIn("Ready化・merge待ち", self.status)
+
     def test_sd029_is_unique(self):
         headings = re.findall(r"^## (SD-\d{3})\b", self.decisions, flags=re.MULTILINE)
         self.assertEqual(headings.count("SD-029"), 1)

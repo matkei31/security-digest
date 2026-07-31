@@ -1617,9 +1617,11 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
         self.assertNotIn("follow-up candidates BL-031", bl030)
         self.assertIn("BL-031", bl030)
         self.assertIn("completed, approved, and merged", bl030)
+        # BL-032 merged during its own post-merge closeout, so this line no
+        # longer describes it as "registered"/"the current Active work item".
         self.assertIn("BL-032", bl030)
-        self.assertIn("registered", bl030)
-        self.assertIn("Active work item", bl030)
+        self.assertNotIn("registered", bl030)
+        self.assertNotIn("Active work item", bl030)
         self.assertIn("BL-009", bl030)
         self.assertIn("separate, unstarted ticket", bl030)
         self.assertIn("None of these is BL-030 residual work", bl030)
