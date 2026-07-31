@@ -6,9 +6,11 @@ robots.txt等へのアクセスは一切行わない(urllib.request.urlopenを�
 """
 
 import copy
+import datetime
 import json
 import os
 import unittest
+import urllib.error
 from unittest.mock import patch
 
 import daily_json as dj
@@ -708,7 +710,10 @@ class ModeAttributionRenderingTest(unittest.TestCase):
         self.assertIn("Monomi Digestが公式RSSの概要をもとに生成したAI分析", html)
         self.assertIn("原文の転載・代替を目的とするものではありません", html)
 
-    def test_structured_open_attribution_uses_source_definition_text(self):
+    def test_structured_open_with_unmapped_source_id_shows_no_attribution(self):
+        # PR #69レビューBlocker 2: attribution_requirement(監査上の説明文)を
+        # そのままUI文言として表示しない。STRUCTURED_OPEN_ATTRIBUTION_SOURCE_IDS
+        # に無いsource_idは、実際のattribution表示を持たないため何も表示しない。
         with patch("fetch.SOURCE_DEFINITIONS",
                    fetch.SOURCE_DEFINITIONS + [make_source_def(
                        "test_source", "Test Source",
@@ -716,7 +721,8 @@ class ModeAttributionRenderingTest(unittest.TestCase):
                        attribution_requirement="UNIQUE-ATTRIBUTION-TEXT-FOR-TEST",
                    )]):
             html = fetch.build_html([self._item_with_mode("structured_open")])
-        self.assertIn("UNIQUE-ATTRIBUTION-TEXT-FOR-TEST", html)
+        self.assertNotIn("UNIQUE-ATTRIBUTION-TEXT-FOR-TEST", html)
+        self.assertNotIn("article-attribution", html)
 
     def test_no_attribution_shown_without_content_policy(self):
         item = {
@@ -726,6 +732,115 @@ class ModeAttributionRenderingTest(unittest.TestCase):
         }
         html = fetch.build_html([item])
         self.assertNotIn("article-attribution", html)
+
+
+class StructuredOpenRealAttributionRenderingTest(unittest.TestCase):
+    """PR #69レビューBlocker 2: structured_openのattributionが、監査記述
+    (attribution_requirement)の垂れ流しではなく、実際の表示(実URL・実日付・
+    実免責文)として組み立てられることを検証する。"""
+
+    def _item(self, source_id, source="Test Source"):
+        return {
+            "source": source, "lang": "en", "link": "https://example.com/a",
+            "title": "t", "raw_title": "t", "summary": "s", "date": None,
+            "facts": {"cves": []},
+            "content_policy": {
+                "source_id": source_id, "configured_mode": "structured_open",
+                "effective_mode": "structured_open", "ai_eligible": True,
+                "downgrade_reason": None,
+            },
+        }
+
+    def test_ncsc_ogl_v3_link_has_correct_href(self):
+        html = fetch.build_html(
+            [self._item("ncsc", source="NCSC")],
+            generated_at=__import__("datetime").datetime(2026, 7, 31, 7, 0, tzinfo=dj.JST),
+        )
+        self.assertIn(f'href="{fetch._NCSC_OGL_V3_URL}"', html)
+        self.assertIn("Open Government Licence v3.0", html)
+
+    def test_fsa_shows_real_date_not_instruction_text(self):
+        html = fetch.build_html(
+            [self._item("fsa", source="金融庁")],
+            generated_at=__import__("datetime").datetime(2026, 7, 31, 7, 0, tzinfo=dj.JST),
+        )
+        self.assertIn("利用日: 2026-07-31", html)
+        self.assertNotIn("利用日を表示する", html)
+        self.assertNotIn("原ページURL", html)
+
+    def test_nvd_disclaimer_is_displayed_accurately(self):
+        html = fetch.build_html(
+            [self._item("nist_nvd", source="NIST NVD")],
+            generated_at=__import__("datetime").datetime(2026, 7, 31, 7, 0, tzinfo=dj.JST),
+        )
+        self.assertIn(
+            "This product uses the NVD API but is not endorsed or certified by the NVD.",
+            html,
+        )
+
+    def test_cisa_kev_cc0_is_displayed(self):
+        html = fetch.build_html(
+            [self._item("cisa_kev", source="CISA KEV")],
+            generated_at=__import__("datetime").datetime(2026, 7, 31, 7, 0, tzinfo=dj.JST),
+        )
+        self.assertIn("CISA Known Exploited Vulnerabilities", html)
+        self.assertIn("CC0", html)
+
+    def test_malformed_attribution_url_is_not_linked(self):
+        with patch("fetch._NCSC_OGL_V3_URL", "javascript:alert(1)"):
+            fragment = fetch.render_structured_open_attribution_html("ncsc", "2026-07-31")
+        self.assertNotIn("<a ", fragment)
+        self.assertNotIn("javascript:", fragment)
+        self.assertIn("Open Government Licence v3.0", fragment)
+
+    def test_unmapped_structured_open_source_id_renders_nothing(self):
+        self.assertEqual(
+            fetch.render_structured_open_attribution_html("unknown_source", "2026-07-31"), ""
+        )
+
+    def test_existing_feed_summary_limited_metadata_attribution_still_render(self):
+        # 既存のfeed_summary/limited_feed_analysis/metadata_only attribution
+        # 表示は、structured_openの修正によって変更されていないことを確認する。
+        feed_summary_item = {
+            "source": "Test", "lang": "en", "link": "https://example.com/a",
+            "title": "t", "raw_title": "t", "summary": "s", "date": None,
+            "facts": {"cves": []},
+            "content_policy": {"source_id": "jpcert_cc", "configured_mode": "feed_summary",
+                                "effective_mode": "feed_summary", "ai_eligible": True,
+                                "downgrade_reason": None},
+        }
+        limited_item = {
+            "source": "The Hacker News", "lang": "en", "link": "https://example.com/a",
+            "title": "t", "raw_title": "t", "summary": "s", "date": None,
+            "facts": {"cves": []},
+            "content_policy": {"source_id": "the_hacker_news",
+                                "configured_mode": "limited_feed_analysis",
+                                "effective_mode": "limited_feed_analysis", "ai_eligible": True,
+                                "downgrade_reason": None},
+        }
+        metadata_only_item = {
+            "source": "Cisco Talos", "lang": "en", "link": "https://example.com/a",
+            "title": "t", "raw_title": "t", "summary": "s", "date": None,
+            "facts": {"cves": []},
+            "content_policy": {"source_id": "cisco_talos", "configured_mode": "metadata_only",
+                                "effective_mode": "metadata_only", "ai_eligible": False,
+                                "downgrade_reason": None},
+        }
+        html = fetch.build_html([feed_summary_item, limited_item, metadata_only_item])
+        self.assertIn("Monomi DigestによるAI要約・分析", html)
+        self.assertIn("Monomi Digestが公式RSSの概要をもとに生成したAI分析", html)
+        self.assertIn("AIによる要約・評価は行っていません", html)
+
+    def test_attribution_ok_false_for_unmapped_structured_open_source(self):
+        source_policy = make_source_policy(content_usage_mode="structured_open")
+        content_policy = dj.build_item_content_policy(
+            "unknown_source", "structured_open", "structured_open", None
+        )
+        item, _ = make_item(content_policy, source="Unknown Source")
+        response = dict(VALID_ANALYSIS_RESPONSE)
+        items, call_count = run_enrich_with_ai([(item, response)])
+        self.assertEqual(call_count, 1)
+        self.assertEqual(items[0]["content_policy"]["downgrade_reason"], "missing_attribution")
 
 
 class LimitedFeedAnalysisNoTranslatedSubtitleTest(unittest.TestCase):
@@ -748,6 +863,170 @@ class LimitedFeedAnalysisNoTranslatedSubtitleTest(unittest.TestCase):
         parts = fetch.article_title_parts(item)
         self.assertEqual(parts["main"], "Original English Title")
         self.assertEqual(parts["subtitle"], "")
+
+
+def run_enrich_with_ai_with_gemini_failure(item):
+    """items内の1件についてGeminiが常にHTTP 500で失敗する状況を再現し、
+    enrich_with_ai経由で処理した後のitemを返す(実際のGemini APIへは
+    アクセスしない)。"""
+    def fake_urlopen(req, timeout=None):
+        raise urllib.error.HTTPError(
+            "https://example.com", 500, "Internal Server Error", {}, None
+        )
+
+    with patch.dict(os.environ, {"GEMINI_API_KEY": "test-key-not-real"}):
+        with patch("fetch.urllib.request.urlopen", side_effect=fake_urlopen):
+            with patch("fetch.time.sleep"):
+                with patch("fetch.SOURCE_DEFINITIONS", fetch.SOURCE_DEFINITIONS + [
+                    make_source_def("test_source", "Test Source",
+                                    content_usage_mode=item["content_policy"]["configured_mode"]),
+                ]):
+                    fetch.enrich_with_ai([item])
+    return item
+
+
+class PublisherTextTransientPurgeTest(unittest.TestCase):
+    """PR #69レビューBlocker 1: metadata-only相当の記事はpublisher由来
+    description(summary/raw_summary)・rich_contentを直ちに破棄し、HTML・
+    daily JSON・Today's Briefのいずれにも表示・保存されないことを検証する。
+    """
+
+    MARKER = "UNIQUE-PUBLISHER-DESCRIPTION-MARKER-MUST-NOT-LEAK"
+
+    def test_metadata_only_item_has_publisher_description_purged(self):
+        content_policy = dj.build_item_content_policy(
+            "microsoft_security", "metadata_only", "metadata_only", None
+        )
+        item = {
+            "source": "Microsoft Security", "title": "t", "summary": self.MARKER,
+            "rich_content": self.MARKER, "content_policy": content_policy,
+        }
+        fetch.purge_publisher_text_for_ineligible_items([item])
+        self.assertEqual(item["summary"], "")
+        self.assertEqual(item["rich_content"], "")
+
+    def test_gate_downgraded_item_has_publisher_description_purged(self):
+        # gemini_data_use_status != paid_verifiedによる収集時点でのdowngrade。
+        source_policy = make_source_policy(content_usage_mode="feed_summary")
+        effective_mode, reason = dj.compute_effective_content_usage_mode(source_policy, "unpaid")
+        content_policy = dj.build_item_content_policy(
+            "jpcert_cc", "feed_summary", effective_mode, reason
+        )
+        self.assertFalse(content_policy["ai_eligible"])
+        item = {
+            "source": "JPCERT/CC", "title": "t", "summary": self.MARKER,
+            "rich_content": self.MARKER, "content_policy": content_policy,
+        }
+        fetch.purge_publisher_text_for_ineligible_items([item])
+        self.assertEqual(item["summary"], "")
+        self.assertEqual(item["rich_content"], "")
+
+    def test_ai_eligible_item_is_not_purged(self):
+        content_policy = dj.build_item_content_policy(
+            "test_source", "structured_open", "structured_open", None
+        )
+        item = {"source": "Test Source", "title": "t", "summary": self.MARKER,
+                "rich_content": "", "content_policy": content_policy}
+        fetch.purge_publisher_text_for_ineligible_items([item])
+        self.assertEqual(item["summary"], self.MARKER)
+
+    def _feed_summary_or_limited_item(self, mode, source_id):
+        source_policy = make_source_policy(content_usage_mode=mode)
+        effective_mode, reason = dj.compute_effective_content_usage_mode(source_policy, "paid_verified")
+        content_policy = dj.build_item_content_policy(source_id, mode, effective_mode, reason)
+        item, _ = make_item(
+            content_policy, source="Test Source", lang="en",
+            summary=self.MARKER, raw_summary=self.MARKER, rich_content=self.MARKER,
+        )
+        item["facts"] = {"cves": []}
+        return item
+
+    def test_feed_summary_gemini_failed_downgrades_and_hides_description(self):
+        item = self._feed_summary_or_limited_item("feed_summary", "test_source")
+        run_enrich_with_ai_with_gemini_failure(item)
+        self.assertFalse(item["content_policy"]["ai_eligible"])
+        self.assertEqual(item["content_policy"]["effective_mode"], "metadata_only")
+        self.assertEqual(item["content_policy"]["downgrade_reason"], "analysis_unavailable")
+        self.assertEqual(item["summary"], "")
+        self.assertEqual(item["raw_summary"], "")
+        self.assertEqual(item["rich_content"], "")
+        self.assertNotIn("ai_analysis", item)
+        html = fetch.build_html([item])
+        self.assertNotIn(self.MARKER, html)
+
+    def test_limited_feed_analysis_gemini_failed_downgrades_and_hides_description(self):
+        item = self._feed_summary_or_limited_item("limited_feed_analysis", "test_source")
+        run_enrich_with_ai_with_gemini_failure(item)
+        self.assertFalse(item["content_policy"]["ai_eligible"])
+        self.assertEqual(item["content_policy"]["effective_mode"], "metadata_only")
+        self.assertEqual(item["content_policy"]["downgrade_reason"], "analysis_unavailable")
+        self.assertEqual(item["summary"], "")
+        self.assertEqual(item["raw_summary"], "")
+        self.assertEqual(item["rich_content"], "")
+        html = fetch.build_html([item])
+        self.assertNotIn(self.MARKER, html)
+
+    def test_gemini_unattempted_without_api_key_downgrades_feed_summary(self):
+        content_policy = dj.build_item_content_policy(
+            "test_source", "feed_summary", "feed_summary", None
+        )
+        item, _ = make_item(
+            content_policy, source="Test Source", lang="en",
+            summary=self.MARKER, raw_summary=self.MARKER, rich_content=self.MARKER,
+        )
+        with patch.dict(os.environ, {}, clear=True):
+            fetch.enrich_with_ai([item])
+        self.assertFalse(item["content_policy"]["ai_eligible"])
+        self.assertEqual(item["content_policy"]["downgrade_reason"], "analysis_unavailable")
+        self.assertEqual(item["summary"], "")
+        self.assertEqual(item["rich_content"], "")
+
+    def test_policy_violation_downgrade_purges_description_from_html_and_daily_json(self):
+        source_policy = make_source_policy(content_usage_mode="feed_summary")
+        effective_mode, reason = dj.compute_effective_content_usage_mode(source_policy, "paid_verified")
+        content_policy = dj.build_item_content_policy(
+            "test_source", "feed_summary", effective_mode, reason
+        )
+        verbatim_text = self.MARKER + " " + ("x" * 60)
+        item, _ = make_item(content_policy, summary=verbatim_text, raw_summary=verbatim_text)
+        response = dict(VALID_ANALYSIS_RESPONSE)
+        response["summary"] = verbatim_text
+        items, call_count = run_enrich_with_ai([(item, response)])
+        self.assertEqual(call_count, 1)
+        self.assertEqual(items[0]["content_policy"]["downgrade_reason"], "verbatim_long_match")
+        self.assertEqual(items[0]["summary"], "")
+        self.assertEqual(items[0]["raw_summary"], "")
+        html = fetch.build_html(items)
+        self.assertNotIn(self.MARKER, html)
+        items[0]["facts"] = {"cves": []}
+        entry = dj.build_article_entry(
+            items[0],
+            [make_source_def("test_source", "Test Source", content_usage_mode="feed_summary")],
+            "gemini-2.5-flash",
+            datetime.datetime(2026, 7, 30, 7, 0, tzinfo=dj.JST),
+        )
+        entry_json = json.dumps(entry, ensure_ascii=False)
+        self.assertNotIn(self.MARKER, entry_json)
+        self.assertIsNone(entry["raw_excerpt"])
+
+    def test_structured_open_fallback_still_shows_raw_summary_without_analysis(self):
+        content_policy = dj.build_item_content_policy(
+            "test_source", "structured_open", "structured_open", None
+        )
+        item = {
+            "source": "Test Source", "lang": "en", "link": "https://example.com/a",
+            "title": "t", "raw_title": "t", "summary": self.MARKER, "date": None,
+            "facts": {"cves": []}, "content_policy": content_policy,
+        }
+        html = fetch.build_html([item])
+        self.assertIn(self.MARKER, html)
+
+    def test_marker_never_appears_in_brief_for_downgraded_item(self):
+        item = self._feed_summary_or_limited_item("feed_summary", "test_source")
+        run_enrich_with_ai_with_gemini_failure(item)
+        brief = fetch.build_todays_brief([item])
+        self.assertNotIn(self.MARKER, json.dumps(brief, ensure_ascii=False))
+        self.assertEqual(brief["status"], "not_attempted")
 
 
 class V1ArchiveBackwardCompatibilityTest(unittest.TestCase):

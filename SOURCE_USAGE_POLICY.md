@@ -227,6 +227,8 @@ Gemini APIの公式Terms(https://ai.google.dev/gemini-api/terms)より:
 | `metadata_only`分類の2source | source name、original title、original URLのみ。AIによる要約・評価を行っていない旨を明示する。 |
 | `disabled_legal_review`分類の4source | 非公開のため表示なし。 |
 
+**実装状況(BL-032、Draft・ユーザー受入前。10章参照):** 上表は監査上の要件記述であり、UI文言そのものではない。`fetch.py`の`render_structured_open_attribution_html()`が、`fsa`/`nist`/`ncsc`/`cisa_kev`/`nist_nvd`のsource_idごとに実際の表示(実URL・実日付・実免責文)を組み立てる(監査記述である`attribution_requirement`列の文字列をそのままUI文言として表示しない)。`fsa`の「利用日」はdigest生成日(JST、YYYY-MM-DD)を正本とする。`ncsc`のOGL v3リンクは`https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/`を参照し、`safe_url()`でスキーム検証したうえでのみリンク化する。この5 source以外のstructured_open source_idが将来追加された場合、対応する表示が実装されるまでattribution_okはfalseとなり(7章参照)、`missing_attribution`としてmetadata-only相当へ自動downgradeされる。
+
 ---
 
 ## 7. Output-similarity and quotation controls (BL-032必須要件・Draft実装済み、ユーザー受入前。10章参照)

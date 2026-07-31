@@ -311,6 +311,7 @@ DOWNGRADE_REASONS = (
     "missing_attribution",
     "forbidden_publisher_text_persistence",
     "invalid_mode_analysis_combination",
+    "analysis_unavailable",
 )
 
 # BL-032: 出力fieldごとの文字数上限(一元管理、他ファイルへ複製しない)。

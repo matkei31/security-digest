@@ -3439,8 +3439,74 @@ KEV非掲載自体は根拠にしない）
     return {"analysis": None, "status": "failed", "error_type": "unknown", "http_status": None}
 
 
+def _attribution_is_available(item, content_policy):
+    """BL-032: attribution_okは、記事URL・原題の有無だけでなく、そのmode/
+    sourceに必要なattribution構成が実際に生成可能かも検証する
+    (missing_attributionの実効性を高める)。structured_openは、
+    render_structured_open_attribution_html()が実際の表示を持つ既知の
+    source_id(STRUCTURED_OPEN_ATTRIBUTION_SOURCE_IDS)の場合のみtrueとする。
+    他modeは固定文言テンプレートが常に生成できるため、従来どおりlink・原題の
+    有無のみで判定する。
+    """
+    if not (bool(item.get("link")) and bool(item.get("raw_title") or item.get("title"))):
+        return False
+    mode = content_policy.get("effective_mode") if content_policy else None
+    if mode == "structured_open":
+        return content_policy.get("source_id") in STRUCTURED_OPEN_ATTRIBUTION_SOURCE_IDS
+    return True
+
+
+def purge_publisher_text_for_ineligible_items(items):
+    """BL-032: 真のmetadata_only source、またはGemini data-use gate未充足に
+    より収集時点で既にmetadata-only相当(ai_eligible=False)なitemから、
+    publisher由来description(summary)とrich_contentを直ちに破棄する。
+    is_cyber_relevant(関連性フィルタ)がcollect_recent内で既に完了した後、
+    raw_title/raw_summaryスナップショットより前に呼ぶ想定(raw_summaryへ
+    複製させないため)。ai_eligible=Trueのitem、content_policyが無いitemは
+    変更しない。
+    """
+    for item in items:
+        content_policy = item.get("content_policy")
+        if content_policy is not None and not content_policy.get("ai_eligible", True):
+            item["summary"] = ""
+            item["rich_content"] = ""
+
+
+def _downgrade_to_metadata_only_and_purge(item, content_policy, reason):
+    """BL-032: policy違反・Gemini未実施・Gemini失敗のいずれかにより、記事を
+    metadata-only相当へ即時downgradeする。同時にpublisher由来description
+    (summary/raw_summary)とrich_contentをitemから直ちに破棄し、この後の
+    daily JSON構築・HTML生成のいずれにも渡さない(Gemini呼出し中に使った
+    ローカル変数body_textは、この時点では既に呼出しを終えているため無関係)。
+    """
+    content_policy["effective_mode"] = "metadata_only"
+    content_policy["ai_eligible"] = False
+    content_policy["downgrade_reason"] = reason
+    item["content_policy"] = content_policy
+    item["summary"] = ""
+    item["raw_summary"] = ""
+    item["rich_content"] = ""
+
+
 def enrich_with_ai(items, analysis_date=None):
     if not os.environ.get("GEMINI_API_KEY"):
+        # BL-032: APIキー未設定でGemini自体を一切呼ばない場合でも、
+        # feed_summary/limited_feed_analysisがGemini未試行のまま
+        # publisher由来descriptionを保持し続けないよう、この経路でも
+        # metadata-only相当へdowngradeし該当テキストを破棄する。
+        # metadata_only(既にai_eligible=False)・structured_openはこの
+        # 経路で変更しない。
+        for item in items:
+            content_policy = item.get("content_policy")
+            if (
+                content_policy is not None
+                and content_policy.get("ai_eligible", True)
+                and content_policy.get("effective_mode")
+                in ("feed_summary", "limited_feed_analysis")
+            ):
+                _downgrade_to_metadata_only_and_purge(
+                    item, content_policy, "analysis_unavailable"
+                )
         return items
 
     # Ticket 15a: analysis_dateはrun内で1回だけ決定し、全記事へ同一値を渡す
@@ -3544,6 +3610,21 @@ def enrich_with_ai(items, analysis_date=None):
         result = gemini_analyze(text)
         analysis = result["analysis"]
 
+        # BL-032: feed_summary/limited_feed_analysisでGeminiが失敗・未試行
+        # (analysis=None)だった場合、既存のraw_summary表示fallbackへ進めず
+        # metadata-only相当へdowngradeする。既存の共通fallback(raw_summary
+        # の先頭120文字表示)はstructured_openのみに残す(要件5)。
+        if (
+            analysis is None
+            and content_policy is not None
+            and effective_mode in ("feed_summary", "limited_feed_analysis")
+        ):
+            _downgrade_to_metadata_only_and_purge(
+                item, content_policy, "analysis_unavailable"
+            )
+            time.sleep(15)
+            continue
+
         # BL-032: limited_feed_analysisでは原見出しの日本語翻訳タイトルを
         # 公開しない。既存の共通ARTICLE promptはtitle_jaを必須項目のまま
         # 生成するため、公開・保存前にこの分類でだけ機械的に無効化する
@@ -3554,9 +3635,7 @@ def enrich_with_ai(items, analysis_date=None):
             analysis["title_ja"] = None
 
         if analysis is not None and content_policy is not None:
-            attribution_ok = bool(item.get("link")) and bool(
-                item.get("raw_title") or item.get("title")
-            )
+            attribution_ok = _attribution_is_available(item, content_policy)
             verbatim_source_text = (
                 body_text if effective_mode in ("feed_summary", "limited_feed_analysis") else ""
             )
@@ -3567,10 +3646,9 @@ def enrich_with_ai(items, analysis_date=None):
                 # policy違反: この記事の分析は公開せず、metadata-only相当へ
                 # 即時downgradeする。ai_analysis/ai_analysis_metaは設定しない
                 # (daily_json側でnot_attempted相当として扱われる)。
-                content_policy["effective_mode"] = "metadata_only"
-                content_policy["ai_eligible"] = False
-                content_policy["downgrade_reason"] = violation_reason
-                item["content_policy"] = content_policy
+                _downgrade_to_metadata_only_and_purge(
+                    item, content_policy, violation_reason
+                )
                 time.sleep(15)
                 continue
 
@@ -4655,9 +4733,7 @@ def render_vulnerability_facts_html(facts):
       </section>"""
 
 
-# BL-032: mode別のattribution文言(SOURCE_USAGE_POLICY.md 6章)。structured_open
-# 分類はsource定義のpolicy.attribution_requirementをそのまま使い、この定数へ
-# 複製しない。
+# BL-032: mode別のattribution文言(SOURCE_USAGE_POLICY.md 6章)。
 _FEED_SUMMARY_ATTRIBUTION_TEXT = (
     "Monomi DigestによるAI要約・分析です。要約・分析には正確性の限界があります。"
 )
@@ -4667,8 +4743,54 @@ _LIMITED_FEED_ANALYSIS_ATTRIBUTION_TEXT = (
 )
 _METADATA_ONLY_ATTRIBUTION_TEXT = "AIによる要約・評価は行っていません。"
 
+# BL-032: NCSCコンテンツが依拠するOpen Government Licence v3のcanonical URL。
+# source_definitions.jsonのattribution_url(現在未設定)に依存せず、この定数を
+# 正本として一元管理する(SOURCE_USAGE_POLICY.md 6章の該当記述と一致させる)。
+_NCSC_OGL_V3_URL = "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
 
-def render_source_attribution_html(item):
+# BL-032: structured_open分類のうち、実際のattribution表示を組み立てられる
+# source_idの集合。source定義のpolicy.attribution_requirement(監査上の
+# 説明文)をそのままUI文言として表示せず、source_id別に実際の表示内容を
+# 組み立てる(6章の要件を実装として反映する)。この集合に無いsource_idは
+# 表示を生成できない(attribution_okの検証対象、7章参照)。
+STRUCTURED_OPEN_ATTRIBUTION_SOURCE_IDS = frozenset(
+    {"fsa", "nist", "ncsc", "cisa_kev", "nist_nvd"}
+)
+
+
+def render_structured_open_attribution_html(source_id, generated_at_ymd):
+    """structured_open分類のsource_id別に、実際のattribution表示(安全に
+    escape済みのHTML断片)を組み立てる。原ページURLは既存の元記事リンク
+    (article-source-link)で充足するため、ここでは繰り返さない。
+    generated_at_ymdは、Monomi Digestがこのcontentを利用した日付(digest
+    生成日、JST、YYYY-MM-DD形式)の正本(SOURCE_USAGE_POLICY.md 6章参照)。
+    未知のsource_idの場合は空文字列を返す。
+    """
+    if source_id == "fsa":
+        date_part = f"利用日: {esc(generated_at_ymd)}" if generated_at_ymd else ""
+        return "金融庁ウェブサイトをもとにMonomi Digestが加工。" + date_part
+    if source_id == "nist":
+        return "出典: NIST"
+    if source_id == "ncsc":
+        safe_ogl_url = safe_url(_NCSC_OGL_V3_URL)
+        if safe_ogl_url:
+            ogl_link = (
+                f'<a href="{esc(safe_ogl_url)}" target="_blank" '
+                'rel="noopener noreferrer">Open Government Licence v3.0</a>'
+            )
+        else:
+            ogl_link = "Open Government Licence v3.0"
+        return f"出典: NCSC。{ogl_link}のもとで提供される情報を含みます。"
+    if source_id == "cisa_kev":
+        return "出典: CISA Known Exploited Vulnerabilities (KEV) Catalog。CC0 1.0 Universal(パブリックドメイン)。"
+    if source_id == "nist_nvd":
+        return (
+            "This product uses the NVD API but is not endorsed or certified by the NVD."
+        )
+    return ""
+
+
+def render_source_attribution_html(item, generated_at_ymd=""):
     """記事カードへ表示するsource固有のattribution note(SOURCE_USAGE_POLICY.md
     6章)をmode別に組み立てる。content_policyが無い(collect_recentを経由しない
     古い呼び出し等)場合は空文字列を返す(表示なし、既存挙動を変えない)。
@@ -4678,8 +4800,12 @@ def render_source_attribution_html(item):
         return ""
     mode = content_policy.get("effective_mode") or content_policy.get("configured_mode")
     if mode == "structured_open":
-        source_def = get_source_definition(SOURCE_DEFINITIONS, content_policy.get("source_id"))
-        text = source_def["policy"].get("attribution_requirement", "") if source_def else ""
+        html_fragment = render_structured_open_attribution_html(
+            content_policy.get("source_id"), generated_at_ymd
+        )
+        if not html_fragment:
+            return ""
+        return f'\n      <p class="article-attribution">{html_fragment}</p>'
     elif mode == "feed_summary":
         text = _FEED_SUMMARY_ATTRIBUTION_TEXT
     elif mode == "limited_feed_analysis":
@@ -4710,6 +4836,17 @@ def build_html(
         date_str = normalize_datetime_for_display(date_source).strftime("%Y年%m月%d日 %H:%M")
     else:
         date_str = clean_archive_text(date_source)
+    # BL-032: structured_open(fsa)のattribution表示に使う「利用日」の正本は
+    # digest生成日(JST、YYYY-MM-DD)とする(SOURCE_USAGE_POLICY.md 6章参照)。
+    # date_sourceがdatetimeとして解釈できない場合(legacy Archive再生成等)は
+    # 空文字列とし、日付欄自体を省略する(誤った日付を表示しない)。
+    normalized_generated_at = (
+        normalize_datetime_for_display(date_source)
+        if isinstance(date_source, datetime.datetime) else None
+    )
+    generated_at_ymd = (
+        normalized_generated_at.strftime("%Y-%m-%d") if normalized_generated_at else ""
+    )
     dashboard_html = render_dashboard_html(items)
     display_items = sort_items_for_display(items)
     article_refs = {}
@@ -4790,7 +4927,7 @@ def build_html(
         analysis = normalize_display_analysis(item.get("ai_analysis"))
         anchor_id = article_anchor_id(display_index)
         facts_html = render_vulnerability_facts_html(item.get("facts"))
-        attribution_html = render_source_attribution_html(item)
+        attribution_html = render_source_attribution_html(item, generated_at_ymd)
 
         # sourceが上流で必須であっても、date_labelが欠ける場合(date未設定)に
         # 「source ・」のような不自然な末尾区切りを生成しないよう、空でない値
@@ -4910,8 +5047,20 @@ def build_html(
         else:
             assessment_html = ""
             tags_html = ""
+            # BL-032: raw_summary(publisher由来description)の表示fallbackは
+            # structured_open(bounded raw excerptの保存・表示が許可されている
+            # mode)、またはcontent_policy自体が無い legacy v1 itemのみに残す。
+            # feed_summary/limited_feed_analysisはenrich_with_ai側で有効な
+            # analysisが無ければ既にmetadata-only相当(ai_eligible=False)へ
+            # downgrade済みのはずであり、この分岐へは到達しないが、念のため
+            # 二重に保証する。
+            item_content_policy = item.get("content_policy")
+            allow_raw_summary_fallback = (
+                item_content_policy is None
+                or item_content_policy.get("effective_mode") == "structured_open"
+            )
             max_len = 120
-            summary = raw_summary[:max_len]
+            summary = raw_summary[:max_len] if allow_raw_summary_fallback else ""
             raw_summary_html = (
                 f'<p class="summary">{esc(summary)}'
                 f'{"…" if len(raw_summary) > max_len else ""}</p>'
@@ -5477,6 +5626,13 @@ def main():
     print("フィードを収集中...")
     items = collect_recent(kev_catalog_memo=kev_catalog_memo)
     print(f"  {len(items)} 件取得")
+
+    # BL-032: 真のmetadata_only source、またはGemini data-use gate未充足に
+    # よりこの収集時点で既にmetadata-only相当へdowngrade済みのitemは、
+    # is_cyber_relevant(関連性フィルタ、collect_recent内で既に完了済み)より
+    # 後、raw_summaryスナップショットより前にpublisher由来description・
+    # rich contentを破棄する(raw_summaryへ複製させない)。
+    purge_publisher_text_for_ineligible_items(items)
 
     # 日次JSON(Ticket 3)向けに、表示用に上書きされる前の原文タイトル・概要を
     # 収集直後のこの時点でスナップショットしておく。
