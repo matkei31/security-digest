@@ -309,11 +309,13 @@ class Bl007ClosureRecordTest(unittest.TestCase):
 
     def test_status_latest_published_daily_json_reflects_the_latest_run(self):
         # This row tracks whichever ordinary production run is most recent;
-        # it has since advanced past the 2026-07-29 run this test originally
-        # checked, to the 2026-07-30 08:00 JST run recorded by BL-031.
+        # it has since advanced past the 2026-07-30 08:00 JST run recorded by
+        # BL-031, to the 2026-07-31 08:07 JST run recorded by BL-032's
+        # post-merge closeout (this run predates the BL-032 merge itself, so
+        # it is still schema v1; see the separate schema rows below it).
         row = self._section(self.status, "| Latest published daily JSON |", "\n|")
         self.assertIn("today-brief-extractive-v2", row)
-        self.assertIn("2026-07-30 08:00 JST", row)
+        self.assertIn("2026-07-31 08:07 JST", row)
         self.assertIn("9記事", row)
 
     def test_bl007_distinguishes_its_own_work_from_the_scheduled_run(self):

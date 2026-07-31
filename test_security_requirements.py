@@ -1206,11 +1206,14 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
             "## 5. Recently completed work", 1
         )[0]
         self.assertNotIn("BL-031", active)
-        self.assertIn("BL-032", active)
+        # BL-032's PR #69 merged during post-merge closeout, so it moved out
+        # of Active work into Recently completed alongside BL-031.
+        self.assertNotIn("BL-032", active)
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
         self.assertIn("BL-031", recently_completed)
+        self.assertIn("BL-032", recently_completed)
 
     def test_bl031_gemini_billing_confirmation_removed_from_backlog_residual_work(self):
         bl031 = self.backlog.split("## BL-031", 1)[1].split("\n## ", 1)[0]
