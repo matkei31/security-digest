@@ -1058,19 +1058,65 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
         self.assertIn("9757ae98c2f5ef9f13da667be5677d870a6e2cd1", bl030)
         self.assertIn("30428514818", bl030)
 
-    def test_status_active_work_lists_bl032_and_bl031_is_recently_completed(self):
-        # BL-031の受入・merge後、BL-032がActive workへ追加された。BL-031と
-        # BL-030がActive workへ戻っていないことと、両方がRecently completed
-        # workに残っていることだけを検証する。
+    def test_status_active_work_is_clear_of_bl030_bl031_bl032(self):
+        # BL-032のPR #69 merge後、Active workからBL-032も外れた。BL-030・
+        # BL-031・BL-032はいずれもActive workへ戻っておらず、すべて
+        # Recently completed workに残っていることだけを検証する。
         active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
-        self.assertIn("BL-032", active)
         self.assertNotIn("BL-030", active)
         self.assertNotIn("BL-031", active)
+        self.assertNotIn("BL-032", active)
         recently_completed = self._section(
             self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
         )
         self.assertIn("BL-030", recently_completed)
         self.assertIn("BL-031", recently_completed)
+        self.assertIn("BL-032", recently_completed)
+
+    def test_status_never_describes_bl032_as_currently_pending(self):
+        # Scoped to the specific current-state locations that once described
+        # BL-032 as Draft/pending merge, not a blanket ban on these phrases
+        # across all of STATUS.md -- "current Active work item",
+        # "要件定義済み／未着手", and "Ready化・merge待ち" are ordinary status
+        # vocabulary that a future, unrelated ticket may legitimately use
+        # while it is genuinely active and pending.
+        active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
+        self.assertNotIn("BL-032", active)
+
+        recently_completed = self._section(
+            self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
+        )
+        self.assertIn("BL-032", recently_completed)
+        bl032 = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-032 ")
+        )
+        self.assertTrue(
+            "PR #69" in bl032 or "cd5e6ec" in bl032,
+            "BL-032's Recently completed entry must record PR #69 or the merge commit",
+        )
+
+        next_candidates = self._section(self.status, "## 7. Next candidates", "\n## 8. ")
+        bl032_anchor = (
+            "[BL-032]"
+            "(BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)"
+        )
+        self.assertIn(bl032_anchor, next_candidates)
+        # BL-032-specific: guard against BL-032 itself being reintroduced
+        # here as the current Active work item, without banning that same
+        # ordinary phrase for some other, unrelated ticket in this section.
+        self.assertNotIn(f"{bl032_anchor} is the current Active work item", next_candidates)
+        self.assertIn(f"and {bl032_anchor} are all complete", next_candidates)
+
+        bl030 = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-030 ")
+        )
+        self.assertNotIn(
+            "is registered and is the current Active work item, 要件定義済み／未着手",
+            bl030,
+        )
+        self.assertIn("BL-031", bl030)
+        self.assertIn("BL-032", bl030)
+        self.assertIn("are both completed, approved, and merged", bl030)
 
     def test_sd029_is_unique(self):
         headings = re.findall(r"^## (SD-\d{3})\b", self.decisions, flags=re.MULTILINE)

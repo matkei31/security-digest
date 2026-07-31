@@ -1206,11 +1206,14 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
             "## 5. Recently completed work", 1
         )[0]
         self.assertNotIn("BL-031", active)
-        self.assertIn("BL-032", active)
+        # BL-032's PR #69 merged during post-merge closeout, so it moved out
+        # of Active work into Recently completed alongside BL-031.
+        self.assertNotIn("BL-032", active)
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
         self.assertIn("BL-031", recently_completed)
+        self.assertIn("BL-032", recently_completed)
 
     def test_bl031_gemini_billing_confirmation_removed_from_backlog_residual_work(self):
         bl031 = self.backlog.split("## BL-031", 1)[1].split("\n## ", 1)[0]
@@ -1614,9 +1617,17 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
         self.assertNotIn("follow-up candidates BL-031", bl030)
         self.assertIn("BL-031", bl030)
         self.assertIn("completed, approved, and merged", bl030)
+        # BL-032 merged during its own post-merge closeout, so this line no
+        # longer describes it with the specific old phrase below. This checks
+        # that exact old phrase, not the words "registered"/"Active work
+        # item" in general, which a future unrelated ticket may legitimately
+        # use elsewhere in this same BL-030 line.
         self.assertIn("BL-032", bl030)
-        self.assertIn("registered", bl030)
-        self.assertIn("Active work item", bl030)
+        self.assertNotIn(
+            "is registered and is the current Active work item, 要件定義済み／未着手",
+            bl030,
+        )
+        self.assertIn("are both completed, approved, and merged", bl030)
         self.assertIn("BL-009", bl030)
         self.assertIn("separate, unstarted ticket", bl030)
         self.assertIn("None of these is BL-030 residual work", bl030)
