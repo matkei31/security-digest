@@ -312,7 +312,30 @@ DOWNGRADE_REASONS = (
     "forbidden_publisher_text_persistence",
     "invalid_mode_analysis_combination",
     "analysis_unavailable",
+    "archive_attribution_snapshot_invalid",
 )
+
+# BL-032: structured_open分類のうち、attribution表示にURLを要する(=
+# source_definitions.jsonの変更に伴い将来無効化し得る)source_idの集合。
+# この集合に属するsourceは、schema v2 daily JSON生成時に実際に使用可能
+# だったURLをpolicy.attribution_urlへsnapshotとして保存し、Archive再生成が
+# 現在のsource_definitions.jsonではなくこのsnapshotだけを参照することで、
+# source policyの後日変更に関わらず決定論的に同じ結果を再現できるようにする。
+STRUCTURED_OPEN_ATTRIBUTION_URL_SOURCE_IDS = frozenset({"ncsc"})
+
+
+def _is_safe_http_scheme_url(url):
+    """URLがhttp(s)スキームの安全な文字列かどうかを検証する(fetch.safe_url()
+    と同じ規則: 前後の空白のみ許容し、ASCII制御文字を含まず、http(s)://で
+    始まる)。daily_json.pyはfetch.pyに依存しないため、検証ロジックを
+    ここで独立して持つ(fetch.safe_url()とロジックを共有しない)。
+    """
+    if not isinstance(url, str):
+        return False
+    stripped = url.strip()
+    if re.search(r"[\x00-\x20]", stripped):
+        return False
+    return stripped.lower().startswith(("http://", "https://"))
 
 # BL-032: 出力fieldごとの文字数上限(一元管理、他ファイルへ複製しない)。
 # summary/financial_impact(200文字)・reason(150文字)・category_reason(100文字)は
@@ -577,6 +600,24 @@ def build_article_entry(item, source_definitions, model, fetched_at):
 
     rule_flags = compute_rule_flags(source_meta["source_id"])
 
+    # BL-032: structured_openのうちURL依存attribution(現状ncscのみ)を
+    # 要するsourceについて、生成時に実際に使用可能だった(source_definitions
+    # 側で設定済み、かつ安全なhttp(s) URL)attribution_urlだけをsnapshotとして
+    # 保存する。Archive再生成は、このsnapshotだけを参照し、将来
+    # source_definitions.jsonが変更されても保存済み結果を変えない
+    # (digest_items_for_html/render_structured_open_attribution_html参照)。
+    # 対象外のmode/source、またはURLが無効・欠落の場合はNoneのままとする
+    # (Noneを保存すること自体は許容され、Archive再生成側がfail-closedに扱う)。
+    attribution_url_snapshot = None
+    if (
+        content_policy["ai_eligible"]
+        and content_policy["effective_mode"] == "structured_open"
+        and source_meta["source_id"] in STRUCTURED_OPEN_ATTRIBUTION_URL_SOURCE_IDS
+    ):
+        candidate_url = source_policy.get("attribution_url")
+        if _is_safe_http_scheme_url(candidate_url):
+            attribution_url_snapshot = candidate_url
+
     return {
         "id": article_id,
         "source_id": source_meta["source_id"],
@@ -604,6 +645,7 @@ def build_article_entry(item, source_definitions, model, fetched_at):
             "effective_mode": content_policy["effective_mode"],
             "ai_eligible": content_policy["ai_eligible"],
             "downgrade_reason": content_policy.get("downgrade_reason"),
+            "attribution_url": attribution_url_snapshot,
         },
 
         "analysis": build_analysis_section(item, model),
@@ -925,6 +967,31 @@ def validate_daily_digest(digest):
                 raise DailyJsonError(
                     f"items[{i}] (id={item_id!r}): policy.downgrade_reasonが不正です: "
                     f"{downgrade_reason!r}"
+                )
+
+            # BL-032: policy.attribution_urlは、Archive再生成時にsource_definitions
+            # の後日変更へ左右されないための生成時snapshotである。全v2 entryで
+            # None|strのみ許容し(型不正は暗黙のdefaultで補わない)、URL依存
+            # attribution(現状ncscのみ)を要するsourceでai_eligible=trueの
+            # 場合は、安全なhttp(s) URLとして存在することを必須とする(欠落・
+            # 不正なsnapshotのまま保存することを許さない)。
+            attribution_url = policy.get("attribution_url")
+            if attribution_url is not None and not isinstance(attribution_url, str):
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): policy.attribution_urlが"
+                    f"None/strではありません: {attribution_url!r}"
+                )
+            if (
+                policy.get("ai_eligible")
+                and policy.get("effective_mode") == "structured_open"
+                and item.get("source_id") in STRUCTURED_OPEN_ATTRIBUTION_URL_SOURCE_IDS
+                and not _is_safe_http_scheme_url(attribution_url)
+            ):
+                raise DailyJsonError(
+                    f"items[{i}] (id={item_id!r}): source_id="
+                    f"{item.get('source_id')!r}はpolicy.attribution_urlに安全な"
+                    f"http(s) URLのsnapshotが必要ですが、欠落または不正です: "
+                    f"{attribution_url!r}"
                 )
 
         analysis = item.get("analysis")

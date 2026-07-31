@@ -2041,7 +2041,29 @@ def digest_items_for_html(digest):
                 "effective_mode": policy.get("effective_mode"),
                 "ai_eligible": policy.get("ai_eligible", True),
                 "downgrade_reason": policy.get("downgrade_reason"),
+                # BL-032: 生成時に保存されたattribution_url snapshot(現状ncsc
+                # のみが使用)をそのまま復元する。render_source_attribution_html
+                # は、このキーが存在する場合、現在のsource_definitions.jsonを
+                # 参照せずこのsnapshotだけを使う(source policyの後日変更に
+                # 関わらず、既存Archiveの再生成結果を変えないため)。
+                "attribution_url": policy.get("attribution_url"),
             }
+            # BL-032: structured_openのうちURL依存attribution(現状ncscのみ)を
+            # 要するsourceで、保存されたsnapshotが欠落・不正な場合は、記事
+            # カードだけでなくDashboard集計・優先確認・Today's Brief(重要・
+            # 優先事項の再構成)を含めてmetadata-only相当へfail-closedに
+            # downgradeする(通常のgenerate_and_save_daily_digestはvalidate_
+            # daily_digest()でこの状態を事前に拒否するため、ここは改変・
+            # 破損したdaily JSONに対する防御的backstop)。
+            if (
+                content_policy["ai_eligible"]
+                and content_policy["effective_mode"] == "structured_open"
+                and content_policy["source_id"]
+                in daily_json.STRUCTURED_OPEN_ATTRIBUTION_URL_SOURCE_IDS
+                and not safe_url(content_policy["attribution_url"] or "")
+            ):
+                content_policy["ai_eligible"] = False
+                content_policy["downgrade_reason"] = "archive_attribution_snapshot_invalid"
 
         items.append({
             "id": entry.get("id"),
@@ -2113,11 +2135,16 @@ def important_item_identity(item):
 
 
 def select_important_items(items):
-    """本日の重要情報へ表示する記事を抽出し、指定優先順で安定ソートする。"""
+    """本日の重要情報へ表示する記事を抽出し、指定優先順で安定ソートする。
+    BL-032: policy.ai_eligible=falseの記事は、ai_analysisが(Archive再生成時の
+    fail-closed downgrade等により)残っていても対象外とする。
+    """
     selected = []
     seen = set()
 
     for index, item in enumerate(items):
+        if not item_is_ai_eligible(item):
+            continue
         analysis = normalize_display_analysis(item.get("ai_analysis"))
         if not analysis:
             continue
@@ -3700,10 +3727,21 @@ def is_article_evaluated(item):
     (compute_brief_trusted_context)の両方が、この関数だけを判定基準として共用する
     (二重実装・判定基準のズレを避ける)。
 
-    判定済み条件: analysis.statusがsuccess/fallback、ai_analysisが有効なdict、
-    importance/urgencyが両方とも既存の許容値のいずれか。いずれか一方でも
-    欠落・不正なら記事全体を未判定として扱う(fallbackでも両軸有効なら判定済み)。
+    判定済み条件: policy.ai_eligibleがtrue(またはcontent_policy自体が無い
+    legacy item)、analysis.statusがsuccess/fallback、ai_analysisが有効な
+    dict、importance/urgencyが両方とも既存の許容値のいずれか。いずれか一方
+    でも欠落・不正なら記事全体を未判定として扱う(fallbackでも両軸有効なら
+    判定済み)。
+
+    BL-032: ai_eligible=falseの記事は、ai_analysis/ai_analysis_metaが
+    (Archive再生成時のfail-closed downgrade等により)残っていても判定済み
+    として扱わない。これによりis_article_evaluated()を使う全ての派生表示
+    (select_priority_items・select_brief_input_items・compute_brief_
+    trusted_context)が、記事カード表示だけでなく一貫してmetadata-only相当
+    を除外する。
     """
+    if not item_is_ai_eligible(item):
+        return False
     meta = item.get("ai_analysis_meta") or {}
     if meta.get("status") not in ("success", "fallback"):
         return False
@@ -3723,6 +3761,20 @@ def select_brief_input_items(items):
     (記事本文・raw_excerpt・Geminiの生レスポンス・前日以前の記事は使わない)。
     """
     return [item for item in items if is_article_evaluated(item)]
+
+
+def select_brief_eligible_items(items):
+    """BL-032完了条件11: Today's Brief生成が対象とする記事集合を一元的に
+    決定する共通helper。content_policyが無いlegacy itemは従来どおり対象とし
+    (item_is_ai_eligible()のdefault-True挙動)、content_policy.ai_eligible=
+    False(metadata-only相当)の記事は、Brief入力・trusted context・状態行・
+    未判定件数・source ID集合・priority item・provenanceのすべてから除外する。
+    compose_extractive_brief()内のこれらの処理は、必ずこの関数が返す同じ
+    filtered集合に対して行う(個別に`is_article_evaluated`等でだけ除外すると、
+    published_total/unclassifiedのような「掲載記事全体」を数える処理が
+    metadata-only相当を誤って含めてしまうため)。
+    """
+    return [item for item in items if item_is_ai_eligible(item)]
 
 
 def compute_brief_temporal_state(urgency_today, urgency_week):
@@ -4448,8 +4500,15 @@ def compose_extractive_brief(items):
 
     戻り値のbriefだけがpublic daily JSON/HTML経路へ進む。provenanceはoffline
     screening・テスト用であり、public projectionには含めない。
+
+    BL-032完了条件11: metadata-only相当(policy.ai_eligible=False)の記事は、
+    select_brief_eligible_items()により、掲載総数のカウント(compute_brief_
+    trusted_contextのpublished_total/unclassifiedを含む)より前の時点で
+    この関数全体から除外する(掲載総数自体にはDashboard側で引き続き含める。
+    ここで除外するのはBriefの入出力のみ)。
     """
-    brief_items = select_brief_input_items(items)
+    eligible_items = select_brief_eligible_items(items)
+    brief_items = select_brief_input_items(eligible_items)
     if not brief_items:
         return {
             "brief": {
@@ -4458,12 +4517,13 @@ def compose_extractive_brief(items):
                 "prompt_version": daily_json.BRIEF_PROMPT_VERSION,
             },
             "provenance": [],
+            "context": compute_brief_trusted_context(eligible_items),
         }
 
-    ctx = compute_brief_trusted_context(items)
-    source_ids = _build_brief_source_ids(items)
+    ctx = compute_brief_trusted_context(eligible_items)
+    source_ids = _build_brief_source_ids(eligible_items)
     valid_source_ids = set(source_ids.values())
-    ordered_items = sort_items_for_display(items)
+    ordered_items = sort_items_for_display(eligible_items)
 
     highlight_candidates = []
     for item in ordered_items:
@@ -4489,7 +4549,7 @@ def compose_extractive_brief(items):
     )
     # BL-029: 「重要・優先事項」は同一記事のsummary/financial_impactペアから
     # select_priority_items()で構成する(build_html()の描画時再構成と同じhelper)。
-    priority_items, discussion_provenance = select_priority_items(items)
+    priority_items, discussion_provenance = select_priority_items(eligible_items)
     discussion_points = [entry["combined_text"] for entry in priority_items]
 
     check_candidates = []
@@ -4577,6 +4637,7 @@ def compose_extractive_brief(items):
         "provenance": (
             highlight_provenance + discussion_provenance + check_provenance
         ),
+        "context": ctx,
     }
 
 
@@ -4589,7 +4650,10 @@ def build_todays_brief(items):
     result = composition["brief"]
 
     if result["status"] == "success":
-        ctx = compute_brief_trusted_context(items)
+        # BL-032: 二重計算によるズレを避けるため、compose_extractive_brief()が
+        # 既にmetadata-only相当除外後のitem集合で算出したcontextをそのまま使う
+        # (ここで生のitemsから再計算しない)。
+        ctx = composition["context"]
         print(
             f"Today's Briefを構成: 概況1件(状態:{ctx['temporal_state']}) / "
             f"ハイライト{len(result['important_highlights'])}件 / "
@@ -4771,50 +4835,71 @@ _STRUCTURED_OPEN_FIXED_TEXT_SOURCE_IDS = frozenset(
 )
 
 
-def _resolve_ncsc_ogl_url():
-    """source_definitions.jsonのncsc.policy.attribution_url(Open Government
-    Licence v3のcanonical URL)を取得し、safe_url()を通過した場合のみ返す。
-    欠落・空・不正schemeの場合はNoneを返す(呼び出し側はNoneを
-    「実際にリンク化できない」と扱い、平文へfallbackして公開を継続せず、
-    missing_attributionとしてmetadata-only相当へdowngradeする)。
+# BL-032: attribution_url_snapshotパラメータの既定値として使うsentinel。
+# 「引数を省略した(=fresh生成・通常のbuild_html呼び出しであり、Archive
+# 再生成のsnapshot復元を経ていない)」ことを、有効な値になり得るNoneと
+# 区別するために使う。
+_ATTRIBUTION_URL_LIVE_LOOKUP = object()
+
+
+def _resolve_ncsc_ogl_url(attribution_url_snapshot=_ATTRIBUTION_URL_LIVE_LOOKUP):
+    """NCSCのOGL v3 URLを解決する。
+
+    attribution_url_snapshotを明示的に渡した場合(Archive再生成時、schema v2
+    daily JSONのpolicy.attribution_urlから復元したsnapshot)は、その値だけを
+    safe_url()で検証して使う――現在のsource_definitions.jsonは一切参照しない。
+    これにより、生成後にsource_definitions.jsonのNCSC設定が変更・削除されても、
+    既存Archiveの再生成結果は生成時点のsnapshotのまま変わらない。
+    引数省略時(fresh生成・通常のbuild_html呼び出し)は、
+    source_definitions.jsonのncsc.policy.attribution_urlを都度ライブ参照する。
+    いずれの経路でも、欠落・空・不正schemeの場合はNoneを返す(呼び出し側は
+    Noneを「実際にリンク化できない」と扱う)。
     """
-    source_def = get_source_definition(SOURCE_DEFINITIONS, "ncsc")
-    attribution_url = source_def["policy"].get("attribution_url") if source_def else None
+    if attribution_url_snapshot is _ATTRIBUTION_URL_LIVE_LOOKUP:
+        source_def = get_source_definition(SOURCE_DEFINITIONS, "ncsc")
+        attribution_url = source_def["policy"].get("attribution_url") if source_def else None
+    else:
+        attribution_url = attribution_url_snapshot
     if not attribution_url:
         return None
     return safe_url(attribution_url)
 
 
-def _can_render_structured_open_attribution(source_id):
+def _can_render_structured_open_attribution(
+    source_id, attribution_url_snapshot=_ATTRIBUTION_URL_LIVE_LOOKUP
+):
     """BL-032: structured_open source_id別に、実際にattribution表示を
     生成できるかどうかをfail-closedで判定する共通helper。
     render_structured_open_attribution_html()と_attribution_is_available()の
     両方が、この関数だけを正本として判定する(判定ロジックの二重定義を避ける)。
     * fsa: 利用日(digest生成日)は常に生成可能。
     * nist/nist_nvd/cisa_kev: 固定文言は常に生成可能。
-    * ncsc: source_definitions.jsonのattribution_urlが存在し、safe_url()を
-      通過する場合のみ生成可能(URLが欠落・空・不正schemeの場合は不可)。
+    * ncsc: attribution_url_snapshot(省略時はsource_definitions.jsonの
+      ライブ値)が存在し、safe_url()を通過する場合のみ生成可能。
     * 上記以外の未知source_idは生成不可。
     """
     if source_id in _STRUCTURED_OPEN_FIXED_TEXT_SOURCE_IDS:
         return True
     if source_id == "ncsc":
-        return _resolve_ncsc_ogl_url() is not None
+        return _resolve_ncsc_ogl_url(attribution_url_snapshot) is not None
     return False
 
 
-def render_structured_open_attribution_html(source_id, generated_at_ymd):
+def render_structured_open_attribution_html(
+    source_id, generated_at_ymd, attribution_url_snapshot=_ATTRIBUTION_URL_LIVE_LOOKUP
+):
     """structured_open分類のsource_id別に、実際のattribution表示(安全に
     escape済みのHTML断片)を組み立てる。原ページURLは既存の元記事リンク
     (article-source-link)で充足するため、ここでは繰り返さない。
     generated_at_ymdは、Monomi Digestがこのcontentを利用した日付(digest
     生成日、JST、YYYY-MM-DD形式)の正本(SOURCE_USAGE_POLICY.md 6章参照)。
+    attribution_url_snapshotはncsc専用(他source_idでは無視される)。
     _can_render_structured_open_attribution()がfalseを返す場合(未知の
     source_id、またはncsc用URLが生成不可の場合)は空文字列を返す
     (リンクなし平文へのfallbackはしない――呼び出し元がattribution_ok経由で
     missing_attribution downgradeへ回す前提)。
     """
-    if not _can_render_structured_open_attribution(source_id):
+    if not _can_render_structured_open_attribution(source_id, attribution_url_snapshot):
         return ""
     if source_id == "fsa":
         date_part = f"利用日: {esc(generated_at_ymd)}" if generated_at_ymd else ""
@@ -4822,7 +4907,7 @@ def render_structured_open_attribution_html(source_id, generated_at_ymd):
     if source_id == "nist":
         return "出典: NIST"
     if source_id == "ncsc":
-        safe_ogl_url = _resolve_ncsc_ogl_url()
+        safe_ogl_url = _resolve_ncsc_ogl_url(attribution_url_snapshot)
         ogl_link = (
             f'<a href="{esc(safe_ogl_url)}" target="_blank" '
             'rel="noopener noreferrer">Open Government Licence v3.0</a>'
@@ -4847,8 +4932,18 @@ def render_source_attribution_html(item, generated_at_ymd=""):
         return ""
     mode = content_policy.get("effective_mode") or content_policy.get("configured_mode")
     if mode == "structured_open":
+        # BL-032: content_policyに"attribution_url"キーが存在する場合
+        # (digest_items_for_html()がArchive再生成用に復元したsnapshot、
+        # ncsc以外ではNoneでも可)は、そのsnapshot値だけを使い、現在の
+        # source_definitions.jsonは参照しない。キー自体が無い場合(fresh
+        # 生成・通常のbuild_html呼び出し)は、従来どおりライブ参照する。
+        attribution_url_snapshot = (
+            content_policy["attribution_url"]
+            if "attribution_url" in content_policy
+            else _ATTRIBUTION_URL_LIVE_LOOKUP
+        )
         html_fragment = render_structured_open_attribution_html(
-            content_policy.get("source_id"), generated_at_ymd
+            content_policy.get("source_id"), generated_at_ymd, attribution_url_snapshot
         )
         if not html_fragment:
             return ""

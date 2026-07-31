@@ -104,7 +104,7 @@ Monomi Digestの取得元は、次の5つのcontent usage modeのいずれかへ
 
 **表示(BL-032実装状況、Draft・ユーザー受入前。10章参照):**
 - 通常の記事一覧(AI評価済み記事)へ公開日時順で混在させ、AI分析カードとは異なる簡易リンクカード(原題・取得元・公開日時・原記事リンクのみ、description・AI翻訳・importance・urgency・category・tags・financial_impact・recommended_actions・factsを表示しない)として表示する実装済み。
-- 掲載総数には含めるが、Today's Brief、importance／urgency／category集計、AI成功率の分母には含めず、「未判定」にも入れない実装済み。意図的なpolicy非評価(この区分に属すること)と、AI処理の失敗(`fallback`/`failed`)を混同しない。
+- 掲載総数には含めるが、Today's Brief、importance／urgency／category集計、AI成功率の分母には含めず、「未判定」にも入れない実装済み。意図的なpolicy非評価(この区分に属すること)と、AI処理の失敗(`fallback`/`failed`)を混同しない。`fetch.py`の`select_brief_eligible_items()`が、Brief生成が対象とする記事集合(入力・trusted context・状態行・未判定件数・source ID・優先事項・provenance)を一元的に決定する共通helperとして実装済みであり、compose_extractive_brief()内のこれらの処理はすべて同じfiltered集合を参照する。
 - AI評価済み記事と混同しないUI上の区別を実装済み。
 
 ### E. `disabled_legal_review`
@@ -228,6 +228,8 @@ Gemini APIの公式Terms(https://ai.google.dev/gemini-api/terms)より:
 | `disabled_legal_review`分類の4source | 非公開のため表示なし。 |
 
 **実装状況(BL-032、Draft・ユーザー受入前。10章参照):** 上表は監査上の要件記述であり、UI文言そのものではない。`fetch.py`の`render_structured_open_attribution_html()`が、`fsa`/`nist`/`ncsc`/`cisa_kev`/`nist_nvd`のsource_idごとに実際の表示(実URL・実日付・実免責文)を組み立てる(監査記述である`attribution_requirement`列の文字列をそのままUI文言として表示しない)。`fsa`の「利用日」はdigest生成日(JST、YYYY-MM-DD)を正本とする。`ncsc`のOGL v3リンクは、`source_definitions.json`の`ncsc.policy.attribution_url`(`https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/`)を正本とし、`safe_url()`でスキーム検証を通過した場合にのみリンク化する。この可否判定は`fetch.py`の`_can_render_structured_open_attribution()`が一元的に行い、`attribution_ok`(実装状況、7章参照)とHTML描画の両方がこの1つの関数だけを参照する。`attribution_url`が欠落・空・不正schemeの場合、リンクなしの平文へfallbackして公開を継続することはせず、`missing_attribution`としてmetadata-only相当へ自動downgradeする(fail-closed)。`fsa`/`nist`/`nist_nvd`/`cisa_kev`は固定文言のみで完結するため常に生成可能である。この5 source以外のstructured_open source_idが将来追加された場合も、対応する表示が実装されるまでattribution_okはfalseとなり、`missing_attribution`としてmetadata-only相当へ自動downgradeされる。
+
+**Archive再生成時のattribution snapshot(BL-032実装状況、Draft・ユーザー受入前):** schema v2 daily JSON生成時、`ncsc`のstructured_open記事については、生成時点で実際に使用可能だった(source_definitions.json側で設定済み、かつ`safe_url()`を通過した)attribution URLを`daily_json.build_article_entry()`が`policy.attribution_url`へsnapshotとして保存する。`fetch.py`の`digest_items_for_html()`は、Archive再生成時にこのsnapshotだけを`content_policy`へ復元し、現在のsource_definitions.jsonを参照しない。これにより、生成後にsource_definitions.jsonのNCSC設定が変更・削除されても、既存Archiveの再生成結果(AI分析カード・OGL v3リンク)は生成時点のまま変わらない。`daily_json.validate_daily_digest()`は、schema v2でncsc・structured_open・ai_eligible=trueの記事について、このsnapshotが安全なhttp(s) URLとして存在することを保存前に必須検証する。改変・破損によりsnapshotが欠落・不正なdaily JSONを読み込んだ場合(本来はvalidationで拒否されるため生じないはずの状態)も、`digest_items_for_html()`はAI分析カードだけでなくDashboard集計・優先確認・重要事項の再構成を含めてmetadata-only相当へfail-closedにdowngradeし(`downgrade_reason: archive_attribution_snapshot_invalid`)、部分的な公開を許さない。schema v1の既存daily JSON・Archiveはこの仕組みの対象外であり、遡及変更しない。
 
 ---
 

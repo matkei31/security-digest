@@ -584,6 +584,87 @@ class DashboardCountsExclusionTest(unittest.TestCase):
         self.assertTrue(fetch.item_is_ai_eligible({}))
 
 
+class TodaysBriefEligibilityExclusionTest(unittest.TestCase):
+    """PR #69レビュー(round 3)Blocker 1: metadata-only相当の記事が
+    Today's Briefの掲載件数・未判定件数・provenanceへ入らないことを検証する
+    (BL-032完了条件11)。Dashboardの掲載総数(compute_dashboard_counts)は
+    別契約であり、DashboardCountsExclusionTestで検証済み(ここでは変更しない)。
+    """
+
+    MARKER = "UNIQUE-METADATA-ONLY-BRIEF-MARKER"
+
+    def _evaluated_item(self, title="Evaluated Title"):
+        return {
+            "title": title, "raw_title": title, "source": "Test Source",
+            "link": "https://example.com/a",
+            "ai_analysis": dict(VALID_ANALYSIS_RESPONSE),
+            "ai_analysis_meta": {"status": "success", "error_type": None, "http_status": None,
+                                  "generated_at": "2026-07-31T00:00:00+09:00"},
+            "content_policy": {"source_id": "test_source", "configured_mode": "structured_open",
+                                "effective_mode": "structured_open", "ai_eligible": True,
+                                "downgrade_reason": None},
+        }
+
+    def _failed_item(self, title="Failed Title"):
+        return {
+            "title": title, "raw_title": title, "source": "Test Source",
+            "link": "https://example.com/b",
+            "ai_analysis": None,
+            "ai_analysis_meta": {"status": "failed", "error_type": "api_error", "http_status": 500,
+                                  "generated_at": "2026-07-31T00:00:00+09:00"},
+            "content_policy": {"source_id": "test_source", "configured_mode": "structured_open",
+                                "effective_mode": "structured_open", "ai_eligible": True,
+                                "downgrade_reason": None},
+        }
+
+    def _metadata_only_item(self, title=None):
+        return {
+            "title": title or self.MARKER, "raw_title": title or self.MARKER,
+            "source": self.MARKER, "link": "https://example.com/c",
+            "content_policy": {"source_id": "microsoft_security", "configured_mode": "metadata_only",
+                                "effective_mode": "metadata_only", "ai_eligible": False,
+                                "downgrade_reason": None},
+        }
+
+    def test_published_total_excludes_metadata_only_and_has_no_unclassified(self):
+        result = fetch.build_todays_brief([self._evaluated_item(), self._metadata_only_item()])
+        self.assertEqual(result["status"], "success")
+        self.assertIn("掲載1件", result["overview"])
+        self.assertNotIn("未判定", result["overview"])
+
+    def test_metadata_only_fields_do_not_appear_in_brief_or_provenance(self):
+        composition = fetch.compose_extractive_brief(
+            [self._evaluated_item(), self._metadata_only_item()]
+        )
+        brief_json = json.dumps(composition["brief"], ensure_ascii=False)
+        provenance_json = json.dumps(composition["provenance"], ensure_ascii=False)
+        self.assertNotIn(self.MARKER, brief_json)
+        self.assertNotIn(self.MARKER, provenance_json)
+
+    def test_unclassified_counts_only_failed_not_metadata_only(self):
+        result = fetch.build_todays_brief(
+            [self._evaluated_item(), self._failed_item(), self._metadata_only_item()]
+        )
+        self.assertIn("掲載2件", result["overview"])
+        self.assertIn("未判定1件", result["overview"])
+
+    def test_metadata_only_only_items_result_in_not_attempted_brief(self):
+        result = fetch.build_todays_brief([self._metadata_only_item()])
+        self.assertEqual(result["status"], "not_attempted")
+
+    def test_legacy_item_without_content_policy_still_counted(self):
+        legacy_item = {
+            "title": "Legacy", "raw_title": "Legacy", "source": "Legacy Source",
+            "link": "https://example.com/legacy",
+            "ai_analysis": dict(VALID_ANALYSIS_RESPONSE),
+            "ai_analysis_meta": {"status": "success", "error_type": None, "http_status": None,
+                                  "generated_at": "2026-07-31T00:00:00+09:00"},
+        }
+        result = fetch.build_todays_brief([legacy_item])
+        self.assertEqual(result["status"], "success")
+        self.assertIn("掲載1件", result["overview"])
+
+
 class VulnerabilityFactsScopingTest(unittest.TestCase):
     """metadata-only相当の記事はCVE facts取得の対象外、feed_summary/
     limited_feed_analysisはpublisher descriptionをfacts抽出へ使わないことを
@@ -1227,6 +1308,101 @@ class PublisherTextTransientPurgeTest(unittest.TestCase):
         self.assertEqual(item["summary"], "")
         self.assertEqual(item["raw_summary"], "")
         self.assertEqual(item["rich_content"], "")
+
+
+_ARCHIVE_SNAPSHOT_NOT_ATTEMPTED_BRIEF_RESULT = {
+    "overview": None, "important_highlights": [], "discussion_points": [], "check_items": [],
+    "status": "not_attempted", "error_type": None, "http_status": None,
+}
+
+
+class ArchiveAttributionSnapshotTest(unittest.TestCase):
+    """PR #69レビュー(round 3)Blocker 2: schema v2 daily JSONへ保存された
+    structured_open(ncsc)のattribution_url snapshotにより、Archive再生成が
+    source_definitions.jsonの後日変更に左右されず決定論的であること、および
+    snapshotが欠落・不正な場合はAI分析カード・Dashboard・優先確認・重要・
+    優先事項を含めてmetadata-only相当へfail-closedになることを検証する。
+    """
+
+    NCSC_OGL_URL = "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+
+    def _ncsc_item(self):
+        content_policy = dj.build_item_content_policy("ncsc", "structured_open", "structured_open", None)
+        return {
+            "source": "NCSC", "raw_title": "NCSC Advisory", "title": "NCSC Advisory",
+            "raw_summary": "Official advisory description.", "summary": "Official advisory description.",
+            "link": "https://www.ncsc.gov.uk/advisory/example", "facts": {"cves": []},
+            "published_at_jst": None, "content_policy": content_policy,
+            "ai_analysis": dict(VALID_ANALYSIS_RESPONSE),
+            "ai_analysis_meta": {"status": "success", "error_type": None, "http_status": None,
+                                  "generated_at": "2026-07-31T00:00:00+09:00"},
+        }
+
+    def _build_digest(self, ncsc_attribution_url):
+        source_defs = [make_source_def(
+            "ncsc", "NCSC", content_usage_mode="structured_open",
+            allow_excerpt_storage=True, attribution_url=ncsc_attribution_url,
+        )]
+        return dj.build_daily_digest(
+            [self._ncsc_item()], dict(_ARCHIVE_SNAPSHOT_NOT_ATTEMPTED_BRIEF_RESULT),
+            source_defs, "gemini-2.5-flash",
+            datetime.datetime(2026, 7, 31, 7, 0, tzinfo=dj.JST),
+            datetime.datetime(2026, 7, 31, 7, 0, tzinfo=dj.JST),
+        )
+
+    def test_valid_snapshot_reproduces_ai_analysis_and_clickable_ogl_link(self):
+        digest = self._build_digest(self.NCSC_OGL_URL)
+        self.assertEqual(digest["items"][0]["policy"]["attribution_url"], self.NCSC_OGL_URL)
+        dj.validate_daily_digest(digest)  # 正常に検証を通過する(例外を送出しない)
+        items = fetch.digest_items_for_html(digest)
+        self.assertTrue(fetch.item_is_ai_eligible(items[0]))
+        html = fetch.build_html(items)
+        self.assertIn(f'href="{self.NCSC_OGL_URL}"', html)
+        self.assertIn(VALID_ANALYSIS_RESPONSE["summary"], html)
+        self.assertNotIn("card-metadata-only", html)
+
+    def test_missing_snapshot_is_rejected_by_validation(self):
+        digest = self._build_digest(None)
+        self.assertIsNone(digest["items"][0]["policy"]["attribution_url"])
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_invalid_snapshot_is_rejected_by_validation(self):
+        digest = self._build_digest("javascript:alert(1)")
+        with self.assertRaises(dj.DailyJsonError):
+            dj.validate_daily_digest(digest)
+
+    def test_tampered_digest_with_missing_snapshot_fails_closed_across_all_derived_displays(self):
+        # validate_daily_digest()は本来この状態を拒否するが、改変・破損した
+        # ファイルを直接読み込むケースへの防御的backstopとして、
+        # digest_items_for_html()自体もfail-closedであることを検証する。
+        digest = self._build_digest(self.NCSC_OGL_URL)
+        digest["items"][0]["policy"]["attribution_url"] = None  # 生成後に改変されたと仮定
+        items = fetch.digest_items_for_html(digest)
+        item = items[0]
+        self.assertFalse(fetch.item_is_ai_eligible(item))
+        self.assertEqual(item["content_policy"]["downgrade_reason"], "archive_attribution_snapshot_invalid")
+        html = fetch.build_html(items)
+        self.assertIn("card-metadata-only", html)
+        self.assertNotIn(VALID_ANALYSIS_RESPONSE["summary"], html)
+        self.assertNotIn("Open Government Licence", html)
+        dashboard_counts = fetch.compute_dashboard_counts(items)
+        self.assertEqual(sum(dashboard_counts["importance"].values()), 0)
+        self.assertEqual(fetch.select_important_items(items), [])
+        priority_items, _ = fetch.select_priority_items(items)
+        self.assertEqual(priority_items, [])
+
+    def test_source_definitions_change_after_generation_does_not_affect_archive_output(self):
+        digest = self._build_digest(self.NCSC_OGL_URL)
+        items = fetch.digest_items_for_html(digest)
+        # source_definitions.json側のNCSC設定が、生成後に削除・変更されたと
+        # 仮定する(URLをNoneへ変更、または存在自体が別のものへ変わった状況)。
+        with patch("fetch.SOURCE_DEFINITIONS",
+                   [make_source_def("ncsc", "NCSC", content_usage_mode="structured_open",
+                                     attribution_url=None)]):
+            html = fetch.build_html(items)
+        self.assertIn(f'href="{self.NCSC_OGL_URL}"', html)
+        self.assertNotIn("card-metadata-only", html)
 
 
 class V1ArchiveBackwardCompatibilityTest(unittest.TestCase):
