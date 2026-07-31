@@ -81,7 +81,7 @@ Monomi Digestの取得元は、次の5つのcontent usage modeのいずれかへ
 - Gemini Paid Service状態が確認できない間(`gemini_data_use_status: unpaid` または `unknown`)は、`metadata_only`と同じ挙動として扱う。
 - 出典・原記事リンク・「Monomi Digestが公式RSSの概要をもとに生成したAI分析」の表示を必須とする。
 
-**BL-032実装状況(Draft、ユーザー受入前。10章参照):**
+**BL-032実装状況(受入済み・[PR #69](https://github.com/matkei31/security-digest/pull/69)のReady化・merge待ち。10章参照):**
 - Gemini入力を最大1000文字、出力(要約等)にも文字数上限を設ける実装済み(`daily_json.py`の`TRANSIENT_INPUT_MAX_CHARS`・`OUTPUT_FIELD_MAX_CHARS`)。
 - 原文との長い連続一致等、7章のoutput-similarity/quotation controlsに違反する出力を検出した場合、metadata-only相当の簡易表示へfallbackする実装済み。
 - 原題・取得元・元記事リンクの必須表示、および「詳細と正確性は元記事で確認」等の限界注記の表示実装済み。
@@ -102,7 +102,7 @@ Monomi Digestの取得元は、次の5つのcontent usage modeのいずれかへ
 
 **Cisco Talosの残余リスク:** Cisco Site Content利用規約(internal use限定)がブログドメイン(`blog.talosintelligence.com`)へ直接適用されるかどうかは未解決であり(9章参照)、この分類が許可する最小メタデータの自動取得自体にも残余リスクが残る。適用が確認された場合は、`metadata_only`にとどまらず`disabled_legal_review`への降格を含めて再評価する。
 
-**表示(BL-032実装状況、Draft・ユーザー受入前。10章参照):**
+**表示(BL-032実装状況、受入済み・[PR #69](https://github.com/matkei31/security-digest/pull/69)のReady化・merge待ち。10章参照):**
 - 通常の記事一覧(AI評価済み記事)へ公開日時順で混在させ、AI分析カードとは異なる簡易リンクカード(原題・取得元・公開日時・原記事リンクのみ、description・AI翻訳・importance・urgency・category・tags・financial_impact・recommended_actions・factsを表示しない)として表示する実装済み。
 - 掲載総数には含めるが、Today's Brief、importance／urgency／category集計、AI成功率の分母には含めず、「未判定」にも入れない実装済み。意図的なpolicy非評価(この区分に属すること)と、AI処理の失敗(`fallback`/`failed`)を混同しない。`fetch.py`の`select_brief_eligible_items()`が、Brief生成が対象とする記事集合(入力・trusted context・状態行・未判定件数・source ID・優先事項・provenance)を一元的に決定する共通helperとして実装済みであり、compose_extractive_brief()内のこれらの処理はすべて同じfiltered集合を参照する。
 - AI評価済み記事と混同しないUI上の区別を実装済み。
@@ -227,9 +227,9 @@ Gemini APIの公式Terms(https://ai.google.dev/gemini-api/terms)より:
 | `metadata_only`分類の2source | source name、original title、original URLのみ。AIによる要約・評価を行っていない旨を明示する。 |
 | `disabled_legal_review`分類の4source | 非公開のため表示なし。 |
 
-**実装状況(BL-032、Draft・ユーザー受入前。10章参照):** 上表は監査上の要件記述であり、UI文言そのものではない。`fetch.py`の`render_structured_open_attribution_html()`が、`fsa`/`nist`/`ncsc`/`cisa_kev`/`nist_nvd`のsource_idごとに実際の表示(実URL・実日付・実免責文)を組み立てる(監査記述である`attribution_requirement`列の文字列をそのままUI文言として表示しない)。`fsa`の「利用日」はdigest生成日(JST、YYYY-MM-DD)を正本とする。`ncsc`のOGL v3リンクは、`source_definitions.json`の`ncsc.policy.attribution_url`(`https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/`)を正本とし、`safe_url()`でスキーム検証を通過した場合にのみリンク化する。この可否判定は`fetch.py`の`_can_render_structured_open_attribution()`が一元的に行い、`attribution_ok`(実装状況、7章参照)とHTML描画の両方がこの1つの関数だけを参照する。`attribution_url`が欠落・空・不正schemeの場合、リンクなしの平文へfallbackして公開を継続することはせず、`missing_attribution`としてmetadata-only相当へ自動downgradeする(fail-closed)。`fsa`/`nist`/`nist_nvd`/`cisa_kev`は固定文言のみで完結するため常に生成可能である。この5 source以外のstructured_open source_idが将来追加された場合も、対応する表示が実装されるまでattribution_okはfalseとなり、`missing_attribution`としてmetadata-only相当へ自動downgradeされる。
+**実装状況(BL-032、受入済み・[PR #69](https://github.com/matkei31/security-digest/pull/69)のReady化・merge待ち。10章参照):** 上表は監査上の要件記述であり、UI文言そのものではない。`fetch.py`の`render_structured_open_attribution_html()`が、`fsa`/`nist`/`ncsc`/`cisa_kev`/`nist_nvd`のsource_idごとに実際の表示(実URL・実日付・実免責文)を組み立てる(監査記述である`attribution_requirement`列の文字列をそのままUI文言として表示しない)。`fsa`の「利用日」はdigest生成日(JST、YYYY-MM-DD)を正本とする。`ncsc`のOGL v3リンクは、`source_definitions.json`の`ncsc.policy.attribution_url`(`https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/`)を正本とし、`safe_url()`でスキーム検証を通過した場合にのみリンク化する。この可否判定は`fetch.py`の`_can_render_structured_open_attribution()`が一元的に行い、`attribution_ok`(実装状況、7章参照)とHTML描画の両方がこの1つの関数だけを参照する。`attribution_url`が欠落・空・不正schemeの場合、リンクなしの平文へfallbackして公開を継続することはせず、`missing_attribution`としてmetadata-only相当へ自動downgradeする(fail-closed)。`fsa`/`nist`/`nist_nvd`/`cisa_kev`は固定文言のみで完結するため常に生成可能である。この5 source以外のstructured_open source_idが将来追加された場合も、対応する表示が実装されるまでattribution_okはfalseとなり、`missing_attribution`としてmetadata-only相当へ自動downgradeされる。
 
-**Archive再生成時のattribution snapshot(BL-032実装状況、Draft・ユーザー受入前):** schema v2 daily JSON生成時、`ncsc`のstructured_open記事については、生成時点で実際に使用可能だった(source_definitions.json側で設定済み、かつ`daily_json.is_safe_attribution_url()`を通過した)attribution URLを`daily_json.build_article_entry()`が`policy.attribution_url`へsnapshotとして保存する。`is_safe_attribution_url()`は、記事リンク全般に使う`fetch.safe_url()`とは別の、このattribution snapshot契約専用のより厳密な検証であり、`urllib.parse.urlsplit()`でscheme(http/https)・netloc・hostnameがすべて存在することまで要求する(`https://`単体・`https:///missing-host`・`http://?query`のようなhostを持たない値は拒否する)。`fetch.py`の`digest_items_for_html()`は、Archive再生成時にこのsnapshotだけを`content_policy`へ復元し、現在のsource_definitions.jsonを参照しない。これにより、生成後にsource_definitions.jsonのNCSC設定が変更・削除されても、既存Archiveの再生成結果(AI分析カード・OGL v3リンク)は生成時点のまま変わらない。
+**Archive再生成時のattribution snapshot(BL-032実装状況、受入済み・[PR #69](https://github.com/matkei31/security-digest/pull/69)のReady化・merge待ち):** schema v2 daily JSON生成時、`ncsc`のstructured_open記事については、生成時点で実際に使用可能だった(source_definitions.json側で設定済み、かつ`daily_json.is_safe_attribution_url()`を通過した)attribution URLを`daily_json.build_article_entry()`が`policy.attribution_url`へsnapshotとして保存する。`is_safe_attribution_url()`は、記事リンク全般に使う`fetch.safe_url()`とは別の、このattribution snapshot契約専用のより厳密な検証であり、`urllib.parse.urlsplit()`でscheme(http/https)・netloc・hostnameがすべて存在することまで要求する(`https://`単体・`https:///missing-host`・`http://?query`のようなhostを持たない値は拒否する)。`fetch.py`の`digest_items_for_html()`は、Archive再生成時にこのsnapshotだけを`content_policy`へ復元し、現在のsource_definitions.jsonを参照しない。これにより、生成後にsource_definitions.jsonのNCSC設定が変更・削除されても、既存Archiveの再生成結果(AI分析カード・OGL v3リンク)は生成時点のまま変わらない。
 
 `daily_json.validate_daily_digest()`は、schema v2でncsc・structured_open・ai_eligible=trueの記事について、このsnapshotが`is_safe_attribution_url()`を通過することを保存前に必須検証する(この保存前strict validationは緩めていない)。
 
@@ -319,7 +319,7 @@ Gemini APIの公式Terms(https://ai.google.dev/gemini-api/terms)より:
 
 ## 10. Relationship to BL-032 and BL-009
 
-- **[BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)(Draft実装済み、ユーザー受入前)**: 本文書で提案したcontent usage modeを、`source_definitions.json`への`content_usage_mode`等の設定項目追加と、`fetch.py`側の共通処理(取得・Gemini入力・保存・公開の各段階でのmode強制)として実装した。Gemini data-use gate(5章)の`paid_verified`確認結果を反映済み。output-similarity/quotation controls(7章)を実装しテスト済み(`test_content_usage_policy.py`)。ユーザーが受入するまでは、本文書の監査結果・方針自体(Version 0.1 Approved)は変更されないが、このenforcement実装自体はDraftであり、production・`workflow_dispatch`・実Gemini API呼び出しに対する事前承認ではない。
+- **[BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)(実装・独立レビュー(7ラウンド、合計12件のBlockerすべて修正・独立再確認済み)・ユーザー受入完了、[PR #69](https://github.com/matkei31/security-digest/pull/69)のReady化・merge待ち)**: 本文書で提案したcontent usage modeを、`source_definitions.json`への`content_usage_mode`等の設定項目追加と、`fetch.py`側の共通処理(取得・Gemini入力・保存・公開の各段階でのmode強制)として実装した。Gemini data-use gate(5章)の`paid_verified`確認結果を反映済み。output-similarity/quotation controls(7章)を実装しテスト済み(`test_content_usage_policy.py`)。本文書の監査結果・方針自体(Version 0.1 Approved)は本受入によって変更されないが、このenforcement実装のPR #69自体はまだmergeされておらず、production・`workflow_dispatch`・実Gemini API呼び出しに対する事前承認ではない。
 - **BL-009**: About／出典表示ページ、免責事項、訂正申出窓口の実装。本文書のattribution要件(6章)を実際のUIへ反映する。
 - 本文書(BL-031)自体は、監査結果と方針の記録にとどまり、上記いずれの実装も行わない。Dark Readingの暫定停止(`source_definitions.json`の`enabled: false`)のみを例外的にこのTicketで実施する(本文書の章番号ではなく、BL-031チケット記述内の実施phaseを指す。詳細は下記BACKLOG.mdのBL-031記載を参照)。
 
