@@ -5645,7 +5645,11 @@ def daily_digest_paths(data_dir):
     )
 
 
-def update_index_archive_paths(data_dir, summaries, generated_at=None):
+def update_index_archive_paths(data_dir, summaries, docs_dir=None, generated_at=None):
+    # BL-032: 呼び出し元が指定したdocs_dir(テスト用の一時ディレクトリ等)を
+    # 使う。省略時のみモジュールのglobal DOCS_DIRへfallbackする(既存呼び出し
+    # 元との後方互換のため)。
+    docs_dir = Path(docs_dir) if docs_dir is not None else DOCS_DIR
     data_dir = Path(data_dir)
     index_path = data_dir / "index.json"
     if index_path.exists():
@@ -5676,7 +5680,7 @@ def update_index_archive_paths(data_dir, summaries, generated_at=None):
             updated["archive_path"] = summary_by_date[digest_date]["archive_path"]
         elif updated.get("archive_path"):
             archive_rel = str(updated["archive_path"]).removeprefix("docs/")
-            if not (DOCS_DIR / archive_rel).exists():
+            if not (docs_dir / archive_rel).exists():
                 updated["archive_path"] = None
         digests.append(updated)
 
@@ -5706,6 +5710,7 @@ def generate_archive_outputs(data_dir=None, docs_dir=None, generated_at=None):
     archive_dir = docs_dir / "archive"
     digests = []
     summaries = []
+    invalid_dates = []
 
     for path in daily_digest_paths(data_dir):
         try:
@@ -5714,11 +5719,25 @@ def generate_archive_outputs(data_dir=None, docs_dir=None, generated_at=None):
             # digest_date・ファイル名程度しか確認しない。schema v2の
             # policy.attribution_url snapshot(現状ncscのみ)が欠落・不正な
             # digestを含め、日次JSON全体の整合性はここでfull validationする。
-            # 検証を通過しないdigestは、日別Archive HTML・Archive summary・
-            # index entryのいずれも生成・更新しない(既存の警告・skip経路)。
-            daily_json.validate_daily_digest(digest)
+            # schema v2は保存直前と同じstrict validation(validate_daily_digest)
+            # を適用するが、schema v1(レガシー)は現行の閾値・enumを実在ファイル
+            # へ遡及適用しない、最小限の構造検証にとどめる
+            # (validate_daily_digest_for_archive_read参照。実在するschema v1
+            # ファイルが、生成当時は正当だった値――例: 現行のBRIEF_MAX_CHECK_ITEMS
+            # より多いcheck_items――を理由に誤ってArchive生成対象から除外
+            # されないようにするため)。
+            daily_json.validate_daily_digest_for_archive_read(digest)
         except daily_json.DailyJsonError as e:
             print(f"[WARN] アーカイブ生成をスキップ: {e}", file=sys.stderr)
+            # BL-032: 検証を通過しないdigestは、日別Archive HTML・Archive
+            # summary・index entryのいずれも生成・更新しない。加えて、この
+            # 日付に対応する既存のstale Archive HTML(以前は有効だったdigestが
+            # 後日改変・破損した場合に残り得る)があれば削除対象として記録する
+            # (ファイル名からdigest_date形式を厳密に判定できる場合のみ。
+            # 他日付・index.html等を誤って削除しない)。
+            fallback_date = path.stem
+            if daily_json.DIGEST_DATE_RE.fullmatch(fallback_date):
+                invalid_dates.append(fallback_date)
             continue
         digests.append(digest)
         summaries.append(archive_summary_from_digest(digest))
@@ -5743,9 +5762,18 @@ def generate_archive_outputs(data_dir=None, docs_dir=None, generated_at=None):
         )
         atomic_write_text(archive_path, html, validator=validate_html_document)
 
+    # BL-032: invalidと判定された日付について、過去の有効なdigestから生成
+    # されたまま残っているstaleな日別Archive HTMLを削除する。その日付と
+    # 厳密に一致するファイルだけを対象とし、他日付・archive/index.html等は
+    # 一切削除しない。
+    for digest_date in invalid_dates:
+        stale_path = archive_dir / f"{digest_date}.html"
+        if stale_path.is_file():
+            stale_path.unlink()
+
     index_html = build_archive_index_html(summaries, generated_at=generated_at)
     atomic_write_text(archive_dir / "index.html", index_html, validator=validate_html_document)
-    update_index_archive_paths(data_dir, summaries, generated_at=generated_at)
+    update_index_archive_paths(data_dir, summaries, docs_dir=docs_dir, generated_at=generated_at)
     return summaries
 
 # ── メイン ───────────────────────────────────────────────────────────────────

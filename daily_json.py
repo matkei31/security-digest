@@ -1167,6 +1167,56 @@ def validate_daily_digest(digest):
     return True
 
 
+def validate_daily_digest_for_archive_read(digest):
+    """Archive読込・再生成専用のschema-version-awareなvalidator(BL-032)。
+
+    validate_daily_digest()(保存直前専用、Ticket 8時点のコメントどおり
+    scan_daily_digest_files()等の既存日次JSON走査からは経由されない前提)を
+    Archive生成の読込前チェックにもそのまま流用すると、schema v1(レガシー)の
+    実在ファイルへ現行の閾値(例: BRIEF_MAX_CHECK_ITEMS)・enum値・
+    fieldの有無を遡及適用してしまい、生成当時は正当だった実データ
+    (例: 昔のBrief件数上限で保存されたcheck_items)がArchive生成対象から
+    誤って除外される。
+
+    * schema v2(現行)は、保存直前と完全に同じstrict validation
+      (validate_daily_digest()、NCSC attribution snapshot検証を含む)を
+      そのまま適用する――現行生成物に対する検証は一切緩めない。
+    * schema v1(レガシー)は、現在の閾値・enum・field構成を遡及的に
+      適用せず、安全にHTMLへ描画するための最低限の構造
+      (トップレベル型、digest_date形式、items配列とその要素型、
+      briefがdict化nullであること)だけを検証する。
+    """
+    schema_version = digest.get("schema_version")
+    if not isinstance(schema_version, int):
+        raise DailyJsonError(f"schema_versionが整数ではありません: {schema_version!r}")
+    if schema_version not in (LEGACY_SCHEMA_VERSION, SCHEMA_VERSION):
+        raise DailyJsonError(
+            f"schema_versionが不正です: {schema_version!r} "
+            f"(許容値: {LEGACY_SCHEMA_VERSION}, {SCHEMA_VERSION})"
+        )
+
+    if schema_version == SCHEMA_VERSION:
+        validate_daily_digest(digest)
+        return
+
+    digest_date = digest.get("digest_date")
+    if not isinstance(digest_date, str) or not DIGEST_DATE_RE.fullmatch(digest_date):
+        raise DailyJsonError(f"digest_dateがYYYY-MM-DD形式ではありません: {digest_date!r}")
+    if not digest.get("generated_at"):
+        raise DailyJsonError("generated_atがありません")
+
+    items = digest.get("items")
+    if not isinstance(items, list):
+        raise DailyJsonError("itemsが配列ではありません")
+    for i, item in enumerate(items):
+        if not isinstance(item, dict):
+            raise DailyJsonError(f"items[{i}]がオブジェクトではありません")
+
+    brief = digest.get("brief")
+    if brief is not None and not isinstance(brief, dict):
+        raise DailyJsonError(f"briefがオブジェクトでもnullでもありません: {brief!r}")
+
+
 def validate_index(index):
     """data/index.json 保存前の最低限の検証。"""
     if not isinstance(index.get("schema_version"), int):
