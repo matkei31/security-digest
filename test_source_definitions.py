@@ -1074,16 +1074,41 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
         self.assertIn("BL-032", recently_completed)
 
     def test_status_never_describes_bl032_as_currently_pending(self):
-        # These phrases described BL-032 while it was still Draft/pending
-        # merge (Active work item, 要件定義済み／未着手, Ready化・merge待ち).
-        # None of them are quoted user/reviewer text anywhere in STATUS.md
-        # (they are STATUS.md's own prose about BL-032's state), so their
-        # reappearance anywhere in the file signals the merged/completed
-        # state has gone stale again -- this is not limited to a single
-        # section on purpose.
-        self.assertNotIn("current Active work item", self.status)
-        self.assertNotIn("要件定義済み／未着手", self.status)
-        self.assertNotIn("Ready化・merge待ち", self.status)
+        # Scoped to the specific current-state locations that once described
+        # BL-032 as Draft/pending merge, not a blanket ban on these phrases
+        # across all of STATUS.md -- "current Active work item",
+        # "要件定義済み／未着手", and "Ready化・merge待ち" are ordinary status
+        # vocabulary that a future, unrelated ticket may legitimately use
+        # while it is genuinely active and pending.
+        active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
+        self.assertNotIn("BL-032", active)
+
+        recently_completed = self._section(
+            self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
+        )
+        self.assertIn("BL-032", recently_completed)
+        bl032 = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-032 ")
+        )
+        self.assertTrue(
+            "PR #69" in bl032 or "cd5e6ec" in bl032,
+            "BL-032's Recently completed entry must record PR #69 or the merge commit",
+        )
+
+        next_candidates = self._section(self.status, "## 7. Next candidates", "\n## 8. ")
+        self.assertIn("BL-032", next_candidates)
+        self.assertNotIn("current Active work item", next_candidates)
+
+        bl030 = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-030 ")
+        )
+        self.assertNotIn(
+            "is registered and is the current Active work item, 要件定義済み／未着手",
+            bl030,
+        )
+        self.assertIn("BL-031", bl030)
+        self.assertIn("BL-032", bl030)
+        self.assertIn("are both completed, approved, and merged", bl030)
 
     def test_sd029_is_unique(self):
         headings = re.findall(r"^## (SD-\d{3})\b", self.decisions, flags=re.MULTILINE)

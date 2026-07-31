@@ -1618,10 +1618,16 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
         self.assertIn("BL-031", bl030)
         self.assertIn("completed, approved, and merged", bl030)
         # BL-032 merged during its own post-merge closeout, so this line no
-        # longer describes it as "registered"/"the current Active work item".
+        # longer describes it with the specific old phrase below. This checks
+        # that exact old phrase, not the words "registered"/"Active work
+        # item" in general, which a future unrelated ticket may legitimately
+        # use elsewhere in this same BL-030 line.
         self.assertIn("BL-032", bl030)
-        self.assertNotIn("registered", bl030)
-        self.assertNotIn("Active work item", bl030)
+        self.assertNotIn(
+            "is registered and is the current Active work item, 要件定義済み／未着手",
+            bl030,
+        )
+        self.assertIn("are both completed, approved, and merged", bl030)
         self.assertIn("BL-009", bl030)
         self.assertIn("separate, unstarted ticket", bl030)
         self.assertIn("None of these is BL-030 residual work", bl030)
