@@ -100,14 +100,20 @@ class StatusSourceOfTruthTest(unittest.TestCase):
 
     def test_source_of_truth_row_does_not_pin_a_specific_published_schema_value(self):
         # "schemaはこの文書へ複製しない" (a description of the delegation) is
-        # fine; "schema_version 2" or "published schema 2" (a reintroduced
-        # fixed value) is not. Current generator schema on `main` is a
-        # separate, deliberately-pinned stable-contract row and is untouched
-        # by this check since it is scoped to the source-of-truth row only.
+        # fine; a specific value -- "schema_version 2", "published schema
+        # 4", "最新公開schemaは5", "schema v3" -- is not, for ANY digit, not
+        # just today's "2" (a future schema bump reintroducing this row's
+        # staleness with a different number must still fail this test).
+        # Current generator schema on `main` is a separate, deliberately-
+        # pinned stable-contract row and is untouched by this check since it
+        # is scoped to the source-of-truth row only.
         row = self._source_of_truth_row()
-        self.assertNotRegex(row, r"schema[_ ]version\s*[`「]?\s*2\b")
-        self.assertNotRegex(row, r"published schema\s*[`「]?\s*2\b")
-        self.assertNotRegex(row, r"最新公開schema\s*[はが]?\s*[`「]?\s*2\b")
+        self.assertNotRegex(row, r"(?i)\bschema[_ ]version\b\s*[:=はが]?\s*[`「]?\s*\d+\b")
+        self.assertNotRegex(
+            row, r"(?i)\bpublished schema(?: version)?\b\s*[:=はが]?\s*[`「]?\s*v?\d+\b"
+        )
+        self.assertNotRegex(row, r"最新公開schema(?:_version| version)?\s*[はが:=]?\s*[`「]?\s*v?\d+\b")
+        self.assertNotRegex(row, r"(?i)\bschema\s+v\d+\b")
 
     def test_current_generator_schema_on_main_is_still_2(self):
         section = self._current_versions_section()
