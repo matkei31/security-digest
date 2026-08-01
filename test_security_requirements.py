@@ -1248,10 +1248,12 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         self.assertIn("2026-07-30発効", bl031)
         self.assertIn("limited_feed_analysis", bl031)
 
-    def test_status_as_of_and_bl030_run_evidence_are_2026_08_01(self):
+    def test_status_as_of_is_2026_08_01_and_bl030_run_evidence_is_historical(self):
         # STATUS.md's "As of" is the document's own last-update date (BL-033
         # delegates volatile latest-publication values to data/index.json
-        # instead), so this bumps whenever STATUS.md itself is edited.
+        # instead), so this bumps whenever STATUS.md itself is edited --
+        # separately, BL-030's own scheduled-run evidence below is a fixed
+        # 2026-07-30 historical fact, not tied to this "As of" date.
         self.assertIn("## 1. As of\n\n2026-08-01", self.status)
         recently_completed = self.status.split(
             "## 5. Recently completed work", 1
@@ -1558,6 +1560,29 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
         self.assertTrue(checked_at_values)
         self.assertNotIn("2026-07-31", checked_at_values)
         self.assertEqual(checked_at_values, {"2026-07-29", "2026-07-30"})
+
+    def test_bl032_residual_work_records_operational_observation_as_succeeded(self):
+        # BL-033: BL-032's own 残作業 (residual-work) line must reflect that
+        # its post-merge operational observation has already succeeded, not
+        # describe it in future tense as still-pending work. Scoped to the
+        # residual-work line itself, not a blanket ban across all of
+        # BACKLOG.md -- other tickets may legitimately describe their own
+        # upcoming scheduled-run confirmations in future tense.
+        bl032 = self.backlog.split("## BL-032", 1)[1].split("\n## ", 1)[0]
+        residual = next(
+            line for line in bl032.splitlines() if line.startswith("- **残作業:**")
+        )
+        self.assertIn("BL-032の完了条件としての残作業はない", residual)
+        self.assertIn("982a261b15afd695486fffe50fadf9209cc0faa5", residual)
+        self.assertIn("成功済み", residual)
+        self.assertNotIn(
+            "次回scheduled production runでschema v2 enforcementが実際に稼働することの実挙動確認",
+            residual,
+        )
+        self.assertIn("この確認はBL-032を再オープンするものではなく", residual)
+        self.assertIn("別Ticketで扱う", residual)
+        self.assertIn("BL-009", residual)
+        self.assertIn("別Ticket", residual)
 
     def test_bl032_completion_condition_6_requires_changing_rich_content_not_preserving_it(self):
         # Condition 6 must not simultaneously require "no rich content for any

@@ -35,15 +35,28 @@ class StatusSourceOfTruthTest(unittest.TestCase):
     def _current_versions_section(self):
         return self._section(self.status, "## 2. Current versions", "\n## 3.")
 
+    def _source_of_truth_rows(self):
+        return [
+            line
+            for line in self._current_versions_section().splitlines()
+            if line.startswith("| Latest publication source of truth |")
+        ]
+
     def _source_of_truth_row(self):
-        # This is the last row in the table, so it is bounded by the blank
-        # line that ends the table, not by another "\n|" table row.
-        section = self._current_versions_section()
-        return self._section(section, "| Latest publication source of truth |", "\n\n")
+        # Returns exactly one full table row by matching the row's own
+        # leading cell text and taking the rest of that line -- this does
+        # NOT assume the row is the table's last line, so a later addition
+        # of another stable-contract row after it cannot leak into what
+        # this row is checked against.
+        rows = self._source_of_truth_rows()
+        return next(iter(rows))
 
     def test_current_versions_has_latest_publication_source_of_truth_row(self):
         section = self._current_versions_section()
         self.assertIn("| Latest publication source of truth |", section)
+
+    def test_source_of_truth_row_is_unique(self):
+        self.assertEqual(len(self._source_of_truth_rows()), 1)
 
     def test_source_of_truth_row_references_index_json(self):
         row = self._source_of_truth_row()
@@ -77,8 +90,24 @@ class StatusSourceOfTruthTest(unittest.TestCase):
         self.assertNotRegex(row, r"\d+記事")
 
     def test_source_of_truth_row_does_not_pin_a_specific_production_commit(self):
+        # Detects any 7-40 hex-char token that looks like a commit SHA,
+        # regardless of how it is introduced (a "commit `abc1234`" phrase, a
+        # bare backtick-quoted SHA, or a markdown link) -- not just the
+        # literal "commit `<sha>`" wording used by the row previously
+        # deleted from this table.
         row = self._source_of_truth_row()
-        self.assertNotRegex(row, r"commit `[0-9a-f]{7,40}`")
+        self.assertNotRegex(row, r"\b[0-9a-f]{7,40}\b")
+
+    def test_source_of_truth_row_does_not_pin_a_specific_published_schema_value(self):
+        # "schemaはこの文書へ複製しない" (a description of the delegation) is
+        # fine; "schema_version 2" or "published schema 2" (a reintroduced
+        # fixed value) is not. Current generator schema on `main` is a
+        # separate, deliberately-pinned stable-contract row and is untouched
+        # by this check since it is scoped to the source-of-truth row only.
+        row = self._source_of_truth_row()
+        self.assertNotRegex(row, r"schema[_ ]version\s*[`「]?\s*2\b")
+        self.assertNotRegex(row, r"published schema\s*[`「]?\s*2\b")
+        self.assertNotRegex(row, r"最新公開schema\s*[はが]?\s*[`「]?\s*2\b")
 
     def test_current_generator_schema_on_main_is_still_2(self):
         section = self._current_versions_section()
@@ -89,6 +118,49 @@ class StatusSourceOfTruthTest(unittest.TestCase):
         as_of_section = self._section(self.status, "## 1. As of", "\n## 2.")
         self.assertIn("最終更新日", as_of_section)
         self.assertIn("production run日ではない", as_of_section)
+
+    def _source_of_truth_paragraph(self):
+        # The explanatory prose paragraph right after the Current-versions
+        # table (not the table itself, and not the unrelated PR #35/BL-021/
+        # BL-022 sentences that precede it in the same paragraph).
+        section = self._current_versions_section()
+        return section[section.index("**正本の分担"):]
+
+    def test_current_versions_paragraph_states_generator_contract_source_of_truth(self):
+        paragraph = self._source_of_truth_paragraph()
+        self.assertIn("generator契約", paragraph)
+        self.assertIn("正本は`main`上のコード", paragraph)
+
+    def test_current_versions_paragraph_states_latest_publication_source_of_truth(self):
+        paragraph = self._source_of_truth_paragraph()
+        self.assertIn("data/index.json", paragraph)
+
+    def test_current_versions_paragraph_states_referenced_daily_json_source_of_truth(self):
+        paragraph = self._source_of_truth_paragraph()
+        self.assertIn("data/YYYY-MM-DD.json", paragraph)
+        self.assertIn("generated_at・run結果・記事数・AI各件数・schema_versionの正本", paragraph)
+
+    def test_current_versions_paragraph_states_production_commit_source_of_truth(self):
+        paragraph = self._source_of_truth_paragraph()
+        self.assertIn("production commit", paragraph)
+        self.assertIn("Git履歴を正本とする", paragraph)
+
+    def test_current_versions_paragraph_states_no_daily_value_duplication(self):
+        paragraph = self._source_of_truth_paragraph()
+        self.assertIn("この文書へ固定値として複製しない", paragraph)
+
+    def test_current_versions_paragraph_treats_past_runs_as_historical_not_latest(self):
+        paragraph = self._source_of_truth_paragraph()
+        self.assertIn("歴史的観測事実", paragraph)
+        self.assertIn("現在の最新公開状態を主張するものではない", paragraph)
+
+    def test_current_versions_paragraph_does_not_reintroduce_the_deleted_row_as_current(self):
+        # Guards against the exact PR #70 round-2 regression: the table
+        # updated, but this paragraph kept narrating a specific run via the
+        # now-deleted "Latest published daily JSON" row as if it were still
+        # current.
+        section = self._current_versions_section()
+        self.assertNotIn("上記「Latest published daily JSON」は", section)
 
 
 class Sd031DecisionTest(unittest.TestCase):
