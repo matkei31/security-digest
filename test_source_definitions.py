@@ -1058,20 +1058,39 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
         self.assertIn("9757ae98c2f5ef9f13da667be5677d870a6e2cd1", bl030)
         self.assertIn("30428514818", bl030)
 
-    def test_status_active_work_is_clear_of_bl030_bl031_bl032(self):
+    def test_status_active_work_is_clear_of_bl030_bl031_bl032_and_has_bl033(self):
         # BL-032のPR #69 merge後、Active workからBL-032も外れた。BL-030・
         # BL-031・BL-032はいずれもActive workへ戻っておらず、すべて
-        # Recently completed workに残っていることだけを検証する。
+        # Recently completed workに残っている。BL-033はBL-032のpost-merge
+        # closeoutに続くActive workであることを検証する。
         active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
         self.assertNotIn("BL-030", active)
         self.assertNotIn("BL-031", active)
         self.assertNotIn("BL-032", active)
+        self.assertIn("BL-033", active)
         recently_completed = self._section(
             self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
         )
         self.assertIn("BL-030", recently_completed)
         self.assertIn("BL-031", recently_completed)
         self.assertIn("BL-032", recently_completed)
+
+    def test_status_bl032_entry_records_first_schema_v2_operational_observation(self):
+        # BL-033: BL-032のRecently completed entryへ、merge後最初の
+        # 通常scheduled production run(schema v2)が成功したことが記録されて
+        # いることを検証する。982a261はこの一回限りの歴史的証跡としてpinして
+        # よい(将来のscheduled runのたびに変わるlatest snapshotではない)。
+        recently_completed = self._section(
+            self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
+        )
+        bl032 = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-032 ")
+        )
+        self.assertIn("982a261b15afd695486fffe50fadf9209cc0faa5", bl032)
+        self.assertIn("schema_version", bl032)
+        self.assertIn("`2`", bl032)
+        self.assertIn("operational observation", bl032)
+        self.assertIn("BL-032を再オープンするものではない", bl032)
 
     def test_status_never_describes_bl032_as_currently_pending(self):
         # Scoped to the specific current-state locations that once described
@@ -1106,6 +1125,14 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
         # ordinary phrase for some other, unrelated ticket in this section.
         self.assertNotIn(f"{bl032_anchor} is the current Active work item", next_candidates)
         self.assertIn(f"and {bl032_anchor} are all complete", next_candidates)
+
+        # BL-033-specific: it is the current Active work item, distinct from
+        # BL-032's own "are all complete" membership above.
+        bl033_anchor = (
+            "[BL-033]"
+            "(BACKLOG.md#bl-033--statusmdの動的公開実績を正本へ委譲する)"
+        )
+        self.assertIn(f"{bl033_anchor} is the current Active work item", next_candidates)
 
         bl030 = next(
             line for line in recently_completed.splitlines() if line.startswith("- BL-030 ")

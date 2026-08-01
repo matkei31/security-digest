@@ -1248,8 +1248,11 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         self.assertIn("2026-07-30発効", bl031)
         self.assertIn("limited_feed_analysis", bl031)
 
-    def test_status_as_of_and_bl030_run_evidence_are_2026_07_31(self):
-        self.assertIn("## 1. As of\n\n2026-07-31", self.status)
+    def test_status_as_of_and_bl030_run_evidence_are_2026_08_01(self):
+        # STATUS.md's "As of" is the document's own last-update date (BL-033
+        # delegates volatile latest-publication values to data/index.json
+        # instead), so this bumps whenever STATUS.md itself is edited.
+        self.assertIn("## 1. As of\n\n2026-08-01", self.status)
         recently_completed = self.status.split(
             "## 5. Recently completed work", 1
         )[1].split("## 6. Known issues and limitations", 1)[0]

@@ -307,34 +307,6 @@ class Bl007ClosureRecordTest(unittest.TestCase):
         end = rest.find(next_marker)
         return rest if end == -1 else rest[:end]
 
-    def test_status_latest_published_daily_json_reflects_the_latest_run(self):
-        # This row tracks whichever ordinary production run is most recent;
-        # it has since advanced past the 2026-07-30 08:00 JST run recorded by
-        # BL-031, to the 2026-07-31 08:07 JST run recorded by BL-032's
-        # post-merge closeout (this run predates the BL-032 merge itself, so
-        # it is still schema v1; see the separate schema rows below it).
-        row = self._section(self.status, "| Latest published daily JSON |", "\n|")
-        self.assertIn("today-brief-extractive-v2", row)
-        self.assertIn("2026-07-31 08:07 JST", row)
-        self.assertIn("9記事", row)
-
-    def test_status_current_versions_paragraph_reflects_the_latest_run(self):
-        # The table row above is only half the picture -- the explanatory
-        # paragraph right after "## 2. Current versions" independently
-        # described the "current" production run in prose, and it lagged
-        # behind the table (still narrating the 2026-07-30/13-source run as
-        # current after the table had already moved to 2026-07-31/12-source).
-        # This must stay in sync with the table row.
-        section = self._section(self.status, "## 2. Current versions", "\n## 3.")
-        self.assertIn("2026-07-31 08:07 JST", section)
-        self.assertIn("bf0a1d2", section)
-        self.assertIn("enabled sourceは12", section)
-        self.assertIn("Archive footerも12-sourceである", section)
-        # A historical contrast mentioning the earlier 2026-07-30/13-source
-        # run is fine; it must not still be presented as the current state.
-        self.assertNotIn("Archive footerも13-sourceのままである", section)
-        self.assertNotIn("この時点でenabled sourceは13(`google_tag`", section)
-
     def test_bl007_distinguishes_its_own_work_from_the_scheduled_run(self):
         bl007 = self._section(self.backlog, "## BL-007")
         self.assertIn("本Ticketの実装・cutover・closure作業", bl007)
