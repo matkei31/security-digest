@@ -1126,9 +1126,16 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
         )
         self.assertIn("delivery lifecycleはGitHub上のPR状態を正本とし", residual)
         self.assertIn("BL-033の機能的・設計上の完了状態を変更しない", residual)
+        self.assertIn("merge後に別のpost-merge closeout PRは不要", residual)
         # Must not describe Ready化/merge as still-pending current work --
-        # PR delivery lifecycle belongs to GitHub, not this residual-work line.
-        self.assertNotIn("Ready化・merge等のrepository delivery operationとして残る", residual)
+        # PR delivery lifecycle belongs to GitHub, not this residual-work
+        # line. Reject the essence of the actual round-4 phrasing
+        # ("[PR #71]のReady化・通常のmerge-commit方式によるmergeは、
+        # repository delivery operationとして残るが、これはBL-033の機能的・
+        # 設計上の未完了を意味しない"), not just one exact wording of it, so
+        # a reworded reintroduction of the same "still outstanding" claim is
+        # still caught.
+        self.assertNotIn("repository delivery operationとして残る", residual)
         self.assertNotIn("acceptance-record commitの独立再確認後にReady化・mergeする", residual)
 
         note = next(
