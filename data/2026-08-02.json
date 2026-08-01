@@ -1,0 +1,221 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-08-02",
+  "generated_at": "2026-08-02T07:54:30.095928+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 3,
+    "ai_attempted_count": 3,
+    "ai_success_count": 3,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 3
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 3,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 3,
+      "参考": 0,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 1,
+      "攻撃・脅威動向": 0,
+      "インシデント": 2,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 0,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "掲載3件｜重要度「高」0件｜本日確認0件｜今週確認3件\n本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が3件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "7月30日、攻撃者が41分間で1,196のビットコインアドレスから約7,020万ドル相当の1,082.65BTCを盗み出しました。Galaxy Researchは、この盗難がカナダ企業Coinkite製のビットコイン専用ハードウェアウォレット「Coldcard」のファームウェアの脆弱性に関連していると指摘しています。\n金融機関が顧客向けにハードウェアウォレットの提供や推奨を行っている場合、または仮想通貨関連事業を展開している場合に、同様のインシデント発生可能性について確認の対象となり得ます。一般的な金融機関への直接的な影響は限定的です。",
+      "広告技術企業Adformが提供するJavaScriptファイルが攻撃者によって改ざんされ、ブラウザ側で仮想通貨ウォレットアドレスを書き換えるツールとして悪用されました。Adformは2026年7月27日にこのインシデントを検出し、悪意のあるコードを削除し、影響を受けた顧客に通知しました。\nAdformの広告スクリプトをウェブサイトに組み込んでいる金融機関、またはその委託先が影響を受ける可能性があります。仮想通貨関連サービスを提供している場合、顧客のウォレットアドレスが書き換えられるリスクがあります。"
+    ],
+    "check_items": [
+      "仮想通貨関連事業を展開している場合、利用しているハードウェアウォレット製品のセキュリティ状況を確認する",
+      "自社および委託先のウェブサイトでAdformの広告スクリプトを利用しているか確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:33d64b684b386f21f4b0aac2f0d2804a5e1ea8528a9236ae89ca8573093db3a1",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/coldcard-hardware-wallet-flaw-linked-to.html",
+      "canonical_url": "https://thehackernews.com/2026/08/coldcard-hardware-wallet-flaw-linked-to.html",
+      "published_at": "2026-08-02T02:17:22+09:00",
+      "fetched_at": "2026-08-02T07:53:38.413454+09:00",
+      "title": "Coldcard Hardware Wallet Flaw Linked to $70 Million Bitcoin Theft in 41 Minutes",
+      "raw_title": "Coldcard Hardware Wallet Flaw Linked to $70 Million Bitcoin Theft in 41 Minutes",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0179c571aa7707581fb4fa206e7216f5389a25e13f110e1c5dccb38fa26b2686",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-02T07:53:40.921714+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "ハードウェアウォレットの脆弱性を悪用したビットコインの盗難という具体的な被害事例が主題であるため。",
+        "tags": [
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "7月30日、攻撃者が41分間で1,196のビットコインアドレスから約7,020万ドル相当の1,082.65BTCを盗み出しました。Galaxy Researchは、この盗難がカナダ企業Coinkite製のビットコイン専用ハードウェアウォレット「Coldcard」のファームウェアの脆弱性に関連していると指摘しています。",
+        "financial_impact": "金融機関が顧客向けにハードウェアウォレットの提供や推奨を行っている場合、または仮想通貨関連事業を展開している場合に、同様のインシデント発生可能性について確認の対象となり得ます。一般的な金融機関への直接的な影響は限定的です。",
+        "recommended_actions": [
+          "仮想通貨関連事業を展開している場合、利用しているハードウェアウォレット製品のセキュリティ状況を確認する",
+          "Coldcardウォレットを利用している場合、ベンダーからの公式情報を確認し、推奨される対策を評価する"
+        ],
+        "reason": "重要度は、特定のハードウェアウォレットの脆弱性に関連するインシデントであり、金融機関への直接的な影響が限定的であるため「中」です。確認目安は、具体的な対策期限の記述がなく、利用有無の確認から始めるべきであるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0fa86a6b2f57fc9d8dcf3f8c68488f84bfac5b17578d4d88192938889e10b17c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/hackers-poison-adform-script-to-swap.html",
+      "canonical_url": "https://thehackernews.com/2026/08/hackers-poison-adform-script-to-swap.html",
+      "published_at": "2026-08-01T18:03:07+09:00",
+      "fetched_at": "2026-08-02T07:53:38.413454+09:00",
+      "title": "Hackers Poison Adform Script to Swap Crypto Wallet Addresses Across Customer Sites",
+      "raw_title": "Hackers Poison Adform Script to Swap Crypto Wallet Addresses Across Customer Sites",
+      "raw_excerpt": null,
+      "content_hash": "sha256:baf564f67158c020b5a4383bb44efaa0fcb2c90e3821560adec7e2c73bf3458d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-02T07:53:58.137320+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "広告技術企業のスクリプト改ざんによる仮想通貨ウォレットアドレス書き換えという実際の侵害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "広告技術企業Adformが提供するJavaScriptファイルが攻撃者によって改ざんされ、ブラウザ側で仮想通貨ウォレットアドレスを書き換えるツールとして悪用されました。Adformは2026年7月27日にこのインシデントを検出し、悪意のあるコードを削除し、影響を受けた顧客に通知しました。",
+        "financial_impact": "Adformの広告スクリプトをウェブサイトに組み込んでいる金融機関、またはその委託先が影響を受ける可能性があります。仮想通貨関連サービスを提供している場合、顧客のウォレットアドレスが書き換えられるリスクがあります。",
+        "recommended_actions": [
+          "自社および委託先のウェブサイトでAdformの広告スクリプトを利用しているか確認する",
+          "Adformからの公式通知や指示を確認し、必要な対応を評価する"
+        ],
+        "reason": "重要度は、Adformのサービス利用状況に依存し、金融機関への直接的な影響が限定的であるため「中」です。確認目安は、インシデントは既に検出・対応済みであり、即時対応を要する新たな脅威情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:097fcbe5b08ca7e56f3460f25dff76ef9826b04b1b2096b3c79c146adec9745e",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/adobe-campaign-classic-cvss-100-flaw.html",
+      "canonical_url": "https://thehackernews.com/2026/08/adobe-campaign-classic-cvss-100-flaw.html",
+      "published_at": "2026-08-01T16:12:42+09:00",
+      "fetched_at": "2026-08-02T07:53:38.413454+09:00",
+      "title": "Adobe Campaign Classic CVSS 10.0 Flaw Could Run Code Without User Interaction",
+      "raw_title": "Adobe Campaign Classic CVSS 10.0 Flaw Could Run Code Without User Interaction",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4d54c21e24a66499cee9f7d7b6e47a47a2cf40c9175cf97987ff53f89c66dd51",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-02T07:54:15.095468+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Adobe Campaign Classicの最大深刻度脆弱性に関するセキュリティアップデートが主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Adobeは、エンタープライズ向けマーケティング自動化プラットフォームであるCampaign Classic (ACC) の最大深刻度脆弱性(CVE-2026-48449)に対処するセキュリティアップデートをリリースしました。この脆弱性はCVSSスコア10.0で、不適切な認証により任意のコード実行につながる可能性があります。",
+        "financial_impact": "金融機関でAdobe Campaign Classicを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Adobe Campaign Classicの利用有無と影響バージョンを確認する",
+          "Adobeのセキュリティアップデート情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、Adobe Campaign Classicの利用が限定的である可能性があり、金融機関への直接的な影響が不確実なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
