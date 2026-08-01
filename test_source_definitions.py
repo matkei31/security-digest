@@ -1058,22 +1058,56 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
         self.assertIn("9757ae98c2f5ef9f13da667be5677d870a6e2cd1", bl030)
         self.assertIn("30428514818", bl030)
 
-    def test_status_active_work_is_clear_of_bl030_bl031_bl032_and_has_bl033(self):
-        # BL-032のPR #69 merge後、Active workからBL-032も外れた。BL-030・
-        # BL-031・BL-032はいずれもActive workへ戻っておらず、すべて
-        # Recently completed workに残っている。BL-033はBL-032のpost-merge
-        # closeoutに続くActive workであることを検証する。
+    def test_status_active_work_is_empty_and_bl030_bl031_bl032_bl033_are_recently_completed(self):
+        # BL-033自身のユーザー受入後、Active workからBL-033も外れた(BL-033の
+        # 実装内容そのものが「Active work is currently empty」という状態を
+        # 生んだticketである)。BL-030・BL-031・BL-032・BL-033はいずれも
+        # Active workへ戻っておらず、すべてRecently completed workに残って
+        # いることを検証する。
         active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
         self.assertNotIn("BL-030", active)
         self.assertNotIn("BL-031", active)
         self.assertNotIn("BL-032", active)
-        self.assertIn("BL-033", active)
+        self.assertNotIn("BL-033", active)
         recently_completed = self._section(
             self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
         )
         self.assertIn("BL-030", recently_completed)
         self.assertIn("BL-031", recently_completed)
         self.assertIn("BL-032", recently_completed)
+        self.assertIn("BL-033", recently_completed)
+
+    def test_status_bl033_entry_records_user_acceptance(self):
+        active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
+        self.assertIn("None.", active)
+
+        recently_completed = self._section(
+            self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
+        )
+        bl033 = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-033 ")
+        )
+        self.assertIn(
+            "[PR #71](https://github.com/matkei31/security-digest/pull/71)", bl033
+        )
+        self.assertIn("82ae62af3d522a7095748b591476566ac21b9036", bl033)
+        self.assertIn("30690090491", bl033)
+        self.assertIn("1555 tests", bl033)
+        self.assertIn("data/index.json", bl033)
+        self.assertIn("ユーザーがBL-033の実装後受入を行い", bl033)
+        self.assertNotIn("ユーザー受入待ち", bl033)
+        self.assertNotIn("未受入", bl033)
+
+    def test_backlog_bl033_status_is_completed_and_user_accepted(self):
+        bl033 = self.backlog.split("## BL-033", 1)[1].split("\n## ", 1)[0]
+        self.assertIn("- **状態:** 完了／ユーザー受入済み", bl033)
+        residual = next(
+            line for line in bl033.splitlines() if line.startswith("- **残作業:**")
+        )
+        self.assertIn(
+            "BL-033の設計・実装・test・ユーザー受入について残作業はない", residual
+        )
+        self.assertNotIn("ユーザーによる実装後の受入、Ready化、通常のmerge-commit方式によるmergeが残作業", residual)
 
     def test_status_bl032_entry_records_first_schema_v2_operational_observation(self):
         # BL-033: BL-032のRecently completed entryへ、merge後最初の
@@ -1124,15 +1158,17 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
         # here as the current Active work item, without banning that same
         # ordinary phrase for some other, unrelated ticket in this section.
         self.assertNotIn(f"{bl032_anchor} is the current Active work item", next_candidates)
-        self.assertIn(f"and {bl032_anchor} are all complete", next_candidates)
 
-        # BL-033-specific: it is the current Active work item, distinct from
-        # BL-032's own "are all complete" membership above.
+        # BL-033-specific: after its own user acceptance, BL-033 joined the
+        # "are all complete" list (it is the list's new last member) rather
+        # than remaining "the current Active work item".
         bl033_anchor = (
             "[BL-033]"
             "(BACKLOG.md#bl-033--statusmdの動的公開実績を正本へ委譲する)"
         )
-        self.assertIn(f"{bl033_anchor} is the current Active work item", next_candidates)
+        self.assertIn(bl033_anchor, next_candidates)
+        self.assertNotIn(f"{bl033_anchor} is the current Active work item", next_candidates)
+        self.assertIn(f"and {bl033_anchor} are all complete", next_candidates)
 
         bl030 = next(
             line for line in recently_completed.splitlines() if line.startswith("- BL-030 ")
