@@ -1099,15 +1099,45 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
         self.assertNotIn("未受入", bl033)
 
     def test_backlog_bl033_status_is_completed_and_user_accepted(self):
+        # Scoped to BL-033's own section (状態／ユーザー受入証跡／残作業／注記
+        # lines), not a blanket ban on "Draft"/"Ready"/"merge" across all of
+        # BACKLOG.md -- other tickets may legitimately use that vocabulary
+        # for their own, still-open PR lifecycle.
         bl033 = self.backlog.split("## BL-033", 1)[1].split("\n## ", 1)[0]
         self.assertIn("- **状態:** 完了／ユーザー受入済み", bl033)
+
+        acceptance = next(
+            line for line in bl033.splitlines() if line.startswith("- **ユーザー受入証跡:**")
+        )
+        self.assertIn("[PR #71](https://github.com/matkei31/security-digest/pull/71)", acceptance)
+        self.assertIn("82ae62af3d522a7095748b591476566ac21b9036", acceptance)
+        self.assertIn("30690090491", acceptance)
+        self.assertIn("1555 tests", acceptance)
+        self.assertIn("520 tests", acceptance)
+        self.assertIn("unresolved review threads: 0", acceptance)
+        self.assertIn("changed files: 8ファイル", acceptance)
+        self.assertIn("実装後受入", acceptance)
+
         residual = next(
             line for line in bl033.splitlines() if line.startswith("- **残作業:**")
         )
         self.assertIn(
             "BL-033の設計・実装・test・ユーザー受入について残作業はない", residual
         )
-        self.assertNotIn("ユーザーによる実装後の受入、Ready化、通常のmerge-commit方式によるmergeが残作業", residual)
+        self.assertIn("delivery lifecycleはGitHub上のPR状態を正本とし", residual)
+        self.assertIn("BL-033の機能的・設計上の完了状態を変更しない", residual)
+        # Must not describe Ready化/merge as still-pending current work --
+        # PR delivery lifecycle belongs to GitHub, not this residual-work line.
+        self.assertNotIn("Ready化・merge等のrepository delivery operationとして残る", residual)
+        self.assertNotIn("acceptance-record commitの独立再確認後にReady化・mergeする", residual)
+
+        note = next(
+            line for line in bl033.splitlines() if line.startswith("- **注記:**")
+        )
+        self.assertIn("PR delivery lifecycleはGitHubを正本とする", note)
+        self.assertIn("BL-033はユーザー受入済みであり、機能的・設計上の残作業はない", note)
+        self.assertNotIn("PR #71はReady化・mergeせず、Draftのまま停止する", note)
+        self.assertNotIn("受入記録commitの独立再確認のため", note)
 
     def test_status_bl032_entry_records_first_schema_v2_operational_observation(self):
         # BL-033: BL-032のRecently completed entryへ、merge後最初の
@@ -1148,28 +1178,6 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
             "BL-032's Recently completed entry must record PR #69 or the merge commit",
         )
 
-        next_candidates = self._section(self.status, "## 7. Next candidates", "\n## 8. ")
-        bl032_anchor = (
-            "[BL-032]"
-            "(BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)"
-        )
-        self.assertIn(bl032_anchor, next_candidates)
-        # BL-032-specific: guard against BL-032 itself being reintroduced
-        # here as the current Active work item, without banning that same
-        # ordinary phrase for some other, unrelated ticket in this section.
-        self.assertNotIn(f"{bl032_anchor} is the current Active work item", next_candidates)
-
-        # BL-033-specific: after its own user acceptance, BL-033 joined the
-        # "are all complete" list (it is the list's new last member) rather
-        # than remaining "the current Active work item".
-        bl033_anchor = (
-            "[BL-033]"
-            "(BACKLOG.md#bl-033--statusmdの動的公開実績を正本へ委譲する)"
-        )
-        self.assertIn(bl033_anchor, next_candidates)
-        self.assertNotIn(f"{bl033_anchor} is the current Active work item", next_candidates)
-        self.assertIn(f"and {bl033_anchor} are all complete", next_candidates)
-
         bl030 = next(
             line for line in recently_completed.splitlines() if line.startswith("- BL-030 ")
         )
@@ -1180,6 +1188,32 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
         self.assertIn("BL-031", bl030)
         self.assertIn("BL-032", bl030)
         self.assertIn("are both completed, approved, and merged", bl030)
+
+    def test_status_next_candidates_keeps_bl032_and_bl033_complete(self):
+        # Positively checks that BL-032 AND BL-033 both sit inside the "are
+        # all complete" clause (not just that BL-032 individually isn't
+        # described as pending), and that neither is reintroduced as the
+        # current Active work item. Does not pin the clause's Ticket
+        # ordering, does not assume BL-033 is the clause's last member in
+        # perpetuity, and does not ban "current Active work item" for some
+        # other, unrelated ticket elsewhere in this section.
+        next_candidates = self._section(self.status, "## 7. Next candidates", "\n## 8. ")
+        bl032_anchor = (
+            "[BL-032]"
+            "(BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)"
+        )
+        bl033_anchor = (
+            "[BL-033]"
+            "(BACKLOG.md#bl-033--statusmdの動的公開実績を正本へ委譲する)"
+        )
+
+        self.assertIn(" are all complete;", next_candidates)
+        complete_clause = next_candidates.split(" are all complete;", 1)[0]
+        self.assertIn(bl032_anchor, complete_clause)
+        self.assertIn(bl033_anchor, complete_clause)
+
+        self.assertNotIn(f"{bl032_anchor} is the current Active work item", next_candidates)
+        self.assertNotIn(f"{bl033_anchor} is the current Active work item", next_candidates)
 
     def test_sd029_is_unique(self):
         headings = re.findall(r"^## (SD-\d{3})\b", self.decisions, flags=re.MULTILINE)
