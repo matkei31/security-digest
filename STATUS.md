@@ -45,7 +45,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- BL-034 閲覧計測基盤 — 実装Draft PR作成・独立レビュー待ち(branch `feature/bl034-cloudflare-web-analytics`)。Cloudflare Web Analyticsのmanual JavaScript beacon(DNS/proxy移行なし)とfooterアクセス解析説明を、トップページ・Archive一覧・全日別Archiveへ追加した。GA4・Umami・Plausible・Google Tag Managerは導入せず、大規模なCSP整備も行わない([SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.7で必要最小限のsecurity再評価のみ記録)。Google Search Consoleの導入はユーザーが別途外部で進めており、その完了は本Ticketのblockerではない。詳細は[BL-034](BACKLOG.md#bl-034--閲覧計測基盤)・[SD-032](DECISIONS.md#sd-032--adopt-cloudflare-web-analytics-and-google-search-console-for-bl-034)を参照。
+- BL-034 閲覧計測基盤 — [PR #72](https://github.com/matkei31/security-digest/pull/72)としてDraft PR作成・独立レビュー待ち(branch `feature/bl034-cloudflare-web-analytics`。Draftという一時的な状態は本項目の恒久的な正本ではない)。Cloudflare Web Analyticsのmanual JavaScript beacon(DNS/proxy移行なし)とfooterアクセス解析説明を、トップページ・Archive一覧・全日別Archiveへ追加した。GA4・Umami・Plausible・Google Tag Managerは導入せず、大規模なCSP整備も行わない([SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.7で必要最小限のsecurity再評価のみ記録)。ユーザーがブラウザでCloudflareのsite登録とmanual beacon snippet取得を完了し、その値をチャットで共有したことは確認済み(round 1レビュー訂正: それ以上の外部状態は推測しない)。Google Search Consoleは外部作業として未完了／実施予定であり、verification成功は未確認である。Search Consoleの完了は本Ticketのrepository実装のblockerではなく、Googleが発行するDNS TXT値はrepositoryへ保存しない。merge前は独立レビュー・full unittest・`git diff --check`・PC 1280px／390px表示確認・ユーザー受入・Ready化承認を行い、Cloudflare dashboardでの実データ受信確認・Search Console verification結果確認・4週間の基準値取得開始はいずれもmerge後に行う。詳細は[BL-034](BACKLOG.md#bl-034--閲覧計測基盤)・[SD-032](DECISIONS.md#sd-032--adopt-cloudflare-web-analytics-and-google-search-console-for-bl-034)を参照。
 
 ## 5. Recently completed work
 

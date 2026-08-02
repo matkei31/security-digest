@@ -2172,40 +2172,56 @@ class Bl034CloudflareWebAnalyticsTest(unittest.TestCase):
     """
 
     EXPECTED_SRC = "src='https://static.cloudflareinsights.com/beacon.min.js'"
+    EXPECTED_BEACON = (
+        "<!-- Cloudflare Web Analytics -->"
+        "<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' "
+        'data-cf-beacon=\'{"token": "61817bf1677944c191c8933b207fdc7d"}\'></script>'
+        "<!-- End Cloudflare Web Analytics -->"
+    )
 
-    def test_top_page_has_beacon_and_footer_notice(self):
-        html = fetch.build_html([])
+    def _assert_page_contract(self, html):
+        # beaconはfooterのpタグ全体が閉じた後、</body>の直前に正確に1件だけ置く。
+        self.assertEqual(html.count(self.EXPECTED_BEACON), 1)
+        self.assertEqual(html.count("<script"), 1)
+        self.assertIn("<script type='module'", html)
         self.assertIn(self.EXPECTED_SRC, html)
-        self.assertIn(fetch.CLOUDFLARE_WEB_ANALYTICS_BEACON_TOKEN, html)
-        self.assertIn('data-cf-beacon=\'{"token": "', html)
-        self.assertIn('class="site-footer"', html)
-        self.assertIn('class="analytics-notice"', html)
-        self.assertIn("Cloudflare Web Analytics", html)
-        self.assertIn("Cookie", html)
-        # beaconはfooterの後、</body>の直前に置く。
+        self.assertIn(
+            'data-cf-beacon=\'{"token": "61817bf1677944c191c8933b207fdc7d"}\'', html
+        )
+        self.assertEqual(
+            html.count(fetch.CLOUDFLARE_WEB_ANALYTICS_BEACON_TOKEN), 1
+        )
+        self.assertEqual(html.count('class="site-footer"'), 1)
+        self.assertEqual(html.count('class="analytics-notice"'), 1)
         self.assertLess(html.index("analytics-notice"), html.index(self.EXPECTED_SRC))
         self.assertLess(html.index(self.EXPECTED_SRC), html.index("</body>"))
+        # スクリプト読込元(static.cloudflareinsights.com)と計測データ送信先
+        # (cloudflareinsights.com、実際にはcdn-cgi/rum配下)を、footer説明文で
+        # 混同していないことを確認する(round 1レビュー訂正)。
+        notice_start = html.index('class="analytics-notice"')
+        notice_end = html.index("</p>", notice_start)
+        notice_text = html[notice_start:notice_end]
+        self.assertIn("static.cloudflareinsights.comから読み込み", notice_text)
+        self.assertIn("cloudflareinsights.comへ送信", notice_text)
+        self.assertNotIn("static.cloudflareinsights.com（Cloudflare）へ送信", notice_text)
+        self.assertNotIn("static.cloudflareinsights.comへ送信", notice_text)
+        self.assertIn("localStorage", notice_text)
+        self.assertNotIn("local storage", notice_text)
+        self.assertNotIn("Visits", notice_text)
+        self.assertNotIn("visitors", notice_text.lower())
 
-    def test_daily_archive_has_beacon_and_footer_notice(self):
+    def test_top_page_contract(self):
+        html = fetch.build_html([])
+        self._assert_page_contract(html)
+        self.assertIn("Cloudflare Web Analytics", html)
+
+    def test_daily_archive_contract(self):
         html = fetch.build_daily_archive_html(make_digest("2026-07-22"))
-        self.assertIn(self.EXPECTED_SRC, html)
-        self.assertIn(fetch.CLOUDFLARE_WEB_ANALYTICS_BEACON_TOKEN, html)
-        self.assertIn('class="analytics-notice"', html)
+        self._assert_page_contract(html)
 
-    def test_archive_index_has_beacon_and_footer_notice(self):
+    def test_archive_index_contract(self):
         html = fetch.build_archive_index_html([])
-        self.assertIn(self.EXPECTED_SRC, html)
-        self.assertIn(fetch.CLOUDFLARE_WEB_ANALYTICS_BEACON_TOKEN, html)
-        self.assertIn('class="analytics-notice"', html)
-
-    def test_beacon_appears_exactly_once_per_page(self):
-        for html in (
-            fetch.build_html([]),
-            fetch.build_daily_archive_html(make_digest("2026-07-22")),
-            fetch.build_archive_index_html([]),
-        ):
-            self.assertEqual(html.count("<script"), 1)
-            self.assertEqual(html.count(fetch.CLOUDFLARE_WEB_ANALYTICS_BEACON_TOKEN), 1)
+        self._assert_page_contract(html)
 
     def test_footer_notice_does_not_assert_legal_conclusions(self):
         # 断定的な法的評価("収集しません"等)を避け、Cloudflare側の説明の
@@ -2214,7 +2230,53 @@ class Bl034CloudflareWebAnalyticsTest(unittest.TestCase):
         notice_start = html.index('class="analytics-notice"')
         notice_end = html.index("</p>", notice_start)
         notice_text = html[notice_start:notice_end]
-        self.assertIn("説明されています", notice_text)
+        self.assertIn("説明しています", notice_text)
+
+
+class Bl034CheckedInHtmlAuditTest(unittest.TestCase):
+    """BL-034 round 1レビュー: リポジトリへcommit済みの公開HTML全件
+    (docs/index.html・docs/archive/index.html・全docs/archive/YYYY-MM-DD.html)
+    が、生成関数と同じbeacon/footer契約を満たしていることを検査する
+    (生成関数のunit testとは別に、実際にcommitされた出力そのものを検査する)。
+    """
+
+    ROOT = Path(__file__).resolve().parent
+    DOCS_DIR = ROOT / "docs"
+
+    @classmethod
+    def setUpClass(cls):
+        cls.files = [cls.DOCS_DIR / "index.html", cls.DOCS_DIR / "archive" / "index.html"]
+        cls.files += sorted(
+            p for p in (cls.DOCS_DIR / "archive").glob("*.html") if p.name != "index.html"
+        )
+
+    def test_at_least_one_daily_archive_file_is_included(self):
+        daily = [p for p in self.files if p.name != "index.html"]
+        self.assertGreater(len(daily), 0)
+
+    def test_every_checked_in_html_file_has_exactly_one_beacon_and_footer(self):
+        expected_beacon = (
+            "<!-- Cloudflare Web Analytics -->"
+            "<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' "
+            'data-cf-beacon=\'{"token": "61817bf1677944c191c8933b207fdc7d"}\'></script>'
+            "<!-- End Cloudflare Web Analytics -->"
+        )
+        for path in self.files:
+            with self.subTest(file=path.relative_to(self.ROOT)):
+                html = path.read_text(encoding="utf-8")
+                self.assertEqual(html.count(expected_beacon), 1)
+                self.assertEqual(html.count("<script"), 1)
+                self.assertIn("<script type='module'", html)
+                self.assertIn("static.cloudflareinsights.com", html)
+                self.assertIn("cloudflareinsights.com", html)
+                self.assertEqual(html.count('class="analytics-notice"'), 1)
+                self.assertIn("localStorage", html)
+                self.assertNotIn("local storage", html)
+                self.assertNotIn(
+                    "static.cloudflareinsights.com（Cloudflare）へ送信", html
+                )
+                self.assertNotIn("static.cloudflareinsights.comへ送信", html)
+                self.assertNotIn("Visits", html)
 
 
 if __name__ == "__main__":

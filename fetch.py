@@ -5007,19 +5007,23 @@ def render_cloudflare_web_analytics_html():
 
 
 def render_analytics_footer_html():
-    """BL-034: footerに掲載する短いアクセス解析説明。
+    """BL-034: footerに掲載する短いアクセス解析説明(round 1レビュー訂正)。
 
     利用サービス名・目的・Cookie/localStorage不使用というCloudflare側の仕様説明・
-    取得できる集計情報・送信先を簡潔に示す。断定的な法的評価はしない
-    (「〜と説明されています」という引用の形にとどめる)。
+    取得できる集計情報を簡潔に示す。断定的な法的評価はしない
+    (「〜と説明しています」という引用の形にとどめる)。スクリプトの読込元
+    (`static.cloudflareinsights.com`)と計測データの送信先
+    (`cloudflareinsights.com`、実際のbeaconは`cloudflareinsights.com/cdn-cgi/rum`
+    へPOSTする)を区別して記載する――読込元だけを「送信先」と誤記しない。
     """
     return (
         '<footer class="site-footer">\n'
-        '    <p class="analytics-notice">本サイトはページ閲覧状況を把握するため'
-        'Cloudflare Web Analyticsを利用しています。Cloudflareの仕様として、'
-        'Cookieおよびlocal storageは使用しないと説明されています。取得される'
-        'のはページビュー数・参照元・国・デバイス種別などの集計情報であり、'
-        'static.cloudflareinsights.com（Cloudflare）へ送信されます。</p>\n'
+        '    <p class="analytics-notice">本サイトは閲覧状況の把握に'
+        'Cloudflare Web Analyticsを利用しています。Cloudflareは、Cookieや'
+        'localStorageを使用せず、個々の訪問者を追跡しないと説明しています。'
+        'ページビュー、参照元、国、デバイス種別等を集計し、解析用スクリプトを'
+        'static.cloudflareinsights.comから読み込み、計測データを'
+        'cloudflareinsights.comへ送信します。</p>\n'
         '  </footer>'
     )
 

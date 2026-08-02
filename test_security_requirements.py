@@ -187,7 +187,7 @@ class SecurityRequirementsTest(unittest.TestCase):
             "GAP-015": "Hardening candidate",
             "GAP-016": "Security gap",
             "GAP-017": "Owner verification",
-            "GAP-018": "Security gap",
+            "GAP-018": "Policy decision",
         }
         self.assertEqual({gap_id: row[1] for gap_id, row in rows.items()}, expected)
         allowed_dispositions = {
@@ -217,7 +217,7 @@ class SecurityRequirementsTest(unittest.TestCase):
             "GAP-013": "Completed by documentation",
             "GAP-014": "Completed by documentation",
             "GAP-015": "Deferred until trigger",
-            "GAP-016": "Implemented (Draft, pending user acceptance)",
+            "GAP-016": "Implemented",
             "GAP-017": "Completed owner verification",
             "GAP-018": "Implemented (Draft, pending user acceptance)",
         }
@@ -1671,6 +1671,86 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
         # The 2026-07-30 past-tense 13-source-footer fact must still be intact.
         self.assertIn("pre-BL-031 13-source list", bl030)
         self.assertIn("This actually occurred once, confirmed", bl030)
+
+
+class Bl034Round1ReviewCorrectionsTest(unittest.TestCase):
+    """BL-034 PR #72 round 1 independent review: locks the 7 corrections in
+    place so a later edit cannot silently reintroduce the misstatements
+    (footer destination confusion, BL-009/BL-034 state mismatch, merge-order
+    conflation, an unconfirmed Search Console claim, GAP-018 misclassified as
+    a security gap, and BL-032's current state shown as still-Draft).
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        root = Path(__file__).resolve().parent
+        cls.requirements = (root / "SECURITY_REQUIREMENTS.md").read_text(encoding="utf-8")
+        cls.backlog = (root / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (root / "STATUS.md").read_text(encoding="utf-8")
+
+    @staticmethod
+    def _section(text, start, end=None):
+        after = text.split(start, 1)[1]
+        return after.split(end, 1)[0] if end else after
+
+    def test_bl009_is_an_in_progress_umbrella_not_completed(self):
+        bl009 = self._section(self.backlog, "## BL-009", "\n## BL-010")
+        self.assertIn("進行中（BL-034で閲覧計測基盤を先行）", bl009)
+        self.assertNotIn("- **状態:** 完了", bl009)
+
+    def test_bl034_is_not_completed_and_awaits_acceptance(self):
+        bl034 = self._section(self.backlog, "## BL-034", "\n## 完了済み参照")
+        self.assertNotIn("- **状態:** 完了", bl034)
+        self.assertIn("実装Draft PR／レビュー待ち", bl034)
+        self.assertIn("記録なし", bl034)
+
+    def test_dashboard_and_search_console_confirmation_are_post_merge_only(self):
+        bl034 = self._section(self.backlog, "## BL-034", "\n## 完了済み参照")
+        self.assertIn("**merge後:**", bl034)
+        self.assertIn("Cloudflare dashboardでの実データ受信確認", bl034)
+        active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
+        self.assertIn("merge後に行う", active)
+        self.assertIn("未完了／実施予定", active)
+        self.assertIn("verification成功は未確認", active)
+        self.assertNotIn("別途外部で進めており", active)
+
+    def test_gap_018_is_a_policy_decision_not_a_security_gap(self):
+        gaps = self._section(
+            self.requirements,
+            "## 8. Gap register",
+            "## 9. Explicitly non-required controls for the current architecture",
+        )
+        self.assertRegex(gaps, r"\| GAP-018 \| Policy decision \|")
+        self.assertNotRegex(gaps, r"\| GAP-018 \| Security gap \|")
+
+    def test_bl032_runtime_implementation_is_accepted_and_merged_not_draft(self):
+        gaps = self._section(
+            self.requirements,
+            "## 8. Gap register",
+            "## 9. Explicitly non-required controls for the current architecture",
+        )
+        self.assertIn("GAP-016", gaps)
+        self.assertRegex(gaps, r"\| GAP-016 \| Security gap \| Implemented \|")
+        gap016_row = next(
+            line for line in gaps.splitlines() if line.startswith("| GAP-016 |")
+        )
+        self.assertIn("user-accepted and merged", gap016_row)
+        self.assertNotIn("Draft, pending user acceptance", gap016_row)
+        self.assertNotIn("not yet user-accepted", gap016_row)
+
+    def test_requirements_document_itself_is_version_17_draft(self):
+        self.assertIn("**Version:** 1.7", self.requirements)
+        self.assertIn("**Status:** Draft", self.requirements)
+
+    def test_footer_and_beacon_destinations_are_distinguished_everywhere(self):
+        # No sentence anywhere in the document should claim
+        # static.cloudflareinsights.com is the only external destination —
+        # the beacon separately POSTs measurement data to cloudflareinsights.com.
+        self.assertNotIn(
+            "first external network\ndestination (`static.cloudflareinsights.com`)",
+            self.requirements,
+        )
+        self.assertIn("cloudflareinsights.com/cdn-cgi/rum", self.requirements)
 
 
 if __name__ == "__main__":
