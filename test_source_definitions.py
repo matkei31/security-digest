@@ -1079,10 +1079,11 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
 
     def test_status_bl033_entry_records_user_acceptance(self):
         # Active work was empty at BL-033-acceptance time; BL-034 (閲覧計測基盤)
-        # has since become the current Active work item, which does not
-        # reopen or change BL-033's own completed/accepted record below.
+        # became the Active work item after that, then closed out (2026-08-03),
+        # returning Active work to empty again -- this does not reopen or
+        # change BL-033's own completed/accepted record below.
         active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
-        self.assertIn("BL-034", active)
+        self.assertIn("None.", active)
 
         recently_completed = self._section(
             self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"

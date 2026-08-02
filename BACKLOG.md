@@ -239,12 +239,12 @@
 - **追加のユーザー原文:** 「そういう話をするタイミングになったら教えて」
 - **出所:** 2026-07-13 プロジェクト会話。BL-034分離は2026-08-03のプロジェクト会話。
 - **ユーザー確認済み要約:** 該当なし — 原文は上記のとおり回収済み。
-- **解釈:** 前提条件（BL-006・BL-007・BL-002〜BL-004・BL-028〜BL-033完了、新たな未対応P0/P1データ品質課題なし）が整ったため着手した。umbrella Ticketとして本Ticketを維持し、残作業のうち「成果の測定」の基盤となる閲覧計測を、独立Ticket [BL-034](#bl-034--閲覧計測基盤)（閲覧計測基盤）として先行させる。BL-034はCloudflare Web AnalyticsとGoogle Search Consoleの導入を扱い、robots.txt・sitemap・canonical・OG・favicon・About全体・コンテンツSEOはBL-034のscope外とし、本Ticket配下に残す。本Ticket自体は、BL-034完了・基準値取得後、残る作業へ進む前提で進行中とする。
-- **完了条件:** 未定義。BL-034完了後、残作業の各項目ごとに個別Ticketまたは追加の完了条件を定義する。
+- **解釈:** 前提条件（BL-006・BL-007・BL-002〜BL-004・BL-028〜BL-033完了、新たな未対応P0/P1データ品質課題なし）が整ったため着手した。umbrella Ticketとして本Ticketを維持し、残作業のうち「成果の測定」の基盤となる閲覧計測を、独立Ticket [BL-034](#bl-034--閲覧計測基盤)（閲覧計測基盤）として先行させる。BL-034はCloudflare Web AnalyticsとGoogle Search Consoleの導入を扱い、robots.txt・sitemap・canonical・OG・favicon・About全体・コンテンツSEOはBL-034のscope外とし、本Ticket配下に残す。本Ticket自体は、[BL-034](#bl-034--閲覧計測基盤)完了(2026-08-03)を受け、基準値取得期間中(計測開始日2026-08-03)を経て、残る作業へ進む前提で進行中とする。
+- **完了条件:** 未定義。BL-034は完了した。残作業の各項目ごとに個別Ticketまたは追加の完了条件を今後定義する。
 - **依存関係:** Ticket 14a-3およびTicket 14a-4は完了しており、再オープンの前提条件ではない。BL-006、BL-007、日本語版の編集仕様、BL-002〜BL-004、Aboutコンテンツ、metadata、公開ナビゲーションはいずれも完了済みで、着手前提条件を満たした。[BL-034](#bl-034--閲覧計測基盤)（閲覧計測基盤）は本Ticketから分離した先行Ticketであり、その進捗はBACKLOG.md上のBL-034自身の状態を正本とする（本項目では複製しない）。
 - **実装証跡:** 未実装（BL-034の実装証跡はBL-034自身を参照）。
 - **ユーザー受入証跡:** 記録なし。
-- **残作業:** 対象読者と目標の定義、技術/コンテンツSEOの監査、metadata（meta description等）、robots.txt、sitemap、canonical、OG／共有（Open Graph・Twitter Card）、favicon、About全体、施策の優先順位付け、個別実装、成果測定の継続（BL-034完了後、基準値をもとに評価を継続する）。
+- **残作業:** 対象読者と目標の定義、技術/コンテンツSEOの監査、metadata（meta description等）、robots.txt、sitemap、canonical、OG／共有（Open Graph・Twitter Card）、favicon、About全体、施策の優先順位付け、個別実装、Cloudflare Web AnalyticsとGoogle Search Consoleを用いた成果測定の継続（BL-034は完了し2026-08-03に計測を開始した。基準値取得期間を経て評価を継続する）。
 - **注記:** 前提条件は整い、umbrella Ticketとして進行中。原文はBL-014の最終完了パス（2026-07-18）で回収された；[BACKLOG_AUDIT.md](BACKLOG_AUDIT.md)を参照。
 
 ## BL-010 — 多言語対応の意義判断
@@ -822,7 +822,7 @@
 - **ID:** BL-034
 - **タイトル:** 閲覧計測基盤
 - **優先度:** P2
-- **状態:** 実装受入済み／公開後確認待ち
+- **状態:** 完了
 - **出所種別:** ユーザー原文
 - **ユーザー原文:** 「閲覧数わかるようにするのは？」「訪問数をカウントするにしては過剰じゃない？妥当？ 費用はかからない？Cloudflareじゃなくてxサーバーを使ってるけど問題ない？」「ok。進めよう」
 - **出所:** 2026-08-03 プロジェクト会話。[BL-009](#bl-009--seoと閲覧者増加策)着手前調査として行った、Monomi Digestの閲覧数計測基盤に関する検討。
@@ -859,14 +859,13 @@
   - changed files 35件
   - unresolved review threads 0
   - UIはトップページ・Archive一覧・日別Archiveのそれぞれについて1280px・390pxの計6組み合わせでDOM検査(footer要素・script要素それぞれ正確に1件、横スクロールなし)を行い、取得できた範囲でscreenshotによる目視確認も行った証跡をユーザーが受入れた
-  - 本受入はCloudflare dashboardでのデータ受信確認とGoogle Search Console verification確認を含まない。これらは公開後の残作業として別途確認する。
-- **残作業:** repository実装は受入済みであり、残るのは公開後確認のみ。
-  - GitHub Pages公開反映の客観確認
-  - `monomidigest.com`の公開HTML上でbeaconが正確に1件存在することの確認
-  - Cloudflare dashboardでの実データ受信確認
-  - Google Search Console Domain property verification結果の確認
-  - 計測開始日の記録
-  - 4週間程度の基準値取得期間の開始(4週間の経過完了自体はBL-034の完了条件とせず、基準値取得が開始されたことまでで足りる)
+  - 本受入時点ではCloudflare dashboardでのデータ受信確認とGoogle Search Console verification確認を含んでいなかった。これらは公開後の運用確認として、以下のとおり別途完了した。
+  - [PR #72](https://github.com/matkei31/security-digest/pull/72)は通常のmerge commit方式でmerge済み。merge commit `8cd98e52bfe6164bffa8e10cdbf708eef76d43a1`。merge契機のGitHub Pages deploymentが成功した。
+  - 公開トップページ・Archive一覧・代表的な日別Archive(`2026-07-31.html`)で、Cloudflare beacon(`type='module'`・正しいtoken・`static.cloudflareinsights.com`)とfooterアクセス解析説明が、各ページ正確に1件ずつ存在することをHTTP 200・DOM検査で確認済み。
+  - 2026-08-03、ユーザーがCloudflare Web Analytics dashboardで実データ受信を確認した。初期確認値: Visits 3、Page views 3、Page load time 217ms。この数値は導入直後の初期観測値であり、現在値や恒久的な基準値ではない。Visitsはunique人数を意味しない(Cloudflare公式定義: 異なるwebsiteからのreferrerまたはdirect linkを起点とするpage view。1 Visitに複数page viewsが含まれ得る)。
+  - 2026-08-03、ユーザーがGoogle Search ConsoleでDomain property `monomidigest.com` の所有権確認成功(「所有権を証明しました」の画面)を確認した。確認方法はDNSレコード／ドメイン名プロバイダ。Google verification TXTレコードは所有権維持のためXServer DNSに残し、TXT値そのものはrepositoryへ保存していない。
+  - 計測開始日: `2026-08-03`。4週間程度の基準値取得期間を開始した。
+- **残作業:** なし。4週間程度のデータ蓄積と評価は[BL-009](#bl-009--seoと閲覧者増加策)の成果測定として継続し、BL-034を再オープンしない。
 - **注記:** [BL-009](#bl-009--seoと閲覧者増加策)のうちrobots.txt・sitemap・canonical・OG・favicon・About全体・コンテンツSEOは、本Ticketには含めず、[BL-009](#bl-009--seoと閲覧者増加策)配下の後続Ticket候補として別途記録する。Cloudflareのbeacon tokenはユーザーがCloudflareのmanual setup画面から取得し、チャット上で共有した公開識別子であり、account password・API token・session情報等は要求していない。
 
 ## 完了済み参照
