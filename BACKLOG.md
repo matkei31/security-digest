@@ -822,7 +822,7 @@
 - **ID:** BL-034
 - **タイトル:** 閲覧計測基盤
 - **優先度:** P2
-- **状態:** 実装Draft PR／レビュー待ち
+- **状態:** 実装受入済み／公開後確認待ち
 - **出所種別:** ユーザー原文
 - **ユーザー原文:** 「閲覧数わかるようにするのは？」「訪問数をカウントするにしては過剰じゃない？妥当？ 費用はかからない？Cloudflareじゃなくてxサーバーを使ってるけど問題ない？」「ok。進めよう」
 - **出所:** 2026-08-03 プロジェクト会話。[BL-009](#bl-009--seoと閲覧者増加策)着手前調査として行った、Monomi Digestの閲覧数計測基盤に関する検討。
@@ -850,10 +850,23 @@
   12. **merge後:** GitHub Pagesへの公開反映を確認し、`monomidigest.com`の公開HTML上でbeaconが正確に1件存在することを確認したうえで、Cloudflare dashboardでの実データ受信確認、Google Search Console verification結果の確認、計測開始日の記録を行い、4週間程度の基準値取得期間を開始する。
 - **依存関係:** [BL-009](#bl-009--seoと閲覧者増加策)(umbrella Ticket、本Ticketの完了後も別スコープ・未着手のまま残る)。[BL-006](#bl-006--monomi-digestへのブランド変更)・[BL-007](#bl-007--monomidigestcomへの移行)・[BL-002](#bl-002--記事カードの楕円バッジ多用を見直す)〜[BL-004](#bl-004--fable-5によるuiレビューとui設計書)・[BL-028](#bl-028--ダイジェストナビゲーションの配置を再設計する)〜[BL-033](#bl-033--statusmdの動的公開実績を正本へ委譲する)(いずれも完了済み、着手前提条件)。[SD-032](DECISIONS.md#sd-032--adopt-cloudflare-web-analytics-and-google-search-console-for-bl-034)が採用方針を記録する。
 - **実装証跡:** branch `feature/bl034-cloudflare-web-analytics`。`fetch.py`に`CLOUDFLARE_WEB_ANALYTICS_BEACON_TOKEN`定数(Cloudflareのmanual setupが発行した、公開HTMLへ埋め込む前提の識別子であり、account password・API secret等の秘密情報ではない)、`render_cloudflare_web_analytics_html()`(Cloudflare発行のmanual beacon snippetをそのまま出力)、`render_analytics_footer_html()`(短いアクセス解析説明の`<footer>`)を追加し、`build_html()`(トップページ・全日別Archiveで共用)と`build_archive_index_html()`の`</body>`直前へ配線した(CSS `.site-footer`/`.analytics-notice`を両テンプレートへ追加)。既存の`docs/index.html`・`docs/archive/index.html`・日別Archive HTML23件を、外部HTTP/Gemini/RSS/NVD/CISA KEVを呼ばず、既存daily JSON(`generate_archive_outputs()`・`digest_items_for_html()`/`brief_for_html_from_digest()`)のみを用いてoffline再生成した(`data/*.json`・`docs/CNAME`は無変更、`git diff`で確認)。inline JS・onclick等が一切無いことを検証していた既存test(`test_fetch.py` `test_no_javascript_is_emitted_anywhere_in_the_page`)を、Cloudflare beacon 1個のみを許容する契約(`test_only_the_documented_cloudflare_beacon_script_is_emitted`)へ更新し、HTMLコメントが皆無であることを検証していた既存test(`test_fetch.py` `test_no_html_comment_carries_brief_content`、`test_archive.py` `test_internal_and_external_links_are_safe`)を、Cloudflareの静的な2個のdocumentedコメントのみを許容する契約へ更新した。新規`Bl034CloudflareWebAnalyticsTest`(`test_archive.py`)で、トップページ・日別Archive・Archive一覧それぞれにbeacon・footer開示が1回だけ出現すること、footer開示が断定的な法的評価をしていないことを検証した。full unittest 1563 tests OK。`SECURITY_REQUIREMENTS.md`をVersion 1.7(Draft、pending user acceptance)へ更新し、新規SR-047(third-party browser scripts and client-side analytics)・新規GAP-018(この追加自体をDraft実装として記録)・section 9のMandatory CSP行・section 10のre-evaluation triggerへBL-034を参照する補足を追加した。`test_security_requirements.py`をVersion 1.7・SR-047・GAP-018に合わせて更新した。`source_definitions.json`・`daily_json.py`・`vulnerability_facts.py`・ARTICLE/BRIEF prompt・response schema・schema定数・`.github/workflows/`・`SECURITY_OPERATIONS.md`・`SOURCE_USAGE_POLICY.md`は変更していない。production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行っていない。
-- **ユーザー受入証跡:** 記録なし。「ok。進めよう」は、BL-034の方針(Cloudflare Web Analytics + Search Console採用、XServer DNS維持、GA4/Umami不採用、footer開示、CSP大規模整備なし、BL-009からの分離)と実装着手の承認であり、Draft PR作成前の時点では実装後の最終受入ではない。
-- **残作業:** (round 1レビューでmerge前／merge後の順序を訂正)
-  - **merge前:** [PR #72](https://github.com/matkei31/security-digest/pull/72)(現時点ではDraft。Draftという一時的な状態自体を本Ticketの恒久的な正本として固定しない)の独立レビュー、PC 1280px／390pxでの表示確認、ユーザーによる表示・scopeの受入、Ready化・mergeの明示的な承認。
-  - **merge後:** GitHub Pages公開反映の客観確認、`monomidigest.com`の公開HTML上でbeaconが正確に1件存在することの確認、Cloudflare dashboardでの実データ受信確認、Google Search Console Domain property verification結果の確認、計測開始日の記録、4週間程度の基準値取得期間の開始。
+- **ユーザー受入証跡:** 「ok。進めよう」は方針・実装着手の承認だった(Draft PR作成前の最終受入ではない)。2026-08-03、ユーザーは[PR #72](https://github.com/matkei31/security-digest/pull/72)への独立レビューround 2完了(新たなBlockerなし)を確認し、本メッセージの送付をもって次を明示的に承認した: BL-034のrepository実装受入、[SD-032](DECISIONS.md#sd-032--adopt-cloudflare-web-analytics-and-google-search-console-for-bl-034)の採用判断の維持、[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.7の内容承認、PR #72のReady化と通常のmerge commit方式によるmerge、merge後の公開状態確認。
+  - accepted implementation head: `6d032e702e1b118bc6da86b981a4189b4a85e15b`
+  - 独立レビューround 1・2で指摘されたBlockerはすべて修正・独立再確認済み
+  - full unittest 1577 tests OK
+  - Pull Request CI run [30765873879](https://github.com/matkei31/security-digest/actions/runs/30765873879) success
+  - `git diff --check` success
+  - changed files 35件
+  - unresolved review threads 0
+  - UIはトップページ・Archive一覧・日別Archiveのそれぞれについて1280px・390pxの計6組み合わせでDOM検査(footer要素・script要素それぞれ正確に1件、横スクロールなし)を行い、取得できた範囲でscreenshotによる目視確認も行った証跡をユーザーが受入れた
+  - 本受入はCloudflare dashboardでのデータ受信確認とGoogle Search Console verification確認を含まない。これらは公開後の残作業として別途確認する。
+- **残作業:** repository実装は受入済みであり、残るのは公開後確認のみ。
+  - GitHub Pages公開反映の客観確認
+  - `monomidigest.com`の公開HTML上でbeaconが正確に1件存在することの確認
+  - Cloudflare dashboardでの実データ受信確認
+  - Google Search Console Domain property verification結果の確認
+  - 計測開始日の記録
+  - 4週間程度の基準値取得期間の開始(4週間の経過完了自体はBL-034の完了条件とせず、基準値取得が開始されたことまでで足りる)
 - **注記:** [BL-009](#bl-009--seoと閲覧者増加策)のうちrobots.txt・sitemap・canonical・OG・favicon・About全体・コンテンツSEOは、本Ticketには含めず、[BL-009](#bl-009--seoと閲覧者増加策)配下の後続Ticket候補として別途記録する。Cloudflareのbeacon tokenはユーザーがCloudflareのmanual setup画面から取得し、チャット上で共有した公開識別子であり、account password・API token・session情報等は要求していない。
 
 ## 完了済み参照
