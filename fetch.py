@@ -28,6 +28,12 @@ RSS_RETRY_BACKOFF_SECONDS = 2
 
 GEMINI_MODEL = "gemini-2.5-flash"
 
+# BL-034: Cloudflare Web Analyticsのmanual JavaScript beacon(DNS/proxyを
+# Cloudflareへ移行しない方式)。tokenはCloudflareのmanual setupフローが発行する、
+# 公開HTMLへ埋め込む前提の識別子であり、account password・API token等の秘密情報
+# ではない(https://developers.cloudflare.com/web-analytics/get-started/)。
+CLOUDFLARE_WEB_ANALYTICS_BEACON_TOKEN = "61817bf1677944c191c8933b207fdc7d"
+
 JST = datetime.timezone(datetime.timedelta(hours=9))
 
 NAMESPACES = {
@@ -4983,6 +4989,45 @@ def render_source_attribution_html(item, generated_at_ymd=""):
     return f'\n      <p class="article-attribution">{esc(text)}</p>'
 
 
+def render_cloudflare_web_analytics_html():
+    """BL-034: Cloudflare Web Analyticsのmanual JavaScript beacon。
+
+    Cloudflareのmanual setup(DNS/proxyを移行しない方式)が発行したsnippetを
+    そのまま埋め込む(SD-032)。SRIは、この手動embed方式では現状Cloudflare側が
+    提供していない(公式FAQ)。
+    """
+    return (
+        "<!-- Cloudflare Web Analytics -->"
+        "<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' "
+        "data-cf-beacon='{\"token\": \""
+        + CLOUDFLARE_WEB_ANALYTICS_BEACON_TOKEN
+        + "\"}'></script>"
+        "<!-- End Cloudflare Web Analytics -->"
+    )
+
+
+def render_analytics_footer_html():
+    """BL-034: footerに掲載する短いアクセス解析説明(round 1レビュー訂正)。
+
+    利用サービス名・目的・Cookie/localStorage不使用というCloudflare側の仕様説明・
+    取得できる集計情報を簡潔に示す。断定的な法的評価はしない
+    (「〜と説明しています」という引用の形にとどめる)。スクリプトの読込元
+    (`static.cloudflareinsights.com`)と計測データの送信先
+    (`cloudflareinsights.com`、実際のbeaconは`cloudflareinsights.com/cdn-cgi/rum`
+    へPOSTする)を区別して記載する――読込元だけを「送信先」と誤記しない。
+    """
+    return (
+        '<footer class="site-footer">\n'
+        '    <p class="analytics-notice">本サイトは閲覧状況の把握に'
+        'Cloudflare Web Analyticsを利用しています。Cloudflareは、Cookieや'
+        'localStorageを使用せず、個々の訪問者を追跡しないと説明しています。'
+        'ページビュー、参照元、国、デバイス種別等を集計し、解析用スクリプトを'
+        'static.cloudflareinsights.comから読み込み、計測データを'
+        'cloudflareinsights.comへ送信します。</p>\n'
+        '  </footer>'
+    )
+
+
 def build_html(
     items,
     brief=None,
@@ -5465,6 +5510,8 @@ def build_html(
     .sources ul{{margin:10px 0 0;padding-left:18px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:18px;row-gap:5px}}
     .sources li{{font-size:11px;line-height:1.5;color:#8b949e;overflow-wrap:anywhere}}
     @media (max-width:600px){{.sources ul{{grid-template-columns:1fr}}}}
+    .site-footer{{max-width:680px;margin:20px auto 0;padding:0 12px}}
+    .analytics-notice{{font-size:11px;color:#768496;line-height:1.6}}
   </style>
 </head>
 <body>
@@ -5489,6 +5536,8 @@ def build_html(
     </details>
   </div>
   {archive_footer_nav_html or ""}
+  {render_analytics_footer_html()}
+  {render_cloudflare_web_analytics_html()}
 </body>
 </html>"""
 
@@ -5635,6 +5684,8 @@ def build_archive_index_html(summaries, generated_at=None):
     .archive-list{{max-width:680px;margin:12px auto 0;padding:0 12px;list-style:none;display:grid;gap:10px}}
     .archive-list-item{{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;display:grid;gap:4px}}
     .archive-date-link{{font-size:14px}}
+    .site-footer{{max-width:680px;margin:20px auto 0;padding:0 12px}}
+    .analytics-notice{{font-size:11px;color:#768496;line-height:1.6}}
   </style>
 </head>
 <body>
@@ -5645,6 +5696,8 @@ def build_archive_index_html(summaries, generated_at=None):
   <ul class="archive-list">
       {list_body}
   </ul>
+  {render_analytics_footer_html()}
+  {render_cloudflare_web_analytics_html()}
 </body>
 </html>"""
 

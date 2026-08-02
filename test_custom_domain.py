@@ -212,8 +212,11 @@ class Bl007DocumentationTest(unittest.TestCase):
         self.assertNotIn("ドメインが購入または設定済みであると推定しない", bl007)
 
     def test_bl009_scope_and_state_are_unchanged(self):
+        # BL-034(閲覧計測基盤)登録によりBL-009は進行中へ移行した(round 1
+        # レビュー訂正)。本testはBL-007クロージング作業がBL-009のscope/状態を
+        # 変更していないことのみ検証し、BL-034による意図的な状態変更とは別。
         bl009 = self._section(self.backlog, "## BL-009")
-        self.assertIn("記録済み / 前提条件が整うまで保留", bl009)
+        self.assertIn("進行中（BL-034で閲覧計測基盤を先行）", bl009)
 
     def test_bl006_completion_state_is_unchanged(self):
         bl006 = self._section(self.backlog, "## BL-006")

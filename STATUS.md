@@ -2,7 +2,7 @@
 
 ## 1. As of
 
-2026-08-01
+2026-08-03
 
 「As of」はこの文書自体の最終更新日であり、最新のproduction run日ではない([BL-033](BACKLOG.md#bl-033--statusmdの動的公開実績を正本へ委譲する)以降、最新公開実績はこの文書へ複製せず`data/index.json`とその参照先を正本とするため)。
 
@@ -45,7 +45,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- None.
+- BL-034 閲覧計測基盤 — repository実装はユーザー受入済み(accepted implementation head `6d032e702e1b118bc6da86b981a4189b4a85e15b`、独立レビューround 1・2完了・新たなBlockerなし)。[PR #72](https://github.com/matkei31/security-digest/pull/72)のdelivery状態(Draft／Ready for review／merge待ち／merge済みのいずれであるか)はGitHub上のPR状態を正本とし、本項目では固定しない。Cloudflare Web Analyticsのmanual JavaScript beacon(DNS/proxy移行なし)とfooterアクセス解析説明を、トップページ・Archive一覧・全日別Archiveへ追加した。GA4・Umami・Plausible・Google Tag Managerは導入せず、大規模なCSP整備も行わない([SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.7で必要最小限のsecurity再評価のみ記録し、Approved化した)。ユーザーがブラウザでCloudflareのsite登録とmanual beacon snippet取得を完了し、その値をチャットで共有したことは確認済みだが、Cloudflare dashboardでの実データ受信はまだ未確認である。Google Search ConsoleのDomain property verificationも未確認であり、Googleが発行するDNS TXT値はrepositoryへ保存しない。PR #72のdeliveryと、GitHub Pages公開反映確認・Cloudflare dashboard受信確認・Search Console verification確認・計測開始日の記録・4週間程度の基準値取得開始という公開後確認が、いずれも残っている。[BL-009](BACKLOG.md#bl-009--seoと閲覧者増加策)はumbrella Ticketとして引き続き進行中。詳細は[BL-034](BACKLOG.md#bl-034--閲覧計測基盤)・[SD-032](DECISIONS.md#sd-032--adopt-cloudflare-web-analytics-and-google-search-console-for-bl-034)を参照。
 
 ## 5. Recently completed work
 
@@ -93,7 +93,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## 7. Next candidates
 
-[BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更), [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行), [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する), [BL-027](BACKLOG.md#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする), [BL-028](BACKLOG.md#bl-028--ダイジェストナビゲーションの配置を再設計する), [BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する), [BL-030](BACKLOG.md#bl-030--取得元翻訳経路の緊急リスク低減), [BL-031](BACKLOG.md#bl-031--全取得元の公式規約監査とセキュリティ文書整合化), [BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement), and [BL-033](BACKLOG.md#bl-033--statusmdの動的公開実績を正本へ委譲する) are all complete; see [Recently completed work](#5-recently-completed-work) above. Active work is currently empty. BACKLOG.md records no explicit ordering among the remaining open items, so none is named as the ranked next candidate purely by priority number.
+[BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更), [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行), [BL-026](BACKLOG.md#bl-026--github-actions-supply-chainとproduction-concurrencyを強化する), [BL-027](BACKLOG.md#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする), [BL-028](BACKLOG.md#bl-028--ダイジェストナビゲーションの配置を再設計する), [BL-029](BACKLOG.md#bl-029--金融機関との関連とarticle見出しの情報設計を再検討する), [BL-030](BACKLOG.md#bl-030--取得元翻訳経路の緊急リスク低減), [BL-031](BACKLOG.md#bl-031--全取得元の公式規約監査とセキュリティ文書整合化), [BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement), and [BL-033](BACKLOG.md#bl-033--statusmdの動的公開実績を正本へ委譲する) are all complete; see [Recently completed work](#5-recently-completed-work) above. [BL-034](BACKLOG.md#bl-034--閲覧計測基盤) (閲覧計測基盤, split out of the [BL-009](BACKLOG.md#bl-009--seoと閲覧者増加策) umbrella) is the current Active work item; see above. BACKLOG.md records no explicit ordering among the remaining open items, so none is named as the ranked next candidate purely by priority number.
 
 [BL-023](BACKLOG.md#bl-023--article編集品質改善) is on hold after the v9 and fixed-v10 prompt-only No-Go evaluations and is not ranked in this short priority list. Reconsider it only through a separately designed structured ARTICLE-field contract or facts-based limited deterministic composition.
 
