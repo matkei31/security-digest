@@ -1432,16 +1432,26 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         )
 
     def test_intro_clarifies_version_15_is_the_current_approved_baseline(self):
-        # Version 1.6 (BL-032 Draft implementation) is now "this Version",
-        # layered on top of the still-Approved Version 1.5 baseline; until
-        # user acceptance, only Version 1.5 is approved policy.
+        # BL-034 round 2 review: Version 1.6 (BL-032 Draft implementation) is
+        # no longer "this Version" -- Version 1.7 (BL-034) is. The intro must
+        # say Version 1.6 was a past Draft layer, never itself promoted to
+        # Approved even though BL-032's own implementation was later
+        # user-accepted and merged, with Version 1.7 layered on top of it;
+        # until user acceptance of the current Draft material, only Version
+        # 1.5 remains approved policy.
         intro = self._section(
             "# Monomi Digest Security Requirements", "## 1. Purpose and proportionality"
         )
         self.assertIn("Version 1.5 is the most recent **Approved**", intro)
         self.assertIn(
-            "Version 1.6\n(this Version) is a **Draft** maintenance update layered on top of"
+            "Version 1.6\nwas a **Draft** maintenance update layered on top of"
             " that Approved Version 1.5",
+            intro,
+        )
+        self.assertIn("Version 1.6 was never\nitself independently promoted to Approved status", intro)
+        self.assertIn(
+            "Version 1.7 (this Version) is a\nfurther Draft maintenance update layered on top of"
+            " Version 1.6",
             intro,
         )
         self.assertIn("only Version 1.5 is approved policy", intro)
@@ -1450,6 +1460,7 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
             intro,
         )
         self.assertNotIn("only Version 1.4 is approved", intro)
+        self.assertNotIn("Version 1.6\n(this Version)", intro)
 
     def test_bl_and_sd_ids_referenced_are_unique_in_their_documents(self):
         bl_headings = re.findall(r"^## (BL-\d{3})\b", self.backlog, flags=re.MULTILINE)
@@ -1751,6 +1762,77 @@ class Bl034Round1ReviewCorrectionsTest(unittest.TestCase):
             self.requirements,
         )
         self.assertIn("cloudflareinsights.com/cdn-cgi/rum", self.requirements)
+
+
+class Bl034Round2ReviewCorrectionsTest(unittest.TestCase):
+    """BL-034 PR #72 round 2 independent review: locks the 3 remaining
+    document-consistency corrections in place (SECURITY_REQUIREMENTS.md's
+    stale "Version 1.6 (this Version)" self-reference and leftover BL-032
+    "still Draft"/"deferred"/"registered" current-state phrasing in
+    SR-045/SR-046/GAP-017, and SD-032's Visits description in DECISIONS.md).
+    Historical Version 1.6-era narrative text is intentionally left alone
+    and must not be blanket-forbidden by these checks.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        root = Path(__file__).resolve().parent
+        cls.requirements = (root / "SECURITY_REQUIREMENTS.md").read_text(encoding="utf-8")
+        cls.decisions = (root / "DECISIONS.md").read_text(encoding="utf-8")
+
+    @staticmethod
+    def _section(text, start, end=None):
+        after = text.split(start, 1)[1]
+        return after.split(end, 1)[0] if end else after
+
+    def _row(self, requirement_id):
+        return next(
+            line for line in self.requirements.splitlines()
+            if line.startswith(f"| {requirement_id} |")
+        )
+
+    def test_version_17_is_the_current_draft_and_16_is_not_called_this_version(self):
+        self.assertIn("**Version:** 1.7", self.requirements)
+        self.assertNotIn("Version 1.6\n(this Version)", self.requirements)
+        self.assertIn("Version 1.7 (this Version)", self.requirements)
+
+    def test_version_17_intro_does_not_deny_the_sr044_046_gap016_017_sync(self):
+        intro = self._section(
+            self.requirements,
+            "# Monomi Digest Security Requirements", "## 1. Purpose and proportionality"
+        )
+        self.assertNotIn(
+            "it does not change SR-001–SR-046,\nGAP-001–GAP-017", intro
+        )
+        self.assertIn("synchronizes SR-044–SR-046", intro)
+        self.assertIn("GAP-016–GAP-017", intro)
+        self.assertIn("user-accepted and merged", intro)
+
+    def test_sr045_no_longer_says_enforcement_remains_deferred_to_bl032(self):
+        row = self._row("SR-045")
+        self.assertNotIn("remains deferred to BL-032", row)
+        self.assertIn("implemented, user-accepted, and merged", row)
+
+    def test_sr046_trigger_no_longer_lists_completed_bl032(self):
+        row = self._row("SR-046")
+        trigger = row.rsplit("|", 2)[1].strip()
+        self.assertNotIn("BL-032", trigger)
+        self.assertIn("nist_nvd", trigger)
+
+    def test_gap017_does_not_call_bl032_merely_registered(self):
+        row = self._row("GAP-017")
+        self.assertNotIn("BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement) (registered)", row)
+        self.assertIn("user-accepted and merged", row)
+        self.assertIn("PR #69", row)
+
+    def test_sd032_visits_description_has_no_session_language(self):
+        sd032 = self._section(self.decisions, "## SD-032", "\n## ")
+        self.assertNotIn("session-style", sd032)
+        self.assertNotIn("session count", sd032)
+        self.assertNotIn("unique visitors", sd032)
+        self.assertIn("external referrer or direct link", sd032)
+        self.assertIn("one Visit may include multiple page views", sd032)
+        self.assertIn("not a deduplicated unique-person count", sd032)
 
 
 if __name__ == "__main__":
