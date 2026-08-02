@@ -817,6 +817,42 @@
 - **残作業:** BL-033の設計・実装・test・ユーザー受入について残作業はない。[PR #71](https://github.com/matkei31/security-digest/pull/71)のReady化・merge等のdelivery lifecycleはGitHub上のPR状態を正本とし、BL-033の残作業としては管理しない――delivery lifecycleの状態(Draft／Ready／merge待ち／merge済みのいずれであっても)は、BL-033の機能的・設計上の完了状態を変更しない。merge後に別のpost-merge closeout PRは不要な最終状態を、本Ticketの記録として既に準備済みである。
 - **注記:** 本Ticketはdocumentation／management-onlyであり、`data/*.json`・`docs/archive/*.html`・`.github/workflows/`・runtime code(`fetch.py`・`daily_json.py`・`source_definitions.json`・`vulnerability_facts.py`)への変更は行っていない。production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集(RSS/API/記事ページ/robots.txt等)は行っていない。[PR #71](https://github.com/matkei31/security-digest/pull/71)のReady化・merge等のPR delivery lifecycleはGitHubを正本とする(本注記では追跡しない)。BL-033はユーザー受入済みであり、機能的・設計上の残作業はない。
 
+## BL-034 — 閲覧計測基盤
+
+- **ID:** BL-034
+- **タイトル:** 閲覧計測基盤
+- **優先度:** P2
+- **状態:** 実装Draft PR／レビュー待ち
+- **出所種別:** ユーザー原文
+- **ユーザー原文:** 「閲覧数わかるようにするのは？」「訪問数をカウントするにしては過剰じゃない？妥当？ 費用はかからない？Cloudflareじゃなくてxサーバーを使ってるけど問題ない？」「ok。進めよう」
+- **出所:** 2026-08-03 プロジェクト会話。[BL-009](#bl-009--seoと閲覧者増加策)着手前調査として行った、Monomi Digestの閲覧数計測基盤に関する検討。
+- **ユーザー確認済み要約:** [BL-009](#bl-009--seoと閲覧者増加策)(SEOと閲覧者増加策)の残作業のうち「成果の測定」に相当する、サイト全体の閲覧計測を最初に検討し、独立Ticketとして分離する。SEOや施策の効果を測るには、施策前の基準値が必要であるため、[BL-009](#bl-009--seoと閲覧者増加策)本体(読者層定義・技術/コンテンツSEO監査・施策優先順位付け・robots.txt/sitemap/canonical/OG/favicon/About全体・コンテンツSEO)より先行して着手する。
+- **解釈:** [BL-009](#bl-009--seoと閲覧者増加策)をumbrella Ticketとして維持し、閲覧計測基盤を新規連番Ticket(BL-034)として分離する。独立調査の結果、次の方針をユーザーが承認した。
+  - Cloudflare Web Analyticsを、サイト全体の軽量な閲覧計測として採用する(Page views・Visits・参照元・国・デバイス種別・時系列を把握する基礎計測。unique人数の厳密な把握、UTM campaign計測、custom eventsには向かない)。
+  - Google Search Consoleも、Google検索での表示・クリック・query確認のため併用する(サイト全体の閲覧数とは測定対象が異なる別系統)。
+  - XServerのDNS管理・ネームサーバーは変更せず、CloudflareへDNSやproxyを移行しない(Cloudflare Web Analyticsのmanual/非proxy方式を使う)。
+  - GA4・Umami・Plausible・Google Tag Managerは現時点では導入しない。
+  - 長大な独立privacy policyは作らず、footerへ短いアクセス解析説明(利用サービス名・目的・Cookie/localStorage不使用というCloudflare側の説明・取得できる集計情報・送信先)を掲載する。法的な断定はしない。
+  - 大規模なCSP整備は行わず、third-party script追加に伴う必要最小限のsecurity確認のみ[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md)へ記録する。
+  - robots.txt、sitemap、canonical、OG、favicon、About全体、コンテンツSEOは本Ticketのscopeに含めない([BL-009](#bl-009--seoと閲覧者増加策)配下の後続Ticket候補として残す)。
+- **完了条件:**
+  1. Cloudflare Web Analyticsのmanual JavaScript beacon(DNS/proxy移行なし)を、トップページ・Archive一覧・全日別Archiveへ追加する。
+  2. footerへ、利用サービス名・目的・Cookie/localStorage不使用というCloudflare側の説明・取得できる集計情報・送信先を短く開示する記述を追加する。断定的な法的評価はしない。
+  3. GA4・Umami・Plausible・Google Tag Managerは追加しない。
+  4. 大規模なCSP導入は行わず、third-party script追加に伴う必要最小限のsecurity再評価を[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md)へ記録する。
+  5. robots.txt・sitemap・canonical・OG・favicon・About全体・コンテンツSEOは変更・追加しない。
+  6. XServerのDNS・ネームサーバー・既存のGitHub Pages所有権確認用TXTは変更しない。
+  7. Google Search ConsoleのDomain property登録・DNS TXT verificationはユーザーがブラウザで行う外部作業とし、その完了は本Ticketのrepository実装のblockerにしない。
+  8. `data/*.json`、ARTICLE/BRIEF prompt・response schema・schema定数、`.github/workflows/`は変更しない。
+  9. production、`workflow_dispatch`、実Gemini API呼び出し、通常の外部収集は実行しない。
+  10. 関連test追加とfull unittest成功。
+  11. merge前にユーザーの受入(Cloudflare dashboardでのデータ受信確認を含む)を得る。
+- **依存関係:** [BL-009](#bl-009--seoと閲覧者増加策)(umbrella Ticket、本Ticketの完了後も別スコープ・未着手のまま残る)。[BL-006](#bl-006--monomi-digestへのブランド変更)・[BL-007](#bl-007--monomidigestcomへの移行)・[BL-002](#bl-002--記事カードの楕円バッジ多用を見直す)〜[BL-004](#bl-004--fable-5によるuiレビューとui設計書)・[BL-028](#bl-028--ダイジェストナビゲーションの配置を再設計する)〜[BL-033](#bl-033--statusmdの動的公開実績を正本へ委譲する)(いずれも完了済み、着手前提条件)。[SD-032](DECISIONS.md#sd-032--adopt-cloudflare-web-analytics-and-google-search-console-for-bl-034)が採用方針を記録する。
+- **実装証跡:** branch `feature/bl034-cloudflare-web-analytics`。`fetch.py`に`CLOUDFLARE_WEB_ANALYTICS_BEACON_TOKEN`定数(Cloudflareのmanual setupが発行した、公開HTMLへ埋め込む前提の識別子であり、account password・API secret等の秘密情報ではない)、`render_cloudflare_web_analytics_html()`(Cloudflare発行のmanual beacon snippetをそのまま出力)、`render_analytics_footer_html()`(短いアクセス解析説明の`<footer>`)を追加し、`build_html()`(トップページ・全日別Archiveで共用)と`build_archive_index_html()`の`</body>`直前へ配線した(CSS `.site-footer`/`.analytics-notice`を両テンプレートへ追加)。既存の`docs/index.html`・`docs/archive/index.html`・日別Archive HTML23件を、外部HTTP/Gemini/RSS/NVD/CISA KEVを呼ばず、既存daily JSON(`generate_archive_outputs()`・`digest_items_for_html()`/`brief_for_html_from_digest()`)のみを用いてoffline再生成した(`data/*.json`・`docs/CNAME`は無変更、`git diff`で確認)。inline JS・onclick等が一切無いことを検証していた既存test(`test_fetch.py` `test_no_javascript_is_emitted_anywhere_in_the_page`)を、Cloudflare beacon 1個のみを許容する契約(`test_only_the_documented_cloudflare_beacon_script_is_emitted`)へ更新し、HTMLコメントが皆無であることを検証していた既存test(`test_fetch.py` `test_no_html_comment_carries_brief_content`、`test_archive.py` `test_internal_and_external_links_are_safe`)を、Cloudflareの静的な2個のdocumentedコメントのみを許容する契約へ更新した。新規`Bl034CloudflareWebAnalyticsTest`(`test_archive.py`)で、トップページ・日別Archive・Archive一覧それぞれにbeacon・footer開示が1回だけ出現すること、footer開示が断定的な法的評価をしていないことを検証した。full unittest 1563 tests OK。`SECURITY_REQUIREMENTS.md`をVersion 1.7(Draft、pending user acceptance)へ更新し、新規SR-047(third-party browser scripts and client-side analytics)・新規GAP-018(この追加自体をDraft実装として記録)・section 9のMandatory CSP行・section 10のre-evaluation triggerへBL-034を参照する補足を追加した。`test_security_requirements.py`をVersion 1.7・SR-047・GAP-018に合わせて更新した。`source_definitions.json`・`daily_json.py`・`vulnerability_facts.py`・ARTICLE/BRIEF prompt・response schema・schema定数・`.github/workflows/`・`SECURITY_OPERATIONS.md`・`SOURCE_USAGE_POLICY.md`は変更していない。production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行っていない。
+- **ユーザー受入証跡:** 記録なし。「ok。進めよう」は、BL-034の方針(Cloudflare Web Analytics + Search Console採用、XServer DNS維持、GA4/Umami不採用、footer開示、CSP大規模整備なし、BL-009からの分離)と実装着手の承認であり、Draft PR作成前の時点では実装後の最終受入ではない。
+- **残作業:** Cloudflare dashboardでのデータ受信確認(実際にsnippetが公開された後)、Google Search Console Domain property verificationの完了確認、Draft PRの独立レビュー・Ready化・merge、merge後のGitHub Pages公開反映の客観確認、4週間程度の基準値取得期間の開始。
+- **注記:** [BL-009](#bl-009--seoと閲覧者増加策)のうちrobots.txt・sitemap・canonical・OG・favicon・About全体・コンテンツSEOは、本Ticketには含めず、[BL-009](#bl-009--seoと閲覧者増加策)配下の後続Ticket候補として別途記録する。Cloudflareのbeacon tokenはユーザーがCloudflareのmanual setup画面から取得し、チャット上で共有した公開識別子であり、account password・API token・session情報等は要求していない。
+
 ## 完了済み参照
 
 これらの参照記録は、完了済みの作業が誤って未完了バックログとして再オープンされることを防ぐためだけに存在する。

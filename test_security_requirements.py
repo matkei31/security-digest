@@ -44,11 +44,11 @@ class SecurityRequirementsTest(unittest.TestCase):
         return self.requirements.split(start, 1)[1].split(end, 1)[0]
 
     def test_document_is_approved_version_14_maintenance_update(self):
-        # Version 1.6 (Draft, BL-032) is the current header, but the frozen
+        # Version 1.7 (Draft, BL-034) is the current header, but the frozen
         # Version 1.4 approval record (section 12) must remain byte-identical below it.
         self.assertTrue(REQUIREMENTS_PATH.is_file())
         self.assertIn("# Monomi Digest Security Requirements", self.requirements)
-        self.assertIn("**Version:** 1.6", self.requirements)
+        self.assertIn("**Version:** 1.7", self.requirements)
         self.assertIn("**Status:** Draft", self.requirements)
         self.assertIn("no Critical or High findings", self.requirements)
         self.assertIn("accepted and modified findings", self.requirements)
@@ -85,16 +85,17 @@ class SecurityRequirementsTest(unittest.TestCase):
             with self.subTest(heading=heading):
                 self.assertIn(heading, self.requirements)
 
-    def test_sr_ids_are_stable_unique_and_contiguous_through_046(self):
+    def test_sr_ids_are_stable_unique_and_contiguous_through_047(self):
         ids = re.findall(r"(?m)^\|\s*(SR-\d{3})\s*\|", self.requirements)
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SR IDs: {ids}")
-        self.assertEqual(ids, [f"SR-{number:03d}" for number in range(1, 47)])
+        self.assertEqual(ids, [f"SR-{number:03d}" for number in range(1, 48)])
         self.assertLess(self.requirements.index("| SR-030 |"), self.requirements.index("| SR-031 |"))
         self.assertLess(self.requirements.index("| SR-031 |"), self.requirements.index("| SR-032 |"))
         self.assertLess(self.requirements.index("| SR-042 |"), self.requirements.index("| SR-043 |"))
         self.assertLess(self.requirements.index("| SR-043 |"), self.requirements.index("| SR-044 |"))
         self.assertLess(self.requirements.index("| SR-044 |"), self.requirements.index("| SR-045 |"))
         self.assertLess(self.requirements.index("| SR-045 |"), self.requirements.index("| SR-046 |"))
+        self.assertLess(self.requirements.index("| SR-046 |"), self.requirements.index("| SR-047 |"))
 
     def test_published_output_correction_requirement_and_gap_are_recorded(self):
         self.assertRegex(
@@ -156,7 +157,7 @@ class SecurityRequirementsTest(unittest.TestCase):
             for row in self._markdown_rows(gaps)
             if re.fullmatch(r"GAP-\d{3}", row[0])
         }
-        expected_ids = [f"GAP-{number:03d}" for number in range(1, 18)]
+        expected_ids = [f"GAP-{number:03d}" for number in range(1, 19)]
         self.assertEqual(list(rows), expected_ids)
         self.assertEqual(len(rows), len(set(rows)))
 
@@ -186,6 +187,7 @@ class SecurityRequirementsTest(unittest.TestCase):
             "GAP-015": "Hardening candidate",
             "GAP-016": "Security gap",
             "GAP-017": "Owner verification",
+            "GAP-018": "Security gap",
         }
         self.assertEqual({gap_id: row[1] for gap_id, row in rows.items()}, expected)
         allowed_dispositions = {
@@ -217,6 +219,7 @@ class SecurityRequirementsTest(unittest.TestCase):
             "GAP-015": "Deferred until trigger",
             "GAP-016": "Implemented (Draft, pending user acceptance)",
             "GAP-017": "Completed owner verification",
+            "GAP-018": "Implemented (Draft, pending user acceptance)",
         }
         self.assertEqual(
             {gap_id: row[2] for gap_id, row in rows.items()},
@@ -1099,11 +1102,13 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
 
     def test_version_and_status_are_16_draft(self):
         # Version 1.6 (BL-032 Draft implementation, pending user acceptance)
-        # is now the current header; Version 1.5's own Approved record is
-        # preserved in the intro body, not the header.
-        self.assertIn("**Version:** 1.6", self.requirements)
+        # was the header at BL-031-registration time; Version 1.7 (BL-034
+        # Draft implementation, also pending user acceptance) is now the
+        # current header, layered on top of it. Version 1.5's own Approved
+        # record is preserved in the intro body, not the header.
+        self.assertIn("**Version:** 1.7", self.requirements)
         self.assertIn("**Status:** Draft", self.requirements)
-        self.assertIn("**As of:** 2026-07-31", self.requirements)
+        self.assertIn("**As of:** 2026-08-03", self.requirements)
 
     def test_no_current_architecture_mention_of_removed_translation_path(self):
         scope = self._section(
@@ -1248,13 +1253,13 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         self.assertIn("2026-07-30発効", bl031)
         self.assertIn("limited_feed_analysis", bl031)
 
-    def test_status_as_of_is_2026_08_01_and_bl030_run_evidence_is_historical(self):
+    def test_status_as_of_is_2026_08_03_and_bl030_run_evidence_is_historical(self):
         # STATUS.md's "As of" is the document's own last-update date (BL-033
         # delegates volatile latest-publication values to data/index.json
         # instead), so this bumps whenever STATUS.md itself is edited --
         # separately, BL-030's own scheduled-run evidence below is a fixed
         # 2026-07-30 historical fact, not tied to this "As of" date.
-        self.assertIn("## 1. As of\n\n2026-08-01", self.status)
+        self.assertIn("## 1. As of\n\n2026-08-03", self.status)
         recently_completed = self.status.split(
             "## 5. Recently completed work", 1
         )[1].split("## 6. Known issues and limitations", 1)[0]
@@ -1498,10 +1503,14 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
         cls.fetch_source = (ROOT / "fetch.py").read_text(encoding="utf-8")
 
     def test_three_documents_are_approved_as_of_20260731(self):
-        # SECURITY_REQUIREMENTS.md has since moved to a Draft Version 1.6
-        # (BL-032 implementation, pending user acceptance) layered on top of
-        # the still-Approved Version 1.5 baseline; only SOURCE_USAGE_POLICY.md
-        # and SECURITY_OPERATIONS.md remain Approved as of this round.
+        # SOURCE_USAGE_POLICY.md and SECURITY_OPERATIONS.md remain Approved
+        # as of the 2026-07-31 BL-031 round and are unchanged since.
+        # SECURITY_REQUIREMENTS.md has since moved further, from Draft
+        # Version 1.6 (BL-032 implementation, pending user acceptance) to
+        # Draft Version 1.7 (BL-034 implementation, also pending user
+        # acceptance), still layered on top of the Approved Version 1.5
+        # baseline; only SOURCE_USAGE_POLICY.md and SECURITY_OPERATIONS.md
+        # remain Approved as of this round.
         for doc, version_marker in (
             (self.policy, "**Version:** 0.1"),
             (self.operations, "**Version:** 1.1"),
@@ -1510,9 +1519,9 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
                 self.assertIn(version_marker, doc)
                 self.assertIn("**Status:** Approved", doc)
                 self.assertIn("**As of:** 2026-07-31", doc)
-        self.assertIn("**Version:** 1.6", self.requirements)
+        self.assertIn("**Version:** 1.7", self.requirements)
         self.assertIn("**Status:** Draft", self.requirements)
-        self.assertIn("**As of:** 2026-07-31", self.requirements)
+        self.assertIn("**As of:** 2026-08-03", self.requirements)
 
     def test_bl031_backlog_status_is_completed(self):
         bl031 = self.backlog.split("## BL-031", 1)[1].split("\n## ", 1)[0]

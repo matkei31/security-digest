@@ -438,7 +438,12 @@ class ArchiveGenerationTest(unittest.TestCase):
         )
         self.assertTrue(all("target" not in a and "rel" not in a for a in internal))
         self.assertFalse(parser.nested_anchor)
-        self.assertEqual(parser.comments, [])
+        # BL-034: 唯一許容するコメントはCloudflare Web Analyticsの静的な
+        # documentedコメントのみ(digest由来の内容を含まない)。
+        self.assertEqual(
+            parser.comments,
+            [" Cloudflare Web Analytics ", " End Cloudflare Web Analytics "],
+        )
 
     def test_daily_archive_all_items_uses_same_display_order_and_numbers_as_top(self):
         digest = make_digest(total_items=3, high_count=0)
@@ -2159,6 +2164,57 @@ class Bl028NavigationLayoutTest(unittest.TestCase):
             self.assertIn(fetch.NEXT_DIGEST_LABEL, group)
             self.assertNotIn(fetch.PREVIOUS_DIGEST_LABEL, group)
         self.assertNotIn("archive-prev-link", html)
+
+
+class Bl034CloudflareWebAnalyticsTest(unittest.TestCase):
+    """BL-034: Cloudflare Web Analytics beaconとアクセス解析説明footerが、
+    トップページ・日別Archive・Archive一覧の全生成経路へ反映されることを検証する。
+    """
+
+    EXPECTED_SRC = "src='https://static.cloudflareinsights.com/beacon.min.js'"
+
+    def test_top_page_has_beacon_and_footer_notice(self):
+        html = fetch.build_html([])
+        self.assertIn(self.EXPECTED_SRC, html)
+        self.assertIn(fetch.CLOUDFLARE_WEB_ANALYTICS_BEACON_TOKEN, html)
+        self.assertIn('data-cf-beacon=\'{"token": "', html)
+        self.assertIn('class="site-footer"', html)
+        self.assertIn('class="analytics-notice"', html)
+        self.assertIn("Cloudflare Web Analytics", html)
+        self.assertIn("Cookie", html)
+        # beaconはfooterの後、</body>の直前に置く。
+        self.assertLess(html.index("analytics-notice"), html.index(self.EXPECTED_SRC))
+        self.assertLess(html.index(self.EXPECTED_SRC), html.index("</body>"))
+
+    def test_daily_archive_has_beacon_and_footer_notice(self):
+        html = fetch.build_daily_archive_html(make_digest("2026-07-22"))
+        self.assertIn(self.EXPECTED_SRC, html)
+        self.assertIn(fetch.CLOUDFLARE_WEB_ANALYTICS_BEACON_TOKEN, html)
+        self.assertIn('class="analytics-notice"', html)
+
+    def test_archive_index_has_beacon_and_footer_notice(self):
+        html = fetch.build_archive_index_html([])
+        self.assertIn(self.EXPECTED_SRC, html)
+        self.assertIn(fetch.CLOUDFLARE_WEB_ANALYTICS_BEACON_TOKEN, html)
+        self.assertIn('class="analytics-notice"', html)
+
+    def test_beacon_appears_exactly_once_per_page(self):
+        for html in (
+            fetch.build_html([]),
+            fetch.build_daily_archive_html(make_digest("2026-07-22")),
+            fetch.build_archive_index_html([]),
+        ):
+            self.assertEqual(html.count("<script"), 1)
+            self.assertEqual(html.count(fetch.CLOUDFLARE_WEB_ANALYTICS_BEACON_TOKEN), 1)
+
+    def test_footer_notice_does_not_assert_legal_conclusions(self):
+        # 断定的な法的評価("収集しません"等)を避け、Cloudflare側の説明の
+        # 引用として記述されていることを確認する(round 5報告§10の合意)。
+        html = fetch.build_html([])
+        notice_start = html.index('class="analytics-notice"')
+        notice_end = html.index("</p>", notice_start)
+        notice_text = html[notice_start:notice_end]
+        self.assertIn("説明されています", notice_text)
 
 
 if __name__ == "__main__":

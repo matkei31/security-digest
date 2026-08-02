@@ -841,8 +841,15 @@ class TodaysBriefHtmlTest(unittest.TestCase):
         self.assertIn("&lt;b&gt;", segment)
 
     def test_no_html_comment_carries_brief_content(self):
+        # BL-034: 唯一許容するコメントはCloudflare Web Analyticsの静的な
+        # documentedコメントのみであり、BRIEF由来の内容が(意図せず)コメント
+        # として紛れ込んでいないことを確認する。
         html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
-        self.assertNotIn("<!--", html)
+        comments = re.findall(r"<!--(.*?)-->", html, re.DOTALL)
+        self.assertEqual(
+            comments,
+            [" Cloudflare Web Analytics ", " End Cloudflare Web Analytics "],
+        )
 
     def test_reason_and_category_reason_are_not_added_to_brief(self):
         html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
@@ -1208,9 +1215,15 @@ class BriefStatusLineCssTest(unittest.TestCase):
         self.assertNotIn("#9e6a03", rule)
         self.assertNotIn("#f0b429", rule)
 
-    def test_no_javascript_is_emitted_anywhere_in_the_page(self):
+    def test_only_the_documented_cloudflare_beacon_script_is_emitted(self):
+        # BL-034: Cloudflare Web Analyticsのmanual beaconのみを許容する。
+        # inline JS(onclick等)や、それ以外のscriptタグは引き続き無い。
         html = fetch.build_html([self._make_item()], SAMPLE_BRIEF)
-        self.assertNotIn("<script", html)
+        self.assertEqual(html.count("<script"), 1)
+        self.assertIn(
+            "src='https://static.cloudflareinsights.com/beacon.min.js'", html
+        )
+        self.assertIn(fetch.CLOUDFLARE_WEB_ANALYTICS_BEACON_TOKEN, html)
         self.assertNotIn("onclick", html)
 
 
@@ -3000,19 +3013,19 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         kept = [ch for ch in lowered if ch.isalnum() or ch in (" ", "-", "_")]
         return "".join(kept).replace(" ", "-")
 
-    def test_bl_ids_are_unique_and_cover_bl001_to_bl033(self):
+    def test_bl_ids_are_unique_and_cover_bl001_to_bl034(self):
         text = self._read("BACKLOG.md")
         bl_headings = [h for h in self._headings(text) if re.match(r"^BL-\d{3}\b", h)]
         ids = [re.match(r"^(BL-\d{3})", h).group(1) for h in bl_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
-        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 34)})
+        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 35)})
 
-    def test_sd_ids_are_unique_and_cover_sd001_to_sd031(self):
+    def test_sd_ids_are_unique_and_cover_sd001_to_sd032(self):
         text = self._read("DECISIONS.md")
         sd_headings = [h for h in self._headings(text) if re.match(r"^SD-\d{3}\b", h)]
         ids = [re.match(r"^(SD-\d{3})", h).group(1) for h in sd_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
-        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 32)})
+        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 33)})
 
     def test_bl_001_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
