@@ -54,6 +54,9 @@
     .vulnerability-cve-link:hover{text-decoration:underline}
     .vulnerability-cvss{color:#8b949e}
     .kev-badge{font-size:10px;font-weight:700;line-height:1;padding:3px 8px;border-radius:100px;border:1px solid #9e6a03;color:#e3b341;background:#1c1506;white-space:nowrap}
+    .article-attribution{margin-top:10px;font-size:10px;color:#768496;line-height:1.6;overflow-wrap:anywhere}
+    .article-attribution a{color:#8b949e;text-decoration:underline;text-underline-offset:2px}
+    .article-attribution a:hover{color:#79c0ff}
     .article-source-link{display:inline-flex;align-items:center;width:max-content;max-width:100%;margin-top:10px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}
     .empty{text-align:center;color:#8b949e;padding:60px 0;font-size:14px}
     .todays-brief{max-width:680px;margin:12px auto 0;padding:0 12px}
@@ -118,42 +121,156 @@
 <body>
   <header>
     <h1>🔐 Monomi Digest</h1>
-    <div class="sub">最終更新: 2026年08月03日 07:55</div>
-    <div class="count">0 件</div>
-    <nav class="archive-nav" aria-label="トップページのダイジェストナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link" href="archive/2026-08-02.html">← 前のダイジェスト</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="archive/index.html">過去のダイジェスト</a></div></nav>
+    <div class="sub">最終更新: 2026年08月04日 07:59</div>
+    <div class="count">6 件</div>
+    <nav class="archive-nav" aria-label="トップページのダイジェストナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link" href="archive/2026-08-03.html">← 前のダイジェスト</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="archive/index.html">過去のダイジェスト</a></div></nav>
   </header>
-  
+  <div class="todays-brief">
+    <div class="brief-box">
+      <h2>本日の要点</h2>
+      <div class="brief-section">
+      <h3 class="brief-section-title">概況</h3>
+      <p class="brief-status-line">掲載3件｜重要度「高」0件｜本日確認1件｜今週確認2件</p>
+      <p class="brief-overview">本日中に適用性または初動要否を確認する記事が1件あります。</p>
+    </div><div class="brief-section">
+      <h3 class="brief-section-title">重要・優先事項</h3>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">CISAは2026年8月3日、実悪用が確認されたとしてN-able N-centralの認証バイパス脆弱性(CVE-2026-18577)をKEVカタログへ追加しました。この脆弱性は、CVE-2026-18556に対するパッチが不完全であったために生じ、認証バイパスとアカウント乗っ取りを許す可能性があります。</p><p class="brief-priority-impact">金融機関でN-able N-centralをIT運用管理ツールとして利用している場合に、本脆弱性の影響を受ける可能性があります。利用有無は記事からは確認できません。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">サイバーセキュリティ研究者が、Alibaba開発ツール利用者を標的とした悪意あるnpmパッケージ18種類を発見しました。これらはクロスプラットフォームのRATを配布し、中国語圏を狙った巧妙なソフトウェアサプライチェーン攻撃の一部です。</p><p class="brief-priority-impact">金融機関がAlibaba開発ツールを利用し、かつ当該npmパッケージを導入している場合に影響を受ける可能性があります。記事からは金融機関での利用状況は確認できません。</p></li></ul>
+    </div><div class="brief-section">
+      <h3 class="brief-section-title">確認事項</h3>
+      <ul class="brief-list"><li>N-able N-centralの利用有無と影響バージョンを確認する</li><li>自社および委託先でAlibaba開発ツールと関連するnpmパッケージの利用有無を確認する</li></ul>
+    </div>
+    </div>
+  </div>
   <section class="important-items">
     <h2>優先確認</h2>
+    <p class="important-items-note">重要度が高い、または確認目安が本日確認の記事です。</p>
     <div class="important-items-list">
-      <p class="important-items-empty">本日の優先確認対象はありません。</p>
+      <article class="priority-item">
+        <h3 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-1" lang="en">CVE-2026-18577 — N-able N-central Authentication Bypass Using an Alternate Path or Channel Vulnerability</a><span class="article-title-translation" lang="ja">N-able N-centralの認証バイパス脆弱性、CISAがKEVへ追加</span></span></h3>
+        <p class="priority-item-meta">重要度 中 ・ 確認目安 本日確認</p>
+        <p class="important-item-reason">重要度は、N-able N-centralの利用状況が記事から不明であり、適用範囲が不確実なため「中」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。</p>
+        <a class="priority-item-link" href="#article-1">本文を見る</a>
+      </article>
     </div>
   </section>
   <section class="dashboard">
     <div class="dashboard-head">
       <h2>本日のダッシュボード</h2>
-      <p class="dashboard-count"><span>掲載</span><strong>0</strong>件</p>
+      <p class="dashboard-count"><span>掲載</span><strong>6</strong>件</p>
     </div>
     <div class="dashboard-axes">
       <div class="dashboard-axis">
         <h3>重要度</h3>
-        <ul class="dashboard-axis-list"><li class="dashboard-axis-item"><span>高</span><strong>0</strong></li><li class="dashboard-axis-item"><span>中</span><strong>0</strong></li><li class="dashboard-axis-item"><span>低</span><strong>0</strong></li></ul>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item"><span>高</span><strong>0</strong></li><li class="dashboard-axis-item"><span>中</span><strong>3</strong></li><li class="dashboard-axis-item"><span>低</span><strong>0</strong></li></ul>
       </div>
       <div class="dashboard-axis">
         <h3>確認目安</h3>
-        <ul class="dashboard-axis-list"><li class="dashboard-axis-item"><span>本日確認</span><strong>0</strong></li><li class="dashboard-axis-item"><span>今週確認</span><strong>0</strong></li><li class="dashboard-axis-item"><span>参考</span><strong>0</strong></li></ul>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item is-accent"><span>本日確認</span><strong>1</strong></li><li class="dashboard-axis-item"><span>今週確認</span><strong>2</strong></li><li class="dashboard-axis-item"><span>参考</span><strong>0</strong></li></ul>
       </div>
     </div>
     <div class="dashboard-categories">
       <h3>主なカテゴリ</h3>
-      <ul class="dashboard-category-list"><li class="dashboard-empty">該当する記事はありません。</li></ul>
+      <ul class="dashboard-category-list"><li class="dashboard-category-item"><span>脆弱性・パッチ</span><strong>1</strong></li><li class="dashboard-category-item"><span>攻撃・脅威動向</span><strong>2</strong></li></ul>
     </div>
   </section>
   <section class="article-list-header">
     <h2>本日の情報</h2>
     <p class="article-list-note">確認目安、重要度、元の収集順で表示しています。</p>
   </section>
-  <div class="cards"><p class="empty">本日の新着はありません。</p></div>
+  <div class="cards">
+    <article class="card" id="article-1">
+      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer" lang="en">CVE-2026-18577 — N-able N-central Authentication Bypass Using an Alternate Path or Channel Vulnerability</a><span class="article-title-translation" lang="ja">N-able N-centralの認証バイパス脆弱性、CISAがKEVへ追加</span></span></h2>
+      <p class="article-meta">CISA KEV ・ 08/03 00:00</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item is-accent">確認目安 本日確認</span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>CISAは2026年8月3日、実悪用が確認されたとしてN-able N-centralの認証バイパス脆弱性(CVE-2026-18577)をKEVカタログへ追加しました。この脆弱性は、CVE-2026-18556に対するパッチが不完全であったために生じ、認証バイパスとアカウント乗っ取りを許す可能性があります。</p>
+        </section>
+        <section class="vulnerability-facts">
+        <h3 class="vulnerability-facts-title">脆弱性情報（2件）</h3>
+        <ul class="vulnerability-list"><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-18577" target="_blank" rel="noopener noreferrer">CVE-2026-18577</a><span class="vulnerability-cvss">CVSS 8.2 / High（v4.0・他機関）</span><span class="kev-badge">CISA KEV掲載</span></li><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-18556" target="_blank" rel="noopener noreferrer">CVE-2026-18556</a><span class="vulnerability-cvss">CVSS 8.2 / High（v4.0・他機関）</span></li></ul>
+      </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関でN-able N-centralをIT運用管理ツールとして利用している場合に、本脆弱性の影響を受ける可能性があります。利用有無は記事からは確認できません。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>N-able N-centralの利用有無と影響バージョンを確認する</li><li>ベンダーからの一次情報や修正パッチ、緩和策を確認し、対応要否を評価する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">出典: CISA Known Exploited Vulnerabilities (KEV) Catalog。CC0 1.0 Universal(パブリックドメイン)。</p>
+      <a class="article-source-link" href="https://www.cisa.gov/known-exploited-vulnerabilities-catalog" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">KEV</span><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span></div>
+    </article>
+
+    <article class="card" id="article-2">
+      <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/08/18-malicious-npm-packages-deliver-cross.html" target="_blank" rel="noopener noreferrer" lang="en">18 Malicious npm Packages Deliver Cross-Platform RAT to Alibaba Tool Users</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 08/04 03:43</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>サイバーセキュリティ研究者が、Alibaba開発ツール利用者を標的とした悪意あるnpmパッケージ18種類を発見しました。これらはクロスプラットフォームのRATを配布し、中国語圏を狙った巧妙なソフトウェアサプライチェーン攻撃の一部です。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関がAlibaba開発ツールを利用し、かつ当該npmパッケージを導入している場合に影響を受ける可能性があります。記事からは金融機関での利用状況は確認できません。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先でAlibaba開発ツールと関連するnpmパッケージの利用有無を確認する</li><li>記事に記載された悪意あるnpmパッケージ名（例: &quot;lib-mtop&quot;）と自社環境のnpmパッケージを照合し、導入されていないか確認する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/08/18-malicious-npm-packages-deliver-cross.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">サプライチェーン</span><span class="article-tag">APT</span></div>
+    </article>
+
+    <article class="card" id="article-3">
+      <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/08/google-password-manager-attacks-could.html" target="_blank" rel="noopener noreferrer" lang="en">Google Password Manager Attacks Could Let Malware Hijack Passkey-Protected Accounts</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 08/04 01:24</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>Windowsマシン上で動作するマルウェアが、指紋認証やPINなしで、被害者のパスキー保護アカウントにサインインできることが判明しました。Unit 42は、ChromeのGoogleパスワードマネージャーのクラウド認証器に対する3つの攻撃経路を詳細に解説しています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関でGoogleパスワードマネージャーを従業員が利用している場合、または顧客がパスキー保護アカウントで金融サービスを利用している場合に、アカウント乗っ取りのリスクに関係します。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>Googleパスワードマネージャーおよびパスキーの利用状況について、従業員への注意喚起と利用ガイドラインの確認を検討する</li><li>パスキー保護アカウントのセキュリティ対策について、多要素認証の利用状況や復旧オプションの堅牢性を確認する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/08/google-password-manager-attacks-could.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">認証</span><span class="article-tag">フィッシング</span></div>
+    </article>
+
+    <article class="card card-metadata-only" id="article-4">
+      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/08/inc-ransomware-emerges-as-dominant.html" target="_blank" rel="noopener noreferrer" lang="en">INC Ransomware Emerges as Dominant Actor Exploiting SonicWall SMA 1000 Flaws</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 08/04 01:15</p>
+      <p class="article-attribution">AIによる要約・評価は行っていません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/08/inc-ransomware-emerges-as-dominant.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article>
+
+    <article class="card card-metadata-only" id="article-5">
+      <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://blog.talosintelligence.com/webinar-tales-from-the-frontlines-an-exclusive-briefing-on-q2-incidents/" target="_blank" rel="noopener noreferrer" lang="en">[Webinar] Tales from the Frontlines: An exclusive briefing on Q2 incidents</a></span></h2>
+      <p class="article-meta">Cisco Talos ・ 08/04 01:00</p>
+      <p class="article-attribution">AIによる要約・評価は行っていません。</p>
+      <a class="article-source-link" href="https://blog.talosintelligence.com/webinar-tales-from-the-frontlines-an-exclusive-briefing-on-q2-incidents/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article>
+
+    <article class="card card-metadata-only" id="article-6">
+      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.jpcert.or.jp/at/2026/at260021.html" target="_blank" rel="noopener noreferrer" lang="ja">注意喚起: Ruby on RailsのActive Storageにおけるリモートコード実行につながる脆弱性（CVE-2026-66066）に関する注意喚起  (更新)</a></span></h2>
+      <p class="article-meta">JPCERT/CC ・ 08/03 15:00</p>
+      <p class="article-attribution">AIによる要約・評価は行っていません。</p>
+      <a class="article-source-link" href="https://www.jpcert.or.jp/at/2026/at260021.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article></div>
   <div class="sources">
     <details>
       <summary>収集元 (12ソース)</summary>
