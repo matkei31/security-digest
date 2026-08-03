@@ -1078,6 +1078,49 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertNotIn("push/schedule workflow", testing)
         self.assertIn("GitHub Pages", testing)
         self.assertIn("not a PR CI check", testing)
+        # BL-035 round 2 (Fable 5 review): fetch.yml's own commit/push must not
+        # be described as re-triggering "any other workflow" -- that phrase was
+        # too broad and contradicted the very next sentence, which says that
+        # same push does trigger GitHub Pages' platform-managed deployment.
+        self.assertNotIn("or any other workflow", testing)
+        self.assertIn("re-triggers `fetch.yml` itself", testing)
+        self.assertIn(
+            "no other workflow defined in this repository is triggered by an ordinary push",
+            testing,
+        )
+        self.assertIn("platform-managed", testing)
+        self.assertIn("not a workflow defined in this repository", testing)
+
+    def test_agents_pr_ci_checkout_target_is_the_merge_candidate_not_the_head(self):
+        # BL-035 round 2 (Fable 5 review): pr-ci.yml's `actions/checkout` step
+        # has no `ref`, so a `pull_request`-triggered run checks out GitHub's
+        # auto-generated merge candidate (refs/pull/<PR>/merge), not the PR head
+        # commit by itself. AGENTS.md previously said the workflow "checks out
+        # the PR head," which is not what happens without an explicit `ref`.
+        testing = self.agents.split("## Testing and review", 1)[1].split(
+            "## Git and generated output", 1
+        )[0]
+        self.assertNotIn("checks out the PR head", testing)
+        self.assertIn("does not set a `ref`", testing)
+        self.assertIn("merge candidate", testing)
+        self.assertIn("refs/pull/<PR>/merge", testing)
+        self.assertIn("`persist-credentials: false`", testing)
+
+    def test_agents_distinguishes_unittest_target_diff_check_range_and_head_association(self):
+        # BL-035 round 2 (Fable 5 review): a reader must not come away thinking
+        # "the full unittest suite ran on the PR head" -- it runs on the merge
+        # candidate; `git diff --check` is the part that is scoped to
+        # base...head; and which PR head a run is "for" is a separate fact read
+        # from the run's own status-check head SHA.
+        testing = self.agents.split("## Testing and review", 1)[1].split(
+            "## Git and generated output", 1
+        )[0]
+        self.assertIn("full unittest suite", testing)
+        self.assertIn("merge-candidate checkout", testing)
+        self.assertIn("`base...head`", testing)
+        self.assertIn("status-check head SHA", testing)
+        self.assertIn("passed against that run's merge-candidate checkout", testing)
+        self.assertIn("passed over that run's `base...head` range", testing)
 
     def test_agents_pr_ci_secret_and_token_wording_is_precise(self):
         # BL-035 round 1: "no secrets" must describe pr-ci.yml not referencing
