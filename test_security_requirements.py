@@ -2228,5 +2228,43 @@ class Bl034CloseoutTest(unittest.TestCase):
         self.assertNotIn("PR #73", self.requirements)
 
 
+class StatusSecurityRequirementsSourceOfTruthTest(unittest.TestCase):
+    """STATUS.md's section 8 "Sources of truth" table previously hardcoded
+    `SECURITY_REQUIREMENTS.md Version 1.1`, which went stale every time
+    SECURITY_REQUIREMENTS.md's own Version advanced (it is now 1.7,
+    Approved). The row now delegates the current Version/Status to
+    SECURITY_REQUIREMENTS.md's own header instead of duplicating a number,
+    so this staleness cannot recur on the next Version bump.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        root = Path(__file__).resolve().parent
+        cls.status = (root / "STATUS.md").read_text(encoding="utf-8")
+        cls.requirements = (root / "SECURITY_REQUIREMENTS.md").read_text(encoding="utf-8")
+
+    def _sources_of_truth_row(self, label):
+        section = self.status.split("## 8. Sources of truth", 1)[1].split("\n## 9.", 1)[0]
+        return next(
+            line for line in section.splitlines() if line.startswith(f"| {label} |")
+        )
+
+    def test_row_delegates_to_security_requirements_header_not_a_fixed_version(self):
+        row = self._sources_of_truth_row("Approved security requirements and evidence mapping")
+        self.assertIn("[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md)", row)
+        self.assertNotIn("Version 1.1", row)
+        self.assertNotRegex(row, r"Version\s+\d+\.\d+")
+        self.assertIn("同ファイル冒頭のheaderを正本とする", row)
+        self.assertIn("特定のVersion番号を複製しない", row)
+
+    def test_security_requirements_itself_is_unchanged_by_this_fix(self):
+        # This documentation-only fix must not touch SECURITY_REQUIREMENTS.md
+        # itself -- it stays Version 1.7, Approved (already covered in depth
+        # by Bl034CloseoutTest; this is a narrow reuse of that same fact to
+        # anchor this test class's own claim).
+        self.assertIn("**Version:** 1.7", self.requirements)
+        self.assertIn("**Status:** Approved", self.requirements)
+
+
 if __name__ == "__main__":
     unittest.main()
