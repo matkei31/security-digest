@@ -1,7 +1,7 @@
 # Monomi Digest Security Operations
 
 - **Version:** 1.2
-- **Status:** Draft
+- **Status:** Approved
 - **As of:** 2026-08-03
 
 ## Scope
@@ -628,7 +628,7 @@ validation, generated-output, or production change beyond what BL-030/BL-031 alr
 is not a pre-approval of BL-032's runtime enforcement implementation, of production execution,
 of `workflow_dispatch`, or of any GitHub-side setting change.**
 
-**Version 1.2 is a Draft maintenance update, not yet approved.** It synchronizes this runbook's
+**Version 1.2 is an Approved maintenance update.** It synchronizes this runbook's
 content-usage-mode downgrade procedure (section 7) with BL-032's runtime enforcement, which was
 registered as future work when Version 1.1 was approved and has since been implemented and
 merged ([PR #69](https://github.com/matkei31/security-digest/pull/69)). It replaces the
@@ -643,13 +643,34 @@ change `EXPECTED_CONTENT_USAGE_MODE_COUNTS`'s current values — it records the 
 to update them). It also corrects section 11 item 10's stale description of BL-032 as
 "registered, 要件定義済み／未着手"
 (accurate only as of the Version 1.1 approval date, and now labeled as such), and fixes
-[AGENTS.md](AGENTS.md)'s and [STATUS.md](STATUS.md)'s references to this document's own Version
-and to `.github/workflows/pr-ci.yml`'s existence. Version 1.2 makes no runtime, workflow,
+[AGENTS.md](AGENTS.md)'s and [STATUS.md](STATUS.md)'s references to this document's own Version,
+to `.github/workflows/pr-ci.yml`'s existence and actual checkout target, and to
+`.github/workflows/fetch.yml`'s actual triggers. Version 1.2 makes no runtime, workflow,
 schema, prompt, model, validation, generated-output, source-definition, or production change;
 `source_definitions.json`'s `policy.content_usage_mode` values were set by BL-032 itself, not by
 this Version. This Version's scope is defined and tracked as
-[BL-035](BACKLOG.md#bl-035--bl-032後の運用手順とagent統制文書を現在状態へ同期する). It requires
-its own explicit user acceptance before becoming Approved.
+[BL-035](BACKLOG.md#bl-035--bl-032後の運用手順とagent統制文書を現在状態へ同期する).
+
+**Version 1.2 was accepted via [PR #75](https://github.com/matkei31/security-digest/pull/75).**
+Independent Fable 5 review found Blockers across two rounds and no remaining Blocker after the
+second: round 1 identified the mode-downgrade procedure's missing count-distribution sync step
+and AGENTS.md's stale "the only push/schedule workflow" description of `fetch.yml`; round 2
+identified that AGENTS.md still misdescribed `pr-ci.yml`'s checkout target as the PR head rather
+than GitHub's auto-generated merge candidate, and a self-contradiction between `fetch.yml`'s
+commit/push and the GitHub Pages deployment description. Both rounds' Blockers were fixed on the
+same branch and pull request. The user reviewed PR #75's final content, confirmed no remaining
+Blockers after review round 2, and accepted: BL-035's implementation, this Version 1.2 as
+Approved, Ready-for-review status for PR #75, and a regular merge-commit merge — at accepted
+implementation head `43bc14c584c05ed6539e20b9cba000e784d70bd3`. Evidence: full unittest 1622
+tests OK; Pull Request CI [run 30801691143](https://github.com/matkei31/security-digest/actions/runs/30801691143)
+success; `git diff --check` success; changed files 9
+(`AGENTS.md`, `BACKLOG.md`, `SECURITY_OPERATIONS.md`, `STATUS.md`, `test_fetch.py`,
+`test_security_operations.py`, `test_security_requirements.py`, `test_source_definitions.py`,
+`test_status.py`); unresolved review threads 0. **This approval makes no runtime, workflow,
+schema, prompt, model, validation, generated-output, source-definition, policy-value, or
+production change beyond BL-035's documentation/governance-only scope described above; it is
+not a pre-approval of an actual content-usage-mode change, of production execution, of
+`workflow_dispatch`, or of any GitHub-side setting change.**
 
 Review this runbook when an incident or architecture change exposes a missing boundary. A
 mechanical annual update is not required.

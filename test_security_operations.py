@@ -32,12 +32,12 @@ class SecurityOperationsContractTest(unittest.TestCase):
         return self.operations.split(start, 1)[1].split(end, 1)[0]
 
     def test_version_10_identity_review_record_and_user_approval(self):
-        # Version 1.2 (Draft, BL-035) is the current header, but the frozen
+        # Version 1.2 (Approved, BL-035) is the current header, but the frozen
         # Version 1.0 approval record (section 12) must remain byte-identical below it.
         self.assertTrue(OPERATIONS_PATH.exists())
         self.assertIn("# Monomi Digest Security Operations", self.operations)
         self.assertIn("**Version:** 1.2", self.operations)
-        self.assertIn("**Status:** Draft", self.operations)
+        self.assertIn("**Status:** Approved", self.operations)
         approval = self.section("## 12. Approval and maintenance", "\nReview this runbook")
         for contract in (
             "Critical 0",
@@ -587,15 +587,18 @@ class Bl031SecurityOperationsReconciliationTest(unittest.TestCase):
 
 
 class Bl035DraftSyncTest(unittest.TestCase):
-    """BL-035 (Fable 5 review R-02, round 1): SECURITY_OPERATIONS.md Version 1.2
-    (Draft) synchronizes the content-usage-mode downgrade procedure with BL-032's
-    merged runtime enforcement, including the per-mode count distribution that
-    `fetch.py`'s `EXPECTED_CONTENT_USAGE_MODE_COUNTS` enforces. These tests check
-    for the presence of the required source-of-truth files, fields, constants,
-    and mode names, and the absence of the old deferred-enforcement wording --
-    deliberately not locking full sentences or line wrapping, so an editorial
-    rewording of this procedure does not require a test change unless one of
-    these concrete facts actually changes.
+    """BL-035 (Fable 5 review R-02, rounds 1-2, final acceptance via PR #75):
+    SECURITY_OPERATIONS.md Version 1.2 (Approved) synchronizes the
+    content-usage-mode downgrade procedure with BL-032's merged runtime
+    enforcement, including the per-mode count distribution that `fetch.py`'s
+    `EXPECTED_CONTENT_USAGE_MODE_COUNTS` enforces. These tests check for the
+    presence of the required source-of-truth files, fields, constants, and mode
+    names, the absence of the old deferred-enforcement wording, and the Version
+    1.2 acceptance record -- deliberately not locking full sentences or line
+    wrapping, so an editorial rewording of this procedure does not require a
+    test change unless one of these concrete facts actually changes. The class
+    name is kept as "DraftSyncTest" for continuity with rounds 1-2 even though
+    Version 1.2 is now Approved.
     """
 
     @classmethod
@@ -614,9 +617,9 @@ class Bl035DraftSyncTest(unittest.TestCase):
             "### Validation", 1
         )[0]
 
-    def test_version_is_12_draft_as_of_20260803(self):
+    def test_version_is_12_approved_as_of_20260803(self):
         self.assertIn("**Version:** 1.2", self.operations)
-        self.assertIn("**Status:** Draft", self.operations)
+        self.assertIn("**Status:** Approved", self.operations)
         self.assertIn("**As of:** 2026-08-03", self.operations)
 
     def test_downgrade_procedure_names_its_source_of_truth_and_sync_targets(self):
@@ -695,9 +698,7 @@ class Bl035DraftSyncTest(unittest.TestCase):
     def test_section_12_links_bl035_and_states_no_production_change(self):
         approval = self.section("## 12. Approval and maintenance", "\nReview this runbook")
         compact = compact_whitespace(approval)
-        self.assertIn("Version 1.2", compact)
-        self.assertIn("Draft", compact)
-        self.assertIn("not yet approved", compact)
+        self.assertIn("Version 1.2 is an Approved maintenance update", compact)
         self.assertIn(
             "[BL-035](BACKLOG.md#bl-035--bl-032後の運用手順とagent統制文書を現在状態へ同期する)",
             compact,
@@ -705,9 +706,28 @@ class Bl035DraftSyncTest(unittest.TestCase):
         self.assertIn("EXPECTED_CONTENT_USAGE_MODE_COUNTS", compact)
         self.assertIn(
             "no runtime, workflow, schema, prompt, model, validation, generated-output, "
-            "source-definition, or production change",
+            "source-definition, policy-value, or production change",
             compact,
         )
+
+    def test_section_12_records_version_12_final_acceptance_via_pr75(self):
+        approval = self.section("## 12. Approval and maintenance", "\nReview this runbook")
+        compact = compact_whitespace(approval)
+        self.assertIn(
+            "[PR #75](https://github.com/matkei31/security-digest/pull/75)", compact,
+        )
+        self.assertIn("43bc14c584c05ed6539e20b9cba000e784d70bd3", compact)
+        self.assertIn("round 1", compact)
+        self.assertIn("round 2", compact)
+        self.assertIn("no remaining Blocker", compact)
+        self.assertIn("Ready-for-review", compact)
+        self.assertIn("regular merge-commit merge", compact)
+        self.assertIn("1622", compact)
+        self.assertIn(
+            "[run 30801691143](https://github.com/matkei31/security-digest/actions/runs/30801691143)",
+            compact,
+        )
+        self.assertIn("unresolved review threads 0", compact)
 
 
 if __name__ == "__main__":

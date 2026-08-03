@@ -880,7 +880,7 @@
 - **ID:** BL-035
 - **タイトル:** BL-032後の運用手順とagent統制文書を現在状態へ同期する
 - **優先度:** P2
-- **状態:** 実装中／受入待ち
+- **状態:** 完了
 - **出所種別:** ユーザー原文
 - **ユーザー原文:** 「おk。進めていこう」
 - **原文の意味:** この原文単独では対象が曖昧なため、次を実装解釈として別記する――「Fable 5全体レビュー後に合意した優先順位に従い、最初にR-02とR-03の統制・運用文書同期へ進む。」
@@ -914,9 +914,17 @@
   6. runtime／workflow／source定義／生成物(`data/`・`docs/`)に変更がない。
   7. 関連test更新とfull unittest成功、`git diff --check`成功。
 - **依存関係:** [BL-032](#bl-032--取得元別content-usage-policy-enforcement)(実装・merge済みであることが前提)。[BL-030](#bl-030--取得元翻訳経路の緊急リスク低減)・[BL-031](#bl-031--全取得元の公式規約監査とセキュリティ文書整合化)(SECURITY_OPERATIONS.md Version 1.1の内容の前提)。
-- **実装証跡:** （Draft PR作成後にこの節へ記録する。）
-- **ユーザー受入証跡:** （未受入。SECURITY_OPERATIONS Version 1.2はDraftのまま、PRもDraftのまま維持する。）
-- **残作業:** ユーザーによる独立レビュー・受入、SECURITY_OPERATIONS Version 1.2のApproved化、Ready化・mergeが残っている。
+- **実装証跡:** branch `docs/bl035-operations-agent-sync`、[PR #75](https://github.com/matkei31/security-digest/pull/75)。SECURITY_OPERATIONS.mdのcontent usage mode downgrade手順(section 7)をBL-032のruntime enforcementへ同期し、Version 1.2(当初Draft)へ更新した(mode件数分布の同期要件を含む)。AGENTS.mdのCI・workflow説明を実workflowへ同期し、UI_SPEC／SECURITY_REQUIREMENTS／SECURITY_OPERATIONSのVersion固定参照を各正本fileのheaderへの委譲方式へ変更した。独立レビューround 1(head `e06fd6e`)でmode件数分布同期手順の欠落とAGENTS.mdのfetch.yml誤記("only push/schedule workflow")を指摘され修正、round 2(head `420741d`)でAGENTS.mdのPR CI checkout対象の誤記("checks out the PR head")とfetch.yml/Pages記述の内部矛盾("or any other workflow")を指摘され修正した。round 2で新たなBlockerなしと確認された。
+- **ユーザー受入証跡:** 独立レビューround 1・2で指摘されたBlockerはすべて修正・独立再確認済みであることを、ユーザーが確認した。ユーザーは本指示の送付をもって、BL-035の実装受入、SECURITY_OPERATIONS.md Version 1.2のApproved化、[PR #75](https://github.com/matkei31/security-digest/pull/75)の最終内容受入、Ready化、通常のmerge commit方式によるmergeを承認した。
+  - accepted implementation head: `43bc14c584c05ed6539e20b9cba000e784d70bd3`
+  - 独立レビューround 1・2で指摘されたBlockerはすべて修正・独立再確認済み
+  - full unittest 1622 tests OK
+  - Pull Request CI [run 30801691143](https://github.com/matkei31/security-digest/actions/runs/30801691143) success
+  - `git diff --check` success
+  - changed files 9件
+  - unresolved review threads 0
+  - Ready化・通常のmerge commit方式によるmergeはこのユーザー指示に基づき実行する(mergeそのものの記録は別途Git履歴・GitHub PR状態を正本とする)
+- **残作業:** なし。BL-035の設計・実装・test・ユーザー受入について残作業はない。Fable 5レビューのR-01(attribution CSS)・R-04(文書test構造改革)・R-13(E2E test)・[BL-009](#bl-009--seoと閲覧者増加策)は、それぞれ別Ticketまたは既存Ticketのscopeとして扱い、本Ticketの残作業へ混入させない。
 - **注記:** 本Ticketはdocumentation／governance-onlyであり、`fetch.py`・`daily_json.py`・`vulnerability_facts.py`・`source_definitions.json`・`SOURCE_USAGE_POLICY.md`・`SECURITY_REQUIREMENTS.md`・`UI_SPEC.md`・`DECISIONS.md`・`.github/workflows/`・`data/`・`docs/`への変更は行わない。production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行わない。
 
 ## 完了済み参照
