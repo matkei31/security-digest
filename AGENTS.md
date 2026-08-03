@@ -31,7 +31,7 @@ Current prompt versions, schema version, source status, and known limitations ar
 ## Scope discipline
 
 - Implement only the approved ticket scope.
-- For UI changes, consult the approved Version 1.0 requirements in [UI_SPEC.md](UI_SPEC.md); changing a confirmed requirement needs a new explicit user decision and a superseding decision record.
+- For UI changes, consult the approved requirements in [UI_SPEC.md](UI_SPEC.md) (that file's own header, not this file, is the source of truth for its current Version and Status); changing a confirmed requirement needs a new explicit user decision and a superseding decision record.
 - Do not infer requirements or expand the design when the specification is ambiguous.
 - If existing code or data conflicts with the ticket, report the conflict before changing behavior.
 - Do not introduce title-, vendor-, threat-actor-, CVE-, or article-specific rules unless the approved requirement explicitly calls for them.
@@ -100,10 +100,10 @@ Current prompt versions, schema version, source status, and known limitations ar
 
 ## Security requirements
 
-- [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.2 is the source of truth for the current architecture security baseline, accepted residual risks, and re-evaluation triggers.
+- [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) is the source of truth for the current architecture security baseline, accepted residual risks, and re-evaluation triggers; that file's own header, not this file, is the source of truth for its current Version and Status.
 - Consult that baseline when a listed trigger occurs. Implementing a security control still requires its own approved ticket, scope, tests, review, and merge.
 - Approval of the baseline is not blanket authorization for production execution, GitHub setting changes, or an individual control change.
-- For incidents, credential rotation or revocation, published-output correction or withdrawal, deterministic regeneration, and repository-external artifact handling, follow [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.0. That runbook does not replace the separate approval boundaries for production, generated-output changes, GitHub settings, secrets, Ready status, or merge.
+- For incidents, credential rotation or revocation, published-output correction or withdrawal, deterministic regeneration, and repository-external artifact handling, follow [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) — that file's own header, not this file, is the source of truth for its current Version and Status. That runbook does not replace the separate approval boundaries for production, generated-output changes, GitHub settings, secrets, Ready status, or merge.
 - Escape all external and AI-generated strings before inserting them into HTML.
 - Only allow `http` and `https` links.
 - External links must use `rel="noopener noreferrer"`.
@@ -129,9 +129,11 @@ python3 -m unittest discover -p "test_*.py"
 
 Prompt or request-boundary changes also require actual request-body inspection using mocked transport. Fallback/validation changes require success, fallback, failed, and not-attempted regression coverage where relevant.
 
-This repository currently has no ordinary `pull_request` or `push` CI workflow. When no PR checks exist, use scope-appropriate local verification and independent review as merge evidence. Do not describe absent checks as successful CI:
+This repository has a `pull_request` CI workflow at [`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml): it triggers on pull requests targeting `main`. Its `actions/checkout` step does not set a `ref`, so for a `pull_request` event GitHub Actions checks out the auto-generated merge candidate (`refs/pull/<PR>/merge`, GitHub's synthetic merge of the PR head into the base branch), not the PR head commit in isolation; checkout uses `persist-credentials: false`. The full unittest suite (`python3 -m unittest discover -p "test_*.py"`) runs against that merge-candidate checkout, and `git diff --check` runs separately over the `base...head` range recorded on the run (`github.event.pull_request.base.sha...github.event.pull_request.head.sha`). A CI run is associated with a specific PR head via its status check's head SHA, but the code its tests actually execute is the merge-candidate checkout, not that head commit by itself. It does not build or deploy anything, and it does not reference any repository secret; its workflow-level `permissions:` scopes the job's `GITHUB_TOKEN` to `contents: read` (a GitHub Actions job-token permission, not a claim that GitHub withholds a token from the job). There is no CI workflow triggered by ordinary `push` events to `main`. [`.github/workflows/fetch.yml`](.github/workflows/fetch.yml) is the daily production workflow: its only triggers are `schedule` and `workflow_dispatch` — it has no `push` trigger. After a successful run it commits and pushes the generated `data/`/`docs/` output to `main`; that push is an action the run performs, not an event that re-triggers `fetch.yml` itself, and no other workflow defined in this repository is triggered by an ordinary push to `main` either. GitHub Pages deployment of `docs/` is a separate, platform-managed deployment that GitHub Pages triggers from that push; it is not a workflow defined in this repository and is not a PR CI check.
 
-- For implementation changes, record the successful local full unittest result, confirmation that the PR diff matches the approved final diff, and an independent diff review.
+A successful PR CI run confirms that the full unittest suite passed against that run's merge-candidate checkout and that `git diff --check` passed over that run's `base...head` range; which PR head a given run is associated with is a separate fact, read from that run's status-check head SHA. It does not confirm production execution, Pages deployment, Ready status, or merge approval, and it does not replace an independent diff and scope review. Only describe CI as successful when a PR CI run actually exists and is `success` for the relevant head; if one does not yet exist for the change (for example, before a PR is opened), do not describe absent checks as successful CI:
+
+- For implementation changes, record the successful local full unittest result, the PR CI result when a PR exists for the change, confirmation that the PR diff matches the approved final diff, and an independent diff review.
 - For documentation-only changes, first check whether any static test inspects the documents being changed. If such a test exists, update it with the document and run at least the related tests. If no relevant static test exists, the full unittest suite may be skipped when the reason is recorded. In either case, record Markdown-link verification, changed-file scope, `git diff --check`, and an independent diff review.
 
 ## Git and generated output

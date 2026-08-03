@@ -218,5 +218,118 @@ class Sd031DecisionTest(unittest.TestCase):
         self.assertIn("[PR #70](https://github.com/matkei31/security-digest/pull/70)", evidence)
 
 
+class Bl035ActiveWorkTest(unittest.TestCase):
+    """BL-035 (Fable 5 review R-02/R-03): STATUS.md's Active work section held
+    the runbook/agent-guidance synchronization work while it was in progress,
+    replacing the "None." state left by BL-034's closeout. BL-035 has since
+    received final user acceptance via PR #75 and moved to Recently completed
+    work, returning Active work to "None." -- the same oscillation pattern
+    BL-030 through BL-034 went through before it.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.status = (REPOSITORY_ROOT / "STATUS.md").read_text(encoding="utf-8")
+
+    def _active_work_section(self):
+        return self.status.split("## Active work", 1)[1].split(
+            "\n## 5. Recently completed work", 1
+        )[0]
+
+    def _recently_completed_section(self):
+        return self.status.split("## 5. Recently completed work", 1)[1].split(
+            "\n## 6. Known issues and limitations", 1
+        )[0]
+
+    def test_active_work_is_none_and_does_not_list_bl035(self):
+        active = self._active_work_section()
+        self.assertIn("- None.", active)
+        self.assertFalse(
+            any(line.startswith("- BL-035 ") for line in active.splitlines()),
+            "BL-035 must not reappear as its own Active work item after final acceptance",
+        )
+
+    def test_recently_completed_bl035_entry_records_required_content(self):
+        recently_completed = self._recently_completed_section()
+        bl035 = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-035 ")
+        )
+        for required in (
+            "Fable 5",
+            "R-02",
+            "R-03",
+            "SECURITY_OPERATIONS",
+            "Version 1.2",
+            "BL-032",
+            "AGENTS",
+            "STATUS",
+            "PR CI",
+            "[PR #75](https://github.com/matkei31/security-digest/pull/75)",
+            "43bc14c584c05ed6539e20b9cba000e784d70bd3",
+            "round 1・2",
+            "1622 tests OK",
+            "[Pull Request CI run 30801691143]"
+            "(https://github.com/matkei31/security-digest/actions/runs/30801691143)",
+            "unresolved review threadsは0",
+            "Approved化",
+            "Ready化",
+            "通常のmerge commit方式によるmerge",
+            "9件",
+            "BL-035に残作業はない",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl035)
+        self.assertIn("は変更していない", bl035)
+
+
+class StatusSecurityOperationsSourceOfTruthTest(unittest.TestCase):
+    """STATUS.md's section 8 "Sources of truth" table previously hardcoded
+    `SECURITY_OPERATIONS.md Version 1.0`, which had already gone stale (the
+    document had moved to Version 1.1) before BL-035 advanced it again, first
+    to Version 1.2 Draft and then, on final acceptance via PR #75, to Version
+    1.2 Approved. The row delegates the current Version/Status to
+    SECURITY_OPERATIONS.md's own header instead of duplicating a number or a
+    fixed `Approved` label, so this staleness cannot recur on the next Version
+    or Status change (including the Draft-to-Approved change BL-035 itself
+    just made).
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        root = Path(__file__).resolve().parent
+        cls.status = (root / "STATUS.md").read_text(encoding="utf-8")
+        cls.operations = (root / "SECURITY_OPERATIONS.md").read_text(encoding="utf-8")
+
+    def _sources_of_truth_row(self, label):
+        section = self.status.split("## 8. Sources of truth", 1)[1].split("\n## 9.", 1)[0]
+        return next(
+            line for line in section.splitlines() if line.startswith(f"| {label} |")
+        )
+
+    def test_row_delegates_to_security_operations_header_not_a_fixed_version_or_status(self):
+        row = self._sources_of_truth_row(
+            "Incident, secret-rotation, correction, withdrawal, regeneration, "
+            "and external-artifact policy"
+        )
+        self.assertIn("[SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md)", row)
+        self.assertNotIn("Version 1.0", row)
+        self.assertNotIn("Version 1.1", row)
+        self.assertNotRegex(row, r"Version\s+\d+\.\d+")
+        # Must not hardcode "Approved" either: even now that
+        # SECURITY_OPERATIONS.md's header is in fact Approved (BL-035 final
+        # acceptance), a fixed "Approved" label here would go stale again the
+        # next time the document enters a Draft state for a future Version.
+        self.assertNotIn("Approved", row)
+        self.assertIn("同ファイル冒頭のheaderを正本とする", row)
+        self.assertIn("特定のVersion番号を複製しない", row)
+
+    def test_security_operations_itself_reflects_bl035_final_acceptance(self):
+        # This documentation-only fix must not touch SECURITY_OPERATIONS.md's own
+        # substantive content beyond what BL-035 already changed -- it now stands
+        # at Version 1.2, Approved (final user acceptance via PR #75).
+        self.assertIn("**Version:** 1.2", self.operations)
+        self.assertIn("**Status:** Approved", self.operations)
+
+
 if __name__ == "__main__":
     unittest.main()

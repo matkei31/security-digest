@@ -1019,19 +1019,122 @@ class SecurityRequirementsTest(unittest.TestCase):
             self.assertIn(marker, owner)
         self.assertIn("Mandatory checklist items contain no", owner)
 
-    def test_agents_references_version_12_and_operations_without_blanket_authorization(self):
+    def test_agents_references_security_docs_without_blanket_authorization(self):
+        # BL-035 (Fable 5 review R-03): AGENTS.md no longer hardcodes
+        # SECURITY_REQUIREMENTS.md/SECURITY_OPERATIONS.md/UI_SPEC.md Version
+        # numbers here -- all three delegate to each document's own header
+        # instead, so this reference cannot go stale again on the next Version
+        # bump of any of them. Round 1 of BL-035's own review replaced the
+        # earlier Japanese-parenthetical delegation wording (which read
+        # awkwardly butted against English words, e.g. "）is") with a plain
+        # English clause, so this checks for that clause, not the Japanese text.
+        DELEGATION_PHRASE = (
+            "that file's own header, not this file, is the source of truth for "
+            "its current Version and Status"
+        )
         security = self.agents.split("## Security requirements", 1)[1].split(
             "## Testing and review", 1
         )[0]
         self.assertIn("SECURITY_REQUIREMENTS.md", security)
-        self.assertIn("SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.2", security)
-        self.assertIn("SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.0", security)
+        self.assertIn("SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md)", security)
+        self.assertIn("SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md)", security)
+        self.assertEqual(security.count(DELEGATION_PHRASE), 2)
+        self.assertNotRegex(security, r"SECURITY_REQUIREMENTS\.md\]\(SECURITY_REQUIREMENTS\.md\)\s*Version\s+\d+\.\d+")
+        self.assertNotRegex(security, r"SECURITY_OPERATIONS\.md\]\(SECURITY_OPERATIONS\.md\)\s*Version\s+\d+\.\d+")
         self.assertIn("credential rotation or revocation", security)
         self.assertIn("published-output correction or withdrawal", security)
         self.assertIn("repository-external artifact handling", security)
         self.assertIn("re-evaluation triggers", security)
         self.assertIn("approved ticket", security)
         self.assertIn("not blanket authorization", security)
+
+    def test_agents_ui_spec_reference_delegates_version_too(self):
+        scope = self.agents.split("## Scope discipline", 1)[1].split(
+            "## Backlog provenance and completion", 1
+        )[0]
+        self.assertIn("UI_SPEC.md](UI_SPEC.md)", scope)
+        self.assertIn(
+            "that file's own header, not this file, is the source of truth for "
+            "its current Version and Status",
+            scope,
+        )
+        self.assertNotRegex(scope, r"UI_SPEC\.md\]\(UI_SPEC\.md\)\s*Version\s+\d+\.\d+")
+
+    def test_agents_describes_pr_ci_and_fetch_yml_triggers_accurately(self):
+        # BL-035 round 1 (Fable 5 review): AGENTS.md previously called
+        # fetch.yml "the only push/schedule workflow", which misdescribes it as
+        # push-triggered. fetch.yml has no `push` trigger -- only `schedule` and
+        # `workflow_dispatch` -- and the commit/push it performs after a
+        # successful run is an action the run takes, not a triggering event.
+        testing = self.agents.split("## Testing and review", 1)[1].split(
+            "## Git and generated output", 1
+        )[0]
+        self.assertIn("pr-ci.yml", testing)
+        self.assertIn("fetch.yml", testing)
+        self.assertIn("`schedule`", testing)
+        self.assertIn("`workflow_dispatch`", testing)
+        self.assertIn("no `push` trigger", testing)
+        self.assertNotIn("only push/schedule workflow", testing)
+        self.assertNotIn("push/schedule workflow", testing)
+        self.assertIn("GitHub Pages", testing)
+        self.assertIn("not a PR CI check", testing)
+        # BL-035 round 2 (Fable 5 review): fetch.yml's own commit/push must not
+        # be described as re-triggering "any other workflow" -- that phrase was
+        # too broad and contradicted the very next sentence, which says that
+        # same push does trigger GitHub Pages' platform-managed deployment.
+        self.assertNotIn("or any other workflow", testing)
+        self.assertIn("re-triggers `fetch.yml` itself", testing)
+        self.assertIn(
+            "no other workflow defined in this repository is triggered by an ordinary push",
+            testing,
+        )
+        self.assertIn("platform-managed", testing)
+        self.assertIn("not a workflow defined in this repository", testing)
+
+    def test_agents_pr_ci_checkout_target_is_the_merge_candidate_not_the_head(self):
+        # BL-035 round 2 (Fable 5 review): pr-ci.yml's `actions/checkout` step
+        # has no `ref`, so a `pull_request`-triggered run checks out GitHub's
+        # auto-generated merge candidate (refs/pull/<PR>/merge), not the PR head
+        # commit by itself. AGENTS.md previously said the workflow "checks out
+        # the PR head," which is not what happens without an explicit `ref`.
+        testing = self.agents.split("## Testing and review", 1)[1].split(
+            "## Git and generated output", 1
+        )[0]
+        self.assertNotIn("checks out the PR head", testing)
+        self.assertIn("does not set a `ref`", testing)
+        self.assertIn("merge candidate", testing)
+        self.assertIn("refs/pull/<PR>/merge", testing)
+        self.assertIn("`persist-credentials: false`", testing)
+
+    def test_agents_distinguishes_unittest_target_diff_check_range_and_head_association(self):
+        # BL-035 round 2 (Fable 5 review): a reader must not come away thinking
+        # "the full unittest suite ran on the PR head" -- it runs on the merge
+        # candidate; `git diff --check` is the part that is scoped to
+        # base...head; and which PR head a run is "for" is a separate fact read
+        # from the run's own status-check head SHA.
+        testing = self.agents.split("## Testing and review", 1)[1].split(
+            "## Git and generated output", 1
+        )[0]
+        self.assertIn("full unittest suite", testing)
+        self.assertIn("merge-candidate checkout", testing)
+        self.assertIn("`base...head`", testing)
+        self.assertIn("status-check head SHA", testing)
+        self.assertIn("passed against that run's merge-candidate checkout", testing)
+        self.assertIn("passed over that run's `base...head` range", testing)
+
+    def test_agents_pr_ci_secret_and_token_wording_is_precise(self):
+        # BL-035 round 1: "no secrets" must describe pr-ci.yml not referencing
+        # any repository secret, and must not be conflated with (or read as
+        # denying) the GitHub Actions job token: pr-ci.yml's workflow-level
+        # `permissions:` scopes that job token (GITHUB_TOKEN) to `contents:
+        # read`, it is not evidence that no token exists for the job.
+        testing = self.agents.split("## Testing and review", 1)[1].split(
+            "## Git and generated output", 1
+        )[0]
+        self.assertIn("does not reference any repository secret", testing)
+        self.assertIn("`GITHUB_TOKEN`", testing)
+        self.assertIn("`contents: read`", testing)
+        self.assertIn("not a claim that GitHub withholds a token from the job", testing)
 
     def test_security_requirements_internal_markdown_links_resolve(self):
         docs = {
@@ -1212,10 +1315,15 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         active = self.status.split("## Active work", 1)[1].split(
             "## 5. Recently completed work", 1
         )[0]
-        self.assertNotIn("BL-031", active)
-        # BL-032's PR #69 merged during post-merge closeout, so it moved out
-        # of Active work into Recently completed alongside BL-031.
-        self.assertNotIn("BL-032", active)
+        active_lines = active.splitlines()
+        self.assertFalse(any(line.startswith("- BL-031 ") for line in active_lines))
+        # BL-032's PR #69 merged during post-merge closeout, so it moved out of
+        # Active work into Recently completed alongside BL-031. BL-035's own
+        # Active work entry legitimately names BL-032 as background context (the
+        # enforcement work it is synchronizing), so this checks BL-032 does not
+        # reappear as its own Active work bullet rather than banning the
+        # substring "BL-032" outright.
+        self.assertFalse(any(line.startswith("- BL-032 ") for line in active_lines))
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
@@ -1497,11 +1605,19 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
 
 
 class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
-    """BL-031's acceptance/merge is recorded as Completed, the three security
-    documents are Approved, SD-030 records the approval/enforcement-deferral
-    boundary without marking SD-002 as already superseded, BL-032 is
-    registered exactly once and not started, and per-source `checked_at`
-    values were not bulk-changed by this approval round.
+    """Historical point-in-time checks anchored to the 2026-07-31 BL-031
+    acceptance round: BL-031's acceptance/merge is recorded as Completed, SD-030
+    records the approval/enforcement-deferral boundary without marking SD-002 as
+    already superseded, and per-source `checked_at` values were not bulk-changed
+    by this approval round. At that time, all three security documents were
+    Approved and BL-032 was registered exactly once and not yet started; these
+    were true THEN, not necessarily now -- SECURITY_REQUIREMENTS.md has since
+    moved to Version 1.7 (checked directly below) and SECURITY_OPERATIONS.md has
+    since moved to Version 1.2 Draft under BL-035 (checked in
+    test_security_operations.Bl035DraftSyncTest), and BL-032 itself has since
+    been implemented and merged (checked throughout this file and in
+    test_source_definitions.py). Do not read this class's test names as
+    describing the documents' current state.
     """
 
     @classmethod
@@ -1515,17 +1631,20 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
         cls.source_definitions = (ROOT / "source_definitions.json").read_text(encoding="utf-8")
         cls.fetch_source = (ROOT / "fetch.py").read_text(encoding="utf-8")
 
-    def test_three_documents_are_approved_as_of_20260731(self):
-        # SOURCE_USAGE_POLICY.md and SECURITY_OPERATIONS.md remain Approved
-        # as of the 2026-07-31 BL-031 round and are unchanged since.
+    def test_source_usage_policy_20260731_snapshot_and_security_requirements_current_version(self):
+        # SOURCE_USAGE_POLICY.md remains Approved as of the 2026-07-31 BL-031
+        # round and is unchanged since -- a historical snapshot, checked here.
         # SECURITY_REQUIREMENTS.md has since moved further: Draft Version 1.6
         # (BL-032 implementation, pending user acceptance at the time) was
         # superseded by Version 1.7 (BL-034 implementation), which the user
-        # accepted on 2026-08-03 (PR #72 round 2) -- all three documents are
-        # now Approved, though on different dates/rounds.
+        # accepted on 2026-08-03 (PR #72 round 2) -- its CURRENT version, checked
+        # below. SECURITY_OPERATIONS.md's history is not checked in this method:
+        # it moved further still under BL-035 (Fable 5 review R-02) from the
+        # 2026-07-31 Version 1.1 Approved snapshot to Version 1.2 Draft; see
+        # test_version_11_approval_record_is_preserved_as_history (history) and
+        # test_security_operations.Bl035DraftSyncTest (current state).
         for doc, version_marker in (
             (self.policy, "**Version:** 0.1"),
-            (self.operations, "**Version:** 1.1"),
         ):
             with self.subTest(version_marker=version_marker):
                 self.assertIn(version_marker, doc)
@@ -2060,9 +2179,11 @@ class Bl034CloseoutTest(unittest.TestCase):
                 self.assertIn(item, residual)
 
     def test_status_active_work_no_longer_lists_bl034(self):
+        # Active work returned to empty ("None.") immediately after BL-034's
+        # closeout, then BL-035 (Fable 5 review R-02/R-03) became the new Active
+        # work item -- see test_status.Bl035ActiveWorkTest for that current state.
         active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
         self.assertNotIn("BL-034", active)
-        self.assertIn("None.", active)
 
     def test_status_recently_completed_records_bl034(self):
         recently_completed = self._section(
@@ -2214,9 +2335,12 @@ class Bl034CloseoutTest(unittest.TestCase):
         self.assertIn("30780371203", bl034)
         self.assertIn("ユーザーが最終受入", bl034)
 
-    def test_status_active_work_still_none_after_final_acceptance(self):
+    def test_status_active_work_no_longer_lists_bl034_after_final_acceptance(self):
+        # Active work was "None." immediately after PR #73's final acceptance;
+        # BL-035 (Fable 5 review R-02/R-03) has since become the Active work item
+        # -- see test_status.Bl035ActiveWorkTest for that current state. This test
+        # keeps checking that BL-034 itself never regressed back into Active work.
         active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
-        self.assertIn("None.", active)
         self.assertNotIn("BL-034", active)
 
     def test_final_acceptance_record_does_not_touch_out_of_scope_documents(self):
