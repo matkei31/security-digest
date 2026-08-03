@@ -1710,13 +1710,12 @@ class Bl034Round1ReviewCorrectionsTest(unittest.TestCase):
         self.assertIn("進行中（BL-034で閲覧計測基盤を先行）", bl009)
         self.assertNotIn("- **状態:** 完了", bl009)
 
-    def test_bl034_is_not_completed_and_awaits_acceptance(self):
-        # Historical note: at round 1/2 of independent review (before the
-        # 2026-08-03 closeout), the repository implementation was accepted
-        # but BL-034 was not yet `完了` -- Cloudflare dashboard data and
-        # Search Console verification were unconfirmed post-merge work.
-        # BL-034 closeout has since recorded both as confirmed and moved
-        # BL-034 to `完了`; see Bl034CloseoutTest for the current record.
+    def test_bl034_is_complete_with_the_accepted_implementation_head_recorded(self):
+        # Round 1/2 of independent review accepted the repository
+        # implementation but left BL-034 not yet `完了`; BL-034 closeout
+        # (2026-08-03) then confirmed Cloudflare dashboard data and Search
+        # Console verification and moved BL-034 to `完了` -- see
+        # Bl034CloseoutTest for the full closeout-fact assertions.
         bl034 = self._section(self.backlog, "## BL-034", "\n## 完了済み参照")
         self.assertIn("- **状態:** 完了", bl034)
         self.assertIn("6d032e702e1b118bc6da86b981a4189b4a85e15b", bl034)
@@ -1846,9 +1845,12 @@ class Bl034ImplementationAcceptanceTest(unittest.TestCase):
     """BL-034 implementation acceptance (2026-08-03, PR #72 round 2 clean):
     the user accepted the repository implementation, approved SD-032 and
     SECURITY_REQUIREMENTS.md Version 1.7, and authorized Ready-for-review
-    plus a regular merge-commit merge -- but Cloudflare Web Analytics
-    dashboard data receipt and Google Search Console verification remain
-    unconfirmed, so BL-034 itself is accepted, not fully `完了`.
+    plus a regular merge-commit merge. Cloudflare Web Analytics dashboard
+    data receipt and Google Search Console verification were unconfirmed
+    at that moment; BL-034 closeout (same day) has since confirmed both
+    and moved BL-034 to `完了` -- see Bl034CloseoutTest for the current
+    record. These tests check the acceptance-round evidence that still
+    appears verbatim in BACKLOG.md/DECISIONS.md/SECURITY_REQUIREMENTS.md.
     """
 
     ACCEPTED_HEAD = "6d032e702e1b118bc6da86b981a4189b4a85e15b"
@@ -1866,11 +1868,12 @@ class Bl034ImplementationAcceptanceTest(unittest.TestCase):
         after = text.split(start, 1)[1]
         return after.split(end, 1)[0] if end else after
 
-    def test_bl034_is_accepted_but_not_marked_fully_complete(self):
-        # Superseded by BL-034 closeout (2026-08-03, same day): the
-        # implementation-acceptance round recorded here was itself later
-        # followed by operational confirmation (Cloudflare dashboard,
-        # Search Console) and BL-034 is now `完了`; see Bl034CloseoutTest.
+    def test_bl034_is_complete_with_acceptance_round_evidence_preserved(self):
+        # The implementation-acceptance round recorded here (accepted head,
+        # test/CI evidence) was later followed by BL-034 closeout
+        # (2026-08-03, same day): operational confirmation of the Cloudflare
+        # dashboard and Search Console, moving BL-034 to `完了`; see
+        # Bl034CloseoutTest for the closeout-specific assertions.
         bl034 = self._section(self.backlog, "## BL-034", "\n## 完了済み参照")
         self.assertIn("- **状態:** 完了", bl034)
         self.assertIn(self.ACCEPTED_HEAD, bl034)
@@ -1937,14 +1940,18 @@ class Bl034ImplementationAcceptanceTest(unittest.TestCase):
         self.assertEqual(gap_cells[1], "Policy decision")
         self.assertEqual(gap_cells[2], "Implemented")
 
-    def test_dashboard_and_search_console_remain_unconfirmed_after_acceptance(self):
-        # SECURITY_REQUIREMENTS.md is out of scope for the closeout round,
-        # so GAP-018's "remain unconfirmed" text is deliberately left as the
-        # frozen record of the acceptance-round state, not updated here.
+    def test_dashboard_and_search_console_are_confirmed_by_closeout(self):
+        # SECURITY_REQUIREMENTS.md was later brought into BL-034 closeout's
+        # scope (PR #73 round 1): GAP-018 no longer says dashboard/Search
+        # Console are unconfirmed -- both are now recorded as confirmed.
         gap018 = next(
             line for line in self.requirements.splitlines() if line.startswith("| GAP-018 |")
         )
-        self.assertIn("remain unconfirmed", gap018)
+        self.assertNotIn("remain unconfirmed", gap018)
+        self.assertIn("BL-034 is complete", gap018)
+        self.assertIn("Cloudflare Web Analytics dashboard is receiving data", gap018)
+        self.assertIn("Google Search Console Domain-property ownership verification succeeded", gap018)
+        self.assertIn("TXT value is not stored in this repository", gap018)
 
     def test_acceptance_commit_touches_no_runtime_html_data_or_workflow_files(self):
         # This is a documentation assertion, not a git check (see the round's
@@ -1965,6 +1972,14 @@ class Bl034CloseoutTest(unittest.TestCase):
     公開後確認待ち` to `完了`. Locks the closeout facts in place and
     confirms neither the Google verification TXT value nor
     SECURITY_REQUIREMENTS.md's Approved Version 1.7 status is disturbed.
+
+    PR #73 round 1 additionally brought SECURITY_REQUIREMENTS.md's own
+    current-state text (intro, SR-047, GAP-018, section 12) into scope, so
+    this class also locks: those sections now say dashboard/Search Console
+    are confirmed (not "remain unconfirmed"/"none of those have occurred"),
+    while still preserving the historical, past-tense record of what was
+    true at the moment Version 1.7's repository implementation was
+    accepted (before the closeout confirmations happened).
     """
 
     MERGE_COMMIT = "8cd98e52bfe6164bffa8e10cdbf708eef76d43a1"
@@ -2070,6 +2085,44 @@ class Bl034CloseoutTest(unittest.TestCase):
     def test_security_requirements_version_17_approved_is_unchanged_by_closeout(self):
         self.assertIn("**Version:** 1.7", self.requirements)
         self.assertIn("**Status:** Approved", self.requirements)
+
+    def test_intro_no_longer_claims_no_external_confirmations_have_occurred(self):
+        self.assertNotIn("none of those have occurred and none of them is claimed here", self.requirements)
+        self.assertIn(
+            "on 2026-08-03 the user confirmed the Cloudflare Web\nAnalytics dashboard is receiving data",
+            self.requirements,
+        )
+        self.assertIn("Google Search Console verified Domain-property\nownership", self.requirements)
+        # The historical framing (unconfirmed AT THE TIME of acceptance) must
+        # be preserved, not deleted -- only the present-tense claim was wrong.
+        self.assertIn("were unconfirmed operational", self.requirements)
+        self.assertIn("did\nnot block this Version's own approval", self.requirements)
+
+    def test_sr047_and_gap018_confirm_dashboard_and_search_console_not_unconfirmed(self):
+        sr047 = next(
+            line for line in self.requirements.splitlines() if line.startswith("| SR-047 |")
+        )
+        self.assertNotIn("remain unconfirmed post-merge work", sr047)
+        self.assertIn("confirmed as part of BL-034 closeout", sr047)
+        gap018 = next(
+            line for line in self.requirements.splitlines() if line.startswith("| GAP-018 |")
+        )
+        gap_cells = [c.strip() for c in gap018.strip("|").split("|")]
+        self.assertEqual(gap_cells[1], "Policy decision")
+        self.assertEqual(gap_cells[2], "Implemented")
+        self.assertNotIn("remain unconfirmed", gap018)
+        self.assertIn("BL-034 is complete", gap018)
+
+    def test_section_12_records_closeout_without_reapproving_or_version_bumping(self):
+        section12 = self._section(
+            self.requirements, "## 12. Approval and maintenance", "## 13."
+        )
+        self.assertIn("BL-034 closeout (2026-08-03", section12)
+        self.assertIn(self.MERGE_COMMIT, section12)
+        self.assertIn(
+            "does not re-approve Version 1.7 or bump its Version", section12
+        )
+        self.assertIn("BL-034 is now `完了`", section12)
 
 
 if __name__ == "__main__":
