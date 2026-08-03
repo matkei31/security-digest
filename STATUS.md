@@ -115,6 +115,6 @@ The initial backlog import is not a complete historical-comment audit; [BL-014](
 | Incomplete, partial, and acceptance-pending items | `BACKLOG.md` |
 | Stable decisions | `DECISIONS.md` |
 | Approved UI specification and UI decision history | `UI_SPEC.md` |
-| Approved security requirements and evidence mapping | `SECURITY_REQUIREMENTS.md` Version 1.1 |
+| Approved security requirements and evidence mapping | [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md)（現在のVersion／Statusは同ファイル冒頭のheaderを正本とする。STATUS.mdへは特定のVersion番号を複製しない） |
 | Approved incident, secret-rotation, correction, withdrawal, regeneration, and external-artifact policy | `SECURITY_OPERATIONS.md` Version 1.0 |
 | Implementation-agent constraints | `AGENTS.md` |
