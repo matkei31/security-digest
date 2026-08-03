@@ -1710,28 +1710,23 @@ class Bl034Round1ReviewCorrectionsTest(unittest.TestCase):
         self.assertIn("進行中（BL-034で閲覧計測基盤を先行）", bl009)
         self.assertNotIn("- **状態:** 完了", bl009)
 
-    def test_bl034_is_not_completed_and_awaits_acceptance(self):
-        # BL-034 round 2 implementation-acceptance record (2026-08-03): the
-        # repository implementation itself is now accepted, but BL-034 is
-        # still not `完了` -- Cloudflare dashboard data and Search Console
-        # verification remain unconfirmed post-merge work.
+    def test_bl034_is_complete_with_the_accepted_implementation_head_recorded(self):
+        # Round 1/2 of independent review accepted the repository
+        # implementation but left BL-034 not yet `完了`; BL-034 closeout
+        # (2026-08-03) then confirmed Cloudflare dashboard data and Search
+        # Console verification and moved BL-034 to `完了` -- see
+        # Bl034CloseoutTest for the full closeout-fact assertions.
         bl034 = self._section(self.backlog, "## BL-034", "\n## 完了済み参照")
-        self.assertNotIn("- **状態:** 完了", bl034)
-        self.assertIn("実装受入済み／公開後確認待ち", bl034)
+        self.assertIn("- **状態:** 完了", bl034)
         self.assertIn("6d032e702e1b118bc6da86b981a4189b4a85e15b", bl034)
 
     def test_dashboard_and_search_console_confirmation_are_post_merge_only(self):
+        # The 完了条件 list's merge-before/merge-after sequencing contract
+        # (round 1) remains a valid historical definition of what had to
+        # happen; both have since happened (see Bl034CloseoutTest).
         bl034 = self._section(self.backlog, "## BL-034", "\n## 完了済み参照")
         self.assertIn("**merge後:**", bl034)
         self.assertIn("Cloudflare dashboardでの実データ受信確認", bl034)
-        active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
-        # BL-034 round 2 implementation-acceptance update (2026-08-03):
-        # dashboard/Search Console confirmation remain unconfirmed post-merge
-        # work, not something already in progress externally.
-        self.assertIn("Cloudflare dashboardでの実データ受信はまだ未確認である", active)
-        self.assertIn("Search ConsoleのDomain property verificationも未確認", active)
-        self.assertIn("Googleが発行するDNS TXT値はrepositoryへ保存しない", active)
-        self.assertNotIn("別途外部で進めており", active)
 
     def test_gap_018_is_a_policy_decision_not_a_security_gap(self):
         gaps = self._section(
@@ -1850,9 +1845,12 @@ class Bl034ImplementationAcceptanceTest(unittest.TestCase):
     """BL-034 implementation acceptance (2026-08-03, PR #72 round 2 clean):
     the user accepted the repository implementation, approved SD-032 and
     SECURITY_REQUIREMENTS.md Version 1.7, and authorized Ready-for-review
-    plus a regular merge-commit merge -- but Cloudflare Web Analytics
-    dashboard data receipt and Google Search Console verification remain
-    unconfirmed, so BL-034 itself is accepted, not fully `完了`.
+    plus a regular merge-commit merge. Cloudflare Web Analytics dashboard
+    data receipt and Google Search Console verification were unconfirmed
+    at that moment; BL-034 closeout (same day) has since confirmed both
+    and moved BL-034 to `完了` -- see Bl034CloseoutTest for the current
+    record. These tests check the acceptance-round evidence that still
+    appears verbatim in BACKLOG.md/DECISIONS.md/SECURITY_REQUIREMENTS.md.
     """
 
     ACCEPTED_HEAD = "6d032e702e1b118bc6da86b981a4189b4a85e15b"
@@ -1870,24 +1868,31 @@ class Bl034ImplementationAcceptanceTest(unittest.TestCase):
         after = text.split(start, 1)[1]
         return after.split(end, 1)[0] if end else after
 
-    def test_bl034_is_accepted_but_not_marked_fully_complete(self):
+    def test_bl034_is_complete_with_acceptance_round_evidence_preserved(self):
+        # The implementation-acceptance round recorded here (accepted head,
+        # test/CI evidence) was later followed by BL-034 closeout
+        # (2026-08-03, same day): operational confirmation of the Cloudflare
+        # dashboard and Search Console, moving BL-034 to `完了`; see
+        # Bl034CloseoutTest for the closeout-specific assertions.
         bl034 = self._section(self.backlog, "## BL-034", "\n## 完了済み参照")
-        self.assertIn("- **状態:** 実装受入済み／公開後確認待ち", bl034)
-        self.assertNotIn("- **状態:** 完了", bl034)
+        self.assertIn("- **状態:** 完了", bl034)
         self.assertIn(self.ACCEPTED_HEAD, bl034)
         self.assertIn("1577 tests OK", bl034)
         self.assertIn("30765873879", bl034)
         self.assertIn("changed files 35件", bl034)
         self.assertIn("unresolved review threads 0", bl034)
 
-    def test_bl034_residual_work_is_post_merge_confirmation_only(self):
+    def test_bl034_has_no_residual_work_after_closeout(self):
+        # The 完了条件 list (a historical contract definition, round 1) still
+        # names Cloudflare dashboard/Search Console confirmation as
+        # merge-after items; BL-034 closeout has since completed both, so
+        # 残作業 itself now reads なし.
         bl034 = self._section(self.backlog, "## BL-034", "\n## 完了済み参照")
+        self.assertIn("Cloudflare dashboardでの実データ受信確認", bl034)
+        self.assertIn("Google Search Console verification結果の確認", bl034)
+        self.assertIn("GitHub Pagesへの公開反映を確認", bl034)
         residual = self._section(bl034, "- **残作業:**")
-        self.assertIn("Cloudflare dashboardでの実データ受信確認", residual)
-        self.assertIn("Google Search Console Domain property verification結果の確認", residual)
-        self.assertIn("GitHub Pages公開反映の客観確認", residual)
-        # 4-week baseline completion itself must not be a completion condition.
-        self.assertIn("4週間の経過完了自体はBL-034の完了条件とせず", residual)
+        self.assertIn("なし", residual)
 
     def test_bl009_remains_the_in_progress_umbrella(self):
         bl009 = self._section(self.backlog, "## BL-009", "\n## BL-010")
@@ -1900,7 +1905,6 @@ class Bl034ImplementationAcceptanceTest(unittest.TestCase):
         self.assertNotIn("implementation Draft, pending user acceptance", sd032)
         self.assertIn(self.ACCEPTED_HEAD, sd032)
         self.assertIn("PR #72", sd032)
-        self.assertIn("not yet confirmed", sd032)
 
     def test_security_requirements_version_17_is_approved_and_current_baseline(self):
         self.assertIn("**Version:** 1.7", self.requirements)
@@ -1937,15 +1941,18 @@ class Bl034ImplementationAcceptanceTest(unittest.TestCase):
         self.assertEqual(gap_cells[1], "Policy decision")
         self.assertEqual(gap_cells[2], "Implemented")
 
-    def test_dashboard_and_search_console_remain_unconfirmed_after_acceptance(self):
+    def test_dashboard_and_search_console_are_confirmed_by_closeout(self):
+        # SECURITY_REQUIREMENTS.md was later brought into BL-034 closeout's
+        # scope (PR #73 round 1): GAP-018 no longer says dashboard/Search
+        # Console are unconfirmed -- both are now recorded as confirmed.
         gap018 = next(
             line for line in self.requirements.splitlines() if line.startswith("| GAP-018 |")
         )
-        self.assertIn("remain unconfirmed", gap018)
-        active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
-        self.assertIn("まだ未確認である", active)
-        self.assertIn("も未確認", active)
-        self.assertIn(self.ACCEPTED_HEAD, active)
+        self.assertNotIn("remain unconfirmed", gap018)
+        self.assertIn("BL-034 is complete", gap018)
+        self.assertIn("Cloudflare Web Analytics dashboard is receiving data", gap018)
+        self.assertIn("Google Search Console Domain-property ownership verification succeeded", gap018)
+        self.assertIn("TXT value is not stored in this repository", gap018)
 
     def test_acceptance_commit_touches_no_runtime_html_data_or_workflow_files(self):
         # This is a documentation assertion, not a git check (see the round's
@@ -1957,6 +1964,268 @@ class Bl034ImplementationAcceptanceTest(unittest.TestCase):
         acceptance = self._section(bl034, "- **ユーザー受入証跡:**", "\n- **残作業:**")
         self.assertNotIn("fetch.py", acceptance)
         self.assertNotIn("docs/", acceptance)
+
+
+class Bl034CloseoutTest(unittest.TestCase):
+    """BL-034 closeout (2026-08-03): after the user confirmed Cloudflare Web
+    Analytics dashboard data receipt and Google Search Console Domain
+    property ownership verification, BL-034 moved from `実装受入済み／
+    公開後確認待ち` to `完了`. Locks the closeout facts in place and
+    confirms neither the Google verification TXT value nor
+    SECURITY_REQUIREMENTS.md's Approved Version 1.7 status is disturbed.
+
+    PR #73 round 1 additionally brought SECURITY_REQUIREMENTS.md's own
+    current-state text (intro, SR-047, GAP-018, section 12) into scope, so
+    this class also locks: those sections now say dashboard/Search Console
+    are confirmed (not "remain unconfirmed"/"none of those have occurred"),
+    while still preserving the historical, past-tense record of what was
+    true at the moment Version 1.7's repository implementation was
+    accepted (before the closeout confirmations happened).
+    """
+
+    MERGE_COMMIT = "8cd98e52bfe6164bffa8e10cdbf708eef76d43a1"
+
+    @classmethod
+    def setUpClass(cls):
+        root = Path(__file__).resolve().parent
+        cls.requirements = (root / "SECURITY_REQUIREMENTS.md").read_text(encoding="utf-8")
+        cls.backlog = (root / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (root / "STATUS.md").read_text(encoding="utf-8")
+        cls.decisions = (root / "DECISIONS.md").read_text(encoding="utf-8")
+
+    @staticmethod
+    def _section(text, start, end=None):
+        after = text.split(start, 1)[1]
+        return after.split(end, 1)[0] if end else after
+
+    def test_bl034_is_complete_with_no_residual_work(self):
+        bl034 = self._section(self.backlog, "## BL-034", "\n## 完了済み参照")
+        self.assertIn("- **状態:** 完了", bl034)
+        residual = self._section(bl034, "- **残作業:**", "\n- **注記:**")
+        self.assertIn("なし", residual)
+        self.assertNotIn("公開後確認のみ", residual)
+
+    def test_cloudflare_dashboard_and_search_console_are_confirmed(self):
+        bl034 = self._section(self.backlog, "## BL-034", "\n## 完了済み参照")
+        self.assertIn("Cloudflare Web Analytics dashboardで実データ受信を確認した", bl034)
+        self.assertIn("Visits 3", bl034)
+        self.assertIn("Page views 3", bl034)
+        self.assertIn("217ms", bl034)
+        self.assertIn("初期観測値であり、現在値や恒久的な基準値ではない", bl034)
+        self.assertIn("Visitsはunique人数を意味しない", bl034)
+        self.assertIn("Google Search Consoleで", bl034)
+        self.assertIn("所有権確認成功", bl034)
+        self.assertIn("monomidigest.com", bl034)
+
+    def test_measurement_start_date_is_20260803(self):
+        bl034 = self._section(self.backlog, "## BL-034", "\n## 完了済み参照")
+        self.assertIn("計測開始日: `2026-08-03`", bl034)
+
+    def test_google_verification_txt_value_is_not_present_anywhere(self):
+        # Only the policy statement ("TXT value is not stored") may appear;
+        # no actual TXT record value/content is ever written to any of
+        # these four management documents.
+        for name, text in (
+            ("BACKLOG.md", self.backlog),
+            ("STATUS.md", self.status),
+            ("DECISIONS.md", self.decisions),
+            ("SECURITY_REQUIREMENTS.md", self.requirements),
+        ):
+            with self.subTest(doc=name):
+                self.assertNotIn("google-site-verification", text)
+        self.assertIn("TXT値そのものはrepositoryへ保存していない", self.backlog)
+        self.assertIn("TXT値自体はrepositoryへ保存していない", self.status)
+        self.assertIn("value is not stored in this repository", self.decisions)
+
+    def test_bl009_is_still_the_in_progress_umbrella_with_full_scope(self):
+        bl009 = self._section(self.backlog, "## BL-009", "\n## BL-010")
+        self.assertIn("進行中（BL-034で閲覧計測基盤を先行）", bl009)
+        self.assertNotIn("- **状態:** 完了", bl009)
+        residual = self._section(bl009, "- **残作業:**", "\n- **注記:**")
+        for item in (
+            "対象読者と目標",
+            "技術/コンテンツSEO",
+            "metadata",
+            "robots.txt",
+            "sitemap",
+            "canonical",
+            "OG／共有",
+            "favicon",
+            "About全体",
+            "施策の優先順位付け",
+            "個別実装",
+            "成果測定の継続",
+        ):
+            with self.subTest(item=item):
+                self.assertIn(item, residual)
+
+    def test_status_active_work_no_longer_lists_bl034(self):
+        active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
+        self.assertNotIn("BL-034", active)
+        self.assertIn("None.", active)
+
+    def test_status_recently_completed_records_bl034(self):
+        recently_completed = self._section(
+            self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
+        )
+        bl034 = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-034 ")
+        )
+        self.assertIn(self.MERGE_COMMIT, bl034)
+        self.assertIn("30766650046", bl034)
+        self.assertIn("Cloudflare Web Analytics dashboard", bl034)
+        self.assertIn("Search Console", bl034)
+        self.assertIn("2026-08-03", bl034)
+        self.assertIn("BL-034に残作業はない", bl034)
+
+    def test_sd032_status_is_still_accepted(self):
+        sd032 = self._section(self.decisions, "## SD-032", "\n## ")
+        self.assertIn("- **Status:** Accepted", sd032)
+        self.assertIn(self.MERGE_COMMIT, sd032)
+
+    def test_security_requirements_version_17_approved_is_unchanged_by_closeout(self):
+        self.assertIn("**Version:** 1.7", self.requirements)
+        self.assertIn("**Status:** Approved", self.requirements)
+
+    def test_intro_no_longer_claims_no_external_confirmations_have_occurred(self):
+        self.assertNotIn("none of those have occurred and none of them is claimed here", self.requirements)
+        self.assertNotIn("no DNS change, Cloudflare account\noperation, or Search Console verification had occurred", self.requirements)
+        self.assertIn(
+            "on 2026-08-03 the user confirmed the Cloudflare Web\nAnalytics dashboard is receiving data",
+            self.requirements,
+        )
+        self.assertIn("Google Search Console verified Domain-property\nownership", self.requirements)
+        # The Cloudflare site/hostname registration and manual beacon
+        # snippet retrieval genuinely happened before acceptance (the
+        # implementation embeds that token) -- the intro must say so.
+        self.assertIn("the user had already registered", self.requirements)
+        self.assertIn("retrieved the manual beacon\nsnippet", self.requirements)
+        self.assertIn("no DNS, proxy, or nameserver migration to Cloudflare was made", self.requirements)
+        # The historical framing (unconfirmed AT THE TIME of acceptance) must
+        # be preserved, not deleted -- only the present-tense claim was wrong.
+        self.assertIn("both tracked as BL-034's residual post-merge work", self.requirements)
+        self.assertIn("did not block this Version's own approval", self.requirements)
+
+    def test_sr047_and_gap018_confirm_dashboard_and_search_console_not_unconfirmed(self):
+        sr047 = next(
+            line for line in self.requirements.splitlines() if line.startswith("| SR-047 |")
+        )
+        self.assertNotIn("remain unconfirmed post-merge work", sr047)
+        self.assertIn("confirmed as part of BL-034 closeout", sr047)
+        gap018 = next(
+            line for line in self.requirements.splitlines() if line.startswith("| GAP-018 |")
+        )
+        gap_cells = [c.strip() for c in gap018.strip("|").split("|")]
+        self.assertEqual(gap_cells[1], "Policy decision")
+        self.assertEqual(gap_cells[2], "Implemented")
+        self.assertNotIn("remain unconfirmed", gap018)
+        self.assertIn("BL-034 is complete", gap018)
+
+    def test_section_12_records_closeout_without_reapproving_or_version_bumping(self):
+        section12 = self._section(
+            self.requirements, "## 12. Approval and maintenance", "## 13."
+        )
+        self.assertIn("BL-034 closeout (2026-08-03", section12)
+        self.assertIn(self.MERGE_COMMIT, section12)
+        self.assertIn(
+            "does not re-approve Version 1.7 or bump its Version", section12
+        )
+        self.assertIn("BL-034 is now `完了`", section12)
+
+    def test_cloudflare_site_registration_and_snippet_predate_acceptance(self):
+        # PR #73 round 2: the Cloudflare site/hostname registration and
+        # manual beacon snippet retrieval genuinely happened before Version
+        # 1.7's repository implementation was accepted -- the intro must
+        # not claim "no Cloudflare account operation had occurred".
+        self.assertNotIn("no DNS change, Cloudflare account", self.requirements)
+        self.assertIn("the user had already registered", self.requirements)
+        self.assertIn("`monomidigest.com` as a site/hostname in Cloudflare Web Analytics", self.requirements)
+        self.assertIn("retrieved the manual beacon", self.requirements)
+        self.assertIn(
+            "no DNS, proxy, or nameserver migration to Cloudflare was made", self.requirements
+        )
+
+    def test_sr047_distinguishes_dns_provider_unchanged_from_new_google_txt_record(self):
+        sr047 = next(
+            line for line in self.requirements.splitlines() if line.startswith("| SR-047 |")
+        )
+        self.assertIn("DNS registrar/manager (XServer) and nameservers are unchanged", sr047)
+        self.assertIn("Cloudflare's manual/non-proxied beacon embed method itself makes no DNS record change", sr047)
+        self.assertIn("a new Google verification TXT record was added at XServer DNS", sr047)
+        self.assertIn("no existing DNS record was deleted or replaced", sr047)
+        self.assertIn("the TXT value itself is not stored in this repository", sr047)
+        # Must not read as a blanket "DNS never changed at all" claim.
+        self.assertNotIn("DNS/nameservers are unchanged (Cloudflare's manual/non-proxied embed method)", sr047)
+        cells = [c.strip() for c in sr047.strip("|").split("|")]
+        self.assertEqual(cells[3], "Met")
+
+    def test_bl032_control_mapping_no_longer_calls_documentation_gap_unresolved(self):
+        # Section 5 (trust boundaries) and section 7 (current control
+        # mapping) both previously said this document's own Approved
+        # promotion of BL-032's current-state record "remains a separate,
+        # unresolved documentation step", contradicting GAP-016 and Version
+        # 1.7's own Approved status. Both must now say it was completed.
+        self.assertNotIn("remains a separate, unresolved documentation step", self.requirements)
+        self.assertNotIn("is a separate, unresolved documentation step", self.requirements)
+        mapping_row = next(
+            line for line in self.requirements.splitlines()
+            if line.startswith("| Source content-usage policy and AI provider data-use boundary |")
+        )
+        self.assertIn("was completed by Version 1.7, consistent with GAP-016", mapping_row)
+        trust_boundary_row = next(
+            line for line in self.requirements.splitlines()
+            if line.startswith("| Source-terms audit and content-usage policy |")
+        )
+        self.assertIn("was completed by Version 1.7", trust_boundary_row)
+        gap016 = next(
+            line for line in self.requirements.splitlines() if line.startswith("| GAP-016 |")
+        )
+        self.assertIn("documentation-maintenance gap is now resolved", gap016)
+
+    def test_pr73_final_acceptance_is_recorded_in_backlog(self):
+        # PR #73 closeout itself was independently reviewed (rounds 1-2) and
+        # then finally accepted by the user; that final acceptance -- not
+        # just the earlier BL-034 repository-implementation acceptance --
+        # must be recorded in BACKLOG.md.
+        bl034 = self._section(self.backlog, "## BL-034", "\n## 完了済み参照")
+        self.assertIn("[PR #73](https://github.com/matkei31/security-digest/pull/73)", bl034)
+        self.assertIn("10867e1ec4573ea83b7f9c4572a9243c923f8db5", bl034)
+        self.assertIn("1601 tests OK", bl034)
+        self.assertIn("30780371203", bl034)
+        self.assertIn("changed files 6件", bl034)
+        self.assertIn(
+            "最終受入、PR #73のReady化、通常のmerge commit方式によるmergeを承認した", bl034
+        )
+        # Still 完了 / no residual work after this final-acceptance addition.
+        self.assertIn("- **状態:** 完了", bl034)
+        residual = self._section(bl034, "- **残作業:**")
+        self.assertIn("なし", residual)
+
+    def test_pr73_final_acceptance_is_recorded_in_status(self):
+        recently_completed = self._section(
+            self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
+        )
+        bl034 = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-034 ")
+        )
+        self.assertIn("[PR #73](https://github.com/matkei31/security-digest/pull/73)", bl034)
+        self.assertIn("10867e1ec4573ea83b7f9c4572a9243c923f8db5", bl034)
+        self.assertIn("1601 tests OK", bl034)
+        self.assertIn("30780371203", bl034)
+        self.assertIn("ユーザーが最終受入", bl034)
+
+    def test_status_active_work_still_none_after_final_acceptance(self):
+        active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
+        self.assertIn("None.", active)
+        self.assertNotIn("BL-034", active)
+
+    def test_final_acceptance_record_does_not_touch_out_of_scope_documents(self):
+        # This round's own diff must be limited to BACKLOG.md/STATUS.md
+        # (plus this test file) -- DECISIONS.md and SECURITY_REQUIREMENTS.md
+        # keep the content already synced in prior rounds, unchanged here.
+        self.assertNotIn("10867e1ec4573ea83b7f9c4572a9243c923f8db5", self.decisions)
+        self.assertNotIn("30780371203", self.decisions)
+        self.assertNotIn("PR #73", self.requirements)
 
 
 if __name__ == "__main__":
