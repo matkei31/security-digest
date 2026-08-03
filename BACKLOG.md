@@ -932,7 +932,7 @@
 - **ID:** BL-036
 - **タイトル:** 記事カードのsource attribution注記を低強調表示へ整える
 - **優先度:** P2
-- **状態:** 実装中／ユーザー目視受入待ち
+- **状態:** 完了
 - **出所種別:** 技術上の発見事項
 - **ユーザー原文:** 該当なし — Fable 5の独立repositoryレビューR-01で確認された技術上の発見事項。ユーザーの「おk」はR-01の修正着手を承認する短い進行指示であり、問題内容の原文や実装後の受入発言としては扱わない。
 - **問題:**
@@ -970,9 +970,21 @@
   8. PC 1280px／390pxをユーザーが目視受入する。
   9. runtimeの収集・AI処理・policy enforcementは変更しない。
 - **依存関係:** [BL-031](#bl-031--全取得元の公式規約監査とセキュリティ文書整合化)・[BL-032](#bl-032--取得元別content-usage-policy-enforcement)(source usage policyとruntime enforcementの前提)。[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)(AI-use note方針の現在の正本、本Ticketではsupersedeしない)。
-- **実装証跡:** （Draft PR作成後にこの節へ記録する。）
-- **ユーザー受入証跡:** （未受入。PC 1280px／390pxのローカルreview screenshotsをユーザーが目視確認するまでDraft。）
-- **残作業:** ユーザーによる目視受入、UI_SPEC Version 1.7のApproved化、SD-033の追加登録、Ready化・mergeが残っている。
+- **実装証跡:** branch `feature/bl036-article-attribution-style`、[PR #76](https://github.com/matkei31/security-digest/pull/76)。`fetch.py`の共通style blockへ`.article-attribution`・`.article-attribution a`・`.article-attribution a:hover`の3 CSS ruleを追加した(runtime変更はこのCSSのみ)。UI_SPEC.mdをVersion 1.7 Draftへ更新し、BL-032実装済みのsource-policy-required attributionをSD-016のAI-use note条項に対する限定例外として正式化する提案を記録した。独立レビューround 1(head `71fd3ea`)でUI_SPEC.md Version 1.7 Draft内の論理的矛盾(「区別自体は確定方針を変更しない」と「SD-033で限定的にsupersede」が両立しない記述)を指摘され、accepted implementation head `12a6f502973c78e21dbe0b209073f824731a3e5d`で解消し、round 1で新たなBlockerなしと判断された。
+- **ユーザー受入証跡:** ユーザーは実`fetch.py`の`build_html()`が生成したPC 1280px／390pxのreview screenshots計6枚(`bl036-attribution-page-1280px.png`、`bl036-attribution-page-390px.png`、`bl036-attribution-card-1280px.png`、`bl036-attribution-card-390px.png`、`bl036-attribution-card2-link-1280px.png`、`bl036-attribution-card2-link-390px.png`)をチャット添付ファイルとして受け取り目視確認した(limited_feed_analysisの長文attribution、structured_open〔NCSC〕のattribution内license link、metadata_only cardを含む。10pxが本文より低強調でありながら判読可能、長文折返しと390pxでの横overflowに問題なし、link識別可能、metadata-only cardの余白に問題なしを確認)。
+  - **ユーザー原文:** 「おk」
+  - **原文の解釈:** 直前に提示した6画面の目視受入結果と、直前のレビュー結論(「BL-036の目視受入としてOK」「10pxのまま受入可能」「PR #76を受入記録・Ready化・mergeへ進めてよい」)を踏まえ、同PR内での最終受入記録・UI_SPEC Version 1.7のApproved化・SD-033の追加・Ready化・通常のmerge commit方式によるmergeへ進むことへの同意として解釈した。ユーザーが「10px」等の具体的CSS値を明示発言したものとしては扱わない。
+  - 目視受入日: 2026-08-04
+  - accepted implementation head: `12a6f502973c78e21dbe0b209073f824731a3e5d`
+  - 独立レビューround 1完了、新たなBlockerなし
+  - accepted implementation CI: Pull Request CI [run 30813905763](https://github.com/matkei31/security-digest/actions/runs/30813905763) success
+  - accepted implementation full unittest: 1641 tests OK
+  - `git diff --check` success
+  - changed files 9件
+  - unresolved review threads 0
+  - UI_SPEC.md Version 1.7を承認済みへ更新し、新規[SD-033](DECISIONS.md#sd-033--allow-source-policy-required-article-attribution-as-a-limited-exception-to-the-generic-ai-note-ban)を追加してSD-016のAI-use note条項だけを限定的にsupersedeした(SD-016のgeneric AI disclosure禁止と他の6項目は維持)。
+  - production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行っていない。
+- **残作業:** なし。BL-036の設計・実装・test・ユーザー受入について残作業はない。Fable 5レビューのR-04(文書test構造改革)・R-13(E2E test)・[BL-009](#bl-009--seoと閲覧者増加策)・About／footerの一般的AI説明・source policy自体の変更は、それぞれ別Ticketまたは既存Ticketのscopeとして扱い、本Ticketの残作業へ混入させない。
 - **注記:** 本TicketはCSS表示・UI_SPEC文書更新のみを対象とし、`daily_json.py`・`vulnerability_facts.py`・`source_definitions.json`・`SOURCE_USAGE_POLICY.md`・`SECURITY_REQUIREMENTS.md`・`SECURITY_OPERATIONS.md`・`DECISIONS.md`・`.github/workflows/`・tracked `data/`・tracked `docs/`への変更は行わない。production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行わない。
 
 ## 完了済み参照

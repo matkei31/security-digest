@@ -242,9 +242,11 @@ class Bl035ActiveWorkTest(unittest.TestCase):
         )[0]
 
     def test_active_work_is_none_and_does_not_list_bl035(self):
-        # BL-036 (Fable 5 review R-01) became the new Active work item after
-        # BL-035's closeout, so Active work is no longer "None." -- this now
-        # checks only that BL-035 itself did not reappear as its own item.
+        # BL-036 (Fable 5 review R-01) held Active work between BL-035's and
+        # BL-036's own closeouts; both have since completed and Active work is
+        # "None." again (see test_ui_spec.Bl036ArticleAttributionUiSpecTest for
+        # BL-036's own Active-work/Recently-completed check). This test only
+        # checks that BL-035 itself did not reappear as its own item.
         active = self._active_work_section()
         self.assertFalse(
             any(line.startswith("- BL-035 ") for line in active.splitlines()),
