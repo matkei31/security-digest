@@ -875,6 +875,49 @@
 - **残作業:** なし。4週間程度のデータ蓄積と評価は[BL-009](#bl-009--seoと閲覧者増加策)の成果測定として継続し、BL-034を再オープンしない。
 - **注記:** [BL-009](#bl-009--seoと閲覧者増加策)のうちrobots.txt・sitemap・canonical・OG・favicon・About全体・コンテンツSEOは、本Ticketには含めず、[BL-009](#bl-009--seoと閲覧者増加策)配下の後続Ticket候補として別途記録する。Cloudflareのbeacon tokenはユーザーがCloudflareのmanual setup画面から取得し、チャット上で共有した公開識別子であり、account password・API token・session情報等は要求していない。
 
+## BL-035 — BL-032後の運用手順とagent統制文書を現在状態へ同期する
+
+- **ID:** BL-035
+- **タイトル:** BL-032後の運用手順とagent統制文書を現在状態へ同期する
+- **優先度:** P2
+- **状態:** 実装中／受入待ち
+- **出所種別:** ユーザー原文
+- **ユーザー原文:** 「おk。進めていこう」
+- **原文の意味:** この原文単独では対象が曖昧なため、次を実装解釈として別記する――「Fable 5全体レビュー後に合意した優先順位に従い、最初にR-02とR-03の統制・運用文書同期へ進む。」
+- **出所:** 2026-08-03、matkei31/security-digest repository全体に対するFable 5独立レビュー(`origin/main` `b5f04f5f500c6e3342cb0abdadd56d97165937d4`時点)。同レビューのFindings summaryのR-02(SECURITY_OPERATIONS.mdのcontent usage mode降格手順がBL-032実装後も旧前提のまま)・R-03(AGENTS.mdの固定Version参照とPR CI不在の誤記)を受けて登録した。
+- **解釈:** 種別: Documentation inconsistency／Operational control correction／Fable 5 review R-02・R-03。次の問題を修正する。
+  1. SECURITY_OPERATIONS.mdのcontent usage mode downgrade手順が、BL-032未実装時代の前提(「neither mode has production enforcement until BL-032」「metadata_onlyへの降格ではsource_definitions.json変更は不要」)のまま残っている。
+  2. 現在は`source_definitions.json`の`policy.content_usage_mode`と関連policy fieldsがruntime挙動を実際に決める(BL-032実装・merge済み、[PR #69](https://github.com/matkei31/security-digest/pull/69))。
+  3. 現行手順どおりに[SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md)だけを変更すると、運用者は降格したつもりでもproduction挙動が変わらない可能性がある。
+  4. AGENTS.mdが「This repository currently has no ordinary `pull_request` or `push` CI workflow」とPR CIの存在を否定しているが、現在は`.github/workflows/pr-ci.yml`([BL-001](#bl-001--プルリクエストci)、2026-07-18以降)が存在する。
+  5. AGENTS.md／STATUS.mdに複製されたUI_SPEC／SECURITY_REQUIREMENTS／SECURITY_OPERATIONSのVersion番号が、各正本fileの実際のVersionから陳腐化している(UI_SPEC 1.0→実際1.6、SECURITY_REQUIREMENTS 1.2→実際1.7、SECURITY_OPERATIONS 1.0→実際1.1)。
+- **Scope:**
+  - SECURITY_OPERATIONS.mdのcontent usage mode downgrade手順(section 7)を、BL-032のruntime enforcementへ同期する。
+  - SECURITY_OPERATIONS.mdをVersion 1.2 Draftへ更新する(section 11のBL-032関連stale current-state記述の修正を含む)。
+  - AGENTS.mdのCI説明を実workflow(`.github/workflows/pr-ci.yml`)へ同期する。
+  - AGENTS.md／STATUS.mdのUI_SPEC／SECURITY_REQUIREMENTS／SECURITY_OPERATIONSへのVersion固定参照を、各正本fileのheaderへの委譲方式へ変更する。
+  - 対応する文書test(`test_security_operations.py`・`test_security_requirements.py`・`test_status.py`・必要な範囲の`test_source_definitions.py`のActive work検査)の更新。
+- **Out of scope:**
+  - `source_definitions.json`の実際のmode変更。
+  - [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md)のsource別policy変更。
+  - runtime、workflow、production実行。
+  - Fable 5レビューのR-01(attribution CSS)、R-04(文書test構造改革)、R-13(E2E test)。
+  - [BL-009](#bl-009--seoと閲覧者増加策)、[BL-014](#bl-014--過去ユーザーコメントの体系的棚卸し)／BACKLOG構造整理。
+  - 新しいsecurity controlまたはpolicy decision(DECISIONS.mdへのSD追加は行わない)。
+- **完了条件:**
+  1. 現行手順だけを読んで正しくmode downgradeできる(`source_definitions.json`の`policy.content_usage_mode`と関連boolean fieldsの変更が必要であることが明記されている)。
+  2. BL-032を未実装／将来enforcementとするcurrent-state記述が残らない(Version 1.1承認当時の歴史的記録は区別して保持する)。
+  3. PR CIの説明が実workflow(`.github/workflows/pr-ci.yml`)と一致する。
+  4. AGENTS.md／STATUS.mdがUI_SPEC／SECURITY_REQUIREMENTS／SECURITY_OPERATIONSのVersion番号を重複保持しない。
+  5. SECURITY_OPERATIONS Version 1.2がユーザー受入後にApprovedとなる(本Ticket登録時点ではDraft)。
+  6. runtime／workflow／source定義／生成物(`data/`・`docs/`)に変更がない。
+  7. 関連test更新とfull unittest成功、`git diff --check`成功。
+- **依存関係:** [BL-032](#bl-032--取得元別content-usage-policy-enforcement)(実装・merge済みであることが前提)。[BL-030](#bl-030--取得元翻訳経路の緊急リスク低減)・[BL-031](#bl-031--全取得元の公式規約監査とセキュリティ文書整合化)(SECURITY_OPERATIONS.md Version 1.1の内容の前提)。
+- **実装証跡:** （Draft PR作成後にこの節へ記録する。）
+- **ユーザー受入証跡:** （未受入。SECURITY_OPERATIONS Version 1.2はDraftのまま、PRもDraftのまま維持する。）
+- **残作業:** ユーザーによる独立レビュー・受入、SECURITY_OPERATIONS Version 1.2のApproved化、Ready化・mergeが残っている。
+- **注記:** 本Ticketはdocumentation／governance-onlyであり、`fetch.py`・`daily_json.py`・`vulnerability_facts.py`・`source_definitions.json`・`SOURCE_USAGE_POLICY.md`・`SECURITY_REQUIREMENTS.md`・`UI_SPEC.md`・`DECISIONS.md`・`.github/workflows/`・`data/`・`docs/`への変更は行わない。production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行わない。
+
 ## 完了済み参照
 
 これらの参照記録は、完了済みの作業が誤って未完了バックログとして再オープンされることを防ぐためだけに存在する。

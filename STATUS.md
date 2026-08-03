@@ -45,7 +45,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- None.
+- BL-035 BL-032後の運用手順とagent統制文書を現在状態へ同期する — Fable 5独立レビュー(`origin/main` `b5f04f5f500c6e3342cb0abdadd56d97165937d4`時点)のR-02(SECURITY_OPERATIONS.mdのcontent usage mode降格手順がBL-032実装後も旧前提のまま)・R-03(AGENTS.mdの固定Version参照とPR CI不在の誤記)を起点とする文書・統制同期作業。SECURITY_OPERATIONS.mdをVersion 1.2 Draftへ更新し、`metadata_only`／`disabled_legal_review`への降格手順を、BL-032が実装・merge済みの`source_definitions.json`の`policy`fieldによるruntime enforcementへ同期した。AGENTS.md・STATUS.mdのUI_SPEC／SECURITY_REQUIREMENTS／SECURITY_OPERATIONS固定Version参照を各正本fileのheaderへの委譲方式へ変更し、AGENTS.mdの「PR CI workflowが存在しない」という誤記を実際の`.github/workflows/pr-ci.yml`の記述へ修正した。runtime・workflow・`source_definitions.json`・`data/`・`docs/`は変更していない。SECURITY_OPERATIONS Version 1.2はDraftであり、ユーザー最終受入前。詳細は[BL-035](BACKLOG.md#bl-035--bl-032後の運用手順とagent統制文書を現在状態へ同期する)を参照。
 
 ## 5. Recently completed work
 
@@ -116,5 +116,5 @@ The initial backlog import is not a complete historical-comment audit; [BL-014](
 | Stable decisions | `DECISIONS.md` |
 | Approved UI specification and UI decision history | `UI_SPEC.md` |
 | Approved security requirements and evidence mapping | [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md)（現在のVersion／Statusは同ファイル冒頭のheaderを正本とする。STATUS.mdへは特定のVersion番号を複製しない） |
-| Approved incident, secret-rotation, correction, withdrawal, regeneration, and external-artifact policy | `SECURITY_OPERATIONS.md` Version 1.0 |
+| Incident, secret-rotation, correction, withdrawal, regeneration, and external-artifact policy | [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md)（現在のVersion／Statusは同ファイル冒頭のheaderを正本とする。STATUS.mdへは特定のVersion番号を複製しない） |
 | Implementation-agent constraints | `AGENTS.md` |

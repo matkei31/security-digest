@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Static contract tests for BL-024 SECURITY_OPERATIONS.md Version 1.0."""
+"""Static contract tests for SECURITY_OPERATIONS.md (BL-024 through BL-035)."""
 
 import re
 import unittest
@@ -32,12 +32,12 @@ class SecurityOperationsContractTest(unittest.TestCase):
         return self.operations.split(start, 1)[1].split(end, 1)[0]
 
     def test_version_10_identity_review_record_and_user_approval(self):
-        # Version 1.1 (Draft, BL-030/BL-031) is the current header, but the frozen
+        # Version 1.2 (Draft, BL-035) is the current header, but the frozen
         # Version 1.0 approval record (section 12) must remain byte-identical below it.
         self.assertTrue(OPERATIONS_PATH.exists())
         self.assertIn("# Monomi Digest Security Operations", self.operations)
-        self.assertIn("**Version:** 1.1", self.operations)
-        self.assertIn("**Status:** Approved", self.operations)
+        self.assertIn("**Version:** 1.2", self.operations)
+        self.assertIn("**Status:** Draft", self.operations)
         approval = self.section("## 12. Approval and maintenance", "\nReview this runbook")
         for contract in (
             "Critical 0",
@@ -485,10 +485,15 @@ class Bl031SecurityOperationsReconciliationTest(unittest.TestCase):
     def section(self, start, end):
         return self.operations.split(start, 1)[1].split(end, 1)[0]
 
-    def test_version_and_status_are_11_approved(self):
-        self.assertIn("**Version:** 1.1", self.operations)
-        self.assertIn("**Status:** Approved", self.operations)
-        self.assertIn("**As of:** 2026-07-31", self.operations)
+    def test_version_11_approval_record_is_preserved_as_history(self):
+        # BL-035 advanced the header to Version 1.2 (Draft, see Bl035DraftSyncTest
+        # below); this test now checks that Version 1.1's own approval record
+        # (section 12) is preserved as history rather than overwritten, instead of
+        # asserting it as the current header.
+        self.assertIn(
+            "on 2026-07-31 approved this Version's own\nApproved status.",
+            self.operations,
+        )
 
     def test_correction_section_no_longer_lists_translate_cache_as_published_asset(self):
         correction = self.section(
@@ -579,6 +584,147 @@ class Bl031SecurityOperationsReconciliationTest(unittest.TestCase):
         self.assertIn("paid_verified", approved)
         self.assertIn("billing association is later", approved)
         self.assertNotRegex(approved, r"AIza[0-9A-Za-z_-]{20,}")
+
+
+class Bl035DraftSyncTest(unittest.TestCase):
+    """BL-035 (Fable 5 review R-02): SECURITY_OPERATIONS.md Version 1.2 (Draft)
+    synchronizes the content-usage-mode downgrade procedure with BL-032's merged
+    runtime enforcement, replacing the Version 1.1 premise that a `metadata_only`
+    downgrade needs only a SOURCE_USAGE_POLICY.md change.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.operations = OPERATIONS_PATH.read_text(encoding="utf-8")
+
+    def section(self, start, end):
+        return self.operations.split(start, 1)[1].split(end, 1)[0]
+
+    def _downgrade_section(self):
+        correction = self.section(
+            "## 7. Published-output correction, withdrawal, and regeneration",
+            "## 8. Repository-external artifact handling",
+        )
+        return correction.split("### Content usage mode downgrade", 1)[1].split(
+            "### Validation", 1
+        )[0]
+
+    def test_version_is_12_draft_as_of_20260803(self):
+        self.assertIn("**Version:** 1.2", self.operations)
+        self.assertIn("**Status:** Draft", self.operations)
+        self.assertIn("**As of:** 2026-08-03", self.operations)
+
+    def test_downgrade_procedure_states_source_definitions_json_is_runtime_source_of_truth(self):
+        downgrade = compact_whitespace(self._downgrade_section())
+        self.assertIn("BL-032 has implemented and merged", downgrade)
+        self.assertIn(
+            "`source_definitions.json`'s `policy` object", downgrade,
+        )
+        self.assertIn("is the runtime source of truth", downgrade)
+        self.assertIn(
+            "SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) is the separate policy/evidence "
+            "source of truth",
+            downgrade,
+        )
+
+    def test_downgrade_procedure_requires_source_definitions_json_change(self):
+        downgrade = compact_whitespace(self._downgrade_section())
+        self.assertIn(
+            "update `source_definitions.json`'s `policy.content_usage_mode` for that source",
+            downgrade,
+        )
+        self.assertIn(
+            "SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) change alone, without this "
+            "`source_definitions.json` change, does not alter runtime behavior",
+            downgrade,
+        )
+
+    def test_downgrade_procedure_distinguishes_metadata_only_and_disabled_legal_review(self):
+        downgrade = compact_whitespace(self._downgrade_section())
+        self.assertIn('`policy.content_usage_mode: "metadata_only"`', downgrade)
+        self.assertIn(
+            "`policy.allow_network_fetch` may remain `true`, since `metadata_only` still "
+            "fetches feed metadata",
+            downgrade,
+        )
+        self.assertIn('`policy.content_usage_mode: "disabled_legal_review"`', downgrade)
+        self.assertIn(
+            "`policy.allow_network_fetch`, `policy.allow_description`, "
+            "`policy.allow_ai_processing`, `policy.allow_excerpt_storage`, and "
+            "`policy.allow_public_summary` all `false`",
+            downgrade,
+        )
+
+    def test_downgrade_procedure_requires_source_usage_policy_same_change_sync(self):
+        downgrade = compact_whitespace(self._downgrade_section())
+        self.assertIn(
+            "update the source's row in", downgrade,
+        )
+        self.assertIn("its `proposed_mode` column", downgrade)
+        self.assertIn("does not go stale relative to `source_definitions.json`", downgrade)
+
+    def test_downgrade_procedure_no_longer_defers_enforcement_to_bl032(self):
+        downgrade = compact_whitespace(self._downgrade_section())
+        self.assertNotIn("no `source_definitions.json` change is required", downgrade)
+        self.assertNotIn("neither mode has production enforcement until BL-032", downgrade)
+        self.assertNotIn(
+            "becomes a behavior change only once BL-032 implements per-source enforcement",
+            downgrade,
+        )
+
+    def test_downgrade_procedure_still_requires_tests_and_scope_review(self):
+        downgrade = compact_whitespace(self._downgrade_section())
+        self.assertIn("the full unittest suite", downgrade)
+        self.assertIn("`git diff --check`", downgrade)
+        self.assertIn("scope review confirming no unrelated file changed", downgrade)
+
+    def test_downgrade_procedure_still_forbids_past_data_rewrite_and_unapproved_external_calls(self):
+        # These BL-031-era protections must survive the BL-032-enforcement rewrite.
+        downgrade = compact_whitespace(self._downgrade_section())
+        self.assertIn("Do not modify, delete, or regenerate any past", downgrade)
+        self.assertIn("`data/*.json`", downgrade)
+        self.assertIn("`docs/archive/*.html`", downgrade)
+        self.assertIn(
+            "Do not run production, the Gemini API, or routine automated collection", downgrade,
+        )
+
+    def test_section_11_bl032_items_are_labeled_historical_and_updated(self):
+        approved = self.section(
+            "## 11. Approved operational decisions", "## 12. Approval and maintenance"
+        )
+        compact = compact_whitespace(approved)
+        self.assertIn("at Version 1.1 approval time,", compact)
+        self.assertIn(
+            "remained the separate, later-approved implementation of any production "
+            "content-usage-mode enforcement",
+            compact,
+        )
+        self.assertIn("**Version 1.2 update:** BL-032 is now complete and merged", compact)
+        self.assertIn(
+            "`source_definitions.json`'s `policy` object is the current runtime enforcement "
+            "source of truth",
+            compact,
+        )
+        self.assertIn(
+            "BL-032's content-usage-mode enforcement referenced above is complete as of "
+            "Version 1.2",
+            compact,
+        )
+
+    def test_section_12_records_version_12_draft_scope_and_no_production_change(self):
+        approval = self.section("## 12. Approval and maintenance", "\nReview this runbook")
+        compact = compact_whitespace(approval)
+        self.assertIn("**Version 1.2 is a Draft maintenance update, not yet approved.**", compact)
+        self.assertIn(
+            "[BL-035](BACKLOG.md#bl-035--bl-032後の運用手順とagent統制文書を現在状態へ同期する)",
+            compact,
+        )
+        self.assertIn("requires its own explicit user acceptance before becoming Approved", compact)
+        self.assertIn(
+            "makes no runtime, workflow, schema, prompt, model, validation, generated-output, "
+            "source-definition, or production change",
+            compact,
+        )
 
 
 if __name__ == "__main__":

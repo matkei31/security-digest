@@ -1,8 +1,8 @@
 # Monomi Digest Security Operations
 
-- **Version:** 1.1
-- **Status:** Approved
-- **As of:** 2026-07-31
+- **Version:** 1.2
+- **Status:** Draft
+- **As of:** 2026-08-03
 
 ## Scope
 
@@ -331,37 +331,64 @@ If a takedown or correction request is received for a source's already-published
 suspending future collection does not by itself satisfy a takedown request for existing
 publication.
 
-### Content usage mode downgrade (`limited_feed_analysis`, added in Version 1.1, from BL-031)
+### Content usage mode downgrade (`limited_feed_analysis`, added in Version 1.1, from BL-031; updated in Version 1.2 for BL-032 runtime enforcement)
 
 `limited_feed_analysis` (defined in [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) section 3C)
 is an explicit, bounded risk acceptance for a small number of sources, not a determination that
-their terms permit reuse. Use this procedure to downgrade a `limited_feed_analysis` source when
-any of the following occurs: its official terms or license change; the machine-readable
-instructions (e.g. robots.txt) governing it change; its feed path or availability changes; the
-source's publisher, a rightsholder, or another party submits a correction, removal, or stop
-request; a confirmed output-similarity/quotation-control violation or attribution failure is
-found in generated output; or source-specific terms are discovered where none were previously
-identified.
+their terms permit reuse. Use this procedure to downgrade a `limited_feed_analysis` source (or
+any other source's content usage mode) when any of the following occurs: its official terms or
+license change; the machine-readable instructions (e.g. robots.txt) governing it change; its
+feed path or availability changes; the source's publisher, a rightsholder, or another party
+submits a correction, removal, or stop request; a confirmed output-similarity/quotation-control
+violation or attribution failure is found in generated output; or source-specific terms are
+discovered where none were previously identified.
+
+BL-032 has implemented and merged per-source content-usage-mode runtime enforcement
+([PR #69](https://github.com/matkei31/security-digest/pull/69)). `source_definitions.json`'s
+`policy` object — specifically `policy.content_usage_mode` and its associated boolean fields
+(`allow_network_fetch`, `allow_description`, `allow_rich_content`, `allow_ai_processing`,
+`allow_excerpt_storage`, `allow_public_summary`) — is the runtime source of truth for what
+`fetch.py` and `daily_json.py` actually do with a source's content at collection, Gemini-input,
+storage, and publication time. [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) is the separate
+policy/evidence source of truth: it records the audited mode, the official evidence, the
+confidence, the unresolved issues, and the recheck trigger for each source. The two documents
+must be kept in sync by the same change; updating only one does not produce the intended
+runtime or evidentiary result.
 
 1. Record the specific trigger (which of the above occurred), its official URL where
    applicable, and the date checked.
-2. Update the source's `proposed_mode` in [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) to
+2. To actually change future collection, AI-processing, storage, or publication behavior for
+   the source, update `source_definitions.json`'s `policy.content_usage_mode` for that source to
    `metadata_only` or `disabled_legal_review`, whichever the trigger and its severity warrant,
-   and record the reason in `unresolved_issue`/`recheck_trigger`.
-3. If downgrading to `disabled_legal_review`, also follow the source-suspension procedure above
-   (set `enabled: false` in `source_definitions.json` with a specific `activation_condition`).
-   If downgrading only to `metadata_only`, no `source_definitions.json` change is required or
-   implied by this procedure alone, since neither mode has production enforcement until BL-032;
-   the downgrade is a policy-document change now, and becomes a behavior change only once BL-032
-   implements per-source enforcement.
-4. This is a precautionary downgrade, not a legal determination that the source's terms were in
+   together with the boolean fields that mode requires (see steps 3–4 below). A
+   [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) change alone, without this
+   `source_definitions.json` change, does not alter runtime behavior.
+3. For a downgrade to `metadata_only`, set at minimum in `source_definitions.json`:
+   - `policy.content_usage_mode: "metadata_only"`;
+   - `policy.allow_description`, `policy.allow_ai_processing`, `policy.allow_excerpt_storage`,
+     and `policy.allow_public_summary` all `false` (required by `metadata_only`'s validation
+     contract in `fetch.py`); `policy.allow_network_fetch` may remain `true`, since
+     `metadata_only` still fetches feed metadata (title, link, published date) without using
+     description, AI processing, excerpt storage, or public summary.
+4. For a downgrade to `disabled_legal_review`, also follow the source-suspension procedure above
+   (set `enabled: false` in `source_definitions.json` with a specific `activation_condition`)
+   and set at minimum in `source_definitions.json`:
+   - `policy.content_usage_mode: "disabled_legal_review"`;
+   - `policy.allow_network_fetch`, `policy.allow_description`, `policy.allow_ai_processing`,
+     `policy.allow_excerpt_storage`, and `policy.allow_public_summary` all `false`.
+5. In the same change, update the source's row in
+   [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) (its `proposed_mode` column and the
+   `unresolved_issue`/`recheck_trigger`/`checked_at` cells) to match the new mode and the reason
+   recorded in step 1, so the policy/evidence document does not go stale relative to
+   `source_definitions.json`.
+6. This is a precautionary downgrade, not a legal determination that the source's terms were in
    fact violated; do not represent it as a legal conclusion in the commit, pull request, or
    BACKLOG/STATUS/DECISIONS record.
-5. Do not modify, delete, or regenerate any past `data/*.json` or `docs/archive/*.html` as a
+7. Do not modify, delete, or regenerate any past `data/*.json` or `docs/archive/*.html` as a
    side effect of a mode downgrade; a takedown or correction request for already-published
    articles is handled separately through section 7, following the same principle as the
    source-suspension procedure above.
-6. Do not run production, the Gemini API, or routine automated collection against the source to
+8. Do not run production, the Gemini API, or routine automated collection against the source to
    verify the downgrade trigger, and do not scrape article bodies or perform bulk retrieval. A
    read-only check of the source's official terms, license, robots.txt, or official feed-
    guidance page is permitted as an approved investigation step to confirm the specific trigger
@@ -369,9 +396,16 @@ identified.
    already-recorded official information, the reported trigger, and read-only repository
    verification. If the trigger is a rightsholder correction/removal/stop request, do not make
    re-checking the source a precondition of responding to it.
-7. Record the downgrade through the normal branch/PR/test/review path (BACKLOG.md, STATUS.md;
-   DECISIONS.md only if the user separately accepts a Stable Decision) — not as a direct public
-   hotfix under section 4 unless its emergency conditions are independently met.
+9. Run source-definition validation (source load succeeds and the content-usage-mode
+   distribution check passes), the relevant `test_content_usage_policy.py`/
+   `test_source_definitions.py`/`test_source_usage_policy.py` coverage, and the full unittest
+   suite; run `git diff --check`; and complete a scope review confirming no unrelated file
+   changed.
+10. Record the downgrade through the normal branch/PR/test/review path (BACKLOG.md, STATUS.md;
+    DECISIONS.md only if the user separately accepts a Stable Decision) — not as a direct public
+    hotfix under section 4 unless its emergency conditions are independently met. Do not run
+    production, the Gemini API, `workflow_dispatch`, or routine external collection as part of
+    recording the downgrade without separate explicit approval.
 
 ### Validation
 
@@ -515,12 +549,18 @@ Version 1.1 adds:
    [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) SR-045/GAP-017. No API key, Project ID,
    billing account ID, amount, or screenshot was recorded. If the billing association is later
    cancelled, the Project changes, or the API key migrates to a different Project, this
-   verification must be repeated before continuing to rely on `paid_verified`.
+   verification must be repeated before continuing to rely on `paid_verified`. **Version 1.2
+   note:** BL-032's content-usage-mode enforcement referenced above is complete as of Version
+   1.2 (see the updated "Content usage mode downgrade" procedure in section 7).
 10. **BL-031 audit boundary:** the read-only official-terms audit recorded in
     [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) Approved 0.1 does not itself change runtime
-    behavior beyond the Dark Reading suspension it also records; [BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)
-    (registered, 要件定義済み／未着手) remains the separate, later-approved implementation of any
-    production content-usage-mode enforcement.
+    behavior beyond the Dark Reading suspension it also records; at Version 1.1 approval time,
+    [BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement) (registered,
+    要件定義済み／未着手) remained the separate, later-approved implementation of any production
+    content-usage-mode enforcement. **Version 1.2 update:** BL-032 is now complete and merged
+    ([PR #69](https://github.com/matkei31/security-digest/pull/69)); `source_definitions.json`'s
+    `policy` object is the current runtime enforcement source of truth (see the updated "Content
+    usage mode downgrade" procedure in section 7).
 11. **`limited_feed_analysis` content usage mode:** a new fifth content usage mode is recorded
     for `the_hacker_news` and `krebs_on_security` — an explicit, bounded risk acceptance, not a
     determination that their terms permit reuse. A terms/machine-readable-instruction/feed-path
@@ -563,6 +603,24 @@ Approved status. **This approval makes no additional runtime, workflow, schema, 
 validation, generated-output, or production change beyond what BL-030/BL-031 already made; it
 is not a pre-approval of BL-032's runtime enforcement implementation, of production execution,
 of `workflow_dispatch`, or of any GitHub-side setting change.**
+
+**Version 1.2 is a Draft maintenance update, not yet approved.** It synchronizes this runbook's
+content-usage-mode downgrade procedure (section 7) with BL-032's runtime enforcement, which was
+registered as future work when Version 1.1 was approved and has since been implemented and
+merged ([PR #69](https://github.com/matkei31/security-digest/pull/69)). It replaces the
+Version 1.1 premise that a `metadata_only` downgrade requires only a
+[SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) change with the current requirement to update
+`source_definitions.json`'s `policy.content_usage_mode` and its associated boolean fields in the
+same change, since that is what `fetch.py`/`daily_json.py` actually read at runtime. It also
+corrects section 11 item 10's stale description of BL-032 as "registered, 要件定義済み／未着手"
+(accurate only as of the Version 1.1 approval date, and now labeled as such), and fixes
+[AGENTS.md](AGENTS.md)'s and [STATUS.md](STATUS.md)'s references to this document's own Version
+and to `.github/workflows/pr-ci.yml`'s existence. Version 1.2 makes no runtime, workflow,
+schema, prompt, model, validation, generated-output, source-definition, or production change;
+`source_definitions.json`'s `policy.content_usage_mode` values were set by BL-032 itself, not by
+this Version. This Version's scope is defined and tracked as
+[BL-035](BACKLOG.md#bl-035--bl-032後の運用手順とagent統制文書を現在状態へ同期する). It requires
+its own explicit user acceptance before becoming Approved.
 
 Review this runbook when an incident or architecture change exposes a missing boundary. A
 mechanical annual update is not required.

@@ -1061,14 +1061,20 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
     def test_status_active_work_is_empty_and_bl030_bl031_bl032_bl033_are_recently_completed(self):
         # BL-033自身のユーザー受入後、Active workからBL-033も外れた(BL-033の
         # 実装内容そのものが「Active work is currently empty」という状態を
-        # 生んだticketである)。BL-030・BL-031・BL-032・BL-033はいずれも
-        # Active workへ戻っておらず、すべてRecently completed workに残って
-        # いることを検証する。
+        # 生んだticketである)。BL-030・BL-031・BL-032・BL-033はいずれも自分自身の
+        # 項目としてActive workへ戻っておらず、すべてRecently completed workに
+        # 残っていることを検証する。BL-035(Fable 5 review R-02/R-03)のActive work
+        # entryが本文中でBL-032の名前を経緯説明として引用することは、BL-032自身が
+        # 再度Active workの項目になったことを意味しないため、行頭の"- BL-0NN "
+        # bulletとしての再出現だけを禁止する(部分文字列としての出現は許容する)。
         active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
-        self.assertNotIn("BL-030", active)
-        self.assertNotIn("BL-031", active)
-        self.assertNotIn("BL-032", active)
-        self.assertNotIn("BL-033", active)
+        active_lines = active.splitlines()
+        for reopened_id in ("BL-030", "BL-031", "BL-032", "BL-033"):
+            with self.subTest(reopened_id=reopened_id):
+                self.assertFalse(
+                    any(line.startswith(f"- {reopened_id} ") for line in active_lines),
+                    f"{reopened_id} must not reappear as its own Active work item",
+                )
         recently_completed = self._section(
             self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
         )
@@ -1080,11 +1086,10 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
     def test_status_bl033_entry_records_user_acceptance(self):
         # Active work was empty at BL-033-acceptance time; BL-034 (閲覧計測基盤)
         # became the Active work item after that, then closed out (2026-08-03),
-        # returning Active work to empty again -- this does not reopen or
-        # change BL-033's own completed/accepted record below.
-        active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
-        self.assertIn("None.", active)
-
+        # returning Active work to empty briefly before BL-035 (Fable 5 review
+        # R-02/R-03, see test_status.Bl035ActiveWorkTest) became the new Active
+        # work item -- none of this reopens or changes BL-033's own
+        # completed/accepted record below.
         recently_completed = self._section(
             self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
         )
@@ -1173,9 +1178,18 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
         # across all of STATUS.md -- "current Active work item",
         # "要件定義済み／未着手", and "Ready化・merge待ち" are ordinary status
         # vocabulary that a future, unrelated ticket may legitimately use
-        # while it is genuinely active and pending.
+        # while it is genuinely active and pending. BL-035's own Active work
+        # entry legitimately names BL-032 as background context (it is the
+        # enforcement work being synchronized), so this checks that BL-032 does
+        # not reappear as its own Active work bullet, not that the substring
+        # "BL-032" never appears in the section.
         active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
-        self.assertNotIn("BL-032", active)
+        self.assertFalse(
+            any(line.startswith("- BL-032 ") for line in active.splitlines()),
+            "BL-032 must not reappear as its own Active work item",
+        )
+        self.assertNotIn("要件定義済み／未着手", active)
+        self.assertNotIn("Ready化・merge待ち", active)
 
         recently_completed = self._section(
             self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"

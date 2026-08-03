@@ -1019,13 +1019,21 @@ class SecurityRequirementsTest(unittest.TestCase):
             self.assertIn(marker, owner)
         self.assertIn("Mandatory checklist items contain no", owner)
 
-    def test_agents_references_version_12_and_operations_without_blanket_authorization(self):
+    def test_agents_references_security_docs_without_blanket_authorization(self):
+        # BL-035 (Fable 5 review R-03): AGENTS.md no longer hardcodes
+        # SECURITY_REQUIREMENTS.md/SECURITY_OPERATIONS.md Version numbers here --
+        # both delegate to each document's own header instead, so this reference
+        # cannot go stale again on the next Version bump of either document.
         security = self.agents.split("## Security requirements", 1)[1].split(
             "## Testing and review", 1
         )[0]
         self.assertIn("SECURITY_REQUIREMENTS.md", security)
-        self.assertIn("SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) Version 1.2", security)
-        self.assertIn("SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.0", security)
+        self.assertIn("SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md)", security)
+        self.assertIn("SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md)", security)
+        self.assertIn("同ファイル冒頭のheaderを正本とする", security)
+        self.assertIn("特定のVersion番号を複製しない", security)
+        self.assertNotRegex(security, r"SECURITY_REQUIREMENTS\.md\]\(SECURITY_REQUIREMENTS\.md\)\s*Version\s+\d+\.\d+")
+        self.assertNotRegex(security, r"SECURITY_OPERATIONS\.md\]\(SECURITY_OPERATIONS\.md\)\s*Version\s+\d+\.\d+")
         self.assertIn("credential rotation or revocation", security)
         self.assertIn("published-output correction or withdrawal", security)
         self.assertIn("repository-external artifact handling", security)
@@ -1212,10 +1220,15 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         active = self.status.split("## Active work", 1)[1].split(
             "## 5. Recently completed work", 1
         )[0]
-        self.assertNotIn("BL-031", active)
-        # BL-032's PR #69 merged during post-merge closeout, so it moved out
-        # of Active work into Recently completed alongside BL-031.
-        self.assertNotIn("BL-032", active)
+        active_lines = active.splitlines()
+        self.assertFalse(any(line.startswith("- BL-031 ") for line in active_lines))
+        # BL-032's PR #69 merged during post-merge closeout, so it moved out of
+        # Active work into Recently completed alongside BL-031. BL-035's own
+        # Active work entry legitimately names BL-032 as background context (the
+        # enforcement work it is synchronizing), so this checks BL-032 does not
+        # reappear as its own Active work bullet rather than banning the
+        # substring "BL-032" outright.
+        self.assertFalse(any(line.startswith("- BL-032 ") for line in active_lines))
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1].split(
             "## 6. Known issues and limitations", 1
         )[0]
@@ -1516,16 +1529,17 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
         cls.fetch_source = (ROOT / "fetch.py").read_text(encoding="utf-8")
 
     def test_three_documents_are_approved_as_of_20260731(self):
-        # SOURCE_USAGE_POLICY.md and SECURITY_OPERATIONS.md remain Approved
-        # as of the 2026-07-31 BL-031 round and are unchanged since.
-        # SECURITY_REQUIREMENTS.md has since moved further: Draft Version 1.6
-        # (BL-032 implementation, pending user acceptance at the time) was
-        # superseded by Version 1.7 (BL-034 implementation), which the user
-        # accepted on 2026-08-03 (PR #72 round 2) -- all three documents are
-        # now Approved, though on different dates/rounds.
+        # SOURCE_USAGE_POLICY.md remains Approved as of the 2026-07-31 BL-031
+        # round and is unchanged since. SECURITY_REQUIREMENTS.md has since moved
+        # further: Draft Version 1.6 (BL-032 implementation, pending user
+        # acceptance at the time) was superseded by Version 1.7 (BL-034
+        # implementation), which the user accepted on 2026-08-03 (PR #72 round 2).
+        # SECURITY_OPERATIONS.md also moved further: BL-035 (Fable 5 review R-02)
+        # advanced it from the 2026-07-31 Version 1.1 Approved snapshot checked
+        # here to Version 1.2 Draft, pending its own user acceptance -- see
+        # test_security_operations.Bl035DraftSyncTest for the current header.
         for doc, version_marker in (
             (self.policy, "**Version:** 0.1"),
-            (self.operations, "**Version:** 1.1"),
         ):
             with self.subTest(version_marker=version_marker):
                 self.assertIn(version_marker, doc)
@@ -2060,9 +2074,11 @@ class Bl034CloseoutTest(unittest.TestCase):
                 self.assertIn(item, residual)
 
     def test_status_active_work_no_longer_lists_bl034(self):
+        # Active work returned to empty ("None.") immediately after BL-034's
+        # closeout, then BL-035 (Fable 5 review R-02/R-03) became the new Active
+        # work item -- see test_status.Bl035ActiveWorkTest for that current state.
         active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
         self.assertNotIn("BL-034", active)
-        self.assertIn("None.", active)
 
     def test_status_recently_completed_records_bl034(self):
         recently_completed = self._section(
@@ -2214,9 +2230,12 @@ class Bl034CloseoutTest(unittest.TestCase):
         self.assertIn("30780371203", bl034)
         self.assertIn("ユーザーが最終受入", bl034)
 
-    def test_status_active_work_still_none_after_final_acceptance(self):
+    def test_status_active_work_no_longer_lists_bl034_after_final_acceptance(self):
+        # Active work was "None." immediately after PR #73's final acceptance;
+        # BL-035 (Fable 5 review R-02/R-03) has since become the Active work item
+        # -- see test_status.Bl035ActiveWorkTest for that current state. This test
+        # keeps checking that BL-034 itself never regressed back into Active work.
         active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
-        self.assertIn("None.", active)
         self.assertNotIn("BL-034", active)
 
     def test_final_acceptance_record_does_not_touch_out_of_scope_documents(self):

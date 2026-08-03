@@ -218,5 +218,95 @@ class Sd031DecisionTest(unittest.TestCase):
         self.assertIn("[PR #70](https://github.com/matkei31/security-digest/pull/70)", evidence)
 
 
+class Bl035ActiveWorkTest(unittest.TestCase):
+    """BL-035 (Fable 5 review R-02/R-03): STATUS.md's Active work section records
+    the runbook/agent-guidance synchronization work, replacing the "None." state
+    left by BL-034's closeout.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.status = (REPOSITORY_ROOT / "STATUS.md").read_text(encoding="utf-8")
+
+    def _active_work_section(self):
+        return self.status.split("## Active work", 1)[1].split(
+            "\n## 5. Recently completed work", 1
+        )[0]
+
+    def test_active_work_lists_bl035_not_none(self):
+        active = self._active_work_section()
+        self.assertIn(
+            "[BL-035](BACKLOG.md#bl-035--bl-032後の運用手順とagent統制文書を現在状態へ同期する)",
+            active,
+        )
+        self.assertNotIn("- None.", active)
+
+    def test_active_work_bl035_entry_records_required_content(self):
+        active = self._active_work_section()
+        for required in (
+            "Fable 5",
+            "R-02",
+            "R-03",
+            "SECURITY_OPERATIONS",
+            "Version 1.2",
+            "Draft",
+            "BL-032",
+            "AGENTS",
+            "STATUS",
+            "PR CI",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, active)
+        self.assertIn("runtime・workflow・", active)
+        self.assertIn("は変更していない", active)
+        self.assertIn("ユーザー最終受入前", active)
+
+
+class StatusSecurityOperationsSourceOfTruthTest(unittest.TestCase):
+    """STATUS.md's section 8 "Sources of truth" table previously hardcoded
+    `SECURITY_OPERATIONS.md Version 1.0`, which had already gone stale (the
+    document had moved to Version 1.1) before BL-035 advanced it again to
+    Version 1.2 (Draft). The row now delegates the current Version/Status to
+    SECURITY_OPERATIONS.md's own header instead of duplicating a number or a
+    fixed `Approved` label, so this staleness cannot recur on the next Version
+    or Status change.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        root = Path(__file__).resolve().parent
+        cls.status = (root / "STATUS.md").read_text(encoding="utf-8")
+        cls.operations = (root / "SECURITY_OPERATIONS.md").read_text(encoding="utf-8")
+
+    def _sources_of_truth_row(self, label):
+        section = self.status.split("## 8. Sources of truth", 1)[1].split("\n## 9.", 1)[0]
+        return next(
+            line for line in section.splitlines() if line.startswith(f"| {label} |")
+        )
+
+    def test_row_delegates_to_security_operations_header_not_a_fixed_version_or_status(self):
+        row = self._sources_of_truth_row(
+            "Incident, secret-rotation, correction, withdrawal, regeneration, "
+            "and external-artifact policy"
+        )
+        self.assertIn("[SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md)", row)
+        self.assertNotIn("Version 1.0", row)
+        self.assertNotIn("Version 1.1", row)
+        self.assertNotRegex(row, r"Version\s+\d+\.\d+")
+        # Must not hardcode "Approved" either: SECURITY_OPERATIONS.md's header is
+        # currently Draft (BL-035), and a fixed "Approved" label here would
+        # contradict that header the moment this row was written.
+        self.assertNotIn("Approved", row)
+        self.assertIn("同ファイル冒頭のheaderを正本とする", row)
+        self.assertIn("特定のVersion番号を複製しない", row)
+
+    def test_security_operations_itself_is_unchanged_by_this_fix(self):
+        # This documentation-only fix must not touch SECURITY_OPERATIONS.md's own
+        # substantive content beyond what BL-035 already changed -- it stays at
+        # Version 1.2, Draft (pending its own user acceptance).
+        self.assertIn("**Version:** 1.2", self.operations)
+        self.assertIn("**Status:** Draft", self.operations)
+
+
 if __name__ == "__main__":
     unittest.main()
