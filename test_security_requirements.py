@@ -2182,6 +2182,51 @@ class Bl034CloseoutTest(unittest.TestCase):
         )
         self.assertIn("documentation-maintenance gap is now resolved", gap016)
 
+    def test_pr73_final_acceptance_is_recorded_in_backlog(self):
+        # PR #73 closeout itself was independently reviewed (rounds 1-2) and
+        # then finally accepted by the user; that final acceptance -- not
+        # just the earlier BL-034 repository-implementation acceptance --
+        # must be recorded in BACKLOG.md.
+        bl034 = self._section(self.backlog, "## BL-034", "\n## 完了済み参照")
+        self.assertIn("[PR #73](https://github.com/matkei31/security-digest/pull/73)", bl034)
+        self.assertIn("10867e1ec4573ea83b7f9c4572a9243c923f8db5", bl034)
+        self.assertIn("1601 tests OK", bl034)
+        self.assertIn("30780371203", bl034)
+        self.assertIn("changed files 6件", bl034)
+        self.assertIn(
+            "最終受入、PR #73のReady化、通常のmerge commit方式によるmergeを承認した", bl034
+        )
+        # Still 完了 / no residual work after this final-acceptance addition.
+        self.assertIn("- **状態:** 完了", bl034)
+        residual = self._section(bl034, "- **残作業:**")
+        self.assertIn("なし", residual)
+
+    def test_pr73_final_acceptance_is_recorded_in_status(self):
+        recently_completed = self._section(
+            self.status, "## 5. Recently completed work", "\n## 6. Known issues and limitations"
+        )
+        bl034 = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-034 ")
+        )
+        self.assertIn("[PR #73](https://github.com/matkei31/security-digest/pull/73)", bl034)
+        self.assertIn("10867e1ec4573ea83b7f9c4572a9243c923f8db5", bl034)
+        self.assertIn("1601 tests OK", bl034)
+        self.assertIn("30780371203", bl034)
+        self.assertIn("ユーザーが最終受入", bl034)
+
+    def test_status_active_work_still_none_after_final_acceptance(self):
+        active = self._section(self.status, "## Active work", "\n## 5. Recently completed work")
+        self.assertIn("None.", active)
+        self.assertNotIn("BL-034", active)
+
+    def test_final_acceptance_record_does_not_touch_out_of_scope_documents(self):
+        # This round's own diff must be limited to BACKLOG.md/STATUS.md
+        # (plus this test file) -- DECISIONS.md and SECURITY_REQUIREMENTS.md
+        # keep the content already synced in prior rounds, unchanged here.
+        self.assertNotIn("10867e1ec4573ea83b7f9c4572a9243c923f8db5", self.decisions)
+        self.assertNotIn("30780371203", self.decisions)
+        self.assertNotIn("PR #73", self.requirements)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -865,6 +865,13 @@
   - 2026-08-03、ユーザーがCloudflare Web Analytics dashboardで実データ受信を確認した。初期確認値: Visits 3、Page views 3、Page load time 217ms。この数値は導入直後の初期観測値であり、現在値や恒久的な基準値ではない。Visitsはunique人数を意味しない(Cloudflare公式定義: 異なるwebsiteからのreferrerまたはdirect linkを起点とするpage view。1 Visitに複数page viewsが含まれ得る)。
   - 2026-08-03、ユーザーがGoogle Search ConsoleでDomain property `monomidigest.com` の所有権確認成功(「所有権を証明しました」の画面)を確認した。確認方法はDNSレコード／ドメイン名プロバイダ。Google verification TXTレコードは所有権維持のためXServer DNSに残し、TXT値そのものはrepositoryへ保存していない。
   - 計測開始日: `2026-08-03`。4週間程度の基準値取得期間を開始した。
+  - 本closeout記録は[PR #73](https://github.com/matkei31/security-digest/pull/73)として作成され、独立レビューround 1・2で指摘されたBlockerがすべて修正・独立再確認済みと判断された。ユーザーは本指示の送付をもって、closeout記録の最終受入、PR #73のReady化、通常のmerge commit方式によるmergeを承認した。
+  - accepted closeout head: `10867e1ec4573ea83b7f9c4572a9243c923f8db5`
+  - full unittest 1601 tests OK
+  - Pull Request CI run [30780371203](https://github.com/matkei31/security-digest/actions/runs/30780371203) success
+  - `git diff --check` success
+  - changed files 6件
+  - unresolved review threads 0
 - **残作業:** なし。4週間程度のデータ蓄積と評価は[BL-009](#bl-009--seoと閲覧者増加策)の成果測定として継続し、BL-034を再オープンしない。
 - **注記:** [BL-009](#bl-009--seoと閲覧者増加策)のうちrobots.txt・sitemap・canonical・OG・favicon・About全体・コンテンツSEOは、本Ticketには含めず、[BL-009](#bl-009--seoと閲覧者増加策)配下の後続Ticket候補として別途記録する。Cloudflareのbeacon tokenはユーザーがCloudflareのmanual setup画面から取得し、チャット上で共有した公開識別子であり、account password・API token・session情報等は要求していない。
 
