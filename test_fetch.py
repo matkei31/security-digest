@@ -3013,19 +3013,19 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         kept = [ch for ch in lowered if ch.isalnum() or ch in (" ", "-", "_")]
         return "".join(kept).replace(" ", "-")
 
-    def test_bl_ids_are_unique_and_cover_bl001_to_bl035(self):
+    def test_bl_ids_are_unique_and_cover_bl001_to_bl036(self):
         text = self._read("BACKLOG.md")
         bl_headings = [h for h in self._headings(text) if re.match(r"^BL-\d{3}\b", h)]
         ids = [re.match(r"^(BL-\d{3})", h).group(1) for h in bl_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
-        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 36)})
+        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 37)})
 
-    def test_sd_ids_are_unique_and_cover_sd001_to_sd032(self):
+    def test_sd_ids_are_unique_and_cover_sd001_to_sd033(self):
         text = self._read("DECISIONS.md")
         sd_headings = [h for h in self._headings(text) if re.match(r"^SD-\d{3}\b", h)]
         ids = [re.match(r"^(SD-\d{3})", h).group(1) for h in sd_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
-        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 33)})
+        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 34)})
 
     def test_bl_001_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -3472,6 +3472,56 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
                         anchor, anchor_sets[target_file],
                         f"{name} links to #{anchor} in {target_file}, which has no matching heading",
                     )
+
+
+class Bl036ArticleAttributionCssTest(unittest.TestCase):
+    """BL-036 (Fable 5 review R-01): `.article-attribution` gained a low-emphasis
+    CSS rule in the shared <style> block. These tests check the specific rule
+    values and the absence of pill/badge/alert-box styling, not the whole
+    style block verbatim -- a future unrelated CSS edit elsewhere in the block
+    should not need to touch this test.
+    """
+
+    @staticmethod
+    def _style_block(html):
+        return html.split("<style>", 1)[1].split("</style>", 1)[0]
+
+    def test_article_attribution_rule_exists_exactly_once_with_expected_values(self):
+        html = fetch.build_html([])
+        style = self._style_block(html)
+        self.assertEqual(style.count(".article-attribution{"), 1)
+        rule = style.split(".article-attribution{", 1)[1].split("}", 1)[0]
+        self.assertIn("margin-top:10px", rule)
+        self.assertIn("font-size:10px", rule)
+        self.assertIn("color:#768496", rule)
+        self.assertIn("line-height:1.6", rule)
+        self.assertIn("overflow-wrap:anywhere", rule)
+
+    def test_article_attribution_link_rule_and_hover_exist(self):
+        html = fetch.build_html([])
+        style = self._style_block(html)
+        self.assertEqual(style.count(".article-attribution a{"), 1)
+        link_rule = style.split(".article-attribution a{", 1)[1].split("}", 1)[0]
+        self.assertIn("color:#8b949e", link_rule)
+        self.assertIn("text-decoration:underline", link_rule)
+
+        self.assertEqual(style.count(".article-attribution a:hover{"), 1)
+        hover_rule = style.split(".article-attribution a:hover{", 1)[1].split("}", 1)[0]
+        self.assertIn("color:#79c0ff", hover_rule)
+
+    def test_article_attribution_is_not_a_pill_badge_or_alert_box(self):
+        html = fetch.build_html([])
+        style = self._style_block(html)
+        attribution_rules = "".join(
+            style.split(selector, 1)[1].split("}", 1)[0]
+            for selector in (
+                ".article-attribution{", ".article-attribution a{",
+                ".article-attribution a:hover{",
+            )
+        )
+        for forbidden in ("background", "border", "border-radius", "padding", "font-weight:700"):
+            with self.subTest(forbidden=forbidden):
+                self.assertNotIn(forbidden, attribution_rules)
 
 
 if __name__ == "__main__":

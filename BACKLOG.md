@@ -927,6 +927,66 @@
 - **残作業:** なし。BL-035の設計・実装・test・ユーザー受入について残作業はない。Fable 5レビューのR-01(attribution CSS)・R-04(文書test構造改革)・R-13(E2E test)・[BL-009](#bl-009--seoと閲覧者増加策)は、それぞれ別Ticketまたは既存Ticketのscopeとして扱い、本Ticketの残作業へ混入させない。
 - **注記:** 本Ticketはdocumentation／governance-onlyであり、`fetch.py`・`daily_json.py`・`vulnerability_facts.py`・`source_definitions.json`・`SOURCE_USAGE_POLICY.md`・`SECURITY_REQUIREMENTS.md`・`UI_SPEC.md`・`DECISIONS.md`・`.github/workflows/`・`data/`・`docs/`への変更は行わない。production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行わない。
 
+## BL-036 — 記事カードのsource attribution注記を低強調表示へ整える
+
+- **ID:** BL-036
+- **タイトル:** 記事カードのsource attribution注記を低強調表示へ整える
+- **優先度:** P2
+- **状態:** 完了
+- **出所種別:** 技術上の発見事項
+- **ユーザー原文:** 該当なし — Fable 5の独立repositoryレビューR-01で確認された技術上の発見事項。ユーザーの「おk」はR-01の修正着手を承認する短い進行指示であり、問題内容の原文や実装後の受入発言としては扱わない。
+- **問題:**
+  1. [BL-032](#bl-032--取得元別content-usage-policy-enforcement)により、記事カードへsource policy別の`.article-attribution`(`render_source_attribution_html()`)が既に出力されている。
+  2. 生成HTMLのinline CSS(`build_html()`内の`<style>`block)には`.article-attribution`のstyle定義が存在しない。
+  3. そのため注記がブラウザ既定に近いサイズ・余白で表示され、AI analysis本文・recommended actions・元記事CTAとの情報階層が不明瞭である。
+  4. [UI_SPEC.md](UI_SPEC.md) Version 1.6・[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)には、「現行UIへAI利用を明示する専用注記は追加しない。記事カード単位・分析区分単位の注記も採用しない」という方針が記録されている。
+  5. ただし現在のattributionは、サイト全体への一般的なAI利用説明を追加したものではなく、[BL-031](#bl-031--全取得元の公式規約監査とセキュリティ文書整合化)／BL-032のsource usage policyに基づく、source別・content usage mode別の表示要件として既に実装・稼働している。
+  6. 現行実装(runtime attribution)は[BL-032](#bl-032--取得元別content-usage-policy-enforcement)により既に実装・稼働している事実である一方、これをUI_SPEC・[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)への限定例外として正式化することは、ユーザー目視受入とSD-033の追加を経るまでは仕様・Decision上まだ確定していない提案である。両者を混同せず区別して整理する必要がある。generic AI disclosure禁止(SD-016のAI-use note条項以外の6項目を含む)は、この提案によっても維持する予定である。
+- **Scope:**
+  - `.article-attribution`の低強調CSS追加。
+  - attribution内linkのCSS追加。
+  - attributionのDOM位置・表示文言・安全性(HTML escape、safe URL、mode分岐)は変更せず維持する。
+  - UI_SPEC.md Version 1.7 Draftへの更新(AI-use note原則の整理、CSS現行値の記載)。
+  - BACKLOG.md／STATUS.md更新。
+  - 関連testの更新。
+  - PC 1280px／390pxのローカルreview screenshots作成(repositoryへcommitしない)。
+  - ユーザー受入後、同PRのacceptance-recording commitで新規[SD-033](DECISIONS.md)を追加し、[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)のAI-use note条項だけを限定的にsupersedeする予定を記録する(今回はSD-033自体を作成せず、DECISIONS.mdも変更しない)。
+- **Out of scope:**
+  - attribution文言の変更。
+  - mode別attributionの追加・削除。
+  - source policy値の変更、`source_definitions.json`、[SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md)。
+  - ARTICLE prompt／schema／Gemini model、daily JSON schema、AI analysis本文、元記事CTA文言。
+  - Aboutページ、サイト全体の一般的なAI利用説明、footerへのAI説明追加、generic AI badge／icon。
+  - Fable 5レビューのR-04(文書test構造改革)・R-13(E2E test)、[BL-009](#bl-009--seoと閲覧者増加策)。
+  - production／公開HTMLの即時更新。
+- **完了条件:**
+  1. attributionが本文より明確に低強調である。
+  2. 小さすぎずPC／390px双方で読める。
+  3. attribution内linkが識別できる。
+  4. pill、badge、alert boxのような過剰な強調を使わない。
+  5. DOM位置はAI analysisの後、元記事CTAの前を維持する。
+  6. attribution文言とmode別表示条件を変更しない。
+  7. UI_SPECとStable Decisionがユーザー受入後に現行実装と一致する。
+  8. PC 1280px／390pxをユーザーが目視受入する。
+  9. runtimeの収集・AI処理・policy enforcementは変更しない。
+- **依存関係:** [BL-031](#bl-031--全取得元の公式規約監査とセキュリティ文書整合化)・[BL-032](#bl-032--取得元別content-usage-policy-enforcement)(source usage policyとruntime enforcementの前提)。[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)(AI-use note方針の現在の正本、本Ticketではsupersedeしない)。
+- **実装証跡:** branch `feature/bl036-article-attribution-style`、[PR #76](https://github.com/matkei31/security-digest/pull/76)。`fetch.py`の共通style blockへ`.article-attribution`・`.article-attribution a`・`.article-attribution a:hover`の3 CSS ruleを追加した(runtime変更はこのCSSのみ)。UI_SPEC.mdをVersion 1.7 Draftへ更新し、BL-032実装済みのsource-policy-required attributionをSD-016のAI-use note条項に対する限定例外として正式化する提案を記録した。独立レビューround 1(head `71fd3ea`)でUI_SPEC.md Version 1.7 Draft内の論理的矛盾(「区別自体は確定方針を変更しない」と「SD-033で限定的にsupersede」が両立しない記述)を指摘され、accepted implementation head `12a6f502973c78e21dbe0b209073f824731a3e5d`で解消し、round 1で新たなBlockerなしと判断された。
+- **ユーザー受入証跡:** ユーザーは実`fetch.py`の`build_html()`が生成したPC 1280px／390pxのreview screenshots計6枚(`bl036-attribution-page-1280px.png`、`bl036-attribution-page-390px.png`、`bl036-attribution-card-1280px.png`、`bl036-attribution-card-390px.png`、`bl036-attribution-card2-link-1280px.png`、`bl036-attribution-card2-link-390px.png`)をチャット添付ファイルとして受け取り目視確認した(limited_feed_analysisの長文attribution、structured_open〔NCSC〕のattribution内license link、metadata_only cardを含む。10pxが本文より低強調でありながら判読可能、長文折返しと390pxでの横overflowに問題なし、link識別可能、metadata-only cardの余白に問題なしを確認)。
+  - **ユーザー原文:** 「おk」
+  - **原文の解釈:** 直前に提示した6画面の目視受入結果と、直前のレビュー結論(「BL-036の目視受入としてOK」「10pxのまま受入可能」「PR #76を受入記録・Ready化・mergeへ進めてよい」)を踏まえ、同PR内での最終受入記録・UI_SPEC Version 1.7のApproved化・SD-033の追加・Ready化・通常のmerge commit方式によるmergeへ進むことへの同意として解釈した。ユーザーが「10px」等の具体的CSS値を明示発言したものとしては扱わない。
+  - 目視受入日: 2026-08-04
+  - accepted implementation head: `12a6f502973c78e21dbe0b209073f824731a3e5d`
+  - 独立レビューround 1完了、新たなBlockerなし
+  - accepted implementation CI: Pull Request CI [run 30813905763](https://github.com/matkei31/security-digest/actions/runs/30813905763) success
+  - accepted implementation full unittest: 1641 tests OK
+  - `git diff --check` success
+  - changed files 9件
+  - unresolved review threads 0
+  - UI_SPEC.md Version 1.7を承認済みへ更新し、新規[SD-033](DECISIONS.md#sd-033--allow-source-policy-required-article-attribution-as-a-limited-exception-to-the-generic-ai-note-ban)を追加してSD-016のAI-use note条項だけを限定的にsupersedeした(SD-016のgeneric AI disclosure禁止と他の6項目は維持)。
+  - production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行っていない。
+- **残作業:** なし。BL-036の設計・実装・test・ユーザー受入について残作業はない。Fable 5レビューのR-04(文書test構造改革)・R-13(E2E test)・[BL-009](#bl-009--seoと閲覧者増加策)・About／footerの一般的AI説明・source policy自体の変更は、それぞれ別Ticketまたは既存Ticketのscopeとして扱い、本Ticketの残作業へ混入させない。
+- **注記:** 本TicketはCSS表示・UI_SPEC文書更新のみを対象とし、`daily_json.py`・`vulnerability_facts.py`・`source_definitions.json`・`SOURCE_USAGE_POLICY.md`・`SECURITY_REQUIREMENTS.md`・`SECURITY_OPERATIONS.md`・`DECISIONS.md`・`.github/workflows/`・tracked `data/`・tracked `docs/`への変更は行わない。production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行わない。
+
 ## 完了済み参照
 
 これらの参照記録は、完了済みの作業が誤って未完了バックログとして再オープンされることを防ぐためだけに存在する。

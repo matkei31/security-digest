@@ -28,8 +28,9 @@ class UiSpecDocumentTest(unittest.TestCase):
     def test_ui_spec_exists_with_version_metadata(self):
         self.assertTrue(self.spec_path.is_file())
         self.assertIn("# Monomi Digest UI Specification", self.spec)
-        self.assertIn("- **バージョン:** 1.6", self.spec)
+        self.assertIn("- **バージョン:** 1.7", self.spec)
         self.assertIn("- **状態:** 承認済み", self.spec)
+        self.assertIn("- **最終受入日:** 2026-08-04", self.spec)
         self.assertIn(
             "2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、"
             "Version 1.4として承認済みである",
@@ -278,6 +279,165 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("v4は構造ガードが成立したが編集品質Gate未達だった", self.bl005)
         self.assertNotIn("実装済み", self.bl005)
         self.assertNotIn("- **状態:** 完了", self.bl005)
+
+
+class Bl036ArticleAttributionUiSpecTest(unittest.TestCase):
+    """BL-036 (Fable 5 review R-01, final acceptance via PR #76, 2026-08-04):
+    UI_SPEC.md Version 1.7 is Approved, distinguishing the maintained
+    generic-AI-note-ban policy from the source-policy-required attribution
+    exception that SD-033 now formally confirms, records the
+    `.article-attribution` current values, and records BL-036's completion.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.spec = (REPOSITORY_ROOT / "UI_SPEC.md").read_text(encoding="utf-8")
+        cls.backlog = (REPOSITORY_ROOT / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (REPOSITORY_ROOT / "STATUS.md").read_text(encoding="utf-8")
+        cls.decisions = (REPOSITORY_ROOT / "DECISIONS.md").read_text(encoding="utf-8")
+        cls.bl036 = backlog_section(cls.backlog, "BL-036")
+        cls.sd033 = backlog_section(cls.decisions, "SD-033")
+        cls.sd016 = backlog_section(cls.decisions, "SD-016")
+
+    def test_version_is_17_approved_with_acceptance_date(self):
+        self.assertIn("- **バージョン:** 1.7", self.spec)
+        self.assertIn("- **状態:** 承認済み", self.spec)
+        self.assertIn("- **最終受入日:** 2026-08-04", self.spec)
+
+    def test_original_ai_note_ban_sentences_are_preserved_not_deleted(self):
+        self.assertIn("現行UIへAI利用を明示する専用注記は追加しない", self.spec)
+        self.assertIn("記事カード単位・分析区分単位の注記も採用しない", self.spec)
+
+    def test_maintained_policy_bans_generic_ai_badge_and_uniform_note(self):
+        self.assertIn("維持する方針", self.spec)
+        self.assertIn("genericな「AIを利用しています」badgeやalertを追加しない", self.spec)
+        self.assertIn("一律AI noteを追加しない", self.spec)
+        self.assertIn("generic AI disclosure禁止", self.spec)
+
+    def test_source_policy_required_attribution_is_recorded_as_a_confirmed_limited_exception(self):
+        # Final acceptance: the heading no longer describes a pending proposal
+        # ("提案する") -- SD-033 confirmed the exception on 2026-08-04.
+        self.assertIn("限定例外として認められた現行実装", self.spec)
+        self.assertNotIn("例外として明示する現行契約", self.spec)
+        self.assertNotIn("限定例外として提案する現行実装", self.spec)
+        self.assertIn("`.article-attribution`", self.spec)
+        self.assertIn("BACKLOG.md#bl-031--全取得元の公式規約監査とセキュリティ文書整合化", self.spec)
+        self.assertIn("BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement", self.spec)
+        self.assertIn("一律のgeneric AI badgeとは目的・表示条件・文言が異なる", self.spec)
+        self.assertIn("SOURCE_USAGE_POLICY.md", self.spec)
+        self.assertIn("`render_source_attribution_html()`", self.spec)
+
+    def test_runtime_attribution_is_already_implemented_and_bl036_only_added_css(self):
+        self.assertIn("BL-032で既に実装・受入・merge済み", self.spec)
+        self.assertIn("BL-036が新たに追加したruntime要素はCSSだけ", self.spec)
+
+    def test_css_current_values_are_recorded_for_pc_and_390px_both(self):
+        self.assertIn("| `.article-attribution` |", self.spec)
+        self.assertIn("font-size `10px`", self.spec)
+        self.assertIn("color `#768496`", self.spec)
+        self.assertIn("line-height `1.6`", self.spec)
+        self.assertIn("background／border／border-radius／pillなし", self.spec)
+        self.assertIn("PC／390px共通", self.spec)
+
+    def test_no_contradictory_no_change_claim_near_the_limited_exception(self):
+        # Round 1 (Fable 5 review): "この区別自体は上記の確定方針を変更しない"
+        # directly contradicted the later statement that SD-033 will supersede
+        # part of SD-016. That exact contradictory phrase must not remain.
+        self.assertNotIn("この区別自体は上記の確定方針を変更しない", self.spec)
+        self.assertNotIn("決定自体は変更していない", self.spec)
+
+    def test_no_pending_or_draft_current_state_wording_remains_for_the_exception(self):
+        # Final acceptance: the exception is confirmed, not "pending until
+        # acceptance/SD-033" -- that framing described the Draft/round-1 state
+        # and must not remain as a claim about the current state.
+        self.assertNotIn("確定するまで", self.spec)
+        self.assertNotIn("受入待ちのDraft", self.spec)
+        self.assertNotIn("Version 1.7 Draft", self.spec)
+
+    def test_screenshot_filenames_and_evidence_are_recorded(self):
+        for filename in (
+            "bl036-attribution-page-1280px.png",
+            "bl036-attribution-page-390px.png",
+            "bl036-attribution-card-1280px.png",
+            "bl036-attribution-card-390px.png",
+            "bl036-attribution-card2-link-1280px.png",
+            "bl036-attribution-card2-link-390px.png",
+        ):
+            with self.subTest(filename=filename):
+                self.assertIn(filename, self.spec)
+        self.assertIn("12a6f502973c78e21dbe0b209073f824731a3e5d", self.spec)
+        self.assertIn("[PR #76](https://github.com/matkei31/security-digest/pull/76)", self.spec)
+
+    def test_user_original_text_and_interpretation_are_recorded_separately(self):
+        self.assertIn("「おk」", self.spec)
+        self.assertIn("原文の解釈", self.spec)
+        self.assertIn(
+            "ユーザーが「10px」等の具体的CSS値を明示発言したものとしては扱わない", self.spec,
+        )
+
+    def test_sd033_exists_accepted_and_supersedes_only_the_ai_note_clause(self):
+        self.assertIn(
+            "## SD-033 — Allow source-policy-required article attribution as a "
+            "limited exception to the generic AI-note ban",
+            self.decisions,
+        )
+        self.assertIn("- **Date:** 2026-08-04", self.sd033)
+        self.assertIn("- **Status:** Accepted / Active", self.sd033)
+        self.assertIn(
+            "[SD-016](#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)",
+            self.sd033,
+        )
+        self.assertIn("other six resolved choices are not superseded and remain Active", self.sd033)
+        self.assertIn("generic sitewide", self.sd033)
+        self.assertIn("[UI_SPEC.md](UI_SPEC.md)", self.sd033)
+        self.assertIn("[SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md)", self.sd033)
+        self.assertIn("`source_definitions.json`", self.sd033)
+        self.assertIn("`render_source_attribution_html()`", self.sd033)
+        self.assertIn("[PR #76]", self.sd033)
+        self.assertIn("12a6f502973c78e21dbe0b209073f824731a3e5d", self.sd033)
+
+    def test_sd016_historical_body_is_preserved_and_notes_partial_supersession(self):
+        self.assertIn(
+            "## SD-016 — Resolve the remaining BL-004 UI choices without changing the accepted layout",
+            self.decisions,
+        )
+        self.assertIn("- **Status:** Accepted / Active", self.decisions)
+        quote = "「7点ともこの方針でOK」"
+        self.assertIn(quote, self.sd016)
+        self.assertIn(
+            "(1) do not add an AI-use note to the current UI, including "
+            "per-article-card or per-analysis-section notes",
+            self.sd016,
+        )
+        self.assertIn("- **Partially superseded by:**", self.sd016)
+        self.assertIn("SD-033", self.sd016)
+        self.assertIn("generic sitewide AI-disclosure ban", self.sd016)
+        self.assertIn("other six choices remain unchanged and Active", self.sd016)
+
+    def test_bl036_is_recorded_as_complete_without_r04_r13_bl009_contamination(self):
+        self.assertIn("- **状態:** 完了", self.bl036)
+        self.assertNotIn("- **状態:** 実装中／ユーザー目視受入待ち", self.bl036)
+        self.assertIn("PC 1280px／390px", self.bl036)
+        self.assertIn("残作業:** なし", self.bl036)
+        self.assertIn("R-04", self.bl036)
+        self.assertIn("R-13", self.bl036)
+        self.assertIn("BL-009", self.bl036)
+
+    def test_status_active_work_excludes_and_recently_completed_includes_bl036(self):
+        active = self.status.split("## Active work", 1)[1].split(
+            "\n## 5. Recently completed work", 1
+        )[0]
+        self.assertFalse(
+            any(line.startswith("- BL-036 ") for line in active.splitlines()),
+            "BL-036 must not remain in Active work after final acceptance",
+        )
+        recently_completed = self.status.split("## 5. Recently completed work", 1)[1]
+        bl036_line = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-036 ")
+        )
+        self.assertIn("SD-033", bl036_line)
+        self.assertIn("承認済み", bl036_line)
+        self.assertIn("12a6f502973c78e21dbe0b209073f824731a3e5d", bl036_line)
 
 
 if __name__ == "__main__":

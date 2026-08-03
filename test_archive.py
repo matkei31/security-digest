@@ -2279,5 +2279,64 @@ class Bl034CheckedInHtmlAuditTest(unittest.TestCase):
                 self.assertNotIn("Visits", html)
 
 
+class Bl036ArchiveAttributionConsistencyTest(unittest.TestCase):
+    """BL-036 (Fable 5 review R-01): a policy-bearing article rebuilt through
+    the Archive path (schema v2 digest -> build_daily_archive_html) must show
+    the same `.article-attribution` class and DOM order as a freshly generated
+    top-page card, since the CSS-only change did not touch this rendering
+    path.
+    """
+
+    def _v2_digest_with_limited_feed_analysis_article(self, digest_date):
+        item = {
+            "source": "The Hacker News", "raw_title": "Advisory", "title": "Advisory",
+            "raw_summary": "Summary.", "summary": "Summary.",
+            "link": "https://thehackernews.com/example", "facts": {"cves": []},
+            "published_at_jst": None,
+            "content_policy": dj.build_item_content_policy(
+                "the_hacker_news", "limited_feed_analysis", "limited_feed_analysis", None
+            ),
+            "ai_analysis": {
+                "title_ja": "勧告", "category": "脆弱性・パッチ",
+                "category_reason": "テストのため。", "importance": "高",
+                "urgency": "本日確認", "summary": "テスト要約。",
+                "financial_impact": "テスト影響。",
+                "recommended_actions": ["テスト対応。"],
+                "reason": "重要度はテストのため「高」です。確認目安は緊急性が高いため「本日確認」です。",
+                "tags": [],
+            },
+            "ai_analysis_meta": {
+                "status": "success", "error_type": None, "http_status": None,
+                "generated_at": f"{digest_date}T07:20:00+09:00",
+            },
+        }
+        brief_result = {
+            "status": "success", "overview": "概況: テスト",
+            "important_highlights": ["テストのハイライト"],
+            "discussion_points": ["テストの論点"], "check_items": ["テストの確認事項"],
+            "error_type": None, "http_status": None,
+        }
+        return dj.build_daily_digest(
+            [item], brief_result, fetch.SOURCE_DEFINITIONS, "gemini-2.5-flash",
+            datetime.datetime.fromisoformat(f"{digest_date}T07:00:00+09:00"),
+            datetime.datetime.fromisoformat(f"{digest_date}T07:30:00+09:00"),
+        )
+
+    def test_archive_rebuild_shows_same_attribution_class_and_order(self):
+        digest = self._v2_digest_with_limited_feed_analysis_article("2026-07-15")
+        dj.validate_daily_digest(digest)  # confirm the fixture is itself valid
+        html = fetch.build_daily_archive_html(digest)
+
+        self.assertEqual(html.count('<p class="article-attribution">'), 1)
+        ai_analysis_index = html.index('<div class="ai-analysis">')
+        attribution_index = html.index('<p class="article-attribution">')
+        source_link_index = html.index('<a class="article-source-link"')
+        self.assertLess(ai_analysis_index, attribution_index)
+        self.assertLess(attribution_index, source_link_index)
+        self.assertIn(
+            fetch._LIMITED_FEED_ANALYSIS_ATTRIBUTION_TEXT.split("。")[0], html
+        )
+
+
 if __name__ == "__main__":
     unittest.main()
