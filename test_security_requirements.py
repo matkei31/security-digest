@@ -1363,13 +1363,17 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         self.assertIn("2026-07-30発効", bl031)
         self.assertIn("limited_feed_analysis", bl031)
 
-    def test_status_as_of_is_2026_08_03_and_bl030_run_evidence_is_historical(self):
+    def test_status_as_of_is_2026_08_04_and_bl030_run_evidence_is_historical(self):
         # STATUS.md's "As of" is the document's own last-update date (BL-033
         # delegates volatile latest-publication values to data/index.json
-        # instead), so this bumps whenever STATUS.md itself is edited --
-        # separately, BL-030's own scheduled-run evidence below is a fixed
-        # 2026-07-30 historical fact, not tied to this "As of" date.
-        self.assertIn("## 1. As of\n\n2026-08-03", self.status)
+        # instead), so this bumps whenever STATUS.md itself is edited -- most
+        # recently to 2026-08-04 by BL-036's post-merge record fix (the
+        # STATUS.md content itself was last substantively updated at BL-036's
+        # 2026-08-04 final acceptance, but the "As of" field had gone stale at
+        # 2026-08-03 until this fix). Separately, BL-030's own scheduled-run
+        # evidence below is a fixed 2026-07-30 historical fact, not tied to
+        # this "As of" date.
+        self.assertIn("## 1. As of\n\n2026-08-04", self.status)
         recently_completed = self.status.split(
             "## 5. Recently completed work", 1
         )[1].split("## 6. Known issues and limitations", 1)[0]

@@ -941,16 +941,21 @@
   3. そのため注記がブラウザ既定に近いサイズ・余白で表示され、AI analysis本文・recommended actions・元記事CTAとの情報階層が不明瞭である。
   4. [UI_SPEC.md](UI_SPEC.md) Version 1.6・[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)には、「現行UIへAI利用を明示する専用注記は追加しない。記事カード単位・分析区分単位の注記も採用しない」という方針が記録されている。
   5. ただし現在のattributionは、サイト全体への一般的なAI利用説明を追加したものではなく、[BL-031](#bl-031--全取得元の公式規約監査とセキュリティ文書整合化)／BL-032のsource usage policyに基づく、source別・content usage mode別の表示要件として既に実装・稼働している。
-  6. 現行実装(runtime attribution)は[BL-032](#bl-032--取得元別content-usage-policy-enforcement)により既に実装・稼働している事実である一方、これをUI_SPEC・[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)への限定例外として正式化することは、ユーザー目視受入とSD-033の追加を経るまでは仕様・Decision上まだ確定していない提案である。両者を混同せず区別して整理する必要がある。generic AI disclosure禁止(SD-016のAI-use note条項以外の6項目を含む)は、この提案によっても維持する予定である。
-- **Scope:**
-  - `.article-attribution`の低強調CSS追加。
-  - attribution内linkのCSS追加。
-  - attributionのDOM位置・表示文言・安全性(HTML escape、safe URL、mode分岐)は変更せず維持する。
-  - UI_SPEC.md Version 1.7 Draftへの更新(AI-use note原則の整理、CSS現行値の記載)。
-  - BACKLOG.md／STATUS.md更新。
-  - 関連testの更新。
-  - PC 1280px／390pxのローカルreview screenshots作成(repositoryへcommitしない)。
-  - ユーザー受入後、同PRのacceptance-recording commitで新規[SD-033](DECISIONS.md)を追加し、[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)のAI-use note条項だけを限定的にsupersedeする予定を記録する(今回はSD-033自体を作成せず、DECISIONS.mdも変更しない)。
+  6. 現行実装(runtime attribution)は[BL-032](#bl-032--取得元別content-usage-policy-enforcement)により既に実装・稼働している事実であった一方、これをUI_SPEC・[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)への限定例外として正式化することは、本Ticket開始時点では仕様・Decision上まだ確定していない提案だった。両者を混同せず区別して整理する必要があった。**解決:** 2026-08-04のユーザー目視受入と新規[SD-033](DECISIONS.md#sd-033--allow-source-policy-required-article-attribution-as-a-limited-exception-to-the-generic-ai-note-ban)の追加により、この限定例外は正式に確定した。generic AI disclosure禁止(SD-016のAI-use note条項以外の6項目を含む)は、この確定後も維持されている。
+- **実装・受入scope:**
+  - **Draft実装段階(accepted implementation head `12a6f502973c78e21dbe0b209073f824731a3e5d`まで):**
+    - `.article-attribution`の低強調CSS追加。
+    - attribution内linkのCSS追加。
+    - attributionのDOM位置・表示文言・安全性(HTML escape、safe URL、mode分岐)は変更せず維持する。
+    - UI_SPEC.md Version 1.7 Draftへの更新(AI-use note原則の整理、CSS現行値の記載)。
+    - BACKLOG.md／STATUS.md更新。
+    - 関連testの更新。
+    - PC 1280px／390pxのローカルreview screenshots作成(repositoryへcommitしない)。
+    - この段階ではSD-033は作成せず、DECISIONS.mdも変更しない。
+  - **最終受入段階(final head `c1c09855bcafce2c5fab3a1071801aaae06e3f0d`、同PR #76内のacceptance-recording commit):**
+    - UI_SPEC.mdをVersion 1.7 承認済みへ更新した。
+    - 新規[SD-033](DECISIONS.md#sd-033--allow-source-policy-required-article-attribution-as-a-limited-exception-to-the-generic-ai-note-ban)をDECISIONS.mdへ追加し、[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)のAI-use note条項だけを限定的にsupersedeした(SD-016のgeneric AI disclosure禁止と他の6項目は維持)。
+    - BACKLOG.md／STATUS.mdを最終受入状態へ更新した。
 - **Out of scope:**
   - attribution文言の変更。
   - mode別attributionの追加・削除。
@@ -969,23 +974,18 @@
   7. UI_SPECとStable Decisionがユーザー受入後に現行実装と一致する。
   8. PC 1280px／390pxをユーザーが目視受入する。
   9. runtimeの収集・AI処理・policy enforcementは変更しない。
-- **依存関係:** [BL-031](#bl-031--全取得元の公式規約監査とセキュリティ文書整合化)・[BL-032](#bl-032--取得元別content-usage-policy-enforcement)(source usage policyとruntime enforcementの前提)。[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)(AI-use note方針の現在の正本、本Ticketではsupersedeしない)。
+- **依存関係:** [BL-031](#bl-031--全取得元の公式規約監査とセキュリティ文書整合化)・[BL-032](#bl-032--取得元別content-usage-policy-enforcement)(source usage policyとruntime enforcementの前提)。[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)(本Ticket開始時点のAI-use note方針の正本)。新規[SD-033](DECISIONS.md#sd-033--allow-source-policy-required-article-attribution-as-a-limited-exception-to-the-generic-ai-note-ban)が、SD-016のAI-use note条項のうちsource-policy-required attribution部分だけを限定的にsupersedeした(2026-08-04)。generic AI disclosure禁止とSD-016の他の6項目は維持されている。
 - **実装証跡:** branch `feature/bl036-article-attribution-style`、[PR #76](https://github.com/matkei31/security-digest/pull/76)。`fetch.py`の共通style blockへ`.article-attribution`・`.article-attribution a`・`.article-attribution a:hover`の3 CSS ruleを追加した(runtime変更はこのCSSのみ)。UI_SPEC.mdをVersion 1.7 Draftへ更新し、BL-032実装済みのsource-policy-required attributionをSD-016のAI-use note条項に対する限定例外として正式化する提案を記録した。独立レビューround 1(head `71fd3ea`)でUI_SPEC.md Version 1.7 Draft内の論理的矛盾(「区別自体は確定方針を変更しない」と「SD-033で限定的にsupersede」が両立しない記述)を指摘され、accepted implementation head `12a6f502973c78e21dbe0b209073f824731a3e5d`で解消し、round 1で新たなBlockerなしと判断された。
 - **ユーザー受入証跡:** ユーザーは実`fetch.py`の`build_html()`が生成したPC 1280px／390pxのreview screenshots計6枚(`bl036-attribution-page-1280px.png`、`bl036-attribution-page-390px.png`、`bl036-attribution-card-1280px.png`、`bl036-attribution-card-390px.png`、`bl036-attribution-card2-link-1280px.png`、`bl036-attribution-card2-link-390px.png`)をチャット添付ファイルとして受け取り目視確認した(limited_feed_analysisの長文attribution、structured_open〔NCSC〕のattribution内license link、metadata_only cardを含む。10pxが本文より低強調でありながら判読可能、長文折返しと390pxでの横overflowに問題なし、link識別可能、metadata-only cardの余白に問題なしを確認)。
   - **ユーザー原文:** 「おk」
   - **原文の解釈:** 直前に提示した6画面の目視受入結果と、直前のレビュー結論(「BL-036の目視受入としてOK」「10pxのまま受入可能」「PR #76を受入記録・Ready化・mergeへ進めてよい」)を踏まえ、同PR内での最終受入記録・UI_SPEC Version 1.7のApproved化・SD-033の追加・Ready化・通常のmerge commit方式によるmergeへ進むことへの同意として解釈した。ユーザーが「10px」等の具体的CSS値を明示発言したものとしては扱わない。
   - 目視受入日: 2026-08-04
-  - accepted implementation head: `12a6f502973c78e21dbe0b209073f824731a3e5d`
-  - 独立レビューround 1完了、新たなBlockerなし
-  - accepted implementation CI: Pull Request CI [run 30813905763](https://github.com/matkei31/security-digest/actions/runs/30813905763) success
-  - accepted implementation full unittest: 1641 tests OK
-  - `git diff --check` success
-  - changed files 9件
-  - unresolved review threads 0
-  - UI_SPEC.md Version 1.7を承認済みへ更新し、新規[SD-033](DECISIONS.md#sd-033--allow-source-policy-required-article-attribution-as-a-limited-exception-to-the-generic-ai-note-ban)を追加してSD-016のAI-use note条項だけを限定的にsupersedeした(SD-016のgeneric AI disclosure禁止と他の6項目は維持)。
+  - **accepted implementation証跡(独立レビューround 1完了時点):** head `12a6f502973c78e21dbe0b209073f824731a3e5d`、独立レビューround 1完了・新たなBlockerなし、Pull Request CI [run 30813905763](https://github.com/matkei31/security-digest/actions/runs/30813905763) success、full unittest 1641 tests OK、`git diff --check` success、changed files 9件、unresolved review threads 0。
+  - **final acceptance証跡(同PR #76内のacceptance-recording commit、新規SD-033追加を含む):** final head `c1c09855bcafce2c5fab3a1071801aaae06e3f0d`、UI_SPEC.md Version 1.7を承認済みへ更新し、新規[SD-033](DECISIONS.md#sd-033--allow-source-policy-required-article-attribution-as-a-limited-exception-to-the-generic-ai-note-ban)を追加してSD-016のAI-use note条項だけを限定的にsupersedeした(SD-016のgeneric AI disclosure禁止と他の6項目は維持)。`DECISIONS.md`が加わりfinal changed files 10件、Pull Request CI [run 30833853521](https://github.com/matkei31/security-digest/actions/runs/30833853521) success、full unittest 1644 tests OK、`git diff --check` success、unresolved review threads 0。
+  - **merge証跡:** Ready化のうえ通常のmerge commit方式(squash・rebase不使用)でmergeされ、merge commit `38095fff8eaafd938a33603f4332bbf8c100fba2`として`origin/main`へ反映された。merge契機の[Pages deployment run 30833953993](https://github.com/matkei31/security-digest/actions/runs/30833953993)が成功した。本PRは`docs/`を変更していないため、`.article-attribution`の新CSSが公開HTMLへ反映されるのは次回の通常scheduled production runが`docs/`を再生成した後である(merge直後のPages success自体は既存の`docs/`を再デプロイしたのみで、新CSSの公開反映を意味しない)。
   - production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行っていない。
 - **残作業:** なし。BL-036の設計・実装・test・ユーザー受入について残作業はない。Fable 5レビューのR-04(文書test構造改革)・R-13(E2E test)・[BL-009](#bl-009--seoと閲覧者増加策)・About／footerの一般的AI説明・source policy自体の変更は、それぞれ別Ticketまたは既存Ticketのscopeとして扱い、本Ticketの残作業へ混入させない。
-- **注記:** 本TicketはCSS表示・UI_SPEC文書更新のみを対象とし、`daily_json.py`・`vulnerability_facts.py`・`source_definitions.json`・`SOURCE_USAGE_POLICY.md`・`SECURITY_REQUIREMENTS.md`・`SECURITY_OPERATIONS.md`・`DECISIONS.md`・`.github/workflows/`・tracked `data/`・tracked `docs/`への変更は行わない。production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行わない。
+- **注記:** 本Ticketのruntime差分は`fetch.py`のCSS 3 rule(`.article-attribution`・`.article-attribution a`・`.article-attribution a:hover`)だけである。`DECISIONS.md`は最終受入時のSD-033追加とSD-016のPartially superseded by note追加だけを変更しており(Draft実装段階では無変更)、SD-016の歴史的本文・SD-033自体のDecision内容はいずれも改変していない。`daily_json.py`・`vulnerability_facts.py`・`source_definitions.json`・[SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md)・`SECURITY_REQUIREMENTS.md`・`SECURITY_OPERATIONS.md`・`.github/workflows/`・tracked `data/`・tracked `docs/`への変更は行っていない。production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行っていない。
 
 ## 完了済み参照
 
