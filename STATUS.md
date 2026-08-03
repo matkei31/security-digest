@@ -45,7 +45,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- BL-036 記事カードのsource attribution注記を低強調表示へ整える — Fable 5独立レビューR-01を起点とする、記事カードの`.article-attribution`(BL-032で既に実装・稼働済み)への低強調CSS追加。生成HTMLのinline CSSに同classの定義がなく、注記が本文に近い既定サイズで表示され情報階層が不明瞭だった問題を修正する。UI_SPEC.mdをVersion 1.7 Draftへ更新し、[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)の「一般的AI-use noteを追加しない」方針と、BL-031／BL-032のsource usage policyが要求するsource別・mode別attributionとの関係を明確化した。attribution文言・mode分岐・DOM順序・HTML escape・URL安全性は変更していない。SD-016自体は今回変更せず、ユーザー受入後にSD-033を新規追加してSD-016のAI-use note部分だけを限定的にsupersedeする予定。PC 1280px／390pxのローカルreview screenshots(repository外)をユーザーが目視受入するまでDraft。production未実施。
+- BL-036 記事カードのsource attribution注記を低強調表示へ整える — Fable 5独立レビューR-01を起点とする、記事カードの`.article-attribution`(runtime実装は[BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)で既に実装・稼働済み)への低強調CSS追加。BL-036がruntime側に加えた変更はこのCSSのみ。生成HTMLのinline CSSに同classの定義がなく、注記が本文に近い既定サイズで表示され情報階層が不明瞭だった問題を修正する。UI_SPEC.mdをVersion 1.7 Draftへ更新し、BL-032で既に実装済みのsource-policy-required attributionを、[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)の「記事カード単位のAI-use noteを採用しない」という条項に対する限定例外として正式化することを提案した。この限定例外の正式化は、ユーザー目視受入と新規SD-033の追加によって確定するまでは、仕様・Decision上まだ受入待ちのDraftである。generic AI disclosure禁止とSD-016の他の6項目は、この提案によっても維持する予定。attribution文言・mode分岐・DOM順序・HTML escape・URL安全性は変更していない。SD-016自体・DECISIONS.mdは今回変更せず、SD-033も今回は作成しない。PC 1280px／390pxのローカルreview screenshots(repository外)をユーザーが目視受入するまでDraft。production未実施。
 
 ## 5. Recently completed work
 

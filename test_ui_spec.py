@@ -308,14 +308,22 @@ class Bl036ArticleAttributionUiSpecTest(unittest.TestCase):
         self.assertIn("genericな「AIを利用しています」badgeやalertを追加しない", self.spec)
         self.assertIn("一律AI noteを追加しない", self.spec)
 
-    def test_source_policy_required_attribution_is_recorded_as_a_limited_exception(self):
-        self.assertIn("例外として明示する現行契約", self.spec)
+    def test_source_policy_required_attribution_is_recorded_as_a_proposed_limited_exception(self):
+        # Round 1 (Fable 5 review): the heading previously read "例外として
+        # 明示する現行契約" (a settled contract), which is not what Version 1.7
+        # Draft can claim before user acceptance/SD-033 -- it is a proposal.
+        self.assertIn("限定例外として提案する現行実装", self.spec)
+        self.assertNotIn("例外として明示する現行契約", self.spec)
         self.assertIn("`.article-attribution`", self.spec)
         self.assertIn("BACKLOG.md#bl-031--全取得元の公式規約監査とセキュリティ文書整合化", self.spec)
         self.assertIn("BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement", self.spec)
         self.assertIn("一律のgeneric AI badgeとは目的・表示条件・文言が異なる", self.spec)
         self.assertIn("SOURCE_USAGE_POLICY.md", self.spec)
         self.assertIn("`render_source_attribution_html()`", self.spec)
+
+    def test_runtime_attribution_is_already_implemented_and_bl036_only_added_css(self):
+        self.assertIn("BL-032で既に実装・受入・merge済み", self.spec)
+        self.assertIn("BL-036が新たに追加したruntime要素はCSSだけ", self.spec)
 
     def test_css_current_values_are_recorded_for_pc_and_390px_both(self):
         self.assertIn("| `.article-attribution` |", self.spec)
@@ -325,9 +333,25 @@ class Bl036ArticleAttributionUiSpecTest(unittest.TestCase):
         self.assertIn("background／border／border-radius／pillなし", self.spec)
         self.assertIn("PC／390px共通", self.spec)
 
+    def test_no_contradictory_no_change_claim_near_the_limited_exception(self):
+        # Round 1 (Fable 5 review): "この区別自体は上記の確定方針を変更しない"
+        # directly contradicted the later statement that SD-033 will supersede
+        # part of SD-016. That exact contradictory phrase must not remain.
+        self.assertNotIn("この区別自体は上記の確定方針を変更しない", self.spec)
+        self.assertNotIn("決定自体は変更していない", self.spec)
+
+    def test_limited_exception_proposal_is_pending_until_acceptance_and_sd033(self):
+        self.assertIn("ユーザー目視受入", self.spec)
+        self.assertIn("SD-033", self.spec)
+        self.assertIn("確定するまで", self.spec)
+        # The generic-disclosure ban and the other six SD-016 items must be
+        # explicitly recorded as unaffected by this proposal.
+        self.assertIn("generic AI disclosure禁止", self.spec)
+        self.assertIn("他の6項目", self.spec)
+
     def test_sd033_future_supersede_is_recorded_but_not_created(self):
         self.assertIn("SD-033", self.spec)
-        self.assertIn("SD-016のうちAI-use noteに関する部分だけを限定的にsupersede", self.spec)
+        self.assertIn("SD-016のAI-use note条項だけを限定的にsupersede", self.spec)
         self.assertNotIn("## SD-033", self.decisions)
 
     def test_sd016_itself_is_not_modified(self):

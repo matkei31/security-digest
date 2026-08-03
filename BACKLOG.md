@@ -941,7 +941,7 @@
   3. そのため注記がブラウザ既定に近いサイズ・余白で表示され、AI analysis本文・recommended actions・元記事CTAとの情報階層が不明瞭である。
   4. [UI_SPEC.md](UI_SPEC.md) Version 1.6・[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)には、「現行UIへAI利用を明示する専用注記は追加しない。記事カード単位・分析区分単位の注記も採用しない」という方針が記録されている。
   5. ただし現在のattributionは、サイト全体への一般的なAI利用説明を追加したものではなく、[BL-031](#bl-031--全取得元の公式規約監査とセキュリティ文書整合化)／BL-032のsource usage policyに基づく、source別・content usage mode別の表示要件として既に実装・稼働している。
-  6. 現行実装とUI仕様・Stable Decisionの関係を、ユーザー目視受入を経て明示的に整理する必要がある。
+  6. 現行実装(runtime attribution)は[BL-032](#bl-032--取得元別content-usage-policy-enforcement)により既に実装・稼働している事実である一方、これをUI_SPEC・[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)への限定例外として正式化することは、ユーザー目視受入とSD-033の追加を経るまでは仕様・Decision上まだ確定していない提案である。両者を混同せず区別して整理する必要がある。generic AI disclosure禁止(SD-016のAI-use note条項以外の6項目を含む)は、この提案によっても維持する予定である。
 - **Scope:**
   - `.article-attribution`の低強調CSS追加。
   - attribution内linkのCSS追加。
@@ -950,7 +950,7 @@
   - BACKLOG.md／STATUS.md更新。
   - 関連testの更新。
   - PC 1280px／390pxのローカルreview screenshots作成(repositoryへcommitしない)。
-  - ユーザー受入後、同PRのacceptance-recording commitで新規[SD-033](DECISIONS.md)を追加し、[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)のAI-use noteに関する部分だけを限定的にsupersedeする予定を記録する(今回はSD-033自体を作成しない)。
+  - ユーザー受入後、同PRのacceptance-recording commitで新規[SD-033](DECISIONS.md)を追加し、[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)のAI-use note条項だけを限定的にsupersedeする予定を記録する(今回はSD-033自体を作成せず、DECISIONS.mdも変更しない)。
 - **Out of scope:**
   - attribution文言の変更。
   - mode別attributionの追加・削除。
