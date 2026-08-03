@@ -1882,10 +1882,11 @@ class Bl034ImplementationAcceptanceTest(unittest.TestCase):
         self.assertIn("changed files 35件", bl034)
         self.assertIn("unresolved review threads 0", bl034)
 
-    def test_bl034_residual_work_is_post_merge_confirmation_only(self):
-        # Superseded by closeout: those post-merge confirmations have since
-        # happened, and BL-034's 残作業 field now reads なし; the 完了条件
-        # list (a historical contract definition) still names them.
+    def test_bl034_has_no_residual_work_after_closeout(self):
+        # The 完了条件 list (a historical contract definition, round 1) still
+        # names Cloudflare dashboard/Search Console confirmation as
+        # merge-after items; BL-034 closeout has since completed both, so
+        # 残作業 itself now reads なし.
         bl034 = self._section(self.backlog, "## BL-034", "\n## 完了済み参照")
         self.assertIn("Cloudflare dashboardでの実データ受信確認", bl034)
         self.assertIn("Google Search Console verification結果の確認", bl034)
@@ -2088,15 +2089,22 @@ class Bl034CloseoutTest(unittest.TestCase):
 
     def test_intro_no_longer_claims_no_external_confirmations_have_occurred(self):
         self.assertNotIn("none of those have occurred and none of them is claimed here", self.requirements)
+        self.assertNotIn("no DNS change, Cloudflare account\noperation, or Search Console verification had occurred", self.requirements)
         self.assertIn(
             "on 2026-08-03 the user confirmed the Cloudflare Web\nAnalytics dashboard is receiving data",
             self.requirements,
         )
         self.assertIn("Google Search Console verified Domain-property\nownership", self.requirements)
+        # The Cloudflare site/hostname registration and manual beacon
+        # snippet retrieval genuinely happened before acceptance (the
+        # implementation embeds that token) -- the intro must say so.
+        self.assertIn("the user had already registered", self.requirements)
+        self.assertIn("retrieved the manual beacon\nsnippet", self.requirements)
+        self.assertIn("no DNS, proxy, or nameserver migration to Cloudflare was made", self.requirements)
         # The historical framing (unconfirmed AT THE TIME of acceptance) must
         # be preserved, not deleted -- only the present-tense claim was wrong.
-        self.assertIn("were unconfirmed operational", self.requirements)
-        self.assertIn("did\nnot block this Version's own approval", self.requirements)
+        self.assertIn("both tracked as BL-034's residual post-merge work", self.requirements)
+        self.assertIn("did not block this Version's own approval", self.requirements)
 
     def test_sr047_and_gap018_confirm_dashboard_and_search_console_not_unconfirmed(self):
         sr047 = next(
@@ -2123,6 +2131,56 @@ class Bl034CloseoutTest(unittest.TestCase):
             "does not re-approve Version 1.7 or bump its Version", section12
         )
         self.assertIn("BL-034 is now `完了`", section12)
+
+    def test_cloudflare_site_registration_and_snippet_predate_acceptance(self):
+        # PR #73 round 2: the Cloudflare site/hostname registration and
+        # manual beacon snippet retrieval genuinely happened before Version
+        # 1.7's repository implementation was accepted -- the intro must
+        # not claim "no Cloudflare account operation had occurred".
+        self.assertNotIn("no DNS change, Cloudflare account", self.requirements)
+        self.assertIn("the user had already registered", self.requirements)
+        self.assertIn("`monomidigest.com` as a site/hostname in Cloudflare Web Analytics", self.requirements)
+        self.assertIn("retrieved the manual beacon", self.requirements)
+        self.assertIn(
+            "no DNS, proxy, or nameserver migration to Cloudflare was made", self.requirements
+        )
+
+    def test_sr047_distinguishes_dns_provider_unchanged_from_new_google_txt_record(self):
+        sr047 = next(
+            line for line in self.requirements.splitlines() if line.startswith("| SR-047 |")
+        )
+        self.assertIn("DNS registrar/manager (XServer) and nameservers are unchanged", sr047)
+        self.assertIn("Cloudflare's manual/non-proxied beacon embed method itself makes no DNS record change", sr047)
+        self.assertIn("a new Google verification TXT record was added at XServer DNS", sr047)
+        self.assertIn("no existing DNS record was deleted or replaced", sr047)
+        self.assertIn("the TXT value itself is not stored in this repository", sr047)
+        # Must not read as a blanket "DNS never changed at all" claim.
+        self.assertNotIn("DNS/nameservers are unchanged (Cloudflare's manual/non-proxied embed method)", sr047)
+        cells = [c.strip() for c in sr047.strip("|").split("|")]
+        self.assertEqual(cells[3], "Met")
+
+    def test_bl032_control_mapping_no_longer_calls_documentation_gap_unresolved(self):
+        # Section 5 (trust boundaries) and section 7 (current control
+        # mapping) both previously said this document's own Approved
+        # promotion of BL-032's current-state record "remains a separate,
+        # unresolved documentation step", contradicting GAP-016 and Version
+        # 1.7's own Approved status. Both must now say it was completed.
+        self.assertNotIn("remains a separate, unresolved documentation step", self.requirements)
+        self.assertNotIn("is a separate, unresolved documentation step", self.requirements)
+        mapping_row = next(
+            line for line in self.requirements.splitlines()
+            if line.startswith("| Source content-usage policy and AI provider data-use boundary |")
+        )
+        self.assertIn("was completed by Version 1.7, consistent with GAP-016", mapping_row)
+        trust_boundary_row = next(
+            line for line in self.requirements.splitlines()
+            if line.startswith("| Source-terms audit and content-usage policy |")
+        )
+        self.assertIn("was completed by Version 1.7", trust_boundary_row)
+        gap016 = next(
+            line for line in self.requirements.splitlines() if line.startswith("| GAP-016 |")
+        )
+        self.assertIn("documentation-maintenance gap is now resolved", gap016)
 
 
 if __name__ == "__main__":
