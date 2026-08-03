@@ -377,31 +377,55 @@ runtime or evidentiary result.
    - `policy.allow_network_fetch`, `policy.allow_description`, `policy.allow_ai_processing`,
      `policy.allow_excerpt_storage`, and `policy.allow_public_summary` all `false`.
 5. In the same change, update the source's row in
-   [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) (its `proposed_mode` column and the
-   `unresolved_issue`/`recheck_trigger`/`checked_at` cells) to match the new mode and the reason
-   recorded in step 1, so the policy/evidence document does not go stale relative to
+   [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) — its `proposed_mode` column, `checked_at`,
+   `unresolved_issue`, `recheck_trigger`, and evidence cells (`official_evidence_url`,
+   `evidence_type`, `confidence`, `attribution_requirement`) — to match the new mode and the
+   reason recorded in step 1, so the policy/evidence document does not go stale relative to
    `source_definitions.json`.
-6. This is a precautionary downgrade, not a legal determination that the source's terms were in
+6. A mode change moves the source from one content-usage-mode bucket to another, so it also
+   changes the per-mode count distribution recorded in
+   [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) section 4 (the "件数集計" line, currently
+   `structured_open 5, feed_summary 4, limited_feed_analysis 2, metadata_only 2,
+   disabled_legal_review 4, 合計17`) and enforced at runtime by `fetch.py`'s
+   `EXPECTED_CONTENT_USAGE_MODE_COUNTS` constant, which
+   `validate_content_usage_mode_distribution()` checks against `source_definitions.json`'s
+   actual counts at module load — including at the start of every production run — and fails
+   closed with a `SourceDefinitionError` on any mismatch. In the same change:
+   - update the "件数集計" line in [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) section 4 to
+     the new distribution;
+   - update `EXPECTED_CONTENT_USAGE_MODE_COUNTS` in `fetch.py` to the same new distribution
+     (decrement the source's previous mode by 1, increment its new mode by 1; the total stays 17
+     unless the source count itself changes);
+   - update the tests that lock this distribution, at minimum
+     `test_content_usage_policy.py`'s `EXPECTED_CONTENT_USAGE_MODE_COUNTS`-based assertions and
+     `test_source_usage_policy.py`'s "合計17" check.
+   Skipping this step does not silently succeed: leaving `EXPECTED_CONTENT_USAGE_MODE_COUNTS`
+   unchanged means the very next `source_definitions.json` load — including the next scheduled
+   production run — fails closed with a count-mismatch error.
+7. Because this step changes a runtime constant in `fetch.py`, an actual mode-change ticket's
+   scope must explicitly include that `fetch.py` change; it is not an incidental side effect of
+   an otherwise documentation-only change.
+8. This is a precautionary downgrade, not a legal determination that the source's terms were in
    fact violated; do not represent it as a legal conclusion in the commit, pull request, or
    BACKLOG/STATUS/DECISIONS record.
-7. Do not modify, delete, or regenerate any past `data/*.json` or `docs/archive/*.html` as a
+9. Do not modify, delete, or regenerate any past `data/*.json` or `docs/archive/*.html` as a
    side effect of a mode downgrade; a takedown or correction request for already-published
    articles is handled separately through section 7, following the same principle as the
    source-suspension procedure above.
-8. Do not run production, the Gemini API, or routine automated collection against the source to
-   verify the downgrade trigger, and do not scrape article bodies or perform bulk retrieval. A
-   read-only check of the source's official terms, license, robots.txt, or official feed-
-   guidance page is permitted as an approved investigation step to confirm the specific trigger
-   in step 1 — record the date checked, the official URL, and what was confirmed alongside the
-   already-recorded official information, the reported trigger, and read-only repository
-   verification. If the trigger is a rightsholder correction/removal/stop request, do not make
-   re-checking the source a precondition of responding to it.
-9. Run source-definition validation (source load succeeds and the content-usage-mode
-   distribution check passes), the relevant `test_content_usage_policy.py`/
-   `test_source_definitions.py`/`test_source_usage_policy.py` coverage, and the full unittest
-   suite; run `git diff --check`; and complete a scope review confirming no unrelated file
-   changed.
-10. Record the downgrade through the normal branch/PR/test/review path (BACKLOG.md, STATUS.md;
+10. Do not run production, the Gemini API, or routine automated collection against the source to
+    verify the downgrade trigger, and do not scrape article bodies or perform bulk retrieval. A
+    read-only check of the source's official terms, license, robots.txt, or official feed-
+    guidance page is permitted as an approved investigation step to confirm the specific trigger
+    in step 1 — record the date checked, the official URL, and what was confirmed alongside the
+    already-recorded official information, the reported trigger, and read-only repository
+    verification. If the trigger is a rightsholder correction/removal/stop request, do not make
+    re-checking the source a precondition of responding to it.
+11. Run source-definition validation (source load succeeds and the content-usage-mode
+    distribution check against the updated `EXPECTED_CONTENT_USAGE_MODE_COUNTS` passes), the
+    relevant `test_content_usage_policy.py`/`test_source_definitions.py`/
+    `test_source_usage_policy.py` coverage, and the full unittest suite; run `git diff --check`;
+    and complete a scope review confirming no unrelated file changed.
+12. Record the downgrade through the normal branch/PR/test/review path (BACKLOG.md, STATUS.md;
     DECISIONS.md only if the user separately accepts a Stable Decision) — not as a direct public
     hotfix under section 4 unless its emergency conditions are independently met. Do not run
     production, the Gemini API, `workflow_dispatch`, or routine external collection as part of
@@ -611,8 +635,13 @@ merged ([PR #69](https://github.com/matkei31/security-digest/pull/69)). It repla
 Version 1.1 premise that a `metadata_only` downgrade requires only a
 [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md) change with the current requirement to update
 `source_definitions.json`'s `policy.content_usage_mode` and its associated boolean fields in the
-same change, since that is what `fetch.py`/`daily_json.py` actually read at runtime. It also
-corrects section 11 item 10's stale description of BL-032 as "registered, 要件定義済み／未着手"
+same change, since that is what `fetch.py`/`daily_json.py` actually read at runtime. It also adds
+the previously missing requirement to keep [SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md)
+section 4's per-mode count tally, `fetch.py`'s `EXPECTED_CONTENT_USAGE_MODE_COUNTS` constant, and
+the tests that lock that distribution in sync with an actual mode change (this Version does not
+change `EXPECTED_CONTENT_USAGE_MODE_COUNTS`'s current values — it records the future requirement
+to update them). It also corrects section 11 item 10's stale description of BL-032 as
+"registered, 要件定義済み／未着手"
 (accurate only as of the Version 1.1 approval date, and now labeled as such), and fixes
 [AGENTS.md](AGENTS.md)'s and [STATUS.md](STATUS.md)'s references to this document's own Version
 and to `.github/workflows/pr-ci.yml`'s existence. Version 1.2 makes no runtime, workflow,

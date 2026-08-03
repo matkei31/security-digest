@@ -31,7 +31,7 @@ Current prompt versions, schema version, source status, and known limitations ar
 ## Scope discipline
 
 - Implement only the approved ticket scope.
-- For UI changes, consult the approved requirements in [UI_SPEC.md](UI_SPEC.md)（現在のVersion／Statusは同ファイル冒頭のheaderを正本とする。AGENTS.mdへは特定のVersion番号を複製しない）; changing a confirmed requirement needs a new explicit user decision and a superseding decision record.
+- For UI changes, consult the approved requirements in [UI_SPEC.md](UI_SPEC.md) (that file's own header, not this file, is the source of truth for its current Version and Status); changing a confirmed requirement needs a new explicit user decision and a superseding decision record.
 - Do not infer requirements or expand the design when the specification is ambiguous.
 - If existing code or data conflicts with the ticket, report the conflict before changing behavior.
 - Do not introduce title-, vendor-, threat-actor-, CVE-, or article-specific rules unless the approved requirement explicitly calls for them.
@@ -100,10 +100,10 @@ Current prompt versions, schema version, source status, and known limitations ar
 
 ## Security requirements
 
-- [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md)（現在のVersion／Statusは同ファイル冒頭のheaderを正本とする。AGENTS.mdへは特定のVersion番号を複製しない）is the source of truth for the current architecture security baseline, accepted residual risks, and re-evaluation triggers.
+- [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md) is the source of truth for the current architecture security baseline, accepted residual risks, and re-evaluation triggers; that file's own header, not this file, is the source of truth for its current Version and Status.
 - Consult that baseline when a listed trigger occurs. Implementing a security control still requires its own approved ticket, scope, tests, review, and merge.
 - Approval of the baseline is not blanket authorization for production execution, GitHub setting changes, or an individual control change.
-- For incidents, credential rotation or revocation, published-output correction or withdrawal, deterministic regeneration, and repository-external artifact handling, follow [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md)（現在のVersion／Statusは同ファイル冒頭のheaderを正本とする。AGENTS.mdへは特定のVersion番号を複製しない）. That runbook does not replace the separate approval boundaries for production, generated-output changes, GitHub settings, secrets, Ready status, or merge.
+- For incidents, credential rotation or revocation, published-output correction or withdrawal, deterministic regeneration, and repository-external artifact handling, follow [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) — that file's own header, not this file, is the source of truth for its current Version and Status. That runbook does not replace the separate approval boundaries for production, generated-output changes, GitHub settings, secrets, Ready status, or merge.
 - Escape all external and AI-generated strings before inserting them into HTML.
 - Only allow `http` and `https` links.
 - External links must use `rel="noopener noreferrer"`.
@@ -129,7 +129,7 @@ python3 -m unittest discover -p "test_*.py"
 
 Prompt or request-boundary changes also require actual request-body inspection using mocked transport. Fallback/validation changes require success, fallback, failed, and not-attempted regression coverage where relevant.
 
-This repository has a `pull_request` CI workflow at [`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml): it triggers on pull requests targeting `main`, runs with `contents: read` permissions and no secrets, checks out the PR head with `persist-credentials: false`, runs the full unittest suite (`python3 -m unittest discover -p "test_*.py"`), and runs `git diff --check` over the PR's base...head range. It does not build or deploy anything. There is no separate CI workflow for ordinary `push` events to `main`; the only push/schedule workflow is [`.github/workflows/fetch.yml`](.github/workflows/fetch.yml), and that is production generation, not CI.
+This repository has a `pull_request` CI workflow at [`.github/workflows/pr-ci.yml`](.github/workflows/pr-ci.yml): it triggers on pull requests targeting `main`, checks out the PR head with `persist-credentials: false`, runs the full unittest suite (`python3 -m unittest discover -p "test_*.py"`), and runs `git diff --check` over the PR's base...head range. It does not build or deploy anything, and it does not reference any repository secret; its workflow-level `permissions:` scopes the job's `GITHUB_TOKEN` to `contents: read` (a GitHub Actions job-token permission, not a claim that GitHub withholds a token from the job). There is no CI workflow triggered by ordinary `push` events to `main`. [`.github/workflows/fetch.yml`](.github/workflows/fetch.yml) is the daily production workflow: its only triggers are `schedule` and `workflow_dispatch` — it has no `push` trigger. After a successful run it commits and pushes the generated `data/`/`docs/` output to `main`, but that push is an action the run performs, not an event that triggers `fetch.yml` or any other workflow. GitHub Pages deployment of `docs/` is a separate GitHub Pages platform behavior triggered by that push; it is not a PR CI check.
 
 A successful PR CI run confirms the full unittest suite and `git diff --check` passed at that head. It does not confirm production execution, Pages deployment, Ready status, or merge approval, and it does not replace an independent diff and scope review. Only describe CI as successful when a PR CI run actually exists and is `success` for the relevant head; if one does not yet exist for the change (for example, before a PR is opened), do not describe absent checks as successful CI:
 

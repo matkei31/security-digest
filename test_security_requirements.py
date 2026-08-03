@@ -1021,17 +1021,24 @@ class SecurityRequirementsTest(unittest.TestCase):
 
     def test_agents_references_security_docs_without_blanket_authorization(self):
         # BL-035 (Fable 5 review R-03): AGENTS.md no longer hardcodes
-        # SECURITY_REQUIREMENTS.md/SECURITY_OPERATIONS.md Version numbers here --
-        # both delegate to each document's own header instead, so this reference
-        # cannot go stale again on the next Version bump of either document.
+        # SECURITY_REQUIREMENTS.md/SECURITY_OPERATIONS.md/UI_SPEC.md Version
+        # numbers here -- all three delegate to each document's own header
+        # instead, so this reference cannot go stale again on the next Version
+        # bump of any of them. Round 1 of BL-035's own review replaced the
+        # earlier Japanese-parenthetical delegation wording (which read
+        # awkwardly butted against English words, e.g. "）is") with a plain
+        # English clause, so this checks for that clause, not the Japanese text.
+        DELEGATION_PHRASE = (
+            "that file's own header, not this file, is the source of truth for "
+            "its current Version and Status"
+        )
         security = self.agents.split("## Security requirements", 1)[1].split(
             "## Testing and review", 1
         )[0]
         self.assertIn("SECURITY_REQUIREMENTS.md", security)
         self.assertIn("SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md)", security)
         self.assertIn("SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md)", security)
-        self.assertIn("同ファイル冒頭のheaderを正本とする", security)
-        self.assertIn("特定のVersion番号を複製しない", security)
+        self.assertEqual(security.count(DELEGATION_PHRASE), 2)
         self.assertNotRegex(security, r"SECURITY_REQUIREMENTS\.md\]\(SECURITY_REQUIREMENTS\.md\)\s*Version\s+\d+\.\d+")
         self.assertNotRegex(security, r"SECURITY_OPERATIONS\.md\]\(SECURITY_OPERATIONS\.md\)\s*Version\s+\d+\.\d+")
         self.assertIn("credential rotation or revocation", security)
@@ -1040,6 +1047,51 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("re-evaluation triggers", security)
         self.assertIn("approved ticket", security)
         self.assertIn("not blanket authorization", security)
+
+    def test_agents_ui_spec_reference_delegates_version_too(self):
+        scope = self.agents.split("## Scope discipline", 1)[1].split(
+            "## Backlog provenance and completion", 1
+        )[0]
+        self.assertIn("UI_SPEC.md](UI_SPEC.md)", scope)
+        self.assertIn(
+            "that file's own header, not this file, is the source of truth for "
+            "its current Version and Status",
+            scope,
+        )
+        self.assertNotRegex(scope, r"UI_SPEC\.md\]\(UI_SPEC\.md\)\s*Version\s+\d+\.\d+")
+
+    def test_agents_describes_pr_ci_and_fetch_yml_triggers_accurately(self):
+        # BL-035 round 1 (Fable 5 review): AGENTS.md previously called
+        # fetch.yml "the only push/schedule workflow", which misdescribes it as
+        # push-triggered. fetch.yml has no `push` trigger -- only `schedule` and
+        # `workflow_dispatch` -- and the commit/push it performs after a
+        # successful run is an action the run takes, not a triggering event.
+        testing = self.agents.split("## Testing and review", 1)[1].split(
+            "## Git and generated output", 1
+        )[0]
+        self.assertIn("pr-ci.yml", testing)
+        self.assertIn("fetch.yml", testing)
+        self.assertIn("`schedule`", testing)
+        self.assertIn("`workflow_dispatch`", testing)
+        self.assertIn("no `push` trigger", testing)
+        self.assertNotIn("only push/schedule workflow", testing)
+        self.assertNotIn("push/schedule workflow", testing)
+        self.assertIn("GitHub Pages", testing)
+        self.assertIn("not a PR CI check", testing)
+
+    def test_agents_pr_ci_secret_and_token_wording_is_precise(self):
+        # BL-035 round 1: "no secrets" must describe pr-ci.yml not referencing
+        # any repository secret, and must not be conflated with (or read as
+        # denying) the GitHub Actions job token: pr-ci.yml's workflow-level
+        # `permissions:` scopes that job token (GITHUB_TOKEN) to `contents:
+        # read`, it is not evidence that no token exists for the job.
+        testing = self.agents.split("## Testing and review", 1)[1].split(
+            "## Git and generated output", 1
+        )[0]
+        self.assertIn("does not reference any repository secret", testing)
+        self.assertIn("`GITHUB_TOKEN`", testing)
+        self.assertIn("`contents: read`", testing)
+        self.assertIn("not a claim that GitHub withholds a token from the job", testing)
 
     def test_security_requirements_internal_markdown_links_resolve(self):
         docs = {
@@ -1510,11 +1562,19 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
 
 
 class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
-    """BL-031's acceptance/merge is recorded as Completed, the three security
-    documents are Approved, SD-030 records the approval/enforcement-deferral
-    boundary without marking SD-002 as already superseded, BL-032 is
-    registered exactly once and not started, and per-source `checked_at`
-    values were not bulk-changed by this approval round.
+    """Historical point-in-time checks anchored to the 2026-07-31 BL-031
+    acceptance round: BL-031's acceptance/merge is recorded as Completed, SD-030
+    records the approval/enforcement-deferral boundary without marking SD-002 as
+    already superseded, and per-source `checked_at` values were not bulk-changed
+    by this approval round. At that time, all three security documents were
+    Approved and BL-032 was registered exactly once and not yet started; these
+    were true THEN, not necessarily now -- SECURITY_REQUIREMENTS.md has since
+    moved to Version 1.7 (checked directly below) and SECURITY_OPERATIONS.md has
+    since moved to Version 1.2 Draft under BL-035 (checked in
+    test_security_operations.Bl035DraftSyncTest), and BL-032 itself has since
+    been implemented and merged (checked throughout this file and in
+    test_source_definitions.py). Do not read this class's test names as
+    describing the documents' current state.
     """
 
     @classmethod
@@ -1528,16 +1588,18 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
         cls.source_definitions = (ROOT / "source_definitions.json").read_text(encoding="utf-8")
         cls.fetch_source = (ROOT / "fetch.py").read_text(encoding="utf-8")
 
-    def test_three_documents_are_approved_as_of_20260731(self):
+    def test_source_usage_policy_20260731_snapshot_and_security_requirements_current_version(self):
         # SOURCE_USAGE_POLICY.md remains Approved as of the 2026-07-31 BL-031
-        # round and is unchanged since. SECURITY_REQUIREMENTS.md has since moved
-        # further: Draft Version 1.6 (BL-032 implementation, pending user
-        # acceptance at the time) was superseded by Version 1.7 (BL-034
-        # implementation), which the user accepted on 2026-08-03 (PR #72 round 2).
-        # SECURITY_OPERATIONS.md also moved further: BL-035 (Fable 5 review R-02)
-        # advanced it from the 2026-07-31 Version 1.1 Approved snapshot checked
-        # here to Version 1.2 Draft, pending its own user acceptance -- see
-        # test_security_operations.Bl035DraftSyncTest for the current header.
+        # round and is unchanged since -- a historical snapshot, checked here.
+        # SECURITY_REQUIREMENTS.md has since moved further: Draft Version 1.6
+        # (BL-032 implementation, pending user acceptance at the time) was
+        # superseded by Version 1.7 (BL-034 implementation), which the user
+        # accepted on 2026-08-03 (PR #72 round 2) -- its CURRENT version, checked
+        # below. SECURITY_OPERATIONS.md's history is not checked in this method:
+        # it moved further still under BL-035 (Fable 5 review R-02) from the
+        # 2026-07-31 Version 1.1 Approved snapshot to Version 1.2 Draft; see
+        # test_version_11_approval_record_is_preserved_as_history (history) and
+        # test_security_operations.Bl035DraftSyncTest (current state).
         for doc, version_marker in (
             (self.policy, "**Version:** 0.1"),
         ):

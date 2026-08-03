@@ -892,7 +892,7 @@
   4. AGENTS.mdが「This repository currently has no ordinary `pull_request` or `push` CI workflow」とPR CIの存在を否定しているが、現在は`.github/workflows/pr-ci.yml`([BL-001](#bl-001--プルリクエストci)、2026-07-18以降)が存在する。
   5. AGENTS.md／STATUS.mdに複製されたUI_SPEC／SECURITY_REQUIREMENTS／SECURITY_OPERATIONSのVersion番号が、各正本fileの実際のVersionから陳腐化している(UI_SPEC 1.0→実際1.6、SECURITY_REQUIREMENTS 1.2→実際1.7、SECURITY_OPERATIONS 1.0→実際1.1)。
 - **Scope:**
-  - SECURITY_OPERATIONS.mdのcontent usage mode downgrade手順(section 7)を、BL-032のruntime enforcementへ同期する。
+  - SECURITY_OPERATIONS.mdのcontent usage mode downgrade手順(section 7)を、BL-032のruntime enforcementへ同期する。mode変更時には`source_definitions.json`のpolicy fieldsだけでなく、SOURCE_USAGE_POLICY.md section 4の`content_usage_mode`別件数集計(「件数集計」行、合計17)と、`fetch.py`の`EXPECTED_CONTENT_USAGE_MODE_COUNTS`(`validate_content_usage_mode_distribution()`がfail-closedで照合するruntime定数)も同じ変更で同期する必要があることを手順へ明記する(今回`EXPECTED_CONTENT_USAGE_MODE_COUNTS`の実値は変更せず、将来の必要手順として記載するのみ)。
   - SECURITY_OPERATIONS.mdをVersion 1.2 Draftへ更新する(section 11のBL-032関連stale current-state記述の修正を含む)。
   - AGENTS.mdのCI説明を実workflow(`.github/workflows/pr-ci.yml`)へ同期する。
   - AGENTS.md／STATUS.mdのUI_SPEC／SECURITY_REQUIREMENTS／SECURITY_OPERATIONSへのVersion固定参照を、各正本fileのheaderへの委譲方式へ変更する。
@@ -906,6 +906,7 @@
   - 新しいsecurity controlまたはpolicy decision(DECISIONS.mdへのSD追加は行わない)。
 - **完了条件:**
   1. 現行手順だけを読んで正しくmode downgradeできる(`source_definitions.json`の`policy.content_usage_mode`と関連boolean fieldsの変更が必要であることが明記されている)。
+  1a. 現行手順が、mode変更時にSOURCE_USAGE_POLICY.md section 4の件数集計と`fetch.py`の`EXPECTED_CONTENT_USAGE_MODE_COUNTS`(および両者を固定する既存test)も同じ変更で更新する必要があることを明記している。
   2. BL-032を未実装／将来enforcementとするcurrent-state記述が残らない(Version 1.1承認当時の歴史的記録は区別して保持する)。
   3. PR CIの説明が実workflow(`.github/workflows/pr-ci.yml`)と一致する。
   4. AGENTS.md／STATUS.mdがUI_SPEC／SECURITY_REQUIREMENTS／SECURITY_OPERATIONSのVersion番号を重複保持しない。
