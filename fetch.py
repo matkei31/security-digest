@@ -5453,6 +5453,9 @@ def build_html(
     .vulnerability-cve-link:hover{{text-decoration:underline}}
     .vulnerability-cvss{{color:#8b949e}}
     .kev-badge{{font-size:10px;font-weight:700;line-height:1;padding:3px 8px;border-radius:100px;border:1px solid #9e6a03;color:#e3b341;background:#1c1506;white-space:nowrap}}
+    .article-attribution{{margin-top:10px;font-size:10px;color:#768496;line-height:1.6;overflow-wrap:anywhere}}
+    .article-attribution a{{color:#8b949e;text-decoration:underline;text-underline-offset:2px}}
+    .article-attribution a:hover{{color:#79c0ff}}
     .article-source-link{{display:inline-flex;align-items:center;width:max-content;max-width:100%;margin-top:10px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
     .empty{{text-align:center;color:#8b949e;padding:60px 0;font-size:14px}}
     .todays-brief{{max-width:680px;margin:12px auto 0;padding:0 12px}}

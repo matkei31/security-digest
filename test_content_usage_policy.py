@@ -803,7 +803,11 @@ class ModeAttributionRenderingTest(unittest.TestCase):
                    )]):
             html = fetch.build_html([self._item_with_mode("structured_open")])
         self.assertNotIn("UNIQUE-ATTRIBUTION-TEXT-FOR-TEST", html)
-        self.assertNotIn("article-attribution", html)
+        # BL-036 added a shared `.article-attribution` CSS rule to every page's
+        # <style> block, so a bare substring check now always matches that rule
+        # even when no card renders the element. Check for the actual element
+        # instead of the class-name substring.
+        self.assertNotIn('<p class="article-attribution">', html)
 
     def test_no_attribution_shown_without_content_policy(self):
         item = {
@@ -812,7 +816,58 @@ class ModeAttributionRenderingTest(unittest.TestCase):
             "facts": {"cves": []},
         }
         html = fetch.build_html([item])
-        self.assertNotIn("article-attribution", html)
+        # BL-036: see the comment in
+        # test_structured_open_with_unmapped_source_id_shows_no_attribution
+        # above -- the shared CSS rule makes the bare substring always present.
+        self.assertNotIn('<p class="article-attribution">', html)
+
+
+class Bl036AttributionDomOrderAndEscapingTest(unittest.TestCase):
+    """BL-036 (Fable 5 review R-01): the CSS-only change must not disturb the
+    attribution element's DOM position (after AI analysis, before the source
+    CTA) or its existing HTML-escaping/mode-gating contract.
+    """
+
+    def _item_with_full_analysis(self, mode, source_id="test_source"):
+        return {
+            "source": "Test Source", "lang": "en", "link": "https://example.com/a",
+            "title": "t", "raw_title": "t", "summary": "s", "date": None,
+            "facts": {"cves": []},
+            "content_policy": {
+                "source_id": source_id, "configured_mode": mode, "effective_mode": mode,
+                "ai_eligible": True, "downgrade_reason": None,
+            },
+            "ai_analysis": {
+                "category": "脆弱性・パッチ", "importance": "高", "urgency": "本日確認",
+                "summary": "要約", "financial_impact": "影響",
+                "recommended_actions": ["対応1"], "reason": "理由", "tags": ["KEV"],
+            },
+            "ai_analysis_meta": {"status": "success", "error_type": None, "http_status": None},
+        }
+
+    def test_attribution_appears_after_ai_analysis_and_before_source_link(self):
+        html = fetch.build_html([self._item_with_full_analysis("limited_feed_analysis")])
+        ai_analysis_index = html.index('<div class="ai-analysis">')
+        attribution_index = html.index('<p class="article-attribution">')
+        source_link_index = html.index('<a class="article-source-link"')
+        self.assertLess(ai_analysis_index, attribution_index)
+        self.assertLess(attribution_index, source_link_index)
+
+    def test_attribution_text_is_html_escaped(self):
+        with patch("fetch._METADATA_ONLY_ATTRIBUTION_TEXT", "<b>&injected</b>"):
+            item = self._item_with_full_analysis("metadata_only")
+            item["content_policy"]["ai_eligible"] = False
+            html = fetch.build_html([item])
+        self.assertIn("&lt;b&gt;&amp;injected&lt;/b&gt;", html)
+        self.assertNotIn("<b>&injected</b>", html)
+
+    def test_mode_gating_is_unaffected_by_the_css_change(self):
+        # A quick cross-check that BL-032's mode -> attribution-text mapping
+        # still holds after the CSS-only change (full mode coverage is
+        # ModeAttributionRenderingTest's job; this only confirms no regression
+        # was introduced alongside the CSS).
+        html = fetch.build_html([self._item_with_full_analysis("limited_feed_analysis")])
+        self.assertIn(fetch._LIMITED_FEED_ANALYSIS_ATTRIBUTION_TEXT, html)
 
 
 class StructuredOpenRealAttributionRenderingTest(unittest.TestCase):

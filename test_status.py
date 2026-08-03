@@ -242,8 +242,10 @@ class Bl035ActiveWorkTest(unittest.TestCase):
         )[0]
 
     def test_active_work_is_none_and_does_not_list_bl035(self):
+        # BL-036 (Fable 5 review R-01) became the new Active work item after
+        # BL-035's closeout, so Active work is no longer "None." -- this now
+        # checks only that BL-035 itself did not reappear as its own item.
         active = self._active_work_section()
-        self.assertIn("- None.", active)
         self.assertFalse(
             any(line.startswith("- BL-035 ") for line in active.splitlines()),
             "BL-035 must not reappear as its own Active work item after final acceptance",

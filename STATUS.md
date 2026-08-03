@@ -45,7 +45,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- None.
+- BL-036 記事カードのsource attribution注記を低強調表示へ整える — Fable 5独立レビューR-01を起点とする、記事カードの`.article-attribution`(BL-032で既に実装・稼働済み)への低強調CSS追加。生成HTMLのinline CSSに同classの定義がなく、注記が本文に近い既定サイズで表示され情報階層が不明瞭だった問題を修正する。UI_SPEC.mdをVersion 1.7 Draftへ更新し、[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)の「一般的AI-use noteを追加しない」方針と、BL-031／BL-032のsource usage policyが要求するsource別・mode別attributionとの関係を明確化した。attribution文言・mode分岐・DOM順序・HTML escape・URL安全性は変更していない。SD-016自体は今回変更せず、ユーザー受入後にSD-033を新規追加してSD-016のAI-use note部分だけを限定的にsupersedeする予定。PC 1280px／390pxのローカルreview screenshots(repository外)をユーザーが目視受入するまでDraft。production未実施。
 
 ## 5. Recently completed work
 

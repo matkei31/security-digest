@@ -28,8 +28,8 @@ class UiSpecDocumentTest(unittest.TestCase):
     def test_ui_spec_exists_with_version_metadata(self):
         self.assertTrue(self.spec_path.is_file())
         self.assertIn("# Monomi Digest UI Specification", self.spec)
-        self.assertIn("- **バージョン:** 1.6", self.spec)
-        self.assertIn("- **状態:** 承認済み", self.spec)
+        self.assertIn("- **バージョン:** 1.7", self.spec)
+        self.assertIn("- **状態:** Draft", self.spec)
         self.assertIn(
             "2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、"
             "Version 1.4として承認済みである",
@@ -278,6 +278,71 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("v4は構造ガードが成立したが編集品質Gate未達だった", self.bl005)
         self.assertNotIn("実装済み", self.bl005)
         self.assertNotIn("- **状態:** 完了", self.bl005)
+
+
+class Bl036ArticleAttributionUiSpecTest(unittest.TestCase):
+    """BL-036 (Fable 5 review R-01): UI_SPEC.md Version 1.7 (Draft) distinguishes
+    the maintained generic-AI-note-ban policy from the source-policy-required
+    attribution exception, records the `.article-attribution` current values,
+    and records BL-036's pending-acceptance state without prematurely marking
+    UI_SPEC Approved or SD-016 superseded.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.spec = (REPOSITORY_ROOT / "UI_SPEC.md").read_text(encoding="utf-8")
+        cls.backlog = (REPOSITORY_ROOT / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.decisions = (REPOSITORY_ROOT / "DECISIONS.md").read_text(encoding="utf-8")
+        cls.bl036 = backlog_section(cls.backlog, "BL-036")
+
+    def test_version_is_17_draft(self):
+        self.assertIn("- **バージョン:** 1.7", self.spec)
+        self.assertIn("- **状態:** Draft", self.spec)
+
+    def test_original_ai_note_ban_sentences_are_preserved_not_deleted(self):
+        self.assertIn("現行UIへAI利用を明示する専用注記は追加しない", self.spec)
+        self.assertIn("記事カード単位・分析区分単位の注記も採用しない", self.spec)
+
+    def test_maintained_policy_bans_generic_ai_badge_and_uniform_note(self):
+        self.assertIn("維持する方針", self.spec)
+        self.assertIn("genericな「AIを利用しています」badgeやalertを追加しない", self.spec)
+        self.assertIn("一律AI noteを追加しない", self.spec)
+
+    def test_source_policy_required_attribution_is_recorded_as_a_limited_exception(self):
+        self.assertIn("例外として明示する現行契約", self.spec)
+        self.assertIn("`.article-attribution`", self.spec)
+        self.assertIn("BACKLOG.md#bl-031--全取得元の公式規約監査とセキュリティ文書整合化", self.spec)
+        self.assertIn("BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement", self.spec)
+        self.assertIn("一律のgeneric AI badgeとは目的・表示条件・文言が異なる", self.spec)
+        self.assertIn("SOURCE_USAGE_POLICY.md", self.spec)
+        self.assertIn("`render_source_attribution_html()`", self.spec)
+
+    def test_css_current_values_are_recorded_for_pc_and_390px_both(self):
+        self.assertIn("| `.article-attribution` |", self.spec)
+        self.assertIn("font-size `10px`", self.spec)
+        self.assertIn("color `#768496`", self.spec)
+        self.assertIn("line-height `1.6`", self.spec)
+        self.assertIn("background／border／border-radius／pillなし", self.spec)
+        self.assertIn("PC／390px共通", self.spec)
+
+    def test_sd033_future_supersede_is_recorded_but_not_created(self):
+        self.assertIn("SD-033", self.spec)
+        self.assertIn("SD-016のうちAI-use noteに関する部分だけを限定的にsupersede", self.spec)
+        self.assertNotIn("## SD-033", self.decisions)
+
+    def test_sd016_itself_is_not_modified(self):
+        self.assertIn(
+            "## SD-016 — Resolve the remaining BL-004 UI choices without changing the accepted layout",
+            self.decisions,
+        )
+        self.assertIn("- **Status:** Accepted / Active", self.decisions)
+        sd016 = backlog_section(self.decisions, "SD-016")
+        self.assertNotIn("SD-033", sd016)
+
+    def test_bl036_is_recorded_as_pending_visual_acceptance(self):
+        self.assertIn("- **状態:** 実装中／ユーザー目視受入待ち", self.bl036)
+        self.assertIn("PC 1280px／390px", self.bl036)
+        self.assertNotIn("- **状態:** 完了", self.bl036)
 
 
 if __name__ == "__main__":
