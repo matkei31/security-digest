@@ -13,6 +13,8 @@ import re
 import unittest
 from pathlib import Path
 
+import document_test_utils as dtu
+
 REPOSITORY_ROOT = Path(__file__).resolve().parent
 
 
@@ -357,8 +359,23 @@ class Bl036PostMergeRecordFixTest(unittest.TestCase):
         return self.backlog[start:] if end == -1 else self.backlog[start:end]
 
     def test_status_as_of_is_20260804(self):
-        self.assertIn("## 1. As of\n\n2026-08-04", self.status)
-        self.assertNotIn("## 1. As of\n\n2026-08-03", self.status)
+        # BL-038: was a literal "## 1. As of\n\n2026-08-04" substring check,
+        # which is brittle to any reformatting of the blank line between the
+        # heading and its value (e.g. a single newline instead of two) even
+        # though the actual contract is the exact date value. The section's
+        # body has explanatory prose after the date (see
+        # StatusSourceOfTruthTest.test_as_of_is_document_update_date_not_
+        # production_run_date below), so this extracts just the first
+        # non-empty line and requires it to equal "2026-08-04" exactly --
+        # not merely start with it -- so a near-miss value like
+        # "2026-08-04-old" or "2026-08-04 (stale)" still fails.
+        as_of_section = dtu.extract_markdown_section(self.status, "## 1. As of")
+        as_of_value = next(line.strip() for line in as_of_section.splitlines() if line.strip())
+        self.assertEqual(
+            as_of_value,
+            "2026-08-04",
+            f"STATUS.md's As of section's value must be exactly 2026-08-04: {as_of_value!r}",
+        )
 
     def test_status_bl036_entry_distinguishes_implementation_and_final_evidence(self):
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1]

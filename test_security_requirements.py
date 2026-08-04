@@ -6,6 +6,7 @@ import unittest
 from collections import Counter
 from pathlib import Path
 
+import document_test_utils as dtu
 
 ROOT = Path(__file__).resolve().parent
 REQUIREMENTS_PATH = ROOT / "SECURITY_REQUIREMENTS.md"
@@ -59,12 +60,27 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("not blanket preapproval", self.requirements)
         self.assertIn("Completed by documentation", self.requirements)
         self.assertIn("SD-025", self.requirements)
+        # BL-038: these two facts live in the document's preamble, before
+        # its first "##" heading, so there is no dedicated section to scope
+        # extract_markdown_section to; normalize_markdown_prose is used
+        # instead to stop the assertion depending on exactly where the
+        # source Markdown happens to wrap these sentences (the original
+        # literals embedded a specific mid-sentence line break each).
+        normalized_requirements = dtu.normalize_markdown_prose(self.requirements)
         self.assertIn(
-            "Fable 5 could not retrieve `STATUS.md` or\n"
-            "`test_security_requirements.py`",
-            self.requirements,
+            dtu.normalize_markdown_prose(
+                "Fable 5 could not retrieve `STATUS.md` or `test_security_requirements.py`"
+            ),
+            normalized_requirements,
+            "SECURITY_REQUIREMENTS.md no longer records that Fable 5 could not "
+            "retrieve STATUS.md/test_security_requirements.py",
         )
-        self.assertIn("checked independently at the\nPR head", self.requirements)
+        self.assertIn(
+            dtu.normalize_markdown_prose("checked independently at the PR head"),
+            normalized_requirements,
+            "SECURITY_REQUIREMENTS.md no longer records that those two files "
+            "were checked independently at the PR head",
+        )
 
     def test_required_sections_are_present(self):
         for heading in (
@@ -1373,7 +1389,21 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         # 2026-08-03 until this fix). Separately, BL-030's own scheduled-run
         # evidence below is a fixed 2026-07-30 historical fact, not tied to
         # this "As of" date.
-        self.assertIn("## 1. As of\n\n2026-08-04", self.status)
+        # BL-038: scoped to the As-of section itself (see
+        # document_test_utils.extract_markdown_section) instead of a
+        # literal "## 1. As of\n\n2026-08-04" substring, which was brittle
+        # to the exact blank-line formatting between the heading and its
+        # value. The section body has explanatory prose after the date, so
+        # this extracts just the first non-empty line and requires it to
+        # equal "2026-08-04" exactly -- not merely start with it -- so a
+        # near-miss value like "2026-08-04-old" still fails.
+        as_of_section = dtu.extract_markdown_section(self.status, "## 1. As of")
+        as_of_value = next(line.strip() for line in as_of_section.splitlines() if line.strip())
+        self.assertEqual(
+            as_of_value,
+            "2026-08-04",
+            f"STATUS.md's As of section's value must be exactly 2026-08-04: {as_of_value!r}",
+        )
         recently_completed = self.status.split(
             "## 5. Recently completed work", 1
         )[1].split("## 6. Known issues and limitations", 1)[0]

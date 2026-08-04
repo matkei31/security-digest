@@ -3013,12 +3013,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         kept = [ch for ch in lowered if ch.isalnum() or ch in (" ", "-", "_")]
         return "".join(kept).replace(" ", "-")
 
-    def test_bl_ids_are_unique_and_cover_bl001_to_bl037(self):
+    def test_bl_ids_are_unique_and_cover_bl001_to_bl038(self):
         text = self._read("BACKLOG.md")
         bl_headings = [h for h in self._headings(text) if re.match(r"^BL-\d{3}\b", h)]
         ids = [re.match(r"^(BL-\d{3})", h).group(1) for h in bl_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
-        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 38)})
+        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 39)})
 
     def test_sd_ids_are_unique_and_cover_sd001_to_sd033(self):
         text = self._read("DECISIONS.md")
@@ -3590,13 +3590,20 @@ class Bl037FinalAcceptanceRecordTest(unittest.TestCase):
         self.assertIn("GitHub", bl037)
         self.assertIn("正本", bl037)
 
-    def test_status_active_work_is_none_and_does_not_list_bl037(self):
+    def test_status_active_work_does_not_list_bl037_as_its_own_item(self):
+        # Matches the established pattern in test_status.Bl035ActiveWorkTest:
+        # Active work may legitimately hold a later, unrelated ticket that
+        # mentions BL-037 in passing (e.g. as "after BL-037 completed"
+        # context); what must never recur is BL-037 reappearing as its own
+        # Active work line item after its own final acceptance.
         status = self._read("STATUS.md")
         active = status.split("## Active work", 1)[1].split(
             "\n## 5. Recently completed work", 1
         )[0]
-        self.assertIn("None.", active)
-        self.assertNotIn("BL-037", active)
+        self.assertFalse(
+            any(line.startswith("- BL-037 ") for line in active.splitlines()),
+            "BL-037 must not reappear as its own Active work item after final acceptance",
+        )
 
     def test_status_recently_completed_bl037_entry_records_required_content(self):
         status = self._read("STATUS.md")
@@ -3619,6 +3626,168 @@ class Bl037FinalAcceptanceRecordTest(unittest.TestCase):
             with self.subTest(required=required):
                 self.assertIn(required, bl037_line)
         self.assertNotIn("final acceptance pending", bl037_line)
+
+
+class Bl038Tranche1RecordSyncTest(unittest.TestCase):
+    """BL-038 (Fable 5 whole-repository review R-04, tranche 1) round 2
+    independent review found round 1's confirmed head/CI/test-count
+    evidence was missing from BACKLOG.md/STATUS.md, and that BACKLOG.md's
+    round 1 record described the fenced-code-block fix backwards ("no
+    fenced code block support was added" instead of "fenced code block
+    support was added"). These tests check the record-sync fix without
+    locking the full surrounding prose verbatim; they do not assert
+    BL-038 is complete (it remains an incomplete umbrella ticket).
+    """
+
+    ROOT = Path(__file__).resolve().parent
+
+    def _read(self, name):
+        return (self.ROOT / name).read_text(encoding="utf-8")
+
+    def _bl038_section(self):
+        backlog = self._read("BACKLOG.md")
+        marker = "## BL-038 "
+        start = backlog.index(marker)
+        end = backlog.find("\n## ", start + len(marker))
+        return backlog[start:] if end == -1 else backlog[start:end]
+
+    def test_backlog_bl038_records_round1_confirmed_evidence(self):
+        bl038 = self._bl038_section()
+        for required in (
+            "87d9511ababcd200f5418b7421b40288301554e4",
+            "30903691728",
+            "1706 tests OK",
+            "changed files累計8件",
+            "unresolved review threads 0",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl038)
+
+    def test_backlog_bl038_state_and_residual_work_are_not_complete(self):
+        bl038 = self._bl038_section()
+        self.assertIn("- **状態:** 実装中(tranche 1受入済み／tranche 2以降継続)", bl038)
+        self.assertIn("tranche 2以降", bl038)
+        self.assertNotIn("- **状態:** 完了", bl038)
+
+    def test_backlog_bl038_round1_fix_record_no_longer_claims_fenced_code_is_unsupported(self):
+        # The stale phrase is legitimately still quoted inside round 2's own
+        # finding description ("round 1's record said X, which was
+        # backwards") -- what must not happen is the round 1修正 bullet
+        # ITSELF still describing its own fix that way. Scope the check to
+        # that one bullet, not the whole BL-038 section.
+        bl038 = self._bl038_section()
+        round1_fix_start = bl038.index("**round 1修正:**")
+        round1_fix_end = bl038.index("**round 1修正確定証跡:**", round1_fix_start)
+        round1_fix_bullet = bl038[round1_fix_start:round1_fix_end]
+        self.assertNotIn("fenced code block非対応の言及を追加した", round1_fix_bullet)
+        self.assertNotIn("fenced code blockには対応していない", round1_fix_bullet)
+        self.assertIn("fenced code block内のheading風の行を無視する対応", round1_fix_bullet)
+
+    def test_status_active_work_lists_bl038_with_round1_confirmed_evidence(self):
+        status = self._read("STATUS.md")
+        active = status.split("## Active work", 1)[1].split(
+            "\n## 5. Recently completed work", 1
+        )[0]
+        bl038_line = next(
+            line for line in active.splitlines() if line.startswith("- BL-038 ")
+        )
+        for required in (
+            "87d9511ababcd200f5418b7421b40288301554e4",
+            "30903691728",
+            "1706 tests OK",
+            "f1b6121e54b7f92b1dac0796723af9da1a28931d",
+            "30905147771",
+            "1712 tests OK",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl038_line)
+
+    def test_status_active_work_no_longer_has_the_vague_pr_reference(self):
+        status = self._read("STATUS.md")
+        active = status.split("## Active work", 1)[1].split(
+            "\n## 5. Recently completed work", 1
+        )[0]
+        self.assertNotIn("修正後のhead・CI・test件数はPR上で確認可能", active)
+
+    def test_status_recently_completed_bl037_record_is_unchanged(self):
+        # Round 2 must not touch BL-037's own Recently completed record.
+        status = self._read("STATUS.md")
+        recently_completed = status.split("## 5. Recently completed work", 1)[1]
+        bl037_line = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-037 ")
+        )
+        self.assertIn("d53e04a474d166144f28a50c07e656e27ed56192", bl037_line)
+        self.assertIn("30886560785", bl037_line)
+
+    def test_backlog_bl038_state_reflects_tranche1_accepted_not_complete(self):
+        bl038 = self._bl038_section()
+        self.assertIn("実装中(tranche 1受入済み／tranche 2以降継続)", bl038)
+        self.assertNotIn("- **状態:** 完了", bl038)
+        self.assertNotIn("- **状態:** 実装中／独立レビュー待ち", bl038)
+
+    def test_backlog_bl038_records_tranche1_final_acceptance_quote_and_date(self):
+        bl038 = self._bl038_section()
+        self.assertIn("「おk」", bl038)
+        self.assertIn("2026-08-04", bl038)
+        # 着手時原文「ok」とtranche 1最終受入原文「おk」の両方が区別されて存在する。
+        self.assertIn("「ok」", bl038)
+        self.assertIn("tranche 1最終受入原文", bl038)
+        self.assertIn("着手時ユーザー原文", bl038)
+
+    def test_backlog_bl038_records_round2_accepted_implementation_evidence(self):
+        bl038 = self._bl038_section()
+        self.assertIn("f1b6121e54b7f92b1dac0796723af9da1a28931d", bl038)
+        self.assertIn("30905147771", bl038)
+        self.assertIn("1712 tests OK", bl038)
+        self.assertIn("changed files 8件", bl038)
+
+    def test_backlog_bl038_residual_work_still_names_tranche2_scope(self):
+        bl038 = self._bl038_section()
+        self.assertIn("tranche 2以降", bl038)
+        self.assertIn("Bl031SecurityRequirementsReconciliationTest", bl038)
+
+    def test_backlog_bl038_does_not_claim_overall_final_acceptance_pending_state(self):
+        # The stale-state phrases from before tranche 1's acceptance must not
+        # remain as the CURRENT state field; historical mentions elsewhere
+        # (e.g. quoting round 1/round 2 findings) are not what this checks.
+        bl038 = self._bl038_section()
+        self.assertNotIn("- **状態:** 実装中／独立レビュー待ち", bl038)
+
+    def test_status_active_work_records_tranche1_final_acceptance(self):
+        status = self._read("STATUS.md")
+        active = status.split("## Active work", 1)[1].split(
+            "\n## 5. Recently completed work", 1
+        )[0]
+        bl038_line = next(
+            line for line in active.splitlines() if line.startswith("- BL-038 ")
+        )
+        for required in (
+            "「おk」",
+            "f1b6121e54b7f92b1dac0796723af9da1a28931d",
+            "30905147771",
+            "1712 tests OK",
+            "tranche 2以降",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl038_line)
+
+    def test_status_active_work_still_lists_bl038_not_moved_to_recently_completed(self):
+        status = self._read("STATUS.md")
+        active = status.split("## Active work", 1)[1].split(
+            "\n## 5. Recently completed work", 1
+        )[0]
+        self.assertNotIn("None.", active)
+        self.assertTrue(
+            any(line.startswith("- BL-038 ") for line in active.splitlines()),
+            "BL-038 must remain in Active work after tranche 1 final acceptance "
+            "(BL-038 overall is not complete)",
+        )
+        recently_completed = status.split("## 5. Recently completed work", 1)[1]
+        self.assertFalse(
+            any(line.startswith("- BL-038 ") for line in recently_completed.splitlines()),
+            "BL-038 must not be listed in Recently completed work "
+            "(tranche 1 acceptance is not BL-038's overall completion)",
+        )
 
 
 if __name__ == "__main__":
