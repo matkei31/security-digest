@@ -44,6 +44,76 @@ class MarkdownHeadingsTest(unittest.TestCase):
         self.assertEqual(headings[0][1], "Padded Heading")
 
 
+class FencedCodeBlockHeadingTest(unittest.TestCase):
+    """A heading-shaped line inside a fenced code block is code, not a
+    document heading (BL-038 round 1 review: the original implementation
+    scanned the whole document with one regex and had no fence awareness
+    at all, so it misdetected these)."""
+
+    def test_ignores_heading_shaped_line_inside_a_backtick_fence(self):
+        text = "## Real Section\n\n```text\n## Fake heading\n```\n\nbody\n"
+        headings = dtu.markdown_headings(text)
+        self.assertEqual([(level, name) for level, name, _ in headings], [(2, "Real Section")])
+
+    def test_ignores_heading_shaped_line_inside_a_tilde_fence(self):
+        text = "## Real Section\n\n~~~text\n### Fake heading\n~~~\n\nbody\n"
+        headings = dtu.markdown_headings(text)
+        self.assertEqual([(level, name) for level, name, _ in headings], [(2, "Real Section")])
+
+    def test_opening_fence_with_an_info_string_is_still_recognized_as_a_fence(self):
+        # The info string ("python" here) must not prevent fence detection.
+        text = "```python\n## Fake heading\n```\n## Real Heading\n"
+        headings = dtu.markdown_headings(text)
+        self.assertEqual([(level, name) for level, name, _ in headings], [(2, "Real Heading")])
+
+    def test_unclosed_fence_suppresses_headings_to_the_end_of_the_document(self):
+        text = "## Before\n```\n## Inside unclosed fence\n## Still inside\n"
+        headings = dtu.markdown_headings(text)
+        self.assertEqual([(level, name) for level, name, _ in headings], [(2, "Before")])
+
+    def test_heading_after_a_properly_closed_fence_is_still_detected(self):
+        text = "```\ncode\n```\n## Real Heading After Fence\nbody\n"
+        headings = dtu.markdown_headings(text)
+        self.assertEqual(
+            [(level, name) for level, name, _ in headings], [(2, "Real Heading After Fence")]
+        )
+
+    def test_extract_markdown_section_does_not_end_early_at_a_fake_heading_in_its_body(self):
+        text = (
+            "## Section A\n"
+            "before fence\n"
+            "```text\n"
+            "## Section A\n"  # same level+text as the section itself, but it's code
+            "```\n"
+            "after fence\n"
+            "## Section B\n"
+            "b body\n"
+        )
+        section = dtu.extract_markdown_section(text, "## Section A")
+        self.assertIn("before fence", section)
+        self.assertIn("after fence", section)
+        self.assertNotIn("b body", section)
+
+    def test_heading_shaped_line_in_a_fence_does_not_count_as_a_duplicate_heading(self):
+        # Without fence-awareness, this document would look like "## Same
+        # Heading" appears twice and extract_markdown_section would refuse
+        # it as ambiguous; with fence-awareness there is exactly one real
+        # heading, so extraction must succeed.
+        text = "## Same Heading\nreal body\n```\n## Same Heading\n```\nmore body\n"
+        section = dtu.extract_markdown_section(text, "## Same Heading")
+        self.assertIn("real body", section)
+        self.assertIn("more body", section)
+
+    def test_ordinary_inline_code_and_prose_hash_handling_is_unaffected(self):
+        text = (
+            "This paragraph has `inline code` and a #hashtag, neither is a heading.\n"
+            "## Real Heading\n"
+            "body with `a #hash in code span` too\n"
+        )
+        headings = dtu.markdown_headings(text)
+        self.assertEqual([(level, name) for level, name, _ in headings], [(2, "Real Heading")])
+
+
 class ExtractMarkdownSectionTest(unittest.TestCase):
     DOC = (
         "# Doc Title\n"

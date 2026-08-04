@@ -1393,10 +1393,17 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         # document_test_utils.extract_markdown_section) instead of a
         # literal "## 1. As of\n\n2026-08-04" substring, which was brittle
         # to the exact blank-line formatting between the heading and its
-        # value even though the actual contract is just "the value is
-        # 2026-08-04".
-        as_of_section = dtu.extract_markdown_section(self.status, "## 1. As of").strip()
-        self.assertTrue(as_of_section.startswith("2026-08-04"))
+        # value. The section body has explanatory prose after the date, so
+        # this extracts just the first non-empty line and requires it to
+        # equal "2026-08-04" exactly -- not merely start with it -- so a
+        # near-miss value like "2026-08-04-old" still fails.
+        as_of_section = dtu.extract_markdown_section(self.status, "## 1. As of")
+        as_of_value = next(line.strip() for line in as_of_section.splitlines() if line.strip())
+        self.assertEqual(
+            as_of_value,
+            "2026-08-04",
+            f"STATUS.md's As of section's value must be exactly 2026-08-04: {as_of_value!r}",
+        )
         recently_completed = self.status.split(
             "## 5. Recently completed work", 1
         )[1].split("## 6. Known issues and limitations", 1)[0]

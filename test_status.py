@@ -362,15 +362,20 @@ class Bl036PostMergeRecordFixTest(unittest.TestCase):
         # BL-038: was a literal "## 1. As of\n\n2026-08-04" substring check,
         # which is brittle to any reformatting of the blank line between the
         # heading and its value (e.g. a single newline instead of two) even
-        # though the actual contract is just "the As of section's value is
-        # this date". Scoping to the section and checking its stripped body
-        # separates that semantic contract from incidental Markdown layout.
-        as_of_section = dtu.extract_markdown_section(self.status, "## 1. As of").strip()
-        self.assertTrue(
-            as_of_section.startswith("2026-08-04"),
-            f"STATUS.md's As of section does not start with 2026-08-04: {as_of_section[:40]!r}",
+        # though the actual contract is the exact date value. The section's
+        # body has explanatory prose after the date (see
+        # StatusSourceOfTruthTest.test_as_of_is_document_update_date_not_
+        # production_run_date below), so this extracts just the first
+        # non-empty line and requires it to equal "2026-08-04" exactly --
+        # not merely start with it -- so a near-miss value like
+        # "2026-08-04-old" or "2026-08-04 (stale)" still fails.
+        as_of_section = dtu.extract_markdown_section(self.status, "## 1. As of")
+        as_of_value = next(line.strip() for line in as_of_section.splitlines() if line.strip())
+        self.assertEqual(
+            as_of_value,
+            "2026-08-04",
+            f"STATUS.md's As of section's value must be exactly 2026-08-04: {as_of_value!r}",
         )
-        self.assertFalse(as_of_section.startswith("2026-08-03"))
 
     def test_status_bl036_entry_distinguishes_implementation_and_final_evidence(self):
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1]

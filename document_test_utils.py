@@ -14,8 +14,12 @@ value, not "this exact 40-word sentence wraps at this exact column").
 This is not a general Markdown parser: it implements exactly the section/
 heading extraction pattern this repository's document tests need (ATX `#`
 headings, ATX-only -- Setext `===`/`---` underline headings are not used
-anywhere in this repository's documents and are not supported). No new
-dependency was added; this module uses only the standard library.
+anywhere in this repository's documents and are not supported). Heading
+recognition is fenced-code-block-aware: a line that looks like an ATX
+heading but sits inside a ` ``` `/`~~~` fenced code block is a line of
+CODE, not a document heading, and is not returned as one (see
+markdown_headings). No new dependency was added; this module uses only
+the standard library.
 
 Import this from test_*.py files only. It has no dependency on runtime
 code (fetch.py/daily_json.py/vulnerability_facts.py) and must never be
@@ -33,12 +37,22 @@ class MarkdownSectionError(Exception):
     or extracted unambiguously."""
 
 
-# Matches only real ATX heading lines (`#` through `######` at the start of
-# a line, followed by at least one space/tab and the heading text). A bare
-# `#` inside prose, a code span, or a code block is never on its own line
-# preceded by nothing but optional heading markers followed by whitespace
-# in the way this pattern requires, so this does not misinterpret prose.
-_HEADING_RE = re.compile(r"^(#{1,6})[ \t]+(.*?)[ \t]*$", re.MULTILINE)
+# Matches a single line (no trailing newline) that is an ATX heading: `#`
+# through `######` at the start of the line, followed by at least one
+# space/tab and the heading text. A bare `#` inside prose (not at the very
+# start of the line) never matches this. Applied only to lines the fenced-
+# code-block scanner in markdown_headings has determined are NOT inside a
+# code fence -- a line that merely looks like this pattern but sits inside
+# a ```/~~~ fenced code block is code, not a heading (see below).
+_HEADING_LINE_RE = re.compile(r"^(#{1,6})[ \t]+(.*?)[ \t]*$")
+
+# Matches a fenced-code-block delimiter line: 0-3 leading spaces (matching
+# CommonMark's fence-indentation allowance), then a run of 3+ backticks or
+# 3+ tildes, then the rest of the line (an opening fence's info string, or
+# -- when this same pattern is reused to test for the CLOSING fence -- text
+# that must turn out to be empty/whitespace-only for the line to actually
+# close the fence).
+_FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})(.*)$")
 
 _WHITESPACE_RUN_RE = re.compile(r"\s+")
 
@@ -51,11 +65,49 @@ def markdown_headings(text):
     `line_start_offset` is the character offset where the heading LINE
     begins (not the offset of the heading text itself), for use by
     extract_markdown_section.
+
+    A line that looks like an ATX heading is skipped -- not returned as a
+    heading -- while a fenced code block (delimited by a line of 3+
+    backticks or 3+ tildes, optionally indented up to 3 spaces, optionally
+    followed by an info string on the OPENING fence) is open. The closing
+    fence must use the same character as the opening fence, be at least as
+    long, and (per CommonMark) contain nothing but that fence character
+    and optional trailing whitespace -- a line that merely starts with
+    enough of the fence character but has other trailing text does not
+    close the fence. An unclosed fence runs to the end of the document,
+    so nothing after it is scanned for headings either. This is not a
+    general Markdown parser -- indented (non-fenced) code blocks and
+    Setext headings are intentionally out of scope, since this
+    repository's documents don't use either.
     """
-    return [
-        (len(match.group(1)), match.group(2).strip(), match.start())
-        for match in _HEADING_RE.finditer(text)
-    ]
+    headings = []
+    in_fence = False
+    fence_char = None
+    fence_len = 0
+    offset = 0
+    for line in text.splitlines(keepends=True):
+        content = line.rstrip("\r\n")
+        fence_match = _FENCE_RE.match(content)
+        if in_fence:
+            if (
+                fence_match
+                and fence_match.group(1)[0] == fence_char
+                and len(fence_match.group(1)) >= fence_len
+                and fence_match.group(2).strip() == ""
+            ):
+                in_fence = False
+        elif fence_match:
+            in_fence = True
+            fence_char = fence_match.group(1)[0]
+            fence_len = len(fence_match.group(1))
+        else:
+            heading_match = _HEADING_LINE_RE.match(content)
+            if heading_match:
+                headings.append(
+                    (len(heading_match.group(1)), heading_match.group(2).strip(), offset)
+                )
+        offset += len(line)
+    return headings
 
 
 def _parse_heading_spec(heading):
