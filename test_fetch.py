@@ -3676,7 +3676,7 @@ class Bl038Tranche1RecordSyncTest(unittest.TestCase):
         # "tranche 3以降", producing a false positive that no longer detects
         # a regression in what BL-038 actually still owes.
         bl038 = self._bl038_section()
-        self.assertIn("tranche 1受入済み", bl038)
+        self.assertIn("tranche 1・2受入済み", bl038)
         self.assertNotIn("- **状態:** 完了", bl038)
         # Anchor on the actual bullet (line-start "- **残作業:**"), not any
         # prose elsewhere in the section that merely quotes that label.
@@ -3743,12 +3743,12 @@ class Bl038Tranche1RecordSyncTest(unittest.TestCase):
         self.assertIn("30886560785", bl037_line)
 
     def test_backlog_bl038_state_reflects_tranche1_accepted_not_complete(self):
-        # See Bl038Tranche2RecordSyncTest for the current tranche 2 state string;
-        # this test only checks the state field was never re-marked complete or
-        # reverted to the pre-tranche-1 phrasing.
+        # See Bl038Tranche2RecordSyncTest for the current tranche 1+2 state
+        # string; this test only checks the state field was never re-marked
+        # complete or reverted to the pre-tranche-1 phrasing.
         bl038 = self._bl038_section()
         self.assertIn("実装中(", bl038)
-        self.assertIn("tranche 1受入済み", bl038)
+        self.assertIn("tranche 1・2受入済み", bl038)
         self.assertNotIn("- **状態:** 完了", bl038)
         self.assertNotIn("- **状態:** 実装中／独立レビュー待ち", bl038)
 
@@ -3820,12 +3820,14 @@ class Bl038Tranche1RecordSyncTest(unittest.TestCase):
 class Bl038Tranche2RecordSyncTest(unittest.TestCase):
     """BL-038 tranche 2 (individual A/B/C/D re-classification of the
     tranche-1-recorded brittle candidates, and Category C conversion)
-    kickoff and progress record-sync checks. Tranche 2's kickoff quote
-    "「ok」" is textually identical to BL-038's initial kickoff quote but is
-    a distinct, later statement; these tests check BACKLOG.md/STATUS.md
-    keep the two (and tranche 1's own "「おk」" final acceptance quote)
-    distinguishable by role, and that BL-038 overall is still not recorded
-    as complete.
+    kickoff, review, and final-acceptance record-sync checks. Tranche 2's
+    kickoff quote "「ok」" and final acceptance quote "「おk」" are each
+    textually identical to an earlier BL-038 quote (the initial kickoff
+    "「ok」" and tranche 1's own final acceptance "「おk」" respectively) but
+    are distinct, later statements; these tests check BACKLOG.md/STATUS.md
+    keep all four user statements distinguishable by role and order, and
+    that BL-038 overall is still not recorded as complete even though both
+    tranche 1 and tranche 2 are now individually accepted.
     """
 
     ROOT = Path(__file__).resolve().parent
@@ -3849,12 +3851,18 @@ class Bl038Tranche2RecordSyncTest(unittest.TestCase):
             line for line in active.splitlines() if line.startswith("- BL-038 ")
         )
 
-    def test_backlog_bl038_state_reflects_tranche2_implementing(self):
+    def test_backlog_bl038_state_reflects_tranche1_and_tranche2_accepted(self):
         bl038 = self._bl038_section()
         self.assertIn(
-            "- **状態:** 実装中(tranche 1受入済み／tranche 2実装中)", bl038
+            "- **状態:** 実装中(tranche 1・2受入済み／tranche 3以降継続)", bl038
         )
         self.assertNotIn("- **状態:** 完了", bl038)
+        # The pre-final-acceptance "tranche 2実装中" phrasing must not remain
+        # as the current state field (it may still legitimately appear in
+        # historical round 1/round 2 review-record prose elsewhere).
+        state_match = re.search(r"^- \*\*状態:\*\* .*$", bl038, re.MULTILINE)
+        self.assertIsNotNone(state_match, "BL-038 section must have a current 状態 bullet")
+        self.assertNotIn("tranche 2実装中", state_match.group(0))
 
     def test_backlog_bl038_still_records_tranche1_final_acceptance(self):
         bl038 = self._bl038_section()
@@ -3862,11 +3870,15 @@ class Bl038Tranche2RecordSyncTest(unittest.TestCase):
         self.assertIn("tranche 1最終受入", bl038)
         self.assertIn("f1b6121e54b7f92b1dac0796723af9da1a28931d", bl038)
 
-    def test_backlog_bl038_distinguishes_the_three_ok_quotes_by_role(self):
-        # BL-038 tranche 2 round 1 review: only the numbered history entries
-        # (the actual quote records) are contract-checked here -- the
-        # heading's own "同じ表記「ok」を含む3件" descriptive prose is NOT
-        # counted, since it is not itself historical evidence.
+    def test_backlog_bl038_distinguishes_the_four_user_statements_by_role(self):
+        # BL-038 tranche 2 final acceptance: a 4th numbered entry (tranche 2
+        # final acceptance, "「おk」") was added alongside the pre-existing 3.
+        # Only the numbered history entries (the actual quote records) are
+        # contract-checked here -- the heading's own descriptive prose is
+        # NOT counted, since it is not itself historical evidence. Entries
+        # are distinguished by role/order, not by how many times each raw
+        # quote string happens to occur ("「ok」" and "「おk」" each occur
+        # twice across the 4 entries).
         bl038 = self._bl038_section()
         history_start = bl038.index("ユーザー原文の履歴")
         history_end = bl038.index("着手時ユーザー原文:", history_start)
@@ -3874,8 +3886,8 @@ class Bl038Tranche2RecordSyncTest(unittest.TestCase):
         entries = re.findall(
             r"^\s*(\d)\.\s+(.*?)(?=^\s*\d\.\s|\Z)", history, re.MULTILINE | re.DOTALL
         )
-        self.assertEqual([number for number, _ in entries], ["1", "2", "3"])
-        entry1, entry2, entry3 = (text for _, text in entries)
+        self.assertEqual([number for number, _ in entries], ["1", "2", "3", "4"])
+        entry1, entry2, entry3, entry4 = (text for _, text in entries)
         self.assertIn("BL-038 initial kickoff original", entry1)
         self.assertIn("「ok」", entry1)
         self.assertIn("tranche 1 final acceptance original", entry2)
@@ -3883,6 +3895,9 @@ class Bl038Tranche2RecordSyncTest(unittest.TestCase):
         self.assertIn("tranche 2 kickoff original", entry3)
         self.assertIn("「ok」", entry3)
         self.assertIn("同一文字列だが別の発言", entry3)
+        self.assertIn("tranche 2 final acceptance original", entry4)
+        self.assertIn("「おk」", entry4)
+        self.assertIn("同一文字列だが", entry4)
 
     def test_backlog_bl038_records_tranche2_kickoff_date_branch_and_scope(self):
         bl038 = self._bl038_section()
@@ -3939,26 +3954,55 @@ class Bl038Tranche2RecordSyncTest(unittest.TestCase):
             "A/B/C/D classification(未実施)",
             bl038,
         )
+        self.assertIn("BL-038全体の最終受入", bl038)
 
-    def test_backlog_bl038_tranche2_final_acceptance_is_pending(self):
+    def test_backlog_bl038_records_tranche2_final_acceptance_evidence(self):
         bl038 = self._bl038_section()
-        self.assertIn("tranche 2 final acceptance:** 未実施(pending)", bl038)
-        self.assertIn(
-            "BL-038全体の最終受入は上記残作業が完了するまで行わない", bl038
-        )
+        for required in (
+            "tranche 2最終受入日:** 2026-08-04",
+            "「おk」",
+            "e4a5da5c5edb4f45b3d031a6e60e5307cf3199a5",
+            "30915285624",
+            "1729 tests OK",
+            "tranche 2最終受入原文の解釈",
+            "BL-038全体の完了承認ではない",
+            "tranche 3以降の着手",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl038)
+        # Tranche 2 final acceptance must no longer be recorded as pending,
+        # and BL-038 overall must not be recorded as complete.
+        self.assertNotIn("tranche 2 final acceptance:** 未実施(pending)", bl038)
+        self.assertNotIn("- **状態:** 完了", bl038)
 
     def test_status_active_work_records_tranche2_kickoff_and_progress(self):
         bl038_line = self._status_bl038_line()
         for required in (
             "tranche 2着手",
             "test/bl038-tranche2-brittle-assertions",
-            "tranche 2 final acceptance pending",
             "「おk」",
             "tranche 2 kickoff原文「ok」",
             "着手時ユーザー原文「ok」",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038_line)
+
+    def test_status_active_work_records_tranche2_final_acceptance(self):
+        bl038_line = self._status_bl038_line()
+        for required in (
+            "tranche 2最終受入(2026-08-04)",
+            "e4a5da5c5edb4f45b3d031a6e60e5307cf3199a5",
+            "30915285624",
+            "1729 tests OK",
+            "tranche 3以降継続",
+            "BL-038全体の完了承認ではなく",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl038_line)
+        # "final acceptance pending" must not remain as the current tranche 2
+        # state in Active work; the line explicitly says it is complete.
+        self.assertNotIn("tranche 2 final acceptance pending。", bl038_line)
+        self.assertIn("tranche 2 final acceptanceはpendingではなく完了している", bl038_line)
 
     def test_status_active_work_still_lists_bl038_not_recently_completed(self):
         status = self._read("STATUS.md")
