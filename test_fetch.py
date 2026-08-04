@@ -3013,12 +3013,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         kept = [ch for ch in lowered if ch.isalnum() or ch in (" ", "-", "_")]
         return "".join(kept).replace(" ", "-")
 
-    def test_bl_ids_are_unique_and_cover_bl001_to_bl036(self):
+    def test_bl_ids_are_unique_and_cover_bl001_to_bl037(self):
         text = self._read("BACKLOG.md")
         bl_headings = [h for h in self._headings(text) if re.match(r"^BL-\d{3}\b", h)]
         ids = [re.match(r"^(BL-\d{3})", h).group(1) for h in bl_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
-        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 37)})
+        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 38)})
 
     def test_sd_ids_are_unique_and_cover_sd001_to_sd033(self):
         text = self._read("DECISIONS.md")

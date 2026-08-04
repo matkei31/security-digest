@@ -45,7 +45,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- None.
+- BL-037 pipeline E2Eとrepository実データ全件検証を追加する — Fable 5 whole-repository review R-13(P3・Test gap)を起点とする。`fetch.main()`を実際に呼び出し、外部I/O境界(urllib.request経由のnetwork呼び出し)だけをdeterministicにmockして、収集・content usage policy適用・AI分析・vulnerability facts・Today's Brief・日次JSON・index.html・Archive生成までを実function間の結合として検証するpipeline integration E2E(`test_pipeline_e2e.Bl037PipelineE2ETest`)と、repositoryに保存済みの全daily JSONに対するread-only schema regression test(`test_repository_data.Bl037RepositoryDataValidationTest`、`daily_json.validate_daily_digest_for_archive_read()`を使用。理由はBACKLOG.md#BL-037のpre-flight調査記録を参照)を追加した。branch `test/bl037-pipeline-e2e-data-validation`、Draft PR作成予定。ユーザー原文「おk」はBL-036完了後のFable 5レビュー次項目着手承認であり、実装内容や最終受入を先に承認した発言ではない。production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行っていない(fake url routerによる完全遮断)。final acceptance pending。詳細は[BL-037](BACKLOG.md#bl-037--pipeline-e2eとrepository実データ全件検証を追加する)を参照。
 
 ## 5. Recently completed work
 

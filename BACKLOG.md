@@ -987,6 +987,43 @@
 - **残作業:** なし。BL-036の設計・実装・test・ユーザー受入について残作業はない。Fable 5レビューのR-04(文書test構造改革)・R-13(E2E test)・[BL-009](#bl-009--seoと閲覧者増加策)・About／footerの一般的AI説明・source policy自体の変更は、それぞれ別Ticketまたは既存Ticketのscopeとして扱い、本Ticketの残作業へ混入させない。
 - **注記:** 本Ticketのruntime差分は`fetch.py`のCSS 3 rule(`.article-attribution`・`.article-attribution a`・`.article-attribution a:hover`)だけである。`DECISIONS.md`は最終受入時のSD-033追加とSD-016のPartially superseded by note追加だけを変更しており(Draft実装段階では無変更)、SD-016の歴史的本文・SD-033自体のDecision内容はいずれも改変していない。`daily_json.py`・`vulnerability_facts.py`・`source_definitions.json`・[SOURCE_USAGE_POLICY.md](SOURCE_USAGE_POLICY.md)・`SECURITY_REQUIREMENTS.md`・`SECURITY_OPERATIONS.md`・`.github/workflows/`・tracked `data/`・tracked `docs/`への変更は行っていない。本Ticketの実装・受入作業としては、手動production・`workflow_dispatch`・実Gemini API呼び出し・通常外部収集を行っていない。後続の通常scheduled production(commit `5b7f40c30b9309cbf35469fb3c3ae2acb0f4a544`)は別運用として自然発生した。
 
+## BL-037 — pipeline E2Eとrepository実データ全件検証を追加する
+
+- **ID:** BL-037
+- **タイトル:** pipeline E2Eとrepository実データ全件検証を追加する
+- **優先度:** P3
+- **状態:** 実装中／独立レビュー待ち
+- **出所種別:** Fable 5 whole-repository review R-13(Type: Test gap)
+- **ユーザー原文:** 「おk」
+- **原文の解釈:** BL-036完了後、Fable 5レビューの次項目としてR-13へ着手することへの承認。実装内容や最終受入を先に承認した発言ではない。問題の起点はユーザー発言ではなくFable 5レビューR-13自体である。
+- **問題(R-13原文):** 真のE2Eテスト不在(既存main()テストは主要関数全モックの配線検証と自認)。repo内実データ24日分の全件スキーマ検証テストもなし。
+  - 「24日分」はレビュー実施時点の件数であり、現在のfile数を24件へ固定しない(test実行時に存在する全`data/YYYY-MM-DD.json`を動的に対象とする)。
+- **影響:** パイプライン結合部の回帰を検出できない。
+- **推奨修正:** urlopen境界モックのE2E 1本＋実データ検証追加。
+- **本Ticketでいう「E2E」の定義:** ブラウザ操作(Playwright/Selenium等)ではなく、`fetch.main()`を入口として、外部I/O境界(urllib.request経由のnetwork呼び出し)だけをmockし、収集・content usage policy適用・AI分析・vulnerability facts・Today's Brief・日次JSON・index.html・Archive生成までを実function間の結合として通すpipeline integration E2E。新しいPython依存packageは追加していない(標準library `unittest`と既存依存のみ)。
+- **既存testとの関係:**
+  - 既存main test(`test_archive.TopPageArchiveLinkTest.test_main_uses_generated_date_for_top_daily_and_archive_across_midnight`): 主要pipeline function(collect_recent・enrich_with_ai・build_todays_brief・build_html・daily_json.generate_and_save_daily_digest・generate_archive_outputs等)をすべてmockし、fetch.main()の呼出順・引数を検証するorchestration test(配線契約の検証)。削除・弱体化せず、この役割のまま維持する。
+  - 本Ticket(`test_pipeline_e2e.Bl037PipelineE2ETest`): external I/O境界だけをmockし、実function間の結合を確認するpipeline integration E2E。
+  - `test_repository_data.Bl037RepositoryDataValidationTest`: repositoryに保存済みの全daily JSONに対するread-only schema regression test。
+  - 「既存testは無価値」「今回ですべてのE2Eを保証する」という記載はしない。今回保証しないもの: 実publisher endpointの可用性、実Gemini APIの可用性・品質、GitHub Actions production環境そのもの、GitHub Pagesの実deploy、ブラウザ描画、public siteの目視、記事内容の事実正確性。
+- **pre-flight調査で確定した事実(実データ不備ではなくvalidator適用先の問題):** repository実データ全25件へ`daily_json.validate_daily_digest()`(保存直前専用のstrict validator)を直接適用すると、`data/2026-07-11.json`(factsキー欠落)・`data/2026-07-12.json`・`data/2026-07-14.json`(いずれも`brief.check_items`4件、上限2件超過)の3件が失敗した。調査の結果、これは実データの不備ではなく、validatorの適用先選択の問題と判明した: `daily_json.validate_daily_digest()`は自身のdocstringで「保存直前専用」と明記されており、schema v1(レガシー)の実在fileへ現行のBrief件数上限等を遡及適用してしまう。production自身(`fetch.py`の`generate_archive_outputs()`・`load_validated_published_digest_dates()`)は、この理由から一貫して`daily_json.validate_daily_digest_for_archive_read()`(schema v2はvalidate_daily_digest()と同じstrict validation、schema v1は現行閾値を遡及適用しない後方互換validation)を使っており、`data/2026-07-14.json`の4件`brief.check_items`はBL-032 round 7として既にfetch.py側のdocstringで明示的に「生成当時は正当だった実データ」と記録済みだった(fetch.py:1987-1993)。本Ticketの`test_repository_data.py`はこれに合わせ、全fileへ`validate_daily_digest_for_archive_read()`を一様に適用する。`daily_json.py`(validator自体)は変更していない。historical dataも変更していない。
+- **受入条件:**
+  1. `fetch.main()`を実際に呼ぶpipeline E2Eが1本以上存在する。
+  2. 主要pipeline関数をmockしていない。
+  3. 外部通信はurlopen境界で完全に遮断されている。
+  4. unknown URLは即test failureになる(fail-closed、実networkへのfallback無し)。
+  5. 出力先とcacheはtemporary directoryへ隔離されている。
+  6. 日次JSON、index.html、Archiveが実際に生成される。
+  7. 生成された日次JSONが`daily_json.validate_daily_digest()`を通過する。
+  8. repository内の全`data/YYYY-MM-DD.json`が`daily_json.validate_daily_digest_for_archive_read()`(schema-version-awareな読込検証。理由は上記pre-flight調査参照)を通過する。
+  9. filenameと`digest_date`が一致する。
+  10. tracked `data/`／`docs/`に差分がない。
+  11. full unittest／CI が成功する。
+  12. runtime変更は無い(本Ticketは`fetch.py`・`daily_json.py`・`vulnerability_facts.py`を変更していない)。
+- **実装証跡:** branch `test/bl037-pipeline-e2e-data-validation`。新規`test_pipeline_e2e.py`(`Bl037PipelineE2ETest`)と新規`test_repository_data.py`(`Bl037RepositoryDataValidationTest`)を追加した。`urllib.request.OpenerDirector.open`を差し替えるfake url routerを実装し、11件の有効RSS source(うち1件をAI eligible(structured_open、NIST)、1件をmetadata_only(Microsoft Security)のfixture記事とし、他はvalid empty feed。1件はAtom形式で経路も確認)・CISA KEV JSON・Gemini endpointをdeterministicに応答させた。`vulnerability_facts.load_kev_catalog`/`fetch_nvd_batch`の`urlopen_fn`引数はdef実行時にcaptureされる default引数のため、`urllib.request.urlopen`自体のpatchでは遮断できないことをpre-flight調査で確認し、実urlopen()が内部で必ず経由する`OpenerDirector.open`を差し替えることで単一の境界で確実に遮断した。fetch.DOCS_DIR・daily_json.DATA_DIRをtemporary directoryへ差し替え、fetch.datetime.datetimeを固定値へ差し替え、fetch.time.sleep(Gemini呼び出し間のrate-limit pacer、networkの一部ではない)をno-op化した。GEMINI_API_KEY環境変数はtest専用のダミー値を設定した。
+- **残作業:** 独立レビュー待ち。最終受入前に完了扱いしない。
+- **注記:** 本Ticketは`fetch.py`・`daily_json.py`・`vulnerability_facts.py`・`UI_SPEC.md`・`DECISIONS.md`・`SOURCE_USAGE_POLICY.md`・`source_definitions.json`・`SECURITY_REQUIREMENTS.md`・`SECURITY_OPERATIONS.md`・`.github/workflows/`・tracked `data/`・tracked `docs/`への変更を行っていない。production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行っていない(fake url routerによる完全遮断)。repository実データは変更していない(read-only検証のみ)。Playwright・Selenium・npm・ブラウザ依存は追加していない。
+
 ## 完了済み参照
 
 これらの参照記録は、完了済みの作業が誤って未完了バックログとして再オープンされることを防ぐためだけに存在する。
