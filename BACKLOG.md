@@ -992,10 +992,14 @@
 - **ID:** BL-037
 - **タイトル:** pipeline E2Eとrepository実データ全件検証を追加する
 - **優先度:** P3
-- **状態:** 実装中／独立レビュー待ち
+- **状態:** 完了
 - **出所種別:** Fable 5 whole-repository review R-13(Type: Test gap)
-- **ユーザー原文:** 「おk」
-- **原文の解釈:** BL-036完了後、Fable 5レビューの次項目としてR-13へ着手することへの承認。実装内容や最終受入を先に承認した発言ではない。問題の起点はユーザー発言ではなくFable 5レビューR-13自体である。
+- **着手時ユーザー原文:** 「おk」
+- **着手時原文の解釈:** BL-036完了後、Fable 5レビューの次項目としてR-13へ着手することへの承認。実装内容や最終受入を先に承認した発言ではない。問題の起点はユーザー発言ではなくFable 5レビューR-13自体である。
+- **最終受入:**
+  - **最終受入日:** 2026-08-04
+  - **最終受入原文:** 「ok」(着手時原文「おk」とは別の発言であり、混同・上書きしない)
+  - **最終受入原文の解釈:** 独立レビューround 2で受入可能と判断された実装(accepted implementation head `d53e04a474d166144f28a50c07e656e27ed56192`)を最終受入し、BL-037の完了記録を承認し、[PR #79](https://github.com/matkei31/security-digest/pull/79)のReady化と通常のmerge commit方式によるmergeを承認する発言として解釈した。CSS・UI・runtime・source policy・schemaの追加変更を指示した発言ではない。
 - **問題(R-13原文):** 真のE2Eテスト不在(既存main()テストは主要関数全モックの配線検証と自認)。repo内実データ24日分の全件スキーマ検証テストもなし。
   - 「24日分」はレビュー実施時点の件数であり、現在のfile数を24件へ固定しない(test実行時に存在する全`data/YYYY-MM-DD.json`を動的に対象とする)。
 - **影響:** パイプライン結合部の回帰を検出できない。
@@ -1027,7 +1031,11 @@
   - **round 1修正確定証跡:** [Draft PR #79](https://github.com/matkei31/security-digest/pull/79) head `ef6964ed881dc48934a91a60e4c5c223b2fea20a`、[Pull Request CI run 30885281618](https://github.com/matkei31/security-digest/actions/runs/30885281618) success、full unittest 1670 tests OK、changed files累計5件、unresolved review threads 0。独立レビューround 1のNVD Blockerは解消されたと判断された。
   - **独立レビューround 2:** 次の2点を指摘した。(1) `test_repository_data.py`の`setUpClass()`が、schema v2 fileを抽出するために全daily digest fileを事前parseしており、将来UTF-8不正・JSON破損fileが1件でも追加された場合、filenameを明示する個別subTestへ到達する前に`setUpClass()`自体が例外送出し、class全体のtestが一括で失敗してしまう構造上の問題。(2) index.html/Archiveのfacts表示検証がTEST_CVE_ID・base scoreの文字列一致のみで、既存rendererとの構造的結合の検出力が弱い点。NVD route・CISA KEV memo再利用・CVSS・facts cache・fixed clock・Brief assertions・schema v2 strict validationの設計・実装自体には新たなBlockerは無いと判断された。
   - **round 2修正:** `setUpClass()`をpath一覧取得のみへ縮小し(内容のparseをしない)、schema v2 fileの抽出と各fileのparseを`test_current_schema_files_pass_strict_save_time_validation`内の`subTest(file=path.name)`ループへ移した。これにより、malformed fileがあってもそのfile自身のsubTestだけがfilenameを含めて失敗し、他のfileの検証やclass全体には影響しないことを、実際にmalformed fileを注入して確認した(setUpClassは例外送出せず、他の6 test methodはいずれも正常に実行され、malformed fileの各subTestだけがfilename付きで失敗した)。index.html/Archive双方のfacts表示検証を、`class="vulnerability-facts"`・`class="vulnerability-item"`・`class="vulnerability-cve-link"`・`class="vulnerability-cvss"`・`class="kev-badge"`という既存rendererの安定したclass、`vulnerability_facts.nvd_detail_url(TEST_CVE_ID)`が返す実際のNVD詳細URL、CVSSバージョン(`3.1`)、KEV掲載表示(`KEV`)を構造的に検証するassertionへ強化した(HTML全文・CSS全文の逐語lockはしていない)。
-- **残作業:** 独立レビュー待ち。最終受入前に完了扱いしない。
+  - **round 2 accepted implementation証跡:** head `d53e04a474d166144f28a50c07e656e27ed56192`、[Pull Request CI run 30886560785](https://github.com/matkei31/security-digest/actions/runs/30886560785) success、full unittest 1670 tests OK、`git diff --check` success、changed files 5件、unresolved review threads 0。独立レビューround 2は、`setUpClass()`のeager parse解消とHTML vulnerability facts構造assertion追加を確認し、新たなBlockerなしと判断した。
+- **Repository data evidence(accepted implementation head時点の実測値):** daily digest files 25件(schema v1 21件・schema v2 4件)。件数はtest実行時に動的に検出され、test contractとして固定されていない(将来のscheduled productionで増減しても既存testはそのまま機能する)。全25件が`daily_json.validate_daily_digest_for_archive_read()`(schema-version-aware読込検証)を通過し、このうちschema v2の4件は明示的な`daily_json.validate_daily_digest()`(strict save-time validator)にも通過することを確認した。schema v1の21件へこのstrict validatorを遡及適用していない。
+- **受入条件充足の確認:** 受入条件1〜12はすべて満たされた。`fetch.main()`を入口とするpipeline integration E2E(`test_pipeline_e2e.Bl037PipelineE2ETest`)が主要pipeline function(collect_recent・enrich_with_ai・vulnerability_facts.build_facts_for_items・build_todays_brief・build_html・daily_json.build_daily_digest/validate_daily_digest/save_daily_digest・Archive/index生成)をmockせず実際に呼び出し、external network境界(urllib.request.OpenerDirector.open)だけをfake url routerで遮断し、NVD・CISA KEV endpointを含む未登録URLはfail-closed、出力先とvulnerability facts cacheはtemporary directoryへ隔離、生成された日次JSONは`daily_json.validate_daily_digest()`を通過する。repository実データは`test_repository_data.Bl037RepositoryDataValidationTest`によりread-onlyで検証され、filenameと`digest_date`の一致も確認される。tracked `data/`／`docs/`への差分は無く、full unittest／CIは成功し、runtime(`fetch.py`・`daily_json.py`・`vulnerability_facts.py`)は変更していない。
+- **残作業:** なし。ただし、次はBL-037の残作業に含めない(いずれも別scope): 実publisher endpointの可用性検証、実Gemini／NVD APIの可用性・品質検証、GitHub Actions production環境自体のE2E、GitHub Pages実deploy検証、browser rendering・visual E2E、public siteの目視、記事内容の事実正確性、Fable 5レビューR-04、他のFable 5 findings。
+- **merge記録:** 2026-08-04に最終受入済み。accepted implementationおよびfinal acceptance recording headを通常のmerge commit方式でmainへmergeすることが承認された。実際のmerge commit SHA・merge state・merge日時は[PR #79](https://github.com/matkei31/security-digest/pull/79)のGitHub上の記録を正本とする(本文書では推測・placeholder記載しない)。
 - **注記:** 本Ticketは`fetch.py`・`daily_json.py`・`vulnerability_facts.py`・`UI_SPEC.md`・`DECISIONS.md`・`SOURCE_USAGE_POLICY.md`・`source_definitions.json`・`SECURITY_REQUIREMENTS.md`・`SECURITY_OPERATIONS.md`・`.github/workflows/`・tracked `data/`・tracked `docs/`への変更を行っていない。production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行っていない(fake url routerによる完全遮断)。repository実データは変更していない(read-only検証のみ)。Playwright・Selenium・npm・ブラウザ依存は追加していない。
 
 ## 完了済み参照
