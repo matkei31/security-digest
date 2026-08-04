@@ -412,5 +412,72 @@ class Bl036PostMergeRecordFixTest(unittest.TestCase):
         self.assertIn("SD-033追加とSD-016のPartially superseded by note追加だけを変更", bl036)
 
 
+class Bl036ProductionEvidenceSyncTest(unittest.TestCase):
+    """BL-036 merged as PR #76 without touching docs/, so STATUS.md/BACKLOG.md's
+    final-acceptance record correctly described the new CSS as pending the next
+    scheduled production run. That production run then happened independently
+    (production commit 5b7f40c..., synced into PR #77 before PR #77 itself
+    merged), so the "次回scheduled production待ち" framing described a state
+    that was no longer current. These tests check that the current-state record
+    now reflects the CSS as already deployed via that production commit and PR
+    #77's own merge, without locking the full surrounding prose verbatim.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.status = (REPOSITORY_ROOT / "STATUS.md").read_text(encoding="utf-8")
+        cls.backlog = (REPOSITORY_ROOT / "BACKLOG.md").read_text(encoding="utf-8")
+
+    def _bl036_section(self):
+        marker = "## BL-036 "
+        start = self.backlog.index(marker)
+        end = self.backlog.find("\n## ", start + len(marker))
+        return self.backlog[start:] if end == -1 else self.backlog[start:end]
+
+    def _status_bl036_line(self):
+        recently_completed = self.status.split("## 5. Recently completed work", 1)[1]
+        return next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-036 ")
+        )
+
+    def test_status_bl036_line_records_production_commit_and_pages_run(self):
+        line = self._status_bl036_line()
+        self.assertIn("5b7f40c30b9309cbf35469fb3c3ae2acb0f4a544", line)
+        self.assertIn("30864611190", line)
+
+    def test_backlog_bl036_records_production_commit_and_pages_run(self):
+        bl036 = self._bl036_section()
+        self.assertIn("5b7f40c30b9309cbf35469fb3c3ae2acb0f4a544", bl036)
+        self.assertIn("30864611190", bl036)
+
+    def test_status_no_longer_claims_current_state_is_pending_next_production(self):
+        self.assertNotIn(
+            "新CSSの公開HTML反映は次回の通常scheduled production run待ちである",
+            self.status,
+        )
+
+    def test_backlog_no_longer_claims_current_state_is_pending_next_production(self):
+        bl036 = self._bl036_section()
+        self.assertNotIn(
+            "新CSSの公開HTML反映は次回の通常scheduled production run待ちである",
+            bl036,
+        )
+
+    def test_status_distinguishes_independent_scheduled_production_from_bl036_manual_work(self):
+        line = self._status_bl036_line()
+        self.assertIn("独立した通常scheduled production", line)
+        self.assertIn("手動production", line)
+
+    def test_backlog_distinguishes_independent_scheduled_production_from_bl036_manual_work(self):
+        bl036 = self._bl036_section()
+        self.assertIn("独立した通常scheduled production", bl036)
+        self.assertIn("手動production", bl036)
+
+    def test_backlog_bl036_still_complete_with_no_remaining_work(self):
+        bl036 = self._bl036_section()
+        self.assertIn("- **状態:** 完了", bl036)
+        self.assertIn("- **残作業:** なし。", bl036)
+
+
 if __name__ == "__main__":
     unittest.main()
