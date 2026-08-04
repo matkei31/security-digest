@@ -5,6 +5,7 @@ import re
 import unittest
 from pathlib import Path
 
+import document_test_utils as dtu
 
 ROOT = Path(__file__).resolve().parent
 OPERATIONS_PATH = ROOT / "SECURITY_OPERATIONS.md"
@@ -490,9 +491,17 @@ class Bl031SecurityOperationsReconciliationTest(unittest.TestCase):
         # below); this test now checks that Version 1.1's own approval record
         # (section 12) is preserved as history rather than overwritten, instead of
         # asserting it as the current header.
+        # BL-038: scoped to "## 12. Approval and maintenance" and
+        # whitespace-normalized instead of locking the exact line-wrap
+        # position of this sentence in the whole document.
+        approval_section = dtu.extract_markdown_section(
+            self.operations, "## 12. Approval and maintenance"
+        )
         self.assertIn(
-            "on 2026-07-31 approved this Version's own\nApproved status.",
-            self.operations,
+            dtu.normalize_markdown_prose("on 2026-07-31 approved this Version's own Approved status."),
+            dtu.normalize_markdown_prose(approval_section),
+            "SECURITY_OPERATIONS.md's '## 12. Approval and maintenance' section no "
+            "longer records the 2026-07-31 approval of Version 1.1's own Approved status",
         )
 
     def test_correction_section_no_longer_lists_translate_cache_as_published_asset(self):

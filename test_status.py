@@ -13,6 +13,8 @@ import re
 import unittest
 from pathlib import Path
 
+import document_test_utils as dtu
+
 REPOSITORY_ROOT = Path(__file__).resolve().parent
 
 
@@ -357,8 +359,18 @@ class Bl036PostMergeRecordFixTest(unittest.TestCase):
         return self.backlog[start:] if end == -1 else self.backlog[start:end]
 
     def test_status_as_of_is_20260804(self):
-        self.assertIn("## 1. As of\n\n2026-08-04", self.status)
-        self.assertNotIn("## 1. As of\n\n2026-08-03", self.status)
+        # BL-038: was a literal "## 1. As of\n\n2026-08-04" substring check,
+        # which is brittle to any reformatting of the blank line between the
+        # heading and its value (e.g. a single newline instead of two) even
+        # though the actual contract is just "the As of section's value is
+        # this date". Scoping to the section and checking its stripped body
+        # separates that semantic contract from incidental Markdown layout.
+        as_of_section = dtu.extract_markdown_section(self.status, "## 1. As of").strip()
+        self.assertTrue(
+            as_of_section.startswith("2026-08-04"),
+            f"STATUS.md's As of section does not start with 2026-08-04: {as_of_section[:40]!r}",
+        )
+        self.assertFalse(as_of_section.startswith("2026-08-03"))
 
     def test_status_bl036_entry_distinguishes_implementation_and_final_evidence(self):
         recently_completed = self.status.split("## 5. Recently completed work", 1)[1]

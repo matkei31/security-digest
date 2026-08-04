@@ -45,7 +45,7 @@ Other enabled RSS/Atom sources are controlled by `source_definitions.json`; this
 
 ## Active work
 
-- None.
+- BL-038 文書testを構造・意味契約中心へ整理する — Fable 5 whole-repository review R-04を起点とする(正確な原文はlocal artifactで確認できず、レビュー要旨として記録)。長い説明文・改行位置・段落全体の逐語一致へ依存するassertionと、複数testへ分散したMarkdown section／table抽出処理を、exact durable contract(Version・Status・ID・ユーザー原文・日付・SHA・CI run・enum等)を維持したまま、structural/semantic contractまたはwhitespace-normalizedな意味比較へ整理する。branch `test/bl038-document-contract-refactor`。新規`document_test_utils.py`(test専用helper: `markdown_headings`・`extract_markdown_section`・`normalize_markdown_prose`)と新規`test_document_test_utils.py`(19 tests、短い合成Markdown fixtureのみ使用)を追加し、`test_status.py`・`test_security_requirements.py`の「## 1. As of」重複検証、および`test_security_requirements.py`・`test_security_operations.py`の計3件のbrittleな複数行literal assertionをこのhelperベースの検証へ変換した(tranche 1)。mutation-style verification(commitしない一時変更、検証後に復元)により、改行位置等のharmless mutationではtestが成功したまま変わらず、日付・必須句削除等のsemantic mutationではdocument識別子を含む明確なfailure messageとともにtestが失敗することを確認した。着手時ユーザー原文「ok」はBL-037完了後のFable 5レビュー次項目着手承認であり、実装内容やPRの最終受入を先に承認した発言ではない。10ファイル／差分800行程度の上限のもとtranche 1へscopeを限定し、残りのbrittle candidateはtranche 2以降としてBL-038に残作業として明記した(部分的なrefactorだけで完了扱いにしない)。`SECURITY_REQUIREMENTS.md`・`SECURITY_OPERATIONS.md`・`UI_SPEC.md`・`SOURCE_USAGE_POLICY.md`・`DECISIONS.md`・`AGENTS.md`の本文は変更していない(mutation検証のための一時変更はすべて復元済み)。runtime・workflow・policy・schema変更なし。production・`workflow_dispatch`・実Gemini・実NVD・実networkなし。final acceptance pending。詳細は[BL-038](BACKLOG.md#bl-038--文書testを構造意味契約中心へ整理する)を参照。
 
 ## 5. Recently completed work
 

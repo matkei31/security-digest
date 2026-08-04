@@ -1038,6 +1038,41 @@
 - **merge記録:** 2026-08-04に最終受入済み。accepted implementationおよびfinal acceptance recording headを通常のmerge commit方式でmainへmergeすることが承認された。実際のmerge commit SHA・merge state・merge日時は[PR #79](https://github.com/matkei31/security-digest/pull/79)のGitHub上の記録を正本とする(本文書では推測・placeholder記載しない)。
 - **注記:** 本Ticketは`fetch.py`・`daily_json.py`・`vulnerability_facts.py`・`UI_SPEC.md`・`DECISIONS.md`・`SOURCE_USAGE_POLICY.md`・`source_definitions.json`・`SECURITY_REQUIREMENTS.md`・`SECURITY_OPERATIONS.md`・`.github/workflows/`・tracked `data/`・tracked `docs/`への変更を行っていない。production・`workflow_dispatch`・実Gemini API呼び出し・通常の外部収集は行っていない(fake url routerによる完全遮断)。repository実データは変更していない(read-only検証のみ)。Playwright・Selenium・npm・ブラウザ依存は追加していない。
 
+## BL-038 — 文書testを構造・意味契約中心へ整理する
+
+- **ID:** BL-038
+- **タイトル:** 文書testを構造・意味契約中心へ整理する
+- **優先度:** P3／Maintenance(元レビューで別severityが明確に確認できなかったため、既定のP3／Maintenanceとした)
+- **状態:** 実装中／独立レビュー待ち
+- **出所種別:** Fable 5 whole-repository review R-04
+- **レビュー要旨:** Fable 5レビューの正確な原文はlocal artifactとして確認できなかったため、原文を捏造せず要旨として記録する。文書testに、長い説明文・改行位置・段落全体の逐語一致へ依存するassertionがある。同じMarkdown section／tableの抽出処理が複数testへ分散している。文書の意味を変えない整形修正でも、複数のtestを機械的に更新する保守負担が生じる。一方で、Version、Status、ID、ユーザー原文、日付、SHA、CI run、enum、表の状態等はexact contractとして維持すべきである。
+- **着手時ユーザー原文:** 「ok」
+- **着手時原文の解釈:** BL-037完了後、Fable 5レビューの次項目R-04へ着手することへの承認。実装内容やPRの最終受入を先に承認した発言ではない。問題の起点はFable 5レビューR-04自体である。最終受入発言とは分離して記録する。
+- **影響:** 文書の意味を変えない編集でもtest更新が広範囲化し、testが文書設計を過度に拘束する。
+- **目的:** exact durable contract(Version・Status・ID・ユーザー原文・日付・SHA・CI run・enum・表の状態等)とsemantic/structural contract(section存在・必須論点・状態遷移等)を区別し、改行位置・段落整形等のbrittle prose lockだけを意味契約または構造契約へ変換する。文書の保護を弱めるTicketではない。
+- **umbrellaとしての分割方針:** pre-flight調査で、Markdown文書を読むtest fileは8件・関連class 27件、multiline literal 25件・120文字以上のliteral 10件(うち大半が`test_security_requirements.py`に集中)と判明した。10ファイル／差分800行程度という上限のもとで全件を一括変換すると上限超過が確実なため、ユーザーとの合意によりBL-038をumbrellaとし、tranche 1を本PRのscopeとした。tranche 1で対応しなかった残りのbrittle candidateは以下の「残作業」に明記し、tranche 2以降の対象として本Ticketに残す(完了扱いにしない)。
+- **受入条件:**
+  1. Markdown文書assertion inventoryが実施されている。
+  2. exact durable contractを維持する。
+  3. historical acceptance evidenceを維持する。
+  4. line-wrap依存の長文assertionを意味契約へ変換する(tranche 1でtranche 1対象分)。
+  5. section外の同名文字列によるfalse positiveを防止する。
+  6. Markdown section／table parserの重複を削減する。
+  7. helper自身のunit testが存在する。
+  8. harmlessな改行・折返し変更を許容する(mutation検証で確認)。
+  9. semanticな欠落・値変更は検出する(mutation検証で確認)。
+  10. full unittest／CIが成功する。
+  11. test件数を不自然に減らさない。
+  12. protected documents(`SECURITY_REQUIREMENTS.md`・`SECURITY_OPERATIONS.md`・`UI_SPEC.md`・`SOURCE_USAGE_POLICY.md`・`DECISIONS.md`・`AGENTS.md`)の本文変更なし。
+  13. runtime／workflow／policy／schema変更なし。
+- **実装証跡(tranche 1):** branch `test/bl038-document-contract-refactor`。新規`document_test_utils.py`(test専用pure helper、`test_`prefixを付けずtest discovery対象外)を追加し、`markdown_headings`・`extract_markdown_section`(exact heading level・text一致、次の同level以上headingで終了、本文中の同名文字列を誤認しない、heading未存在・重複時の例外)・`normalize_markdown_prose`(改行と連続whitespaceだけを正規化し、文字・記号・ID・値は削除・置換しない)の3関数を実装した(候補にあった`parse_markdown_table`・`find_ticket_section`・`extract_markdown_subsection`はtranche 1で実際に使う箇所が無かったため未実装、tranche 2以降で必要になった時点で追加する)。新規`test_document_test_utils.py`(19 tests)で、正しいheading境界での抽出・親section外へのsubsection取り込み防止・本文中の同名文字列の誤認防止・missing heading時の例外・duplicate heading時の挙動・prose normalizeが改行差だけを吸収しsemanticな欠落は隠さないことを検証した。短い合成Markdown fixtureのみを使用し、production文書全体をfixtureへ複製していない。
+  - `test_status.py`・`test_security_requirements.py`の「## 1. As of」重複検証(従来はそれぞれ独自に`"## 1. As of\n\n2026-08-04"`という、heading・空行・値の並びを丸ごと固定する文字列一致だった)を、`extract_markdown_section`でsectionを抽出したうえで値をstripして比較する形へ統一した。
+  - `test_security_requirements.py`の`test_document_is_approved_version_14_maintenance_update`内、SECURITY_REQUIREMENTS.mdの前文(最初の`##` heading より前で、section境界を持たない)にあった2件のbrittleな複数行literal(「Fable 5 could not retrieve `STATUS.md` or\n`test_security_requirements.py`」「checked independently at the\nPR head」)を、`normalize_markdown_prose`による正規化比較へ変換し、文書識別子を含む明示的なfailure messageを追加した。
+  - `test_security_operations.py`の`Bl031SecurityOperationsReconciliationTest.test_version_11_approval_record_is_preserved_as_history`内、SECURITY_OPERATIONS.mdの複数行literal(「on 2026-07-31 approved this Version's own\nApproved status.」)を、`## 12. Approval and maintenance`section抽出+`normalize_markdown_prose`へ変換した。同file内の`SecurityOperationsContractTest`が既に持っていた`compact_whitespace`/`section`という同種の局所helperは、tranche 1のscope外として今回は移行していない(brittleではなく既に安全に動作しているため、純粋な重複削減のみを目的とした移行はtranche 2以降で判断する)。
+  - mutation-style verification(repositoryへcommitしない一時的な変更、実施後は必ず復元): 上記4箇所の変換について、(a) harmless mutation(heading直後の空行を単一改行へ変更、文の改行位置を変更、連続whitespaceへ変更)ではtestが成功したまま変わらないこと、(b) semantic mutation(日付値の変更、必須句の削除)ではtestが失敗し、failure messageから対象document・sectionが分かることを確認した。全mutationは検証後に復元し、working tree cleanを確認した。
+- **残作業:** tranche 2以降。pre-flight調査で確認済みで、tranche 1では対応しなかった残りのbrittle candidate: `test_security_requirements.py`の`Bl031SecurityRequirementsReconciliationTest`(multiline 5件)・`Bl031AcceptanceAndBl032RegistrationTest`(120文字以上1件)・`Bl034Round1ReviewCorrectionsTest`／`Bl034Round2ReviewCorrectionsTest`(Version 1.6/1.7履歴prose、multiline計5件)・`Bl034ImplementationAcceptanceTest`(120文字以上1件・multiline1件)・`Bl034CloseoutTest`(Cloudflare/GSC evidence、multiline4件)、および`test_security_operations.py`の`Bl035DraftSyncTest`(120文字以上1件)。`test_ui_spec.py`・`test_content_usage_policy.py`・`test_custom_domain.py`・`test_source_definitions.py`は、pre-flight inventoryでmultiline／120文字以上のliteralが検出されなかったため、tranche 1・2いずれにおいてもrefactor対象に含めていない(重複section抽出helper自体の統合は将来の判断とする)。最終受入前に完了扱いしない。
+- **注記:** 本Ticketは`fetch.py`・`daily_json.py`・`vulnerability_facts.py`・`UI_SPEC.md`・`DECISIONS.md`・`SOURCE_USAGE_POLICY.md`・`source_definitions.json`・`SECURITY_REQUIREMENTS.md`・`SECURITY_OPERATIONS.md`・`AGENTS.md`・`.github/workflows/`・`data/`・`docs/`の本文を変更していない(`SECURITY_REQUIREMENTS.md`・`SECURITY_OPERATIONS.md`はmutation-style verificationのため一時的に変更したが、検証後にすべて復元した)。production・`workflow_dispatch`・実Gemini・実NVD・通常外部収集・実network接続は行っていない。新規Python依存packageは追加していない(標準library `unittest`のみ)。
+
 ## 完了済み参照
 
 これらの参照記録は、完了済みの作業が誤って未完了バックログとして再オープンされることを防ぐためだけに存在する。
