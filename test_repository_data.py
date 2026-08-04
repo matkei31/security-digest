@@ -77,11 +77,12 @@ class Bl037RepositoryDataValidationTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        # path一覧の取得だけを行い、内容のparseはしない(round 2レビュー
+        # 指摘への対応)。ここでJSONをparseすると、将来UTF-8不正・JSON破損
+        # fileが1件でも追加された場合にsetUpClass()自体が例外送出し、
+        # filenameを明示する個別subTestへ到達する前にclass全体のtestが
+        # 一括で失敗してしまう(どのfileが原因か分からない失敗を招く)。
         cls.daily_digest_paths = _discover_daily_digest_files()
-        cls.schema_v2_paths = [
-            p for p in cls.daily_digest_paths
-            if _load(p).get("schema_version") == daily_json.SCHEMA_VERSION
-        ]
 
     def test_at_least_one_daily_digest_file_exists(self):
         self.assertGreaterEqual(
@@ -117,19 +118,29 @@ class Bl037RepositoryDataValidationTest(unittest.TestCase):
 
     def test_current_schema_files_pass_strict_save_time_validation(self):
         # schema v2(current)のfileだけへ、明示的にstrictな
-        # daily_json.validate_daily_digest()も適用する。件数はtest実行時に
-        # 動的に抽出し固定しない。schema v1(historical)へは遡及適用しない
+        # daily_json.validate_daily_digest()も適用する。schema v2の抽出自体
+        # (どのfileがv2かの判定にはparseが必要)もこのtest method内で、
+        # file単位のsubTestの中で行う(setUpClass()では一切parseしない。
+        # round 2レビュー指摘への対応)。これにより、1件のfileがUTF-8不正・
+        # JSON破損であっても、そのfile自身のsubTestだけがfilenameを含めて
+        # 失敗し、他の全fileの検証やこのclassの他のtest methodには
+        # 影響しない。件数はtest実行時に動的に抽出し固定しない。
+        # schema v1(historical)へこのstrict validatorを遡及適用しない
         # (archive-read互換性検証は上のtest_every_daily_digest_file_passes_
         # validate_daily_digest_for_archive_readが別途担う)。
-        if not self.schema_v2_paths:
-            self.skipTest("repositoryにschema v2のdaily digest fileが現在1件も無い")
-        for path in self.schema_v2_paths:
+        found_schema_v2_file = False
+        for path in self.daily_digest_paths:
             with self.subTest(file=path.name):
                 document = _load(path)
+                if document.get("schema_version") != daily_json.SCHEMA_VERSION:
+                    continue
+                found_schema_v2_file = True
                 try:
                     daily_json.validate_daily_digest(document)
                 except daily_json.DailyJsonError as e:
                     self.fail(f"{path.name}: validate_daily_digest()(strict)が失敗しました: {e}")
+        if not found_schema_v2_file:
+            self.skipTest("repositoryにschema v2のdaily digest fileが現在1件も無い")
 
     def test_every_daily_digest_filename_date_matches_its_digest_date_field(self):
         for path in self.daily_digest_paths:

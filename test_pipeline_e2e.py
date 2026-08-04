@@ -387,6 +387,26 @@ class Bl037PipelineE2ETest(unittest.TestCase):
                 return entry
         raise AssertionError(f"no digest item found for source_id={source_id!r}")
 
+    def _assert_vulnerability_facts_rendered(self, html, where):
+        # 既存renderer(fetch.pyのrender_vulnerability_facts_html相当)が実際に
+        # 出力する安定したclass・NVD詳細link・KEV表示を構造として検証する
+        # (単なるCVE ID/base scoreの文字列一致だけでは、renderer結合の
+        # 検出力が弱いため)。HTML全文やCSS全文の逐語lockはしない。
+        for class_name in (
+            "vulnerability-facts", "vulnerability-item",
+            "vulnerability-cve-link", "vulnerability-cvss", "kev-badge",
+        ):
+            self.assertIn(
+                f'class="{class_name}"', html,
+                f'{where}: class="{class_name}"が表示されていない',
+            )
+        nvd_url = vulnerability_facts.nvd_detail_url(TEST_CVE_ID)
+        self.assertIn(nvd_url, html, f"{where}: NVD詳細URL({nvd_url})が表示されていない")
+        self.assertIn(TEST_CVE_ID, html, f"{where}: {TEST_CVE_ID}が表示されていない")
+        self.assertIn(str(NVD_BASE_SCORE), html, f"{where}: NVD base scoreが表示されていない")
+        self.assertIn("3.1", html, f"{where}: CVSSバージョンが表示されていない")
+        self.assertIn("KEV", html, f"{where}: KEV掲載表示が見当たらない")
+
     def test_main_runs_real_pipeline_with_only_network_boundary_mocked(self):
         self._run_main()
 
@@ -523,14 +543,13 @@ class Bl037PipelineE2ETest(unittest.TestCase):
             "AIによる要約・評価は行っていません", index_html,
             "metadata_only記事のsource attributionがindex.htmlへ表示されていない",
         )
-        self.assertIn(TEST_CVE_ID, index_html, "TEST_CVE_IDがindex.htmlへ表示されていない")
-        self.assertIn(str(NVD_BASE_SCORE), index_html, "NVD base scoreがindex.htmlへ表示されていない")
+        self._assert_vulnerability_facts_rendered(index_html, "index.html")
 
-        # --- Archiveへ同日記事とCVEが表示されている --------------------------------
+        # --- Archiveへ同日記事とCVE facts構造が表示されている ------------------------
         archive_html = archive_today_path.read_text(encoding="utf-8")
         self.assertIn(GEMINI_TITLE_JA_MARKER, archive_html, "AI分析後のtitle_jaがArchiveへ表示されていない")
         self.assertIn(MS_TITLE, archive_html, "metadata_only記事の原題がArchiveへ表示されていない")
-        self.assertIn(TEST_CVE_ID, archive_html, "TEST_CVE_IDがArchiveへ表示されていない")
+        self._assert_vulnerability_facts_rendered(archive_html, "Archive")
 
         # --- fixtureの秘密値がoutputへ漏れていない ---------------------------------
         combined_output = index_html + archive_html + json.dumps(digest, ensure_ascii=False) + json.dumps(cache)
