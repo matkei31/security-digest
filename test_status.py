@@ -478,6 +478,36 @@ class Bl036ProductionEvidenceSyncTest(unittest.TestCase):
         self.assertIn("- **状態:** 完了", bl036)
         self.assertIn("- **残作業:** なし。", bl036)
 
+    def test_status_no_longer_contains_unqualified_no_production_claim(self):
+        # Round 1 of independent review found this sentence still present,
+        # unqualified, elsewhere in the same BL-036 entry -- contradicting the
+        # entry's own record that production commit 5b7f40c... (an independent,
+        # later scheduled production run) actually happened. It must not read
+        # as "BL-036 work involved no production of any kind, ever."
+        line = self._status_bl036_line()
+        self.assertNotIn(
+            "production・`workflow_dispatch`・実Gemini API呼び出し・"
+            "通常の外部収集は行っていない。",
+            line,
+        )
+
+    def test_backlog_bl036_no_longer_contains_unqualified_no_production_claim(self):
+        bl036 = self._bl036_section()
+        self.assertNotIn(
+            "production・`workflow_dispatch`・実Gemini API呼び出し・"
+            "通常の外部収集は行っていない。",
+            bl036,
+        )
+
+    def test_status_bl036_scopes_the_no_manual_production_claim_to_bl036_work(self):
+        line = self._status_bl036_line()
+        self.assertIn("BL-036の実装・受入作業", line)
+
+    def test_backlog_bl036_scopes_the_no_manual_production_claim_to_bl036_work(self):
+        bl036 = self._bl036_section()
+        self.assertIn("BL-036の実装・受入作業", bl036)
+        self.assertIn("本Ticketの実装・受入作業", bl036)
+
 
 if __name__ == "__main__":
     unittest.main()
