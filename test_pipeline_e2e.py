@@ -11,13 +11,13 @@
   検証するorchestration test(配線契約の検証)。本testはこれを置き換えない。
 - 本file(Bl037PipelineE2ETest): external I/O境界(urllib.request経由の実際の
   network呼び出し)だけをdeterministicにmockし、fetch.main()を実際に呼び出して、
-  収集・content usage policy適用・AI分析・vulnerability facts・Today's Brief・
-  日次JSON・index.html・Archive生成までを実function間の結合として検証する
-  pipeline integration E2E。
+  収集・content usage policy適用・AI分析・vulnerability facts(NVD/KEV含む)・
+  Today's Brief・日次JSON・index.html・Archive生成までを実function間の結合として
+  検証するpipeline integration E2E。
 - test_repository_data.Bl037RepositoryDataValidationTest: 別fileにある、
   repositoryに保存済みの全daily JSONに対するread-only schema regression test。
 
-今回保証しないもの: 実publisher endpointの可用性、実Gemini APIの可用性・品質、
+今回保証しないもの: 実publisher endpointの可用性、実Gemini/NVD APIの可用性・品質、
 GitHub Actions production環境そのもの、GitHub Pagesの実deploy、ブラウザ描画、
 public siteの目視、記事内容の事実正確性。
 """
@@ -33,22 +33,30 @@ from unittest import mock
 
 import daily_json
 import fetch
+import vulnerability_facts
 
 
 JST = fetch.JST
 
 # main()内のdatetime.datetime.now()/.utcnow()呼び出しをすべて固定値へ差し替える
-# (timezone/実行日に依存しないため)。
+# (timezone/実行日に依存しないため)。fetch.datetime.datetimeとは別module
+# namespaceのvulnerability_facts.datetime.datetimeも、facts解決内部の
+# fetched_at(datetime.datetime.now(datetime.timezone.utc))が参照するため
+# 同じ固定値へ差し替える(daily_json.pyはfetched_at/generated_atを引数として
+# 受け取るだけでdatetime.now()を自ら呼ばないため、patch不要と確認済み)。
 FROZEN_UTC_NOW = datetime.datetime(2026, 8, 4, 3, 0, 0)
 FROZEN_JST_NOW = datetime.datetime(2026, 8, 4, 12, 0, 0, tzinfo=JST)
 EXPECTED_DIGEST_DATE = "2026-08-04"
+FROZEN_UTC_NOW_Z = "2026-08-04T03:00:00Z"
 
-# AI eligible(structured_open)なfixture記事: NIST。
+# AI eligible(structured_open)なfixture記事: NIST。TEST_CVE_IDを自然な形で
+# summaryへ含め、CVE抽出→NVD/KEV facts解決経路を実際に通す。
+TEST_CVE_ID = "CVE-2020-12345"
 NIST_TITLE = "E2E-MARKER-NIST-STRUCTURED-OPEN-ARTICLE"
 NIST_LINK = "https://www.nist.gov/news-events/news/2026/08/e2e-marker-article"
 NIST_SUMMARY = (
     "E2E pipeline integration test marker summary about a cyber security "
-    "vulnerability, for a NIST structured_open article."
+    f"vulnerability {TEST_CVE_ID}, for a NIST structured_open article."
 )
 NIST_PUBDATE = "Mon, 03 Aug 2026 20:00:00 GMT"
 
@@ -62,7 +70,8 @@ MS_PUBDATE = "Mon, 03 Aug 2026 21:00:00 GMT"
 GEMINI_SUMMARY_MARKER = "E2E-MARKER-GEMINI-SUMMARY-TEXT"
 GEMINI_IMPACT_MARKER = "E2E-MARKER-GEMINI-FINANCIAL-IMPACT-TEXT"
 GEMINI_TITLE_JA_MARKER = "E2Eパイプライン統合テストマーカー記事"
-FAKE_GEMINI_API_KEY = "test-key-not-real"
+FAKE_GEMINI_API_KEY = "test-key-not-real-gemini"
+FAKE_NVD_API_KEY = "test-key-not-real-nvd"
 
 GEMINI_ANALYSIS_FIXTURE = {
     "title_ja": GEMINI_TITLE_JA_MARKER,
@@ -80,11 +89,21 @@ GEMINI_ANALYSIS_FIXTURE = {
     "tags": [],
 }
 
+# NVD CVSSフィクスチャ(deterministic)。
+NVD_BASE_SCORE = 9.8
+NVD_BASE_SEVERITY = "CRITICAL"
+NVD_VECTOR = "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+NVD_VULN_STATUS = "Analyzed"
+
 # CISA KEVカタログ: 有効なcveIDを持つ要素が0件だとカタログ自体が
 # 信頼できないものとして扱われる(load_kev_catalog参照)ため、DAYS_BACKの
-# cutoffより十分古いdateAddedを持つ1件だけを含め、カタログ取得は成功させつつ
-# 新着記事としては採用されないようにする。
-KEV_HISTORICAL_CVE_ID = "CVE-2020-00000"
+# cutoffより十分古いdateAddedを持つTEST_CVE_IDの1件だけを含め、カタログ取得は
+# 成功させつつ新着記事としては採用されないようにする。NIST fixtureが言及する
+# TEST_CVE_IDと同じCVEにすることで、collect_recent()側のCISA KEV収集で
+# 作られるkev_catalog_memoが、facts解決側のresolve_kev_facts()で
+# そのまま再利用され(優先度1のmemoパス)、CISA KEV endpointが二重取得されない
+# ことを確認する。
+KEV_DATE_ADDED = "2020-01-01"
 
 ENABLED_RSS_SOURCE_IDS = (
     "fsa", "jpcert_cc", "ipa", "nist", "microsoft_security", "mandiant",
@@ -95,6 +114,7 @@ GEMINI_URL = (
     f"https://generativelanguage.googleapis.com/v1beta/models/"
     f"{fetch.GEMINI_MODEL}:generateContent"
 )
+NVD_URL = f"{vulnerability_facts.NVD_API_URL}?cveIds={TEST_CVE_ID}"
 
 
 def _empty_rss(title="Empty Feed"):
@@ -126,9 +146,9 @@ def _empty_atom(title="Empty Atom Feed"):
 def _kev_catalog_json():
     return json.dumps({
         "vulnerabilities": [{
-            "cveID": KEV_HISTORICAL_CVE_ID,
+            "cveID": TEST_CVE_ID,
             "vulnerabilityName": "E2E-MARKER-HISTORICAL-KEV-ENTRY",
-            "dateAdded": "2020-01-01",
+            "dateAdded": KEV_DATE_ADDED,
             "shortDescription": "Historical marker entry outside the DAYS_BACK cutoff window.",
         }]
     }).encode("utf-8")
@@ -144,10 +164,40 @@ def _gemini_response_json():
     }).encode("utf-8")
 
 
+def _nvd_response_json():
+    # vulnerability_facts.normalize_nvd_record/select_cvssが要求する構造:
+    # vulnerabilities[].cve.{id,vulnStatus,published,lastModified,metrics}。
+    # published/lastModifiedはdatetime.fromisoformat()で解釈できる形式にする
+    # (小数秒なし)。metricsはsource="nvd@nist.gov"・type="Primary"のCVSS 3.1を
+    # 1件だけ含める(select_cvssの優先group 1・version 3.1)。
+    return json.dumps({
+        "vulnerabilities": [{
+            "cve": {
+                "id": TEST_CVE_ID,
+                "vulnStatus": NVD_VULN_STATUS,
+                "published": "2020-01-01T00:00:00",
+                "lastModified": "2020-01-02T00:00:00",
+                "metrics": {
+                    "cvssMetricV31": [{
+                        "source": "nvd@nist.gov",
+                        "type": "Primary",
+                        "cvssData": {
+                            "baseScore": NVD_BASE_SCORE,
+                            "baseSeverity": NVD_BASE_SEVERITY,
+                            "vectorString": NVD_VECTOR,
+                        },
+                    }],
+                },
+            },
+        }],
+    }).encode("utf-8")
+
+
 class _FrozenDateTime(datetime.datetime):
-    """fetch.py内のdatetime.datetime.now()/.utcnow()呼び出しをすべて固定値へ
-    差し替える。now(tz)は常にFROZEN_JST_NOWをtzへ変換した値、utcnow()は
-    常にFROZEN_UTC_NOW(naive)を返す(呼び出し回数・順序に依存しない)。"""
+    """fetch.py・vulnerability_facts.py双方のdatetime.datetime.now()/
+    .utcnow()呼び出しをすべて固定値へ差し替える。now(tz)は常に
+    FROZEN_JST_NOWをtzへ変換した値、utcnow()は常にFROZEN_UTC_NOW(naive)を
+    返す(呼び出し回数・順序に依存しない)。"""
 
     @classmethod
     def now(cls, tz=None):
@@ -259,17 +309,19 @@ def _build_router():
             router.register(url, _empty_rss())
     router.register(_source_url("cisa_kev"), _kev_catalog_json())
     router.register(GEMINI_URL, _gemini_response_json())
+    router.register(NVD_URL, _nvd_response_json())
     return router
 
 
 class Bl037PipelineE2ETest(unittest.TestCase):
     """fetch.main()を実際に呼び出し、urllib.request経由のnetwork I/O境界だけを
     deterministicにmockして、実function間の結合(収集→policy適用→AI分析→
-    facts→Today's Brief→日次JSON→index.html→Archive生成)を検証する。
+    NVD/KEV facts→Today's Brief→日次JSON→index.html→Archive生成)を検証する。
 
     mockしない(実際に通す)主要関数: collect_recent, RSS/Atom parser,
     source definition読込み・validation, content usage policy適用,
-    enrich_with_ai, build_facts_for_items(vulnerability_facts経由),
+    enrich_with_ai, vulnerability_facts.build_facts_for_items(CVE抽出・
+    NVD API・CISA KEV memo再利用・CVSS選択・facts cache永続化を含む),
     build_todays_brief, build_html, daily_json.build_daily_digest,
     daily_json.validate_daily_digest, daily_json.save_daily_digest,
     Archive生成処理, data index生成処理。
@@ -277,9 +329,14 @@ class Bl037PipelineE2ETest(unittest.TestCase):
     mockする境界: urllib.request.OpenerDirector.open(実質的な
     urllib.request.urlopen()の共通境界)、fetch.time.sleep(Gemini呼び出し間の
     rate-limit pacerで、networkの一部ではなくprocess内待機のため)、
-    fetch.datetime.datetime(現在時刻)、fetch.DOCS_DIR・daily_json.DATA_DIR
-    (書込み先をtemporary directoryへ隔離)、GEMINI_API_KEY環境変数
-    (AI経路を有効化するテスト専用のダミー値)。
+    fetch.datetime.datetime・vulnerability_facts.datetime.datetime(現在時刻。
+    daily_json.pyはdatetime.now()を自ら呼ばずfetched_at/generated_atを引数
+    として受け取るだけのためpatch不要)、fetch.DOCS_DIR・daily_json.DATA_DIR
+    (書込み先をtemporary directoryへ隔離。vulnerability facts cacheの
+    path(vulnerability_facts.default_cache_path)はdaily_json.DATA_DIRから
+    実行時に導出されるため、この2つのpatchだけで一緒に隔離される)、
+    GEMINI_API_KEY・NVD_API_KEY環境変数(ホスト環境の実キーに依存しない、
+    test専用のダミー値)。
     """
 
     def setUp(self):
@@ -291,23 +348,36 @@ class Bl037PipelineE2ETest(unittest.TestCase):
         self.data_dir.mkdir(parents=True)
         self.router = _build_router()
 
-    def _run_main(self):
+    def _run_main(self, router=None, docs_dir=None, data_dir=None):
+        router = router or self.router
+        docs_dir = docs_dir or self.docs_dir
+        data_dir = data_dir or self.data_dir
+        env = {"GEMINI_API_KEY": FAKE_GEMINI_API_KEY, "NVD_API_KEY": FAKE_NVD_API_KEY}
         with (
-            mock.patch.dict(os.environ, {"GEMINI_API_KEY": FAKE_GEMINI_API_KEY}, clear=False),
-            mock.patch("urllib.request.OpenerDirector.open", self.router),
-            mock.patch("fetch.DOCS_DIR", self.docs_dir),
-            mock.patch("daily_json.DATA_DIR", self.data_dir),
+            mock.patch.dict(os.environ, env, clear=False),
+            mock.patch("urllib.request.OpenerDirector.open", router),
+            mock.patch("fetch.DOCS_DIR", docs_dir),
+            mock.patch("daily_json.DATA_DIR", data_dir),
             mock.patch("fetch.datetime.datetime", _FrozenDateTime),
+            mock.patch("vulnerability_facts.datetime.datetime", _FrozenDateTime),
             mock.patch("fetch.time.sleep"),
         ):
             fetch.main()
 
-    def _daily_json_paths(self):
-        return sorted(self.data_dir.glob("*.json"))
+    def _daily_json_paths(self, data_dir=None):
+        return sorted((data_dir or self.data_dir).glob("*.json"))
 
-    def _load_digest(self):
-        path = self.data_dir / f"{EXPECTED_DIGEST_DATE}.json"
+    def _load_digest(self, data_dir=None):
+        data_dir = data_dir or self.data_dir
+        path = data_dir / f"{EXPECTED_DIGEST_DATE}.json"
         self.assertTrue(path.exists(), f"expected daily digest file missing: {path}")
+        with path.open(encoding="utf-8") as f:
+            return json.load(f)
+
+    def _load_facts_cache(self, data_dir=None):
+        data_dir = data_dir or self.data_dir
+        path = data_dir / "vulnerability_facts_cache.json"
+        self.assertTrue(path.exists(), f"vulnerability_facts_cache.jsonが生成されていない: {path}")
         with path.open(encoding="utf-8") as f:
             return json.load(f)
 
@@ -329,11 +399,19 @@ class Bl037PipelineE2ETest(unittest.TestCase):
             _source_url("microsoft_security"), self.router.calls,
             "Microsoft(metadata_only)RSS feed URLが実際に取得されていない",
         )
-        self.assertIn(
-            _source_url("cisa_kev"), self.router.calls,
-            "CISA KEV JSON URLが実際に取得されていない",
-        )
         self.assertIn(GEMINI_URL, self.router.calls, "Gemini endpointが実際に呼ばれていない")
+        self.assertIn(NVD_URL, self.router.calls, "NVD endpointが実際に呼ばれていない")
+        self.assertEqual(
+            self.router.calls.count(NVD_URL), 1,
+            f"NVD URLが1回だけ呼ばれることを期待したが{self.router.calls.count(NVD_URL)}回だった",
+        )
+        kev_url = _source_url("cisa_kev")
+        self.assertIn(kev_url, self.router.calls, "CISA KEV JSON URLが実際に取得されていない")
+        self.assertEqual(
+            self.router.calls.count(kev_url), 1,
+            "CISA KEV URLはcollect_recent()での収集とfacts解決の双方から参照されるが、"
+            f"kev_catalog_memoにより1回だけ取得される想定が{self.router.calls.count(kev_url)}回だった",
+        )
 
         # --- 生成物: temporary filesystemへの出力確認 --------------------------
         index_html_path = self.docs_dir / "index.html"
@@ -388,16 +466,55 @@ class Bl037PipelineE2ETest(unittest.TestCase):
         self.assertEqual(ms_entry["policy"]["configured_mode"], "metadata_only")
         self.assertFalse(ms_entry["policy"]["ai_eligible"])
 
-        # --- facts構造が保存されている(CVE言及の無いfixtureなのでcvesは空) -------
-        self.assertIn("cves", nist_entry["facts"])
-        self.assertEqual(nist_entry["facts"]["cves"], [])
+        # --- facts/CVSS構造が実NVD/KEV応答fixtureどおりに保存されている ---------
+        self.assertEqual(len(nist_entry["facts"]["cves"]), 1, "NIST記事のfacts.cvesが1件ではない")
+        cve_fact = nist_entry["facts"]["cves"][0]
+        self.assertEqual(cve_fact["cve_id"], TEST_CVE_ID)
+
+        nvd_fact = cve_fact["nvd"]
+        self.assertEqual(nvd_fact["status"], "found")
+        self.assertEqual(nvd_fact["retrieval"], "live")
+        self.assertEqual(nvd_fact["vuln_status"], NVD_VULN_STATUS)
+        self.assertEqual(nvd_fact["cvss"]["version"], "3.1")
+        self.assertEqual(nvd_fact["cvss"]["base_score"], NVD_BASE_SCORE)
+        self.assertEqual(nvd_fact["cvss"]["base_severity"], NVD_BASE_SEVERITY)
+        self.assertEqual(nvd_fact["cvss"]["vector"], NVD_VECTOR)
+        self.assertEqual(nvd_fact["cvss"]["source"], "nvd@nist.gov")
+        self.assertEqual(nvd_fact["cvss"]["type"], "Primary")
+
+        kev_fact = cve_fact["kev"]
+        self.assertEqual(kev_fact["status"], "listed")
+        self.assertEqual(kev_fact["retrieval"], "live")
+        self.assertEqual(kev_fact["date_added"], KEV_DATE_ADDED)
+
+        # metadata_only記事はfacts構造を持つが、CVE言及がないのでcvesは空。
         self.assertIn("cves", ms_entry["facts"])
+        self.assertEqual(ms_entry["facts"]["cves"], [])
 
-        # --- Today's Brief構造が保存されている -----------------------------------
-        self.assertIn("brief", digest)
-        self.assertIn(digest["brief"]["status"], ("success", "not_attempted", "failed"))
+        # --- vulnerability facts cacheがtemporary directoryへ生成されている -----
+        cache = self._load_facts_cache()
+        self.assertIn(TEST_CVE_ID, cache.get("nvd", {}), "NVD cacheにTEST_CVE_IDが保存されていない")
+        self.assertEqual(cache["nvd"][TEST_CVE_ID]["status"], "found")
+        self.assertIn(
+            TEST_CVE_ID, cache.get("kev", {}).get("entries", {}),
+            "KEV cacheにTEST_CVE_IDが保存されていない",
+        )
 
-        # --- index.htmlへ記事が表示されている -------------------------------------
+        # --- Today's Brief構造が保存されている(AI分析成功のためsuccessを期待) ----
+        brief = digest["brief"]
+        self.assertEqual(brief["status"], "success")
+        self.assertEqual(brief["model"], daily_json.BRIEF_MODEL)
+        self.assertEqual(brief["prompt_version"], daily_json.BRIEF_PROMPT_VERSION)
+        self.assertIsInstance(brief["overview"], str)
+        self.assertTrue(brief["overview"].strip(), "brief.overviewが空")
+        for key in ("important_highlights", "discussion_points", "check_items"):
+            self.assertIsInstance(brief[key], list)
+        # metadata_only記事(MS)のpublisher textがBriefへ混入していない。
+        brief_text = json.dumps(brief, ensure_ascii=False)
+        self.assertNotIn(MS_SUMMARY, brief_text)
+        self.assertNotIn(MS_TITLE, brief_text)
+
+        # --- index.htmlへ記事・facts・CVEが表示されている ------------------------
         index_html = index_html_path.read_text(encoding="utf-8")
         self.assertIn(GEMINI_TITLE_JA_MARKER, index_html, "AI分析後のtitle_jaがindex.htmlへ表示されていない")
         self.assertIn(MS_TITLE, index_html, "metadata_only記事の原題がindex.htmlへ表示されていない")
@@ -406,16 +523,19 @@ class Bl037PipelineE2ETest(unittest.TestCase):
             "AIによる要約・評価は行っていません", index_html,
             "metadata_only記事のsource attributionがindex.htmlへ表示されていない",
         )
+        self.assertIn(TEST_CVE_ID, index_html, "TEST_CVE_IDがindex.htmlへ表示されていない")
+        self.assertIn(str(NVD_BASE_SCORE), index_html, "NVD base scoreがindex.htmlへ表示されていない")
 
-        # --- Archiveへ同日記事が表示されている --------------------------------
+        # --- Archiveへ同日記事とCVEが表示されている --------------------------------
         archive_html = archive_today_path.read_text(encoding="utf-8")
         self.assertIn(GEMINI_TITLE_JA_MARKER, archive_html, "AI分析後のtitle_jaがArchiveへ表示されていない")
         self.assertIn(MS_TITLE, archive_html, "metadata_only記事の原題がArchiveへ表示されていない")
+        self.assertIn(TEST_CVE_ID, archive_html, "TEST_CVE_IDがArchiveへ表示されていない")
 
         # --- fixtureの秘密値がoutputへ漏れていない ---------------------------------
-        self.assertNotIn(FAKE_GEMINI_API_KEY, index_html)
-        self.assertNotIn(FAKE_GEMINI_API_KEY, archive_html)
-        self.assertNotIn(FAKE_GEMINI_API_KEY, json.dumps(digest, ensure_ascii=False))
+        combined_output = index_html + archive_html + json.dumps(digest, ensure_ascii=False) + json.dumps(cache)
+        self.assertNotIn(FAKE_GEMINI_API_KEY, combined_output)
+        self.assertNotIn(FAKE_NVD_API_KEY, combined_output)
 
         # --- unknown URLへの通信が一切無い(router登録分だけが呼ばれている) --------
         for called_url in self.router.calls:
@@ -423,10 +543,13 @@ class Bl037PipelineE2ETest(unittest.TestCase):
 
     def test_run_is_deterministic_across_repeated_invocations(self):
         # 5.7: 実行順・timezone・実行日に依存しないことを、同一processで2回
-        # 独立に実行し、両方成功しdigest_dateが一致することで確認する
-        # (rerunでflakyにならないこと自体を1 test内で検証する)。
+        # 独立に実行し、両方成功しdigest_date・総件数に加えてNVD/KEV facts・
+        # brief metadataという主要deterministic fieldsも一致することで確認する
+        # (rerunでflakyにならないこと自体を1 test内で検証する。HTML/JSON全体の
+        # 完全一致までは求めない)。
         self._run_main()
         first_digest = self._load_digest()
+        first_cache = self._load_facts_cache()
 
         # 2回目はfilesystemを別の隔離tempdirへ切り替えて再実行する。
         with tempfile.TemporaryDirectory() as second_tmp:
@@ -434,21 +557,28 @@ class Bl037PipelineE2ETest(unittest.TestCase):
             second_data_dir = Path(second_tmp) / "data"
             second_data_dir.mkdir(parents=True)
             second_router = _build_router()
-            with (
-                mock.patch.dict(os.environ, {"GEMINI_API_KEY": FAKE_GEMINI_API_KEY}, clear=False),
-                mock.patch("urllib.request.OpenerDirector.open", second_router),
-                mock.patch("fetch.DOCS_DIR", second_docs_dir),
-                mock.patch("daily_json.DATA_DIR", second_data_dir),
-                mock.patch("fetch.datetime.datetime", _FrozenDateTime),
-                mock.patch("fetch.time.sleep"),
-            ):
-                fetch.main()
-            second_digest_path = second_data_dir / f"{EXPECTED_DIGEST_DATE}.json"
-            with second_digest_path.open(encoding="utf-8") as f:
-                second_digest = json.load(f)
+            self._run_main(router=second_router, docs_dir=second_docs_dir, data_dir=second_data_dir)
+            second_digest = self._load_digest(data_dir=second_data_dir)
+            second_cache = self._load_facts_cache(data_dir=second_data_dir)
 
         self.assertEqual(first_digest["digest_date"], second_digest["digest_date"])
         self.assertEqual(first_digest["run"]["total_items"], second_digest["run"]["total_items"])
+
+        first_nist = self._find_item(first_digest, "nist")
+        second_nist = self._find_item(second_digest, "nist")
+        first_cve_fact = first_nist["facts"]["cves"][0]
+        second_cve_fact = second_nist["facts"]["cves"][0]
+        self.assertEqual(first_cve_fact["nvd"], second_cve_fact["nvd"])
+        self.assertEqual(first_cve_fact["kev"], second_cve_fact["kev"])
+        self.assertEqual(first_cve_fact["nvd"]["fetched_at"], FROZEN_UTC_NOW_Z)
+        self.assertEqual(first_cve_fact["kev"]["fetched_at"], FROZEN_UTC_NOW_Z)
+
+        self.assertEqual(first_cache["nvd"][TEST_CVE_ID], second_cache["nvd"][TEST_CVE_ID])
+        self.assertEqual(
+            first_cache["kev"]["entries"][TEST_CVE_ID], second_cache["kev"]["entries"][TEST_CVE_ID]
+        )
+
+        self.assertEqual(first_digest["brief"], second_digest["brief"])
 
 
 if __name__ == "__main__":

@@ -5,8 +5,18 @@ schema regression test。標準ライブラリの unittest のみを使用する
 役割: mainに保存されている全daily JSON(data/YYYY-MM-DD.json)に対する、
 read-onlyのschema regression test。test_pipeline_e2e.Bl037PipelineE2ETestが
 fetch.main()を実際に呼び出すpipeline integration E2Eであるのに対し、本fileは
-既に保存済みのrepository実データを対象に、daily_json.validate_daily_digest()
-を通すだけの独立したread-only検証である。
+既に保存済みのrepository実データを対象にした独立したread-only検証である。
+次の3層を区別して検証する(「全fileが同じstrict schemaを満たす」わけではない)。
+
+1. JSON parse／filename-digest_date一致(schema versionによらず全fileへ適用)。
+2. historical schema(v1)のarchive-read互換性検証: 全fileへ
+   `daily_json.validate_daily_digest_for_archive_read()`を適用する。
+3. current schema(v2)のstrict save-time検証: schema v2のfileだけへ、
+   明示的に`daily_json.validate_daily_digest()`も適用する
+   (validate_daily_digest_for_archive_read()は内部でv2をこの関数へ委譲する
+   ため実質的には同じ検証だが、本fileでも明示的に検証することで、将来
+   委譲関係が変わってもschema v2への厳格な検証が暗黙のまま失われない
+   ようにする)。schema v1へこのstrict validatorを遡及適用することはしない。
 
 対象fileはtest実行時に`data/`直下に存在する`daily_json.DAILY_FILENAME_RE`
 一致fileすべてを動的に取得する(件数を固定値へロックしない)。data/index.json・
@@ -52,6 +62,10 @@ def _discover_daily_digest_files():
     )
 
 
+def _load(path):
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
 class Bl037RepositoryDataValidationTest(unittest.TestCase):
     """repositoryの`data/`直下にある全daily JSON(`data/index.json`・cache・
     fixture・temporary fileを除く)が、production自身がArchive読込・
@@ -64,6 +78,10 @@ class Bl037RepositoryDataValidationTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.daily_digest_paths = _discover_daily_digest_files()
+        cls.schema_v2_paths = [
+            p for p in cls.daily_digest_paths
+            if _load(p).get("schema_version") == daily_json.SCHEMA_VERSION
+        ]
 
     def test_at_least_one_daily_digest_file_exists(self):
         self.assertGreaterEqual(
@@ -97,6 +115,22 @@ class Bl037RepositoryDataValidationTest(unittest.TestCase):
                         f"{path.name}: validate_daily_digest_for_archive_read()が失敗しました: {e}"
                     )
 
+    def test_current_schema_files_pass_strict_save_time_validation(self):
+        # schema v2(current)のfileだけへ、明示的にstrictな
+        # daily_json.validate_daily_digest()も適用する。件数はtest実行時に
+        # 動的に抽出し固定しない。schema v1(historical)へは遡及適用しない
+        # (archive-read互換性検証は上のtest_every_daily_digest_file_passes_
+        # validate_daily_digest_for_archive_readが別途担う)。
+        if not self.schema_v2_paths:
+            self.skipTest("repositoryにschema v2のdaily digest fileが現在1件も無い")
+        for path in self.schema_v2_paths:
+            with self.subTest(file=path.name):
+                document = _load(path)
+                try:
+                    daily_json.validate_daily_digest(document)
+                except daily_json.DailyJsonError as e:
+                    self.fail(f"{path.name}: validate_daily_digest()(strict)が失敗しました: {e}")
+
     def test_every_daily_digest_filename_date_matches_its_digest_date_field(self):
         for path in self.daily_digest_paths:
             with self.subTest(file=path.name):
@@ -122,9 +156,9 @@ class Bl037RepositoryDataValidationTest(unittest.TestCase):
                 )
 
     def test_validation_is_read_only(self):
-        # validate_daily_digest()自体はvalidationのみを行いdisk書込みを一切
-        # 行わない関数だが、本testでは念のためファイル内容(mtime含む)が
-        # 前後で変化しないことも確認する。
+        # validate_daily_digest_for_archive_read()自体はvalidationのみを行い
+        # disk書込みを一切行わない関数だが、本testでは念のためファイル内容
+        # (mtime含む)が前後で変化しないことも確認する。
         for path in self.daily_digest_paths:
             with self.subTest(file=path.name):
                 before_bytes = path.read_bytes()
