@@ -3013,12 +3013,12 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         kept = [ch for ch in lowered if ch.isalnum() or ch in (" ", "-", "_")]
         return "".join(kept).replace(" ", "-")
 
-    def test_bl_ids_are_unique_and_cover_bl001_to_bl036(self):
+    def test_bl_ids_are_unique_and_cover_bl001_to_bl037(self):
         text = self._read("BACKLOG.md")
         bl_headings = [h for h in self._headings(text) if re.match(r"^BL-\d{3}\b", h)]
         ids = [re.match(r"^(BL-\d{3})", h).group(1) for h in bl_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
-        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 37)})
+        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 38)})
 
     def test_sd_ids_are_unique_and_cover_sd001_to_sd033(self):
         text = self._read("DECISIONS.md")
@@ -3522,6 +3522,103 @@ class Bl036ArticleAttributionCssTest(unittest.TestCase):
         for forbidden in ("background", "border", "border-radius", "padding", "font-weight:700"):
             with self.subTest(forbidden=forbidden):
                 self.assertNotIn(forbidden, attribution_rules)
+
+
+class Bl037FinalAcceptanceRecordTest(unittest.TestCase):
+    """BL-037 (Fable 5 whole-repository review R-13, pipeline E2E and
+    repository data validation) final-acceptance documentation record:
+    BACKLOG.md's BL-037 section and STATUS.md's Recently completed entry.
+    Documentation-only; does not exercise fetch.py/daily_json.py behavior.
+    These checks use substring/structural assertions, not full-paragraph
+    verbatim locks.
+    """
+
+    ROOT = Path(__file__).resolve().parent
+
+    def _read(self, name):
+        return (self.ROOT / name).read_text(encoding="utf-8")
+
+    def _bl037_section(self):
+        backlog = self._read("BACKLOG.md")
+        marker = "## BL-037 "
+        start = backlog.index(marker)
+        end = backlog.find("\n## ", start + len(marker))
+        return backlog[start:] if end == -1 else backlog[start:end]
+
+    def test_backlog_bl037_state_is_complete(self):
+        bl037 = self._bl037_section()
+        self.assertIn("- **状態:** 完了", bl037)
+        self.assertNotIn("実装中／独立レビュー待ち", bl037)
+
+    def test_backlog_bl037_records_final_acceptance_original_and_date(self):
+        bl037 = self._bl037_section()
+        self.assertIn("「ok」", bl037)
+        self.assertIn("2026-08-04", bl037)
+        # 着手時原文「おk」と最終受入原文「ok」は別発言として区別されている。
+        self.assertIn("「おk」", bl037)
+        self.assertIn("別の発言", bl037)
+
+    def test_backlog_bl037_records_accepted_implementation_head_and_ci(self):
+        bl037 = self._bl037_section()
+        self.assertIn("d53e04a474d166144f28a50c07e656e27ed56192", bl037)
+        self.assertIn("30886560785", bl037)
+        self.assertIn("1670 tests OK", bl037)
+
+    def test_backlog_bl037_records_round1_and_round2_evidence(self):
+        bl037 = self._bl037_section()
+        self.assertIn("5f30e1d04e9d48a9a6a1a9780e3bab4905a65842", bl037)
+        self.assertIn("ef6964ed881dc48934a91a60e4c5c223b2fea20a", bl037)
+        self.assertIn("30870986858", bl037)
+        self.assertIn("30885281618", bl037)
+
+    def test_backlog_bl037_residual_work_is_none(self):
+        bl037 = self._bl037_section()
+        self.assertIn("- **残作業:** なし。", bl037)
+        self.assertNotIn(
+            "独立レビュー待ち。最終受入前に完了扱いしない。", bl037,
+        )
+
+    def test_backlog_bl037_does_not_claim_final_acceptance_pending(self):
+        bl037 = self._bl037_section()
+        self.assertNotIn("final acceptance pending", bl037)
+
+    def test_backlog_bl037_does_not_guess_a_merge_commit_sha(self):
+        bl037 = self._bl037_section()
+        for stale_phrase in ("merge待ち", "merge pending", "Ready化待ち", "次回closeoutで記録"):
+            with self.subTest(stale_phrase=stale_phrase):
+                self.assertNotIn(stale_phrase, bl037)
+        self.assertIn("GitHub", bl037)
+        self.assertIn("正本", bl037)
+
+    def test_status_active_work_is_none_and_does_not_list_bl037(self):
+        status = self._read("STATUS.md")
+        active = status.split("## Active work", 1)[1].split(
+            "\n## 5. Recently completed work", 1
+        )[0]
+        self.assertIn("None.", active)
+        self.assertNotIn("BL-037", active)
+
+    def test_status_recently_completed_bl037_entry_records_required_content(self):
+        status = self._read("STATUS.md")
+        recently_completed = status.split("## 5. Recently completed work", 1)[1]
+        bl037_line = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-037 ")
+        )
+        for required in (
+            "Fable 5",
+            "R-13",
+            "pipeline integration E2E",
+            "d53e04a474d166144f28a50c07e656e27ed56192",
+            "30886560785",
+            "1670 tests OK",
+            "[PR #79](https://github.com/matkei31/security-digest/pull/79)",
+            "「おk」",
+            "「ok」",
+            "残作業はない",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl037_line)
+        self.assertNotIn("final acceptance pending", bl037_line)
 
 
 if __name__ == "__main__":
