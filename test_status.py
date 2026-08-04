@@ -335,5 +335,82 @@ class StatusSecurityOperationsSourceOfTruthTest(unittest.TestCase):
         self.assertIn("**Status:** Approved", self.operations)
 
 
+class Bl036PostMergeRecordFixTest(unittest.TestCase):
+    """BL-036 post-merge independent review found four documentation-only
+    staleness issues in the final acceptance records: STATUS.md's "As of"
+    had not been bumped to match its own last content update, and BACKLOG.md's
+    BL-036 entry still described the SD-016 exception as an unconfirmed
+    proposal and SD-033 as not-yet-created, contradicting the fact that both
+    were confirmed in the same PR. These tests check the fix without locking
+    the full surrounding prose verbatim.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.status = (REPOSITORY_ROOT / "STATUS.md").read_text(encoding="utf-8")
+        cls.backlog = (REPOSITORY_ROOT / "BACKLOG.md").read_text(encoding="utf-8")
+
+    def _bl036_section(self):
+        marker = "## BL-036 "
+        start = self.backlog.index(marker)
+        end = self.backlog.find("\n## ", start + len(marker))
+        return self.backlog[start:] if end == -1 else self.backlog[start:end]
+
+    def test_status_as_of_is_20260804(self):
+        self.assertIn("## 1. As of\n\n2026-08-04", self.status)
+        self.assertNotIn("## 1. As of\n\n2026-08-03", self.status)
+
+    def test_status_bl036_entry_distinguishes_implementation_and_final_evidence(self):
+        recently_completed = self.status.split("## 5. Recently completed work", 1)[1]
+        bl036_line = next(
+            line for line in recently_completed.splitlines() if line.startswith("- BL-036 ")
+        )
+        self.assertIn("12a6f502973c78e21dbe0b209073f824731a3e5d", bl036_line)
+        self.assertIn("30813905763", bl036_line)
+        self.assertIn("1641 tests OK", bl036_line)
+        self.assertIn("9件", bl036_line)
+        self.assertIn("c1c09855bcafce2c5fab3a1071801aaae06e3f0d", bl036_line)
+        self.assertIn("30833853521", bl036_line)
+        self.assertIn("1644 tests OK", bl036_line)
+        self.assertIn("final changed files 10件", bl036_line)
+        self.assertIn("38095fff8eaafd938a33603f4332bbf8c100fba2", bl036_line)
+        self.assertIn("30833953993", bl036_line)
+
+    def test_backlog_bl036_no_longer_contains_stale_pending_current_state_wording(self):
+        bl036 = self._bl036_section()
+        for stale_phrase in (
+            "本Ticketではsupersedeしない",
+            "今回はSD-033自体を作成せず、DECISIONS.mdも変更しない",
+            "仕様・Decision上まだ確定していない提案である",
+            "維持する予定である",
+        ):
+            with self.subTest(stale_phrase=stale_phrase):
+                self.assertNotIn(stale_phrase, bl036)
+
+    def test_backlog_bl036_records_sd033_partial_supersession_as_confirmed(self):
+        bl036 = self._bl036_section()
+        self.assertIn("正式に確定した", bl036)
+        self.assertIn("SD-033", bl036)
+        self.assertIn("2026-08-04", bl036)
+        self.assertIn("維持されている", bl036)
+
+    def test_backlog_bl036_distinguishes_accepted_implementation_and_final_files(self):
+        bl036 = self._bl036_section()
+        self.assertIn("accepted implementation", bl036)
+        self.assertIn("changed files 9件", bl036)
+        self.assertIn("final acceptance", bl036)
+        self.assertIn("final changed files 10件", bl036)
+        self.assertIn("30833853521", bl036)
+        self.assertIn("1644 tests OK", bl036)
+        self.assertIn("38095fff8eaafd938a33603f4332bbf8c100fba2", bl036)
+        self.assertIn("30833953993", bl036)
+        self.assertIn("次回の通常scheduled production run", bl036)
+
+    def test_backlog_bl036_note_does_not_claim_decisions_untouched(self):
+        bl036 = self._bl036_section()
+        self.assertNotIn("`DECISIONS.md`・`.github/workflows/`", bl036)
+        self.assertIn("SD-033追加とSD-016のPartially superseded by note追加だけを変更", bl036)
+
+
 if __name__ == "__main__":
     unittest.main()
