@@ -7,24 +7,35 @@ This module has two jobs:
 1. Enumerate the document/static-contract-candidate assertions that
    actually exist, in source order, inside a scoped set of
    `unittest.TestCase` classes in a given Python test file (see
-   `enumerate_assertions`). "Assertion" here means: a `self.assert*`/
-   `cls.assert*` call, a bare `assert` statement, a `with self.assertRaises*
-   (...)`/`assertRaisesRegex(...)` context manager, or a call to a custom
-   assertion-style helper method defined on the same class (a non-`test_`
-   method whose name starts with `assert_`, or starts with `_` and
-   contains "assert"). Each is given a stable ID
+   `enumerate_assertions`/`scan_classes`). "Assertion" here means: a
+   `self.assert*`/`cls.assert*` call, a bare `assert` statement, a
+   `with self.assertRaises*(...)`/`assertRaisesRegex(...)` context
+   manager, or a call to a custom assertion-style helper method defined on
+   the same class (a non-`test_` method whose name starts with `assert_`,
+   or starts with `_` and contains "assert") -- both plain `def` and
+   `async def` methods are supported throughout, test methods and helper
+   definitions alike. Each is given a stable ID
    `<file>::<class>::<method>::assert-<NN>` (ordinal is source order
    within the method, 2-digit, 1-based) and a canonical AST fingerprint
    that changes if and only if the assertion's actual code (API, argument
    structure, literal values) changes -- not if the surrounding source is
-   merely reformatted.
+   merely reformatted. For a custom helper call, the fingerprint also
+   incorporates the resolved helper DEFINITION's own body (see
+   `composite_fingerprint`), so a semantic change to the helper is
+   detected even when the call site itself is untouched.
 
-2. Check a `document_test_classification.json`-shaped manifest for
-   completeness and internal consistency against that enumeration (see
-   `validate_manifest`): every enumerated assertion must have exactly one
-   manifest entry, every manifest entry must correspond to a real
-   enumerated assertion with a matching fingerprint, IDs/ordinals must be
-   contiguous and unique, and every entry's fields must be well-formed.
+2. Check a `document_test_classification.json`-shaped manifest for shape,
+   schema, and internal consistency against that enumeration (see
+   `validate_manifest`): the manifest's top-level shape and
+   `schema_version`, every entry's `target`/`targets` contract (exactly
+   one, correctly typed, and consistent in style across the whole
+   manifest), every enumerated assertion having exactly one manifest entry
+   naming a method that actually exists (a nonexistent method is
+   `unknown-method`, distinct from a real method whose specific ordinal
+   doesn't exist, `stale-entry`), every manifest entry corresponding to a
+   real enumerated assertion with a matching fingerprint, IDs/ordinals
+   being contiguous, unique, and non-boolean, and every entry's fields
+   being well-formed.
 
 This is a project-management/test-maintenance tool, not a general Python
 analyzer. It is deliberately narrow: it does not resolve control flow, does
@@ -112,6 +123,16 @@ class AssertionRecord:
         return (self.file, self.cls, self.method, self.ordinal)
 
 
+def _hash_dumps(nodes):
+    """SHA-256 over the canonical (line/column/formatting-free) AST dumps
+    of `nodes`, joined with a NUL separator so dumps from different nodes
+    can never be concatenated ambiguously (a node whose own dump happens to
+    look like "A" + "B" cannot collide with two nodes "A" and "B").
+    """
+    parts = [ast.dump(n, annotate_fields=True, include_attributes=False) for n in nodes]
+    return hashlib.sha256("\x00".join(parts).encode("utf-8")).hexdigest()
+
+
 def canonical_fingerprint(node):
     """A SHA-256 hex digest of `node`'s structure, deliberately excluding
     line/column/formatting information (`include_attributes=False`), so it
@@ -120,8 +141,22 @@ def canonical_fingerprint(node):
     same AST) but changes whenever the assertion's own API, argument
     structure, or literal values change.
     """
-    dumped = ast.dump(node, annotate_fields=True, include_attributes=False)
-    return hashlib.sha256(dumped.encode("utf-8")).hexdigest()
+    return _hash_dumps([node])
+
+
+def composite_fingerprint(nodes):
+    """Like `canonical_fingerprint`, but over several nodes at once (in the
+    given order). Used for a custom assertion helper call: the call site
+    alone does not carry the helper's own logic, so a semantic change to
+    the helper's BODY (its assertion API, comparison structure, or literal
+    values) must also change the fingerprint recorded against the call
+    site -- otherwise the manifest could silently drift from what the
+    helper actually checks. Purely cosmetic changes to the helper body
+    (formatting, comments, blank lines) still leave this unchanged, for the
+    same reason a single node's formatting doesn't change its own
+    fingerprint.
+    """
+    return _hash_dumps(nodes)
 
 
 def _is_unittest_assert_call(call_node):
@@ -134,11 +169,11 @@ def _is_unittest_assert_call(call_node):
     )
 
 
-def _is_custom_helper_call(call_node, helper_names):
+def _is_custom_helper_call(call_node, helper_defs):
     return (
         isinstance(call_node, ast.Call)
         and isinstance(call_node.func, ast.Attribute)
-        and call_node.func.attr in helper_names
+        and call_node.func.attr in helper_defs
         and isinstance(call_node.func.value, ast.Name)
         and call_node.func.value.id in ("self", "cls")
     )
@@ -164,19 +199,27 @@ def _assert_raises_call_in_with(with_node):
     return None
 
 
-def _helper_names_for_class(class_node):
-    """Non-test helper methods on `class_node` whose name marks them as an
-    assertion-style helper: starts with `assert_`, or starts with `_` and
-    contains "assert" (case-insensitive) -- e.g. `_assert_row_state`,
-    `assert_section_contains`. Plain fixture/setup helpers are excluded.
+_METHOD_DEF_TYPES = (ast.FunctionDef, ast.AsyncFunctionDef)
+
+
+def _helper_defs_for_class(class_node):
+    """Non-test helper methods (`def` or `async def`) on `class_node` whose
+    name marks them as an assertion-style helper: starts with `assert_`, or
+    starts with `_` and contains "assert" (case-insensitive) -- e.g.
+    `_assert_row_state`, `assert_section_contains`. Plain fixture/setup
+    helpers are excluded. Returns {name: def_node}, not just names, so a
+    call site's fingerprint can incorporate the resolved helper's own body
+    (see composite_fingerprint) -- a call site's fingerprint must change if
+    the helper it calls changes semantically, not just if the call itself
+    changes.
     """
-    names = set()
+    defs = {}
     for item in class_node.body:
-        if isinstance(item, ast.FunctionDef) and not item.name.startswith("test_"):
+        if isinstance(item, _METHOD_DEF_TYPES) and not item.name.startswith("test_"):
             lname = item.name.lower()
             if lname.startswith("assert_") or (lname.startswith("_") and "assert" in lname):
-                names.add(item.name)
-    return names
+                defs[item.name] = item
+    return defs
 
 
 def _iter_source_order(node, stop_types):
@@ -197,7 +240,7 @@ def _iter_source_order(node, stop_types):
 _STOP_DESCENDING = (ast.FunctionDef, ast.AsyncFunctionDef, ast.Lambda, ast.ClassDef)
 
 
-def _enumerate_method_assertions(file_name, class_name, method_node, helper_names):
+def _enumerate_method_assertions(file_name, class_name, method_node, helper_defs):
     records = []
     ordinal = 0
     # The Call node inside a `with self.assertRaises(...):` item is reached
@@ -210,24 +253,34 @@ def _enumerate_method_assertions(file_name, class_name, method_node, helper_name
     consumed_ids = set()
     for node in _iter_source_order(method_node, _STOP_DESCENDING):
         assertion_api = None
-        fingerprint_node_ = None
+        fingerprint = None
+        assertion_node = None
         if isinstance(node, ast.Assert):
             assertion_api = "assert"
-            fingerprint_node_ = node
+            fingerprint = canonical_fingerprint(node)
+            assertion_node = node
         elif isinstance(node, ast.With):
             raises_call = _assert_raises_call_in_with(node)
             if raises_call is not None:
                 assertion_api = raises_call.func.attr
-                fingerprint_node_ = raises_call
+                fingerprint = canonical_fingerprint(raises_call)
+                assertion_node = raises_call
                 consumed_ids.add(id(raises_call))
         elif id(node) in consumed_ids:
             continue
         elif _is_unittest_assert_call(node):
             assertion_api = node.func.attr
-            fingerprint_node_ = node
-        elif _is_custom_helper_call(node, helper_names):
+            fingerprint = canonical_fingerprint(node)
+            assertion_node = node
+        elif _is_custom_helper_call(node, helper_defs):
             assertion_api = node.func.attr
-            fingerprint_node_ = node
+            # The call site alone doesn't carry the helper's own logic --
+            # fold the resolved helper definition's body into the
+            # fingerprint too, so a semantic change to the helper (its
+            # assertion API, comparison structure, or literal values) is
+            # detected even though the call site itself is untouched.
+            fingerprint = composite_fingerprint([node, helper_defs[node.func.attr]])
+            assertion_node = node
         if assertion_api is None:
             continue
         ordinal += 1
@@ -238,18 +291,28 @@ def _enumerate_method_assertions(file_name, class_name, method_node, helper_name
                 method=method_node.name,
                 ordinal=ordinal,
                 assertion_api=assertion_api,
-                fingerprint=canonical_fingerprint(fingerprint_node_),
-                node=fingerprint_node_,
+                fingerprint=fingerprint,
+                node=assertion_node,
             )
         )
     return records
 
 
-def enumerate_assertions(source_text, file_name, scoped_classes):
-    """Parse `source_text` (the contents of `file_name`) and return a list
-    of AssertionRecord for every document/static-contract-candidate
-    assertion in every `test_*` method of every class named in
-    `scoped_classes`, in (class, method, ordinal) source order.
+def scan_classes(source_text, file_name, scoped_classes):
+    """Parse `source_text` (the contents of `file_name`) and return
+    `(records, known_methods)`:
+
+    - `records`: a list of AssertionRecord for every document/static-
+      contract-candidate assertion in every `test_*`/`async def test_*`
+      method of every class named in `scoped_classes`, in (class, method,
+      ordinal) source order.
+    - `known_methods`: {(file_name, class_name): {test method names}} --
+      the real test methods that exist in each scoped class, regardless of
+      whether they contain any enumerable assertions. A manifest entry
+      naming a method not in this set is referencing a method that does
+      not exist at all (see validate_manifest's `unknown-method` check),
+      which is a different problem from an entry whose ordinal doesn't
+      match any assertion in a method that DOES exist (`stale-entry`).
 
     Raises InventoryError if `source_text` does not parse, or if a name in
     `scoped_classes` is not a class defined in this file.
@@ -267,14 +330,25 @@ def enumerate_assertions(source_text, file_name, scoped_classes):
         raise InventoryError(f"{file_name}: unknown class(es) in scope: {missing}")
 
     records = []
+    known_methods = {}
     for class_name in scoped_classes:
         class_node = classes_by_name[class_name]
-        helper_names = _helper_names_for_class(class_node)
+        helper_defs = _helper_defs_for_class(class_node)
+        methods = set()
         for item in class_node.body:
-            if isinstance(item, ast.FunctionDef) and item.name.startswith("test_"):
+            if isinstance(item, _METHOD_DEF_TYPES) and item.name.startswith("test_"):
+                methods.add(item.name)
                 records.extend(
-                    _enumerate_method_assertions(file_name, class_name, item, helper_names)
+                    _enumerate_method_assertions(file_name, class_name, item, helper_defs)
                 )
+        known_methods[(file_name, class_name)] = methods
+    return records, known_methods
+
+
+def enumerate_assertions(source_text, file_name, scoped_classes):
+    """Convenience wrapper around scan_classes() for callers that only need
+    the assertion records, not each class's known test-method names."""
+    records, _ = scan_classes(source_text, file_name, scoped_classes)
     return records
 
 
@@ -283,10 +357,47 @@ def load_manifest(manifest_path):
         return json.load(fh)
 
 
-def _target_value(entry):
-    if "targets" in entry:
-        return entry["targets"]
-    return entry.get("target")
+def _validate_target(entry):
+    """Check entry's target/targets contract. Returns None if valid, or a
+    short detail string describing the violation. Exactly one of `target`
+    (a nonblank string) or `targets` (a nonempty list of unique nonblank
+    strings) must be present -- not both, not neither, and not the wrong
+    type/shape for whichever one is used.
+    """
+    has_target = "target" in entry
+    has_targets = "targets" in entry
+    if has_target and has_targets:
+        return "entry must not have both 'target' and 'targets'"
+    if not has_target and not has_targets:
+        return "entry must have exactly one of 'target' or 'targets'"
+    if has_target:
+        target = entry["target"]
+        if not isinstance(target, str) or not target.strip():
+            return f"'target' must be a nonblank string, got {target!r}"
+        return None
+    targets = entry["targets"]
+    if not isinstance(targets, list) or not targets:
+        return f"'targets' must be a nonempty list, got {targets!r}"
+    for t in targets:
+        if not isinstance(t, str) or not t.strip():
+            return f"'targets' entries must all be nonblank strings, got {t!r}"
+    if len(set(targets)) != len(targets):
+        return "'targets' must not contain duplicates"
+    return None
+
+
+def _empty_summary():
+    return {
+        "scoped_files": [],
+        "scoped_classes": 0,
+        "inventoried_assertions": 0,
+        "manifest_assertions": 0,
+        "category_counts": {"A": 0, "B": 0, "C": 0, "D": 0},
+        "file_counts": {},
+        "unclassified": 0,
+        "stale": 0,
+        "fingerprint_mismatch": 0,
+    }
 
 
 class ValidationFailure:
@@ -328,14 +439,65 @@ def validate_manifest(manifest, root=None):
     """
     if root is None:
         root = REPOSITORY_ROOT
+
+    if not isinstance(manifest, dict):
+        return (
+            [ValidationFailure("invalid-manifest-shape", "manifest must be a JSON object")],
+            _empty_summary(),
+        )
+
     failures = []
 
-    scope = manifest.get("scope", [])
+    schema_version = manifest.get("schema_version")
+    if isinstance(schema_version, bool) or schema_version != 1:
+        failures.append(
+            ValidationFailure(
+                "invalid-schema-version",
+                f"schema_version must be exactly the integer 1, got {schema_version!r}",
+            )
+        )
+
+    scope_raw = manifest.get("scope", [])
+    if not isinstance(scope_raw, list):
+        failures.append(ValidationFailure("invalid-manifest-shape", "scope must be a list"))
+        scope_raw = []
+
+    assertions_raw = manifest.get("assertions", [])
+    if not isinstance(assertions_raw, list):
+        failures.append(ValidationFailure("invalid-manifest-shape", "assertions must be a list"))
+        assertions_raw = []
+
     scope_files = set()
     scoped_classes_by_file = {}
-    for scope_entry in scope:
+    for scope_entry in scope_raw:
+        if not isinstance(scope_entry, dict):
+            failures.append(
+                ValidationFailure(
+                    "invalid-scope-shape",
+                    f"scope entry must be an object, got {type(scope_entry).__name__}",
+                )
+            )
+            continue
         file_name = scope_entry.get("file")
-        classes = scope_entry.get("classes", [])
+        classes = scope_entry.get("classes")
+        if not isinstance(file_name, str) or not file_name.strip():
+            failures.append(
+                ValidationFailure(
+                    "invalid-scope-shape", "scope entry 'file' must be a nonblank string"
+                )
+            )
+            continue
+        if not isinstance(classes, list) or not all(
+            isinstance(c, str) and c.strip() for c in classes
+        ):
+            failures.append(
+                ValidationFailure(
+                    "invalid-scope-shape",
+                    "scope entry 'classes' must be a list of nonblank strings",
+                    file=file_name,
+                )
+            )
+            continue
         if file_name in scope_files:
             failures.append(
                 ValidationFailure("duplicate-scope-file", f"file {file_name!r} listed twice")
@@ -356,6 +518,7 @@ def validate_manifest(manifest, root=None):
         scoped_classes_by_file[file_name] = classes
 
     inventory_by_key = {}
+    known_methods_by_class = {}
     for file_name, classes in scoped_classes_by_file.items():
         source_path = root / file_name
         try:
@@ -366,20 +529,31 @@ def validate_manifest(manifest, root=None):
             )
             continue
         try:
-            records = enumerate_assertions(source_text, file_name, classes)
+            records, known_methods = scan_classes(source_text, file_name, classes)
         except InventoryError as exc:
             failures.append(ValidationFailure("inventory-error", str(exc), file=file_name))
             continue
         for record in records:
             inventory_by_key[record.key()] = record
+        known_methods_by_class.update(known_methods)
 
-    entries = manifest.get("assertions", [])
+    entries = assertions_raw
     manifest_by_key = {}
     manifest_ids = set()
     manifest_ordinals_by_method = {}
     counts = {"A": 0, "B": 0, "C": 0, "D": 0}
+    target_style = None  # "target" or "targets", once the first valid entry sets it
 
     for entry in entries:
+        if not isinstance(entry, dict):
+            failures.append(
+                ValidationFailure(
+                    "invalid-manifest-shape",
+                    f"assertion entry must be an object, got {type(entry).__name__}",
+                )
+            )
+            continue
+
         entry_id = entry.get("id")
         file_name = entry.get("file")
         cls = entry.get("class")
@@ -405,12 +579,26 @@ def validate_manifest(manifest, root=None):
             )
             continue
 
-        if _target_value(entry) in (None, "", []):
+        target_error = _validate_target(entry)
+        if target_error:
             failures.append(
                 ValidationFailure(
-                    "missing-field", "missing target/targets", id_=entry_id, file=file_name, cls=cls, method=method
+                    "invalid-target", target_error, id_=entry_id, file=file_name, cls=cls, method=method
                 )
             )
+        else:
+            entry_style = "targets" if "targets" in entry else "target"
+            if target_style is None:
+                target_style = entry_style
+            elif entry_style != target_style:
+                failures.append(
+                    ValidationFailure(
+                        "mixed-target-style",
+                        f"manifest already uses {target_style!r}-style entries; "
+                        f"this entry uses {entry_style!r}",
+                        id_=entry_id, file=file_name, cls=cls, method=method,
+                    )
+                )
 
         if file_name not in scope_files:
             failures.append(
@@ -433,8 +621,17 @@ def validate_manifest(manifest, root=None):
                 )
             )
             continue
+        if method not in known_methods_by_class.get((file_name, cls), set()):
+            failures.append(
+                ValidationFailure(
+                    "unknown-method",
+                    f"method {method!r} does not exist in class {cls!r}",
+                    id_=entry_id, file=file_name, cls=cls, method=method,
+                )
+            )
+            continue
 
-        if not isinstance(ordinal, int) or ordinal < 1:
+        if isinstance(ordinal, bool) or not isinstance(ordinal, int) or ordinal < 1:
             failures.append(
                 ValidationFailure(
                     "invalid-ordinal", f"ordinal must be a positive int, got {ordinal!r}",

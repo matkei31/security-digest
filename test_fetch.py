@@ -4138,6 +4138,32 @@ class Bl038Tranche3aRecordSyncTest(unittest.TestCase):
             "BL-038 must not be listed in Recently completed work during tranche 3a",
         )
 
+    def test_backlog_bl038_records_round1_review_evidence_and_revised_cap(self):
+        bl038 = self._bl038_section()
+        for required in (
+            "独立レビューround 1(tranche 3a)",
+            "9e49be8642a2583809569dc64e612fc14257b5f4",
+            "30924720700",
+            "1766 tests OK",
+            "custom assertion helper",
+            "schema",
+            "async",
+            "unknown-method",
+            "2000行",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl038)
+
+    def test_status_active_work_records_round1_review_note(self):
+        bl038_line = self._status_bl038_line()
+        for required in (
+            "独立レビューround 1(tranche 3a",
+            "9e49be8642a2583809569dc64e612fc14257b5f4",
+            "round 1修正済み",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl038_line)
+
 
 if __name__ == "__main__":
     unittest.main()

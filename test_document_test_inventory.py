@@ -126,10 +126,15 @@ class EnumerationOrderTest(unittest.TestCase):
             "        self._assert_row_state('abc', 'a')\n"
         )
         records = dti.enumerate_assertions(src, "foo.py", ["FooTest"])
-        # Only the test_* method's own call site is enumerated for this
-        # class scope -- not the helper's internal assertIn (the helper
-        # method itself is not a test_* method, so its body is not walked
-        # as a separate method's assertions).
+        # Only the test_* method's own call site is enumerated as an entry
+        # for this class scope -- the helper's internal assertIn is not a
+        # separate entry (the helper method itself is not a test_* method,
+        # so its body is not walked as a separate method's assertions).
+        # Its definition is NOT ignored, though: the call site's
+        # fingerprint incorporates the resolved helper's own body (see
+        # FingerprintStabilityTest's composite-fingerprint tests), so a
+        # semantic change to the helper is still detected even though the
+        # call site itself stays untouched.
         self.assertEqual(len(records), 1)
         self.assertEqual(records[0].assertion_api, "_assert_row_state")
 
@@ -237,6 +242,94 @@ class FingerprintStabilityTest(unittest.TestCase):
         # ordinal is still 1 in both -- what matters here is only that the
         # assertion's OWN fingerprint, not its position, stays identical).
         self.assertEqual(self._fingerprint(src_a), self._fingerprint(src_b))
+
+
+class CustomHelperCompositeFingerprintTest(unittest.TestCase):
+    """BL-038 tranche 3a round 1 review Blocker 1: a custom assertion
+    helper's call site fingerprint must incorporate the resolved helper
+    DEFINITION's own body, not just the call node -- otherwise a semantic
+    change to the helper (its assertion API, comparison structure, or
+    literal values) could go undetected while the call site itself stays
+    untouched, silently drifting the manifest out of sync with what the
+    helper actually checks.
+    """
+
+    HELPER_DEF = (
+        "    def _assert_row_state(self, row, state):\n"
+        "        self.assertIn(state, row)\n"
+    )
+
+    def _fingerprint(self, helper_def):
+        src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            f"{helper_def}"
+            "    def test_basic(self):\n"
+            "        self._assert_row_state('abc', 'a')\n"
+        )
+        records = dti.enumerate_assertions(src, "foo.py", ["FooTest"])
+        self.assertEqual(len(records), 1)
+        return records[0].fingerprint
+
+    def test_helper_body_formatting_change_does_not_change_fingerprint(self):
+        reformatted = (
+            "    def _assert_row_state(self, row, state):\n\n"
+            "        self.assertIn(\n"
+            "            state,\n"
+            "            row,\n"
+            "        )\n"
+        )
+        self.assertEqual(self._fingerprint(self.HELPER_DEF), self._fingerprint(reformatted))
+
+    def test_helper_body_api_change_changes_fingerprint(self):
+        changed = (
+            "    def _assert_row_state(self, row, state):\n"
+            "        self.assertNotIn(state, row)\n"
+        )
+        self.assertNotEqual(self._fingerprint(self.HELPER_DEF), self._fingerprint(changed))
+
+    def test_helper_body_literal_change_changes_fingerprint(self):
+        changed = (
+            "    def _assert_row_state(self, row, state):\n"
+            "        self.assertIn(state, row.upper())\n"
+        )
+        self.assertNotEqual(self._fingerprint(self.HELPER_DEF), self._fingerprint(changed))
+
+    def test_helper_body_semantic_change_after_manifest_creation_is_fingerprint_mismatch(self):
+        tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(tmpdir.cleanup)
+        root = Path(tmpdir.name)
+        src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            f"{self.HELPER_DEF}"
+            "    def test_basic(self):\n"
+            "        self._assert_row_state('abc', 'a')\n"
+        )
+        (root / "foo.py").write_text(src, encoding="utf-8")
+        records = dti.enumerate_assertions(src, "foo.py", ["FooTest"])
+        manifest = _manifest_for("foo.py", ["FooTest"], _records_to_manifest_entries(records))
+
+        # Change ONLY the helper body -- the call site is untouched.
+        changed_src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            "    def _assert_row_state(self, row, state):\n"
+            "        self.assertNotIn(state, row)\n"
+            "    def test_basic(self):\n"
+            "        self._assert_row_state('abc', 'a')\n"
+        )
+        (root / "foo.py").write_text(changed_src, encoding="utf-8")
+
+        failures, _ = dti.validate_manifest(manifest, root=root)
+        self.assertIn("fingerprint-mismatch", _failure_types(failures))
+        failure = next(f for f in failures if f.mismatch_type == "fingerprint-mismatch")
+        self.assertEqual(failure.id, records[0].id)
+        self.assertEqual(failure.cls, "FooTest")
+        self.assertEqual(failure.method, "test_basic")
+        # Failure output must stay short (identify the target), not dump
+        # the whole document/source.
+        self.assertLess(len(failure.format()), 300)
 
 
 class ManifestValidationFailureTest(unittest.TestCase):
@@ -389,6 +482,255 @@ class ManifestValidationFailureTest(unittest.TestCase):
         self._write_source("foo.py", shrunk_src)
         failures, _ = dti.validate_manifest(manifest, root=self.root)
         self.assertIn("stale-entry", _failure_types(failures))
+
+
+class ManifestSchemaValidationTest(unittest.TestCase):
+    """BL-038 tranche 3a round 1 review Blocker 2: the validator must
+    itself enforce document_test_classification.json's schema shape --
+    schema_version, top-level manifest/scope/assertions shape, the
+    exactly-one target/targets contract (and manifest-wide style
+    consistency), and non-bool ordinals -- not just per-field business
+    rules on an assumed-well-formed manifest.
+    """
+
+    def setUp(self):
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.root = Path(self._tmpdir.name)
+        self.src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            "    def test_basic(self):\n"
+            "        self.assertEqual(1, 1)\n"
+            "        self.assertIn('a', 'abc')\n"
+        )
+        (self.root / "foo.py").write_text(self.src, encoding="utf-8")
+        self.records = dti.enumerate_assertions(self.src, "foo.py", ["FooTest"])
+
+    def _valid_entries(self, *, use_targets=False):
+        entries = _records_to_manifest_entries(self.records)
+        if use_targets:
+            for entry in entries:
+                target = entry.pop("target")
+                entry["targets"] = [target]
+        return entries
+
+    def _check(self, manifest):
+        return dti.validate_manifest(manifest, root=self.root)
+
+    def test_missing_schema_version_is_detected(self):
+        manifest = {"scope": [{"file": "foo.py", "classes": ["FooTest"]}], "assertions": self._valid_entries()}
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-schema-version", _failure_types(failures))
+
+    def test_wrong_schema_version_is_detected(self):
+        manifest = _manifest_for("foo.py", ["FooTest"], self._valid_entries())
+        manifest["schema_version"] = 999
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-schema-version", _failure_types(failures))
+
+    def test_bool_schema_version_is_detected(self):
+        manifest = _manifest_for("foo.py", ["FooTest"], self._valid_entries())
+        manifest["schema_version"] = True
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-schema-version", _failure_types(failures))
+
+    def test_scope_not_a_list_is_detected(self):
+        manifest = _manifest_for("foo.py", ["FooTest"], self._valid_entries())
+        manifest["scope"] = {"file": "foo.py", "classes": ["FooTest"]}
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-manifest-shape", _failure_types(failures))
+
+    def test_assertions_not_a_list_is_detected(self):
+        manifest = _manifest_for("foo.py", ["FooTest"], self._valid_entries())
+        manifest["assertions"] = {"not": "a list"}
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-manifest-shape", _failure_types(failures))
+
+    def test_scope_entry_not_an_object_is_detected(self):
+        manifest = _manifest_for("foo.py", ["FooTest"], self._valid_entries())
+        manifest["scope"] = ["foo.py"]
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-scope-shape", _failure_types(failures))
+
+    def test_assertion_entry_not_an_object_is_detected(self):
+        manifest = _manifest_for("foo.py", ["FooTest"], ["not an object"])
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-manifest-shape", _failure_types(failures))
+
+    def test_both_target_and_targets_is_detected(self):
+        entries = self._valid_entries()
+        entries[0]["targets"] = [entries[0]["target"]]
+        manifest = _manifest_for("foo.py", ["FooTest"], entries)
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-target", _failure_types(failures))
+
+    def test_neither_target_nor_targets_is_detected(self):
+        entries = self._valid_entries()
+        del entries[0]["target"]
+        manifest = _manifest_for("foo.py", ["FooTest"], entries)
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-target", _failure_types(failures))
+
+    def test_blank_target_is_detected(self):
+        entries = self._valid_entries()
+        entries[0]["target"] = "   "
+        manifest = _manifest_for("foo.py", ["FooTest"], entries)
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-target", _failure_types(failures))
+
+    def test_empty_targets_list_is_detected(self):
+        entries = self._valid_entries(use_targets=True)
+        entries[0]["targets"] = []
+        manifest = _manifest_for("foo.py", ["FooTest"], entries)
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-target", _failure_types(failures))
+
+    def test_targets_with_blank_or_non_string_is_detected(self):
+        entries = self._valid_entries(use_targets=True)
+        entries[0]["targets"] = ["ok", "", 123]
+        manifest = _manifest_for("foo.py", ["FooTest"], entries)
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-target", _failure_types(failures))
+
+    def test_duplicate_targets_is_detected(self):
+        entries = self._valid_entries(use_targets=True)
+        entries[0]["targets"] = ["a", "a"]
+        manifest = _manifest_for("foo.py", ["FooTest"], entries)
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-target", _failure_types(failures))
+
+    def test_mixed_target_style_across_manifest_is_detected(self):
+        entries = self._valid_entries()
+        entries[1]["targets"] = [entries[1].pop("target")]
+        manifest = _manifest_for("foo.py", ["FooTest"], entries)
+        failures, _ = self._check(manifest)
+        self.assertIn("mixed-target-style", _failure_types(failures))
+
+    def test_bool_ordinal_is_detected(self):
+        entries = self._valid_entries()
+        entries[0]["ordinal"] = True
+        entries[0]["id"] = "foo.py::FooTest::test_basic::assert-01"
+        manifest = _manifest_for("foo.py", ["FooTest"], entries)
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-ordinal", _failure_types(failures))
+
+    def test_valid_single_target_style_manifest_has_no_failures(self):
+        manifest = _manifest_for("foo.py", ["FooTest"], self._valid_entries(use_targets=False))
+        failures, _ = self._check(manifest)
+        self.assertEqual(failures, [])
+
+    def test_valid_multi_target_style_manifest_has_no_failures(self):
+        manifest = _manifest_for("foo.py", ["FooTest"], self._valid_entries(use_targets=True))
+        failures, _ = self._check(manifest)
+        self.assertEqual(failures, [])
+
+
+class AsyncTestMethodAndUnknownMethodTest(unittest.TestCase):
+    """BL-038 tranche 3a round 1 review Blocker 3: `async def test_*`
+    methods must be enumerated like any other test method (not silently
+    skipped), and a manifest entry naming a method that does not exist at
+    all must be distinguished from one naming a real method whose specific
+    ordinal doesn't exist (`unknown-method` vs `stale-entry`).
+    """
+
+    def setUp(self):
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.root = Path(self._tmpdir.name)
+
+    def _write(self, src):
+        (self.root / "foo.py").write_text(src, encoding="utf-8")
+
+    def test_async_test_method_assertions_are_enumerated_in_source_order(self):
+        src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            "    async def test_basic(self):\n"
+            "        self.assertEqual(1, 1)\n"
+            "        assert 'a' in 'abc'\n"
+        )
+        records = dti.enumerate_assertions(src, "foo.py", ["FooTest"])
+        self.assertEqual(
+            [(r.ordinal, r.assertion_api) for r in records],
+            [(1, "assertEqual"), (2, "assert")],
+        )
+
+    def test_async_custom_helper_semantic_change_is_detected(self):
+        src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            "    async def _assert_row_state(self, row, state):\n"
+            "        self.assertIn(state, row)\n"
+            "    async def test_basic(self):\n"
+            "        await self._assert_row_state('abc', 'a')\n"
+        )
+        # Note: `await self._assert_row_state(...)` is an Await node
+        # wrapping the Call -- the call itself is still reached by plain
+        # descendant traversal, so this is enumerated exactly like the
+        # synchronous case.
+        records = dti.enumerate_assertions(src, "foo.py", ["FooTest"])
+        self.assertEqual(len(records), 1)
+        self._write(src)
+        manifest = _manifest_for("foo.py", ["FooTest"], _records_to_manifest_entries(records))
+
+        changed_src = src.replace("self.assertIn(state, row)", "self.assertNotIn(state, row)")
+        self._write(changed_src)
+        failures, _ = dti.validate_manifest(manifest, root=self.root)
+        self.assertIn("fingerprint-mismatch", _failure_types(failures))
+
+    def test_unknown_method_entry_is_distinguished_from_stale_entry(self):
+        src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            "    def test_basic(self):\n"
+            "        self.assertEqual(1, 1)\n"
+            "        self.assertIn('a', 'abc')\n"
+        )
+        self._write(src)
+        records = dti.enumerate_assertions(src, "foo.py", ["FooTest"])
+        entries = _records_to_manifest_entries(records)
+        # entries[1] names a method that does not exist at all.
+        entries[1]["method"] = "test_no_such_method"
+        entries[1]["id"] = "foo.py::FooTest::test_no_such_method::assert-02"
+        manifest = _manifest_for("foo.py", ["FooTest"], entries)
+
+        failures, _ = dti.validate_manifest(manifest, root=self.root)
+        types_by_id = {f.id: f.mismatch_type for f in failures}
+        self.assertEqual(types_by_id[entries[1]["id"]], "unknown-method")
+        # The real method's own real assertion (assert-02, now unclassified
+        # since entries[1] was repointed away from it) must be reported as
+        # unclassified, not conflated with the unknown-method failure.
+        self.assertIn(
+            "unclassified",
+            {f.mismatch_type for f in failures if f.method == "test_basic"},
+        )
+        # unknown-method must not ALSO be reported as stale-entry for the
+        # same id.
+        self.assertNotIn("stale-entry", {t for i, t in types_by_id.items() if i == entries[1]["id"]})
+
+    def test_existing_method_removed_assertion_is_still_stale_entry(self):
+        src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            "    def test_basic(self):\n"
+            "        self.assertEqual(1, 1)\n"
+            "        self.assertIn('a', 'abc')\n"
+        )
+        self._write(src)
+        records = dti.enumerate_assertions(src, "foo.py", ["FooTest"])
+        manifest = _manifest_for("foo.py", ["FooTest"], _records_to_manifest_entries(records))
+
+        shrunk_src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            "    def test_basic(self):\n"
+            "        self.assertEqual(1, 1)\n"
+        )
+        self._write(shrunk_src)
+        failures, _ = dti.validate_manifest(manifest, root=self.root)
+        self.assertIn("stale-entry", _failure_types(failures))
+        self.assertNotIn("unknown-method", _failure_types(failures))
 
 
 class CliOutputTest(unittest.TestCase):
