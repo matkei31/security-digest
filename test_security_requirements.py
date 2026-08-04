@@ -1601,6 +1601,8 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         self.assertIn(
             dtu.normalize_markdown_prose("Version 1.5 was the previous Approved baseline"),
             normalized_intro,
+            "SECURITY_REQUIREMENTS.md intro must state Version 1.5 was the "
+            "previous Approved baseline (Version history contract)",
         )
         self.assertIn(
             dtu.normalize_markdown_prose(
@@ -1608,6 +1610,8 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
                 "that Approved Version 1.5"
             ),
             normalized_intro,
+            "SECURITY_REQUIREMENTS.md intro must describe Version 1.6 as a "
+            "Draft maintenance update layered on Version 1.5 (Version history contract)",
         )
         self.assertIn("Version 1.6 was never itself independently promoted to Approved status", intro)
         self.assertIn(
@@ -1615,6 +1619,9 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
                 "Version 1.7 (this Version) is a further maintenance update layered on top of Version 1.6"
             ),
             normalized_intro,
+            "SECURITY_REQUIREMENTS.md intro must describe Version 1.7 (this "
+            "Version) as a further maintenance update layered on Version 1.6 "
+            "(Version history contract)",
         )
         self.assertIn("it is Approved, per the acceptance recorded in section 12", intro)
         self.assertIn(
@@ -1623,7 +1630,11 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         )
         self.assertNotIn("only Version 1.4 is approved", intro)
         self.assertNotIn(
-            dtu.normalize_markdown_prose("Version 1.6 (this Version)"), normalized_intro
+            dtu.normalize_markdown_prose("Version 1.6 (this Version)"),
+            normalized_intro,
+            "SECURITY_REQUIREMENTS.md intro must not refer to Version 1.6 as "
+            "'this Version' -- Version 1.7 is the current self-reference "
+            "(Version history contract)",
         )
         self.assertNotIn("only Version 1.5 is approved policy", intro)
 
@@ -1941,11 +1952,15 @@ class Bl034Round1ReviewCorrectionsTest(unittest.TestCase):
         # a phrase that must not appear ANYWHERE, not just in one section),
         # but compared after normalize_markdown_prose so this no longer
         # depends on the exact line-wrap position of the stale phrase.
-        self.assertNotIn(
-            dtu.normalize_markdown_prose(
-                "first external network destination (`static.cloudflareinsights.com`)"
-            ),
-            dtu.normalize_markdown_prose(self.requirements),
+        stale = dtu.normalize_markdown_prose(
+            "first external network destination (`static.cloudflareinsights.com`)"
+        )
+        normalized_requirements = dtu.normalize_markdown_prose(self.requirements)
+        self.assertFalse(
+            stale in normalized_requirements,
+            "SECURITY_REQUIREMENTS.md must not globally describe "
+            "static.cloudflareinsights.com as the first external network "
+            "destination (document-global destination contract)",
         )
         self.assertIn("cloudflareinsights.com/cdn-cgi/rum", self.requirements)
 
@@ -1995,10 +2010,16 @@ class Bl034Round2ReviewCorrectionsTest(unittest.TestCase):
         normalized_intro = dtu.normalize_markdown_prose(intro)
         self.assertIn("**Version:** 1.7", self.requirements)
         self.assertNotIn(
-            dtu.normalize_markdown_prose("Version 1.6 (this Version)"), normalized_intro
+            dtu.normalize_markdown_prose("Version 1.6 (this Version)"),
+            normalized_intro,
+            "SECURITY_REQUIREMENTS.md intro must not self-reference Version "
+            "1.6 as 'this Version' (Version 1.7 current-self-reference contract)",
         )
         self.assertIn(
-            dtu.normalize_markdown_prose("Version 1.7 (this Version)"), normalized_intro
+            dtu.normalize_markdown_prose("Version 1.7 (this Version)"),
+            normalized_intro,
+            "SECURITY_REQUIREMENTS.md intro must self-reference Version 1.7 "
+            "as 'this Version' (Version 1.7 current-self-reference contract)",
         )
 
     def test_version_17_intro_does_not_deny_the_sr044_046_gap016_017_sync(self):
@@ -2009,6 +2030,8 @@ class Bl034Round2ReviewCorrectionsTest(unittest.TestCase):
         self.assertNotIn(
             dtu.normalize_markdown_prose("it does not change SR-001–SR-046, GAP-001–GAP-017"),
             dtu.normalize_markdown_prose(intro),
+            "SECURITY_REQUIREMENTS.md intro must not deny the SR-044-046/"
+            "GAP-016-017 sync (intro SR/GAP stale-denial contract)",
         )
         self.assertIn("synchronizes SR-044–SR-046", intro)
         self.assertIn("GAP-016–GAP-017", intro)
@@ -2309,6 +2332,8 @@ class Bl034CloseoutTest(unittest.TestCase):
                 "verification had occurred"
             ),
             normalized_intro,
+            "SECURITY_REQUIREMENTS.md intro must not claim no DNS/Cloudflare/"
+            "Search Console confirmation had occurred (closeout confirmation contract)",
         )
         self.assertIn(
             dtu.normalize_markdown_prose(
@@ -2316,18 +2341,30 @@ class Bl034CloseoutTest(unittest.TestCase):
                 "dashboard is receiving data"
             ),
             normalized_intro,
+            "SECURITY_REQUIREMENTS.md intro must record the 2026-08-03 "
+            "Cloudflare Web Analytics dashboard confirmation (closeout confirmation contract)",
         )
-        self.assertIn("2026-08-03", intro)
+        self.assertIn(
+            "2026-08-03",
+            intro,
+            "SECURITY_REQUIREMENTS.md intro must record the exact confirmation "
+            "date 2026-08-03 (closeout historical-exact date contract)",
+        )
         self.assertIn(
             dtu.normalize_markdown_prose("Google Search Console verified Domain-property ownership"),
             normalized_intro,
+            "SECURITY_REQUIREMENTS.md intro must record the Google Search "
+            "Console Domain-property ownership verification (closeout confirmation contract)",
         )
         # The Cloudflare site/hostname registration and manual beacon
         # snippet retrieval genuinely happened before acceptance (the
         # implementation embeds that token) -- the intro must say so.
         self.assertIn("the user had already registered", intro)
         self.assertIn(
-            dtu.normalize_markdown_prose("retrieved the manual beacon snippet"), normalized_intro
+            dtu.normalize_markdown_prose("retrieved the manual beacon snippet"),
+            normalized_intro,
+            "SECURITY_REQUIREMENTS.md intro must record that the manual "
+            "beacon snippet was already retrieved (closeout confirmation contract)",
         )
         self.assertIn("no DNS, proxy, or nameserver migration to Cloudflare was made", intro)
         # The historical framing (unconfirmed AT THE TIME of acceptance) must

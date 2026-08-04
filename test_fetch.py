@@ -3663,14 +3663,34 @@ class Bl038Tranche1RecordSyncTest(unittest.TestCase):
             with self.subTest(required=required):
                 self.assertIn(required, bl038)
 
-    def test_backlog_bl038_state_and_residual_work_are_not_complete(self):
+    def test_backlog_bl038_state_not_complete_and_current_residual_names_tranche3(self):
         # This test predates tranche 2; the state field has since moved from
         # "tranche 2以降継続" to "tranche 2実装中" as tranche 2 itself began.
         # Bl038Tranche2RecordSyncTest below covers the current state string.
+        #
+        # BL-038 tranche 2 round 1 review: the residual-work check below is
+        # scoped to the CURRENT "- **残作業:**" field, not the whole BL-038
+        # section -- a document-global "tranche 2以降" substring search would
+        # keep passing on historical prose mentions (e.g. tranche 1's own
+        # evidence record) even after the current residual work moved on to
+        # "tranche 3以降", producing a false positive that no longer detects
+        # a regression in what BL-038 actually still owes.
         bl038 = self._bl038_section()
         self.assertIn("tranche 1受入済み", bl038)
-        self.assertIn("tranche 2以降", bl038)
         self.assertNotIn("- **状態:** 完了", bl038)
+        # Anchor on the actual bullet (line-start "- **残作業:**"), not any
+        # prose elsewhere in the section that merely quotes that label.
+        residual_match = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE)
+        self.assertIsNotNone(residual_match, "BL-038 section must have a current 残作業 bullet")
+        residual = residual_match.group(0)
+        self.assertIn("tranche 3以降", residual)
+        self.assertIn(
+            "約1593件のbroad inventory全件に対するfull per-assertion "
+            "A/B/C/D classification(未実施)",
+            residual,
+        )
+        self.assertIn("BL-038全体の最終受入", residual)
+        self.assertNotEqual(residual.strip(), "- **残作業:** なし。")
 
     def test_backlog_bl038_round1_fix_record_no_longer_claims_fenced_code_is_unsupported(self):
         # The stale phrase is legitimately still quoted inside round 2's own
@@ -3843,18 +3863,26 @@ class Bl038Tranche2RecordSyncTest(unittest.TestCase):
         self.assertIn("f1b6121e54b7f92b1dac0796723af9da1a28931d", bl038)
 
     def test_backlog_bl038_distinguishes_the_three_ok_quotes_by_role(self):
+        # BL-038 tranche 2 round 1 review: only the numbered history entries
+        # (the actual quote records) are contract-checked here -- the
+        # heading's own "同じ表記「ok」を含む3件" descriptive prose is NOT
+        # counted, since it is not itself historical evidence.
         bl038 = self._bl038_section()
-        self.assertIn("BL-038 initial kickoff original", bl038)
-        self.assertIn("tranche 1 final acceptance original", bl038)
-        self.assertIn("tranche 2 kickoff original", bl038)
         history_start = bl038.index("ユーザー原文の履歴")
         history_end = bl038.index("着手時ユーザー原文:", history_start)
         history = bl038[history_start:history_end]
-        # 3 mentions of "「ok」": the heading's own "同じ表記「ok」を含む" note,
-        # plus the two actual quote instances (initial kickoff and tranche 2 kickoff).
-        self.assertEqual(history.count("「ok」"), 3)
-        self.assertEqual(history.count("「おk」"), 1)
-        self.assertIn("同一文字列だが別の発言", history)
+        entries = re.findall(
+            r"^\s*(\d)\.\s+(.*?)(?=^\s*\d\.\s|\Z)", history, re.MULTILINE | re.DOTALL
+        )
+        self.assertEqual([number for number, _ in entries], ["1", "2", "3"])
+        entry1, entry2, entry3 = (text for _, text in entries)
+        self.assertIn("BL-038 initial kickoff original", entry1)
+        self.assertIn("「ok」", entry1)
+        self.assertIn("tranche 1 final acceptance original", entry2)
+        self.assertIn("「おk」", entry2)
+        self.assertIn("tranche 2 kickoff original", entry3)
+        self.assertIn("「ok」", entry3)
+        self.assertIn("同一文字列だが別の発言", entry3)
 
     def test_backlog_bl038_records_tranche2_kickoff_date_branch_and_scope(self):
         bl038 = self._bl038_section()
