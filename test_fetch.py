@@ -3891,11 +3891,46 @@ class Bl038Tranche2RecordSyncTest(unittest.TestCase):
         self.assertIn("tranche 2 kickoff原文の解釈", bl038)
         self.assertIn("BL-038全体の完了承認ではない", bl038)
 
-    def test_backlog_bl038_records_classification_table_and_category_c_count(self):
+    def test_backlog_bl038_records_corrected_classification_counts_and_sd030_as_d(self):
+        # BL-038 tranche 2 round 2 review: round 1's A->D correction on the
+        # SD-030 candidate was a content fix, but the record test only ever
+        # checked the classification table's header and the C-conversion
+        # count/total -- it never pinned each individual A/B/C/D count or
+        # the corrected candidate's own row, so BACKLOG.md could silently
+        # regress to A 1/D 1 and this test would still pass. Pin each count
+        # individually (not a whole-paragraph verbatim lock) and check the
+        # SD-030 row itself carries D, not A.
         bl038 = self._bl038_section()
         self.assertIn("| File | Class | Candidate概要 | 分類 | 対応 | 理由 |", bl038)
+
+        counts_match = re.search(
+            r"\(A (\d+)／B (\d+)／C (\d+)／D (\d+)\)", bl038
+        )
+        self.assertIsNotNone(
+            counts_match, "BL-038 section must record an (A n／B n／C n／D n) count summary"
+        )
+        a_count, b_count, c_count, d_count = (int(g) for g in counts_match.groups())
+        self.assertEqual(a_count, 0)
+        self.assertEqual(b_count, 1)
+        self.assertEqual(c_count, 12)
+        self.assertEqual(d_count, 2)
+        self.assertEqual(a_count + b_count + c_count + d_count, 15)
         self.assertIn("計15 candidateすべてを個別に分類した", bl038)
-        self.assertIn("Category C 12件を変換し", bl038)
+
+        row_match = re.search(
+            r"^\s*\|.*Bl031AcceptanceAndBl032RegistrationTest.*\|\s*$",
+            bl038,
+            re.MULTILINE,
+        )
+        self.assertIsNotNone(
+            row_match,
+            "classification table must have a row for "
+            "Bl031AcceptanceAndBl032RegistrationTest's SD-030 candidate",
+        )
+        sd030_row = row_match.group(0)
+        self.assertIn("| D |", sd030_row)
+        self.assertIn("historical", sd030_row)
+        self.assertNotIn("| A |", sd030_row)
 
     def test_backlog_bl038_names_full_1593_classification_as_residual(self):
         bl038 = self._bl038_section()
