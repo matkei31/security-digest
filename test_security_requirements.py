@@ -1582,20 +1582,39 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         # promoted to Approved even though BL-032's own implementation was
         # later user-accepted and merged; its current-state material is now
         # carried forward and approved as part of Version 1.7.
+        # BL-038 tranche 2: the section itself is still extracted via this
+        # class's own local _section(start, end) (kept as-is -- migrating to
+        # document_test_utils.extract_markdown_section was investigated and
+        # rejected: that helper stops an H1 section only at the next H1,
+        # and this document has exactly one H1, so it would return
+        # essentially the whole rest of the document instead of just this
+        # intro paragraph before "## 1. Purpose and proportionality"). The
+        # brittle part was never the extraction -- it was locking the exact
+        # mid-sentence line-wrap of several explanatory sentences; those are
+        # now compared via normalize_markdown_prose so only wording (not an
+        # incidental wrap column) is the contract.
         intro = self._section(
             "# Monomi Digest Security Requirements", "## 1. Purpose and proportionality"
         )
+        normalized_intro = dtu.normalize_markdown_prose(intro)
         self.assertIn("Version 1.7 is now the most recent **Approved**", intro)
-        self.assertIn("Version 1.5 was\nthe previous Approved baseline", intro)
         self.assertIn(
-            "Version 1.6 was a **Draft** maintenance update layered on top of\n"
-            "that Approved Version 1.5",
-            intro,
+            dtu.normalize_markdown_prose("Version 1.5 was the previous Approved baseline"),
+            normalized_intro,
+        )
+        self.assertIn(
+            dtu.normalize_markdown_prose(
+                "Version 1.6 was a **Draft** maintenance update layered on top of "
+                "that Approved Version 1.5"
+            ),
+            normalized_intro,
         )
         self.assertIn("Version 1.6 was never itself independently promoted to Approved status", intro)
         self.assertIn(
-            "Version 1.7 (this\nVersion) is a further maintenance update layered on top of Version 1.6",
-            intro,
+            dtu.normalize_markdown_prose(
+                "Version 1.7 (this Version) is a further maintenance update layered on top of Version 1.6"
+            ),
+            normalized_intro,
         )
         self.assertIn("it is Approved, per the acceptance recorded in section 12", intro)
         self.assertIn(
@@ -1603,7 +1622,9 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
             intro,
         )
         self.assertNotIn("only Version 1.4 is approved", intro)
-        self.assertNotIn("Version 1.6\n(this Version)", intro)
+        self.assertNotIn(
+            dtu.normalize_markdown_prose("Version 1.6 (this Version)"), normalized_intro
+        )
         self.assertNotIn("only Version 1.5 is approved policy", intro)
 
     def test_bl_and_sd_ids_referenced_are_unique_in_their_documents(self):
@@ -1916,9 +1937,15 @@ class Bl034Round1ReviewCorrectionsTest(unittest.TestCase):
         # No sentence anywhere in the document should claim
         # static.cloudflareinsights.com is the only external destination —
         # the beacon separately POSTs measurement data to cloudflareinsights.com.
+        # BL-038 tranche 2: kept document-global (per rule 7.4's exception for
+        # a phrase that must not appear ANYWHERE, not just in one section),
+        # but compared after normalize_markdown_prose so this no longer
+        # depends on the exact line-wrap position of the stale phrase.
         self.assertNotIn(
-            "first external network\ndestination (`static.cloudflareinsights.com`)",
-            self.requirements,
+            dtu.normalize_markdown_prose(
+                "first external network destination (`static.cloudflareinsights.com`)"
+            ),
+            dtu.normalize_markdown_prose(self.requirements),
         )
         self.assertIn("cloudflareinsights.com/cdn-cgi/rum", self.requirements)
 
@@ -1951,9 +1978,28 @@ class Bl034Round2ReviewCorrectionsTest(unittest.TestCase):
         )
 
     def test_version_17_is_the_current_draft_and_16_is_not_called_this_version(self):
+        # BL-038 tranche 2: this "(this Version)" self-reference tag is a
+        # single, specific phrase pattern that (per this class's own
+        # docstring) is intentionally checked without blanket-forbidding
+        # ordinary historical mentions of "Version 1.6" elsewhere in the
+        # document -- scoping to the intro section (where this
+        # self-reference tag actually lives; verified it does not appear
+        # anywhere else) makes that intent explicit rather than relying on
+        # the exact phrase "Version 1.6\n(this Version)" never accidentally
+        # matching prose elsewhere. normalize_markdown_prose removes the
+        # dependency on this phrase's exact line-wrap position.
+        intro = self._section(
+            self.requirements,
+            "# Monomi Digest Security Requirements", "## 1. Purpose and proportionality",
+        )
+        normalized_intro = dtu.normalize_markdown_prose(intro)
         self.assertIn("**Version:** 1.7", self.requirements)
-        self.assertNotIn("Version 1.6\n(this Version)", self.requirements)
-        self.assertIn("Version 1.7 (this\nVersion)", self.requirements)
+        self.assertNotIn(
+            dtu.normalize_markdown_prose("Version 1.6 (this Version)"), normalized_intro
+        )
+        self.assertIn(
+            dtu.normalize_markdown_prose("Version 1.7 (this Version)"), normalized_intro
+        )
 
     def test_version_17_intro_does_not_deny_the_sr044_046_gap016_017_sync(self):
         intro = self._section(
@@ -1961,7 +2007,8 @@ class Bl034Round2ReviewCorrectionsTest(unittest.TestCase):
             "# Monomi Digest Security Requirements", "## 1. Purpose and proportionality"
         )
         self.assertNotIn(
-            "it does not change SR-001–SR-046,\nGAP-001–GAP-017", intro
+            dtu.normalize_markdown_prose("it does not change SR-001–SR-046, GAP-001–GAP-017"),
+            dtu.normalize_markdown_prose(intro),
         )
         self.assertIn("synchronizes SR-044–SR-046", intro)
         self.assertIn("GAP-016–GAP-017", intro)
@@ -2243,23 +2290,50 @@ class Bl034CloseoutTest(unittest.TestCase):
         self.assertIn("**Status:** Approved", self.requirements)
 
     def test_intro_no_longer_claims_no_external_confirmations_have_occurred(self):
-        self.assertNotIn("none of those have occurred and none of them is claimed here", self.requirements)
-        self.assertNotIn("no DNS change, Cloudflare account\noperation, or Search Console verification had occurred", self.requirements)
-        self.assertIn(
-            "on 2026-08-03 the user confirmed the Cloudflare Web\nAnalytics dashboard is receiving data",
+        # BL-038 tranche 2: scoped to the intro section (all of these
+        # checks are, per this test's own name and the class docstring,
+        # specifically about what the intro currently says) and compared
+        # with normalize_markdown_prose so the contract is the wording, not
+        # the exact mid-sentence line-wrap several of these sentences
+        # happened to have. The exact date (2026-08-03) is still asserted
+        # separately as its own exact-value check.
+        intro = self._section(
             self.requirements,
+            "# Monomi Digest Security Requirements", "## 1. Purpose and proportionality",
         )
-        self.assertIn("Google Search Console verified Domain-property\nownership", self.requirements)
+        normalized_intro = dtu.normalize_markdown_prose(intro)
+        self.assertNotIn("none of those have occurred and none of them is claimed here", intro)
+        self.assertNotIn(
+            dtu.normalize_markdown_prose(
+                "no DNS change, Cloudflare account operation, or Search Console "
+                "verification had occurred"
+            ),
+            normalized_intro,
+        )
+        self.assertIn(
+            dtu.normalize_markdown_prose(
+                "on 2026-08-03 the user confirmed the Cloudflare Web Analytics "
+                "dashboard is receiving data"
+            ),
+            normalized_intro,
+        )
+        self.assertIn("2026-08-03", intro)
+        self.assertIn(
+            dtu.normalize_markdown_prose("Google Search Console verified Domain-property ownership"),
+            normalized_intro,
+        )
         # The Cloudflare site/hostname registration and manual beacon
         # snippet retrieval genuinely happened before acceptance (the
         # implementation embeds that token) -- the intro must say so.
-        self.assertIn("the user had already registered", self.requirements)
-        self.assertIn("retrieved the manual beacon\nsnippet", self.requirements)
-        self.assertIn("no DNS, proxy, or nameserver migration to Cloudflare was made", self.requirements)
+        self.assertIn("the user had already registered", intro)
+        self.assertIn(
+            dtu.normalize_markdown_prose("retrieved the manual beacon snippet"), normalized_intro
+        )
+        self.assertIn("no DNS, proxy, or nameserver migration to Cloudflare was made", intro)
         # The historical framing (unconfirmed AT THE TIME of acceptance) must
         # be preserved, not deleted -- only the present-tense claim was wrong.
-        self.assertIn("both tracked as BL-034's residual post-merge work", self.requirements)
-        self.assertIn("did not block this Version's own approval", self.requirements)
+        self.assertIn("both tracked as BL-034's residual post-merge work", intro)
+        self.assertIn("did not block this Version's own approval", intro)
 
     def test_sr047_and_gap018_confirm_dashboard_and_search_console_not_unconfirmed(self):
         sr047 = next(

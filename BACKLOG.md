@@ -1043,15 +1043,24 @@
 - **ID:** BL-038
 - **タイトル:** 文書testを構造・意味契約中心へ整理する
 - **優先度:** P3／Maintenance(元レビューで別severityが明確に確認できなかったため、既定のP3／Maintenanceとした)
-- **状態:** 実装中(tranche 1受入済み／tranche 2以降継続)
+- **状態:** 実装中(tranche 1受入済み／tranche 2実装中)
 - **出所種別:** Fable 5 whole-repository review R-04
 - **レビュー要旨:** Fable 5レビューの正確な原文はlocal artifactとして確認できなかったため、原文を捏造せず要旨として記録する。文書testに、長い説明文・改行位置・段落全体の逐語一致へ依存するassertionがある。同じMarkdown section／tableの抽出処理が複数testへ分散している。文書の意味を変えない整形修正でも、複数のtestを機械的に更新する保守負担が生じる。一方で、Version、Status、ID、ユーザー原文、日付、SHA、CI run、enum、表の状態等はexact contractとして維持すべきである。
-- **着手時ユーザー原文:** 「ok」
+- **ユーザー原文の履歴(同じ表記「ok」を含む3件の別発言、混同・上書きしない):**
+  1. **BL-038 initial kickoff original(2026-08-04):** 「ok」— BL-037完了後にR-04へ初めて着手する承認。
+  2. **tranche 1 final acceptance original(2026-08-04):** 「おk」— PR #80 tranche 1の最終受入・Ready化・通常merge承認。
+  3. **tranche 2 kickoff original(2026-08-04):** 「ok」— PR #80 merge後、BL-038 tranche 2へ着手する承認。#1と同一文字列だが別の発言であり、tranche 2実装内容やPRの最終受入を先に承認する発言ではなく、BL-038全体の完了承認でもない。
+- **着手時ユーザー原文:** 「ok」(上記1)
 - **着手時原文の解釈:** BL-037完了後、Fable 5レビューの次項目R-04へ着手することへの承認。実装内容やPRの最終受入を先に承認した発言ではない。問題の起点はFable 5レビューR-04自体である。最終受入発言とは分離して記録する。
 - **tranche 1最終受入:**
   - **tranche 1最終受入日:** 2026-08-04
   - **tranche 1最終受入原文:** 「おk」(着手時原文「ok」とは別の発言であり、混同・上書きしない)
   - **tranche 1最終受入原文の解釈:** 独立レビューround 2で受入可能と判断された[PR #80](https://github.com/matkei31/security-digest/pull/80)のtranche 1だけを最終受入し、tranche 1の受入記録を承認し、PR #80のReady化と通常のmerge commit方式によるmergeを承認する発言として解釈した。BL-038全体の完了承認ではない。tranche 2以降のscopeや実装内容を事前承認した発言でもない。protected documents・runtime・policy・schema等の追加変更を指示した発言でもない。
+- **tranche 2着手:**
+  - **tranche 2 kickoff日:** 2026-08-04
+  - **tranche 2 kickoff原文:** 「ok」(着手時原文と同一文字列だが、PR #80 merge後にtranche 2へ着手する別発言。着手時原文「ok」・tranche 1最終受入原文「おk」のいずれとも混同・上書きしない)
+  - **tranche 2 kickoff原文の解釈:** PR #80(tranche 1)のmerge後、BL-038 tranche 2(既知のbrittle candidateの個別精査)へ着手することへの承認。tranche 2実装内容やPRの最終受入を先に承認した発言ではない。BL-038全体の完了承認ではない。
+  - **branch:** `test/bl038-tranche2-brittle-assertions`
 - **影響:** 文書の意味を変えない編集でもtest更新が広範囲化し、testが文書設計を過度に拘束する。
 - **目的:** exact durable contract(Version・Status・ID・ユーザー原文・日付・SHA・CI run・enum・表の状態等)とsemantic/structural contract(section存在・必須論点・状態遷移等)を区別し、改行位置・段落整形等のbrittle prose lockだけを意味契約または構造契約へ変換する。文書の保護を弱めるTicketではない。
 - **umbrellaとしての分割方針:** pre-flight調査(AST解析)で、Markdown文書を読むtest fileは8件・関連class 27件、文書関連assert呼び出しは約1593件と判明した。この約1593件はbroad inventoryであり、A(exact durable contract)／B(structural/semantic contract)／C(brittle prose/layout lock)／D(historical exact evidence)への個別分類は全件には実施していない。実施したのは、multiline literal・120文字以上literalという機械的heuristicによる絞り込み(multiline 25件・120文字以上10件、うち大半が`test_security_requirements.py`に集中)と、そのうちtranche 1で実際にmanual reviewし変換した6件(すべてCategory Cのbrittle prose/layout lockと判断)である。10ファイル／差分800行程度という上限のもとで約1593件全件・25件全件を一括変換すると上限超過が確実なため、ユーザーとの合意によりBL-038をumbrellaとし、tranche 1を本PRのscopeとした。約1593件のfull per-assertion A/B/C/D classificationは実施しておらず、tranche 2以降の残作業に含まれる。tranche 1で対応しなかった残りのmultiline/long-literal brittle candidateも以下の「残作業」に明記し、tranche 2以降の対象として本Ticketに残す(完了扱いにしない)。
@@ -1083,7 +1092,36 @@
   - **round 2 accepted tranche 1 implementation証跡:** head `f1b6121e54b7f92b1dac0796723af9da1a28931d`、[Pull Request CI run 30905147771](https://github.com/matkei31/security-digest/actions/runs/30905147771) success、full unittest 1712 tests OK、`git diff --check` success、changed files 8件、unresolved review threads 0。新しいBlockerなし。独立レビューにより、この実装がtranche 1として最終受入可能と判断された(BL-038全体の受入条件がすべて満たされたとは判断されていない)。
 - **tranche 1受入条件充足の確認(tranche 1のscopeに限る):** broad AST inventory(約1593件)とbrittle-candidate heuristic(multiline 25件／120文字以上10件)を実施し、tranche 1対象6件をmanual reviewしたこと、exact durable contractとhistorical acceptance evidenceをtranche 1で touched した箇所以外すべて維持したこと、tranche 1対象のline-wrap依存multiline literal 6件をsemantic/structural contractへ変換したこと、fenced-code-aware heading scannerとhelper unit tests 27件が存在すること、As-of日付がexact equality contractへ復元されていること、harmless mutationは成功・semantic mutationは失敗することをmutation-style verificationで確認したこと、test method削除が無いこと、full unittest／CIが成功していること、protected documents本文変更が無いこと、runtime／workflow／policy／schema／data／docs変更が無いことを確認した。**BL-038全体の受入条件がすべて完了したとは記録しない**(tranche 2以降の残作業が残る)。
 - **merge記録:** 2026-08-04にtranche 1を最終受入済み。tranche 1 accepted implementationと最終受入記録commitを含む[PR #80](https://github.com/matkei31/security-digest/pull/80)を通常のmerge commit方式でmainへmergeすることが承認された。実際のmerge commit SHA・merge state・merge日時はPR #80のGitHub上の記録を正本とする(本文書では推測・placeholder記載しない)。BL-038全体はtranche 2以降継続する。
-- **残作業:** tranche 2以降。pre-flight調査で確認済みで、tranche 1では対応しなかった残りのbrittle candidate: `test_security_requirements.py`の`Bl031SecurityRequirementsReconciliationTest`(multiline 5件)・`Bl031AcceptanceAndBl032RegistrationTest`(120文字以上1件)・`Bl034Round1ReviewCorrectionsTest`／`Bl034Round2ReviewCorrectionsTest`(Version 1.6/1.7履歴prose、multiline計5件)・`Bl034ImplementationAcceptanceTest`(120文字以上1件・multiline1件)・`Bl034CloseoutTest`(Cloudflare/GSC evidence、multiline4件)、および`test_security_operations.py`の`Bl035DraftSyncTest`(120文字以上1件)。`test_ui_spec.py`・`test_content_usage_policy.py`・`test_custom_domain.py`・`test_source_definitions.py`は、pre-flight inventoryでmultiline／120文字以上のliteralが検出されなかったため、tranche 1・2いずれにおいてもrefactor対象に含めていない(重複section抽出helper自体の統合は将来の判断とする)。約1593件のbroad inventory全件に対するfull per-assertion A/B/C/D classification(実施していない)、必要性が確認された場合の`parse_markdown_table`／`find_ticket_section`／`extract_markdown_subsection`の追加実装、tranche 2以降の残candidateに対するmutation-style verificationも、tranche 2以降の残作業に含む。tranche 1は最終受入済みだが、上記残作業が完了するまでBL-038全体の最終受入は行わない。
+- **実装証跡(tranche 2):** branch `test/bl038-tranche2-brittle-assertions`。tranche 1で記録済みの既知candidateを、記録上の件数を鵜呑みにせず最新main上でAST／source inspectionにより再測定した(記録上「multiline計X件」等はレビュー実施時点の概算であり、対象classの実際のcandidate数とは一部異なっていた)。全candidateを個別にA/B/C/D分類し、分類表を維持した:
+
+  | File | Class | Candidate概要 | 分類 | 対応 | 理由 |
+  |---|---|---|---|---|---|
+  | test_security_requirements.py | Bl031SecurityRequirementsReconciliationTest | 「Version 1.5 was\nthe previous Approved baseline」 | C | 変換 | 通常の説明文のmid-sentence wrap依存 |
+  | 同上 | 同上 | 「Version 1.6 was a **Draft** maintenance update layered on top of\nthat Approved Version 1.5」 | C | 変換 | 同上 |
+  | 同上 | 同上 | 「Version 1.7 (this\nVersion) is a further maintenance update layered on top of Version 1.6」 | C | 変換 | 同上 |
+  | 同上 | 同上 | assertNotIn「Version 1.6\n(this Version)」 | C | 変換 | 同上、negative assertionもintro sectionへscope済み |
+  | test_security_requirements.py | Bl031AcceptanceAndBl032RegistrationTest | 「an enabled \`metadata_only\`...\`structured_open\` source」(146文字、改行なし) | A | 維持 | DECISIONS.md側の実文もこの箇所に改行が無く、Python source上の実装上の折返しに過ぎない。document側のline-wrapに依存していないため変換対象ではない |
+  | test_security_requirements.py | Bl034Round1ReviewCorrectionsTest | assertNotIn「first external network\ndestination (...)」 | C | 変換 | 「document内のどこにも無い」ことを保証する意図的なdocument-global negative assertion(rule 7.4の例外)のため section-scopeはせず維持、normalize_markdown_proseのみ適用 |
+  | test_security_requirements.py | Bl034Round2ReviewCorrectionsTest | assertNotIn「Version 1.6\n(this Version)」 | C | 変換 | class docstring自身が「歴史的なVersion 1.6言及を一律禁止しない」と明記しており、intro sectionへscopeすることでこの意図をより正確に反映 |
+  | 同上 | 同上 | assertIn「Version 1.7 (this\nVersion)」 | C | 変換 | 同上 |
+  | 同上 | 同上 | assertNotIn「it does not change SR-001–SR-046,\nGAP-001–GAP-017」 | C | 変換 | 既にintro section-scoped、normalize_markdown_proseのみ適用 |
+  | test_security_requirements.py | Bl034ImplementationAcceptanceTest | 「Version 1.6 is a Draft maintenance update. It records the BL-032 implementation (Draft, pending\nuser acceptance...)」 | D | 維持 | 既存コード comment が「survive this round's edits verbatim」と明記する意図的なhistorical verbatim lock。当時Version 1.6が記録した内容の正確な歴史的保存が目的であり、brittle proseの偶発的固定ではない |
+  | test_security_requirements.py | Bl034CloseoutTest | assertNotIn「no DNS change, Cloudflare account\noperation...」 | C | 変換 | intro sectionへscope、normalize |
+  | 同上 | 同上 | assertIn「on 2026-08-03 the user confirmed the Cloudflare Web\nAnalytics dashboard is receiving data」 | C(exact date要素を含む) | 変換 | prose部分はnormalize_markdown_prose、日付`2026-08-03`は別途exact assertionとして分離維持 |
+  | 同上 | 同上 | assertIn「Google Search Console verified Domain-property\nownership」 | C | 変換 | intro sectionへscope、normalize |
+  | 同上 | 同上 | assertIn「retrieved the manual beacon\nsnippet」 | C | 変換 | 同上 |
+  | test_security_operations.py | Bl035DraftSyncTest | 「no runtime, workflow, schema...production change」(128文字、改行なし) | B(既存で安全) | 維持 | 既にlocal `compact_whitespace(approval)`(whitespace正規化helper)と`section()`によるsection-scopeを経て比較されており、既にbrittleではない。class docstring自身が「deliberately not locking full sentences or line wrapping」と明記済み。新たな欠陥は発見されなかった |
+
+  Category C 12件を変換し、Category A維持1件・D維持1件・B(既に安全)維持1件、計15 candidateすべてを個別に分類した(「長いから」「multilineだから」という理由だけでの変換は行っていない)。
+
+  **local helper統合の調査結果:** `test_security_requirements.py`の`_section`(および各classの3引数版`_section(text, start, end)`)を`document_test_utils.extract_markdown_section`へ移行することを検討したが、対象箇所(`"# Monomi Digest Security Requirements"`から`"## 1. Purpose and proportionality"`までのintro paragraph抽出)はH1見出しから始まり、`extract_markdown_section`は「次の同levelまたはより浅いheading」で終了する仕様のため、document内にH1が1つしか無いSECURITY_REQUIREMENTS.mdでは文書のほぼ全体(121,008文字、実測)を返してしまい、既存のexact end-marker指定による intro 抽出(約数百〜数千文字)と一致しないことを実測で確認した。この意味的不一致のため、section抽出自体の共通helperへの移行は見送り、既存のlocal `_section`が返す値へ`normalize_markdown_prose`を適用するだけに留めた(抽出範囲は変更せず、brittle prose lockだけを解消)。`test_security_requirements.py`の`_markdown_rows`、`test_security_operations.py`の`section`／`compact_whitespace`、`Bl035DraftSyncTest._downgrade_section`は、いずれも今回変換したcandidateと直接の重複を生んでおらず(Bl035DraftSyncTestの候補はもともとbrittleではなかった)、大規模移行は行っていない。新helper(`parse_markdown_table`等)は、tranche 2で実際の複数use siteが確認できなかったため追加していない。
+
+  **mutation-style verification(repositoryへcommitしない一時的な変更、実施後は必ず復元):** 代表箇所で(a) harmless mutation(文の改行位置変更)では変換後testが成功したまま変わらないこと、(b) semantic mutation(語句変更)では対応testが失敗すること、(c) historical exact mutation(日付`2026-08-03`→`2026-08-04`)では対応testが失敗し、exactnessが弱まっていないことを確認した。全mutationは検証後に`SECURITY_REQUIREMENTS.md`を復元し、working tree cleanを確認した。
+
+  **before/after metrics(実測、target assertion引数のみ、comment/docstring/failure messageは除外):** `test_security_requirements.py`: test method数120→120(0件削除)、assertion呼出し数739→740(brittle多文assertionを個別exact assertionへ分離した結果1件増)、120文字以上literal 7→7(未変換、意図通り)、multiline literal 19→7(12件変換)。`test_security_operations.py`: 全指標変更なし(31 test methods、166 assertions、long-literal 1件・multiline 0件のまま。Bl035DraftSyncTestの候補は元々既に安全だったため)。
+
+- **tranche 2 final acceptance:** 未実施(pending)。tranche 2はDraft PRの作成とCI success確認までを行い、Ready化・merge・tranche 2 final acceptance記録は本Ticketの以降の作業とする。
+- **残作業:** tranche 3以降。約1593件のbroad inventory全件に対するfull per-assertion A/B/C/D classification(未実施)、multiline／120文字以上literal heuristic以外のbrittleness確認(未実施)、必要性が確認された場合の`parse_markdown_table`／`find_ticket_section`／`extract_markdown_subsection`等の追加実装、BL-038全体の最終受入。`test_ui_spec.py`・`test_content_usage_policy.py`・`test_custom_domain.py`・`test_source_definitions.py`は、pre-flight inventoryでmultiline／120文字以上のliteralが検出されなかったため、tranche 1・2いずれにおいてもrefactor対象に含めていない(重複section抽出helper自体の統合は将来の判断とする)。tranche 2は上記15 candidateすべてを分類・対応済みだが、BL-038全体の最終受入は上記残作業が完了するまで行わない。
 - **注記:** 本Ticketは`fetch.py`・`daily_json.py`・`vulnerability_facts.py`・`UI_SPEC.md`・`DECISIONS.md`・`SOURCE_USAGE_POLICY.md`・`source_definitions.json`・`SECURITY_REQUIREMENTS.md`・`SECURITY_OPERATIONS.md`・`AGENTS.md`・`.github/workflows/`・`data/`・`docs/`の本文を変更していない(`SECURITY_REQUIREMENTS.md`・`SECURITY_OPERATIONS.md`はmutation-style verificationのため一時的に変更したが、検証後にすべて復元した)。production・`workflow_dispatch`・実Gemini・実NVD・通常外部収集・実network接続は行っていない。新規Python依存packageは追加していない(標準library `unittest`のみ)。
 
 ## 完了済み参照
