@@ -9,9 +9,8 @@ silently removed from that declared scope (both `scope` and the matching
 suite pins the expected scope/class-set/count as *hardcoded literals*,
 independent of whatever the manifest file currently says, so a silent
 scope shrinkage is caught here even though the validator alone would not
-catch it (round 1 review, Blocker 4: `_assert_expected_scope()` is
-exercised both directly and against a deliberately-shrunk mutated copy,
-so this claim is demonstrated, not just asserted).
+catch it (round 1, Blocker 4: `_assert_expected_scope()` is exercised both
+directly and against a deliberately-shrunk mutated copy, demonstrated not just asserted).
 """
 
 import json
@@ -38,12 +37,92 @@ EXPECTED_CLASSES = (
     "TicketIdTypoTest",
 )
 EXPECTED_ASSERTION_COUNT = 97
-# Round 1 review corrected this tally after finding 30 entries were
-# misclassified B (raw document-prose substring checks vulnerable to a
-# meaning-preserving line-wrap) instead of C, and 4 of the original 12 A
-# entries were prose duplicates that needed C, not A, as their primary
-# classification.
-EXPECTED_CATEGORY_COUNTS = {"A": 8, "B": 48, "C": 30, "D": 11}
+
+# Round 2 review, Blocker 3: category *counts* alone cannot catch a B/C
+# entry being swapped for another B/C entry (counts stay the same). The
+# manifest is a human-reviewed per-assertion record, so A/C/D membership
+# is pinned as hardcoded literal ID sets -- B is checked as the exact
+# remainder (all 97 IDs minus A/C/D), not counted independently.
+EXPECTED_A_IDS = frozenset({
+    "test_custom_domain.py::CnameSurvivesGenerationTest::test_cname_survives_generate_archive_outputs::assert-01",
+    "test_custom_domain.py::CnameSurvivesGenerationTest::test_cname_survives_generate_archive_outputs::assert-02",
+    "test_custom_domain.py::CnameSurvivesGenerationTest::test_cname_survives_repeated_full_archive_regeneration::assert-01",
+    "test_custom_domain.py::CnameSurvivesGenerationTest::test_cname_survives_repeated_full_archive_regeneration::assert-02",
+    "test_custom_domain.py::CnameSurvivesGenerationTest::test_atomic_write_text_never_touches_sibling_files::assert-01",
+    "test_custom_domain.py::CnameSurvivesGenerationTest::test_atomic_write_text_never_touches_sibling_files::assert-02",
+    "test_custom_domain.py::Bl007DocumentationTest::test_no_wildcard_dns_is_instructed_anywhere_in_bl007::assert-01",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_retains_ownership_txt_and_forbids_wildcard::assert-02",
+})
+EXPECTED_C_IDS = frozenset({
+    "test_custom_domain.py::Bl007DocumentationTest::test_bl007_is_recorded_as_complete_with_confirmed_policy::assert-02",
+    "test_custom_domain.py::Bl007DocumentationTest::test_bl007_is_recorded_as_complete_with_confirmed_policy::assert-03",
+    "test_custom_domain.py::Bl007DocumentationTest::test_bl007_is_recorded_as_complete_with_confirmed_policy::assert-04",
+    "test_custom_domain.py::Bl007DocumentationTest::test_bl007_is_recorded_as_complete_with_confirmed_policy::assert-05",
+    "test_custom_domain.py::Bl007DocumentationTest::test_bl007_is_recorded_as_complete_with_confirmed_policy::assert-06",
+    "test_custom_domain.py::Bl007DocumentationTest::test_bl007_is_recorded_as_complete_with_confirmed_policy::assert-07",
+    "test_custom_domain.py::Bl007DocumentationTest::test_bl007_is_recorded_as_complete_with_confirmed_policy::assert-08",
+    "test_custom_domain.py::Bl007DocumentationTest::test_bl007_is_recorded_as_complete_with_confirmed_policy::assert-09",
+    "test_custom_domain.py::Bl007DocumentationTest::test_bl007_does_not_infer_domain_as_unacquired::assert-03",
+    "test_custom_domain.py::Bl007DocumentationTest::test_sd011_status_is_unchanged::assert-02",
+    "test_custom_domain.py::Bl007DocumentationTest::test_sd028_records_the_implementation_decision::assert-03",
+    "test_custom_domain.py::Bl007DocumentationTest::test_sd028_records_the_implementation_decision::assert-04",
+    "test_custom_domain.py::Bl007DocumentationTest::test_no_wildcard_dns_is_instructed_anywhere_in_bl007::assert-02",
+    "test_custom_domain.py::ReadmePublicUrlTest::test_readme_does_not_embed_runbook_or_dns_details::assert-01",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_distinguishes_its_own_work_from_the_scheduled_run::assert-01",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_distinguishes_its_own_work_from_the_scheduled_run::assert-02",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_distinguishes_its_own_work_from_the_scheduled_run::assert-03",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_sd028_context_is_historical_not_current::assert-01",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_sd028_context_is_historical_not_current::assert-02",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_records_the_approved_plan_as_a_separate_history_item::assert-01",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_records_the_approved_plan_as_a_separate_history_item::assert-02",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_records_the_approved_plan_as_a_separate_history_item::assert-03",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_records_the_actual_automatic_activation_order_separately::assert-01",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_records_the_actual_automatic_activation_order_separately::assert-02",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_records_the_actual_automatic_activation_order_separately::assert-03",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_does_not_claim_the_plan_was_executed_as_planned::assert-01",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_does_not_claim_the_plan_was_executed_as_planned::assert-02",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_records_no_unintended_commit_from_custom_domain_activation::assert-01",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_and_sd028_observed_facts_do_not_contradict::assert-03",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_and_sd028_observed_facts_do_not_contradict::assert-04",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_and_sd028_observed_facts_do_not_contradict::assert-05",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_and_sd028_observed_facts_do_not_contradict::assert-06",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_retains_ownership_txt_and_forbids_wildcard::assert-01",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_does_not_retain_stale_pre_closure_wording::assert-01",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_does_not_retain_stale_pre_closure_wording::assert-02",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_sd028_records_https_enforced_and_certificate_approved::assert-01",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_sd028_records_https_enforced_and_certificate_approved::assert-02",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_sd028_records_https_enforced_and_certificate_approved::assert-03",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_sd028_records_cname_merge_activation_as_an_observation_not_a_guarantee::assert-01",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_sd028_records_cname_merge_activation_as_an_observation_not_a_guarantee::assert-02",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_sd028_records_minimal_dns_with_no_wildcard::assert-01",
+})
+EXPECTED_D_IDS = frozenset({
+    "test_custom_domain.py::DocsCnameFileTest::test_cname_content_is_exactly_the_apex_domain_with_trailing_newline::assert-01",
+    "test_custom_domain.py::ArticleBriefContractUnchangedTest::test_article_and_brief_prompt_versions_are_unchanged::assert-01",
+    "test_custom_domain.py::ArticleBriefContractUnchangedTest::test_article_and_brief_prompt_versions_are_unchanged::assert-02",
+    "test_custom_domain.py::ArticleBriefContractUnchangedTest::test_daily_json_schema_version_is_unchanged::assert-01",
+    "test_custom_domain.py::Bl007DocumentationTest::test_bl007_is_recorded_as_complete_with_confirmed_policy::assert-10",
+    "test_custom_domain.py::Bl007DocumentationTest::test_bl007_is_recorded_as_complete_with_confirmed_policy::assert-11",
+    "test_custom_domain.py::Bl007DocumentationTest::test_status_records_bl007_as_recently_completed::assert-02",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_records_the_scheduled_run_commit_sha::assert-01",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_sd028_evidence_records_merge_commit_and_public_state::assert-01",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_sd028_evidence_records_merge_commit_and_public_state::assert-02",
+    "test_custom_domain.py::Bl007ClosureRecordTest::test_sd028_evidence_records_merge_commit_and_public_state::assert-03",
+})
+assert not (EXPECTED_A_IDS & EXPECTED_C_IDS)
+assert not (EXPECTED_A_IDS & EXPECTED_D_IDS)
+assert not (EXPECTED_C_IDS & EXPECTED_D_IDS)
+# Round 2 review corrected this tally further: 11 more B entries were found
+# to be either (a) raw `.index()` anchor phrases that a position-based
+# `assertLess` ordering check depends on, which breaks before the ordering
+# assertion is even reached, or (b) short phrases wrongly kept B on a
+# length/word-count heuristic instead of checking their actual document
+# context (some turned out to be embedded in giant free-flowing paragraphs,
+# not standalone fixed-format fields).
+EXPECTED_CATEGORY_COUNTS = {
+    "A": len(EXPECTED_A_IDS), "B": 97 - len(EXPECTED_A_IDS) - len(EXPECTED_C_IDS) - len(EXPECTED_D_IDS),
+    "C": len(EXPECTED_C_IDS), "D": len(EXPECTED_D_IDS),
+}
 
 EXPECTED_ENTRY_KEY_ORDER = (
     "id",
@@ -81,17 +160,26 @@ EXPECTED_MULTI_TARGETS = {
     ),
 }
 
+# Round 2 fix (Blocker 6): "short"/"one line"/"no realistic [wrap point]"/
+# generic "cname" were the weak length-based reasoning that produced round
+# 1's own misclassifications ("is enabled", "Enforce HTTPS", "DNS切替待ち"
+# were excused as B partly on "short" wording despite being reflow-
+# vulnerable) -- removed rather than tightened. This is a structural
+# sanity net (nonblank, no placeholder, *some* substantive category-
+# appropriate reasoning) -- it cannot verify a rationale's classification
+# judgment is correct. Category membership is a human-reviewed record,
+# pinned by EXPECTED_A_IDS/C_IDS/D_IDS, checked by
+# test_exact_category_membership_matches_hardcoded_id_sets.
 _PLACEHOLDER_WORDS = ("todo", "fixme", "placeholder", "tbd", "xxx", "n/a")
 _CATEGORY_MARKERS = {
     "A": ("duplicat", "helper", "consolidat", "shared", "call site", "identical fingerprint", "repeated"),
     "B": (
         "structural", "atomic", "convention", "no internal wrap", "no wrap point",
-        "no realistic", "token", "marker", "single word", "ordering", "position-based",
+        "token", "marker", "single word", "ordering", "position-based",
         "existence", "minimal", "not subject to", "editorial reflow", "config",
-        "meaning-preserving edit", "short", "one line", "sanity", "postcondition",
-        "cname",
+        "meaning-preserving edit", "sanity", "postcondition", "standalone",
     ),
-    "C": ("brittle", "reflow", "wrap", "normalize", "prose", "clause", "sentence"),
+    "C": ("brittle", "reflow", "wrap", "normalize", "prose", "clause", "sentence", "paragraph"),
     "D": ("exact", "identifier", "sha", "literal", "evidence"),
 }
 
@@ -177,6 +265,57 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         self.assertEqual(counts, EXPECTED_CATEGORY_COUNTS)
         self.assertEqual(sum(counts.values()), EXPECTED_ASSERTION_COUNT)
 
+    # Round 2 fix (Blocker 3): category *counts* alone can't catch a B/C (or
+    # any two same-count-preserving categories) entry swap. This checks the
+    # exact per-ID category membership against hardcoded literal sets for
+    # A/C/D (B is checked as the exact remainder), which the classification
+    # manifest -- a human-reviewed record, not a derivable computation --
+    # requires to be pinned, not merely counted.
+    def _assert_exact_category_membership(self, manifest):
+        by_id = {a["id"]: a["category"] for a in manifest["assertions"]}
+        all_ids = frozenset(by_id)
+        self.assertEqual(all_ids, EXPECTED_A_IDS | EXPECTED_C_IDS | EXPECTED_D_IDS | (
+            all_ids - EXPECTED_A_IDS - EXPECTED_C_IDS - EXPECTED_D_IDS
+        ))
+        expected_b_ids = all_ids - EXPECTED_A_IDS - EXPECTED_C_IDS - EXPECTED_D_IDS
+        for entry_id, expected_category in (
+            [(i, "A") for i in EXPECTED_A_IDS]
+            + [(i, "C") for i in EXPECTED_C_IDS]
+            + [(i, "D") for i in EXPECTED_D_IDS]
+            + [(i, "B") for i in expected_b_ids]
+        ):
+            self.assertEqual(
+                by_id.get(entry_id), expected_category,
+                f"{entry_id} expected category {expected_category!r}, "
+                f"manifest has {by_id.get(entry_id)!r}",
+            )
+
+    def test_exact_category_membership_matches_hardcoded_id_sets(self):
+        self._assert_exact_category_membership(self.manifest)
+
+    def test_count_preserving_category_swap_mutation_is_detected(self):
+        # Swap one B entry and one C entry's categories (and matching
+        # actions) -- the aggregate A/B/C/D counts stay identical, so only
+        # the exact-membership guard (not test_category_counts_match_
+        # corrected_final_tally) can catch this.
+        mutated = json.loads(self.manifest_text)
+        by_id = {a["id"]: a for a in mutated["assertions"]}
+        expected_b_ids = (
+            frozenset(by_id) - EXPECTED_A_IDS - EXPECTED_C_IDS - EXPECTED_D_IDS
+        )
+        b_entry = by_id[next(iter(expected_b_ids))]
+        c_entry = by_id[next(iter(EXPECTED_C_IDS))]
+        b_entry["category"], c_entry["category"] = c_entry["category"], b_entry["category"]
+        b_entry["action"], c_entry["action"] = c_entry["action"], b_entry["action"]
+
+        counts = {"A": 0, "B": 0, "C": 0, "D": 0}
+        for entry in mutated["assertions"]:
+            counts[entry["category"]] += 1
+        self.assertEqual(counts, EXPECTED_CATEGORY_COUNTS, "swap must be count-preserving")
+
+        with self.assertRaises(AssertionError):
+            self._assert_exact_category_membership(mutated)
+
     def test_action_matches_category_mapping_for_every_entry(self):
         for entry in self.manifest["assertions"]:
             with self.subTest(id=entry["id"]):
@@ -227,7 +366,6 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                 rationale = entry["rationale"]
                 self.assertTrue(summary.strip())
                 self.assertTrue(rationale.strip())
-                self.assertGreater(len(rationale), 40)
                 lowered = rationale.lower()
                 for placeholder in _PLACEHOLDER_WORDS:
                     self.assertNotIn(placeholder, lowered)

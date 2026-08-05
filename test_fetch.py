@@ -4269,10 +4269,10 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
         from collections import Counter
 
         counts = Counter(a["category"] for a in manifest["assertions"])
-        # round 1 review corrected this tally: 30 raw document-prose
-        # substring entries were misclassified B (see BACKLOG round 1
-        # evidence); C is no longer 0.
-        self.assertEqual(dict(counts), {"A": 8, "B": 48, "C": 30, "D": 11})
+        # round 2 review corrected this tally further: 11 more B entries
+        # (raw `.index()` ordering anchors and short-but-brittle prose
+        # fragments) moved to C (see BACKLOG round 2 evidence).
+        self.assertEqual(dict(counts), {"A": 8, "B": 37, "C": 41, "D": 11})
         self.assertEqual(sum(counts.values()), 97)
         # every entry uses `targets` (round 1 fix, Blocker 2), never the
         # old single-string `target`
@@ -4321,16 +4321,39 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
                 self.assertIn(required, bl038)
         self.assertNotIn("A→`keep`は誤り、正しくはA→`keep`", bl038)
 
-    def test_status_records_round1_review_and_correct_classification_vs_conversion(self):
+    def test_backlog_records_round2_review_findings_and_final_classification(self):
+        bl038 = self._bl038_section()
+        for required in (
+            "独立レビューround 2(tranche 3b、2026-08-05)",
+            "065f6892b3435070a53a81a95208c72ddcd53d27",
+            "31023760604",
+            "1848 tests OK",
+            ".index()",
+            "ValueError",
+            "count-preserving",
+            "EXPECTED_A_IDS",
+            "A 8／B 37／C 41／D 11",
+            "round 2修正",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl038)
+        # the round 1 kickoff-time manifest/structural-test/source-conversion
+        # bullets (Blocker 4) must not remain as current evidence
+        self.assertNotIn("target`単数形、`targets`不使用", bl038)
+        self.assertNotIn("Category C該当が0件のため変換対象自体が無い", bl038)
+
+    def test_status_records_round2_review_and_correct_classification_vs_conversion(self):
         bl038_line = self._status_bl038_line()
         for required in (
-            "独立レビューround 1(tranche 3b、2026-08-05)",
-            "43f4619dc1f168998da206f5e0699b547da2b3e2",
-            "A 8／B 48／C 30／D 11",
+            "独立レビューround 2(tranche 3b、2026-08-05)",
+            "065f6892b3435070a53a81a95208c72ddcd53d27",
+            "A 8／B 37／C 41／D 11",
             "targets",
-            "pilot classification(97件の分類とmanifest記録)は実施済みだが、Category C 30件のsource conversion",
+            "pilot classification(97件の分類とmanifest記録)は実施済みだが、Category C 41件のsource conversion",
             "未実施",
             "tranche 3cは未着手",
+            "23 tests",
+            "exact category membership guard",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038_line)
@@ -4363,7 +4386,7 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
             "tranche 3b着手",
             "test/bl038-tranche3b-custom-domain-classification",
             "tranche 3b kickoff原文「ok」",
-            "A 8／B 48／C 30／D 11",
+            "A 8／B 37／C 41／D 11",
             "tranche 3b final acceptanceはpending",
             "tranche 3cは未着手",
         ):
