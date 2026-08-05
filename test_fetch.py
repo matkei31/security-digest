@@ -4150,6 +4150,14 @@ class Bl038Tranche3aRecordSyncTest(unittest.TestCase):
             "async",
             "unknown-method",
             "2000行",
+            "独立レビューround 2(tranche 3a)",
+            "8fdee066a5e0875ae6ccfb20f2cd9db5937f1999",
+            "31006649767",
+            "1793 tests OK",
+            "transitive",
+            "invalid-entry-shape",
+            "2300行",
+            "宣言済み",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038)
@@ -4160,6 +4168,10 @@ class Bl038Tranche3aRecordSyncTest(unittest.TestCase):
             "独立レビューround 1(tranche 3a",
             "9e49be8642a2583809569dc64e612fc14257b5f4",
             "round 1修正済み",
+            "独立レビューround 2(tranche 3a",
+            "8fdee066a5e0875ae6ccfb20f2cd9db5937f1999",
+            "round 2修正済み",
+            "2300行",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038_line)

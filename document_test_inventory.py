@@ -44,7 +44,11 @@ not evaluate expressions, and does not attempt to guess an assertion's
 a human reviewer in the manifest. The tool's job is only to make it
 IMPOSSIBLE for that manifest to silently drift out of sync with the source
 it describes (an assertion added/removed/changed without the manifest
-being updated to match).
+being updated to match) -- WITHIN the manifest's own human-declared
+`scope`. It cannot notice a class/file quietly REMOVED from `scope`
+itself; guarding against that silent shrinkage is the job of the
+structural record tests that pin a pilot's expected scope (BL-038
+tranche 3b/3c), not of this tool alone.
 
 Test-only: this module must never be imported by runtime/production code
 (fetch.py/daily_json.py/vulnerability_facts.py) and has no dependency on
@@ -57,6 +61,7 @@ import argparse
 import ast
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -159,23 +164,46 @@ def composite_fingerprint(nodes):
     return _hash_dumps(nodes)
 
 
-def _is_unittest_assert_call(call_node):
+def _is_self_or_cls_call(call_node):
     return (
         isinstance(call_node, ast.Call)
         and isinstance(call_node.func, ast.Attribute)
-        and call_node.func.attr.startswith("assert")
         and isinstance(call_node.func.value, ast.Name)
         and call_node.func.value.id in ("self", "cls")
     )
 
 
+def _is_unittest_assert_call(call_node):
+    # Excludes custom-helper-named calls even though they also start with
+    # "assert" -- real unittest methods are camelCase, never an underscore
+    # right after "assert", so this never misclassifies a real built-in.
+    # Second, independent line of defense on top of call-order in
+    # _enumerate_method_assertions (custom-helper checks run first there).
+    return (
+        _is_self_or_cls_call(call_node)
+        and call_node.func.attr.startswith("assert")
+        and not _looks_like_custom_helper_name(call_node.func.attr)
+    )
+
+
 def _is_custom_helper_call(call_node, helper_defs):
     return (
-        isinstance(call_node, ast.Call)
-        and isinstance(call_node.func, ast.Attribute)
+        _is_self_or_cls_call(call_node)
         and call_node.func.attr in helper_defs
-        and isinstance(call_node.func.value, ast.Name)
-        and call_node.func.value.id in ("self", "cls")
+    )
+
+
+def _is_unresolved_helper_call(call_node, helper_defs):
+    """A `self.<name>(...)`/`cls.<name>(...)` call whose name matches the
+    custom-helper naming pattern but has no same-class definition -- must
+    never be silently treated as a builtin (call-only fingerprint) or
+    silently omitted. Cross-file/inherited/dynamic helpers are explicitly
+    unsupported; callers should raise InventoryError when this matches.
+    """
+    return (
+        _is_self_or_cls_call(call_node)
+        and _looks_like_custom_helper_name(call_node.func.attr)
+        and call_node.func.attr not in helper_defs
     )
 
 
@@ -202,24 +230,68 @@ def _assert_raises_call_in_with(with_node):
 _METHOD_DEF_TYPES = (ast.FunctionDef, ast.AsyncFunctionDef)
 
 
+def _looks_like_custom_helper_name(name):
+    """True for `assert_*` or `_*assert*` (case-insensitive) -- this
+    repository's assertion-style helper naming convention, e.g.
+    `_assert_row_state`, `assert_section_contains`. No real
+    unittest.TestCase method matches this (they're camelCase, never an
+    underscore right after "assert"), so it safely selects both helper
+    DEFINITIONS and CALL sites without misclassifying a genuine built-in.
+    """
+    lname = name.lower()
+    return lname.startswith("assert_") or (lname.startswith("_") and "assert" in lname)
+
+
 def _helper_defs_for_class(class_node):
-    """Non-test helper methods (`def` or `async def`) on `class_node` whose
-    name marks them as an assertion-style helper: starts with `assert_`, or
-    starts with `_` and contains "assert" (case-insensitive) -- e.g.
-    `_assert_row_state`, `assert_section_contains`. Plain fixture/setup
-    helpers are excluded. Returns {name: def_node}, not just names, so a
-    call site's fingerprint can incorporate the resolved helper's own body
-    (see composite_fingerprint) -- a call site's fingerprint must change if
-    the helper it calls changes semantically, not just if the call itself
-    changes.
+    """Non-test helper methods (`def`/`async def`) on `class_node` whose
+    name matches _looks_like_custom_helper_name. Returns {name: def_node},
+    not just names, so a call site's fingerprint can incorporate the
+    resolved helper's own body (composite_fingerprint).
     """
     defs = {}
     for item in class_node.body:
-        if isinstance(item, _METHOD_DEF_TYPES) and not item.name.startswith("test_"):
-            lname = item.name.lower()
-            if lname.startswith("assert_") or (lname.startswith("_") and "assert" in lname):
-                defs[item.name] = item
+        if (
+            isinstance(item, _METHOD_DEF_TYPES)
+            and not item.name.startswith("test_")
+            and _looks_like_custom_helper_name(item.name)
+        ):
+            defs[item.name] = item
     return defs
+
+
+def _resolve_helper_dependency_closure(start_name, helper_defs, file_name, class_name):
+    """DFS over helper_defs from `start_name`. Returns an ordered list of
+    definition nodes: the starting helper, then every same-class helper it
+    calls -- directly or transitively -- each exactly once, deterministic
+    (first-encountered, depth-first) order. A cycle is truncated safely
+    (finite, no re-append). Raises InventoryError on an unresolved
+    dependency -- never silently dropped from the fingerprint.
+    """
+    ordered = []
+    visited = set()
+    visiting = set()
+
+    def visit(name):
+        if name in visited or name in visiting:
+            return
+        visiting.add(name)
+        def_node = helper_defs[name]
+        ordered.append(def_node)
+        for node in _iter_source_order(def_node, _STOP_DESCENDING):
+            if _is_custom_helper_call(node, helper_defs):
+                visit(node.func.attr)
+            elif _is_unresolved_helper_call(node, helper_defs):
+                raise InventoryError(
+                    f"{file_name}::{class_name}: helper {name!r} calls unresolved "
+                    f"custom assertion helper {node.func.attr!r} (name matches the "
+                    f"custom-helper pattern but no same-class definition was found; "
+                    f"cross-file/inherited/dynamic helpers are not supported)"
+                )
+        visiting.discard(name)
+        visited.add(name)
+
+    visit(start_name)
+    return ordered
 
 
 def _iter_source_order(node, stop_types):
@@ -268,18 +340,35 @@ def _enumerate_method_assertions(file_name, class_name, method_node, helper_defs
                 consumed_ids.add(id(raises_call))
         elif id(node) in consumed_ids:
             continue
+        elif _is_custom_helper_call(node, helper_defs):
+            # Checked BEFORE _is_unittest_assert_call: a public-style
+            # helper name (`assert_section_contains`) also starts with
+            # "assert" and would otherwise be swept up as a "built-in"
+            # unittest call with a call-only fingerprint, hiding semantic
+            # drift in the helper's own body. Resolving custom helpers
+            # first (regardless of naming style) ensures composite
+            # fingerprinting always applies to them.
+            assertion_api = node.func.attr
+            # The call site alone doesn't carry the helper's own logic --
+            # fold the resolved helper definition's body (and, transitively,
+            # any same-class helper IT calls) into the fingerprint too, so a
+            # semantic change anywhere in that dependency chain is detected
+            # even though the call site itself is untouched.
+            closure_defs = _resolve_helper_dependency_closure(
+                node.func.attr, helper_defs, file_name, class_name
+            )
+            fingerprint = composite_fingerprint([node] + closure_defs)
+            assertion_node = node
+        elif _is_unresolved_helper_call(node, helper_defs):
+            raise InventoryError(
+                f"{file_name}::{class_name}::{method_node.name}: unresolved custom "
+                f"assertion helper call {node.func.attr!r} (name matches the "
+                f"custom-helper pattern but no same-class definition was found; "
+                f"cross-file/inherited/dynamic helpers are not supported)"
+            )
         elif _is_unittest_assert_call(node):
             assertion_api = node.func.attr
             fingerprint = canonical_fingerprint(node)
-            assertion_node = node
-        elif _is_custom_helper_call(node, helper_defs):
-            assertion_api = node.func.attr
-            # The call site alone doesn't carry the helper's own logic --
-            # fold the resolved helper definition's body into the
-            # fingerprint too, so a semantic change to the helper (its
-            # assertion API, comparison structure, or literal values) is
-            # detected even though the call site itself is untouched.
-            fingerprint = composite_fingerprint([node, helper_defs[node.func.attr]])
             assertion_node = node
         if assertion_api is None:
             continue
@@ -386,6 +475,32 @@ def _validate_target(entry):
     return None
 
 
+_FINGERPRINT_RE = re.compile(r"[0-9a-f]{64}")
+_ENTRY_STRING_FIELDS = (
+    "id", "file", "class", "method", "assertion_api", "contract_summary", "rationale",
+)
+
+
+def _validate_entry_shape(entry):
+    """Type checks that MUST pass before `id`/`file`/`class`/`method` are
+    used as dict/set keys anywhere downstream (a list or dict value there
+    would raise TypeError: unhashable type, crashing the validator instead
+    of reporting a clean failure). Returns (failure_type, detail) if the
+    entry is unsafe to process further, or (None, None) if these fields are
+    all well-typed (value-level checks -- category/action membership,
+    target contract, ordinal range -- are handled separately once shape is
+    confirmed safe).
+    """
+    for field in _ENTRY_STRING_FIELDS:
+        value = entry.get(field)
+        if not isinstance(value, str) or not value.strip():
+            return "invalid-entry-shape", f"{field!r} must be a nonblank string, got {value!r}"
+    fingerprint = entry.get("fingerprint")
+    if not isinstance(fingerprint, str) or not _FINGERPRINT_RE.fullmatch(fingerprint):
+        return "invalid-fingerprint", "'fingerprint' must be a 64-character lowercase hex string"
+    return None, None
+
+
 def _empty_summary():
     return {
         "scoped_files": [],
@@ -449,7 +564,10 @@ def validate_manifest(manifest, root=None):
     failures = []
 
     schema_version = manifest.get("schema_version")
-    if isinstance(schema_version, bool) or schema_version != 1:
+    # type(...) is int (not isinstance) deliberately rejects both bool
+    # (type is bool, a distinct type) and float (1.0 == 1 is True in
+    # Python, so a naive `!= 1` check alone would accept the float 1.0).
+    if type(schema_version) is not int or schema_version != 1:
         failures.append(
             ValidationFailure(
                 "invalid-schema-version",
@@ -457,15 +575,27 @@ def validate_manifest(manifest, root=None):
             )
         )
 
-    scope_raw = manifest.get("scope", [])
-    if not isinstance(scope_raw, list):
-        failures.append(ValidationFailure("invalid-manifest-shape", "scope must be a list"))
+    if "scope" not in manifest:
+        failures.append(ValidationFailure("invalid-manifest-shape", "manifest must have a 'scope' key"))
         scope_raw = []
+    else:
+        scope_raw = manifest["scope"]
+        if not isinstance(scope_raw, list) or not scope_raw:
+            failures.append(
+                ValidationFailure("invalid-manifest-shape", "scope must be a nonempty list")
+            )
+            scope_raw = scope_raw if isinstance(scope_raw, list) else []
 
-    assertions_raw = manifest.get("assertions", [])
-    if not isinstance(assertions_raw, list):
-        failures.append(ValidationFailure("invalid-manifest-shape", "assertions must be a list"))
+    if "assertions" not in manifest:
+        failures.append(
+            ValidationFailure("invalid-manifest-shape", "manifest must have an 'assertions' key")
+        )
         assertions_raw = []
+    else:
+        assertions_raw = manifest["assertions"]
+        if not isinstance(assertions_raw, list):
+            failures.append(ValidationFailure("invalid-manifest-shape", "assertions must be a list"))
+            assertions_raw = []
 
     scope_files = set()
     scoped_classes_by_file = {}
@@ -487,13 +617,13 @@ def validate_manifest(manifest, root=None):
                 )
             )
             continue
-        if not isinstance(classes, list) or not all(
+        if not isinstance(classes, list) or not classes or not all(
             isinstance(c, str) and c.strip() for c in classes
         ):
             failures.append(
                 ValidationFailure(
                     "invalid-scope-shape",
-                    "scope entry 'classes' must be a list of nonblank strings",
+                    "scope entry 'classes' must be a nonempty list of nonblank strings",
                     file=file_name,
                 )
             )
@@ -575,6 +705,25 @@ def validate_manifest(manifest, root=None):
                     file=file_name,
                     cls=cls,
                     method=method,
+                )
+            )
+            continue
+
+        # Must run before ANY of entry_id/file_name/cls/method is used as a
+        # dict/set key below (out-of-scope lookups, manifest_ids.add(),
+        # manifest_by_key[key] = ...) -- an unhashable value (e.g. a list
+        # passed where a string was expected) would otherwise crash the
+        # validator with TypeError instead of reporting a clean failure.
+        shape_failure_type, shape_detail = _validate_entry_shape(entry)
+        if shape_failure_type:
+            failures.append(
+                ValidationFailure(
+                    shape_failure_type,
+                    shape_detail,
+                    id_=entry_id if isinstance(entry_id, str) else None,
+                    file=file_name if isinstance(file_name, str) else None,
+                    cls=cls if isinstance(cls, str) else None,
+                    method=method if isinstance(method, str) else None,
                 )
             )
             continue
@@ -806,7 +955,20 @@ def main(argv=None):
     manifest_path = Path(args.manifest)
     if not manifest_path.is_absolute():
         manifest_path = REPOSITORY_ROOT / manifest_path
-    manifest = load_manifest(manifest_path)
+
+    # A missing file or invalid JSON must produce a short, actionable
+    # message and exit code 1 -- not an uncaught traceback. (A valid JSON
+    # document whose top level isn't an object is instead handled by
+    # validate_manifest's own "invalid-manifest-shape" check below, since
+    # that's a manifest-content problem, not a load problem.)
+    try:
+        manifest = load_manifest(manifest_path)
+    except OSError as exc:
+        print(f"document_test_inventory: manifest-load-error {exc}", file=sys.stdout)
+        return 1
+    except json.JSONDecodeError as exc:
+        print(f"document_test_inventory: manifest-load-error invalid JSON: {exc}", file=sys.stdout)
+        return 1
 
     failures, summary = validate_manifest(manifest)
     _print_report(failures, summary)

@@ -332,6 +332,231 @@ class CustomHelperCompositeFingerprintTest(unittest.TestCase):
         self.assertLess(len(failure.format()), 300)
 
 
+class PublicHelperPrecedenceAndUnresolvedHelperTest(unittest.TestCase):
+    """BL-038 tranche 3a round 2 review Blocker 1: a PUBLIC-style helper
+    name (`assert_section_contains`) also starts with "assert" and was
+    previously matched by the generic unittest-builtin check BEFORE the
+    custom-helper check ever ran, giving it a call-only fingerprint that
+    couldn't see semantic drift in the helper's own body. Custom helper
+    resolution must be checked first, for both naming styles. Separately,
+    a call whose name matches the custom-helper pattern but has no
+    same-class definition must raise an explicit error, never silently
+    fall back to a call-only fingerprint or be silently skipped.
+    """
+
+    PUBLIC_HELPER_DEF = (
+        "    def assert_section_contains(self, section, marker):\n"
+        "        self.assertIn(marker, section)\n"
+    )
+
+    def _fingerprint(self, helper_def):
+        src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            f"{helper_def}"
+            "    def test_basic(self):\n"
+            "        self.assert_section_contains('abc', 'a')\n"
+        )
+        records = dti.enumerate_assertions(src, "foo.py", ["FooTest"])
+        self.assertEqual(len(records), 1)
+        self.assertEqual(records[0].assertion_api, "assert_section_contains")
+        return records[0].fingerprint
+
+    def test_public_helper_call_is_a_single_entry(self):
+        # Assertion already made inside _fingerprint (len(records) == 1);
+        # this test exists so that contract is checked independent of any
+        # other assertion in this class about fingerprint values.
+        self._fingerprint(self.PUBLIC_HELPER_DEF)
+
+    def test_public_helper_body_formatting_change_does_not_change_fingerprint(self):
+        reformatted = (
+            "    def assert_section_contains(self, section, marker):\n\n"
+            "        self.assertIn(\n            marker,\n            section,\n        )\n"
+        )
+        self.assertEqual(
+            self._fingerprint(self.PUBLIC_HELPER_DEF), self._fingerprint(reformatted)
+        )
+
+    def test_public_helper_body_api_change_changes_fingerprint(self):
+        changed = (
+            "    def assert_section_contains(self, section, marker):\n"
+            "        self.assertNotIn(marker, section)\n"
+        )
+        self.assertNotEqual(
+            self._fingerprint(self.PUBLIC_HELPER_DEF), self._fingerprint(changed)
+        )
+
+    def test_public_helper_body_literal_change_changes_fingerprint(self):
+        changed = (
+            "    def assert_section_contains(self, section, marker):\n"
+            "        self.assertIn(marker, section.upper())\n"
+        )
+        self.assertNotEqual(
+            self._fingerprint(self.PUBLIC_HELPER_DEF), self._fingerprint(changed)
+        )
+
+    def test_public_helper_semantic_change_after_manifest_creation_is_fingerprint_mismatch(self):
+        tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(tmpdir.cleanup)
+        root = Path(tmpdir.name)
+        src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            f"{self.PUBLIC_HELPER_DEF}"
+            "    def test_basic(self):\n"
+            "        self.assert_section_contains('abc', 'a')\n"
+        )
+        (root / "foo.py").write_text(src, encoding="utf-8")
+        records = dti.enumerate_assertions(src, "foo.py", ["FooTest"])
+        manifest = _manifest_for("foo.py", ["FooTest"], _records_to_manifest_entries(records))
+
+        changed_src = src.replace(
+            "self.assertIn(marker, section)", "self.assertNotIn(marker, section)"
+        )
+        (root / "foo.py").write_text(changed_src, encoding="utf-8")
+        failures, _ = dti.validate_manifest(manifest, root=root)
+        self.assertIn("fingerprint-mismatch", _failure_types(failures))
+
+    def test_unresolved_underscore_style_helper_call_is_an_explicit_failure(self):
+        src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            "    def test_basic(self):\n"
+            "        self._assert_inherited_contract('x')\n"
+        )
+        with self.assertRaises(dti.InventoryError):
+            dti.enumerate_assertions(src, "foo.py", ["FooTest"])
+
+    def test_unresolved_public_style_helper_call_is_an_explicit_failure(self):
+        src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            "    def test_basic(self):\n"
+            "        self.assert_custom_contract('x')\n"
+        )
+        with self.assertRaises(dti.InventoryError):
+            dti.enumerate_assertions(src, "foo.py", ["FooTest"])
+
+    def test_builtin_unittest_assertions_are_not_treated_as_unsupported_helpers(self):
+        src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            "    def test_basic(self):\n"
+            "        self.assertEqual(1, 1)\n"
+            "        self.assertIn('a', 'abc')\n"
+            "        self.assertTrue(True)\n"
+        )
+        records = dti.enumerate_assertions(src, "foo.py", ["FooTest"])
+        self.assertEqual(
+            [r.assertion_api for r in records], ["assertEqual", "assertIn", "assertTrue"]
+        )
+
+
+class TransitiveHelperDependencyClosureTest(unittest.TestCase):
+    """BL-038 tranche 3a round 2 review Blocker 2: a custom helper's
+    fingerprint must fold in every same-class helper it calls, directly or
+    transitively (not just the one it calls directly) -- otherwise a
+    semantic change buried in a nested helper is invisible to both the
+    call site's AST and the direct helper's AST, and the manifest would
+    silently drift.
+    """
+
+    OUTER_INNER_SRC = (
+        "import unittest\n"
+        "class FooTest(unittest.TestCase):\n"
+        "    def _assert_inner(self, value):\n"
+        "        self.assertTrue(value)\n"
+        "    def _assert_outer(self, value):\n"
+        "        self._assert_inner(value)\n"
+        "    def test_basic(self):\n"
+        "        self._assert_outer(1)\n"
+    )
+
+    def _fingerprint(self, src):
+        records = dti.enumerate_assertions(src, "foo.py", ["FooTest"])
+        self.assertEqual(len(records), 1)
+        return records[0].fingerprint
+
+    def test_nested_helper_semantic_change_changes_outer_call_fingerprint(self):
+        changed = self.OUTER_INNER_SRC.replace(
+            "self.assertTrue(value)", "self.assertFalse(value)"
+        )
+        self.assertNotEqual(self._fingerprint(self.OUTER_INNER_SRC), self._fingerprint(changed))
+
+    def test_nested_helper_formatting_change_does_not_change_fingerprint(self):
+        reformatted = self.OUTER_INNER_SRC.replace(
+            "        self.assertTrue(value)\n",
+            "        self.assertTrue(\n            value\n        )\n",
+        )
+        self.assertEqual(self._fingerprint(self.OUTER_INNER_SRC), self._fingerprint(reformatted))
+
+    def test_nested_helper_change_after_manifest_creation_is_fingerprint_mismatch(self):
+        tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(tmpdir.cleanup)
+        root = Path(tmpdir.name)
+        (root / "foo.py").write_text(self.OUTER_INNER_SRC, encoding="utf-8")
+        records = dti.enumerate_assertions(self.OUTER_INNER_SRC, "foo.py", ["FooTest"])
+        manifest = _manifest_for("foo.py", ["FooTest"], _records_to_manifest_entries(records))
+
+        changed = self.OUTER_INNER_SRC.replace(
+            "self.assertTrue(value)", "self.assertFalse(value)"
+        )
+        (root / "foo.py").write_text(changed, encoding="utf-8")
+        failures, _ = dti.validate_manifest(manifest, root=root)
+        self.assertIn("fingerprint-mismatch", _failure_types(failures))
+
+    def test_three_level_chain_detects_deepest_change(self):
+        src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            "    def _assert_deepest(self, value):\n"
+            "        self.assertTrue(value)\n"
+            "    def _assert_middle(self, value):\n"
+            "        self._assert_deepest(value)\n"
+            "    def _assert_top(self, value):\n"
+            "        self._assert_middle(value)\n"
+            "    def test_basic(self):\n"
+            "        self._assert_top(1)\n"
+        )
+        changed = src.replace("self.assertTrue(value)", "self.assertFalse(value)")
+        self.assertNotEqual(self._fingerprint(src), self._fingerprint(changed))
+
+    def test_helper_cycle_does_not_infinite_recurse(self):
+        src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            "    def _assert_a(self, value):\n"
+            "        self.assertTrue(value)\n"
+            "        self._assert_b(value)\n"
+            "    def _assert_b(self, value):\n"
+            "        self._assert_a(value)\n"
+            "    def test_basic(self):\n"
+            "        self._assert_a(1)\n"
+        )
+        # Must complete (not hang/stack-overflow) and still enumerate the
+        # one call-site assertion with a real fingerprint.
+        records = dti.enumerate_assertions(src, "foo.py", ["FooTest"])
+        self.assertEqual(len(records), 1)
+        self.assertTrue(records[0].fingerprint)
+
+    def test_unresolved_nested_helper_is_an_explicit_failure(self):
+        src = (
+            "import unittest\n"
+            "class FooTest(unittest.TestCase):\n"
+            "    def _assert_outer(self, value):\n"
+            "        self._assert_missing(value)\n"
+            "    def test_basic(self):\n"
+            "        self._assert_outer(1)\n"
+        )
+        with self.assertRaises(dti.InventoryError) as ctx:
+            dti.enumerate_assertions(src, "foo.py", ["FooTest"])
+        # Failure must identify the class/helper, not dump the document.
+        message = str(ctx.exception)
+        self.assertIn("FooTest", message)
+        self.assertIn("_assert_outer", message)
+        self.assertLess(len(message), 400)
+
+
 class ManifestValidationFailureTest(unittest.TestCase):
     """Each test builds a minimal synthetic (file, manifest) pair in a
     temp directory and checks validate_manifest() reports the specific
@@ -625,6 +850,92 @@ class ManifestSchemaValidationTest(unittest.TestCase):
         failures, _ = self._check(manifest)
         self.assertEqual(failures, [])
 
+    # --- round 2 review: schema_version exactness, required scope/
+    # assertions keys, and per-entry field TYPE safety (must not crash the
+    # validator with an unhashable-type TypeError). ---
+
+    def test_float_schema_version_is_rejected(self):
+        # 1.0 == 1 in Python, so a naive `!= 1` check alone would accept
+        # this; schema_version must be exactly the int 1, not a float.
+        manifest = _manifest_for("foo.py", ["FooTest"], self._valid_entries())
+        manifest["schema_version"] = 1.0
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-schema-version", _failure_types(failures))
+
+    def test_missing_scope_key_is_detected(self):
+        manifest = {"schema_version": 1, "assertions": self._valid_entries()}
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-manifest-shape", _failure_types(failures))
+
+    def test_missing_assertions_key_is_detected(self):
+        manifest = {"schema_version": 1, "scope": [{"file": "foo.py", "classes": ["FooTest"]}]}
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-manifest-shape", _failure_types(failures))
+
+    def test_empty_scope_list_is_detected(self):
+        manifest = {"schema_version": 1, "scope": [], "assertions": self._valid_entries()}
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-manifest-shape", _failure_types(failures))
+
+    def test_scope_entry_with_empty_classes_is_detected(self):
+        manifest = _manifest_for("foo.py", [], self._valid_entries())
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-scope-shape", _failure_types(failures))
+
+    def test_entry_field_type_errors_are_caught_without_crashing(self):
+        # Table-driven: each case sets ONE required string-ish field on
+        # entries[0] to an unhashable/wrong-type value and confirms the
+        # validator reports a clean failure (not a TypeError) rather than
+        # crashing when that value is later used as a dict/set key. Values
+        # are deliberately TRUTHY (nonempty list/dict, nonzero number) --
+        # a falsy value ([], {}, None) is already caught earlier by the
+        # existing missing-field check and never reaches this path, so it
+        # wouldn't exercise the crash-safety fix this test targets.
+        cases = [
+            ("id", [1, 2, 3]),
+            ("file", {"a": 1}),
+            ("class", [1, 2, 3]),
+            ("method", {"a": 1}),
+            ("assertion_api", 123),
+            ("contract_summary", ["x"]),
+            ("rationale", ["x"]),
+        ]
+        for field, bad_value in cases:
+            with self.subTest(field=field):
+                entries = self._valid_entries()
+                entries[0][field] = bad_value
+                manifest = _manifest_for("foo.py", ["FooTest"], entries)
+                # Must not raise -- this is the crash-safety assertion.
+                failures, _ = self._check(manifest)
+                self.assertIn("invalid-entry-shape", _failure_types(failures))
+
+    def test_malformed_fingerprint_is_detected(self):
+        entries = self._valid_entries()
+        entries[0]["fingerprint"] = "not-64-hex-chars"
+        manifest = _manifest_for("foo.py", ["FooTest"], entries)
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-fingerprint", _failure_types(failures))
+
+    def test_uppercase_fingerprint_is_detected(self):
+        entries = self._valid_entries()
+        entries[0]["fingerprint"] = entries[0]["fingerprint"].upper()
+        manifest = _manifest_for("foo.py", ["FooTest"], entries)
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-fingerprint", _failure_types(failures))
+
+    def test_malformed_entry_does_not_crash_validator_and_other_entries_still_checked(self):
+        entries = self._valid_entries()
+        entries[0]["id"] = [1, 2, 3]  # unhashable -- would crash a naive validator
+        manifest = _manifest_for("foo.py", ["FooTest"], entries)
+        # Must complete and still report the second (valid) entry as fine
+        # while flagging the first as invalid-entry-shape.
+        failures, _ = self._check(manifest)
+        self.assertIn("invalid-entry-shape", _failure_types(failures))
+        self.assertNotIn(
+            entries[1]["id"],
+            {f.id for f in failures if f.mismatch_type not in ("unclassified",)},
+        )
+
 
 class AsyncTestMethodAndUnknownMethodTest(unittest.TestCase):
     """BL-038 tranche 3a round 1 review Blocker 3: `async def test_*`
@@ -797,6 +1108,28 @@ class CliOutputTest(unittest.TestCase):
         # Output must stay short (an identifying line per failure), not a
         # dump of the whole document/source under test.
         self.assertLess(len(output), 2000)
+
+    def test_cli_missing_manifest_file_is_a_short_clean_failure(self):
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            exit_code = dti.main(["--manifest", "does-not-exist.json", "--check"])
+        output = buf.getvalue()
+        self.assertEqual(exit_code, 1)
+        self.assertIn("manifest-load-error", output)
+        # No Python traceback markers.
+        self.assertNotIn("Traceback", output)
+        self.assertLess(len(output), 500)
+
+    def test_cli_invalid_json_is_a_short_clean_failure(self):
+        manifest_path = self._write("manifest.json", "{not valid json")
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            exit_code = dti.main(["--manifest", str(manifest_path), "--check"])
+        output = buf.getvalue()
+        self.assertEqual(exit_code, 1)
+        self.assertIn("manifest-load-error", output)
+        self.assertNotIn("Traceback", output)
+        self.assertLess(len(output), 500)
 
 
 if __name__ == "__main__":
