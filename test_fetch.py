@@ -4106,20 +4106,17 @@ class Bl038Tranche3aRecordSyncTest(unittest.TestCase):
         self.assertIn("classification", bl038)
         self.assertIn("BL-038全体の最終受入", bl038)
 
-    def test_no_repository_classification_manifest_or_pilot_file_diff_in_tranche3a(self):
-        # As of tranche 3a's own acceptance, no manifest existed yet -- it
-        # was added later, by tranche 3b (see Bl038Tranche3bRecordSyncTest).
-        # This test now checks the weaker, still-true invariant: if a
-        # manifest exists, its scope has not silently grown beyond what a
-        # single tranche is expected to cover in one PR (test_ui_spec.py/
-        # test_content_usage_policy.py pilot classification is still not
-        # part of this manifest).
-        manifest_path = self.ROOT / "document_test_classification.json"
-        if manifest_path.exists():
-            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-            scoped_files = {entry["file"] for entry in manifest.get("scope", [])}
-            self.assertNotIn("test_ui_spec.py", scoped_files)
-            self.assertNotIn("test_content_usage_policy.py", scoped_files)
+    def test_backlog_records_no_manifest_or_pilot_classification_as_of_tranche3a_acceptance(self):
+        # This is a HISTORICAL contract about what was true when tranche 3a
+        # itself was accepted (no manifest, no pilot classification yet) --
+        # it reads BACKLOG's own accepted-implementation evidence text, not
+        # the current filesystem (which now legitimately has a manifest,
+        # added later by tranche 3b; round 1 review, section 7.5: the
+        # current-filesystem scope check belongs in
+        # Bl038Tranche3bRecordSyncTest instead, not here).
+        bl038 = self._bl038_section()
+        self.assertIn("repository classification manifestなし", bl038)
+        self.assertIn("pilot classificationなし", bl038)
 
     def test_backlog_bl038_records_tranche3a_final_acceptance_evidence(self):
         bl038 = self._bl038_section()
@@ -4272,10 +4269,16 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
         from collections import Counter
 
         counts = Counter(a["category"] for a in manifest["assertions"])
-        self.assertEqual(dict(counts), {"A": 12, "B": 74, "D": 11})
+        # round 1 review corrected this tally: 30 raw document-prose
+        # substring entries were misclassified B (see BACKLOG round 1
+        # evidence); C is no longer 0.
+        self.assertEqual(dict(counts), {"A": 8, "B": 48, "C": 30, "D": 11})
         self.assertEqual(sum(counts.values()), 97)
-        # this PR does not convert any Category C candidate (there are none)
-        self.assertEqual(counts.get("C", 0), 0)
+        # every entry uses `targets` (round 1 fix, Blocker 2), never the
+        # old single-string `target`
+        for entry in manifest["assertions"]:
+            self.assertIn("targets", entry)
+            self.assertNotIn("target", entry)
 
     def test_manifest_line_count_is_within_budget(self):
         lines = self.MANIFEST_PATH.read_text(encoding="utf-8").splitlines()
@@ -4288,16 +4291,49 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
             "test/bl038-tranche3b-custom-domain-classification",
             "bfa6c7281c760597b865a425de2f3df6759c1a3d",
             "8435dcc32518037b96b736ad7f81e4a1b951c348",
-            "A 12／B 74／C 0／D 11",
+            "A 8／B 48／C 30／D 11",
             "97",
             "validate_manifest",
             "test_document_test_classification.py",
-            "16 tests",
-            "このPRでは`test_custom_domain.py`を一切変換していない",
             "tranche 3b final acceptance:** 未実施(pending)",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038)
+
+    def test_backlog_records_round1_review_findings_and_corrected_classification(self):
+        bl038 = self._bl038_section()
+        for required in (
+            "独立レビューround 1(tranche 3b、2026-08-05)",
+            "43f4619dc1f168998da206f5e0699b547da2b3e2",
+            "31017444090",
+            "1841 tests OK",
+            "single-line／short",
+            "targets",
+            "structural guard",
+            "rationale全件一意",
+            "round 1修正",
+            "C 30件",
+            "refactor_later",
+            "21 tests",
+            "target style",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl038)
+        self.assertNotIn("A→`keep`は誤り、正しくはA→`keep`", bl038)
+
+    def test_status_records_round1_review_and_correct_classification_vs_conversion(self):
+        bl038_line = self._status_bl038_line()
+        for required in (
+            "独立レビューround 1(tranche 3b、2026-08-05)",
+            "43f4619dc1f168998da206f5e0699b547da2b3e2",
+            "A 8／B 48／C 30／D 11",
+            "targets",
+            "pilot classification(97件の分類とmanifest記録)は実施済みだが、Category C 30件のsource conversion",
+            "未実施",
+            "tranche 3cは未着手",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl038_line)
 
     def test_backlog_residual_work_names_tranche3b_pending_and_tranche3c_not_started(self):
         bl038 = self._bl038_section()
@@ -4327,7 +4363,7 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
             "tranche 3b着手",
             "test/bl038-tranche3b-custom-domain-classification",
             "tranche 3b kickoff原文「ok」",
-            "A12/B74/C0/D11",
+            "A 8／B 48／C 30／D 11",
             "tranche 3b final acceptanceはpending",
             "tranche 3cは未着手",
         ):
