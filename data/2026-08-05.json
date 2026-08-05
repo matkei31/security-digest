@@ -1,0 +1,664 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-08-05",
+  "generated_at": "2026-08-05T08:03:30.827920+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 10,
+    "ai_attempted_count": 7,
+    "ai_success_count": 7,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 3,
+    "ai_eligible_count": 7
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 5,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 3,
+      "今週確認": 3,
+      "参考": 1,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 3,
+      "攻撃・脅威動向": 3,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "掲載7件｜重要度「高」2件｜本日確認3件｜今週確認3件\n本日中に適用性または初動要否を確認する記事が3件あります。",
+    "important_highlights": [
+      "CISAは2026年8月4日、実悪用が確認されたとしてApache Tomcatの機微情報暗号化欠陥(CVE-2026-34486)をKEVカタログへ追加しました。この脆弱性はEncryptInterceptorのバイパスを可能にします。",
+      "CISAは2026年8月4日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。IBM Langflowに認証されていない攻撃者がリモートコード実行を可能にするコードインジェクションの脆弱性「CVE-2026-9198」が存在します。",
+      "CISAは2026年8月4日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。N-able N-centralには認証バイパスの脆弱性(CVE-2026-18556)が存在し、認証を回避される可能性があります。"
+    ],
+    "discussion_points": [
+      "CISAは2026年8月4日、実悪用が確認されたとしてApache Tomcatの機微情報暗号化欠陥(CVE-2026-34486)をKEVカタログへ追加しました。この脆弱性はEncryptInterceptorのバイパスを可能にします。\n金融機関で広く利用されているApache Tomcat製品に影響する可能性があり、利用している場合は適用性確認の対象になります。",
+      "CISAは2026年8月4日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。IBM Langflowに認証されていない攻撃者がリモートコード実行を可能にするコードインジェクションの脆弱性「CVE-2026-9198」が存在します。\nLangflowをデフォルト設定で利用している金融機関は、本脆弱性の影響を受ける可能性があります。利用有無を確認し、必要な対応を検討する必要があります。"
+    ],
+    "check_items": [
+      "CVE-2026-34486の影響を受けるApache Tomcatのバージョンと利用有無を棚卸しする",
+      "自社および委託先におけるIBM Langflowの利用有無と影響バージョンを確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:a945dff3189baf7de57cd3eaa8a06360a984a0723522f5980e5e57bd9d20bae0",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/08/04/advance-zero-trust-for-ai-new-tools-and-guidance-to-secure-ai-agents-and-devsecops/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/08/04/advance-zero-trust-for-ai-new-tools-and-guidance-to-secure-ai-agents-and-devsecops/",
+      "published_at": "2026-08-05T03:30:00+09:00",
+      "fetched_at": "2026-08-05T08:01:29.398978+09:00",
+      "title": "Advance Zero Trust for AI: New tools and guidance to secure AI agents and DevSecOps",
+      "raw_title": "Advance Zero Trust for AI: New tools and guidance to secure AI agents and DevSecOps",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3639a6203d689da5a8155d0429b9ac6668f675d39c57ca6953b846cd6a740526",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1fc8e9e97d0f876e64227de32aab71652446e740f7b933f4b7bb94dca742803c",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/08/04/129-seconds-disruption-microsoft-defender-stops-ransomware-qnet/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/08/04/129-seconds-disruption-microsoft-defender-stops-ransomware-qnet/",
+      "published_at": "2026-08-05T02:54:04+09:00",
+      "fetched_at": "2026-08-05T08:01:29.398978+09:00",
+      "title": "128 Seconds to disruption: Microsoft Defender stops ransomware at QNET",
+      "raw_title": "128 Seconds to disruption: Microsoft Defender stops ransomware at QNET",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3b646064c2dcf19ada839d3965807059717328c1cc5f2ee15a6cf123adcbd3e3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:bc208a99b0f1cf428b4a11d5001af7a80e12beb6d9388ef77159f6dffd780473",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/greatness-phaas-adds-device-code.html",
+      "canonical_url": "https://thehackernews.com/2026/08/greatness-phaas-adds-device-code.html",
+      "published_at": "2026-08-05T02:27:39+09:00",
+      "fetched_at": "2026-08-05T08:01:29.398978+09:00",
+      "title": "Greatness PhaaS Adds Device Code Phishing to Bypass MFA and Steal Tokens",
+      "raw_title": "Greatness PhaaS Adds Device Code Phishing to Bypass MFA and Steal Tokens",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7103061b82ade16b16801833c4b691af622ac23571b5edf5313c0e2d76af09b5",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-05T08:01:31.995582+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "商用フィッシングサービスがMFA回避の新機能を追加したという、攻撃手法の動向に関する記事であるため。",
+        "tags": [
+          "フィッシング",
+          "認証",
+          "IAM"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "商用フィッシング・アズ・ア・サービス（PhaaS）ツールキット「Greatness」が、OAuth 2.0デバイス認証フローを悪用して多要素認証（MFA）を回避し、ユーザーアカウントを乗っ取る「デバイスコードフィッシング」のサポートを追加しました。",
+        "financial_impact": "金融機関がOAuth 2.0デバイス認証フローを利用している場合、従業員や顧客がデバイスコードフィッシングの標的となる可能性があります。これにより、アカウント乗っ取りや情報漏えいのリスクが生じます。",
+        "recommended_actions": [
+          "OAuth 2.0デバイス認証フローの利用状況と、関連するMFA設定および監視体制を確認する",
+          "デバイスコードフィッシングの手法について従業員への注意喚起と教育を検討する"
+        ],
+        "reason": "重要度は、MFA回避を目的とした新たなフィッシング手法の動向であり、金融機関でも標的となる可能性があるため「中」です。確認目安は、具体的な侵害事例や緊急の対応期限が示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4b6302d9f5c48ebc651f72fe68275e80c0d70b4e36807c535effcc3df011418e",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/keyv-linked-npm-worm-poisons-hundreds.html",
+      "canonical_url": "https://thehackernews.com/2026/08/keyv-linked-npm-worm-poisons-hundreds.html",
+      "published_at": "2026-08-04T22:30:23+09:00",
+      "fetched_at": "2026-08-05T08:01:29.398978+09:00",
+      "title": "Keyv-Linked npm Worm Poisons Hundreds of Packages, Plants Claude Code and VS Code Hooks",
+      "raw_title": "Keyv-Linked npm Worm Poisons Hundreds of Packages, Plants Claude Code and VS Code Hooks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6456a4fd5140ec4d8e0fbe656a03103535cd87d8daf987d9134b09284f0114dc",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-05T08:01:49.900614+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "npmパッケージを標的としたマルウェアの拡散と攻撃手法が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Keyv@6.0.0で初めて確認されたnpmワームが、2026年8月4日にKeyvおよびCacheable以外の数百のパッケージに拡散しました。SafeDepはnpmレジストリで79パッケージ名にわたる353の汚染バージョンを確認し、Aikidoは少なくとも868パッケージが影響を受けたと報告しています。",
+        "financial_impact": "金融機関がnpmパッケージを利用してソフトウェア開発を行っている場合、サプライチェーンリスクとして関係します。特に、汚染されたパッケージが内部システムや顧客向けサービスに組み込まれると、情報漏えいや業務停止につながる可能性があります。",
+        "recommended_actions": [
+          "自社で利用しているnpmパッケージの中に、記事で言及されている汚染されたバージョンが含まれていないか確認する",
+          "開発環境におけるnpmパッケージのサプライチェーンセキュリティ対策を見直し、信頼できるソースからの導入を徹底する",
+          "開発環境やCI/CDパイプラインにおける不審な挙動やファイル変更がないか監視を強化する"
+        ],
+        "reason": "重要度は、npmパッケージのサプライチェーン攻撃であり、金融機関の開発プロセスに影響を与える可能性があるため「中」です。確認目安は、広範なパッケージ汚染が確認されたものの、即座の対応を要する具体的な期限や進行中の直接的な脅威が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:db6c2ae7b2b21caafca3c0a5c5f9dbfd2f59d470c8992eb4e4f9c38c0494239b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/fake-adobe-and-zoom-updates-install.html",
+      "canonical_url": "https://thehackernews.com/2026/08/fake-adobe-and-zoom-updates-install.html",
+      "published_at": "2026-08-04T22:11:22+09:00",
+      "fetched_at": "2026-08-05T08:01:29.398978+09:00",
+      "title": "Fake Adobe and Zoom Updates Install ScreenConnect for Persistent Remote Access",
+      "raw_title": "Fake Adobe and Zoom Updates Install ScreenConnect for Persistent Remote Access",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e9c74c63653db43c75d6c6631ad65637734ff7d14c7c79924bebddb18ad42a0f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-05T08:02:07.308517+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "偽のソフトウェアアップデートを悪用したソーシャルエンジニアリング攻撃キャンペーンが主題であるため。",
+        "tags": [
+          "フィッシング",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、AdobeやZoomのソフトウェアアップデート、ビジネス文書レビュー、システムメンテナンスユーティリティを装ったソーシャルエンジニアリング攻撃キャンペーンの詳細を公開しました。この攻撃は、ConnectWise ScreenConnectのようなリモート監視・管理（RMM）プログラムを密かに展開するものです。",
+        "financial_impact": "金融機関でAdobeやZoomなどの一般的なソフトウェアを利用している場合、従業員が攻撃の標的となる可能性があります。RMMツールが導入されると、内部システムへの永続的なアクセスを許してしまうリスクがあります。",
+        "recommended_actions": [
+          "従業員に対し、ソフトウェアアップデートの正規の入手経路（ベンダー公式サイトなど）を再確認するよう注意喚起する",
+          "不審なソフトウェアインストールやRMMツールの導入がないか、システムログやネットワーク通信を監視する"
+        ],
+        "reason": "重要度は、一般的なソフトウェアを悪用したソーシャルエンジニアリング攻撃であり、金融機関の従業員が標的となる可能性があるため「中」です。確認目安は、進行中の攻撃キャンペーンではあるものの、特定の緊急パッチや期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:3d1d6ecffa743c4024029ff7665b6d997af66709a70916fba0ca4d10c8a0101f",
+      "source_id": "ncsc",
+      "source_name": "NCSC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.ncsc.gov.uk/news/ncsc-statement-in-response-to-recent-incidents-resulting-from-frontier-ai-evaluations",
+      "canonical_url": "https://www.ncsc.gov.uk/news/ncsc-statement-in-response-to-recent-incidents-resulting-from-frontier-ai-evaluations",
+      "published_at": "2026-08-04T21:00:00+09:00",
+      "fetched_at": "2026-08-05T08:01:29.398978+09:00",
+      "title": "NCSC、最先端AI評価に起因する最近のインシデントに関する声明を発表",
+      "raw_title": "NCSC statement in response to recent incidents resulting from frontier AI evaluations",
+      "raw_excerpt": "A statement from Ollie Whitehouse, Chief Technology Officer at the NCSC, on AI security following recent incidents.",
+      "content_hash": "sha256:a569d56a8fffb1ab8d25f17f21d6932546e06cc0ed1541f156c475aed84261c6",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-05T08:02:24.259660+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIのセキュリティと、最先端AI評価に起因するインシデントに関する声明であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "NCSCの最高技術責任者であるOllie Whitehouse氏が、最近のインシデントを受けてAIセキュリティに関する声明を発表しました。",
+        "financial_impact": "金融機関が最先端AI技術の評価や導入を検討している場合、そのセキュリティリスクを理解する上で参考となる情報です。直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、最先端AI技術のセキュリティに関する一般的な注意喚起であり、特定の製品や脆弱性への対応を求めるものではないため「中」です。確認目安は、具体的な脅威や期限の記述がなく、中長期的な情報収集として参考となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b938abdeb597439c98b5a2f0d05ca27b5948a4edec7daabb8479bbfb725b5667",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/keep-going-bro-youve-got-this-a-data-driven-look-at-how-adversaries-are-weaponizing-ai/",
+      "canonical_url": "https://blog.talosintelligence.com/keep-going-bro-youve-got-this-a-data-driven-look-at-how-adversaries-are-weaponizing-ai/",
+      "published_at": "2026-08-04T19:00:11+09:00",
+      "fetched_at": "2026-08-05T08:01:29.398978+09:00",
+      "title": "“Keep going, bro. You’ve got this!” A data-driven look at how adversaries are weaponizing AI",
+      "raw_title": "“Keep going, bro. You’ve got this!” A data-driven look at how adversaries are weaponizing AI",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5a01bc06756fffd63ffbe3065ca0de4a3dea5f8690e2026a52c14c2fa15b30b3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a4d671bbc4b4ddbc141ee3c67722aa8a8d77f7f00ab105ee4b4a4b3575adfe8e",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-08-05T08:01:29.398978+09:00",
+      "title": "N-able N-centralの認証バイパス脆弱性「CVE-2026-18556」",
+      "raw_title": "CVE-2026-18556 — N-able N-central Authentication Bypass Using an Alternate Path or Channel Vulnerability",
+      "raw_excerpt": "N-able N-central contains an authentication bypass using an alternate path or channel that allows for authentication bypass.",
+      "content_hash": "sha256:d0d8c0c4f162f72f0c437af357c5a059a06049de1739e193aeb12b70bdc3d436",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-05T08:02:41.582247+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CISA KEVに掲載された認証バイパスの脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "本日確認",
+        "summary": "CISAは2026年8月4日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。N-able N-centralには認証バイパスの脆弱性(CVE-2026-18556)が存在し、認証を回避される可能性があります。",
+        "financial_impact": "N-able N-centralを導入している金融機関において、本脆弱性の影響を受ける可能性があります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "N-able N-centralの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報と修正版・緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、N-able N-centralの利用状況が記事から不明であり、適用範囲が限定的である可能性があるため「中」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-18556",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-04T23:01:29Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-18556",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-08-01T20:16:37Z",
+              "last_modified_at": "2026-08-04T19:28:55Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 7.4,
+                "base_severity": "HIGH",
+                "vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N",
+                "source": "nvd@nist.gov",
+                "type": "Primary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-04T23:01:29Z",
+              "date_added": "2026-08-04"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:f75409cc4a965f441b7b7959e4a73c8cd75af878a03ccaa9218c2ec4e0a8d598",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-08-05T08:01:29.398978+09:00",
+      "title": "CISA、Apache Tomcatの機微情報暗号化欠陥をKEVへ追加",
+      "raw_title": "CVE-2026-34486 — Apache Tomcat Missing Encryption of Sensitive Data Vulnerability",
+      "raw_excerpt": "Apache Tomcat contains a missing encryption of sensitive data vulnerability that allows the bypass of the EncryptInterceptor.",
+      "content_hash": "sha256:5d84841a1a79e60e5e9dcc752886fd62768b0c7d911c32eb9ebcd0f748e72a87",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-05T08:02:58.690376+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CISA KEVへの脆弱性追加が主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "CISAは2026年8月4日、実悪用が確認されたとしてApache Tomcatの機微情報暗号化欠陥(CVE-2026-34486)をKEVカタログへ追加しました。この脆弱性はEncryptInterceptorのバイパスを可能にします。",
+        "financial_impact": "金融機関で広く利用されているApache Tomcat製品に影響する可能性があり、利用している場合は適用性確認の対象になります。",
+        "recommended_actions": [
+          "CVE-2026-34486の影響を受けるApache Tomcatのバージョンと利用有無を棚卸しする",
+          "ベンダーの一次情報やパッチ、緩和策を確認し、対応要否を評価する",
+          "侵害の兆候がないかログ等を監視し、必要に応じて対応を検討する"
+        ],
+        "reason": "重要度は、広く利用されるApache Tomcat製品の脆弱性であり、適用性評価の優先度が高いため「高」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-34486",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-04T23:01:29Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-34486",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-04-09T20:16:25Z",
+              "last_modified_at": "2026-08-04T20:09:57Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 7.5,
+                "base_severity": "HIGH",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N",
+                "source": "0b0ca135-0b70-47e7-9f44-1890c2a1c46c",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-04T23:01:29Z",
+              "date_added": "2026-08-04"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:51311099cb5ad3eb8d006bc1191f5eec3c7b57cce0bfdf49c608a2f8e6fbe04f",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-08-05T08:01:29.398978+09:00",
+      "title": "IBM Langflowのコードインジェクション脆弱性「CVE-2026-9198」",
+      "raw_title": "CVE-2026-9198 — IBM Langflow Code Injection Vulnerability",
+      "raw_excerpt": "Langflow contains a code injection vulnerability that allows unauthenticated attackers to achieve full remote code execution on default Langflow deployments.",
+      "content_hash": "sha256:03cf0b62bd89234765c56349959504c8ce56872233ea905a06f805329f30df1b",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-05T08:03:15.827395+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CVEと脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "CISAは2026年8月4日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。IBM Langflowに認証されていない攻撃者がリモートコード実行を可能にするコードインジェクションの脆弱性「CVE-2026-9198」が存在します。",
+        "financial_impact": "Langflowをデフォルト設定で利用している金融機関は、本脆弱性の影響を受ける可能性があります。利用有無を確認し、必要な対応を検討する必要があります。",
+        "recommended_actions": [
+          "自社および委託先におけるIBM Langflowの利用有無と影響バージョンを確認する",
+          "IBM Langflowのベンダー情報を確認し、パッチ適用や緩和策の実施を検討する",
+          "Langflow環境における不審な活動や侵害の兆候がないか監視する"
+        ],
+        "reason": "重要度は、CISA KEVに掲載され、認証不要でリモートコード実行が可能な重大な脆弱性であるため「高」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-9198",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-04T23:01:29Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-9198",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-07-17T18:17:17Z",
+              "last_modified_at": "2026-08-04T19:29:00Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 9.8,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                "source": "psirt@us.ibm.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-04T23:01:29Z",
+              "date_added": "2026-08-04"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
