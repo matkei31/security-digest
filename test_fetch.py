@@ -5095,6 +5095,26 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
             with self.subTest(required=required):
                 self.assertIn(required, bl038)
 
+    def test_backlog_bl034_original_wording_is_intact_not_mutation_residue(self):
+        # PR #86 round 2 review Blocker 1: round 1's mutation-style
+        # verification for the 所有権確認成功 -> 所有権の確認に成功 reword left
+        # residue committed in BL-034's own historical record (the first
+        # mutation attempt was never reverted -- a LATER backup was taken
+        # from the already-mutated state, so the "revert" only restored to
+        # that mutated baseline). test_security_requirements.py's own
+        # test_cloudflare_dashboard_and_search_console_are_confirmed scopes
+        # to "## BL-034" through "\n## 完了済み参照" -- which also contains
+        # this PR's own BACKLOG.md round 1 review paragraphs (further down
+        # the document, before "## 完了済み参照"), so a duplicate mention of
+        # the ORIGINAL phrase in that later prose can mask a genuine
+        # regression in BL-034's own body. Scope tightly to BL-034's own
+        # section only (## BL-034 through the next ## BL-035 heading) to
+        # close that gap.
+        backlog = self._read("BACKLOG.md")
+        bl034 = backlog.split("## BL-034", 1)[1].split("\n## BL-035", 1)[0]
+        self.assertIn("所有権確認成功", bl034)
+        self.assertNotIn("所有権の確認に成功", bl034)
+
     def test_backlog_records_tranche3e_kickoff_and_implementation_evidence(self):
         bl038 = self._bl038_section()
         for required in (
