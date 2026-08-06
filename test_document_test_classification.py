@@ -1,11 +1,19 @@
 #!/usr/bin/env python3
-"""BL-038 tranche 3e: declared-scope/count structural guard for
+"""BL-038 tranche 3f: declared-scope/count structural guard for
 document_test_classification.json, now spanning test_custom_domain.py
 (tranche 3b, 97 entries, unchanged), test_ui_spec.py (tranche 3c, 185
 entries, unchanged), test_status.py (tranche 3d, 98 entries, unchanged),
-and test_security_requirements.py (tranche 3e, 143 new entries: the
-Bl034Round2ReviewCorrectionsTest/Bl034ImplementationAcceptanceTest/
-Bl034CloseoutTest/StatusSecurityRequirementsSourceOfTruthTest classes).
+and test_security_requirements.py (tranche 3e's 143 entries, unchanged,
+plus tranche 3f's 62 new Bl031AcceptanceAndBl032RegistrationTest entries
+= 205).
+
+Tranche 3f adds Bl031AcceptanceAndBl032RegistrationTest to the existing
+test_security_requirements.py scope entry, placed FIRST because its
+`class` statement precedes Bl034Round2ReviewCorrectionsTest's in the
+source file -- every scoped file's declared class order equals its file
+source order. enumerate_assertions() walks that tuple in order, so the
+62 new entries land in the corresponding manifest block and all 523
+pre-existing entries stay byte-identical and in unchanged order.
 
 document_test_inventory.py's validator can only check a manifest against
 whatever scope it *declares* -- it cannot detect a class/file being
@@ -20,11 +28,12 @@ is exercised both directly and against deliberately-mutated copies,
 demonstrated not just asserted).
 """
 
+import ast
 import itertools
 import json
 import re
 import unittest
-from collections import OrderedDict
+from collections import Counter, OrderedDict
 from pathlib import Path
 
 import document_test_inventory as dti
@@ -65,6 +74,8 @@ STATUS_EXPECTED_CLASSES = (
     "Bl036ProductionEvidenceSyncTest",
 )
 SECURITY_REQUIREMENTS_EXPECTED_CLASSES = (
+    # Tranche 3f's class, first because it is first in the source file.
+    "Bl031AcceptanceAndBl032RegistrationTest",
     "Bl034Round2ReviewCorrectionsTest",
     "Bl034ImplementationAcceptanceTest",
     "Bl034CloseoutTest",
@@ -80,7 +91,7 @@ EXPECTED_SCOPE_ORDER = (
 CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT = 97
 UI_SPEC_EXPECTED_ASSERTION_COUNT = 185
 STATUS_EXPECTED_ASSERTION_COUNT = 98
-SECURITY_REQUIREMENTS_EXPECTED_ASSERTION_COUNT = 143
+SECURITY_REQUIREMENTS_EXPECTED_ASSERTION_COUNT = 205  # 143 (tranche 3e) + 62 (tranche 3f)
 COMBINED_EXPECTED_ASSERTION_COUNT = (
     CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT
     + UI_SPEC_EXPECTED_ASSERTION_COUNT
@@ -411,13 +422,17 @@ STATUS_EXPECTED_CATEGORY_COUNTS = {
     "D": len(STATUS_EXPECTED_D_IDS),
 }
 
-# Tranche 3e's exact per-ID category membership record for
-# test_security_requirements.py, built the same way as tranche 3b/3c/3d:
-# A/C/D pinned as hardcoded literal ID sets, B checked as the exact
-# remainder of the 143 test_security_requirements.py IDs. Category A
-# policy (a repeated structural pattern with clear shared-helper-
-# consolidation value, not merely a recurring exact/fixed value) yields
-# zero Category A entries, same as test_status.py.
+# Tranche 3e's and 3f's per-ID category membership record for
+# test_security_requirements.py, built like 3b/3c/3d: A/C/D pinned as
+# literal ID sets, B checked as the exact remainder of the 205 IDs.
+#
+# Category A policy is unchanged: a repeated structural pattern with clear
+# shared-helper-consolidation value, NOT merely a recurring exact/fixed
+# value re-anchored at different checkpoints. Tranche 3e's four classes
+# yielded zero (their 17 fingerprint-duplicate groups are recurring values
+# inside otherwise-distinct methods, correctly left B/C/D). Tranche 3f
+# yields four of the other kind: the two sd002/sd030 methods are the SAME
+# assertions over the SAME extractions, differing only in statement order.
 #
 # PR #86 round 1 review correction: 12 entries initially misclassified B
 # were moved -- 9 to C (raw negative multi-token substrings like "session
@@ -433,8 +448,48 @@ STATUS_EXPECTED_CATEGORY_COUNTS = {
 # assertion in the same method). See BACKLOG.md's tranche 3e round 1 fix
 # paragraph for the full per-ID reasoning.
 SECURITY_REQUIREMENTS_EXPECTED_A_IDS = frozenset({
+    # Tranche 3f: the one duplicated-method pair in this file.
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_sd030_does_not_mark_sd002_as_implemented_superseded::assert-01",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_sd030_does_not_mark_sd002_as_implemented_superseded::assert-02",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_sd002_remains_accepted_implemented_and_not_marked_superseded_by_sd030::assert-01",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_sd002_remains_accepted_implemented_and_not_marked_superseded_by_sd030::assert-02",
 })
 SECURITY_REQUIREMENTS_EXPECTED_C_IDS = frozenset({
+    # Tranche 3f (Bl031AcceptanceAndBl032RegistrationTest, 33 entries).
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl031_backlog_status_is_completed::assert-02",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl031_backlog_status_is_completed::assert-03",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl031_backlog_status_is_completed::assert-04",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl032_is_registered_exactly_once::assert-02",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_sd030_is_unique_and_records_approval_deferral_boundary::assert-02",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_sd030_is_unique_and_records_approval_deferral_boundary::assert-04",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl032_residual_work_records_operational_observation_as_succeeded::assert-01",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl032_residual_work_records_operational_observation_as_succeeded::assert-03",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl032_residual_work_records_operational_observation_as_succeeded::assert-04",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl032_residual_work_records_operational_observation_as_succeeded::assert-05",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl032_residual_work_records_operational_observation_as_succeeded::assert-06",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl032_residual_work_records_operational_observation_as_succeeded::assert-08",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl032_completion_condition_6_requires_changing_rich_content_not_preserving_it::assert-01",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl032_completion_condition_6_requires_changing_rich_content_not_preserving_it::assert-02",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl032_completion_condition_6_requires_changing_rich_content_not_preserving_it::assert-03",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl032_completion_condition_6_requires_changing_rich_content_not_preserving_it::assert-04",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl032_completion_condition_6_requires_changing_rich_content_not_preserving_it::assert-05",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl032_completion_condition_6_requires_changing_rich_content_not_preserving_it::assert-06",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_sd030_records_that_mode_restrictions_are_not_yet_enforced_in_production::assert-01",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_sd030_records_that_mode_restrictions_are_not_yet_enforced_in_production::assert-02",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_sd030_records_that_mode_restrictions_are_not_yet_enforced_in_production::assert-03",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_sd030_describes_metadata_only_and_limited_feed_analysis_as_policy_requirements::assert-01",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_sd030_describes_metadata_only_and_limited_feed_analysis_as_policy_requirements::assert-02",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_sd030_describes_metadata_only_and_limited_feed_analysis_as_policy_requirements::assert-03",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_sd030_describes_metadata_only_and_limited_feed_analysis_as_policy_requirements::assert-04",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_status_bl030_entry_no_longer_lists_bl031_as_a_follow_up_candidate::assert-01",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_status_bl030_entry_no_longer_lists_bl031_as_a_follow_up_candidate::assert-03",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_status_bl030_entry_no_longer_lists_bl031_as_a_follow_up_candidate::assert-05",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_status_bl030_entry_no_longer_lists_bl031_as_a_follow_up_candidate::assert-06",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_status_bl030_entry_no_longer_lists_bl031_as_a_follow_up_candidate::assert-08",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_status_bl030_entry_no_longer_lists_bl031_as_a_follow_up_candidate::assert-09",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_status_bl030_entry_no_longer_lists_bl031_as_a_follow_up_candidate::assert-10",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_status_bl030_entry_no_longer_lists_bl031_as_a_follow_up_candidate::assert-11",
+    # Tranche 3e (unchanged).
     "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_version_17_intro_does_not_deny_the_sr044_046_gap016_017_sync::assert-02",
     "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_version_17_intro_does_not_deny_the_sr044_046_gap016_017_sync::assert-03",
     "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_version_17_intro_does_not_deny_the_sr044_046_gap016_017_sync::assert-04",
@@ -508,6 +563,24 @@ SECURITY_REQUIREMENTS_EXPECTED_C_IDS = frozenset({
     "test_security_requirements.py::StatusSecurityRequirementsSourceOfTruthTest::test_row_delegates_to_security_requirements_header_not_a_fixed_version::assert-05",
 })
 SECURITY_REQUIREMENTS_EXPECTED_D_IDS = frozenset({
+    # Tranche 3f (Bl031AcceptanceAndBl032RegistrationTest, 14 entries).
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_source_usage_policy_20260731_snapshot_and_security_requirements_current_version::assert-01",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_source_usage_policy_20260731_snapshot_and_security_requirements_current_version::assert-03",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_source_usage_policy_20260731_snapshot_and_security_requirements_current_version::assert-04",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_source_usage_policy_20260731_snapshot_and_security_requirements_current_version::assert-06",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl031_backlog_acceptance_evidence_is_recorded::assert-01",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl031_backlog_acceptance_evidence_is_recorded::assert-02",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl031_backlog_acceptance_evidence_is_recorded::assert-03",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl031_backlog_acceptance_evidence_is_recorded::assert-04",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl031_backlog_acceptance_evidence_is_recorded::assert-05",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl031_backlog_acceptance_evidence_is_recorded::assert-06",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_source_usage_policy_checked_at_dates_are_not_bulk_changed::assert-02",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_source_usage_policy_checked_at_dates_are_not_bulk_changed::assert-03",
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_bl032_residual_work_records_operational_observation_as_succeeded::assert-02",
+    # Locked as D by BL-038 tranche 2 (BACKLOG.md's classification table and
+    # test_fetch.Bl038Tranche2RecordSyncTest); preserved unchanged here.
+    "test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest::test_sd030_records_that_mode_restrictions_are_not_yet_enforced_in_production::assert-04",
+    # Tranche 3e (unchanged).
     "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_version_17_is_the_current_draft_and_16_is_not_called_this_version::assert-01",
     "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_gap017_does_not_call_bl032_merely_registered::assert-03",
     "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_bl034_is_complete_with_acceptance_round_evidence_preserved::assert-02",
@@ -604,6 +677,8 @@ EXPECTED_ENTRY_KEY_ORDER = (
 # test_status.py's own methods each check exactly one of self.status/
 # self.decisions/self.operations/self.backlog per assertion. Tranche 3e
 # added exactly one: a `for name, text in (...)` loop over 4 documents.
+# Tranche 3f added none: its only loop has a single element, so its three
+# assertions each check exactly one document, SOURCE_USAGE_POLICY.md.
 EXPECTED_MULTI_TARGETS = {
     "test_custom_domain.py::TicketIdTypoTest::"
     "test_no_bl007_underscore_typo_anywhere_in_tracked_markdown_or_python::assert-01": (
@@ -642,6 +717,84 @@ EXPECTED_MULTI_TARGETS = {
 # classification judgment is correct. Category membership is a
 # human-reviewed record, pinned by the *_EXPECTED_A_IDS/C_IDS/D_IDS sets,
 # checked by test_exact_category_membership_matches_hardcoded_id_sets.
+# -- Tranche 3f round 2: two NARROW structural guards over the tranche 3f
+# class's source. Neither improves the per-assertion fingerprint in general
+# -- `canonical_fingerprint()` is unchanged and still covers only the
+# assertion call node. They close two specific places where that scope is
+# too narrow for what the manifest claims, nothing more. Both take a source
+# STRING so the same helper runs against a mutated copy (demonstrated, not
+# asserted). `test_security_requirements.py` is not modified by either.
+
+_FUNCTION_DEF_TYPES = (ast.FunctionDef, ast.AsyncFunctionDef)
+
+TRANCHE_3F_CLASS = "Bl031AcceptanceAndBl032RegistrationTest"
+
+# Blind spot 1: this method's `**Version:** 0.1` literal lives in the
+# surrounding one-element `for` tuple, NOT in the assertion call, so the
+# recorded fingerprint would not move if the tuple were edited to `0.2`.
+VERSION_MARKER_METHOD = (
+    "test_source_usage_policy_20260731_snapshot_and_security_requirements_current_version"
+)
+VERSION_MARKER_LITERAL = "**Version:** 0.1"
+VERSION_MARKER_DOC_ATTR = "policy"
+VERSION_MARKER_BINDINGS = ["doc", "version_marker"]
+
+# Blind spot 2: the four Category A entries rest on whole-METHOD
+# duplication, which assertion fingerprints alone cannot see.
+CATEGORY_A_METHOD_PAIR = (
+    "test_sd030_does_not_mark_sd002_as_implemented_superseded",
+    "test_sd002_remains_accepted_implemented_and_not_marked_superseded_by_sd030",
+)
+CATEGORY_A_EXPECTED_STATEMENT_ROLES = frozenset({
+    ("assign", "sd002"),
+    ("assign", "sd030"),
+    ("assign", "supersedes"),
+    ("call", "assertIn", "- **Status:** Accepted / Implemented"),
+    ("call", "assertNotIn", "SD-002"),
+})
+
+
+def _find_method(source_text, file_name, class_name, method_name):
+    """The named method's AST node; StopIteration if it is gone."""
+    tree = ast.parse(source_text, filename=file_name)
+    class_node = next(
+        n for n in ast.walk(tree) if isinstance(n, ast.ClassDef) and n.name == class_name
+    )
+    return next(
+        n for n in class_node.body
+        if isinstance(n, _FUNCTION_DEF_TYPES) and n.name == method_name
+    )
+
+
+def _statement_role(stmt):
+    """A position-free label saying WHICH contract a statement carries."""
+    if (
+        isinstance(stmt, ast.Assign)
+        and len(stmt.targets) == 1
+        and isinstance(stmt.targets[0], ast.Name)
+    ):
+        return ("assign", stmt.targets[0].id)
+    if isinstance(stmt, ast.Expr) and isinstance(stmt.value, ast.Call):
+        func = stmt.value.func
+        if isinstance(func, ast.Attribute):
+            args = stmt.value.args
+            literal = args[0].value if args and isinstance(args[0], ast.Constant) else None
+            return ("call", func.attr, literal)
+    return ("other", ast.dump(stmt, annotate_fields=True, include_attributes=False))
+
+
+def _mutate_within_method(source_text, class_name, method_name, old, new):
+    """Replace `old` with `new` ONLY inside that method's own source lines,
+    so a literal shared with the sibling method is not changed in both."""
+    method = _find_method(source_text, "<mutation>", class_name, method_name)
+    lines = source_text.splitlines(keepends=True)
+    start, end = method.lineno - 1, method.end_lineno
+    block = "".join(lines[start:end])
+    if old not in block:
+        raise AssertionError(f"{old!r} not found inside {method_name}")
+    return "".join(lines[:start]) + block.replace(old, new, 1) + "".join(lines[end:])
+
+
 _PLACEHOLDER_WORDS = ("todo", "fixme", "placeholder", "tbd", "xxx", "n/a")
 _CATEGORY_MARKERS = {
     "A": ("duplicat", "helper", "consolidat", "shared", "call site", "identical fingerprint", "repeated"),
@@ -891,6 +1044,202 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         with self.assertRaises(AssertionError):
             self._assert_exact_category_membership(mutated)
 
+    # Category A is newly non-empty for test_security_requirements.py, so
+    # the swap above (B<->C only) would not notice an A entry downgraded to
+    # B while a B is promoted to A. Exercise that pair explicitly.
+    def test_count_preserving_a_to_b_swap_in_security_requirements_is_detected(self):
+        mutated = json.loads(self.manifest_text)
+        by_id = {a["id"]: a for a in mutated["assertions"]}
+        expected_b_ids = (
+            frozenset(by_id) - COMBINED_EXPECTED_A_IDS - COMBINED_EXPECTED_C_IDS - COMBINED_EXPECTED_D_IDS
+        )
+        prefix = SECURITY_REQUIREMENTS_SOURCE_FILE + "::Bl031AcceptanceAndBl032RegistrationTest::"
+        b_entry = by_id[sorted(i for i in expected_b_ids if i.startswith(prefix))[0]]
+        a_entry = by_id[sorted(SECURITY_REQUIREMENTS_EXPECTED_A_IDS)[0]]
+        b_entry["category"], a_entry["category"] = a_entry["category"], b_entry["category"]
+        b_entry["action"], a_entry["action"] = a_entry["action"], b_entry["action"]
+
+        combined = {"A": 0, "B": 0, "C": 0, "D": 0}
+        for entry in mutated["assertions"]:
+            combined[entry["category"]] += 1
+        self.assertEqual(combined, COMBINED_EXPECTED_CATEGORY_COUNTS, "swap must be count-preserving")
+        with self.assertRaises(AssertionError):
+            self._assert_exact_category_membership(mutated)
+
+    # The four Category A entries exist because two whole methods duplicate
+    # each other. Demonstrate that against the LIVE source, not just in a
+    # rationale: the four must cover exactly two methods and two distinct
+    # fingerprints, with both methods asserting the same pair.
+    def test_security_requirements_category_a_entries_are_a_real_duplicated_method_pair(self):
+        a_entries = [
+            a for a in self.manifest["assertions"]
+            if a["file"] == SECURITY_REQUIREMENTS_SOURCE_FILE and a["category"] == "A"
+        ]
+        self.assertEqual(len(a_entries), 4)
+        self.assertEqual(
+            {a["class"] for a in a_entries}, {"Bl031AcceptanceAndBl032RegistrationTest"}
+        )
+        methods = sorted({a["method"] for a in a_entries})
+        self.assertEqual(
+            methods,
+            [
+                "test_sd002_remains_accepted_implemented_and_not_marked_superseded_by_sd030",
+                "test_sd030_does_not_mark_sd002_as_implemented_superseded",
+            ],
+        )
+        live_by_id = {r.id: r for r in self.live_records}
+        fingerprints_by_method = {}
+        for entry in a_entries:
+            fingerprints_by_method.setdefault(entry["method"], set()).add(
+                live_by_id[entry["id"]].fingerprint
+            )
+        first, second = (fingerprints_by_method[m] for m in methods)
+        self.assertEqual(len(first), 2, "each method must contribute two distinct assertions")
+        self.assertEqual(
+            first, second,
+            "the two methods must assert the identical pair of fingerprints -- that "
+            "whole-method duplication is what makes these Category A rather than B",
+        )
+
+    # -- Tranche 3f round 2, Blocker 2: the Version-0.1 loop binding --
+    def _assert_version_marker_loop_contract(self, source_text):
+        """Pin the one-element `for` tuple carrying the `**Version:** 0.1`
+        literal the manifest records as an exact Category D contract. The
+        recorded fingerprint covers only `assertIn(version_marker, doc)`,
+        so without this the tuple could be edited to `0.2` undetected."""
+        method = _find_method(
+            source_text, SECURITY_REQUIREMENTS_SOURCE_FILE, TRANCHE_3F_CLASS,
+            VERSION_MARKER_METHOD,
+        )
+        loops = [s for s in method.body if isinstance(s, ast.For)]
+        self.assertEqual(len(loops), 1, "expected exactly one for-loop in this method")
+        loop = loops[0]
+
+        # (a) one-element literal tuple: a second element would silently
+        # widen what this single manifest entry describes
+        self.assertIsInstance(loop.iter, ast.Tuple)
+        self.assertEqual(len(loop.iter.elts), 1, "must stay a single-element tuple")
+
+        # (b) that element is exactly `(self.policy, "**Version:** 0.1")`
+        element = loop.iter.elts[0]
+        self.assertIsInstance(element, ast.Tuple)
+        self.assertEqual(len(element.elts), 2)
+        doc_expr, marker_expr = element.elts
+        self.assertIsInstance(doc_expr, ast.Attribute)
+        self.assertIsInstance(doc_expr.value, ast.Name)
+        self.assertEqual((doc_expr.value.id, doc_expr.attr), ("self", VERSION_MARKER_DOC_ATTR))
+        self.assertIsInstance(marker_expr, ast.Constant)
+        self.assertEqual(
+            marker_expr.value, VERSION_MARKER_LITERAL,
+            "the loop tuple's literal is assert-01's actual Category D contract",
+        )
+
+        # (c) the loop binds those values under the names the assertion uses
+        self.assertIsInstance(loop.target, ast.Tuple)
+        self.assertTrue(all(isinstance(t, ast.Name) for t in loop.target.elts))
+        self.assertEqual([t.id for t in loop.target.elts], VERSION_MARKER_BINDINGS)
+
+        # (d) `self.assertIn(version_marker, doc)` actually consumes that binding
+        matches = [
+            node for node in ast.walk(loop)
+            if isinstance(node, ast.Call)
+            and isinstance(node.func, ast.Attribute)
+            and node.func.attr == "assertIn"
+            and len(node.args) == 2
+            and isinstance(node.args[0], ast.Name)
+            and node.args[0].id == VERSION_MARKER_BINDINGS[1]
+            and isinstance(node.args[1], ast.Name)
+            and node.args[1].id == VERSION_MARKER_BINDINGS[0]
+        ]
+        self.assertEqual(len(matches), 1, "one assertIn must consume the binding")
+
+    def test_version_marker_loop_binding_matches_the_recorded_category_d_contract(self):
+        self._assert_version_marker_loop_contract(self.sources[SECURITY_REQUIREMENTS_SOURCE_FILE])
+
+    def test_version_marker_loop_literal_mutation_is_caught_only_by_the_new_guard(self):
+        # Editing the loop tuple leaves the fingerprint identical, so only
+        # the structural guard fails.
+        source = self.sources[SECURITY_REQUIREMENTS_SOURCE_FILE]
+        mutated = source.replace('"**Version:** 0.1"),', '"**Version:** 0.2"),')
+        self.assertNotEqual(mutated, source)
+
+        def fingerprint_of_assert_01(text):
+            records = dti.enumerate_assertions(
+                text, SECURITY_REQUIREMENTS_SOURCE_FILE, [TRANCHE_3F_CLASS])
+            return next(r.fingerprint for r in records
+                        if r.method == VERSION_MARKER_METHOD and r.ordinal == 1)
+
+        # Step 1: prove the gap -- the ordinary fingerprint does not move.
+        self.assertEqual(
+            fingerprint_of_assert_01(source), fingerprint_of_assert_01(mutated),
+            "the recorded fingerprint is blind to the loop tuple's literal",
+        )
+        # Step 2: prove the new guard catches what the fingerprint missed.
+        with self.assertRaises(AssertionError):
+            self._assert_version_marker_loop_contract(mutated)
+
+    # -- Tranche 3f round 2, Blocker 3: whole-method duplication --
+    def _assert_category_a_methods_are_whole_method_duplicates(self, source_text):
+        """Compare both Category A methods' ENTIRE top-level statement sets,
+        not just assertion fingerprints. Order may differ (the only
+        difference claimed); the multiset of position-free dumps must match,
+        so a change to either method's extraction code -- which no
+        fingerprint covers -- breaks this."""
+        methods = [
+            _find_method(source_text, SECURITY_REQUIREMENTS_SOURCE_FILE, TRANCHE_3F_CLASS, n)
+            for n in CATEGORY_A_METHOD_PAIR
+        ]
+        dumps = [
+            Counter(ast.dump(s, annotate_fields=True, include_attributes=False) for s in m.body)
+            for m in methods
+        ]
+        self.assertEqual(
+            dumps[0], dumps[1],
+            "both methods must hold the identical multiset of top-level statements "
+            "(extraction included, order free) -- the entire basis for Category A",
+        )
+        # And they must be the specific statements the manifest describes, so
+        # the guard cannot pass on two methods that merely match each other.
+        for method, name in zip(methods, CATEGORY_A_METHOD_PAIR):
+            with self.subTest(method=name):
+                self.assertEqual(len(method.body), 5)
+                self.assertEqual(
+                    {_statement_role(stmt) for stmt in method.body},
+                    CATEGORY_A_EXPECTED_STATEMENT_ROLES,
+                )
+
+    def test_category_a_methods_are_whole_method_duplicates_in_live_source(self):
+        self._assert_category_a_methods_are_whole_method_duplicates(
+            self.sources[SECURITY_REQUIREMENTS_SOURCE_FILE])
+
+    def test_category_a_extraction_change_in_one_method_is_caught_only_by_the_new_guard(self):
+        # Change the SD-002 extraction in ONE method: no fingerprint covers
+        # that statement, so the fingerprint comparison stays green while the
+        # methods have stopped being duplicates.
+        source = self.sources[SECURITY_REQUIREMENTS_SOURCE_FILE]
+        mutated = _mutate_within_method(
+            source, TRANCHE_3F_CLASS, CATEGORY_A_METHOD_PAIR[1],
+            '"## SD-002"', '"## SD-003"')
+        self.assertNotEqual(mutated, source)
+
+        def pair_fingerprints(text):
+            records = dti.enumerate_assertions(
+                text, SECURITY_REQUIREMENTS_SOURCE_FILE, [TRANCHE_3F_CLASS])
+            return {n: sorted(r.fingerprint for r in records if r.method == n)
+                    for n in CATEGORY_A_METHOD_PAIR}
+
+        # Step 1: prove the gap -- both methods' assertion fingerprints are
+        # unchanged, and still identical to each other.
+        before, after = pair_fingerprints(source), pair_fingerprints(mutated)
+        self.assertEqual(before, after, "assertion fingerprints are blind to extraction code")
+        self.assertEqual(
+            after[CATEGORY_A_METHOD_PAIR[0]], after[CATEGORY_A_METHOD_PAIR[1]],
+            "the fingerprint-only comparison still passes on the mutated source",
+        )
+        # Step 2: prove the new whole-method guard catches it.
+        with self.assertRaises(AssertionError):
+            self._assert_category_a_methods_are_whole_method_duplicates(mutated)
+
     def test_action_matches_category_mapping_for_every_entry(self):
         for entry in self.manifest["assertions"]:
             with self.subTest(id=entry["id"]):
@@ -995,6 +1344,22 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                 )
             ]
 
+        def drop_tranche3f_class(mutated):
+            # Tranche 3f's own class, whose 62 entries are the newest and
+            # therefore the easiest to lose silently: the validator alone
+            # cannot see the scope shrink back to tranche 3e's four classes.
+            sr_scope = next(s for s in mutated["scope"] if s["file"] == SECURITY_REQUIREMENTS_SOURCE_FILE)
+            sr_scope["classes"] = [
+                c for c in sr_scope["classes"] if c != "Bl031AcceptanceAndBl032RegistrationTest"
+            ]
+            mutated["assertions"] = [
+                a for a in mutated["assertions"]
+                if not (
+                    a["file"] == SECURITY_REQUIREMENTS_SOURCE_FILE
+                    and a["class"] == "Bl031AcceptanceAndBl032RegistrationTest"
+                )
+            ]
+
         def drop_security_requirements_file_entirely(mutated):
             mutated["scope"] = [s for s in mutated["scope"] if s["file"] != SECURITY_REQUIREMENTS_SOURCE_FILE]
             mutated["assertions"] = [
@@ -1007,6 +1372,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
             "class-shrink-within-status": drop_status_class,
             "file-shrink-drop-status-entirely": drop_status_file_entirely,
             "class-shrink-within-security-requirements": drop_security_requirements_class,
+            "class-shrink-drop-tranche3f-class": drop_tranche3f_class,
             "file-shrink-drop-security-requirements-entirely": drop_security_requirements_file_entirely,
         }
         for name, mutate in scenarios.items():
