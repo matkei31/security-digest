@@ -3677,7 +3677,10 @@ class Bl038Tranche1RecordSyncTest(unittest.TestCase):
         # a regression in what BL-038 actually still owes.
         bl038 = self._bl038_section()
         self.assertIn("tranche 1・2・3a", bl038)
-        self.assertNotIn("- **状態:** 完了", bl038)
+        own_state_line = next(
+            line for line in bl038.splitlines() if line.startswith("- **状態:**")
+        )
+        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
         # Anchor on the actual bullet (line-start "- **残作業:**"), not any
         # prose elsewhere in the section that merely quotes that label.
         residual_match = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE)
@@ -3745,7 +3748,10 @@ class Bl038Tranche1RecordSyncTest(unittest.TestCase):
         bl038 = self._bl038_section()
         self.assertIn("実装中(", bl038)
         self.assertIn("tranche 1・2・3a", bl038)
-        self.assertNotIn("- **状態:** 完了", bl038)
+        own_state_line = next(
+            line for line in bl038.splitlines() if line.startswith("- **状態:**")
+        )
+        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
         self.assertNotIn("- **状態:** 実装中／独立レビュー待ち", bl038)
 
     def test_backlog_bl038_records_tranche1_final_acceptance_quote_and_date(self):
@@ -3853,7 +3859,10 @@ class Bl038Tranche2RecordSyncTest(unittest.TestCase):
         # named and the state was never re-marked complete.
         bl038 = self._bl038_section()
         self.assertIn("tranche 1・2・3a", bl038)
-        self.assertNotIn("- **状態:** 完了", bl038)
+        own_state_line = next(
+            line for line in bl038.splitlines() if line.startswith("- **状態:**")
+        )
+        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
         # The pre-final-acceptance "tranche 2実装中" phrasing must not remain
         # as the current state field (it may still legitimately appear in
         # historical round 1/round 2 review-record prose elsewhere).
@@ -3970,7 +3979,10 @@ class Bl038Tranche2RecordSyncTest(unittest.TestCase):
         # Tranche 2 final acceptance must no longer be recorded as pending,
         # and BL-038 overall must not be recorded as complete.
         self.assertNotIn("tranche 2 final acceptance:** 未実施(pending)", bl038)
-        self.assertNotIn("- **状態:** 完了", bl038)
+        own_state_line = next(
+            line for line in bl038.splitlines() if line.startswith("- **状態:**")
+        )
+        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
 
     def test_status_active_work_records_tranche2_kickoff_and_progress(self):
         bl038_line = self._status_bl038_line()
@@ -4068,7 +4080,10 @@ class Bl038Tranche3aRecordSyncTest(unittest.TestCase):
         bl038 = self._bl038_section()
         self.assertIn("実装中(", bl038)
         self.assertIn("tranche 1・2・3a", bl038)
-        self.assertNotIn("- **状態:** 完了", bl038)
+        own_state_line = next(
+            line for line in bl038.splitlines() if line.startswith("- **状態:**")
+        )
+        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
 
     def test_backlog_bl038_records_six_user_statements_with_entry6_as_tranche3a_final(self):
         bl038 = self._bl038_section()
@@ -4231,7 +4246,10 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
         # "3b受入済み" also legitimately appears inside "3a・3b・3c受入済み".
         self.assertIn("- **状態:** 実装中(tranche 1・2・3a・3b", bl038)
         self.assertIn("受入済み", bl038)
-        self.assertNotIn("- **状態:** 完了", bl038)
+        own_state_line = next(
+            line for line in bl038.splitlines() if line.startswith("- **状態:**")
+        )
+        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
 
     def test_backlog_bl038_records_nine_user_statements_with_entry8_as_tranche3b_final(self):
         bl038 = self._bl038_section()
@@ -4505,7 +4523,14 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
         # tranche 3c's own acceptance is a permanent historical fact even
         # after the state string's tranche 3d suffix moves forward.
         self.assertIn("- **状態:** 実装中(tranche 1・2・3a・3b・3c受入済み", bl038)
-        self.assertNotIn("- **状態:** 完了", bl038)
+        # scope the negative check to BL-038's own state field line, not the
+        # whole section -- later evidence/rationale text legitimately
+        # mentions OTHER tickets' "- **状態:** 完了" field values (e.g.
+        # tranche 3d's BL-036 Category A rationale).
+        own_state_line = next(
+            line for line in bl038.splitlines() if line.startswith("- **状態:**")
+        )
+        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
 
     def test_backlog_records_entry9_as_tranche3c_kickoff(self):
         bl038 = self._bl038_section()
@@ -4649,6 +4674,32 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
             with self.subTest(required=required):
                 self.assertIn(required, bl038_line)
 
+    def test_tranche3c_final_acceptance_diff_evidence_is_880_172_not_868(self):
+        # PR #85 round 1 review Blocker 1: the tranche 3c final-acceptance
+        # diff evidence had been recorded as 868/172 (the round-2-reviewed
+        # HEAD's diff, correct only for that historical review record) when
+        # it should be 880/172 (the actual diff of accepted implementation
+        # head `567449062c87f7eca8f16a02f6b30595df221370` vs origin/main at
+        # kickoff, per PR #84's own final body and GitHub's own record --
+        # independently reconfirmed here via `git diff --shortstat`).
+        # The round 2 "reviewed head `d1b1b150...`" record's own 868/172 is
+        # correct and must NOT be touched by this test.
+        bl038 = self._bl038_section()
+        self.assertIn("- **diff:** 880 insertions／172 deletions", bl038)
+        self.assertNotIn("- **diff:** 868 insertions／172 deletions", bl038)
+        # the round 2 reviewed-head historical record must still read 868
+        self.assertIn("reviewed diff 868 insertions／172 deletions", bl038)
+
+        bl038_line = self._status_bl038_line()
+        self.assertIn(
+            "changed files 5件、diff 880 insertions／172 deletions、unresolved",
+            bl038_line,
+        )
+        self.assertNotIn(
+            "changed files 5件、diff 868 insertions／172 deletions、unresolved",
+            bl038_line,
+        )
+
     def test_status_active_work_still_lists_bl038_not_recently_completed(self):
         status = self._read("STATUS.md")
         active = status.split("## Active work", 1)[1].split(
@@ -4695,7 +4746,15 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
         self.assertIn(
             "- **状態:** 実装中(tranche 1・2・3a・3b・3c受入済み／tranche 3d実装中)", bl038
         )
-        self.assertNotIn("- **状態:** 完了", bl038)
+        # scope the negative check to BL-038's own state field line, not the
+        # whole section -- later evidence/rationale text legitimately
+        # mentions OTHER tickets' "- **状態:** 完了" field values (e.g.
+        # BL-036's Category A rationale in the tranche 3d implementation
+        # evidence paragraph).
+        own_state_line = next(
+            line for line in bl038.splitlines() if line.startswith("- **状態:**")
+        )
+        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
 
     def test_backlog_records_eleven_user_statements_with_new_entries(self):
         bl038 = self._bl038_section()
@@ -4736,9 +4795,10 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
             "test/bl038-tranche3d-status-classification",
             "35367dd1506376776e0aa726ded6f8a31ce3a939",
             "実装証跡(tranche 3d)",
-            "A 0／B 31／C 39／D 28",
+            "独立レビューround 1(tranche 3d",
+            "A 5／B 28／C 39／D 26",
             "380 entries",
-            "combined A=18 B=127 C=164 D=71",
+            "combined: **A 23／B 124／C 164／D 69",
             "STATUS_EXPECTED_C_IDS",
             "STATUS_EXPECTED_D_IDS",
             "class-shrink-within-status",
@@ -4746,6 +4806,14 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038)
+        # the pre-review initial-implementation snapshot is preserved as
+        # explicitly-marked-invalid history (struck through), not restated
+        # as current evidence anywhere else in the section
+        self.assertIn("~~test_status.py: A 0／B 31／C 39／D 28(total 98)~~", bl038)
+        self.assertEqual(
+            bl038.count("A 0／B 31／C 39／D 28"), 1,
+            "the superseded initial count must appear exactly once, only inside the struck-through historical note",
+        )
 
     def test_backlog_residual_work_names_category_c_conversion_and_tranche3d_in_progress(self):
         bl038 = self._bl038_section()
@@ -4771,11 +4839,14 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
             "tranche 3d着手(2026-08-06)",
             "test/bl038-tranche3d-status-classification",
             "tranche 3d kickoff原文「次へ進めて」",
-            "A 0／B 31／C 39／D 28",
+            "独立レビューround 1(tranche 3d",
+            "A 5／B 28／C 39／D 26",
+            "combined: **A 23／B 124／C 164／D 69",
             "380 entries",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038_line)
+        self.assertNotIn("最終分類: **test_status.py: A 0／B 31／C 39／D 28", bl038_line)
 
     def test_manifest_is_scoped_to_three_files_with_combined_counts(self):
         manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
@@ -4787,15 +4858,41 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
         self.assertEqual(len(manifest["assertions"]), 380)
         from collections import Counter
 
+        # PR #85 round 1 review corrected this tally: 5 fixed Version/Status/
+        # enum/machine-readable-key entries in test_status.py had been left
+        # in B/D under an (incorrect) fingerprint-duplication precondition
+        # for Category A; moved to A per the tranche 3d classification
+        # definition, which does not require duplication for A.
         counts = Counter(a["category"] for a in manifest["assertions"])
-        self.assertEqual(dict(counts), {"A": 18, "B": 127, "C": 164, "D": 71})
+        self.assertEqual(dict(counts), {"A": 23, "B": 124, "C": 164, "D": 69})
         status_entries = [a for a in manifest["assertions"] if a["file"] == "test_status.py"]
         self.assertEqual(len(status_entries), 98)
         status_counts = Counter(a["category"] for a in status_entries)
-        self.assertEqual(dict(status_counts), {"B": 31, "C": 39, "D": 28})
+        self.assertEqual(dict(status_counts), {"A": 5, "B": 28, "C": 39, "D": 26})
         for entry in status_entries:
             self.assertIn("targets", entry)
             self.assertNotIn("target", entry)
+
+    def test_status_py_fixed_version_status_fields_are_category_a(self):
+        # PR #85 round 1 review Blocker 2: fingerprint duplication/helper-
+        # consolidation potential is explicitly NOT a precondition for
+        # Category A under the tranche 3d classification definition (fixed
+        # Version/Status field, enum, machine-readable key, exact field
+        # name/mechanical structural value). Pin the 5 corrected IDs exactly.
+        manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
+        by_id = {a["id"]: a for a in manifest["assertions"]}
+        expected_a_ids = {
+            "test_status.py::StatusSourceOfTruthTest::test_current_generator_schema_on_main_is_still_2::assert-01",
+            "test_status.py::Sd031DecisionTest::test_sd031_records_date_and_status::assert-02",
+            "test_status.py::StatusSecurityOperationsSourceOfTruthTest::test_security_operations_itself_reflects_bl035_final_acceptance::assert-01",
+            "test_status.py::StatusSecurityOperationsSourceOfTruthTest::test_security_operations_itself_reflects_bl035_final_acceptance::assert-02",
+            "test_status.py::Bl036ProductionEvidenceSyncTest::test_backlog_bl036_still_complete_with_no_remaining_work::assert-01",
+        }
+        for entry_id in expected_a_ids:
+            with self.subTest(id=entry_id):
+                self.assertIn(entry_id, by_id)
+                self.assertEqual(by_id[entry_id]["category"], "A")
+                self.assertEqual(by_id[entry_id]["action"], "keep")
 
     def test_manifest_line_count_is_within_tranche3d_budget(self):
         lines = self.MANIFEST_PATH.read_text(encoding="utf-8").splitlines()

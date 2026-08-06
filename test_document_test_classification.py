@@ -310,6 +310,11 @@ UI_SPEC_EXPECTED_CATEGORY_COUNTS = {
 # built the same way as tranche 3b/3c: A/C/D pinned as hardcoded literal ID
 # sets, B checked as the exact remainder of the 98 test_status.py IDs.
 STATUS_EXPECTED_A_IDS = frozenset({
+    "test_status.py::StatusSourceOfTruthTest::test_current_generator_schema_on_main_is_still_2::assert-01",
+    "test_status.py::Sd031DecisionTest::test_sd031_records_date_and_status::assert-02",
+    "test_status.py::StatusSecurityOperationsSourceOfTruthTest::test_security_operations_itself_reflects_bl035_final_acceptance::assert-01",
+    "test_status.py::StatusSecurityOperationsSourceOfTruthTest::test_security_operations_itself_reflects_bl035_final_acceptance::assert-02",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_backlog_bl036_still_complete_with_no_remaining_work::assert-01",
 })
 STATUS_EXPECTED_C_IDS = frozenset({
     "test_status.py::StatusSourceOfTruthTest::test_source_of_truth_row_defers_to_referenced_daily_json::assert-02",
@@ -353,12 +358,10 @@ STATUS_EXPECTED_C_IDS = frozenset({
     "test_status.py::Bl036ProductionEvidenceSyncTest::test_backlog_bl036_scopes_the_no_manual_production_claim_to_bl036_work::assert-02",
 })
 STATUS_EXPECTED_D_IDS = frozenset({
-    "test_status.py::StatusSourceOfTruthTest::test_current_generator_schema_on_main_is_still_2::assert-01",
     "test_status.py::Sd031DecisionTest::test_sd031_records_date_and_status::assert-01",
     "test_status.py::Sd031DecisionTest::test_sd031_evidence_includes_bl033_commit_and_prs::assert-02",
     "test_status.py::Sd031DecisionTest::test_sd031_evidence_includes_bl033_commit_and_prs::assert-03",
     "test_status.py::Sd031DecisionTest::test_sd031_evidence_includes_bl033_commit_and_prs::assert-04",
-    "test_status.py::StatusSecurityOperationsSourceOfTruthTest::test_security_operations_itself_reflects_bl035_final_acceptance::assert-01",
     "test_status.py::Bl036PostMergeRecordFixTest::test_status_as_of_is_20260804::assert-01",
     "test_status.py::Bl036PostMergeRecordFixTest::test_status_bl036_entry_distinguishes_implementation_and_final_evidence::assert-01",
     "test_status.py::Bl036PostMergeRecordFixTest::test_status_bl036_entry_distinguishes_implementation_and_final_evidence::assert-02",
@@ -460,7 +463,10 @@ EXPECTED_MULTI_TARGETS = {
 # checked by test_exact_category_membership_matches_hardcoded_id_sets.
 _PLACEHOLDER_WORDS = ("todo", "fixme", "placeholder", "tbd", "xxx", "n/a")
 _CATEGORY_MARKERS = {
-    "A": ("duplicat", "helper", "consolidat", "shared", "call site", "identical fingerprint", "repeated"),
+    "A": (
+        "duplicat", "helper", "consolidat", "shared", "call site", "identical fingerprint", "repeated",
+        "machine-like", "machine-readable", "fixed version", "fixed status", "enum",
+    ),
     "B": (
         "structural", "atomic", "convention", "no internal wrap", "no wrap point",
         "token", "marker", "single word", "ordering", "position-based",
