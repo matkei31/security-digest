@@ -4409,7 +4409,7 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
         for required in (
             "Category C conversion",
             "tranche 3bの41件",
-            "tranche 3cの80件",
+            "tranche 3cの84件",
             "tranche 3cは実装中",
             "約1593件",
             "BL-038全体の最終受入",
@@ -4532,19 +4532,22 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
             "540b3380e412bc35a2086ca5d3a581b7098c1443",
             "実装証跡(tranche 3c)",
             "独立レビューround 1(tranche 3c",
-            "A 10／B 61／C 80／D 34",
+            "独立レビューround 2(tranche 3c",
+            "A 10／B 59／C 84／D 32",
             "282 entries",
-            "combined A=18 B=98 C=121 D=45",
+            "combined: A 18／B 96／C 125／D 43",
             "23→26 tests",
             "CUSTOM_DOMAIN_EXPECTED_A_IDS",
             "UI_SPEC_EXPECTED_A_IDS",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038)
-        # round 1's corrected counts must be the current record, not the
-        # pre-review initial-implementation snapshot
+        # neither the pre-review initial-implementation snapshot nor
+        # round 1's superseded corrected counts may remain as the current
+        # record
         self.assertNotIn("A 10／B 62／C 73／D 40", bl038)
         self.assertNotIn("combined A=18 B=99 C=114 D=51", bl038)
+        self.assertNotIn("**A 10／B 61／C 80／D 34(total 185)**", bl038)
 
     def test_backlog_residual_work_no_longer_calls_tranche3c_not_started(self):
         bl038 = self._bl038_section()
@@ -4568,12 +4571,14 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
             "tranche 3c着手(2026-08-06)",
             "test/bl038-tranche3c-ui-spec-classification",
             "tranche 3c kickoff原文「ok」",
-            "A 10／B 61／C 80／D 34",
+            "独立レビューround 2(tranche 3c",
+            "A 10／B 59／C 84／D 32",
             "282 entries",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038_line)
         self.assertNotIn("A 10／B 62／C 73／D 40", bl038_line)
+        self.assertNotIn("**A 10／B 61／C 80／D 34(total 185)**", bl038_line)
 
     def test_manifest_is_scoped_to_two_files_with_combined_counts(self):
         manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
@@ -4588,12 +4593,15 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
         counts = Counter(a["category"] for a in manifest["assertions"])
         # round 1 review corrected this tally: 7 mixed-contract D/B entries
         # (exact quote/label/value bundled with author-written or
-        # rewordable wrapper prose) moved to C.
-        self.assertEqual(dict(counts), {"A": 18, "B": 98, "C": 121, "D": 45})
+        # rewordable wrapper prose) moved to C. round 2 review found 4 more
+        # (an unseparated exact label pair, a raw negative substring check,
+        # a prose-embedded label fragment, and a viewport phrase embedded
+        # in descriptive prose) and moved those to C as well.
+        self.assertEqual(dict(counts), {"A": 18, "B": 96, "C": 125, "D": 43})
         ui_spec_entries = [a for a in manifest["assertions"] if a["file"] == "test_ui_spec.py"]
         self.assertEqual(len(ui_spec_entries), 185)
         ui_spec_counts = Counter(a["category"] for a in ui_spec_entries)
-        self.assertEqual(dict(ui_spec_counts), {"A": 10, "B": 61, "C": 80, "D": 34})
+        self.assertEqual(dict(ui_spec_counts), {"A": 10, "B": 59, "C": 84, "D": 32})
         for entry in ui_spec_entries:
             self.assertIn("targets", entry)
             self.assertNotIn("target", entry)
