@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""BL-038 tranche 3c: declared-scope/count structural guard for
+"""BL-038 tranche 3d: declared-scope/count structural guard for
 document_test_classification.json, now spanning test_custom_domain.py
-(tranche 3b, 97 entries, unchanged) and test_ui_spec.py (tranche 3c, 185
-new entries).
+(tranche 3b, 97 entries, unchanged), test_ui_spec.py (tranche 3c, 185
+entries, unchanged), and test_status.py (tranche 3d, 98 new entries).
 
 document_test_inventory.py's validator can only check a manifest against
 whatever scope it *declares* -- it cannot detect a class/file being
@@ -30,7 +30,8 @@ MANIFEST_PATH = ROOT / "document_test_classification.json"
 
 CUSTOM_DOMAIN_SOURCE_FILE = "test_custom_domain.py"
 UI_SPEC_SOURCE_FILE = "test_ui_spec.py"
-SCOPE_FILES = (CUSTOM_DOMAIN_SOURCE_FILE, UI_SPEC_SOURCE_FILE)
+STATUS_SOURCE_FILE = "test_status.py"
+SCOPE_FILES = (CUSTOM_DOMAIN_SOURCE_FILE, UI_SPEC_SOURCE_FILE, STATUS_SOURCE_FILE)
 
 # Hardcoded literal contracts -- NOT derived from the manifest or from a
 # live AST scan. This, and the exact scope ORDER below, is what makes
@@ -48,15 +49,27 @@ UI_SPEC_EXPECTED_CLASSES = (
     "UiSpecDocumentTest",
     "Bl036ArticleAttributionUiSpecTest",
 )
+STATUS_EXPECTED_CLASSES = (
+    "StatusSourceOfTruthTest",
+    "Sd031DecisionTest",
+    "Bl035ActiveWorkTest",
+    "StatusSecurityOperationsSourceOfTruthTest",
+    "Bl036PostMergeRecordFixTest",
+    "Bl036ProductionEvidenceSyncTest",
+)
 EXPECTED_SCOPE_ORDER = (
     (CUSTOM_DOMAIN_SOURCE_FILE, CUSTOM_DOMAIN_EXPECTED_CLASSES),
     (UI_SPEC_SOURCE_FILE, UI_SPEC_EXPECTED_CLASSES),
+    (STATUS_SOURCE_FILE, STATUS_EXPECTED_CLASSES),
 )
 
 CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT = 97
 UI_SPEC_EXPECTED_ASSERTION_COUNT = 185
+STATUS_EXPECTED_ASSERTION_COUNT = 98
 COMBINED_EXPECTED_ASSERTION_COUNT = (
-    CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT + UI_SPEC_EXPECTED_ASSERTION_COUNT
+    CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT
+    + UI_SPEC_EXPECTED_ASSERTION_COUNT
+    + STATUS_EXPECTED_ASSERTION_COUNT
 )
 
 # Tranche 3b's exact per-ID category membership record -- content
@@ -293,17 +306,108 @@ UI_SPEC_EXPECTED_CATEGORY_COUNTS = {
     "D": len(UI_SPEC_EXPECTED_D_IDS),
 }
 
+# Tranche 3d's exact per-ID category membership record for test_status.py,
+# built the same way as tranche 3b/3c: A/C/D pinned as hardcoded literal ID
+# sets, B checked as the exact remainder of the 98 test_status.py IDs.
+STATUS_EXPECTED_A_IDS = frozenset({
+})
+STATUS_EXPECTED_C_IDS = frozenset({
+    "test_status.py::StatusSourceOfTruthTest::test_source_of_truth_row_defers_to_referenced_daily_json::assert-02",
+    "test_status.py::StatusSourceOfTruthTest::test_source_of_truth_row_points_production_commit_to_git_history::assert-01",
+    "test_status.py::StatusSourceOfTruthTest::test_as_of_is_document_update_date_not_production_run_date::assert-01",
+    "test_status.py::StatusSourceOfTruthTest::test_as_of_is_document_update_date_not_production_run_date::assert-02",
+    "test_status.py::StatusSourceOfTruthTest::test_current_versions_paragraph_states_generator_contract_source_of_truth::assert-01",
+    "test_status.py::StatusSourceOfTruthTest::test_current_versions_paragraph_states_generator_contract_source_of_truth::assert-02",
+    "test_status.py::StatusSourceOfTruthTest::test_current_versions_paragraph_states_referenced_daily_json_source_of_truth::assert-02",
+    "test_status.py::StatusSourceOfTruthTest::test_current_versions_paragraph_states_production_commit_source_of_truth::assert-01",
+    "test_status.py::StatusSourceOfTruthTest::test_current_versions_paragraph_states_production_commit_source_of_truth::assert-02",
+    "test_status.py::StatusSourceOfTruthTest::test_current_versions_paragraph_states_no_daily_value_duplication::assert-01",
+    "test_status.py::StatusSourceOfTruthTest::test_current_versions_paragraph_treats_past_runs_as_historical_not_latest::assert-01",
+    "test_status.py::StatusSourceOfTruthTest::test_current_versions_paragraph_treats_past_runs_as_historical_not_latest::assert-02",
+    "test_status.py::StatusSourceOfTruthTest::test_current_versions_paragraph_does_not_reintroduce_the_deleted_row_as_current::assert-01",
+    "test_status.py::Sd031DecisionTest::test_sd031_decision_records_source_of_truth_delegation::assert-03",
+    "test_status.py::Sd031DecisionTest::test_sd031_decision_records_source_of_truth_delegation::assert-04",
+    "test_status.py::Sd031DecisionTest::test_sd031_decision_records_source_of_truth_delegation::assert-05",
+    "test_status.py::Bl035ActiveWorkTest::test_recently_completed_bl035_entry_records_required_content::assert-01",
+    "test_status.py::Bl035ActiveWorkTest::test_recently_completed_bl035_entry_records_required_content::assert-02",
+    "test_status.py::StatusSecurityOperationsSourceOfTruthTest::test_row_delegates_to_security_operations_header_not_a_fixed_version_or_status::assert-02",
+    "test_status.py::StatusSecurityOperationsSourceOfTruthTest::test_row_delegates_to_security_operations_header_not_a_fixed_version_or_status::assert-03",
+    "test_status.py::StatusSecurityOperationsSourceOfTruthTest::test_row_delegates_to_security_operations_header_not_a_fixed_version_or_status::assert-06",
+    "test_status.py::StatusSecurityOperationsSourceOfTruthTest::test_row_delegates_to_security_operations_header_not_a_fixed_version_or_status::assert-07",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_backlog_bl036_no_longer_contains_stale_pending_current_state_wording::assert-01",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_backlog_bl036_records_sd033_partial_supersession_as_confirmed::assert-01",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_backlog_bl036_records_sd033_partial_supersession_as_confirmed::assert-04",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_backlog_bl036_distinguishes_accepted_implementation_and_final_files::assert-09",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_backlog_bl036_note_does_not_claim_decisions_untouched::assert-01",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_backlog_bl036_note_does_not_claim_decisions_untouched::assert-02",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_status_no_longer_claims_current_state_is_pending_next_production::assert-01",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_backlog_no_longer_claims_current_state_is_pending_next_production::assert-01",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_status_distinguishes_independent_scheduled_production_from_bl036_manual_work::assert-01",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_status_distinguishes_independent_scheduled_production_from_bl036_manual_work::assert-02",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_backlog_distinguishes_independent_scheduled_production_from_bl036_manual_work::assert-01",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_backlog_distinguishes_independent_scheduled_production_from_bl036_manual_work::assert-02",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_status_no_longer_contains_unqualified_no_production_claim::assert-01",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_backlog_bl036_no_longer_contains_unqualified_no_production_claim::assert-01",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_status_bl036_scopes_the_no_manual_production_claim_to_bl036_work::assert-01",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_backlog_bl036_scopes_the_no_manual_production_claim_to_bl036_work::assert-01",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_backlog_bl036_scopes_the_no_manual_production_claim_to_bl036_work::assert-02",
+})
+STATUS_EXPECTED_D_IDS = frozenset({
+    "test_status.py::StatusSourceOfTruthTest::test_current_generator_schema_on_main_is_still_2::assert-01",
+    "test_status.py::Sd031DecisionTest::test_sd031_records_date_and_status::assert-01",
+    "test_status.py::Sd031DecisionTest::test_sd031_evidence_includes_bl033_commit_and_prs::assert-02",
+    "test_status.py::Sd031DecisionTest::test_sd031_evidence_includes_bl033_commit_and_prs::assert-03",
+    "test_status.py::Sd031DecisionTest::test_sd031_evidence_includes_bl033_commit_and_prs::assert-04",
+    "test_status.py::StatusSecurityOperationsSourceOfTruthTest::test_security_operations_itself_reflects_bl035_final_acceptance::assert-01",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_status_as_of_is_20260804::assert-01",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_status_bl036_entry_distinguishes_implementation_and_final_evidence::assert-01",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_status_bl036_entry_distinguishes_implementation_and_final_evidence::assert-02",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_status_bl036_entry_distinguishes_implementation_and_final_evidence::assert-03",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_status_bl036_entry_distinguishes_implementation_and_final_evidence::assert-04",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_status_bl036_entry_distinguishes_implementation_and_final_evidence::assert-05",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_status_bl036_entry_distinguishes_implementation_and_final_evidence::assert-06",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_status_bl036_entry_distinguishes_implementation_and_final_evidence::assert-07",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_status_bl036_entry_distinguishes_implementation_and_final_evidence::assert-08",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_status_bl036_entry_distinguishes_implementation_and_final_evidence::assert-09",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_status_bl036_entry_distinguishes_implementation_and_final_evidence::assert-10",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_backlog_bl036_records_sd033_partial_supersession_as_confirmed::assert-03",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_backlog_bl036_distinguishes_accepted_implementation_and_final_files::assert-02",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_backlog_bl036_distinguishes_accepted_implementation_and_final_files::assert-04",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_backlog_bl036_distinguishes_accepted_implementation_and_final_files::assert-05",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_backlog_bl036_distinguishes_accepted_implementation_and_final_files::assert-06",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_backlog_bl036_distinguishes_accepted_implementation_and_final_files::assert-07",
+    "test_status.py::Bl036PostMergeRecordFixTest::test_backlog_bl036_distinguishes_accepted_implementation_and_final_files::assert-08",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_status_bl036_line_records_production_commit_and_pages_run::assert-01",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_status_bl036_line_records_production_commit_and_pages_run::assert-02",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_backlog_bl036_records_production_commit_and_pages_run::assert-01",
+    "test_status.py::Bl036ProductionEvidenceSyncTest::test_backlog_bl036_records_production_commit_and_pages_run::assert-02",
+})
+assert not (STATUS_EXPECTED_A_IDS & STATUS_EXPECTED_C_IDS)
+assert not (STATUS_EXPECTED_A_IDS & STATUS_EXPECTED_D_IDS)
+assert not (STATUS_EXPECTED_C_IDS & STATUS_EXPECTED_D_IDS)
+STATUS_EXPECTED_CATEGORY_COUNTS = {
+    "A": len(STATUS_EXPECTED_A_IDS),
+    "B": STATUS_EXPECTED_ASSERTION_COUNT
+    - len(STATUS_EXPECTED_A_IDS)
+    - len(STATUS_EXPECTED_C_IDS)
+    - len(STATUS_EXPECTED_D_IDS),
+    "C": len(STATUS_EXPECTED_C_IDS),
+    "D": len(STATUS_EXPECTED_D_IDS),
+}
+
 COMBINED_EXPECTED_CATEGORY_COUNTS = {
-    cat: CUSTOM_DOMAIN_EXPECTED_CATEGORY_COUNTS[cat] + UI_SPEC_EXPECTED_CATEGORY_COUNTS[cat]
+    cat: CUSTOM_DOMAIN_EXPECTED_CATEGORY_COUNTS[cat]
+    + UI_SPEC_EXPECTED_CATEGORY_COUNTS[cat]
+    + STATUS_EXPECTED_CATEGORY_COUNTS[cat]
     for cat in ("A", "B", "C", "D")
 }
-# The two files' IDs are disjoint by construction (each id is prefixed
+# The three files' IDs are disjoint by construction (each id is prefixed
 # with its own file name), so the combined exact-membership guard is a
-# plain union -- this is what keeps tranche 3b's per-ID record in force
-# unweakened after the manifest grew to a second file.
-COMBINED_EXPECTED_A_IDS = CUSTOM_DOMAIN_EXPECTED_A_IDS | UI_SPEC_EXPECTED_A_IDS
-COMBINED_EXPECTED_C_IDS = CUSTOM_DOMAIN_EXPECTED_C_IDS | UI_SPEC_EXPECTED_C_IDS
-COMBINED_EXPECTED_D_IDS = CUSTOM_DOMAIN_EXPECTED_D_IDS | UI_SPEC_EXPECTED_D_IDS
+# plain union -- this is what keeps tranche 3b/3c's per-ID record in force
+# unweakened after the manifest grew to a third file.
+COMBINED_EXPECTED_A_IDS = CUSTOM_DOMAIN_EXPECTED_A_IDS | UI_SPEC_EXPECTED_A_IDS | STATUS_EXPECTED_A_IDS
+COMBINED_EXPECTED_C_IDS = CUSTOM_DOMAIN_EXPECTED_C_IDS | UI_SPEC_EXPECTED_C_IDS | STATUS_EXPECTED_C_IDS
+COMBINED_EXPECTED_D_IDS = CUSTOM_DOMAIN_EXPECTED_D_IDS | UI_SPEC_EXPECTED_D_IDS | STATUS_EXPECTED_D_IDS
 
 EXPECTED_ENTRY_KEY_ORDER = (
     "id",
@@ -324,7 +428,9 @@ EXPECTED_ENTRY_KEY_ORDER = (
 # file/path (a `for` loop over distinct targets), keyed by manifest id.
 # Tranche 3c added no new multi-target entries: test_ui_spec.py's own
 # for-loops (chapter headings, screenshot filenames) all check a single
-# document, not distinct target files.
+# document, not distinct target files. Tranche 3d added none either:
+# test_status.py's own methods each check exactly one of self.status/
+# self.decisions/self.operations/self.backlog per assertion.
 EXPECTED_MULTI_TARGETS = {
     "test_custom_domain.py::TicketIdTypoTest::"
     "test_no_bl007_underscore_typo_anywhere_in_tracked_markdown_or_python::assert-01": (
@@ -375,6 +481,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         cls.sources = {
             CUSTOM_DOMAIN_SOURCE_FILE: (ROOT / CUSTOM_DOMAIN_SOURCE_FILE).read_text(encoding="utf-8"),
             UI_SPEC_SOURCE_FILE: (ROOT / UI_SPEC_SOURCE_FILE).read_text(encoding="utf-8"),
+            STATUS_SOURCE_FILE: (ROOT / STATUS_SOURCE_FILE).read_text(encoding="utf-8"),
         }
         cls.live_records_by_file = {
             CUSTOM_DOMAIN_SOURCE_FILE: dti.enumerate_assertions(
@@ -385,21 +492,27 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                 cls.sources[UI_SPEC_SOURCE_FILE], UI_SPEC_SOURCE_FILE,
                 list(UI_SPEC_EXPECTED_CLASSES),
             ),
+            STATUS_SOURCE_FILE: dti.enumerate_assertions(
+                cls.sources[STATUS_SOURCE_FILE], STATUS_SOURCE_FILE,
+                list(STATUS_EXPECTED_CLASSES),
+            ),
         }
         # Concatenation order matches the manifest's own required layout:
         # test_custom_domain.py's 97 entries first (unchanged from tranche
-        # 3b), then test_ui_spec.py's 185 entries, in source order within
-        # each file.
+        # 3b), then test_ui_spec.py's 185 entries (unchanged from tranche
+        # 3c), then test_status.py's 98 entries (tranche 3d), in source
+        # order within each file.
         cls.live_records = (
             cls.live_records_by_file[CUSTOM_DOMAIN_SOURCE_FILE]
             + cls.live_records_by_file[UI_SPEC_SOURCE_FILE]
+            + cls.live_records_by_file[STATUS_SOURCE_FILE]
         )
 
     # -- shared helper, used both directly and against mutated copies in
     # the scope-shrinkage/reordering mutation tests below --
     def _assert_expected_scope(self, manifest):
         scope = manifest["scope"]
-        self.assertEqual(len(scope), 2, "scope must list exactly 2 files")
+        self.assertEqual(len(scope), 3, "scope must list exactly 3 files")
         for entry, (expected_file, expected_classes) in zip(scope, EXPECTED_SCOPE_ORDER):
             self.assertEqual(entry["file"], expected_file)
             self.assertEqual(
@@ -426,7 +539,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         self.assertEqual(self.manifest["schema_version"], 1)
         self.assertIs(type(self.manifest["schema_version"]), int)
 
-    def test_scope_is_exactly_two_files_in_order_with_expected_classes(self):
+    def test_scope_is_exactly_three_files_in_order_with_expected_classes(self):
         self._assert_expected_scope(self.manifest)
 
     def test_assertion_and_live_inventory_counts_match_expected_totals(self):
@@ -440,6 +553,10 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
             len(self.live_records_by_file[UI_SPEC_SOURCE_FILE]),
             UI_SPEC_EXPECTED_ASSERTION_COUNT,
         )
+        self.assertEqual(
+            len(self.live_records_by_file[STATUS_SOURCE_FILE]),
+            STATUS_EXPECTED_ASSERTION_COUNT,
+        )
         manifest_counts_by_file = {}
         for entry in self.manifest["assertions"]:
             manifest_counts_by_file[entry["file"]] = manifest_counts_by_file.get(entry["file"], 0) + 1
@@ -448,6 +565,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
             {
                 CUSTOM_DOMAIN_SOURCE_FILE: CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT,
                 UI_SPEC_SOURCE_FILE: UI_SPEC_EXPECTED_ASSERTION_COUNT,
+                STATUS_SOURCE_FILE: STATUS_EXPECTED_ASSERTION_COUNT,
             },
         )
 
@@ -483,13 +601,17 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         counts_by_file = {
             CUSTOM_DOMAIN_SOURCE_FILE: {"A": 0, "B": 0, "C": 0, "D": 0},
             UI_SPEC_SOURCE_FILE: {"A": 0, "B": 0, "C": 0, "D": 0},
+            STATUS_SOURCE_FILE: {"A": 0, "B": 0, "C": 0, "D": 0},
         }
         for entry in self.manifest["assertions"]:
             counts_by_file[entry["file"]][entry["category"]] += 1
         self.assertEqual(counts_by_file[CUSTOM_DOMAIN_SOURCE_FILE], CUSTOM_DOMAIN_EXPECTED_CATEGORY_COUNTS)
         self.assertEqual(counts_by_file[UI_SPEC_SOURCE_FILE], UI_SPEC_EXPECTED_CATEGORY_COUNTS)
+        self.assertEqual(counts_by_file[STATUS_SOURCE_FILE], STATUS_EXPECTED_CATEGORY_COUNTS)
         combined = {
-            cat: counts_by_file[CUSTOM_DOMAIN_SOURCE_FILE][cat] + counts_by_file[UI_SPEC_SOURCE_FILE][cat]
+            cat: counts_by_file[CUSTOM_DOMAIN_SOURCE_FILE][cat]
+            + counts_by_file[UI_SPEC_SOURCE_FILE][cat]
+            + counts_by_file[STATUS_SOURCE_FILE][cat]
             for cat in ("A", "B", "C", "D")
         }
         self.assertEqual(combined, COMBINED_EXPECTED_CATEGORY_COUNTS)
@@ -530,6 +652,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         expected_c_ids_by_file = {
             CUSTOM_DOMAIN_SOURCE_FILE: CUSTOM_DOMAIN_EXPECTED_C_IDS,
             UI_SPEC_SOURCE_FILE: UI_SPEC_EXPECTED_C_IDS,
+            STATUS_SOURCE_FILE: STATUS_EXPECTED_C_IDS,
         }
         for file, c_ids in expected_c_ids_by_file.items():
             with self.subTest(file=file):
@@ -643,9 +766,25 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
             mutated["scope"] = [s for s in mutated["scope"] if s["file"] != UI_SPEC_SOURCE_FILE]
             mutated["assertions"] = [a for a in mutated["assertions"] if a["file"] != UI_SPEC_SOURCE_FILE]
 
+        def drop_status_class(mutated):
+            status_scope = next(s for s in mutated["scope"] if s["file"] == STATUS_SOURCE_FILE)
+            status_scope["classes"] = [
+                c for c in status_scope["classes"] if c != "Bl036ProductionEvidenceSyncTest"
+            ]
+            mutated["assertions"] = [
+                a for a in mutated["assertions"]
+                if not (a["file"] == STATUS_SOURCE_FILE and a["class"] == "Bl036ProductionEvidenceSyncTest")
+            ]
+
+        def drop_status_file_entirely(mutated):
+            mutated["scope"] = [s for s in mutated["scope"] if s["file"] != STATUS_SOURCE_FILE]
+            mutated["assertions"] = [a for a in mutated["assertions"] if a["file"] != STATUS_SOURCE_FILE]
+
         scenarios = {
             "class-shrink-within-ui-spec": drop_ui_spec_class,
             "file-shrink-drop-ui-spec-entirely": drop_ui_spec_file_entirely,
+            "class-shrink-within-status": drop_status_class,
+            "file-shrink-drop-status-entirely": drop_status_file_entirely,
         }
         for name, mutate in scenarios.items():
             with self.subTest(scenario=name):
@@ -664,21 +803,29 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                     self._assert_expected_scope(mutated)
 
     def test_file_order_swap_mutation_is_detected_by_deterministic_scope_order_guard(self):
-        mutated = json.loads(self.manifest_text)
-        mutated["scope"] = [mutated["scope"][1], mutated["scope"][0]]
-        with self.assertRaises(AssertionError):
-            self._assert_expected_scope(mutated)
+        swap_pairs = ((0, 1), (1, 2), (0, 2))
+        for i, j in swap_pairs:
+            with self.subTest(swap=(i, j)):
+                mutated = json.loads(self.manifest_text)
+                scope = mutated["scope"]
+                scope[i], scope[j] = scope[j], scope[i]
+                with self.assertRaises(AssertionError):
+                    self._assert_expected_scope(mutated)
 
     def test_assertion_order_swap_mutation_is_detected_by_source_order_guard(self):
-        mutated = json.loads(self.manifest_text)
-        # Swap two adjacent entries within the same file's block so total
-        # counts/category tallies/scope are all untouched -- only the
-        # source-order list-equality guard can catch this.
-        mutated["assertions"][0], mutated["assertions"][1] = (
-            mutated["assertions"][1], mutated["assertions"][0],
-        )
-        with self.assertRaises(AssertionError):
-            self._assert_ids_match_source_order(mutated)
+        # Swap two adjacent entries within the SAME file's block (for each
+        # of the 3 scoped files in turn) so total counts/category tallies/
+        # scope are all untouched -- only the source-order list-equality
+        # guard can catch this.
+        for file in SCOPE_FILES:
+            with self.subTest(file=file):
+                mutated = json.loads(self.manifest_text)
+                idx = next(i for i, a in enumerate(mutated["assertions"]) if a["file"] == file)
+                mutated["assertions"][idx], mutated["assertions"][idx + 1] = (
+                    mutated["assertions"][idx + 1], mutated["assertions"][idx],
+                )
+                with self.assertRaises(AssertionError):
+                    self._assert_ids_match_source_order(mutated)
 
     def test_assertion_deletion_mutation_is_detected_as_unclassified(self):
         for file in SCOPE_FILES:
