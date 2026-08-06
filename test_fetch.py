@@ -4796,24 +4796,24 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
             "35367dd1506376776e0aa726ded6f8a31ce3a939",
             "実装証跡(tranche 3d)",
             "独立レビューround 1(tranche 3d",
-            "A 5／B 28／C 39／D 26",
+            "独立レビューround 2(tranche 3d",
+            "round 2修正(tranche 3d)",
+            "A 0／B 31／C 39／D 28",
             "380 entries",
-            "combined: **A 23／B 124／C 164／D 69",
+            "combined: **A 18／B 127／C 164／D 71",
             "STATUS_EXPECTED_C_IDS",
             "STATUS_EXPECTED_D_IDS",
             "class-shrink-within-status",
             "file-shrink-drop-status-entirely",
+            # round 2's explicit framing: the reconfirmed count is not a
+            # blind restoration of a superseded value
+            "単なる無効化ではない",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038)
-        # the pre-review initial-implementation snapshot is preserved as
-        # explicitly-marked-invalid history (struck through), not restated
-        # as current evidence anywhere else in the section
-        self.assertIn("~~test_status.py: A 0／B 31／C 39／D 28(total 98)~~", bl038)
-        self.assertEqual(
-            bl038.count("A 0／B 31／C 39／D 28"), 1,
-            "the superseded initial count must appear exactly once, only inside the struck-through historical note",
-        )
+        # round 1's temporarily-incorrect Category A reclassification must
+        # not remain as current evidence anywhere in the section
+        self.assertNotIn("最終分類: **test_status.py: A 5／B 28／C 39／D 26", bl038)
 
     def test_backlog_residual_work_names_category_c_conversion_and_tranche3d_in_progress(self):
         bl038 = self._bl038_section()
@@ -4840,13 +4840,17 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
             "test/bl038-tranche3d-status-classification",
             "tranche 3d kickoff原文「次へ進めて」",
             "独立レビューround 1(tranche 3d",
-            "A 5／B 28／C 39／D 26",
-            "combined: **A 23／B 124／C 164／D 69",
+            "独立レビューround 2(tranche 3d",
+            "A 0／B 31／C 39／D 28",
+            "combined: **A 18／B 127／C 164／D 71",
             "380 entries",
+            "単なる無効化された値の復元ではない",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038_line)
-        self.assertNotIn("最終分類: **test_status.py: A 0／B 31／C 39／D 28", bl038_line)
+        # round 1's temporarily-incorrect Category A reclassification must
+        # not remain as current evidence anywhere in this line
+        self.assertNotIn("最終分類: **test_status.py: A 5／B 28／C 39／D 26", bl038_line)
 
     def test_manifest_is_scoped_to_three_files_with_combined_counts(self):
         manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
@@ -4858,41 +4862,68 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
         self.assertEqual(len(manifest["assertions"]), 380)
         from collections import Counter
 
-        # PR #85 round 1 review corrected this tally: 5 fixed Version/Status/
-        # enum/machine-readable-key entries in test_status.py had been left
-        # in B/D under an (incorrect) fingerprint-duplication precondition
-        # for Category A; moved to A per the tranche 3d classification
-        # definition, which does not require duplication for A.
+        # PR #85 round 1 review had (incorrectly) moved 5 fixed Version/
+        # Status/enum/machine-readable-key entries in test_status.py to A,
+        # based on a misreading of the classification definition. Round 2
+        # review determined round 1's instructed definition was itself a
+        # misapplication of BL-038's established Category A policy (a
+        # repeated structural pattern with shared-helper consolidation
+        # value is required, not merely a fixed/exact value) and reverted
+        # those 5 entries to B/D.
         counts = Counter(a["category"] for a in manifest["assertions"])
-        self.assertEqual(dict(counts), {"A": 23, "B": 124, "C": 164, "D": 69})
+        self.assertEqual(dict(counts), {"A": 18, "B": 127, "C": 164, "D": 71})
         status_entries = [a for a in manifest["assertions"] if a["file"] == "test_status.py"]
         self.assertEqual(len(status_entries), 98)
         status_counts = Counter(a["category"] for a in status_entries)
-        self.assertEqual(dict(status_counts), {"A": 5, "B": 28, "C": 39, "D": 26})
+        self.assertEqual(dict(status_counts), {"B": 31, "C": 39, "D": 28})
         for entry in status_entries:
             self.assertIn("targets", entry)
             self.assertNotIn("target", entry)
 
-    def test_status_py_fixed_version_status_fields_are_category_a(self):
-        # PR #85 round 1 review Blocker 2: fingerprint duplication/helper-
-        # consolidation potential is explicitly NOT a precondition for
-        # Category A under the tranche 3d classification definition (fixed
-        # Version/Status field, enum, machine-readable key, exact field
-        # name/mechanical structural value). Pin the 5 corrected IDs exactly.
+    def test_status_py_fixed_version_status_fields_are_b_or_d_not_a(self):
+        # PR #85 round 2 review: round 1 had misread the classification
+        # definition as "any fixed Version/Status/enum/machine-readable
+        # value is automatically Category A", which is not BL-038's
+        # established policy. Category A requires a repeated structural/
+        # assertion pattern across multiple methods with clear shared-
+        # helper consolidation value -- a single-occurrence exact Version/
+        # Status field is B (already structural/semantic, an enum-like
+        # parsed value) or D (the exactness itself is the durable contract),
+        # never A merely for being fixed/exact/enum-shaped. Pin the correct
+        # category for the 5 entries round 1 had mistakenly moved to A.
+        import document_test_inventory as dti
+
         manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
         by_id = {a["id"]: a for a in manifest["assertions"]}
-        expected_a_ids = {
-            "test_status.py::StatusSourceOfTruthTest::test_current_generator_schema_on_main_is_still_2::assert-01",
-            "test_status.py::Sd031DecisionTest::test_sd031_records_date_and_status::assert-02",
-            "test_status.py::StatusSecurityOperationsSourceOfTruthTest::test_security_operations_itself_reflects_bl035_final_acceptance::assert-01",
-            "test_status.py::StatusSecurityOperationsSourceOfTruthTest::test_security_operations_itself_reflects_bl035_final_acceptance::assert-02",
-            "test_status.py::Bl036ProductionEvidenceSyncTest::test_backlog_bl036_still_complete_with_no_remaining_work::assert-01",
+        expected_categories = {
+            "test_status.py::StatusSourceOfTruthTest::test_current_generator_schema_on_main_is_still_2::assert-01": "D",
+            "test_status.py::Sd031DecisionTest::test_sd031_records_date_and_status::assert-02": "B",
+            "test_status.py::StatusSecurityOperationsSourceOfTruthTest::test_security_operations_itself_reflects_bl035_final_acceptance::assert-01": "D",
+            "test_status.py::StatusSecurityOperationsSourceOfTruthTest::test_security_operations_itself_reflects_bl035_final_acceptance::assert-02": "B",
+            "test_status.py::Bl036ProductionEvidenceSyncTest::test_backlog_bl036_still_complete_with_no_remaining_work::assert-01": "B",
         }
-        for entry_id in expected_a_ids:
+        for entry_id, expected_category in expected_categories.items():
             with self.subTest(id=entry_id):
                 self.assertIn(entry_id, by_id)
-                self.assertEqual(by_id[entry_id]["category"], "A")
-                self.assertEqual(by_id[entry_id]["action"], "keep")
+                self.assertEqual(by_id[entry_id]["category"], expected_category)
+                self.assertNotEqual(by_id[entry_id]["category"], "A")
+                self.assertEqual(
+                    by_id[entry_id]["action"], dti.CATEGORY_TO_ACTION[expected_category]
+                )
+
+    def test_status_py_has_no_category_a_entries_without_helper_consolidation_rationale(self):
+        # Category A in this manifest requires a repeated structural/
+        # assertion pattern with clear shared-helper consolidation value
+        # (see CUSTOM_DOMAIN_EXPECTED_A_IDS/UI_SPEC_EXPECTED_A_IDS' own
+        # rationale text for the established pattern). test_status.py has
+        # no fingerprint duplicates (confirmed at kickoff) and no entries
+        # meeting that bar, so it must have zero Category A entries.
+        manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
+        status_a_entries = [
+            a for a in manifest["assertions"]
+            if a["file"] == "test_status.py" and a["category"] == "A"
+        ]
+        self.assertEqual(status_a_entries, [])
 
     def test_manifest_line_count_is_within_tranche3d_budget(self):
         lines = self.MANIFEST_PATH.read_text(encoding="utf-8").splitlines()
