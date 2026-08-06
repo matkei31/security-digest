@@ -5108,9 +5108,9 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
             "Bl034ImplementationAcceptanceTest",
             "Bl034CloseoutTest",
             "StatusSecurityRequirementsSourceOfTruthTest",
-            "A 0／B 49／C 62／D 32",
+            "A 0／B 37／C 71／D 35",
             "523 entries",
-            "combined: **A 18／B 176／C 226／D 103",
+            "combined: **A 18／B 164／C 235／D 106",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038)
@@ -5125,15 +5125,55 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         self.assertEqual(len(manifest["assertions"]), 523)
         from collections import Counter
 
+        # PR #86 round 1 review corrected 12 test_security_requirements.py
+        # entries misclassified B: 9 to C (raw negative multi-token
+        # substrings, a stylistic ID-range embedded in prose, a raw noun
+        # compound not extracted to a field, a multi-word phrase with a
+        # common-noun suffix, a mixed atomic/noun-phrase loop check) and 3
+        # to D (bare "PR #NN" mentions -- substrings of this document's
+        # always-fully-linked PR references, matching this manifest's own
+        # established PR-reference precedent of C/D, never B).
         counts = Counter(a["category"] for a in manifest["assertions"])
-        self.assertEqual(dict(counts), {"A": 18, "B": 176, "C": 226, "D": 103})
+        self.assertEqual(dict(counts), {"A": 18, "B": 164, "C": 235, "D": 106})
         sr_entries = [a for a in manifest["assertions"] if a["file"] == "test_security_requirements.py"]
         self.assertEqual(len(sr_entries), 143)
         sr_counts = Counter(a["category"] for a in sr_entries)
-        self.assertEqual(dict(sr_counts), {"B": 49, "C": 62, "D": 32})
+        self.assertEqual(dict(sr_counts), {"B": 37, "C": 71, "D": 35})
         for entry in sr_entries:
             self.assertIn("targets", entry)
             self.assertNotIn("target", entry)
+
+    def test_security_requirements_five_reviewer_flagged_ids_are_correctly_classified(self):
+        # PR #86 round 1 review Blocker 2: 5 specific entries were
+        # misclassified B and are pinned here to their corrected category
+        # (2 to C: raw negative multi-token substrings/noun compounds not
+        # extracted to a field; 3 to D: bare PR-number mentions that are
+        # part of a historical-acceptance-evidence bundle alongside a
+        # sibling SHA/CI-run-ID assertion in the same method).
+        manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
+        by_id = {a["id"]: a for a in manifest["assertions"]}
+        expected_categories = {
+            "test_security_requirements.py::Bl034ImplementationAcceptanceTest::"
+            "test_dashboard_and_search_console_are_confirmed_by_closeout::assert-01": "C",
+            "test_security_requirements.py::Bl034CloseoutTest::"
+            "test_sr047_and_gap018_confirm_dashboard_and_search_console_not_unconfirmed::assert-05": "C",
+            "test_security_requirements.py::Bl034CloseoutTest::"
+            "test_cloudflare_dashboard_and_search_console_are_confirmed::assert-08": "C",
+            "test_security_requirements.py::Bl034ImplementationAcceptanceTest::"
+            "test_sd032_is_accepted::assert-04": "D",
+            "test_security_requirements.py::Bl034CloseoutTest::"
+            "test_final_acceptance_record_does_not_touch_out_of_scope_documents::assert-03": "D",
+        }
+        import document_test_inventory as dti
+
+        for entry_id, expected_category in expected_categories.items():
+            with self.subTest(id=entry_id):
+                self.assertIn(entry_id, by_id)
+                self.assertEqual(by_id[entry_id]["category"], expected_category)
+                self.assertNotEqual(by_id[entry_id]["category"], "B")
+                self.assertEqual(
+                    by_id[entry_id]["action"], dti.CATEGORY_TO_ACTION[expected_category]
+                )
 
     def test_manifest_line_count_matches_current_evidence(self):
         lines = self.MANIFEST_PATH.read_text(encoding="utf-8").splitlines()
@@ -5176,7 +5216,7 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         self.assertIsNotNone(residual_match)
         residual = residual_match.group(0)
         for required in (
-            "tranche 3eの62件",
+            "tranche 3eの71件",
             "tranche 3eは実装中",
             "tranche 1・2・3a・3b・3c・3dは受入済み",
         ):
@@ -5201,8 +5241,8 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
             "tranche 3e着手(2026-08-06)",
             "test/bl038-tranche3e-next-classification",
             "実装証跡(tranche 3e)",
-            "A 0／B 49／C 62／D 32",
-            "combined: **A 18／B 176／C 226／D 103",
+            "A 0／B 37／C 71／D 35",
+            "combined: **A 18／B 164／C 235／D 106",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038_line)
