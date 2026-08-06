@@ -4223,14 +4223,14 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
             line for line in active.splitlines() if line.startswith("- BL-038 ")
         )
 
-    def test_backlog_bl038_state_reflects_tranche3b_implementing(self):
+    def test_backlog_bl038_state_reflects_tranche3b_accepted(self):
         bl038 = self._bl038_section()
-        self.assertIn(
-            "- **状態:** 実装中(tranche 1・2・3a・3b受入済み／tranche 3c以降継続)", bl038
-        )
+        # tranche 3b's own acceptance is a permanent historical fact even
+        # after the state string's tranche 3c suffix moves forward.
+        self.assertIn("- **状態:** 実装中(tranche 1・2・3a・3b受入済み", bl038)
         self.assertNotIn("- **状態:** 完了", bl038)
 
-    def test_backlog_bl038_records_eight_user_statements_with_entry8_as_tranche3b_final(self):
+    def test_backlog_bl038_records_nine_user_statements_with_entry8_as_tranche3b_final(self):
         bl038 = self._bl038_section()
         history_start = bl038.index("ユーザー原文の履歴")
         history_end = bl038.index("着手時ユーザー原文:", history_start)
@@ -4240,7 +4240,7 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
         )
         self.assertEqual(
             [number for number, _ in entries],
-            ["1", "2", "3", "4", "5", "6", "7", "8"],
+            ["1", "2", "3", "4", "5", "6", "7", "8", "9"],
         )
         entry7 = entries[6][1]
         for required in (
@@ -4271,25 +4271,57 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
         ):
             with self.subTest(required=required):
                 self.assertIn(required, entry8)
+        entry9 = entries[8][1]
+        for required in (
+            "tranche 3c kickoff original",
+            "2026-08-06",
+            "「ok」",
+            "test_ui_spec.py",
+            "185 assertion",
+            "2-file scope",
+            "Category C",
+            "BL-038全体またはtranche 3全体の完了承認でもない",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, entry9)
 
-    def test_manifest_exists_scoped_to_custom_domain_with_corrected_counts(self):
+    def test_manifest_custom_domain_portion_still_matches_tranche3b_corrected_counts(self):
         self.assertTrue(self.MANIFEST_PATH.is_file())
         manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
         self.assertEqual(manifest["schema_version"], 1)
-        self.assertEqual(len(manifest["scope"]), 1)
-        self.assertEqual(manifest["scope"][0]["file"], "test_custom_domain.py")
-        self.assertEqual(len(manifest["assertions"]), 97)
+        # tranche 3c expanded scope to 2 files; test_custom_domain.py's own
+        # declared scope entry and its 97 assertions must remain unchanged.
+        custom_domain_scope = next(
+            s for s in manifest["scope"] if s["file"] == "test_custom_domain.py"
+        )
+        self.assertEqual(
+            custom_domain_scope["classes"],
+            [
+                "DocsCnameFileTest",
+                "CnameSurvivesGenerationTest",
+                "ArticleBriefContractUnchangedTest",
+                "Bl007DocumentationTest",
+                "ReadmePublicUrlTest",
+                "Bl007ClosureRecordTest",
+                "TicketIdTypoTest",
+            ],
+        )
+        custom_domain_entries = [
+            a for a in manifest["assertions"] if a["file"] == "test_custom_domain.py"
+        ]
+        self.assertEqual(len(custom_domain_entries), 97)
         from collections import Counter
 
-        counts = Counter(a["category"] for a in manifest["assertions"])
+        counts = Counter(a["category"] for a in custom_domain_entries)
         # round 2 review corrected this tally further: 11 more B entries
         # (raw `.index()` ordering anchors and short-but-brittle prose
-        # fragments) moved to C (see BACKLOG round 2 evidence).
+        # fragments) moved to C (see BACKLOG round 2 evidence). tranche 3c
+        # must not have touched this file's classification.
         self.assertEqual(dict(counts), {"A": 8, "B": 37, "C": 41, "D": 11})
         self.assertEqual(sum(counts.values()), 97)
         # every entry uses `targets` (round 1 fix, Blocker 2), never the
         # old single-string `target`
-        for entry in manifest["assertions"]:
+        for entry in custom_domain_entries:
             self.assertIn("targets", entry)
             self.assertNotIn("target", entry)
 
@@ -4363,24 +4395,22 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
             "targets",
             "pilot classification(97件の分類とmanifest記録)は実施済みだが、Category C 41件のsource conversion",
             "未実施",
-            "tranche 3cは未着手",
             "23 tests",
             "exact category membership guard",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038_line)
 
-    def test_backlog_residual_work_names_tranche3b_pending_and_tranche3c_not_started(self):
+    def test_backlog_residual_work_names_category_c_conversion_and_tranche3c_in_progress(self):
         bl038 = self._bl038_section()
         residual_match = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE)
         self.assertIsNotNone(residual_match)
         residual = residual_match.group(0)
         for required in (
-            "Category C 41件のsource conversion",
-            "tranche 3c",
-            "test_ui_spec.py",
-            "185",
-            "未着手",
+            "Category C conversion",
+            "tranche 3bの41件",
+            "tranche 3cの73件",
+            "tranche 3cは実装中",
             "約1593件",
             "BL-038全体の最終受入",
         ):
@@ -4389,8 +4419,10 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
         # tranche 3b itself is accepted -- it must not still be listed as
         # pending residual work
         self.assertNotIn("tranche 3b final acceptance", residual)
+        # tranche 3c has started -- it must not still read as not-yet-started
+        self.assertNotIn("tranche 3c(`test_ui_spec.py` 185 assertionのclassification manifestとrecord test、未着手", residual)
 
-    def test_status_active_work_records_tranche3b_kickoff_and_still_lists_bl038(self):
+    def test_status_active_work_records_tranche3b_and_tranche3c_kickoff_and_still_lists_bl038(self):
         status = self._read("STATUS.md")
         active = status.split("## Active work", 1)[1].split(
             "\n## 5. Recently completed work", 1
@@ -4402,14 +4434,15 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
             "test/bl038-tranche3b-custom-domain-classification",
             "tranche 3b kickoff原文「ok」",
             "A 8／B 37／C 41／D 11",
-            "tranche 3cは未着手",
+            "tranche 3c着手",
+            "test/bl038-tranche3c-ui-spec-classification",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038_line)
         recently_completed = status.split("## 5. Recently completed work", 1)[1]
         self.assertFalse(
             any(line.startswith("- BL-038 ") for line in recently_completed.splitlines()),
-            "BL-038 must not be listed in Recently completed work during tranche 3b",
+            "BL-038 must not be listed in Recently completed work during tranche 3c",
         )
 
     def test_backlog_and_status_record_tranche3b_final_acceptance_evidence(self):
@@ -4434,6 +4467,158 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038_line)
+
+
+class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
+    """BL-038 tranche 3c (test_ui_spec.py classification manifest expansion
+    to a 2-file declared scope) kickoff record-sync checks."""
+
+    ROOT = Path(__file__).resolve().parent
+    MANIFEST_PATH = ROOT / "document_test_classification.json"
+    CLASSIFICATION_TEST_PATH = ROOT / "test_document_test_classification.py"
+
+    def _read(self, name):
+        return (self.ROOT / name).read_text(encoding="utf-8")
+
+    def _bl038_section(self):
+        backlog = self._read("BACKLOG.md")
+        marker = "## BL-038 "
+        start = backlog.index(marker)
+        end = backlog.find("\n## ", start + len(marker))
+        return backlog[start:] if end == -1 else backlog[start:end]
+
+    def _status_bl038_line(self):
+        status = self._read("STATUS.md")
+        active = status.split("## Active work", 1)[1].split(
+            "\n## 5. Recently completed work", 1
+        )[0]
+        return next(
+            line for line in active.splitlines() if line.startswith("- BL-038 ")
+        )
+
+    def test_backlog_bl038_state_reflects_tranche3c_in_progress(self):
+        bl038 = self._bl038_section()
+        self.assertIn(
+            "- **状態:** 実装中(tranche 1・2・3a・3b受入済み／tranche 3c実装中)", bl038
+        )
+        self.assertNotIn("- **状態:** 完了", bl038)
+
+    def test_backlog_records_entry9_as_tranche3c_kickoff(self):
+        bl038 = self._bl038_section()
+        history_start = bl038.index("ユーザー原文の履歴")
+        history_end = bl038.index("着手時ユーザー原文:", history_start)
+        history = bl038[history_start:history_end]
+        self.assertIn("「ok」5回・「おk」4回", history)
+        entries = re.findall(
+            r"^\s*(\d)\.\s+(.*?)(?=^\s*\d\.\s|\Z)", history, re.MULTILINE | re.DOTALL
+        )
+        self.assertEqual(len(entries), 9)
+        entry9 = entries[8][1]
+        for required in (
+            "tranche 3c kickoff original",
+            "2026-08-06",
+            "「ok」",
+            "test_ui_spec.py",
+            "185 assertion",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, entry9)
+
+    def test_backlog_records_tranche3c_kickoff_and_implementation_evidence(self):
+        bl038 = self._bl038_section()
+        for required in (
+            "tranche 3c着手(2026-08-06)",
+            "test/bl038-tranche3c-ui-spec-classification",
+            "540b3380e412bc35a2086ca5d3a581b7098c1443",
+            "実装証跡(tranche 3c)",
+            "A 10／B 62／C 73／D 40",
+            "282 entries",
+            "combined A=18 B=99 C=114 D=51",
+            "23→26 tests",
+            "CUSTOM_DOMAIN_EXPECTED_A_IDS",
+            "UI_SPEC_EXPECTED_A_IDS",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl038)
+
+    def test_backlog_residual_work_no_longer_calls_tranche3c_not_started(self):
+        bl038 = self._bl038_section()
+        residual_match = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE)
+        self.assertIsNotNone(residual_match)
+        residual = residual_match.group(0)
+        self.assertIn("tranche 3cは実装中", residual)
+        self.assertNotIn("未着手", residual)
+
+    def test_status_active_work_records_tranche3c_kickoff_evidence(self):
+        bl038_line = self._status_bl038_line()
+        for required in (
+            "tranche 3c着手(2026-08-06)",
+            "test/bl038-tranche3c-ui-spec-classification",
+            "tranche 3c kickoff原文「ok」",
+            "A 10／B 62／C 73／D 40",
+            "282 entries",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl038_line)
+
+    def test_manifest_is_scoped_to_two_files_with_combined_counts(self):
+        manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
+        self.assertEqual(manifest["schema_version"], 1)
+        self.assertEqual(
+            [s["file"] for s in manifest["scope"]],
+            ["test_custom_domain.py", "test_ui_spec.py"],
+        )
+        self.assertEqual(len(manifest["assertions"]), 282)
+        from collections import Counter
+
+        counts = Counter(a["category"] for a in manifest["assertions"])
+        self.assertEqual(dict(counts), {"A": 18, "B": 99, "C": 114, "D": 51})
+        ui_spec_entries = [a for a in manifest["assertions"] if a["file"] == "test_ui_spec.py"]
+        self.assertEqual(len(ui_spec_entries), 185)
+        ui_spec_counts = Counter(a["category"] for a in ui_spec_entries)
+        self.assertEqual(dict(ui_spec_counts), {"A": 10, "B": 62, "C": 73, "D": 40})
+        for entry in ui_spec_entries:
+            self.assertIn("targets", entry)
+            self.assertNotIn("target", entry)
+
+    def test_manifest_line_count_is_within_tranche3c_budget(self):
+        lines = self.MANIFEST_PATH.read_text(encoding="utf-8").splitlines()
+        self.assertLessEqual(len(lines), 400)
+
+    def test_manifest_validates_with_zero_failures_via_document_test_inventory(self):
+        import document_test_inventory as dti
+
+        manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
+        failures, summary = dti.validate_manifest(manifest, root=self.ROOT)
+        self.assertEqual(failures, [])
+        self.assertEqual(summary["unclassified"], 0)
+        self.assertEqual(summary["stale"], 0)
+        self.assertEqual(summary["fingerprint_mismatch"], 0)
+
+    def test_classification_test_file_has_26_tests(self):
+        source = self.CLASSIFICATION_TEST_PATH.read_text(encoding="utf-8")
+        method_count = len(re.findall(r"^    def test_", source, re.MULTILINE))
+        self.assertEqual(method_count, 26)
+
+    def test_no_category_c_source_conversion_and_bl038_overall_incomplete(self):
+        bl038 = self._bl038_section()
+        self.assertNotIn("tranche 3c最終受入", bl038)
+        self.assertNotIn("merge記録(tranche 3c)", bl038)
+        self.assertIn(
+            "BL-038全体の最終受入は上記残作業が完了するまで行わない", bl038
+        )
+
+    def test_status_active_work_still_lists_bl038_not_recently_completed(self):
+        status = self._read("STATUS.md")
+        active = status.split("## Active work", 1)[1].split(
+            "\n## 5. Recently completed work", 1
+        )[0]
+        self.assertNotIn("None.", active)
+        recently_completed = status.split("## 5. Recently completed work", 1)[1]
+        self.assertFalse(
+            any(line.startswith("- BL-038 ") for line in recently_completed.splitlines()),
+            "BL-038 must not be listed in Recently completed work during tranche 3c",
+        )
 
 
 if __name__ == "__main__":

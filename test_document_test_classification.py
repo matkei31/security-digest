@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
-"""BL-038 tranche 3b: declared-scope/count structural guard for
-document_test_classification.json's test_custom_domain.py entries.
+"""BL-038 tranche 3c: declared-scope/count structural guard for
+document_test_classification.json, now spanning test_custom_domain.py
+(tranche 3b, 97 entries, unchanged) and test_ui_spec.py (tranche 3c, 185
+new entries).
 
 document_test_inventory.py's validator can only check a manifest against
 whatever scope it *declares* -- it cannot detect a class/file being
 silently removed from that declared scope (both `scope` and the matching
-`assertions` shrinking together, staying internally consistent). This
-suite pins the expected scope/class-set/count as *hardcoded literals*,
-independent of whatever the manifest file currently says, so a silent
-scope shrinkage is caught here even though the validator alone would not
-catch it (round 1, Blocker 4: `_assert_expected_scope()` is exercised both
-directly and against a deliberately-shrunk mutated copy, demonstrated not just asserted).
+`assertions` shrinking together, staying internally consistent), nor can
+it detect the two scoped files being silently reordered. This suite pins
+the expected scope/class-set/count/order as *hardcoded literals*,
+independent of whatever the manifest file currently says, so scope
+shrinkage or reordering is caught here even though the validator alone
+would not catch it (tranche 3b round 1, Blocker 4: `_assert_expected_scope()`
+is exercised both directly and against deliberately-mutated copies,
+demonstrated not just asserted).
 """
 
 import json
@@ -23,11 +27,15 @@ import document_test_inventory as dti
 
 ROOT = Path(__file__).resolve().parent
 MANIFEST_PATH = ROOT / "document_test_classification.json"
-SOURCE_FILE = "test_custom_domain.py"
 
-# Hardcoded literal contract -- NOT derived from the manifest or from a
-# live AST scan. This is what makes scope shrinkage detectable.
-EXPECTED_CLASSES = (
+CUSTOM_DOMAIN_SOURCE_FILE = "test_custom_domain.py"
+UI_SPEC_SOURCE_FILE = "test_ui_spec.py"
+SCOPE_FILES = (CUSTOM_DOMAIN_SOURCE_FILE, UI_SPEC_SOURCE_FILE)
+
+# Hardcoded literal contracts -- NOT derived from the manifest or from a
+# live AST scan. This, and the exact scope ORDER below, is what makes
+# scope shrinkage/reordering detectable.
+CUSTOM_DOMAIN_EXPECTED_CLASSES = (
     "DocsCnameFileTest",
     "CnameSurvivesGenerationTest",
     "ArticleBriefContractUnchangedTest",
@@ -36,14 +44,29 @@ EXPECTED_CLASSES = (
     "Bl007ClosureRecordTest",
     "TicketIdTypoTest",
 )
-EXPECTED_ASSERTION_COUNT = 97
+UI_SPEC_EXPECTED_CLASSES = (
+    "UiSpecDocumentTest",
+    "Bl036ArticleAttributionUiSpecTest",
+)
+EXPECTED_SCOPE_ORDER = (
+    (CUSTOM_DOMAIN_SOURCE_FILE, CUSTOM_DOMAIN_EXPECTED_CLASSES),
+    (UI_SPEC_SOURCE_FILE, UI_SPEC_EXPECTED_CLASSES),
+)
 
-# Round 2 review, Blocker 3: category *counts* alone cannot catch a B/C
-# entry being swapped for another B/C entry (counts stay the same). The
-# manifest is a human-reviewed per-assertion record, so A/C/D membership
-# is pinned as hardcoded literal ID sets -- B is checked as the exact
-# remainder (all 97 IDs minus A/C/D), not counted independently.
-EXPECTED_A_IDS = frozenset({
+CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT = 97
+UI_SPEC_EXPECTED_ASSERTION_COUNT = 185
+COMBINED_EXPECTED_ASSERTION_COUNT = (
+    CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT + UI_SPEC_EXPECTED_ASSERTION_COUNT
+)
+
+# Tranche 3b's exact per-ID category membership record -- content
+# UNCHANGED from tranche 3b, only renamed (from EXPECTED_A_IDS etc.) for
+# clarity now that a second file shares this module. Round 2 review,
+# Blocker 3: category *counts* alone cannot catch a B/C entry being
+# swapped for another B/C entry (counts stay the same). The manifest is a
+# human-reviewed per-assertion record, so A/C/D membership is pinned as
+# hardcoded literal ID sets -- B is checked as the exact remainder.
+CUSTOM_DOMAIN_EXPECTED_A_IDS = frozenset({
     "test_custom_domain.py::CnameSurvivesGenerationTest::test_cname_survives_generate_archive_outputs::assert-01",
     "test_custom_domain.py::CnameSurvivesGenerationTest::test_cname_survives_generate_archive_outputs::assert-02",
     "test_custom_domain.py::CnameSurvivesGenerationTest::test_cname_survives_repeated_full_archive_regeneration::assert-01",
@@ -53,7 +76,7 @@ EXPECTED_A_IDS = frozenset({
     "test_custom_domain.py::Bl007DocumentationTest::test_no_wildcard_dns_is_instructed_anywhere_in_bl007::assert-01",
     "test_custom_domain.py::Bl007ClosureRecordTest::test_bl007_retains_ownership_txt_and_forbids_wildcard::assert-02",
 })
-EXPECTED_C_IDS = frozenset({
+CUSTOM_DOMAIN_EXPECTED_C_IDS = frozenset({
     "test_custom_domain.py::Bl007DocumentationTest::test_bl007_is_recorded_as_complete_with_confirmed_policy::assert-02",
     "test_custom_domain.py::Bl007DocumentationTest::test_bl007_is_recorded_as_complete_with_confirmed_policy::assert-03",
     "test_custom_domain.py::Bl007DocumentationTest::test_bl007_is_recorded_as_complete_with_confirmed_policy::assert-04",
@@ -96,7 +119,7 @@ EXPECTED_C_IDS = frozenset({
     "test_custom_domain.py::Bl007ClosureRecordTest::test_sd028_records_cname_merge_activation_as_an_observation_not_a_guarantee::assert-02",
     "test_custom_domain.py::Bl007ClosureRecordTest::test_sd028_records_minimal_dns_with_no_wildcard::assert-01",
 })
-EXPECTED_D_IDS = frozenset({
+CUSTOM_DOMAIN_EXPECTED_D_IDS = frozenset({
     "test_custom_domain.py::DocsCnameFileTest::test_cname_content_is_exactly_the_apex_domain_with_trailing_newline::assert-01",
     "test_custom_domain.py::ArticleBriefContractUnchangedTest::test_article_and_brief_prompt_versions_are_unchanged::assert-01",
     "test_custom_domain.py::ArticleBriefContractUnchangedTest::test_article_and_brief_prompt_versions_are_unchanged::assert-02",
@@ -109,20 +132,175 @@ EXPECTED_D_IDS = frozenset({
     "test_custom_domain.py::Bl007ClosureRecordTest::test_sd028_evidence_records_merge_commit_and_public_state::assert-02",
     "test_custom_domain.py::Bl007ClosureRecordTest::test_sd028_evidence_records_merge_commit_and_public_state::assert-03",
 })
-assert not (EXPECTED_A_IDS & EXPECTED_C_IDS)
-assert not (EXPECTED_A_IDS & EXPECTED_D_IDS)
-assert not (EXPECTED_C_IDS & EXPECTED_D_IDS)
-# Round 2 review corrected this tally further: 11 more B entries were found
-# to be either (a) raw `.index()` anchor phrases that a position-based
-# `assertLess` ordering check depends on, which breaks before the ordering
-# assertion is even reached, or (b) short phrases wrongly kept B on a
-# length/word-count heuristic instead of checking their actual document
-# context (some turned out to be embedded in giant free-flowing paragraphs,
-# not standalone fixed-format fields).
-EXPECTED_CATEGORY_COUNTS = {
-    "A": len(EXPECTED_A_IDS), "B": 97 - len(EXPECTED_A_IDS) - len(EXPECTED_C_IDS) - len(EXPECTED_D_IDS),
-    "C": len(EXPECTED_C_IDS), "D": len(EXPECTED_D_IDS),
+assert not (CUSTOM_DOMAIN_EXPECTED_A_IDS & CUSTOM_DOMAIN_EXPECTED_C_IDS)
+assert not (CUSTOM_DOMAIN_EXPECTED_A_IDS & CUSTOM_DOMAIN_EXPECTED_D_IDS)
+assert not (CUSTOM_DOMAIN_EXPECTED_C_IDS & CUSTOM_DOMAIN_EXPECTED_D_IDS)
+CUSTOM_DOMAIN_EXPECTED_CATEGORY_COUNTS = {
+    "A": len(CUSTOM_DOMAIN_EXPECTED_A_IDS),
+    "B": CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT
+    - len(CUSTOM_DOMAIN_EXPECTED_A_IDS)
+    - len(CUSTOM_DOMAIN_EXPECTED_C_IDS)
+    - len(CUSTOM_DOMAIN_EXPECTED_D_IDS),
+    "C": len(CUSTOM_DOMAIN_EXPECTED_C_IDS),
+    "D": len(CUSTOM_DOMAIN_EXPECTED_D_IDS),
 }
+
+# Tranche 3c's exact per-ID category membership record for test_ui_spec.py,
+# built the same way as tranche 3b's: A/C/D pinned as hardcoded literal ID
+# sets, B checked as the exact remainder of the 185 UI-spec IDs.
+UI_SPEC_EXPECTED_A_IDS = frozenset({
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-03",
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-04",
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-05",
+    "test_ui_spec.py::UiSpecDocumentTest::test_sd016_and_user_adjudication_are_recorded_verbatim::assert-01",
+    "test_ui_spec.py::UiSpecDocumentTest::test_sd016_and_user_adjudication_are_recorded_verbatim::assert-02",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_version_is_17_approved_with_acceptance_date::assert-01",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_version_is_17_approved_with_acceptance_date::assert-02",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_version_is_17_approved_with_acceptance_date::assert-03",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_sd016_historical_body_is_preserved_and_notes_partial_supersession::assert-01",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_sd016_historical_body_is_preserved_and_notes_partial_supersession::assert-02",
+})
+UI_SPEC_EXPECTED_C_IDS = frozenset({
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-06",
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-07",
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-08",
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-09",
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-10",
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-13",
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-14",
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-15",
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-18",
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-19",
+    "test_ui_spec.py::UiSpecDocumentTest::test_confirmed_axis_and_related_tag_contracts_are_explicit::assert-01",
+    "test_ui_spec.py::UiSpecDocumentTest::test_confirmed_axis_and_related_tag_contracts_are_explicit::assert-02",
+    "test_ui_spec.py::UiSpecDocumentTest::test_confirmed_axis_and_related_tag_contracts_are_explicit::assert-03",
+    "test_ui_spec.py::UiSpecDocumentTest::test_confirmed_axis_and_related_tag_contracts_are_explicit::assert-04",
+    "test_ui_spec.py::UiSpecDocumentTest::test_confirmed_axis_and_related_tag_contracts_are_explicit::assert-05",
+    "test_ui_spec.py::UiSpecDocumentTest::test_all_seven_choices_are_confirmed_and_no_active_unresolved_items_remain::assert-03",
+    "test_ui_spec.py::UiSpecDocumentTest::test_all_seven_choices_are_confirmed_and_no_active_unresolved_items_remain::assert-04",
+    "test_ui_spec.py::UiSpecDocumentTest::test_all_seven_choices_are_confirmed_and_no_active_unresolved_items_remain::assert-05",
+    "test_ui_spec.py::UiSpecDocumentTest::test_all_seven_choices_are_confirmed_and_no_active_unresolved_items_remain::assert-06",
+    "test_ui_spec.py::UiSpecDocumentTest::test_all_seven_choices_are_confirmed_and_no_active_unresolved_items_remain::assert-07",
+    "test_ui_spec.py::UiSpecDocumentTest::test_all_seven_choices_are_confirmed_and_no_active_unresolved_items_remain::assert-08",
+    "test_ui_spec.py::UiSpecDocumentTest::test_all_seven_choices_are_confirmed_and_no_active_unresolved_items_remain::assert-09",
+    "test_ui_spec.py::UiSpecDocumentTest::test_all_seven_choices_are_confirmed_and_no_active_unresolved_items_remain::assert-10",
+    "test_ui_spec.py::UiSpecDocumentTest::test_all_seven_choices_are_confirmed_and_no_active_unresolved_items_remain::assert-11",
+    "test_ui_spec.py::UiSpecDocumentTest::test_all_seven_choices_are_confirmed_and_no_active_unresolved_items_remain::assert-12",
+    "test_ui_spec.py::UiSpecDocumentTest::test_all_seven_choices_are_confirmed_and_no_active_unresolved_items_remain::assert-13",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl022_previous_digest_link_is_an_approved_responsive_contract::assert-02",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl022_previous_digest_link_is_an_approved_responsive_contract::assert-04",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl022_previous_digest_link_is_an_approved_responsive_contract::assert-06",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl022_previous_digest_link_is_an_approved_responsive_contract::assert-17",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl022_previous_digest_link_is_an_approved_responsive_contract::assert-18",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl020_source_footer_is_plain_user_accepted_and_complete::assert-01",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl020_source_footer_is_plain_user_accepted_and_complete::assert-02",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl020_source_footer_is_plain_user_accepted_and_complete::assert-03",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl020_source_footer_is_plain_user_accepted_and_complete::assert-04",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl020_source_footer_is_plain_user_accepted_and_complete::assert-05",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl020_source_footer_is_plain_user_accepted_and_complete::assert-07",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl020_source_footer_is_plain_user_accepted_and_complete::assert-11",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl020_source_footer_is_plain_user_accepted_and_complete::assert-12",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl020_source_footer_is_plain_user_accepted_and_complete::assert-13",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl004_is_complete_with_original_evidence_unchanged::assert-03",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl004_is_complete_with_original_evidence_unchanged::assert-06",
+    "test_ui_spec.py::UiSpecDocumentTest::test_status_completes_bl004_bl021_and_bl022::assert-06",
+    "test_ui_spec.py::UiSpecDocumentTest::test_status_completes_bl004_bl021_and_bl022::assert-07",
+    "test_ui_spec.py::UiSpecDocumentTest::test_status_completes_bl004_bl021_and_bl022::assert-13",
+    "test_ui_spec.py::UiSpecDocumentTest::test_status_completes_bl004_bl021_and_bl022::assert-14",
+    "test_ui_spec.py::UiSpecDocumentTest::test_status_completes_bl004_bl021_and_bl022::assert-17",
+    "test_ui_spec.py::UiSpecDocumentTest::test_status_completes_bl004_bl021_and_bl022::assert-18",
+    "test_ui_spec.py::UiSpecDocumentTest::test_status_completes_bl004_bl021_and_bl022::assert-20",
+    "test_ui_spec.py::UiSpecDocumentTest::test_status_completes_bl004_bl021_and_bl022::assert-24",
+    "test_ui_spec.py::UiSpecDocumentTest::test_status_completes_bl004_bl021_and_bl022::assert-28",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_original_ai_note_ban_sentences_are_preserved_not_deleted::assert-01",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_original_ai_note_ban_sentences_are_preserved_not_deleted::assert-02",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_maintained_policy_bans_generic_ai_badge_and_uniform_note::assert-01",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_maintained_policy_bans_generic_ai_badge_and_uniform_note::assert-02",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_maintained_policy_bans_generic_ai_badge_and_uniform_note::assert-03",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_maintained_policy_bans_generic_ai_badge_and_uniform_note::assert-04",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_source_policy_required_attribution_is_recorded_as_a_confirmed_limited_exception::assert-01",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_source_policy_required_attribution_is_recorded_as_a_confirmed_limited_exception::assert-02",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_source_policy_required_attribution_is_recorded_as_a_confirmed_limited_exception::assert-03",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_source_policy_required_attribution_is_recorded_as_a_confirmed_limited_exception::assert-07",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_runtime_attribution_is_already_implemented_and_bl036_only_added_css::assert-01",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_runtime_attribution_is_already_implemented_and_bl036_only_added_css::assert-02",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_no_contradictory_no_change_claim_near_the_limited_exception::assert-01",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_no_contradictory_no_change_claim_near_the_limited_exception::assert-02",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_no_pending_or_draft_current_state_wording_remains_for_the_exception::assert-01",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_no_pending_or_draft_current_state_wording_remains_for_the_exception::assert-02",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_user_original_text_and_interpretation_are_recorded_separately::assert-03",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_sd033_exists_accepted_and_supersedes_only_the_ai_note_clause::assert-05",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_sd033_exists_accepted_and_supersedes_only_the_ai_note_clause::assert-06",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_sd016_historical_body_is_preserved_and_notes_partial_supersession::assert-04",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_sd016_historical_body_is_preserved_and_notes_partial_supersession::assert-07",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_sd016_historical_body_is_preserved_and_notes_partial_supersession::assert-08",
+})
+UI_SPEC_EXPECTED_D_IDS = frozenset({
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-11",
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-12",
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-16",
+    "test_ui_spec.py::UiSpecDocumentTest::test_ui_spec_exists_with_version_metadata::assert-17",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl022_previous_digest_link_is_an_approved_responsive_contract::assert-03",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl022_previous_digest_link_is_an_approved_responsive_contract::assert-05",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl022_previous_digest_link_is_an_approved_responsive_contract::assert-08",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl022_previous_digest_link_is_an_approved_responsive_contract::assert-09",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl022_previous_digest_link_is_an_approved_responsive_contract::assert-10",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl022_previous_digest_link_is_an_approved_responsive_contract::assert-11",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl022_previous_digest_link_is_an_approved_responsive_contract::assert-12",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl022_previous_digest_link_is_an_approved_responsive_contract::assert-14",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl020_source_footer_is_plain_user_accepted_and_complete::assert-06",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl020_source_footer_is_plain_user_accepted_and_complete::assert-10",
+    "test_ui_spec.py::UiSpecDocumentTest::test_sd016_and_user_adjudication_are_recorded_verbatim::assert-03",
+    "test_ui_spec.py::UiSpecDocumentTest::test_sd016_and_user_adjudication_are_recorded_verbatim::assert-04",
+    "test_ui_spec.py::UiSpecDocumentTest::test_sd016_and_user_adjudication_are_recorded_verbatim::assert-05",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl004_is_complete_with_original_evidence_unchanged::assert-02",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl004_is_complete_with_original_evidence_unchanged::assert-04",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl004_is_complete_with_original_evidence_unchanged::assert-08",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl004_is_complete_with_original_evidence_unchanged::assert-09",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl004_is_complete_with_original_evidence_unchanged::assert-10",
+    "test_ui_spec.py::UiSpecDocumentTest::test_bl004_is_complete_with_original_evidence_unchanged::assert-11",
+    "test_ui_spec.py::UiSpecDocumentTest::test_status_completes_bl004_bl021_and_bl022::assert-02",
+    "test_ui_spec.py::UiSpecDocumentTest::test_status_completes_bl004_bl021_and_bl022::assert-04",
+    "test_ui_spec.py::UiSpecDocumentTest::test_status_completes_bl004_bl021_and_bl022::assert-05",
+    "test_ui_spec.py::UiSpecDocumentTest::test_status_completes_bl004_bl021_and_bl022::assert-21",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_css_current_values_are_recorded_for_pc_and_390px_both::assert-02",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_css_current_values_are_recorded_for_pc_and_390px_both::assert-03",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_css_current_values_are_recorded_for_pc_and_390px_both::assert-04",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_css_current_values_are_recorded_for_pc_and_390px_both::assert-05",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_no_pending_or_draft_current_state_wording_remains_for_the_exception::assert-03",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_screenshot_filenames_and_evidence_are_recorded::assert-02",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_screenshot_filenames_and_evidence_are_recorded::assert-03",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_user_original_text_and_interpretation_are_recorded_separately::assert-01",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_sd033_exists_accepted_and_supersedes_only_the_ai_note_clause::assert-02",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_sd033_exists_accepted_and_supersedes_only_the_ai_note_clause::assert-11",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_sd033_exists_accepted_and_supersedes_only_the_ai_note_clause::assert-12",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_sd016_historical_body_is_preserved_and_notes_partial_supersession::assert-03",
+    "test_ui_spec.py::Bl036ArticleAttributionUiSpecTest::test_status_active_work_excludes_and_recently_completed_includes_bl036::assert-04",
+})
+assert not (UI_SPEC_EXPECTED_A_IDS & UI_SPEC_EXPECTED_C_IDS)
+assert not (UI_SPEC_EXPECTED_A_IDS & UI_SPEC_EXPECTED_D_IDS)
+assert not (UI_SPEC_EXPECTED_C_IDS & UI_SPEC_EXPECTED_D_IDS)
+UI_SPEC_EXPECTED_CATEGORY_COUNTS = {
+    "A": len(UI_SPEC_EXPECTED_A_IDS),
+    "B": UI_SPEC_EXPECTED_ASSERTION_COUNT
+    - len(UI_SPEC_EXPECTED_A_IDS)
+    - len(UI_SPEC_EXPECTED_C_IDS)
+    - len(UI_SPEC_EXPECTED_D_IDS),
+    "C": len(UI_SPEC_EXPECTED_C_IDS),
+    "D": len(UI_SPEC_EXPECTED_D_IDS),
+}
+
+COMBINED_EXPECTED_CATEGORY_COUNTS = {
+    cat: CUSTOM_DOMAIN_EXPECTED_CATEGORY_COUNTS[cat] + UI_SPEC_EXPECTED_CATEGORY_COUNTS[cat]
+    for cat in ("A", "B", "C", "D")
+}
+# The two files' IDs are disjoint by construction (each id is prefixed
+# with its own file name), so the combined exact-membership guard is a
+# plain union -- this is what keeps tranche 3b's per-ID record in force
+# unweakened after the manifest grew to a second file.
+COMBINED_EXPECTED_A_IDS = CUSTOM_DOMAIN_EXPECTED_A_IDS | UI_SPEC_EXPECTED_A_IDS
+COMBINED_EXPECTED_C_IDS = CUSTOM_DOMAIN_EXPECTED_C_IDS | UI_SPEC_EXPECTED_C_IDS
+COMBINED_EXPECTED_D_IDS = CUSTOM_DOMAIN_EXPECTED_D_IDS | UI_SPEC_EXPECTED_D_IDS
 
 EXPECTED_ENTRY_KEY_ORDER = (
     "id",
@@ -141,6 +319,9 @@ EXPECTED_ENTRY_KEY_ORDER = (
 
 # Entries whose single AST call site genuinely spans more than one target
 # file/path (a `for` loop over distinct targets), keyed by manifest id.
+# Tranche 3c added no new multi-target entries: test_ui_spec.py's own
+# for-loops (chapter headings, screenshot filenames) all check a single
+# document, not distinct target files.
 EXPECTED_MULTI_TARGETS = {
     "test_custom_domain.py::TicketIdTypoTest::"
     "test_no_bl007_underscore_typo_anywhere_in_tracked_markdown_or_python::assert-01": (
@@ -162,14 +343,12 @@ EXPECTED_MULTI_TARGETS = {
 
 # Round 2 fix (Blocker 6): "short"/"one line"/"no realistic [wrap point]"/
 # generic "cname" were the weak length-based reasoning that produced round
-# 1's own misclassifications ("is enabled", "Enforce HTTPS", "DNS切替待ち"
-# were excused as B partly on "short" wording despite being reflow-
-# vulnerable) -- removed rather than tightened. This is a structural
-# sanity net (nonblank, no placeholder, *some* substantive category-
-# appropriate reasoning) -- it cannot verify a rationale's classification
-# judgment is correct. Category membership is a human-reviewed record,
-# pinned by EXPECTED_A_IDS/C_IDS/D_IDS, checked by
-# test_exact_category_membership_matches_hardcoded_id_sets.
+# 1's own misclassifications -- removed rather than tightened. This is a
+# structural sanity net (nonblank, no placeholder, *some* substantive
+# category-appropriate reasoning) -- it cannot verify a rationale's
+# classification judgment is correct. Category membership is a
+# human-reviewed record, pinned by the *_EXPECTED_A_IDS/C_IDS/D_IDS sets,
+# checked by test_exact_category_membership_matches_hardcoded_id_sets.
 _PLACEHOLDER_WORDS = ("todo", "fixme", "placeholder", "tbd", "xxx", "n/a")
 _CATEGORY_MARKERS = {
     "A": ("duplicat", "helper", "consolidat", "shared", "call site", "identical fingerprint", "repeated"),
@@ -178,9 +357,10 @@ _CATEGORY_MARKERS = {
         "token", "marker", "single word", "ordering", "position-based",
         "existence", "minimal", "not subject to", "editorial reflow", "config",
         "meaning-preserving edit", "sanity", "postcondition", "standalone",
+        "reference", "heading",
     ),
-    "C": ("brittle", "reflow", "wrap", "normalize", "prose", "clause", "sentence", "paragraph"),
-    "D": ("exact", "identifier", "sha", "literal", "evidence"),
+    "C": ("brittle", "reflow", "wrap", "normalize", "prose", "clause", "sentence", "paragraph", "fragment"),
+    "D": ("exact", "identifier", "sha", "literal", "evidence", "durable"),
 }
 
 
@@ -189,26 +369,51 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
     def setUpClass(cls):
         cls.manifest_text = MANIFEST_PATH.read_text(encoding="utf-8")
         cls.manifest = json.loads(cls.manifest_text)
-        cls.source = (ROOT / SOURCE_FILE).read_text(encoding="utf-8")
-        cls.live_records = dti.enumerate_assertions(
-            cls.source, SOURCE_FILE, list(EXPECTED_CLASSES)
+        cls.sources = {
+            CUSTOM_DOMAIN_SOURCE_FILE: (ROOT / CUSTOM_DOMAIN_SOURCE_FILE).read_text(encoding="utf-8"),
+            UI_SPEC_SOURCE_FILE: (ROOT / UI_SPEC_SOURCE_FILE).read_text(encoding="utf-8"),
+        }
+        cls.live_records_by_file = {
+            CUSTOM_DOMAIN_SOURCE_FILE: dti.enumerate_assertions(
+                cls.sources[CUSTOM_DOMAIN_SOURCE_FILE], CUSTOM_DOMAIN_SOURCE_FILE,
+                list(CUSTOM_DOMAIN_EXPECTED_CLASSES),
+            ),
+            UI_SPEC_SOURCE_FILE: dti.enumerate_assertions(
+                cls.sources[UI_SPEC_SOURCE_FILE], UI_SPEC_SOURCE_FILE,
+                list(UI_SPEC_EXPECTED_CLASSES),
+            ),
+        }
+        # Concatenation order matches the manifest's own required layout:
+        # test_custom_domain.py's 97 entries first (unchanged from tranche
+        # 3b), then test_ui_spec.py's 185 entries, in source order within
+        # each file.
+        cls.live_records = (
+            cls.live_records_by_file[CUSTOM_DOMAIN_SOURCE_FILE]
+            + cls.live_records_by_file[UI_SPEC_SOURCE_FILE]
         )
 
-    # -- shared helper, used both directly and against a mutated copy in
-    # test_scope_shrinkage_mutation_is_actually_caught_by_the_guard below --
+    # -- shared helper, used both directly and against mutated copies in
+    # the scope-shrinkage/reordering mutation tests below --
     def _assert_expected_scope(self, manifest):
         scope = manifest["scope"]
-        self.assertEqual(len(scope), 1, "scope must list exactly 1 file")
-        entry = scope[0]
-        self.assertEqual(entry["file"], SOURCE_FILE)
-        actual_classes = tuple(entry["classes"])
-        self.assertEqual(
-            actual_classes,
-            EXPECTED_CLASSES,
-            "declared scope classes must exactly equal the hardcoded literal "
-            "expected-class tuple (order and membership)",
-        )
-        self.assertEqual(len(actual_classes), 7)
+        self.assertEqual(len(scope), 2, "scope must list exactly 2 files")
+        for entry, (expected_file, expected_classes) in zip(scope, EXPECTED_SCOPE_ORDER):
+            self.assertEqual(entry["file"], expected_file)
+            self.assertEqual(
+                tuple(entry["classes"]),
+                expected_classes,
+                f"declared scope classes for {expected_file} must exactly equal "
+                "the hardcoded literal expected-class tuple (order and membership)",
+            )
+
+    def _assert_ids_match_source_order(self, manifest):
+        # List (not set) equality: the manifest must list assertions in the
+        # same source order document_test_inventory.py enumerates them in,
+        # not merely contain the same set of IDs in arbitrary order -- and
+        # the two files' blocks must appear in scope order.
+        manifest_ids = [a["id"] for a in manifest["assertions"]]
+        live_ids = [r.id for r in self.live_records]
+        self.assertEqual(manifest_ids, live_ids)
 
     def test_manifest_exists_and_is_a_valid_json_object(self):
         self.assertTrue(MANIFEST_PATH.is_file())
@@ -218,20 +423,33 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         self.assertEqual(self.manifest["schema_version"], 1)
         self.assertIs(type(self.manifest["schema_version"]), int)
 
-    def test_scope_is_exactly_test_custom_domain_with_expected_classes(self):
+    def test_scope_is_exactly_two_files_in_order_with_expected_classes(self):
         self._assert_expected_scope(self.manifest)
 
-    def test_assertion_and_live_inventory_counts_are_exactly_97(self):
-        self.assertEqual(len(self.manifest["assertions"]), EXPECTED_ASSERTION_COUNT)
-        self.assertEqual(len(self.live_records), EXPECTED_ASSERTION_COUNT)
+    def test_assertion_and_live_inventory_counts_match_expected_totals(self):
+        self.assertEqual(len(self.manifest["assertions"]), COMBINED_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(len(self.live_records), COMBINED_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(
+            len(self.live_records_by_file[CUSTOM_DOMAIN_SOURCE_FILE]),
+            CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT,
+        )
+        self.assertEqual(
+            len(self.live_records_by_file[UI_SPEC_SOURCE_FILE]),
+            UI_SPEC_EXPECTED_ASSERTION_COUNT,
+        )
+        manifest_counts_by_file = {}
+        for entry in self.manifest["assertions"]:
+            manifest_counts_by_file[entry["file"]] = manifest_counts_by_file.get(entry["file"], 0) + 1
+        self.assertEqual(
+            manifest_counts_by_file,
+            {
+                CUSTOM_DOMAIN_SOURCE_FILE: CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT,
+                UI_SPEC_SOURCE_FILE: UI_SPEC_EXPECTED_ASSERTION_COUNT,
+            },
+        )
 
     def test_manifest_ids_match_live_inventory_ids_in_source_order(self):
-        # List (not set) equality: the manifest must list assertions in the
-        # same source order document_test_inventory.py enumerates them in,
-        # not merely contain the same set of IDs in arbitrary order.
-        manifest_ids = [a["id"] for a in self.manifest["assertions"]]
-        live_ids = [r.id for r in self.live_records]
-        self.assertEqual(manifest_ids, live_ids)
+        self._assert_ids_match_source_order(self.manifest)
 
     def test_manifest_entries_match_live_inventory_fields(self):
         live_by_id = {r.id: r for r in self.live_records}
@@ -259,29 +477,37 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         self.assertEqual(summary["fingerprint_mismatch"], 0)
 
     def test_category_counts_match_corrected_final_tally(self):
-        counts = {"A": 0, "B": 0, "C": 0, "D": 0}
+        counts_by_file = {
+            CUSTOM_DOMAIN_SOURCE_FILE: {"A": 0, "B": 0, "C": 0, "D": 0},
+            UI_SPEC_SOURCE_FILE: {"A": 0, "B": 0, "C": 0, "D": 0},
+        }
         for entry in self.manifest["assertions"]:
-            counts[entry["category"]] += 1
-        self.assertEqual(counts, EXPECTED_CATEGORY_COUNTS)
-        self.assertEqual(sum(counts.values()), EXPECTED_ASSERTION_COUNT)
+            counts_by_file[entry["file"]][entry["category"]] += 1
+        self.assertEqual(counts_by_file[CUSTOM_DOMAIN_SOURCE_FILE], CUSTOM_DOMAIN_EXPECTED_CATEGORY_COUNTS)
+        self.assertEqual(counts_by_file[UI_SPEC_SOURCE_FILE], UI_SPEC_EXPECTED_CATEGORY_COUNTS)
+        combined = {
+            cat: counts_by_file[CUSTOM_DOMAIN_SOURCE_FILE][cat] + counts_by_file[UI_SPEC_SOURCE_FILE][cat]
+            for cat in ("A", "B", "C", "D")
+        }
+        self.assertEqual(combined, COMBINED_EXPECTED_CATEGORY_COUNTS)
+        self.assertEqual(sum(combined.values()), COMBINED_EXPECTED_ASSERTION_COUNT)
 
     # Round 2 fix (Blocker 3): category *counts* alone can't catch a B/C (or
     # any two same-count-preserving categories) entry swap. This checks the
     # exact per-ID category membership against hardcoded literal sets for
     # A/C/D (B is checked as the exact remainder), which the classification
     # manifest -- a human-reviewed record, not a derivable computation --
-    # requires to be pinned, not merely counted.
+    # requires to be pinned, not merely counted. Tranche 3c preserves
+    # tranche 3b's record unweakened by unioning it into the combined sets
+    # (the two files' IDs are disjoint by construction).
     def _assert_exact_category_membership(self, manifest):
         by_id = {a["id"]: a["category"] for a in manifest["assertions"]}
         all_ids = frozenset(by_id)
-        self.assertEqual(all_ids, EXPECTED_A_IDS | EXPECTED_C_IDS | EXPECTED_D_IDS | (
-            all_ids - EXPECTED_A_IDS - EXPECTED_C_IDS - EXPECTED_D_IDS
-        ))
-        expected_b_ids = all_ids - EXPECTED_A_IDS - EXPECTED_C_IDS - EXPECTED_D_IDS
+        expected_b_ids = all_ids - COMBINED_EXPECTED_A_IDS - COMBINED_EXPECTED_C_IDS - COMBINED_EXPECTED_D_IDS
         for entry_id, expected_category in (
-            [(i, "A") for i in EXPECTED_A_IDS]
-            + [(i, "C") for i in EXPECTED_C_IDS]
-            + [(i, "D") for i in EXPECTED_D_IDS]
+            [(i, "A") for i in COMBINED_EXPECTED_A_IDS]
+            + [(i, "C") for i in COMBINED_EXPECTED_C_IDS]
+            + [(i, "D") for i in COMBINED_EXPECTED_D_IDS]
             + [(i, "B") for i in expected_b_ids]
         ):
             self.assertEqual(
@@ -297,22 +523,43 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         # Swap one B entry and one C entry's categories (and matching
         # actions) -- the aggregate A/B/C/D counts stay identical, so only
         # the exact-membership guard (not test_category_counts_match_
-        # corrected_final_tally) can catch this.
+        # corrected_final_tally) can catch this. Exercised for both files.
+        expected_c_ids_by_file = {
+            CUSTOM_DOMAIN_SOURCE_FILE: CUSTOM_DOMAIN_EXPECTED_C_IDS,
+            UI_SPEC_SOURCE_FILE: UI_SPEC_EXPECTED_C_IDS,
+        }
+        for file, c_ids in expected_c_ids_by_file.items():
+            with self.subTest(file=file):
+                mutated = json.loads(self.manifest_text)
+                by_id = {a["id"]: a for a in mutated["assertions"]}
+                expected_b_ids = (
+                    frozenset(by_id) - COMBINED_EXPECTED_A_IDS - COMBINED_EXPECTED_C_IDS - COMBINED_EXPECTED_D_IDS
+                )
+                b_candidates = [i for i in expected_b_ids if i.startswith(file + "::")]
+                b_entry = by_id[b_candidates[0]]
+                c_entry = by_id[next(iter(c_ids))]
+                b_entry["category"], c_entry["category"] = c_entry["category"], b_entry["category"]
+                b_entry["action"], c_entry["action"] = c_entry["action"], b_entry["action"]
+
+                combined = {"A": 0, "B": 0, "C": 0, "D": 0}
+                for entry in mutated["assertions"]:
+                    combined[entry["category"]] += 1
+                self.assertEqual(combined, COMBINED_EXPECTED_CATEGORY_COUNTS, "swap must be count-preserving")
+
+                with self.assertRaises(AssertionError):
+                    self._assert_exact_category_membership(mutated)
+
+    # Explicit preservation check (distinct from the generic swap test
+    # above): mutating the category of one of tranche 3b's ORIGINAL 97
+    # entries must still be caught by the same combined guard, proving
+    # tranche 3c's expansion did not silently dilute tranche 3b's record.
+    def test_custom_domain_membership_preservation_mutation_is_detected(self):
         mutated = json.loads(self.manifest_text)
         by_id = {a["id"]: a for a in mutated["assertions"]}
-        expected_b_ids = (
-            frozenset(by_id) - EXPECTED_A_IDS - EXPECTED_C_IDS - EXPECTED_D_IDS
-        )
-        b_entry = by_id[next(iter(expected_b_ids))]
-        c_entry = by_id[next(iter(EXPECTED_C_IDS))]
-        b_entry["category"], c_entry["category"] = c_entry["category"], b_entry["category"]
-        b_entry["action"], c_entry["action"] = c_entry["action"], b_entry["action"]
-
-        counts = {"A": 0, "B": 0, "C": 0, "D": 0}
-        for entry in mutated["assertions"]:
-            counts[entry["category"]] += 1
-        self.assertEqual(counts, EXPECTED_CATEGORY_COUNTS, "swap must be count-preserving")
-
+        target_id = next(iter(CUSTOM_DOMAIN_EXPECTED_A_IDS))
+        entry = by_id[target_id]
+        entry["category"] = "B"
+        entry["action"] = dti.CATEGORY_TO_ACTION["B"]
         with self.assertRaises(AssertionError):
             self._assert_exact_category_membership(mutated)
 
@@ -354,10 +601,8 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
             with self.subTest(id=entry["id"]):
                 self.assertEqual(len(entry["targets"]), 1)
 
-    # Round 1 fix (Blocker 5): exact-uniqueness across all 97 rationale
-    # strings was itself brittle (it forbids two genuine duplicate-fingerprint
-    # entries from sharing a rationale, and rewards inventing 97 distinct
-    # wordings over clear ones). Replaced with a structural quality check:
+    # Round 1 fix (Blocker 5): exact-uniqueness across all rationale strings
+    # was itself brittle. Replaced with a structural quality check:
     # nonblank, no placeholder filler, and category-appropriate content.
     def test_summaries_and_rationales_are_nonblank_and_category_appropriate(self):
         for entry in self.manifest["assertions"]:
@@ -376,58 +621,105 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                     f"one of {markers}: {rationale!r}",
                 )
 
-    # Round 1 fix (Blocker 4): the mutation test now demonstrates the actual
-    # gap it claims to close, using the SAME helper the real scope check
-    # uses -- rather than just proving unequal tuples fail assertEqual.
-    def test_scope_shrinkage_mutation_is_actually_caught_by_the_guard(self):
+    # Round 1 fix (Blocker 4): mutation tests demonstrate the actual gap
+    # they claim to close, using the SAME helper the real scope check uses
+    # -- rather than just proving unequal tuples fail assertEqual. Tranche
+    # 3c adds the whole-file-drop scenario alongside the original
+    # single-class-drop scenario, table-driven via subTest.
+    def test_scope_shrinkage_mutations_are_caught_by_the_guard(self):
+        def drop_ui_spec_class(mutated):
+            mutated["scope"][1]["classes"] = [
+                c for c in mutated["scope"][1]["classes"] if c != "Bl036ArticleAttributionUiSpecTest"
+            ]
+            mutated["assertions"] = [
+                a for a in mutated["assertions"]
+                if not (a["file"] == UI_SPEC_SOURCE_FILE and a["class"] == "Bl036ArticleAttributionUiSpecTest")
+            ]
+
+        def drop_ui_spec_file_entirely(mutated):
+            mutated["scope"] = [s for s in mutated["scope"] if s["file"] != UI_SPEC_SOURCE_FILE]
+            mutated["assertions"] = [a for a in mutated["assertions"] if a["file"] != UI_SPEC_SOURCE_FILE]
+
+        scenarios = {
+            "class-shrink-within-ui-spec": drop_ui_spec_class,
+            "file-shrink-drop-ui-spec-entirely": drop_ui_spec_file_entirely,
+        }
+        for name, mutate in scenarios.items():
+            with self.subTest(scenario=name):
+                mutated = json.loads(self.manifest_text)
+                mutate(mutated)
+                # Step 1: prove the gap this guard exists to close -- a
+                # manifest that shrank its own declared scope,
+                # self-consistently, passes validate_manifest() with zero
+                # failures.
+                failures, _ = dti.validate_manifest(mutated, root=ROOT)
+                self.assertEqual(failures, [])
+                # Step 2: prove the structural guard (the same helper the
+                # real test above uses) actually catches what the
+                # validator missed.
+                with self.assertRaises(AssertionError):
+                    self._assert_expected_scope(mutated)
+
+    def test_file_order_swap_mutation_is_detected_by_deterministic_scope_order_guard(self):
         mutated = json.loads(self.manifest_text)
-        mutated["scope"][0]["classes"] = [
-            c for c in mutated["scope"][0]["classes"] if c != "TicketIdTypoTest"
-        ]
-        mutated["assertions"] = [
-            a for a in mutated["assertions"] if a["class"] != "TicketIdTypoTest"
-        ]
-        # Step 1: prove the gap this guard exists to close -- a manifest
-        # that shrank its own declared scope, self-consistently, passes
-        # validate_manifest() with zero failures.
-        failures, _ = dti.validate_manifest(mutated, root=ROOT)
-        self.assertEqual(failures, [])
-        # Step 2: prove the structural guard (the same helper the real
-        # test above uses) actually catches what the validator missed.
+        mutated["scope"] = [mutated["scope"][1], mutated["scope"][0]]
         with self.assertRaises(AssertionError):
             self._assert_expected_scope(mutated)
 
-    def test_assertion_deletion_mutation_is_detected_as_unclassified(self):
+    def test_assertion_order_swap_mutation_is_detected_by_source_order_guard(self):
         mutated = json.loads(self.manifest_text)
-        del mutated["assertions"][0]
-        failures, _ = dti.validate_manifest(mutated, root=ROOT)
-        types = {f.mismatch_type for f in failures}
-        self.assertIn("unclassified", types)
+        # Swap two adjacent entries within the same file's block so total
+        # counts/category tallies/scope are all untouched -- only the
+        # source-order list-equality guard can catch this.
+        mutated["assertions"][0], mutated["assertions"][1] = (
+            mutated["assertions"][1], mutated["assertions"][0],
+        )
+        with self.assertRaises(AssertionError):
+            self._assert_ids_match_source_order(mutated)
+
+    def test_assertion_deletion_mutation_is_detected_as_unclassified(self):
+        for file in SCOPE_FILES:
+            with self.subTest(file=file):
+                mutated = json.loads(self.manifest_text)
+                idx = next(i for i, a in enumerate(mutated["assertions"]) if a["file"] == file)
+                del mutated["assertions"][idx]
+                failures, _ = dti.validate_manifest(mutated, root=ROOT)
+                types = {f.mismatch_type for f in failures}
+                self.assertIn("unclassified", types)
 
     def test_extra_assertion_mutation_is_detected_as_stale_entry(self):
-        mutated = json.loads(self.manifest_text)
-        extra = dict(mutated["assertions"][0])
-        extra["id"] = extra["id"].rsplit("assert-", 1)[0] + "assert-99"
-        extra["ordinal"] = 99
-        mutated["assertions"].append(extra)
-        failures, _ = dti.validate_manifest(mutated, root=ROOT)
-        types = {f.mismatch_type for f in failures}
-        self.assertIn("stale-entry", types)
+        for file in SCOPE_FILES:
+            with self.subTest(file=file):
+                mutated = json.loads(self.manifest_text)
+                idx = next(i for i, a in enumerate(mutated["assertions"]) if a["file"] == file)
+                extra = dict(mutated["assertions"][idx])
+                extra["id"] = extra["id"].rsplit("assert-", 1)[0] + "assert-999"
+                extra["ordinal"] = 999
+                mutated["assertions"].append(extra)
+                failures, _ = dti.validate_manifest(mutated, root=ROOT)
+                types = {f.mismatch_type for f in failures}
+                self.assertIn("stale-entry", types)
 
     def test_fingerprint_mutation_is_detected_as_fingerprint_mismatch(self):
-        mutated = json.loads(self.manifest_text)
-        mutated["assertions"][0]["fingerprint"] = "0" * 64
-        failures, _ = dti.validate_manifest(mutated, root=ROOT)
-        types = {f.mismatch_type for f in failures}
-        self.assertIn("fingerprint-mismatch", types)
+        for file in SCOPE_FILES:
+            with self.subTest(file=file):
+                mutated = json.loads(self.manifest_text)
+                idx = next(i for i, a in enumerate(mutated["assertions"]) if a["file"] == file)
+                mutated["assertions"][idx]["fingerprint"] = "0" * 64
+                failures, _ = dti.validate_manifest(mutated, root=ROOT)
+                types = {f.mismatch_type for f in failures}
+                self.assertIn("fingerprint-mismatch", types)
 
     def test_category_action_inconsistency_mutation_is_detected(self):
-        mutated = json.loads(self.manifest_text)
-        entry = mutated["assertions"][0]
-        entry["category"] = "B" if entry["category"] != "B" else "D"
-        failures, _ = dti.validate_manifest(mutated, root=ROOT)
-        types = {f.mismatch_type for f in failures}
-        self.assertIn("category-action-mismatch", types)
+        for file in SCOPE_FILES:
+            with self.subTest(file=file):
+                mutated = json.loads(self.manifest_text)
+                idx = next(i for i, a in enumerate(mutated["assertions"]) if a["file"] == file)
+                entry = mutated["assertions"][idx]
+                entry["category"] = "B" if entry["category"] != "B" else "D"
+                failures, _ = dti.validate_manifest(mutated, root=ROOT)
+                types = {f.mismatch_type for f in failures}
+                self.assertIn("category-action-mismatch", types)
 
     # Round 1 fix (Blocker 3): deterministic manifest format -- fixed key
     # order per entry, one compact-JSON line per assertion, final newline.
@@ -442,7 +734,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         start = next(i for i, l in enumerate(lines) if l.strip() == '"assertions": [')
         end = next(i for i, l in enumerate(lines) if i > start and l.strip() == "]")
         entry_lines = lines[start + 1 : end]
-        self.assertEqual(len(entry_lines), EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(len(entry_lines), COMBINED_EXPECTED_ASSERTION_COUNT)
         for line in entry_lines:
             stripped = line.strip().rstrip(",")
             parsed = json.loads(stripped)
