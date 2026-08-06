@@ -1,5 +1,7 @@
 # Monomi Digest Deferred Commitments
 
+**As of:** 2026-08-06
+
 ## Purpose
 
 This file is the canonical index of user-requested follow-ups that were intentionally deferred for a later decision or implementation stage.
@@ -20,6 +22,13 @@ The user approved creating this index on 2026-08-06 with the message: 「ok。�
 | DC-003 | Decide whether multilingual support is worth doing | Waiting for evidence | [BL-010](BACKLOG.md#bl-010--多言語対応の意義判断) | Target readers and goals are defined; Japanese SEO/About strategy is settled; enough measurement data exists to estimate demand and cost-effectiveness. | Compare candidate languages, reader value, editorial/translation cost, regulatory mapping demand, maintenance risk, and SEO impact. Record an explicit Go/No-Go decision before any implementation Ticket. |
 | DC-004 | Reassess the future role of `editorial-style-v1` | Decision only; no active implementation | [BL-005](BACKLOG.md#bl-005--editorial-style-v1とtoday-brief-v4), [BL-021](BACKLOG.md#bl-021--todays-briefの意味忠実性semantic-validation再設計), [SD-017](DECISIONS.md#sd-017--do-not-merge-prompt-only-todays-brief-experiments-redesign-semantic-validation-separately) | A concrete editorial-quality gap is observed under the current deterministic BRIEF composition, or a materially different safe integration path is proposed. | Decide whether to close the concept permanently, adopt only selected editorial principles, or register a new Ticket. Do not silently reopen BL-005 or retry the rejected prompt-only path. |
 
+## Source notes
+
+- DC-001 and DC-003 correspond to explicit deferred user requests already recorded in BL-009 and BL-010.
+- DC-002 is a user-confirmed decomposition of the About-related residual scope already present in BL-009.
+- DC-004 is a user-confirmed deferred-decision summary recorded on 2026-08-06. It is not a claim that BL-005 remains open: BL-005's prompt-only implementation path is closed as No-Go, and BL-021 is complete.
+- Where an earlier verbatim statement is unavailable, this file records a confirmed summary rather than fabricating quotation marks.
+
 ## Completed prerequisites and related work
 
 The following are completed and must not be re-listed as deferred work unless new evidence justifies reopening them:
@@ -28,8 +37,8 @@ The following are completed and must not be re-listed as deferred work unless ne
 |---|---|
 | Public brand migration to Monomi Digest | [BL-006](BACKLOG.md#bl-006--monomi-digestへのブランド変更) |
 | Primary domain migration to `monomidigest.com` | [BL-007](BACKLOG.md#bl-007--monomidigestcomへの移行) |
-| Archive/navigation redesign | [BL-028](BACKLOG.md#bl-028--前後ナビゲーションとarchive導線の再設計) |
-| Financial-institution-relevance information design | [BL-029](BACKLOG.md#bl-029--金融機関との関連情報設計) |
+| Archive/navigation redesign | BL-028 in [BACKLOG.md](BACKLOG.md) |
+| Financial-institution-relevance information design | BL-029 in [BACKLOG.md](BACKLOG.md) |
 | Cloudflare Web Analytics and Google Search Console foundation | [BL-034](BACKLOG.md#bl-034--閲覧計測基盤) |
 | Repository governance documents (`BACKLOG.md`, `STATUS.md`, `DECISIONS.md`) | Established and in active use |
 
