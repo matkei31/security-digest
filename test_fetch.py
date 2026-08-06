@@ -4409,7 +4409,7 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
         for required in (
             "Category C conversion",
             "tranche 3bの41件",
-            "tranche 3cの73件",
+            "tranche 3cの80件",
             "tranche 3cは実装中",
             "約1593件",
             "BL-038全体の最終受入",
@@ -4531,15 +4531,20 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
             "test/bl038-tranche3c-ui-spec-classification",
             "540b3380e412bc35a2086ca5d3a581b7098c1443",
             "実装証跡(tranche 3c)",
-            "A 10／B 62／C 73／D 40",
+            "独立レビューround 1(tranche 3c",
+            "A 10／B 61／C 80／D 34",
             "282 entries",
-            "combined A=18 B=99 C=114 D=51",
+            "combined A=18 B=98 C=121 D=45",
             "23→26 tests",
             "CUSTOM_DOMAIN_EXPECTED_A_IDS",
             "UI_SPEC_EXPECTED_A_IDS",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038)
+        # round 1's corrected counts must be the current record, not the
+        # pre-review initial-implementation snapshot
+        self.assertNotIn("A 10／B 62／C 73／D 40", bl038)
+        self.assertNotIn("combined A=18 B=99 C=114 D=51", bl038)
 
     def test_backlog_residual_work_no_longer_calls_tranche3c_not_started(self):
         bl038 = self._bl038_section()
@@ -4547,7 +4552,15 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
         self.assertIsNotNone(residual_match)
         residual = residual_match.group(0)
         self.assertIn("tranche 3cは実装中", residual)
-        self.assertNotIn("未着手", residual)
+        # round 1 review Blocker 3: a generic ban on the word "未着手"
+        # anywhere in the residual-work field would break the moment some
+        # OTHER genuinely-not-started scope (e.g. test_source_definitions.py)
+        # is legitimately recorded as 未着手 -- narrow the check to the
+        # specific stale tranche 3c wording this test exists to catch.
+        self.assertNotIn(
+            "tranche 3c(`test_ui_spec.py` 185 assertionのclassification manifestとrecord test、未着手",
+            residual,
+        )
 
     def test_status_active_work_records_tranche3c_kickoff_evidence(self):
         bl038_line = self._status_bl038_line()
@@ -4555,11 +4568,12 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
             "tranche 3c着手(2026-08-06)",
             "test/bl038-tranche3c-ui-spec-classification",
             "tranche 3c kickoff原文「ok」",
-            "A 10／B 62／C 73／D 40",
+            "A 10／B 61／C 80／D 34",
             "282 entries",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038_line)
+        self.assertNotIn("A 10／B 62／C 73／D 40", bl038_line)
 
     def test_manifest_is_scoped_to_two_files_with_combined_counts(self):
         manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
@@ -4572,11 +4586,14 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
         from collections import Counter
 
         counts = Counter(a["category"] for a in manifest["assertions"])
-        self.assertEqual(dict(counts), {"A": 18, "B": 99, "C": 114, "D": 51})
+        # round 1 review corrected this tally: 7 mixed-contract D/B entries
+        # (exact quote/label/value bundled with author-written or
+        # rewordable wrapper prose) moved to C.
+        self.assertEqual(dict(counts), {"A": 18, "B": 98, "C": 121, "D": 45})
         ui_spec_entries = [a for a in manifest["assertions"] if a["file"] == "test_ui_spec.py"]
         self.assertEqual(len(ui_spec_entries), 185)
         ui_spec_counts = Counter(a["category"] for a in ui_spec_entries)
-        self.assertEqual(dict(ui_spec_counts), {"A": 10, "B": 62, "C": 73, "D": 40})
+        self.assertEqual(dict(ui_spec_counts), {"A": 10, "B": 61, "C": 80, "D": 34})
         for entry in ui_spec_entries:
             self.assertIn("targets", entry)
             self.assertNotIn("target", entry)
@@ -4584,6 +4601,16 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
     def test_manifest_line_count_is_within_tranche3c_budget(self):
         lines = self.MANIFEST_PATH.read_text(encoding="utf-8").splitlines()
         self.assertLessEqual(len(lines), 400)
+
+    def test_manifest_line_count_matches_current_evidence(self):
+        # round 1 review Blocker 4: the <=400 test above is a structural
+        # budget guard only -- it does not confirm the manifest's actual
+        # current line count matches what BACKLOG.md/STATUS.md/the PR body
+        # record as current evidence. Pin the exact measured value so a
+        # future format/content drift is caught here, not just silently
+        # absorbed under the budget ceiling.
+        lines = self.MANIFEST_PATH.read_text(encoding="utf-8").splitlines()
+        self.assertEqual(len(lines), 291)
 
     def test_manifest_validates_with_zero_failures_via_document_test_inventory(self):
         import document_test_inventory as dti
