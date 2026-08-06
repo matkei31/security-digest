@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
-"""BL-038 tranche 3d: declared-scope/count structural guard for
+"""BL-038 tranche 3e: declared-scope/count structural guard for
 document_test_classification.json, now spanning test_custom_domain.py
 (tranche 3b, 97 entries, unchanged), test_ui_spec.py (tranche 3c, 185
-entries, unchanged), and test_status.py (tranche 3d, 98 new entries).
+entries, unchanged), test_status.py (tranche 3d, 98 entries, unchanged),
+and test_security_requirements.py (tranche 3e, 143 new entries: the
+Bl034Round2ReviewCorrectionsTest/Bl034ImplementationAcceptanceTest/
+Bl034CloseoutTest/StatusSecurityRequirementsSourceOfTruthTest classes).
 
 document_test_inventory.py's validator can only check a manifest against
 whatever scope it *declares* -- it cannot detect a class/file being
@@ -17,6 +20,7 @@ is exercised both directly and against deliberately-mutated copies,
 demonstrated not just asserted).
 """
 
+import itertools
 import json
 import re
 import unittest
@@ -31,7 +35,10 @@ MANIFEST_PATH = ROOT / "document_test_classification.json"
 CUSTOM_DOMAIN_SOURCE_FILE = "test_custom_domain.py"
 UI_SPEC_SOURCE_FILE = "test_ui_spec.py"
 STATUS_SOURCE_FILE = "test_status.py"
-SCOPE_FILES = (CUSTOM_DOMAIN_SOURCE_FILE, UI_SPEC_SOURCE_FILE, STATUS_SOURCE_FILE)
+SECURITY_REQUIREMENTS_SOURCE_FILE = "test_security_requirements.py"
+SCOPE_FILES = (
+    CUSTOM_DOMAIN_SOURCE_FILE, UI_SPEC_SOURCE_FILE, STATUS_SOURCE_FILE, SECURITY_REQUIREMENTS_SOURCE_FILE,
+)
 
 # Hardcoded literal contracts -- NOT derived from the manifest or from a
 # live AST scan. This, and the exact scope ORDER below, is what makes
@@ -57,19 +64,28 @@ STATUS_EXPECTED_CLASSES = (
     "Bl036PostMergeRecordFixTest",
     "Bl036ProductionEvidenceSyncTest",
 )
+SECURITY_REQUIREMENTS_EXPECTED_CLASSES = (
+    "Bl034Round2ReviewCorrectionsTest",
+    "Bl034ImplementationAcceptanceTest",
+    "Bl034CloseoutTest",
+    "StatusSecurityRequirementsSourceOfTruthTest",
+)
 EXPECTED_SCOPE_ORDER = (
     (CUSTOM_DOMAIN_SOURCE_FILE, CUSTOM_DOMAIN_EXPECTED_CLASSES),
     (UI_SPEC_SOURCE_FILE, UI_SPEC_EXPECTED_CLASSES),
     (STATUS_SOURCE_FILE, STATUS_EXPECTED_CLASSES),
+    (SECURITY_REQUIREMENTS_SOURCE_FILE, SECURITY_REQUIREMENTS_EXPECTED_CLASSES),
 )
 
 CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT = 97
 UI_SPEC_EXPECTED_ASSERTION_COUNT = 185
 STATUS_EXPECTED_ASSERTION_COUNT = 98
+SECURITY_REQUIREMENTS_EXPECTED_ASSERTION_COUNT = 143
 COMBINED_EXPECTED_ASSERTION_COUNT = (
     CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT
     + UI_SPEC_EXPECTED_ASSERTION_COUNT
     + STATUS_EXPECTED_ASSERTION_COUNT
+    + SECURITY_REQUIREMENTS_EXPECTED_ASSERTION_COUNT
 )
 
 # Tranche 3b's exact per-ID category membership record -- content
@@ -395,19 +411,175 @@ STATUS_EXPECTED_CATEGORY_COUNTS = {
     "D": len(STATUS_EXPECTED_D_IDS),
 }
 
+# Tranche 3e's exact per-ID category membership record for
+# test_security_requirements.py, built the same way as tranche 3b/3c/3d:
+# A/C/D pinned as hardcoded literal ID sets, B checked as the exact
+# remainder of the 143 test_security_requirements.py IDs. Category A
+# policy (a repeated structural pattern with clear shared-helper-
+# consolidation value, not merely a recurring exact/fixed value) yields
+# zero Category A entries, same as test_status.py.
+#
+# PR #86 round 1 review correction: 12 entries initially misclassified B
+# were moved -- 9 to C (raw negative multi-token substrings like "session
+# count"/"remain unconfirmed"; a stylistic ID-range embedded in prose,
+# "GAP-016-GAP-017"; a raw noun-compound not extracted to a field,
+# "所有権確認成功"; a multi-word phrase with a common-noun suffix,
+# "Cloudflare Web Analytics dashboard"; a mixed atomic/noun-phrase
+# loop-based check) and 3 to D (bare "PR #NN" mentions that are
+# substrings of this document's always-fully-linked PR references,
+# `[PR #NN](url)` -- matching this manifest's own established precedent
+# that PR references are C or D, never B -- and/or part of the same
+# historical-acceptance-evidence bundle as a sibling SHA/CI-run-ID
+# assertion in the same method). See BACKLOG.md's tranche 3e round 1 fix
+# paragraph for the full per-ID reasoning.
+SECURITY_REQUIREMENTS_EXPECTED_A_IDS = frozenset({
+})
+SECURITY_REQUIREMENTS_EXPECTED_C_IDS = frozenset({
+    "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_version_17_intro_does_not_deny_the_sr044_046_gap016_017_sync::assert-02",
+    "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_version_17_intro_does_not_deny_the_sr044_046_gap016_017_sync::assert-03",
+    "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_version_17_intro_does_not_deny_the_sr044_046_gap016_017_sync::assert-04",
+    "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_sr045_no_longer_says_enforcement_remains_deferred_to_bl032::assert-01",
+    "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_sr045_no_longer_says_enforcement_remains_deferred_to_bl032::assert-02",
+    "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_gap017_does_not_call_bl032_merely_registered::assert-01",
+    "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_gap017_does_not_call_bl032_merely_registered::assert-02",
+    "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_sd032_visits_description_has_no_session_language::assert-01",
+    "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_sd032_visits_description_has_no_session_language::assert-02",
+    "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_sd032_visits_description_has_no_session_language::assert-03",
+    "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_sd032_visits_description_has_no_session_language::assert-04",
+    "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_sd032_visits_description_has_no_session_language::assert-05",
+    "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_sd032_visits_description_has_no_session_language::assert-06",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_bl034_has_no_residual_work_after_closeout::assert-01",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_bl034_has_no_residual_work_after_closeout::assert-02",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_bl034_has_no_residual_work_after_closeout::assert-03",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_bl009_remains_the_in_progress_umbrella::assert-01",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_sd032_is_accepted::assert-02",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_security_requirements_version_17_is_approved_and_current_baseline::assert-03",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_version_16_historical_draft_record_is_preserved::assert-01",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_version_16_historical_draft_record_is_preserved::assert-02",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_dashboard_and_search_console_are_confirmed_by_closeout::assert-01",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_dashboard_and_search_console_are_confirmed_by_closeout::assert-02",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_dashboard_and_search_console_are_confirmed_by_closeout::assert-03",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_dashboard_and_search_console_are_confirmed_by_closeout::assert-04",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_dashboard_and_search_console_are_confirmed_by_closeout::assert-05",
+    "test_security_requirements.py::Bl034CloseoutTest::test_bl034_is_complete_with_no_residual_work::assert-03",
+    "test_security_requirements.py::Bl034CloseoutTest::test_cloudflare_dashboard_and_search_console_are_confirmed::assert-01",
+    "test_security_requirements.py::Bl034CloseoutTest::test_cloudflare_dashboard_and_search_console_are_confirmed::assert-05",
+    "test_security_requirements.py::Bl034CloseoutTest::test_cloudflare_dashboard_and_search_console_are_confirmed::assert-06",
+    "test_security_requirements.py::Bl034CloseoutTest::test_cloudflare_dashboard_and_search_console_are_confirmed::assert-07",
+    "test_security_requirements.py::Bl034CloseoutTest::test_cloudflare_dashboard_and_search_console_are_confirmed::assert-08",
+    "test_security_requirements.py::Bl034CloseoutTest::test_google_verification_txt_value_is_not_present_anywhere::assert-02",
+    "test_security_requirements.py::Bl034CloseoutTest::test_google_verification_txt_value_is_not_present_anywhere::assert-03",
+    "test_security_requirements.py::Bl034CloseoutTest::test_google_verification_txt_value_is_not_present_anywhere::assert-04",
+    "test_security_requirements.py::Bl034CloseoutTest::test_bl009_is_still_the_in_progress_umbrella_with_full_scope::assert-01",
+    "test_security_requirements.py::Bl034CloseoutTest::test_bl009_is_still_the_in_progress_umbrella_with_full_scope::assert-03",
+    "test_security_requirements.py::Bl034CloseoutTest::test_status_recently_completed_records_bl034::assert-03",
+    "test_security_requirements.py::Bl034CloseoutTest::test_status_recently_completed_records_bl034::assert-06",
+    "test_security_requirements.py::Bl034CloseoutTest::test_intro_no_longer_claims_no_external_confirmations_have_occurred::assert-01",
+    "test_security_requirements.py::Bl034CloseoutTest::test_intro_no_longer_claims_no_external_confirmations_have_occurred::assert-06",
+    "test_security_requirements.py::Bl034CloseoutTest::test_intro_no_longer_claims_no_external_confirmations_have_occurred::assert-08",
+    "test_security_requirements.py::Bl034CloseoutTest::test_intro_no_longer_claims_no_external_confirmations_have_occurred::assert-09",
+    "test_security_requirements.py::Bl034CloseoutTest::test_intro_no_longer_claims_no_external_confirmations_have_occurred::assert-10",
+    "test_security_requirements.py::Bl034CloseoutTest::test_sr047_and_gap018_confirm_dashboard_and_search_console_not_unconfirmed::assert-01",
+    "test_security_requirements.py::Bl034CloseoutTest::test_sr047_and_gap018_confirm_dashboard_and_search_console_not_unconfirmed::assert-02",
+    "test_security_requirements.py::Bl034CloseoutTest::test_sr047_and_gap018_confirm_dashboard_and_search_console_not_unconfirmed::assert-05",
+    "test_security_requirements.py::Bl034CloseoutTest::test_sr047_and_gap018_confirm_dashboard_and_search_console_not_unconfirmed::assert-06",
+    "test_security_requirements.py::Bl034CloseoutTest::test_section_12_records_closeout_without_reapproving_or_version_bumping::assert-01",
+    "test_security_requirements.py::Bl034CloseoutTest::test_section_12_records_closeout_without_reapproving_or_version_bumping::assert-03",
+    "test_security_requirements.py::Bl034CloseoutTest::test_section_12_records_closeout_without_reapproving_or_version_bumping::assert-04",
+    "test_security_requirements.py::Bl034CloseoutTest::test_cloudflare_site_registration_and_snippet_predate_acceptance::assert-01",
+    "test_security_requirements.py::Bl034CloseoutTest::test_cloudflare_site_registration_and_snippet_predate_acceptance::assert-02",
+    "test_security_requirements.py::Bl034CloseoutTest::test_cloudflare_site_registration_and_snippet_predate_acceptance::assert-03",
+    "test_security_requirements.py::Bl034CloseoutTest::test_cloudflare_site_registration_and_snippet_predate_acceptance::assert-04",
+    "test_security_requirements.py::Bl034CloseoutTest::test_cloudflare_site_registration_and_snippet_predate_acceptance::assert-05",
+    "test_security_requirements.py::Bl034CloseoutTest::test_sr047_distinguishes_dns_provider_unchanged_from_new_google_txt_record::assert-01",
+    "test_security_requirements.py::Bl034CloseoutTest::test_sr047_distinguishes_dns_provider_unchanged_from_new_google_txt_record::assert-02",
+    "test_security_requirements.py::Bl034CloseoutTest::test_sr047_distinguishes_dns_provider_unchanged_from_new_google_txt_record::assert-03",
+    "test_security_requirements.py::Bl034CloseoutTest::test_sr047_distinguishes_dns_provider_unchanged_from_new_google_txt_record::assert-04",
+    "test_security_requirements.py::Bl034CloseoutTest::test_sr047_distinguishes_dns_provider_unchanged_from_new_google_txt_record::assert-05",
+    "test_security_requirements.py::Bl034CloseoutTest::test_sr047_distinguishes_dns_provider_unchanged_from_new_google_txt_record::assert-06",
+    "test_security_requirements.py::Bl034CloseoutTest::test_bl032_control_mapping_no_longer_calls_documentation_gap_unresolved::assert-01",
+    "test_security_requirements.py::Bl034CloseoutTest::test_bl032_control_mapping_no_longer_calls_documentation_gap_unresolved::assert-02",
+    "test_security_requirements.py::Bl034CloseoutTest::test_bl032_control_mapping_no_longer_calls_documentation_gap_unresolved::assert-03",
+    "test_security_requirements.py::Bl034CloseoutTest::test_bl032_control_mapping_no_longer_calls_documentation_gap_unresolved::assert-04",
+    "test_security_requirements.py::Bl034CloseoutTest::test_bl032_control_mapping_no_longer_calls_documentation_gap_unresolved::assert-05",
+    "test_security_requirements.py::Bl034CloseoutTest::test_pr73_final_acceptance_is_recorded_in_backlog::assert-06",
+    "test_security_requirements.py::Bl034CloseoutTest::test_pr73_final_acceptance_is_recorded_in_status::assert-05",
+    "test_security_requirements.py::StatusSecurityRequirementsSourceOfTruthTest::test_row_delegates_to_security_requirements_header_not_a_fixed_version::assert-04",
+    "test_security_requirements.py::StatusSecurityRequirementsSourceOfTruthTest::test_row_delegates_to_security_requirements_header_not_a_fixed_version::assert-05",
+})
+SECURITY_REQUIREMENTS_EXPECTED_D_IDS = frozenset({
+    "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_version_17_is_the_current_draft_and_16_is_not_called_this_version::assert-01",
+    "test_security_requirements.py::Bl034Round2ReviewCorrectionsTest::test_gap017_does_not_call_bl032_merely_registered::assert-03",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_bl034_is_complete_with_acceptance_round_evidence_preserved::assert-02",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_bl034_is_complete_with_acceptance_round_evidence_preserved::assert-03",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_bl034_is_complete_with_acceptance_round_evidence_preserved::assert-04",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_bl034_is_complete_with_acceptance_round_evidence_preserved::assert-05",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_bl034_is_complete_with_acceptance_round_evidence_preserved::assert-06",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_sd032_is_accepted::assert-03",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_sd032_is_accepted::assert-04",
+    "test_security_requirements.py::Bl034ImplementationAcceptanceTest::test_security_requirements_version_17_is_approved_and_current_baseline::assert-01",
+    "test_security_requirements.py::Bl034CloseoutTest::test_cloudflare_dashboard_and_search_console_are_confirmed::assert-02",
+    "test_security_requirements.py::Bl034CloseoutTest::test_cloudflare_dashboard_and_search_console_are_confirmed::assert-03",
+    "test_security_requirements.py::Bl034CloseoutTest::test_cloudflare_dashboard_and_search_console_are_confirmed::assert-04",
+    "test_security_requirements.py::Bl034CloseoutTest::test_cloudflare_dashboard_and_search_console_are_confirmed::assert-09",
+    "test_security_requirements.py::Bl034CloseoutTest::test_measurement_start_date_is_20260803::assert-01",
+    "test_security_requirements.py::Bl034CloseoutTest::test_status_recently_completed_records_bl034::assert-01",
+    "test_security_requirements.py::Bl034CloseoutTest::test_status_recently_completed_records_bl034::assert-02",
+    "test_security_requirements.py::Bl034CloseoutTest::test_status_recently_completed_records_bl034::assert-05",
+    "test_security_requirements.py::Bl034CloseoutTest::test_sd032_status_is_still_accepted::assert-02",
+    "test_security_requirements.py::Bl034CloseoutTest::test_security_requirements_version_17_approved_is_unchanged_by_closeout::assert-01",
+    "test_security_requirements.py::Bl034CloseoutTest::test_intro_no_longer_claims_no_external_confirmations_have_occurred::assert-04",
+    "test_security_requirements.py::Bl034CloseoutTest::test_section_12_records_closeout_without_reapproving_or_version_bumping::assert-02",
+    "test_security_requirements.py::Bl034CloseoutTest::test_pr73_final_acceptance_is_recorded_in_backlog::assert-01",
+    "test_security_requirements.py::Bl034CloseoutTest::test_pr73_final_acceptance_is_recorded_in_backlog::assert-02",
+    "test_security_requirements.py::Bl034CloseoutTest::test_pr73_final_acceptance_is_recorded_in_backlog::assert-03",
+    "test_security_requirements.py::Bl034CloseoutTest::test_pr73_final_acceptance_is_recorded_in_backlog::assert-04",
+    "test_security_requirements.py::Bl034CloseoutTest::test_pr73_final_acceptance_is_recorded_in_backlog::assert-05",
+    "test_security_requirements.py::Bl034CloseoutTest::test_pr73_final_acceptance_is_recorded_in_status::assert-01",
+    "test_security_requirements.py::Bl034CloseoutTest::test_pr73_final_acceptance_is_recorded_in_status::assert-02",
+    "test_security_requirements.py::Bl034CloseoutTest::test_pr73_final_acceptance_is_recorded_in_status::assert-03",
+    "test_security_requirements.py::Bl034CloseoutTest::test_pr73_final_acceptance_is_recorded_in_status::assert-04",
+    "test_security_requirements.py::Bl034CloseoutTest::test_final_acceptance_record_does_not_touch_out_of_scope_documents::assert-01",
+    "test_security_requirements.py::Bl034CloseoutTest::test_final_acceptance_record_does_not_touch_out_of_scope_documents::assert-02",
+    "test_security_requirements.py::Bl034CloseoutTest::test_final_acceptance_record_does_not_touch_out_of_scope_documents::assert-03",
+    "test_security_requirements.py::StatusSecurityRequirementsSourceOfTruthTest::test_security_requirements_itself_is_unchanged_by_this_fix::assert-01",
+})
+assert not (SECURITY_REQUIREMENTS_EXPECTED_A_IDS & SECURITY_REQUIREMENTS_EXPECTED_C_IDS)
+assert not (SECURITY_REQUIREMENTS_EXPECTED_A_IDS & SECURITY_REQUIREMENTS_EXPECTED_D_IDS)
+assert not (SECURITY_REQUIREMENTS_EXPECTED_C_IDS & SECURITY_REQUIREMENTS_EXPECTED_D_IDS)
+SECURITY_REQUIREMENTS_EXPECTED_CATEGORY_COUNTS = {
+    "A": len(SECURITY_REQUIREMENTS_EXPECTED_A_IDS),
+    "B": SECURITY_REQUIREMENTS_EXPECTED_ASSERTION_COUNT
+    - len(SECURITY_REQUIREMENTS_EXPECTED_A_IDS)
+    - len(SECURITY_REQUIREMENTS_EXPECTED_C_IDS)
+    - len(SECURITY_REQUIREMENTS_EXPECTED_D_IDS),
+    "C": len(SECURITY_REQUIREMENTS_EXPECTED_C_IDS),
+    "D": len(SECURITY_REQUIREMENTS_EXPECTED_D_IDS),
+}
+
 COMBINED_EXPECTED_CATEGORY_COUNTS = {
     cat: CUSTOM_DOMAIN_EXPECTED_CATEGORY_COUNTS[cat]
     + UI_SPEC_EXPECTED_CATEGORY_COUNTS[cat]
     + STATUS_EXPECTED_CATEGORY_COUNTS[cat]
+    + SECURITY_REQUIREMENTS_EXPECTED_CATEGORY_COUNTS[cat]
     for cat in ("A", "B", "C", "D")
 }
-# The three files' IDs are disjoint by construction (each id is prefixed
+# The four files' IDs are disjoint by construction (each id is prefixed
 # with its own file name), so the combined exact-membership guard is a
-# plain union -- this is what keeps tranche 3b/3c's per-ID record in force
-# unweakened after the manifest grew to a third file.
-COMBINED_EXPECTED_A_IDS = CUSTOM_DOMAIN_EXPECTED_A_IDS | UI_SPEC_EXPECTED_A_IDS | STATUS_EXPECTED_A_IDS
-COMBINED_EXPECTED_C_IDS = CUSTOM_DOMAIN_EXPECTED_C_IDS | UI_SPEC_EXPECTED_C_IDS | STATUS_EXPECTED_C_IDS
-COMBINED_EXPECTED_D_IDS = CUSTOM_DOMAIN_EXPECTED_D_IDS | UI_SPEC_EXPECTED_D_IDS | STATUS_EXPECTED_D_IDS
+# plain union -- this is what keeps tranche 3b/3c/3d's per-ID record in
+# force unweakened after the manifest grew to a fourth file.
+COMBINED_EXPECTED_A_IDS = (
+    CUSTOM_DOMAIN_EXPECTED_A_IDS | UI_SPEC_EXPECTED_A_IDS | STATUS_EXPECTED_A_IDS
+    | SECURITY_REQUIREMENTS_EXPECTED_A_IDS
+)
+COMBINED_EXPECTED_C_IDS = (
+    CUSTOM_DOMAIN_EXPECTED_C_IDS | UI_SPEC_EXPECTED_C_IDS | STATUS_EXPECTED_C_IDS
+    | SECURITY_REQUIREMENTS_EXPECTED_C_IDS
+)
+COMBINED_EXPECTED_D_IDS = (
+    CUSTOM_DOMAIN_EXPECTED_D_IDS | UI_SPEC_EXPECTED_D_IDS | STATUS_EXPECTED_D_IDS
+    | SECURITY_REQUIREMENTS_EXPECTED_D_IDS
+)
 
 EXPECTED_ENTRY_KEY_ORDER = (
     "id",
@@ -430,7 +602,8 @@ EXPECTED_ENTRY_KEY_ORDER = (
 # for-loops (chapter headings, screenshot filenames) all check a single
 # document, not distinct target files. Tranche 3d added none either:
 # test_status.py's own methods each check exactly one of self.status/
-# self.decisions/self.operations/self.backlog per assertion.
+# self.decisions/self.operations/self.backlog per assertion. Tranche 3e
+# added exactly one: a `for name, text in (...)` loop over 4 documents.
 EXPECTED_MULTI_TARGETS = {
     "test_custom_domain.py::TicketIdTypoTest::"
     "test_no_bl007_underscore_typo_anywhere_in_tracked_markdown_or_python::assert-01": (
@@ -447,6 +620,17 @@ EXPECTED_MULTI_TARGETS = {
         "docs/archive/2026-07-10.html",
         "docs/archive/2026-07-11.html",
         "docs/archive/2026-07-12.html",
+    ),
+    # Tranche 3e's one genuine multi-target entry: a `for name, text in
+    # (...)` loop whose single `self.assertNotIn(...)` call site checks the
+    # same banned token across all 4 of BACKLOG.md/STATUS.md/DECISIONS.md/
+    # SECURITY_REQUIREMENTS.md.
+    "test_security_requirements.py::Bl034CloseoutTest::"
+    "test_google_verification_txt_value_is_not_present_anywhere::assert-01": (
+        "BACKLOG.md#BL-034",
+        "STATUS.md#Active-work",
+        "DECISIONS.md#SD-032",
+        "SECURITY_REQUIREMENTS.md",
     ),
 }
 
@@ -482,6 +666,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
             CUSTOM_DOMAIN_SOURCE_FILE: (ROOT / CUSTOM_DOMAIN_SOURCE_FILE).read_text(encoding="utf-8"),
             UI_SPEC_SOURCE_FILE: (ROOT / UI_SPEC_SOURCE_FILE).read_text(encoding="utf-8"),
             STATUS_SOURCE_FILE: (ROOT / STATUS_SOURCE_FILE).read_text(encoding="utf-8"),
+            SECURITY_REQUIREMENTS_SOURCE_FILE: (ROOT / SECURITY_REQUIREMENTS_SOURCE_FILE).read_text(encoding="utf-8"),
         }
         cls.live_records_by_file = {
             CUSTOM_DOMAIN_SOURCE_FILE: dti.enumerate_assertions(
@@ -496,23 +681,29 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                 cls.sources[STATUS_SOURCE_FILE], STATUS_SOURCE_FILE,
                 list(STATUS_EXPECTED_CLASSES),
             ),
+            SECURITY_REQUIREMENTS_SOURCE_FILE: dti.enumerate_assertions(
+                cls.sources[SECURITY_REQUIREMENTS_SOURCE_FILE], SECURITY_REQUIREMENTS_SOURCE_FILE,
+                list(SECURITY_REQUIREMENTS_EXPECTED_CLASSES),
+            ),
         }
         # Concatenation order matches the manifest's own required layout:
         # test_custom_domain.py's 97 entries first (unchanged from tranche
         # 3b), then test_ui_spec.py's 185 entries (unchanged from tranche
-        # 3c), then test_status.py's 98 entries (tranche 3d), in source
-        # order within each file.
+        # 3c), then test_status.py's 98 entries (unchanged from tranche 3d),
+        # then test_security_requirements.py's 143 entries (tranche 3e), in
+        # source order within each file.
         cls.live_records = (
             cls.live_records_by_file[CUSTOM_DOMAIN_SOURCE_FILE]
             + cls.live_records_by_file[UI_SPEC_SOURCE_FILE]
             + cls.live_records_by_file[STATUS_SOURCE_FILE]
+            + cls.live_records_by_file[SECURITY_REQUIREMENTS_SOURCE_FILE]
         )
 
     # -- shared helper, used both directly and against mutated copies in
     # the scope-shrinkage/reordering mutation tests below --
     def _assert_expected_scope(self, manifest):
         scope = manifest["scope"]
-        self.assertEqual(len(scope), 3, "scope must list exactly 3 files")
+        self.assertEqual(len(scope), 4, "scope must list exactly 4 files")
         for entry, (expected_file, expected_classes) in zip(scope, EXPECTED_SCOPE_ORDER):
             self.assertEqual(entry["file"], expected_file)
             self.assertEqual(
@@ -539,7 +730,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         self.assertEqual(self.manifest["schema_version"], 1)
         self.assertIs(type(self.manifest["schema_version"]), int)
 
-    def test_scope_is_exactly_three_files_in_order_with_expected_classes(self):
+    def test_scope_is_exactly_four_files_in_order_with_expected_classes(self):
         self._assert_expected_scope(self.manifest)
 
     def test_assertion_and_live_inventory_counts_match_expected_totals(self):
@@ -557,6 +748,10 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
             len(self.live_records_by_file[STATUS_SOURCE_FILE]),
             STATUS_EXPECTED_ASSERTION_COUNT,
         )
+        self.assertEqual(
+            len(self.live_records_by_file[SECURITY_REQUIREMENTS_SOURCE_FILE]),
+            SECURITY_REQUIREMENTS_EXPECTED_ASSERTION_COUNT,
+        )
         manifest_counts_by_file = {}
         for entry in self.manifest["assertions"]:
             manifest_counts_by_file[entry["file"]] = manifest_counts_by_file.get(entry["file"], 0) + 1
@@ -566,6 +761,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                 CUSTOM_DOMAIN_SOURCE_FILE: CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT,
                 UI_SPEC_SOURCE_FILE: UI_SPEC_EXPECTED_ASSERTION_COUNT,
                 STATUS_SOURCE_FILE: STATUS_EXPECTED_ASSERTION_COUNT,
+                SECURITY_REQUIREMENTS_SOURCE_FILE: SECURITY_REQUIREMENTS_EXPECTED_ASSERTION_COUNT,
             },
         )
 
@@ -602,16 +798,21 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
             CUSTOM_DOMAIN_SOURCE_FILE: {"A": 0, "B": 0, "C": 0, "D": 0},
             UI_SPEC_SOURCE_FILE: {"A": 0, "B": 0, "C": 0, "D": 0},
             STATUS_SOURCE_FILE: {"A": 0, "B": 0, "C": 0, "D": 0},
+            SECURITY_REQUIREMENTS_SOURCE_FILE: {"A": 0, "B": 0, "C": 0, "D": 0},
         }
         for entry in self.manifest["assertions"]:
             counts_by_file[entry["file"]][entry["category"]] += 1
         self.assertEqual(counts_by_file[CUSTOM_DOMAIN_SOURCE_FILE], CUSTOM_DOMAIN_EXPECTED_CATEGORY_COUNTS)
         self.assertEqual(counts_by_file[UI_SPEC_SOURCE_FILE], UI_SPEC_EXPECTED_CATEGORY_COUNTS)
         self.assertEqual(counts_by_file[STATUS_SOURCE_FILE], STATUS_EXPECTED_CATEGORY_COUNTS)
+        self.assertEqual(
+            counts_by_file[SECURITY_REQUIREMENTS_SOURCE_FILE], SECURITY_REQUIREMENTS_EXPECTED_CATEGORY_COUNTS
+        )
         combined = {
             cat: counts_by_file[CUSTOM_DOMAIN_SOURCE_FILE][cat]
             + counts_by_file[UI_SPEC_SOURCE_FILE][cat]
             + counts_by_file[STATUS_SOURCE_FILE][cat]
+            + counts_by_file[SECURITY_REQUIREMENTS_SOURCE_FILE][cat]
             for cat in ("A", "B", "C", "D")
         }
         self.assertEqual(combined, COMBINED_EXPECTED_CATEGORY_COUNTS)
@@ -653,6 +854,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
             CUSTOM_DOMAIN_SOURCE_FILE: CUSTOM_DOMAIN_EXPECTED_C_IDS,
             UI_SPEC_SOURCE_FILE: UI_SPEC_EXPECTED_C_IDS,
             STATUS_SOURCE_FILE: STATUS_EXPECTED_C_IDS,
+            SECURITY_REQUIREMENTS_SOURCE_FILE: SECURITY_REQUIREMENTS_EXPECTED_C_IDS,
         }
         for file, c_ids in expected_c_ids_by_file.items():
             with self.subTest(file=file):
@@ -780,11 +982,32 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
             mutated["scope"] = [s for s in mutated["scope"] if s["file"] != STATUS_SOURCE_FILE]
             mutated["assertions"] = [a for a in mutated["assertions"] if a["file"] != STATUS_SOURCE_FILE]
 
+        def drop_security_requirements_class(mutated):
+            sr_scope = next(s for s in mutated["scope"] if s["file"] == SECURITY_REQUIREMENTS_SOURCE_FILE)
+            sr_scope["classes"] = [
+                c for c in sr_scope["classes"] if c != "StatusSecurityRequirementsSourceOfTruthTest"
+            ]
+            mutated["assertions"] = [
+                a for a in mutated["assertions"]
+                if not (
+                    a["file"] == SECURITY_REQUIREMENTS_SOURCE_FILE
+                    and a["class"] == "StatusSecurityRequirementsSourceOfTruthTest"
+                )
+            ]
+
+        def drop_security_requirements_file_entirely(mutated):
+            mutated["scope"] = [s for s in mutated["scope"] if s["file"] != SECURITY_REQUIREMENTS_SOURCE_FILE]
+            mutated["assertions"] = [
+                a for a in mutated["assertions"] if a["file"] != SECURITY_REQUIREMENTS_SOURCE_FILE
+            ]
+
         scenarios = {
             "class-shrink-within-ui-spec": drop_ui_spec_class,
             "file-shrink-drop-ui-spec-entirely": drop_ui_spec_file_entirely,
             "class-shrink-within-status": drop_status_class,
             "file-shrink-drop-status-entirely": drop_status_file_entirely,
+            "class-shrink-within-security-requirements": drop_security_requirements_class,
+            "file-shrink-drop-security-requirements-entirely": drop_security_requirements_file_entirely,
         }
         for name, mutate in scenarios.items():
             with self.subTest(scenario=name):
@@ -803,7 +1026,10 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                     self._assert_expected_scope(mutated)
 
     def test_file_order_swap_mutation_is_detected_by_deterministic_scope_order_guard(self):
-        swap_pairs = ((0, 1), (1, 2), (0, 2))
+        # All 6 pairs of the now-4-file scope (itertools.combinations), not
+        # just 3 hand-picked pairs -- every adjacent and non-adjacent swap
+        # must be individually caught.
+        swap_pairs = tuple(itertools.combinations(range(len(SCOPE_FILES)), 2))
         for i, j in swap_pairs:
             with self.subTest(swap=(i, j)):
                 mutated = json.loads(self.manifest_text)
