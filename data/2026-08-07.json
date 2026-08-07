@@ -1,0 +1,373 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-08-07",
+  "generated_at": "2026-08-07T10:30:51.377425+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 6,
+    "ai_attempted_count": 4,
+    "ai_success_count": 4,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 2,
+    "ai_eligible_count": 4
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 2,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 4,
+      "参考": 0,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 2,
+      "攻撃・脅威動向": 1,
+      "インシデント": 1,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 0,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "掲載4件｜重要度「高」2件｜本日確認0件｜今週確認4件\n本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が4件あり、計画的な確認が必要です。一方、重要度の高い情報が2件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "2024年の最も重要なサイバー犯罪脅威アクターの一人とされる26歳のカナダ人男性が、クラウドデータストレージプロバイダーSnowflakeを利用する165以上の組織に対するハッキングと恐喝の共謀、およびコンピューター詐欺の罪を認めました。この男性は、1億人以上のAT&T顧客の通話およびテキスト履歴記録の窃盗も認めました。",
+      "UNC6671は、BlackFileブランドの引退発表後も活動を継続しており、Redact、Pink、Helix、Falconといった複数の恐喝ブランドに分散して活動しています。ITヘルプデスクを装ったビッシングで従業員の個人デバイスを狙い、AiTMインフラを介して認証情報とMFAトークンを窃取し、データ窃取恐喝を行っています。"
+    ],
+    "discussion_points": [
+      "2024年の最も重要なサイバー犯罪脅威アクターの一人とされる26歳のカナダ人男性が、クラウドデータストレージプロバイダーSnowflakeを利用する165以上の組織に対するハッキングと恐喝の共謀、およびコンピューター詐欺の罪を認めました。この男性は、1億人以上のAT&T顧客の通話およびテキスト履歴記録の窃盗も認めました。\n金融機関がSnowflakeをデータストレージプロバイダーとして利用している場合、またはAT&Tの顧客である場合に、過去の侵害の有無や影響範囲を確認する必要がある可能性があります。",
+      "UNC6671は、BlackFileブランドの引退発表後も活動を継続しており、Redact、Pink、Helix、Falconといった複数の恐喝ブランドに分散して活動しています。ITヘルプデスクを装ったビッシングで従業員の個人デバイスを狙い、AiTMインフラを介して認証情報とMFAトークンを窃取し、データ窃取恐喝を行っています。\n金融機関の従業員が直接的な標的となっており、認証情報やMFAトークンの窃取は、金融機関のシステムへの不正アクセスやデータ漏えい、業務停止につながる可能性があります。"
+    ],
+    "check_items": [
+      "自社および委託先におけるSnowflakeの利用状況と、過去の侵害の有無を確認する",
+      "従業員に対し、ITヘルプデスクを装った不審な電話やメッセージへの警戒を促す注意喚起を行う"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:7691dab3ed327a576737c88d8963e04a09e795086c17a5de5fb088fa61f828ed",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/why-metaphor-may-dictate-your-security-strategy/",
+      "canonical_url": "https://blog.talosintelligence.com/why-metaphor-may-dictate-your-security-strategy/",
+      "published_at": "2026-08-07T03:00:01+09:00",
+      "fetched_at": "2026-08-07T10:29:24.407178+09:00",
+      "title": "Why metaphor may dictate your security strategy",
+      "raw_title": "Why metaphor may dictate your security strategy",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c141b86ee8187c7b694482711103613fe0a0902438292fd4d39866ba10b84fdf",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:76d72c59e4a3096db7ebdcb3434b6e5685e5a50cf2eda41dd904150d179a9230",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/new-zapscape-kvm-flaw-could-let.html",
+      "canonical_url": "https://thehackernews.com/2026/08/new-zapscape-kvm-flaw-could-let.html",
+      "published_at": "2026-08-07T02:58:30+09:00",
+      "fetched_at": "2026-08-07T10:29:24.407178+09:00",
+      "title": "New Zapscape KVM Flaw Could Let Privileged L1 Guest Code Escape to Linux Hosts",
+      "raw_title": "New Zapscape KVM Flaw Could Let Privileged L1 Guest Code Escape to Linux Hosts",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c3aed8ab4601295d0f7f880787b355ee50e08d4ce9ccc0eb4674d5b6b6ac66ad",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-07T10:29:26.658487+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "LinuxカーネルのKVMにおける新たな脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Zapscapeと呼ばれるLinuxカーネルの新たな脆弱性(CVE-2026-64561)が発見されました。この脆弱性は、L1ゲスト仮想マシン(VM)内でカーネル特権を持つ攻撃者がKVMの分離を回避し、ホスト上でコードを実行する可能性があるものです。",
+        "financial_impact": "金融機関でKVM/x86環境を利用し、かつネストされた仮想化を信頼できないゲストに公開している場合に限り関係します。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "CVE-2026-64561の影響を受けるKVM/x86環境の利用有無、特にネストされた仮想化を信頼できないゲストに公開しているかを確認する",
+          "ベンダーからの一次情報や修正パッチ、緩和策の有無を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、KVM/x86環境における脆弱性であり、ネストされた仮想化の利用状況に依存するため適用範囲が限定的であるため「中」です。確認目安は、実悪用や緊急の対応期限に関する情報が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:928199c4605279dbdca573b5c03fce9902c88f301b67db04e3d0afffd41dded1",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/cisco-patches-12-sd-wan-and-ios-xe.html",
+      "canonical_url": "https://thehackernews.com/2026/08/cisco-patches-12-sd-wan-and-ios-xe.html",
+      "published_at": "2026-08-07T02:13:15+09:00",
+      "fetched_at": "2026-08-07T10:29:24.407178+09:00",
+      "title": "Cisco Patches 12 SD-WAN and IOS XE Flaws, Including Three 9.8 CVSS Score Bugs",
+      "raw_title": "Cisco Patches 12 SD-WAN and IOS XE Flaws, Including Three 9.8 CVSS Score Bugs",
+      "raw_excerpt": null,
+      "content_hash": "sha256:002f4c8a8cc814e50009f3c62380b9ddeb706d853646813cae703b5f5523a313",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-07T10:29:43.687958+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Cisco製品の複数の脆弱性に対するパッチ提供が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Ciscoは、Catalyst SD-WANおよびIOS XEソフトウェアに影響を与える複数の重大なセキュリティ脆弱性に対処するためのアップデートを公開しました。これらの脆弱性は、デバイス構成に関わらずCisco Catalyst SD-WANソフトウェア、および自律モードまたはコントローラモードで実行されているCisco IOS XEソフトウェアに影響します。",
+        "financial_impact": "金融機関でCisco Catalyst SD-WANソフトウェアまたはCisco IOS XEソフトウェアを利用している場合に限り、適用性確認の対象になります。記事からは利用有無を確認できません。",
+        "recommended_actions": [
+          "Cisco Catalyst SD-WANソフトウェアおよびCisco IOS XEソフトウェアの利用有無と影響バージョンを確認する",
+          "Ciscoが公開したセキュリティアドバイザリを参照し、パッチ適用または緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、Cisco製品の脆弱性であり、利用状況によっては影響が大きくなる可能性があるため「中」です。確認目安は、パッチが公開されており、直ちに悪用が確認されているとの記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:58eb3ce5569a189e46a004213c41b56d2a8602c129fd65c6bf379e03f9c17af1",
+      "source_id": "krebs_on_security",
+      "source_name": "Krebs on Security",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://krebsonsecurity.com/2026/08/canadian-man-pleads-guilty-in-snowflake-extortions/",
+      "canonical_url": "https://krebsonsecurity.com/2026/08/canadian-man-pleads-guilty-in-snowflake-extortions/",
+      "published_at": "2026-08-07T02:00:56+09:00",
+      "fetched_at": "2026-08-07T10:29:24.407178+09:00",
+      "title": "Canadian Man Pleads Guilty in Snowflake Extortions",
+      "raw_title": "Canadian Man Pleads Guilty in Snowflake Extortions",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a22312908858a36c30f980c49091bbe690c8c368c13451127a80a714b54c62f1",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-07T10:30:01.153738+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "クラウドデータストレージプロバイダーSnowflakeを利用する165以上の組織に対するハッキングと恐喝の有罪判決が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "クラウド",
+          "サプライチェーン"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "2024年の最も重要なサイバー犯罪脅威アクターの一人とされる26歳のカナダ人男性が、クラウドデータストレージプロバイダーSnowflakeを利用する165以上の組織に対するハッキングと恐喝の共謀、およびコンピューター詐欺の罪を認めました。この男性は、1億人以上のAT&T顧客の通話およびテキスト履歴記録の窃盗も認めました。",
+        "financial_impact": "金融機関がSnowflakeをデータストレージプロバイダーとして利用している場合、またはAT&Tの顧客である場合に、過去の侵害の有無や影響範囲を確認する必要がある可能性があります。",
+        "recommended_actions": [
+          "自社および委託先におけるSnowflakeの利用状況と、過去の侵害の有無を確認する",
+          "AT&Tの顧客である場合、自社のデータが窃取された可能性がないか確認する"
+        ],
+        "reason": "重要度は、広く利用されるクラウドサービスプロバイダーSnowflakeへの侵害と、多数の組織への影響が確認されたため「高」です。確認目安は、過去の有罪判決に関する報道であり、新たな緊急対応の必要性を示す時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:23bdedbf23716bd51b26eb6973f473cea77602f33ff73916ecd6a880ab8a2c7b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/new-interrupt-injection-attack-can.html",
+      "canonical_url": "https://thehackernews.com/2026/08/new-interrupt-injection-attack-can.html",
+      "published_at": "2026-08-07T01:17:13+09:00",
+      "fetched_at": "2026-08-07T10:29:24.407178+09:00",
+      "title": "New Interrupt Injection Attack Can Bypass Spectre v2 Defenses on Intel and AMD CPUs",
+      "raw_title": "New Interrupt Injection Attack Can Bypass Spectre v2 Defenses on Intel and AMD CPUs",
+      "raw_excerpt": null,
+      "content_hash": "sha256:980518d20c60b9b94292eff1b39e958a187d6129a69ba8f5bf8410a048ff5401",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "output_length_violation",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7b5a120ec555064099c40c71ac5f7a3fe8e46aecb3d906b9538986a0bf1ad1c4",
+      "source_id": "mandiant",
+      "source_name": "Mandiant",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://cloud.google.com/blog/topics/threat-intelligence/unc6671-targets-financial-services-and-enterprise-cloud-environments/",
+      "canonical_url": "https://cloud.google.com/blog/topics/threat-intelligence/unc6671-targets-financial-services-and-enterprise-cloud-environments/",
+      "published_at": "2026-08-06T23:00:00+09:00",
+      "fetched_at": "2026-08-07T10:29:24.407178+09:00",
+      "title": "UNC6671がブランドを変更し、金融サービスと企業クラウド環境を標的とした多ブランドのビッシング恐喝を展開",
+      "raw_title": "UNC6671 Rebrands: Multi-Brand Vishing Extortion Targets Financial Services and Enterprise Cloud Environments",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a039391a585108522f72af31eb250b0c335aed7bb0cfe94fa212b8a154b0a56a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "feed_summary",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-07T10:30:36.376950+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "UNC6671という特定の脅威アクターによる攻撃手法と動向が主題であるため。",
+        "tags": [
+          "APT",
+          "フィッシング",
+          "認証",
+          "IAM",
+          "クラウド"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "UNC6671は、BlackFileブランドの引退発表後も活動を継続しており、Redact、Pink、Helix、Falconといった複数の恐喝ブランドに分散して活動しています。ITヘルプデスクを装ったビッシングで従業員の個人デバイスを狙い、AiTMインフラを介して認証情報とMFAトークンを窃取し、データ窃取恐喝を行っています。",
+        "financial_impact": "金融機関の従業員が直接的な標的となっており、認証情報やMFAトークンの窃取は、金融機関のシステムへの不正アクセスやデータ漏えい、業務停止につながる可能性があります。",
+        "recommended_actions": [
+          "従業員に対し、ITヘルプデスクを装った不審な電話やメッセージへの警戒を促す注意喚起を行う",
+          "個人デバイスへの不審な連絡に対する報告体制を再確認し、従業員への周知を徹底する",
+          "AiTM攻撃に対するMFAの耐性や、セッションハイジャック対策について評価・検討する"
+        ],
+        "reason": "重要度は、金融機関の従業員を直接標的とした認証情報窃取攻撃であり、潜在的な影響が大きいため「高」です。確認目安は、進行中の攻撃動向であり、即時対応の緊急性はないものの、今週中の情報共有と対策検討が推奨されるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
