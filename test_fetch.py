@@ -4645,10 +4645,12 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
         self.assertEqual(summary["stale"], 0)
         self.assertEqual(summary["fingerprint_mismatch"], 0)
 
-    def test_classification_test_file_has_26_tests(self):
+    def test_classification_test_file_has_not_shrunk_below_26_tests(self):
+        # Later tranches only ADD guards, so this tranche guards its own
+        # floor; the exact current count is pinned by the newest tranche.
         source = self.CLASSIFICATION_TEST_PATH.read_text(encoding="utf-8")
         method_count = len(re.findall(r"^    def test_", source, re.MULTILINE))
-        self.assertEqual(method_count, 26)
+        self.assertGreaterEqual(method_count, 26)
 
     def test_backlog_and_status_record_tranche3c_final_acceptance_evidence(self):
         # tranche 3c's own final-acceptance evidence is a permanent
@@ -4975,10 +4977,12 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
         self.assertEqual(summary["stale"], 0)
         self.assertEqual(summary["fingerprint_mismatch"], 0)
 
-    def test_classification_test_file_has_26_tests(self):
+    def test_classification_test_file_has_not_shrunk_below_26_tests(self):
+        # Later tranches only ADD guards, so this tranche guards its own
+        # floor; the exact current count is pinned by the newest tranche.
         source = self.CLASSIFICATION_TEST_PATH.read_text(encoding="utf-8")
         method_count = len(re.findall(r"^    def test_", source, re.MULTILINE))
-        self.assertEqual(method_count, 26)
+        self.assertGreaterEqual(method_count, 26)
 
     def test_tranche3d_final_acceptance_recorded_and_bl038_overall_still_incomplete(self):
         # This test originally (during tranche 3d's own Draft-PR phase)
@@ -5036,17 +5040,21 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
             line for line in active.splitlines() if line.startswith("- BL-038 ")
         )
 
-    def test_backlog_bl038_state_reflects_tranche3e_in_progress(self):
+    def test_backlog_bl038_state_reflects_tranche3e_accepted(self):
+        # tranche 3e is now accepted/merged (PR #86), so the state line names
+        # tranche 3f. This class guards that 3e is in the ACCEPTED list and
+        # that BL-038 overall is still not 完了.
         bl038 = self._bl038_section()
         own_state_line = next(
             line for line in bl038.splitlines() if line.startswith("- **状態:**")
         )
-        self.assertIn("tranche 3e実装中", own_state_line)
+        self.assertIn("tranche 3f実装中", own_state_line)
         accepted_part = own_state_line.split("(", 1)[1].split("受入済み", 1)[0]
         accepted_tranches = accepted_part.split("・")
-        for tranche in ("tranche 1", "2", "3a", "3b", "3c", "3d"):
+        for tranche in ("tranche 1", "2", "3a", "3b", "3c", "3d", "3e"):
             with self.subTest(tranche=tranche):
                 self.assertIn(tranche, accepted_tranches)
+        self.assertNotIn("3f", accepted_tranches)
         self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
 
     def test_backlog_records_entries_twelve_and_thirteen_with_updated_totals(self):
@@ -5054,11 +5062,13 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         history_start = bl038.index("ユーザー原文の履歴")
         history_end = bl038.index("着手時ユーザー原文:", history_start)
         history = bl038[history_start:history_end]
-        self.assertIn("「ok」5回・「おk」6回・「次へ進めて」1回・「はい」1回", history)
+        self.assertIn("「ok」5回・「おk」7回・「次へ進めて」1回・「はい」1回", history)
         entries = re.findall(
             r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL
         )
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 14)])
+        # tranche 3f appended entries 14/15/16; entries 1-13 must still be
+        # present and in order, with nothing renumbered away.
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 17)])
         entry12 = next(text for number, text in entries if number == "12")
         for required in (
             "tranche 3d final acceptance original",
@@ -5135,14 +5145,29 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
             with self.subTest(required=required):
                 self.assertIn(required, bl038)
 
-    def test_manifest_is_scoped_to_four_files_with_combined_counts(self):
+    def test_manifest_security_requirements_tranche3e_portion_is_unchanged(self):
+        # tranche 3f added a fifth class to the same scope entry, so the
+        # combined-count guard moved to Bl038Tranche3fRecordSyncTest. What
+        # stays checkable here is that tranche 3e's OWN four classes and
+        # their 143 round-1-corrected entries are unchanged.
         manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
         self.assertEqual(manifest["schema_version"], 1)
         self.assertEqual(
             [s["file"] for s in manifest["scope"]],
             ["test_custom_domain.py", "test_ui_spec.py", "test_status.py", "test_security_requirements.py"],
         )
-        self.assertEqual(len(manifest["assertions"]), 523)
+        tranche3e_classes = [
+            "Bl034Round2ReviewCorrectionsTest",
+            "Bl034ImplementationAcceptanceTest",
+            "Bl034CloseoutTest",
+            "StatusSecurityRequirementsSourceOfTruthTest",
+        ]
+        sr_scope = next(
+            s for s in manifest["scope"] if s["file"] == "test_security_requirements.py"
+        )
+        self.assertEqual(
+            [c for c in sr_scope["classes"] if c in tranche3e_classes], tranche3e_classes
+        )
         from collections import Counter
 
         # PR #86 round 1 review corrected 12 test_security_requirements.py
@@ -5153,9 +5178,10 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         # to D (bare "PR #NN" mentions -- substrings of this document's
         # always-fully-linked PR references, matching this manifest's own
         # established PR-reference precedent of C/D, never B).
-        counts = Counter(a["category"] for a in manifest["assertions"])
-        self.assertEqual(dict(counts), {"A": 18, "B": 164, "C": 235, "D": 106})
-        sr_entries = [a for a in manifest["assertions"] if a["file"] == "test_security_requirements.py"]
+        sr_entries = [
+            a for a in manifest["assertions"]
+            if a["file"] == "test_security_requirements.py" and a["class"] in tranche3e_classes
+        ]
         self.assertEqual(len(sr_entries), 143)
         sr_counts = Counter(a["category"] for a in sr_entries)
         self.assertEqual(dict(sr_counts), {"B": 37, "C": 71, "D": 35})
@@ -5195,10 +5221,14 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
                     by_id[entry_id]["action"], dti.CATEGORY_TO_ACTION[expected_category]
                 )
 
-    def test_manifest_line_count_matches_current_evidence(self):
-        lines = self.MANIFEST_PATH.read_text(encoding="utf-8").splitlines()
-        self.assertEqual(len(lines), 534)
-        self.assertLessEqual(len(lines), 600)
+    def test_backlog_still_records_tranche3e_own_manifest_line_count_as_534(self):
+        # Same re-anchoring as tranche 3d's: tranche 3f's growth (534 -> 596
+        # lines) makes an exact LIVE check meaningless here, so this guards
+        # that BACKLOG.md still records the historical "534行". The live
+        # count is guarded in Bl038Tranche3fRecordSyncTest.
+        bl038 = self._bl038_section()
+        self.assertIn("534行", bl038)
+        self.assertLessEqual(len(self.MANIFEST_PATH.read_text(encoding="utf-8").splitlines()), 600)
 
     def test_manifest_validates_with_zero_failures_via_document_test_inventory(self):
         import document_test_inventory as dti
@@ -5210,46 +5240,113 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         self.assertEqual(summary["stale"], 0)
         self.assertEqual(summary["fingerprint_mismatch"], 0)
 
-    def test_classification_test_file_has_26_tests(self):
+    def test_classification_test_file_has_not_shrunk_below_26_tests(self):
+        # Later tranches only ADD guards, so this tranche guards its own
+        # floor; the exact current count is pinned by the newest tranche.
         source = self.CLASSIFICATION_TEST_PATH.read_text(encoding="utf-8")
         method_count = len(re.findall(r"^    def test_", source, re.MULTILINE))
-        self.assertEqual(method_count, 26)
+        self.assertGreaterEqual(method_count, 26)
 
-    def test_security_requirements_scope_has_no_category_a_entries(self):
+    def test_tranche3e_four_classes_have_no_category_a_entries(self):
         # Same policy as test_status.py: Category A requires a repeated
         # structural pattern across multiple methods with clear shared-
         # helper consolidation value, not merely a recurring exact/fixed
         # value re-anchored at different historical checkpoints (the 17
-        # fingerprint-duplicate groups in this scope are all of the latter
-        # kind). See BACKLOG.md's tranche 3e implementation-evidence
-        # paragraph for the per-group reasoning.
+        # fingerprint-duplicate groups in THIS tranche's scope are all of
+        # the latter kind). Scoped to tranche 3e's own four classes: tranche
+        # 3f's added class has a duplicated METHOD PAIR that does satisfy the
+        # policy and is correctly Category A, guarded in the 3f class.
         manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
+        tranche3e_classes = {
+            "Bl034Round2ReviewCorrectionsTest",
+            "Bl034ImplementationAcceptanceTest",
+            "Bl034CloseoutTest",
+            "StatusSecurityRequirementsSourceOfTruthTest",
+        }
         sr_a_entries = [
             a for a in manifest["assertions"]
-            if a["file"] == "test_security_requirements.py" and a["category"] == "A"
+            if a["file"] == "test_security_requirements.py"
+            and a["class"] in tranche3e_classes
+            and a["category"] == "A"
         ]
         self.assertEqual(sr_a_entries, [])
 
-    def test_backlog_residual_work_names_tranche3e_scope_and_in_progress_state(self):
+    def test_backlog_residual_work_still_names_tranche3e_category_c_count(self):
+        # tranche 3e's 71 Category C entries stay in the residual-work list
+        # after acceptance -- deferred conversions, not work acceptance
+        # closed. The in-progress tranche named there is now tranche 3f.
         bl038 = self._bl038_section()
         residual_match = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE)
         self.assertIsNotNone(residual_match)
         residual = residual_match.group(0)
         for required in (
             "tranche 3eの71件",
-            "tranche 3eは実装中",
-            "tranche 1・2・3a・3b・3c・3dは受入済み",
+            "tranche 3fは実装中",
+            "tranche 1・2・3a・3b・3c・3d・3eは受入済み",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, residual)
 
-    def test_no_category_c_source_conversion_and_bl038_overall_incomplete(self):
+    def test_tranche3e_final_acceptance_original_and_evidence_are_recorded(self):
+        # PR #88 round 1 Blocker 1: PR #86 records the tranche 3e acceptance
+        # original as `- **User original (2026-08-06):** 「おk」`. Pin the
+        # quote, its PR and role -- an earlier revision claimed there was none.
         bl038 = self._bl038_section()
-        self.assertNotIn("tranche 3e最終受入", bl038)
-        self.assertNotIn("merge記録(tranche 3e)", bl038)
+        for required in (
+            "tranche 3e最終受入日:** 2026-08-06",
+            "70f1e79aae5185de910d9fac1f1bdf39ccad36ef",
+            "31105180228",
+            "1894 tests OK",
+            "ae1cfa2c462024063df84ea8f1cca547c4e96b2d",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl038)
+        acceptance_quote_line = next(
+            line for line in bl038.splitlines()
+            if line.startswith("- **tranche 3e最終受入原文:**")
+        )
+        self.assertIn("「おk」", acceptance_quote_line)
+        self.assertIn("PR #86", acceptance_quote_line)
+        self.assertIn("上記14", acceptance_quote_line)
+        # The superseded "no original was supplied" wording must be gone.
+        for banned in ("記録しない", "捏造しない", "提示されなかった", "推測"):
+            with self.subTest(banned=banned):
+                self.assertNotIn(banned, acceptance_quote_line)
+        # Entry 14 carries the quote AND its role, distinct from the six
+        # identical 「おk」 originals before it.
+        history = bl038[bl038.index("ユーザー原文の履歴"):bl038.index("着手時ユーザー原文:")]
+        entry14 = next(
+            text for number, text in re.findall(
+                r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL
+            ) if number == "14"
+        )
+        for required in (
+            "tranche 3e final acceptance original",
+            "2026-08-06",
+            "「おk」",
+            "PR #86",
+            "Ready化",
+            "tranche 3全体またはBL-038全体の完了承認でもなく",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, entry14)
         self.assertIn(
             "BL-038全体の最終受入は上記残作業が完了するまで行わない", bl038
         )
+
+    def test_backlog_history_no_longer_claims_a_missing_tranche3e_original(self):
+        # Scoped to the history header: the count must show seven 「おk」
+        # originals, without the withdrawn "original unavailable" claim.
+        bl038 = self._bl038_section()
+        header = next(
+            line for line in bl038.splitlines()
+            if line.startswith("- **ユーザー原文の履歴")
+        )
+        self.assertIn("「おk」7回", header)
+        self.assertNotIn("「おk」6回", header)
+        for banned in ("提示されなかった", "捏造", "登録しない"):
+            with self.subTest(banned=banned):
+                self.assertNotIn(banned, header)
 
     def test_status_active_work_records_tranche3e_kickoff_evidence(self):
         bl038_line = self._status_bl038_line()
@@ -5277,6 +5374,350 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         self.assertFalse(
             any(line.startswith("- BL-038 ") for line in recently_completed.splitlines()),
             "BL-038 must not be listed in Recently completed work during tranche 3e",
+        )
+
+
+class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
+    """BL-038 tranche 3f (PR #86/tranche 3e closeout sync + classification
+    of test_security_requirements.py::Bl031AcceptanceAndBl032RegistrationTest)
+    kickoff/implementation record-sync checks. The BACKLOG/STATUS/manifest
+    readers are the tranche 3e class's, reused rather than re-typed."""
+
+    ROOT = Path(__file__).resolve().parent
+    MANIFEST_PATH = ROOT / "document_test_classification.json"
+    CLASSIFICATION_TEST_PATH = ROOT / "test_document_test_classification.py"
+    TRANCHE_3F_CLASS = "Bl031AcceptanceAndBl032RegistrationTest"
+
+    _read = Bl038Tranche3eRecordSyncTest._read
+    _bl038_section = Bl038Tranche3eRecordSyncTest._bl038_section
+    _status_bl038_line = Bl038Tranche3eRecordSyncTest._status_bl038_line
+
+    def _manifest(self):
+        return json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
+
+    def test_backlog_bl038_state_reflects_tranche3f_in_progress(self):
+        bl038 = self._bl038_section()
+        own_state_line = next(
+            line for line in bl038.splitlines() if line.startswith("- **状態:**")
+        )
+        self.assertIn("tranche 3f実装中", own_state_line)
+        accepted_part = own_state_line.split("(", 1)[1].split("受入済み", 1)[0]
+        self.assertIn("3e", accepted_part.split("・"))
+        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
+
+    def test_backlog_records_entries_fifteen_and_sixteen_for_tranche3f(self):
+        bl038 = self._bl038_section()
+        history_start = bl038.index("ユーザー原文の履歴")
+        history_end = bl038.index("着手時ユーザー原文:", history_start)
+        history = bl038[history_start:history_end]
+        entries = re.findall(
+            r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL
+        )
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 17)])
+        entry15 = next(text for number, text in entries if number == "15")
+        for required in (
+            "tranche 3f kickoff original",
+            "2026-08-07",
+            "test/bl038-tranche3f-next-classification",
+            self.TRANCHE_3F_CLASS,
+            "tranche 3f実装内容の最終受入ではなく",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, entry15)
+        # PR #88 round 2 Blocker 1: entry 15 still said 過去13件 after entry 14
+        # was inserted before it; an entries-exist check could not catch that.
+        self.assertIn("過去14件のいずれとも異なる", entry15)
+        self.assertNotIn("過去13件", entry15)
+        # The 62-vs-62 tie was resolved by this separate, explicit 「A」 answer
+        # AFTER disclosure -- not by the kickoff. Pin it as its own original.
+        entry16 = next(text for number, text in entries if number == "16")
+        for required in (
+            "tranche 3f candidate selection original",
+            "2026-08-07",
+            "「A」",
+            self.TRANCHE_3F_CLASS,
+            "Bl031SecurityOperationsReconciliationTest",
+            "tranche 3f実装内容の最終受入ではなく",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, entry16)
+
+    def test_backlog_records_tranche3e_merge_and_pages_outcome_without_rewriting_runs(self):
+        # PR #86's merge-triggered Pages run FAILED (build ok, deploy queue
+        # timeout). The green run is PR #87's, and only after re-running its
+        # failed deploy job -- not a retroactive success for 31108037248.
+        bl038 = self._bl038_section()
+        merge_line = next(
+            line for line in bl038.splitlines()
+            if line.startswith("- **tranche 3e merge記録:**")
+        )
+        for required in (
+            "ae1cfa2c462024063df84ea8f1cca547c4e96b2d",
+            "7efd1086a7f3034442d040f52da329be8a0c1eb0",
+            "70f1e79aae5185de910d9fac1f1bdf39ccad36ef",
+            "31108037248",
+            "31111371109",
+            "PR #87",
+            "deployment_queued",
+            "attempt 2",
+            "Pull Request CI run 31105180228",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, merge_line)
+        self.assertIn("failure", merge_line)
+        self.assertIn("遡及的にsuccessへ変えるものではない", merge_line)
+        self.assertIn("run 31108037248はfailureのまま維持する", merge_line)
+
+    def test_backlog_and_status_record_the_pr87_branch_point_not_the_pr86_merge(self):
+        # PR #88 round 1 Blocker 2: cut from main at PR #87's merge commit
+        # a00ef0eb..., not PR #86's ae1cfa2... PR #86/tranche 3e is what
+        # this tranche syncs closeout FOR, not the branch point.
+        start_line = next(
+            line for line in self._bl038_section().splitlines()
+            if line.startswith("- **tranche 3f着手(2026-08-07):**")
+        )
+        status_line = self._status_bl038_line()
+        for text in (start_line, status_line):
+            with self.subTest(scope=text[:40]):
+                self.assertIn("a00ef0ebaea37edb583c99acaaf475f13ff65f50", text)
+                self.assertIn("PR #87", text)
+                self.assertIn("直接", text)
+        self.assertIn("branchの起点commitではない", start_line)
+        self.assertIn("branchの起点commitではない", status_line)
+
+    def test_backlog_records_tranche3f_measurement_selection_and_tie(self):
+        bl038 = self._bl038_section()
+        for required in (
+            "候補実測(tranche 3f)",
+            "選択(tranche 3f)",
+            "実装証跡(tranche 3f)",
+            "13 methods",
+            "assertIn 45／assertNotIn 12／assertEqual 3／assertTrue 2",
+            # The 62-vs-62 tie must be recorded, not silently resolved: it
+            # was resolved by the explicit 「A」 answer after disclosure.
+            "Bl031SecurityOperationsReconciliationTest",
+            "candidate selection非一意",
+            "A 4／B 11／C 33／D 14(total 62)",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl038)
+        selection_line = next(
+            line for line in bl038.splitlines()
+            if line.startswith("- **選択(tranche 3f):**")
+        )
+        self.assertIn("候補Aを明示的に選択する発言「A」(上記16)", selection_line)
+        self.assertIn(
+            "tieはkickoff指示(上記15)の時点で解決されていたわけではなく", selection_line
+        )
+        self.assertIn("最終受入・Ready化・merge承認ではない", selection_line)
+
+    def test_manifest_is_scoped_to_four_files_with_tranche3f_combined_counts(self):
+        manifest = self._manifest()
+        self.assertEqual(manifest["schema_version"], 1)
+        self.assertEqual(
+            [s["file"] for s in manifest["scope"]],
+            ["test_custom_domain.py", "test_ui_spec.py", "test_status.py", "test_security_requirements.py"],
+        )
+        sr_scope = next(
+            s for s in manifest["scope"] if s["file"] == "test_security_requirements.py"
+        )
+        # Source order: the tranche 3f class is declared FIRST because its
+        # `class` statement precedes tranche 3e's four in the source file.
+        self.assertEqual(
+            sr_scope["classes"],
+            [
+                self.TRANCHE_3F_CLASS,
+                "Bl034Round2ReviewCorrectionsTest",
+                "Bl034ImplementationAcceptanceTest",
+                "Bl034CloseoutTest",
+                "StatusSecurityRequirementsSourceOfTruthTest",
+            ],
+        )
+        self.assertEqual(len(manifest["assertions"]), 585)
+        from collections import Counter
+
+        counts = Counter(a["category"] for a in manifest["assertions"])
+        self.assertEqual(dict(counts), {"A": 22, "B": 175, "C": 268, "D": 120})
+        sr_entries = [a for a in manifest["assertions"] if a["file"] == "test_security_requirements.py"]
+        self.assertEqual(len(sr_entries), 205)
+        new_entries = [a for a in sr_entries if a["class"] == self.TRANCHE_3F_CLASS]
+        self.assertEqual(len(new_entries), 62)
+        self.assertEqual(
+            dict(Counter(a["category"] for a in new_entries)),
+            {"A": 4, "B": 11, "C": 33, "D": 14},
+        )
+        for entry in new_entries:
+            with self.subTest(id=entry["id"]):
+                self.assertIn("targets", entry)
+                self.assertNotIn("target", entry)
+
+    def test_tranche3f_entries_are_appended_without_disturbing_the_existing_523(self):
+        # The 523 entries accepted through tranche 3e must survive verbatim and
+        # in order: inserting the 3f class moves where the new block lands only.
+        manifest = self._manifest()
+        existing = [
+            a for a in manifest["assertions"] if a["class"] != self.TRANCHE_3F_CLASS
+        ]
+        self.assertEqual(len(existing), 523)
+        by_file = [a["file"] for a in existing]
+        self.assertEqual(
+            [by_file[0], by_file[96], by_file[97], by_file[281], by_file[282], by_file[379], by_file[380], by_file[522]],
+            [
+                "test_custom_domain.py", "test_custom_domain.py",
+                "test_ui_spec.py", "test_ui_spec.py",
+                "test_status.py", "test_status.py",
+                "test_security_requirements.py", "test_security_requirements.py",
+            ],
+        )
+
+    def test_tranche3f_category_a_is_a_duplicated_method_pair_not_a_recurring_value(self):
+        # The four Category A entries are the one substantive difference from
+        # the provisional A 0/B 19/C 30/D 13 tally, so pin exactly which.
+        manifest = self._manifest()
+        a_ids = sorted(
+            a["id"] for a in manifest["assertions"]
+            if a["file"] == "test_security_requirements.py" and a["category"] == "A"
+        )
+        prefix = "test_security_requirements.py::" + self.TRANCHE_3F_CLASS + "::"
+        self.assertEqual(
+            a_ids,
+            [
+                prefix + "test_sd002_remains_accepted_implemented_and_not_marked_superseded_by_sd030::assert-01",
+                prefix + "test_sd002_remains_accepted_implemented_and_not_marked_superseded_by_sd030::assert-02",
+                prefix + "test_sd030_does_not_mark_sd002_as_implemented_superseded::assert-01",
+                prefix + "test_sd030_does_not_mark_sd002_as_implemented_superseded::assert-02",
+            ],
+        )
+        import document_test_inventory as dti
+
+        by_id = {a["id"]: a for a in manifest["assertions"]}
+        for entry_id in a_ids:
+            with self.subTest(id=entry_id):
+                self.assertEqual(by_id[entry_id]["action"], dti.CATEGORY_TO_ACTION["A"])
+        # Demonstrate the duplication from the live source: the two methods
+        # must carry the identical pair of fingerprints.
+        records = dti.enumerate_assertions(
+            self._read("test_security_requirements.py"),
+            "test_security_requirements.py",
+            [self.TRANCHE_3F_CLASS],
+        )
+        fingerprints = {}
+        for record in records:
+            if record.id in set(a_ids):
+                fingerprints.setdefault(record.method, set()).add(record.fingerprint)
+        self.assertEqual(len(fingerprints), 2)
+        first, second = fingerprints.values()
+        self.assertEqual(len(first), 2)
+        self.assertEqual(first, second)
+
+    def test_tranche2_sd030_d_classification_is_carried_forward_unchanged(self):
+        # BL-038 tranche 2 classified the SD-030 146-character sentence as D
+        # and locked it in BACKLOG.md; tranche 3f's entry must agree.
+        manifest = self._manifest()
+        entry = next(
+            a for a in manifest["assertions"]
+            if a["id"].endswith(
+                "::test_sd030_records_that_mode_restrictions_are_not_yet_enforced_in_production::assert-04"
+            )
+        )
+        self.assertEqual(entry["category"], "D")
+        self.assertEqual(entry["action"], "historical_keep")
+
+    def test_manifest_line_count_is_within_the_600_line_cap(self):
+        lines = self.MANIFEST_PATH.read_text(encoding="utf-8").splitlines()
+        self.assertEqual(len(lines), 596)
+        self.assertLessEqual(len(lines), 600)
+
+    def test_manifest_validates_with_zero_failures_via_document_test_inventory(self):
+        import document_test_inventory as dti
+
+        failures, summary = dti.validate_manifest(self._manifest(), root=self.ROOT)
+        self.assertEqual(failures, [])
+        self.assertEqual(summary["unclassified"], 0)
+        self.assertEqual(summary["stale"], 0)
+        self.assertEqual(summary["fingerprint_mismatch"], 0)
+        self.assertEqual(
+            summary["category_counts"], {"A": 22, "B": 175, "C": 268, "D": 120}
+        )
+
+    def test_classification_test_file_has_32_tests(self):
+        # 26 before tranche 3f, 28 after its round 1; round 2 added four (two
+        # guards, each with its mutation test).
+        source = self.CLASSIFICATION_TEST_PATH.read_text(encoding="utf-8")
+        method_count = len(re.findall(r"^    def test_", source, re.MULTILINE))
+        self.assertEqual(method_count, 32)
+
+    def test_round2_structural_guards_are_present_in_the_classification_suite(self):
+        # These guards are narrow: one loop binding, one Category A method
+        # pair. They do NOT change document_test_inventory's per-assertion
+        # fingerprint, asserted here so the record cannot overclaim.
+        source = self.CLASSIFICATION_TEST_PATH.read_text(encoding="utf-8")
+        for required in (
+            "def _assert_version_marker_loop_contract",
+            "def test_version_marker_loop_literal_mutation_is_caught_only_by_the_new_guard",
+            "def _assert_category_a_methods_are_whole_method_duplicates",
+            "def test_category_a_extraction_change_in_one_method_is_caught_only_by_the_new_guard",
+            # the pre-existing fingerprint-only proof must survive alongside
+            "def test_security_requirements_category_a_entries_are_a_real_duplicated_method_pair",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, source)
+        inventory = (self.ROOT / "document_test_inventory.py").read_text(encoding="utf-8")
+        self.assertIn("def canonical_fingerprint(node):", inventory)
+        self.assertIn("return _hash_dumps([node])", inventory)
+
+    def test_security_requirements_source_module_is_unchanged_by_this_tranche(self):
+        # Category C is refactor_later only: the module must still hold the
+        # exact raw assertions the manifest names.
+        source = self._read("test_security_requirements.py")
+        for literal in (
+            'self.assertIn("ok進もう", acceptance)',
+            'self.assertNotIn("未受入", bl031)',
+            'self.assertIn("成功済み", residual)',
+        ):
+            with self.subTest(literal=literal):
+                self.assertIn(literal, source)
+
+    def test_no_category_c_source_conversion_and_bl038_overall_incomplete(self):
+        bl038 = self._bl038_section()
+        self.assertNotIn("tranche 3f最終受入", bl038)
+        self.assertNotIn("tranche 3f merge記録", bl038)
+        self.assertIn("tranche 3fの33件", bl038)
+        self.assertIn(
+            "BL-038全体の最終受入は上記残作業が完了するまで行わない", bl038
+        )
+
+    def test_status_active_work_records_tranche3f_evidence(self):
+        bl038_line = self._status_bl038_line()
+        for required in (
+            "tranche 3e最終受入・merge(2026-08-06)",
+            "tranche 3e最終受入原文は「おk」",
+            "70f1e79aae5185de910d9fac1f1bdf39ccad36ef",
+            "ae1cfa2c462024063df84ea8f1cca547c4e96b2d",
+            "a00ef0ebaea37edb583c99acaaf475f13ff65f50",
+            "Pull Request CI run 31105180228",
+            "31108037248",
+            "31111371109",
+            "tranche 3f着手(2026-08-07)",
+            "test/bl038-tranche3f-next-classification",
+            "実装証跡(tranche 3f)",
+            "A 4／B 11／C 33／D 14(total 62)",
+            "combined: **A 22／B 175／C 268／D 120(total 585)**",
+            "596行",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, bl038_line)
+
+    def test_status_active_work_still_lists_bl038_not_recently_completed(self):
+        status = self._read("STATUS.md")
+        active = status.split("## Active work", 1)[1].split(
+            "\n## 5. Recently completed work", 1
+        )[0]
+        self.assertNotIn("None.", active)
+        recently_completed = status.split("## 5. Recently completed work", 1)[1]
+        self.assertFalse(
+            any(line.startswith("- BL-038 ") for line in recently_completed.splitlines()),
+            "BL-038 must not be listed in Recently completed work during tranche 3f",
         )
 
 
