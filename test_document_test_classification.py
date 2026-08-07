@@ -26,9 +26,17 @@ shrinkage or reordering is caught here even though the validator alone
 would not catch it (tranche 3b round 1, Blocker 4: `_assert_expected_scope()`
 is exercised both directly and against deliberately-mutated copies,
 demonstrated not just asserted).
+
+Tranche 3g adds no classification at all. It introduces the explicit
+shard index (document_test_classification_index.json) that lets FUTURE
+classification go into an additional shard, and pins here that the base
+manifest is still byte-for-byte what origin/main holds, that the index
+lists it exactly once, and that the combined (index-driven) result is
+identical to the single-manifest result.
 """
 
 import ast
+import hashlib
 import itertools
 import json
 import re
@@ -40,6 +48,12 @@ import document_test_inventory as dti
 
 ROOT = Path(__file__).resolve().parent
 MANIFEST_PATH = ROOT / "document_test_classification.json"
+INDEX_PATH = ROOT / dti.INDEX_FILENAME
+# The manifest as accepted and merged in PR #88 (merge commit 66ef88e5).
+# Sharding exists so the 585 classified entries never have to move.
+BASE_MANIFEST_SHA256 = "640585ca03d7836cbdd66edcc8e2b21df7ea1de946b767ae20fa5c12e0c5f15a"
+BASE_MANIFEST_LINE_COUNT = 596
+BASE_MANIFEST_LINE_CAP = 600
 
 CUSTOM_DOMAIN_SOURCE_FILE = "test_custom_domain.py"
 UI_SPEC_SOURCE_FILE = "test_ui_spec.py"
@@ -1486,6 +1500,62 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         self.assertTrue(self.manifest_text.endswith("\n"))
         reread = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
         self.assertEqual(reread, self.manifest)
+
+
+class ClassificationShardIndexTest(unittest.TestCase):
+    """BL-038 tranche 3g: the repository-level shard-index contract. The
+    index -- not a glob -- says which manifests make up the classification;
+    today, exactly one, unchanged."""
+
+    def setUp(self):
+        self.index_text = INDEX_PATH.read_text(encoding="utf-8")
+        self.index = json.loads(self.index_text, object_pairs_hook=OrderedDict)
+
+    def test_index_declares_exactly_the_base_manifest_and_combines_to_the_same_result(self):
+        self.assertEqual(tuple(self.index.keys()), dti.INDEX_TOP_LEVEL_KEYS)
+        self.assertIs(type(self.index["schema_version"]), int)
+        self.assertEqual(json.loads(self.index_text), {"schema_version": 1, "shards": [MANIFEST_PATH.name]})
+        self.assertTrue(self.index_text.endswith("\n"))
+        # An unregistered shard file would silently vanish from the check.
+        self.assertEqual(dti.discover_shard_filenames(ROOT), self.index["shards"])
+        self.assertTrue(dti.is_allowed_shard_filename("document_test_classification_001.json"))
+        self.assertFalse(dti.is_allowed_shard_filename(dti.INDEX_FILENAME))
+        failures, combined = dti.validate_indexed_manifests(root=ROOT)
+        self.assertEqual([f.format() for f in failures], [])
+        self.assertEqual((combined["shard_count"], combined["shard_files"]), (1, [MANIFEST_PATH.name]))
+        manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+        legacy_failures, legacy = dti.validate_manifest(manifest, root=ROOT)
+        self.assertEqual([f.format() for f in legacy_failures], [])
+        for key in legacy:
+            with self.subTest(key=key):
+                self.assertEqual(combined[key], legacy[key])
+        self.assertEqual(combined["manifest_assertions"], COMBINED_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(combined["category_counts"], COMBINED_EXPECTED_CATEGORY_COUNTS)
+        self.assertEqual((combined["unclassified"], combined["stale"], combined["fingerprint_mismatch"]), (0, 0, 0))
+        load_failures, loaded = dti.load_shard_manifests(combined["shard_files"], root=ROOT)
+        self.assertEqual(load_failures, [])
+        self.assertEqual(dti.combined_assertion_ids(loaded), [e["id"] for e in manifest["assertions"]])
+
+    def test_base_manifest_is_byte_identical_and_meets_the_shard_format_contract(self):
+        # The validator every added shard is held to, run on the base shard.
+        for shard in self.index["shards"]:
+            manifest = json.loads((ROOT / shard).read_text(encoding="utf-8"))
+            failures = dti.validate_shard_file_format(ROOT / shard, manifest, shard=shard)
+            self.assertEqual([f.format() for f in failures], [])
+        self.assertIn(EXPECTED_ENTRY_KEY_ORDER, dti.ENTRY_KEY_ORDERS)
+        self.assertEqual(dti.SHARD_LINE_CAP, BASE_MANIFEST_LINE_CAP)
+        raw = MANIFEST_PATH.read_bytes()
+        self.assertEqual(hashlib.sha256(raw).hexdigest(), BASE_MANIFEST_SHA256)
+        text = raw.decode("utf-8")
+        # The cap is why sharding exists: it must not be raised to make room.
+        self.assertEqual(len(text.splitlines()), BASE_MANIFEST_LINE_COUNT)
+        self.assertEqual(BASE_MANIFEST_LINE_CAP - BASE_MANIFEST_LINE_COUNT, 4)
+        manifest = json.loads(text)
+        self.assertEqual(len(manifest["assertions"]), COMBINED_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(Counter(e["category"] for e in manifest["assertions"]),
+                         Counter(COMBINED_EXPECTED_CATEGORY_COUNTS))
+        self.assertEqual([s["file"] for s in manifest["scope"]], [f for f, _ in EXPECTED_SCOPE_ORDER])
+        self.assertEqual(self.index["shards"], [MANIFEST_PATH.name])  # no added shard
 
 
 if __name__ == "__main__":

@@ -12,6 +12,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 import document_test_inventory as dti
 
@@ -1130,6 +1131,384 @@ class CliOutputTest(unittest.TestCase):
         self.assertIn("manifest-load-error", output)
         self.assertNotIn("Traceback", output)
         self.assertLess(len(output), 500)
+
+
+class ShardIndexTestCase(unittest.TestCase):
+    """BL-038 tranche 3g index/shard tests: small synthetic sources and
+    manifests in a temp dir -- the repository's manifest is never touched."""
+
+    ALPHA_FILE = "alpha_fixture.py"
+    ALPHA_SRC = (
+        "import unittest\nclass AlphaTest(unittest.TestCase):\n    def test_alpha(self):\n"
+        "        self.assertEqual(1, 1)\n        self.assertTrue(True)\nclass BetaTest"
+        "(unittest.TestCase):\n    def test_beta(self):\n        self.assertIn('a', 'abc')\n")
+    GAMMA_FILE = "gamma_fixture.py"
+    GAMMA_SRC = (
+        "import unittest\nclass GammaTest(unittest.TestCase):\n    def test_gamma(self):\n"
+        "        self.assertIsNone(None)\n        self.assertNotIn('z', 'abc')\n")
+    BASE = dti.BASE_SHARD_FILENAME
+    SECOND = "document_test_classification_001.json"
+
+    def setUp(self):
+        self._tmpdir = tempfile.TemporaryDirectory()
+        self.addCleanup(self._tmpdir.cleanup)
+        self.root = Path(self._tmpdir.name)
+
+    def _write(self, name, text):
+        (self.root / name).write_text(text, encoding="utf-8")
+
+    def _read(self, name):
+        return (self.root / name).read_text(encoding="utf-8")
+
+    def _shard(self, file_name, classes, src, *, category="A", action="keep"):
+        records = dti.enumerate_assertions(src, file_name, classes)
+        return _manifest_for(file_name, classes, _records_to_manifest_entries(
+            records, category=category, action=action))
+
+    def _shard_text(self, manifest, *, entry_lines=None):
+        # Canonical layout: one compact JSON line per assertion + newline.
+        lines = entry_lines or [json.dumps(entry) for entry in manifest["assertions"]]
+        return '{\n  "schema_version": %s,\n  "scope": %s,\n  "assertions": [\n%s\n  ]\n}\n' % (
+            json.dumps(manifest["schema_version"]), json.dumps(manifest["scope"]),
+            ",\n".join("    " + line for line in lines))
+
+    def _write_shard(self, name, manifest, **kwargs):
+        self._write(name, self._shard_text(manifest, **kwargs))
+
+    def _write_index(self, shards, *, schema_version=1, extra=None, key_order=None):
+        index = dict({"schema_version": schema_version, "shards": shards}, **(extra or {}))
+        index = {key: index[key] for key in key_order} if key_order else index
+        self._write(dti.INDEX_FILENAME, json.dumps(index))
+
+    def _validate(self):
+        return dti.validate_indexed_manifests(root=self.root)
+
+    def _failures(self):
+        return self._validate()[0]
+
+    def _base_only(self):
+        self._write(self.ALPHA_FILE, self.ALPHA_SRC)
+        self._write_shard(self.BASE, self._shard(self.ALPHA_FILE, ["AlphaTest", "BetaTest"], self.ALPHA_SRC))
+
+    def _gamma_shard(self):
+        self._write(self.GAMMA_FILE, self.GAMMA_SRC)
+        return self._shard(self.GAMMA_FILE, ["GammaTest"], self.GAMMA_SRC, category="B",
+                           action="already_structural")
+
+    def _two_shards(self):
+        """Base owns one file; an added shard owns a second, separate one."""
+        self._base_only()  # a valid base, so shard-level failures stand alone
+        second = self._gamma_shard()
+        self._write_shard(self.SECOND, second)
+        return json.loads(self._read(self.BASE)), second
+
+
+class ShardIndexHappyPathTest(ShardIndexTestCase):
+    def test_single_shard_index_reproduces_single_manifest_validation(self):
+        self._base_only()
+        self._write_index([self.BASE])
+        base = json.loads(self._read(self.BASE))
+        combined_failures, combined = self._validate()
+        legacy_failures, legacy = dti.validate_manifest(base, root=self.root)
+        self.assertEqual((combined_failures, legacy_failures), ([], []))
+        self.assertEqual((combined["shard_count"], combined["shard_files"]), (1, [self.BASE]))
+        self.assertNotIn("shard_count", legacy)
+        for key in legacy:  # sharding adds keys, changes none
+            with self.subTest(key=key):
+                self.assertEqual(combined[key], legacy[key])
+        # Each shard alone stays complete for its own scope, index or no index.
+        for manifest in self._two_shards():
+            failures, summary = dti.validate_manifest(manifest, root=self.root)
+            self.assertEqual(failures, [])
+            self.assertEqual((summary["unclassified"], summary["stale"]), (0, 0))
+
+    def test_two_shard_index_is_validated_as_one_combined_classification(self):
+        self._two_shards()
+        self._write_index([self.BASE, self.SECOND])
+        failures, summary = self._validate()
+        self.assertEqual(failures, [])
+        self.assertEqual((summary["shard_count"], summary["shard_files"]), (2, [self.BASE, self.SECOND]))
+        self.assertEqual(summary["scoped_files"], sorted([self.ALPHA_FILE, self.GAMMA_FILE]))
+        self.assertEqual((summary["scoped_classes"], summary["manifest_assertions"]), (3, 5))
+        self.assertEqual((summary["inventoried_assertions"], summary["unclassified"],
+                          summary["stale"], summary["fingerprint_mismatch"]), (5, 0, 0, 0))
+        self.assertEqual(summary["category_counts"], {"A": 3, "B": 2, "C": 0, "D": 0})
+        self.assertEqual(summary["file_counts"], {self.ALPHA_FILE: 3, self.GAMMA_FILE: 2})
+        # One source file may also be split across shards BY CLASS.
+        self.setUp()
+        self._write(self.ALPHA_FILE, self.ALPHA_SRC)
+        self._write_shard(self.BASE, self._shard(self.ALPHA_FILE, ["AlphaTest"], self.ALPHA_SRC))
+        self._write_shard(self.SECOND, self._shard(self.ALPHA_FILE, ["BetaTest"], self.ALPHA_SRC,
+                                                   category="C", action="refactor_later"))
+        self._write_index([self.BASE, self.SECOND])
+        failures, summary = self._validate()
+        self.assertEqual((failures, summary["scoped_files"]), ([], [self.ALPHA_FILE]))
+        self.assertEqual((summary["scoped_classes"], summary["manifest_assertions"]), (2, 3))
+        self.assertEqual(summary["category_counts"], {"A": 2, "B": 0, "C": 1, "D": 0})
+
+    def test_index_order_determines_combined_assertion_order(self):
+        base, second = self._two_shards()
+        base_ids, second_ids = ([e["id"] for e in m["assertions"]] for m in (base, second))
+        for order in ([self.BASE, self.SECOND], [self.SECOND, self.BASE]):
+            with self.subTest(order=order):
+                self._write_index(order)
+                failures, summary = self._validate()
+                self.assertEqual((failures, summary["shard_files"]), ([], order))
+                load_failures, loaded = dti.load_shard_manifests(order, root=self.root)
+                self.assertEqual(load_failures, [])
+                expected = base_ids + second_ids if order[0] == self.BASE else second_ids + base_ids
+                self.assertEqual(dti.combined_assertion_ids(loaded), expected)
+
+
+class ShardIndexRejectionTest(ShardIndexTestCase):
+    """Index-level rejections, including shard-named SYMLINKS: exists() and
+    is_file() follow links, so the entry itself is checked with lstat().
+    ubuntu-latest (CI) and macOS create symlinks unprivileged: no skips."""
+
+    def _assert_rejected(self, expected_type):
+        failures = self._failures()
+        self.assertIn(expected_type, _failure_types(failures))
+        return failures
+
+    def test_shard_path_shape_violations_are_rejected(self):
+        self._base_only()
+        cases = [(self.BASE, "duplicate-shard-path"), (dti.INDEX_FILENAME, "index-registered-as-shard")]
+        cases += [(n, "invalid-shard-filename") for n in (
+            "document_test_classification_1.json", "document_test_classification_0001.json",
+            "document_test_classification_abc.json", "document_test_classification_001.JSON",
+            "document_test_classification_001.json.bak", "extra_classification.json")]
+        cases += [(p, "absolute-shard-path") for p in (f"/etc/{self.BASE}", f"C:\\{self.BASE}")]
+        cases += [(p, "invalid-shard-path") for p in (
+            f"../{self.SECOND}", f"shards/{self.SECOND}", f"shards\\{self.SECOND}", "", f" {self.BASE}", 17)]
+        for shard, expected in cases:
+            with self.subTest(shard=shard):
+                self._write_index([self.BASE, shard])
+                self._assert_rejected(expected)
+
+    def test_missing_unregistered_or_non_regular_shards_are_rejected(self):
+        self._base_only()
+        self._write_index([self.BASE, self.SECOND])
+        self._assert_rejected("missing-shard")
+        (self.root / self.SECOND).mkdir()
+        self._assert_rejected("shard-not-a-file")
+        (self.root / self.SECOND).rmdir()
+        self._write_shard(self.SECOND, self._gamma_shard())
+        self._write_index([self.BASE])  # on disk, unlisted: entries would drop
+        failures = self._assert_rejected("unlisted-shard")
+        self.assertIn(self.SECOND, " ".join(f.format() for f in failures))
+        self._write_index([self.BASE, self.SECOND])
+        self._write(self.SECOND, "{not valid json")
+        self._assert_rejected("shard-load-error")
+
+    def _link(self, name, body, *, outside):
+        target_dir = self.root
+        if outside:
+            other = tempfile.TemporaryDirectory()
+            self.addCleanup(other.cleanup)
+            target_dir = Path(other.name)
+        target = target_dir / f"real_{name}"
+        target.write_text(body, encoding="utf-8")
+        (self.root / name).symlink_to(target)
+
+    def _link_second_shard(self, *, outside):
+        self._base_only()
+        manifest = self._gamma_shard()
+        self._link(self.SECOND, self._shard_text(manifest), outside=outside)
+        self._write_index([self.BASE, self.SECOND])
+        return manifest
+
+    def test_index_entry_itself_must_be_a_regular_file(self):
+        # A symlinked index could redirect coverage wholesale, and a VALID
+        # target behind the link never rescues it.
+        body = json.dumps({"schema_version": 1, "shards": [self.BASE]})
+        for outside in (False, True):
+            with self.subTest(outside=outside):
+                self.setUp()
+                self._base_only()
+                self._link(dti.INDEX_FILENAME, body, outside=outside)
+                self.assertEqual(_failure_types(self._failures()), {"index-is-a-symlink"})
+        (self.root / dti.INDEX_FILENAME).unlink()
+        (self.root / dti.INDEX_FILENAME).mkdir()
+        self._assert_rejected("index-not-a-file")
+        (self.root / dti.INDEX_FILENAME).rmdir()
+        self._write(dti.INDEX_FILENAME, body)  # same body, regular file
+        self.assertEqual(self._failures(), [])
+
+    def test_symlink_shard_is_rejected_pointing_inside_or_outside(self):
+        for outside in (False, True):
+            with self.subTest(outside=outside):
+                self.setUp()
+                manifest = self._link_second_shard(outside=outside)
+                failures = self._assert_rejected("shard-is-a-symlink")
+                self.assertIn(self.SECOND, " ".join(f.format() for f in failures))
+        (self.root / self.SECOND).unlink()  # the same body as a regular file is fine
+        self._write_shard(self.SECOND, manifest)
+        self.assertEqual(self._failures(), [])
+        (self.root / self.SECOND).unlink()
+        self._link_second_shard(outside=True)
+        self._write_index([self.BASE])
+        self._assert_rejected("unlisted-shard")  # an unlisted symlink is still caught
+
+    def test_index_document_shape_violations_are_rejected(self):
+        self._base_only()
+        cases = [(lambda: self._write_index([self.BASE], extra={"notes": "x"}), "invalid-index-keys"),
+                 (lambda: self._write_index([self.BASE], key_order=("shards", "schema_version")),
+                  "invalid-index-key-order")]  # both keys present, wrong order
+        cases += [(lambda v=v: self._write_index([self.BASE], schema_version=v),
+                   "invalid-index-schema-version") for v in (2, 1.0, True, "1", None)]
+        cases += [(lambda v=v: self._write_index(v), "invalid-index-shape")
+                  for v in ([], self.BASE, {}, None)]
+        cases += [(lambda c=c: self._write(dti.INDEX_FILENAME, c), e) for c, e in (
+            (json.dumps({"shards": [self.BASE]}), "invalid-index-keys"),
+            (json.dumps([self.BASE]), "invalid-index-shape"),
+            ("{not valid json", "index-load-error"))]
+        for setup, expected in cases:
+            with self.subTest(expected=expected):
+                setup()
+                self._assert_rejected(expected)
+        (self.root / dti.INDEX_FILENAME).unlink()
+        self._assert_rejected("index-load-error")
+
+    def test_duplicate_assertion_id_or_class_ownership_across_shards_is_rejected(self):
+        self._write(self.ALPHA_FILE, self.ALPHA_SRC)
+        base = self._shard(self.ALPHA_FILE, ["AlphaTest"], self.ALPHA_SRC)
+        second = self._shard(self.ALPHA_FILE, ["BetaTest"], self.ALPHA_SRC)
+        second["assertions"].append(dict(base["assertions"][0]))
+        self._write_shard(self.BASE, base)
+        self._write_shard(self.SECOND, second)
+        self._write_index([self.BASE, self.SECOND])
+        failures = self._assert_rejected("cross-shard-duplicate-id")
+        self.assertIn(base["assertions"][0]["id"], " ".join(f.format() for f in failures))
+        self._write_shard(self.SECOND, self._shard(self.ALPHA_FILE, ["AlphaTest"], self.ALPHA_SRC))
+        self._assert_rejected("cross-shard-duplicate-ownership")
+
+
+class ShardIntegrityTest(ShardIndexTestCase):
+    """An added shard is not a weaker shard: same physical-file contract and
+    same source-drift detection as the base manifest."""
+
+    def setUp(self):
+        super().setUp()
+        self._two_shards()
+        self._write_index([self.BASE, self.SECOND])
+        self.assertEqual(self._failures(), [])
+        self.second = json.loads(self._read(self.SECOND))
+
+    def _rewrite(self, text):
+        self._write(self.SECOND, text)
+        return _failure_types(self._failures())
+
+    def _drifted(self, src):
+        self._write(self.GAMMA_FILE, src)
+        return self._validate()
+
+    def test_line_cap_and_missing_trailing_newline_are_rejected(self):
+        text = self._shard_text(self.second)
+        # Padded with (valid) blank lines: only the line count changes.
+        padded = text.replace("{\n", "{\n" + "\n" * dti.SHARD_LINE_CAP, 1)
+        self.assertGreater(len(padded.splitlines()), dti.SHARD_LINE_CAP)
+        self.assertEqual(self._rewrite(padded), {"shard-line-cap-exceeded"})
+        self.assertEqual(self._rewrite(text), set())
+        self._write(self.SECOND, text.rstrip("\n"))
+        failures, summary = self._validate()
+        self.assertIn("shard-missing-trailing-newline", _failure_types(failures))
+        self.assertEqual((summary["unclassified"], summary["stale"]), (0, 0))
+        # The parsed-object API is unchanged: it knows nothing of raw layout.
+        self.assertEqual(dti.validate_manifest(self.second, root=self.root)[0], [])
+
+    def test_pretty_printed_run_together_or_reordered_entries_are_rejected(self):
+        entries = [json.dumps(e) for e in self.second["assertions"]]
+        pretty = ["\n".join(json.dumps(self.second["assertions"][0], indent=2).splitlines())] + entries[1:]
+        types = self._rewrite(self._shard_text(self.second, entry_lines=pretty))
+        self.assertTrue(types & {"shard-entry-line-count-mismatch", "shard-entry-not-one-line"}, types)
+        # Two entries on ONE physical line: valid JSON, wrong layout.
+        types = self._rewrite(self._shard_text(self.second, entry_lines=[", ".join(entries)]))
+        self.assertIn("shard-entry-line-count-mismatch", types)
+        reordered = [dict(e) for e in self.second["assertions"]]
+        first = reordered[0]
+        reordered[0] = {k: first[k] for k in ["file", "id"] + [k for k in first if k not in ("file", "id")]}
+        self.assertIn("shard-entry-key-order",
+                      self._rewrite(self._shard_text(dict(self.second, assertions=reordered))))
+
+    def test_source_drift_inside_the_second_shard_is_detected(self):
+        for src, mismatch, key in (
+            (self.GAMMA_SRC.replace("'z', 'abc'", "'q', 'abc'"), "fingerprint-mismatch", "fingerprint_mismatch"),
+            (self.GAMMA_SRC + "        self.assertTrue(True)\n", "unclassified", "unclassified"),
+            (self.GAMMA_SRC.replace("        self.assertNotIn('z', 'abc')\n", ""), "stale-entry", "stale"),
+        ):
+            with self.subTest(mismatch=mismatch):
+                failures, summary = self._drifted(src)
+                self.assertIn(mismatch, _failure_types(failures))
+                self.assertEqual(summary[key], 1)
+
+
+class ShardIndexCliTest(ShardIndexTestCase):
+    def setUp(self):
+        super().setUp()
+        original_root = dti.REPOSITORY_ROOT
+        dti.REPOSITORY_ROOT = self.root
+        self.addCleanup(setattr, dti, "REPOSITORY_ROOT", original_root)
+
+    def _run_cli(self, argv):
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            exit_code = dti.main(argv)
+        return exit_code, buf.getvalue()
+
+    def test_cli_index_mode_reports_success_and_otherwise_fails_closed(self):
+        self._two_shards()
+        both = [self.BASE, self.SECOND]
+        self._write_index(both)
+        for argv in (["--check"], ["--index", dti.INDEX_FILENAME, "--check"]):
+            with self.subTest(argv=argv):
+                exit_code, output = self._run_cli(argv)
+                self.assertEqual(exit_code, 0)
+                for expected in ("manifest check OK", "shards: 2", self.SECOND, "unclassified: 0"):
+                    self.assertIn(expected, output)
+        bad_utf8 = b'{"schema_version": 1, "shards": ["\xff\xfe"]}'
+        for setup, expected, limit in (
+            (lambda: self._write(self.SECOND, self._read(self.SECOND).rstrip("\n")), "shard-missing-trailing-newline", 2000),
+            (lambda: self._write_index([self.BASE]), "unlisted-shard", 2000),
+            (lambda: self._write(dti.INDEX_FILENAME, "{not valid json"), "index-load-error", 500),
+            (lambda: (self.root / dti.INDEX_FILENAME).write_bytes(bad_utf8), "index-load-error", 500),
+            (lambda: (self._write_index(both), (self.root / self.SECOND).write_bytes(bad_utf8)), "shard-load-error", 500),
+        ):
+            with self.subTest(expected=expected):
+                setup()
+                exit_code, output = self._run_cli(["--check"])
+                self.assertEqual(exit_code, 1)
+                self.assertIn(expected, output)
+                self.assertNotIn("Traceback", output)
+                self.assertLess(len(output), limit)
+        # Legacy path untouched; restored valid UTF-8 files pass again.
+        self.assertEqual(self._run_cli(["--manifest", self.BASE, "--check"])[0], 0)
+        self._write_shard(self.SECOND, self._gamma_shard())
+        self._write_index(both)
+        self.assertEqual(self._run_cli(["--check"])[0], 0)
+
+    def test_root_enumeration_failure_is_classified_not_silently_empty(self):
+        # Index and shard are valid regular files; only the scan fails.
+        self._base_only()
+        self._write_index([self.BASE])
+        self.assertEqual(self._run_cli(["--check"])[0], 0)
+        with mock.patch.object(Path, "iterdir", side_effect=OSError("boom")):
+            exit_code, output = self._run_cli(["--check"])
+        self.assertEqual(exit_code, 1)
+        for expected in ("shard-discovery-error", "boom", str(self.root)):
+            self.assertIn(expected, output)
+        self.assertNotIn("Traceback", output)
+
+    def test_explicit_single_manifest_mode_does_not_read_the_index(self):
+        self._two_shards()
+        # The index is deliberately broken; the legacy CLI must not read it.
+        self._write(dti.INDEX_FILENAME, "{not valid json")
+        exit_code, output = self._run_cli(["--manifest", self.BASE, "--check"])
+        self.assertEqual((exit_code, "shards:" in output, "index-load-error" in output), (0, False, False))
+        self.assertIn("manifest check OK", output)
+        with self.assertRaises(SystemExit) as ctx:  # --manifest/--index exclusive
+            with contextlib.redirect_stderr(io.StringIO()):
+                dti.main(["--manifest", "x.json", "--index", "y.json", "--check"])
+        self.assertEqual(ctx.exception.code, 2)
 
 
 if __name__ == "__main__":
