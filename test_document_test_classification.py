@@ -106,7 +106,7 @@ CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT = 97
 UI_SPEC_EXPECTED_ASSERTION_COUNT = 185
 STATUS_EXPECTED_ASSERTION_COUNT = 98
 SECURITY_REQUIREMENTS_EXPECTED_ASSERTION_COUNT = 205  # 143 (tranche 3e) + 62 (tranche 3f)
-COMBINED_EXPECTED_ASSERTION_COUNT = (
+BASE_EXPECTED_ASSERTION_COUNT = (
     CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT
     + UI_SPEC_EXPECTED_ASSERTION_COUNT
     + STATUS_EXPECTED_ASSERTION_COUNT
@@ -644,7 +644,7 @@ SECURITY_REQUIREMENTS_EXPECTED_CATEGORY_COUNTS = {
     "D": len(SECURITY_REQUIREMENTS_EXPECTED_D_IDS),
 }
 
-COMBINED_EXPECTED_CATEGORY_COUNTS = {
+BASE_EXPECTED_CATEGORY_COUNTS = {
     cat: CUSTOM_DOMAIN_EXPECTED_CATEGORY_COUNTS[cat]
     + UI_SPEC_EXPECTED_CATEGORY_COUNTS[cat]
     + STATUS_EXPECTED_CATEGORY_COUNTS[cat]
@@ -655,18 +655,220 @@ COMBINED_EXPECTED_CATEGORY_COUNTS = {
 # with its own file name), so the combined exact-membership guard is a
 # plain union -- this is what keeps tranche 3b/3c/3d's per-ID record in
 # force unweakened after the manifest grew to a fourth file.
-COMBINED_EXPECTED_A_IDS = (
+BASE_EXPECTED_A_IDS = (
     CUSTOM_DOMAIN_EXPECTED_A_IDS | UI_SPEC_EXPECTED_A_IDS | STATUS_EXPECTED_A_IDS
     | SECURITY_REQUIREMENTS_EXPECTED_A_IDS
 )
-COMBINED_EXPECTED_C_IDS = (
+BASE_EXPECTED_C_IDS = (
     CUSTOM_DOMAIN_EXPECTED_C_IDS | UI_SPEC_EXPECTED_C_IDS | STATUS_EXPECTED_C_IDS
     | SECURITY_REQUIREMENTS_EXPECTED_C_IDS
 )
-COMBINED_EXPECTED_D_IDS = (
+BASE_EXPECTED_D_IDS = (
     CUSTOM_DOMAIN_EXPECTED_D_IDS | UI_SPEC_EXPECTED_D_IDS | STATUS_EXPECTED_D_IDS
     | SECURITY_REQUIREMENTS_EXPECTED_D_IDS
 )
+
+
+# BL-038 tranche 3h: the FIRST additional shard, owning
+# test_security_operations.py's first two classes and nothing else. The base
+# manifest above stays frozen -- its 585/596/A22 B175 C268 D120 record is
+# never re-derived from, merged with, or overwritten by anything below.
+SHARD_001_FILENAME = "document_test_classification_001.json"
+SHARD_001_PATH = ROOT / SHARD_001_FILENAME
+SHARD_001_SOURCE_FILE = "test_security_operations.py"
+_SO = SHARD_001_SOURCE_FILE + "::"
+
+# Source order. The file's third class, Bl035DraftSyncTest (34), is
+# deliberately excluded: all three would be 170, over the 150 tranche cap.
+SHARD_001_EXPECTED_CLASSES = (
+    "SecurityOperationsContractTest",
+    "Bl031SecurityOperationsReconciliationTest",
+)
+SHARD_001_UNOWNED_CLASS = "Bl035DraftSyncTest"
+SHARD_001_EXPECTED_ASSERTION_COUNT = 136
+SHARD_001_EXPECTED_METHOD_COUNT = 24
+SHARD_001_EXPECTED_LINE_COUNT = 144
+
+# Hardcoded (class, method, count) in source order; expanding it yields the
+# shard's whole ordered id list from literals alone, so a dropped/reordered/
+# shrunken method is caught even when manifest and source still agree.
+SHARD_001_EXPECTED_METHOD_ORDER = (
+    # SecurityOperationsContractTest
+    ("SecurityOperationsContractTest", "test_version_10_identity_review_record_and_user_approval", 5),
+    ("SecurityOperationsContractTest", "test_requirements_and_decision_references", 1),
+    ("SecurityOperationsContractTest", "test_canonical_secret_prohibition_is_unconditional", 6),
+    ("SecurityOperationsContractTest", "test_approved_secret_stores_are_not_mistaken_for_evidence", 5),
+    ("SecurityOperationsContractTest", "test_only_non_secret_data_can_use_an_approved_artifact_exception", 3),
+    ("SecurityOperationsContractTest", "test_rotation_has_immediate_and_controlled_paths", 8),
+    ("SecurityOperationsContractTest", "test_nvd_secret_state_has_owner_verification_evidence", 8),
+    ("SecurityOperationsContractTest", "test_github_account_compromise_and_published_secret_containment", 7),
+    ("SecurityOperationsContractTest", "test_source_suspension_procedure_is_recorded", 16),
+    ("SecurityOperationsContractTest", "test_closure_conditions_are_conditional", 4),
+    ("SecurityOperationsContractTest", "test_artifact_evidence_priority_and_role_boundaries", 10),
+    ("SecurityOperationsContractTest", "test_approved_operational_decisions_and_emergency_boundaries", 3),
+    ("SecurityOperationsContractTest", "test_withdrawal_and_correction_policy_is_fixed_without_new_contract", 3),
+    ("SecurityOperationsContractTest", "test_artifact_retention_exception_is_recorded_and_reviewed", 2),
+    ("SecurityOperationsContractTest", "test_bl024_is_closed_with_merge_and_deployment_evidence", 20),
+    ("SecurityOperationsContractTest", "test_no_local_absolute_path_or_credential_value_pattern", 5),
+    ("SecurityOperationsContractTest", "test_internal_markdown_links_resolve", 2),
+    # Bl031SecurityOperationsReconciliationTest
+    ("Bl031SecurityOperationsReconciliationTest", "test_version_11_approval_record_is_preserved_as_history", 1),
+    ("Bl031SecurityOperationsReconciliationTest", "test_correction_section_no_longer_lists_translate_cache_as_published_asset", 1),
+    ("Bl031SecurityOperationsReconciliationTest", "test_source_suspension_does_not_rewrite_past_published_output", 4),
+    ("Bl031SecurityOperationsReconciliationTest", "test_gemini_owner_verification_records_no_confidential_information", 3),
+    ("Bl031SecurityOperationsReconciliationTest", "test_verification_step_allows_readonly_official_page_check_not_blanket_ban", 6),
+    ("Bl031SecurityOperationsReconciliationTest", "test_section_11_source_suspension_summary_matches_section_7_verification_rule", 5),
+    ("Bl031SecurityOperationsReconciliationTest", "test_gemini_owner_verification_is_completed_as_paid_verified", 8),
+)
+
+SHARD_001_EXPECTED_C_IDS = frozenset({
+    _SO + "SecurityOperationsContractTest::test_version_10_identity_review_record_and_user_approval::assert-05",
+    _SO + "SecurityOperationsContractTest::test_canonical_secret_prohibition_is_unconditional::assert-01",
+    _SO + "SecurityOperationsContractTest::test_canonical_secret_prohibition_is_unconditional::assert-02",
+    _SO + "SecurityOperationsContractTest::test_canonical_secret_prohibition_is_unconditional::assert-03",
+    _SO + "SecurityOperationsContractTest::test_canonical_secret_prohibition_is_unconditional::assert-04",
+    _SO + "SecurityOperationsContractTest::test_canonical_secret_prohibition_is_unconditional::assert-05",
+    _SO + "SecurityOperationsContractTest::test_canonical_secret_prohibition_is_unconditional::assert-06",
+    _SO + "SecurityOperationsContractTest::test_approved_secret_stores_are_not_mistaken_for_evidence::assert-01",
+    _SO + "SecurityOperationsContractTest::test_approved_secret_stores_are_not_mistaken_for_evidence::assert-03",
+    _SO + "SecurityOperationsContractTest::test_approved_secret_stores_are_not_mistaken_for_evidence::assert-04",
+    _SO + "SecurityOperationsContractTest::test_approved_secret_stores_are_not_mistaken_for_evidence::assert-05",
+    _SO + "SecurityOperationsContractTest::test_only_non_secret_data_can_use_an_approved_artifact_exception::assert-01",
+    _SO + "SecurityOperationsContractTest::test_only_non_secret_data_can_use_an_approved_artifact_exception::assert-02",
+    _SO + "SecurityOperationsContractTest::test_only_non_secret_data_can_use_an_approved_artifact_exception::assert-03",
+    _SO + "SecurityOperationsContractTest::test_rotation_has_immediate_and_controlled_paths::assert-01",
+    _SO + "SecurityOperationsContractTest::test_rotation_has_immediate_and_controlled_paths::assert-02",
+    _SO + "SecurityOperationsContractTest::test_rotation_has_immediate_and_controlled_paths::assert-03",
+    _SO + "SecurityOperationsContractTest::test_rotation_has_immediate_and_controlled_paths::assert-04",
+    _SO + "SecurityOperationsContractTest::test_rotation_has_immediate_and_controlled_paths::assert-05",
+    _SO + "SecurityOperationsContractTest::test_rotation_has_immediate_and_controlled_paths::assert-06",
+    _SO + "SecurityOperationsContractTest::test_rotation_has_immediate_and_controlled_paths::assert-07",
+    _SO + "SecurityOperationsContractTest::test_rotation_has_immediate_and_controlled_paths::assert-08",
+    _SO + "SecurityOperationsContractTest::test_nvd_secret_state_has_owner_verification_evidence::assert-01",
+    _SO + "SecurityOperationsContractTest::test_nvd_secret_state_has_owner_verification_evidence::assert-02",
+    _SO + "SecurityOperationsContractTest::test_nvd_secret_state_has_owner_verification_evidence::assert-03",
+    _SO + "SecurityOperationsContractTest::test_nvd_secret_state_has_owner_verification_evidence::assert-04",
+    _SO + "SecurityOperationsContractTest::test_nvd_secret_state_has_owner_verification_evidence::assert-05",
+    _SO + "SecurityOperationsContractTest::test_nvd_secret_state_has_owner_verification_evidence::assert-06",
+    _SO + "SecurityOperationsContractTest::test_nvd_secret_state_has_owner_verification_evidence::assert-07",
+    _SO + "SecurityOperationsContractTest::test_nvd_secret_state_has_owner_verification_evidence::assert-08",
+    _SO + "SecurityOperationsContractTest::test_github_account_compromise_and_published_secret_containment::assert-01",
+    _SO + "SecurityOperationsContractTest::test_github_account_compromise_and_published_secret_containment::assert-02",
+    _SO + "SecurityOperationsContractTest::test_github_account_compromise_and_published_secret_containment::assert-03",
+    _SO + "SecurityOperationsContractTest::test_github_account_compromise_and_published_secret_containment::assert-04",
+    _SO + "SecurityOperationsContractTest::test_github_account_compromise_and_published_secret_containment::assert-05",
+    _SO + "SecurityOperationsContractTest::test_github_account_compromise_and_published_secret_containment::assert-06",
+    _SO + "SecurityOperationsContractTest::test_github_account_compromise_and_published_secret_containment::assert-07",
+    _SO + "SecurityOperationsContractTest::test_source_suspension_procedure_is_recorded::assert-02",
+    _SO + "SecurityOperationsContractTest::test_source_suspension_procedure_is_recorded::assert-04",
+    _SO + "SecurityOperationsContractTest::test_source_suspension_procedure_is_recorded::assert-07",
+    _SO + "SecurityOperationsContractTest::test_source_suspension_procedure_is_recorded::assert-08",
+    _SO + "SecurityOperationsContractTest::test_source_suspension_procedure_is_recorded::assert-09",
+    _SO + "SecurityOperationsContractTest::test_source_suspension_procedure_is_recorded::assert-10",
+    _SO + "SecurityOperationsContractTest::test_source_suspension_procedure_is_recorded::assert-11",
+    _SO + "SecurityOperationsContractTest::test_source_suspension_procedure_is_recorded::assert-13",
+    _SO + "SecurityOperationsContractTest::test_source_suspension_procedure_is_recorded::assert-14",
+    _SO + "SecurityOperationsContractTest::test_source_suspension_procedure_is_recorded::assert-15",
+    _SO + "SecurityOperationsContractTest::test_source_suspension_procedure_is_recorded::assert-16",
+    _SO + "SecurityOperationsContractTest::test_closure_conditions_are_conditional::assert-01",
+    _SO + "SecurityOperationsContractTest::test_closure_conditions_are_conditional::assert-02",
+    _SO + "SecurityOperationsContractTest::test_closure_conditions_are_conditional::assert-03",
+    _SO + "SecurityOperationsContractTest::test_closure_conditions_are_conditional::assert-04",
+    _SO + "SecurityOperationsContractTest::test_artifact_evidence_priority_and_role_boundaries::assert-01",
+    _SO + "SecurityOperationsContractTest::test_artifact_evidence_priority_and_role_boundaries::assert-02",
+    _SO + "SecurityOperationsContractTest::test_artifact_evidence_priority_and_role_boundaries::assert-03",
+    _SO + "SecurityOperationsContractTest::test_artifact_evidence_priority_and_role_boundaries::assert-04",
+    _SO + "SecurityOperationsContractTest::test_artifact_evidence_priority_and_role_boundaries::assert-05",
+    _SO + "SecurityOperationsContractTest::test_artifact_evidence_priority_and_role_boundaries::assert-06",
+    _SO + "SecurityOperationsContractTest::test_artifact_evidence_priority_and_role_boundaries::assert-07",
+    _SO + "SecurityOperationsContractTest::test_artifact_evidence_priority_and_role_boundaries::assert-08",
+    _SO + "SecurityOperationsContractTest::test_artifact_evidence_priority_and_role_boundaries::assert-09",
+    _SO + "SecurityOperationsContractTest::test_artifact_evidence_priority_and_role_boundaries::assert-10",
+    _SO + "SecurityOperationsContractTest::test_approved_operational_decisions_and_emergency_boundaries::assert-01",
+    _SO + "SecurityOperationsContractTest::test_approved_operational_decisions_and_emergency_boundaries::assert-02",
+    _SO + "SecurityOperationsContractTest::test_approved_operational_decisions_and_emergency_boundaries::assert-03",
+    _SO + "SecurityOperationsContractTest::test_withdrawal_and_correction_policy_is_fixed_without_new_contract::assert-01",
+    _SO + "SecurityOperationsContractTest::test_withdrawal_and_correction_policy_is_fixed_without_new_contract::assert-02",
+    _SO + "SecurityOperationsContractTest::test_withdrawal_and_correction_policy_is_fixed_without_new_contract::assert-03",
+    _SO + "SecurityOperationsContractTest::test_artifact_retention_exception_is_recorded_and_reviewed::assert-01",
+    _SO + "SecurityOperationsContractTest::test_artifact_retention_exception_is_recorded_and_reviewed::assert-02",
+    _SO + "SecurityOperationsContractTest::test_bl024_is_closed_with_merge_and_deployment_evidence::assert-01",
+    _SO + "SecurityOperationsContractTest::test_bl024_is_closed_with_merge_and_deployment_evidence::assert-09",
+    _SO + "SecurityOperationsContractTest::test_bl024_is_closed_with_merge_and_deployment_evidence::assert-10",
+    _SO + "SecurityOperationsContractTest::test_bl024_is_closed_with_merge_and_deployment_evidence::assert-11",
+    _SO + "SecurityOperationsContractTest::test_bl024_is_closed_with_merge_and_deployment_evidence::assert-12",
+    _SO + "SecurityOperationsContractTest::test_bl024_is_closed_with_merge_and_deployment_evidence::assert-13",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_source_suspension_does_not_rewrite_past_published_output::assert-01",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_source_suspension_does_not_rewrite_past_published_output::assert-04",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_verification_step_allows_readonly_official_page_check_not_blanket_ban::assert-01",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_verification_step_allows_readonly_official_page_check_not_blanket_ban::assert-02",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_verification_step_allows_readonly_official_page_check_not_blanket_ban::assert-03",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_verification_step_allows_readonly_official_page_check_not_blanket_ban::assert-04",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_verification_step_allows_readonly_official_page_check_not_blanket_ban::assert-05",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_verification_step_allows_readonly_official_page_check_not_blanket_ban::assert-06",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_section_11_source_suspension_summary_matches_section_7_verification_rule::assert-01",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_section_11_source_suspension_summary_matches_section_7_verification_rule::assert-02",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_section_11_source_suspension_summary_matches_section_7_verification_rule::assert-03",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_section_11_source_suspension_summary_matches_section_7_verification_rule::assert-04",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_section_11_source_suspension_summary_matches_section_7_verification_rule::assert-05",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_gemini_owner_verification_is_completed_as_paid_verified::assert-03",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_gemini_owner_verification_is_completed_as_paid_verified::assert-07",
+})
+
+SHARD_001_EXPECTED_D_IDS = frozenset({
+    _SO + "SecurityOperationsContractTest::test_version_10_identity_review_record_and_user_approval::assert-03",
+    _SO + "SecurityOperationsContractTest::test_bl024_is_closed_with_merge_and_deployment_evidence::assert-15",
+    _SO + "SecurityOperationsContractTest::test_bl024_is_closed_with_merge_and_deployment_evidence::assert-17",
+    _SO + "SecurityOperationsContractTest::test_bl024_is_closed_with_merge_and_deployment_evidence::assert-18",
+    _SO + "SecurityOperationsContractTest::test_bl024_is_closed_with_merge_and_deployment_evidence::assert-19",
+    _SO + "SecurityOperationsContractTest::test_bl024_is_closed_with_merge_and_deployment_evidence::assert-20",
+    _SO + "Bl031SecurityOperationsReconciliationTest::test_gemini_owner_verification_is_completed_as_paid_verified::assert-01",
+})
+
+# Tranche 3h has NO Category A entry -- pinned explicitly, not left implicit:
+# both fingerprint-duplicate groups below were reviewed and rejected as A.
+SHARD_001_EXPECTED_A_IDS = frozenset()
+
+SHARD_001_EXPECTED_CATEGORY_COUNTS = {
+    "A": len(SHARD_001_EXPECTED_A_IDS),
+    "B": SHARD_001_EXPECTED_ASSERTION_COUNT
+    - len(SHARD_001_EXPECTED_A_IDS)
+    - len(SHARD_001_EXPECTED_C_IDS)
+    - len(SHARD_001_EXPECTED_D_IDS),
+    "C": len(SHARD_001_EXPECTED_C_IDS),
+    "D": len(SHARD_001_EXPECTED_D_IDS),
+}
+
+# The two fingerprint-duplicate groups in this scope, each reviewed at
+# whole-method / extraction-context level and rejected as Category A.
+SHARD_001_FINGERPRINT_DUPLICATE_GROUPS = (
+    (
+        _SO + "SecurityOperationsContractTest::"
+        "test_source_suspension_procedure_is_recorded::assert-13",
+        _SO + "Bl031SecurityOperationsReconciliationTest::"
+        "test_verification_step_allows_readonly_official_page_check_not_blanket_ban::assert-01",
+    ),
+    (
+        _SO + "SecurityOperationsContractTest::"
+        "test_withdrawal_and_correction_policy_is_fixed_without_new_contract::assert-03",
+        _SO + "SecurityOperationsContractTest::"
+        "test_artifact_retention_exception_is_recorded_and_reviewed::assert-02",
+    ),
+)
+
+# Current index state. Tranche 3g's "exactly one shard" survives below as
+# HISTORY only, asserted NOT to be the current shard count.
+EXPECTED_SHARD_ORDER = (MANIFEST_PATH.name, SHARD_001_FILENAME)
+EXPECTED_SHARD_COUNT = len(EXPECTED_SHARD_ORDER)
+TRANCHE_3G_HISTORICAL_SHARD_COUNT = 1
+INDEX_COMBINED_ASSERTION_COUNT = (
+    BASE_EXPECTED_ASSERTION_COUNT + SHARD_001_EXPECTED_ASSERTION_COUNT
+)
+INDEX_COMBINED_CATEGORY_COUNTS = {
+    cat: BASE_EXPECTED_CATEGORY_COUNTS[cat] + SHARD_001_EXPECTED_CATEGORY_COUNTS[cat]
+    for cat in ("A", "B", "C", "D")
+}
+
 
 EXPECTED_ENTRY_KEY_ORDER = (
     "id",
@@ -901,8 +1103,8 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         self._assert_expected_scope(self.manifest)
 
     def test_assertion_and_live_inventory_counts_match_expected_totals(self):
-        self.assertEqual(len(self.manifest["assertions"]), COMBINED_EXPECTED_ASSERTION_COUNT)
-        self.assertEqual(len(self.live_records), COMBINED_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(len(self.manifest["assertions"]), BASE_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(len(self.live_records), BASE_EXPECTED_ASSERTION_COUNT)
         self.assertEqual(
             len(self.live_records_by_file[CUSTOM_DOMAIN_SOURCE_FILE]),
             CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT,
@@ -982,8 +1184,8 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
             + counts_by_file[SECURITY_REQUIREMENTS_SOURCE_FILE][cat]
             for cat in ("A", "B", "C", "D")
         }
-        self.assertEqual(combined, COMBINED_EXPECTED_CATEGORY_COUNTS)
-        self.assertEqual(sum(combined.values()), COMBINED_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(combined, BASE_EXPECTED_CATEGORY_COUNTS)
+        self.assertEqual(sum(combined.values()), BASE_EXPECTED_ASSERTION_COUNT)
 
     # Round 2 fix (Blocker 3): category *counts* alone can't catch a B/C (or
     # any two same-count-preserving categories) entry swap. This checks the
@@ -996,11 +1198,11 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
     def _assert_exact_category_membership(self, manifest):
         by_id = {a["id"]: a["category"] for a in manifest["assertions"]}
         all_ids = frozenset(by_id)
-        expected_b_ids = all_ids - COMBINED_EXPECTED_A_IDS - COMBINED_EXPECTED_C_IDS - COMBINED_EXPECTED_D_IDS
+        expected_b_ids = all_ids - BASE_EXPECTED_A_IDS - BASE_EXPECTED_C_IDS - BASE_EXPECTED_D_IDS
         for entry_id, expected_category in (
-            [(i, "A") for i in COMBINED_EXPECTED_A_IDS]
-            + [(i, "C") for i in COMBINED_EXPECTED_C_IDS]
-            + [(i, "D") for i in COMBINED_EXPECTED_D_IDS]
+            [(i, "A") for i in BASE_EXPECTED_A_IDS]
+            + [(i, "C") for i in BASE_EXPECTED_C_IDS]
+            + [(i, "D") for i in BASE_EXPECTED_D_IDS]
             + [(i, "B") for i in expected_b_ids]
         ):
             self.assertEqual(
@@ -1028,7 +1230,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                 mutated = json.loads(self.manifest_text)
                 by_id = {a["id"]: a for a in mutated["assertions"]}
                 expected_b_ids = (
-                    frozenset(by_id) - COMBINED_EXPECTED_A_IDS - COMBINED_EXPECTED_C_IDS - COMBINED_EXPECTED_D_IDS
+                    frozenset(by_id) - BASE_EXPECTED_A_IDS - BASE_EXPECTED_C_IDS - BASE_EXPECTED_D_IDS
                 )
                 b_candidates = [i for i in expected_b_ids if i.startswith(file + "::")]
                 b_entry = by_id[b_candidates[0]]
@@ -1039,7 +1241,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                 combined = {"A": 0, "B": 0, "C": 0, "D": 0}
                 for entry in mutated["assertions"]:
                     combined[entry["category"]] += 1
-                self.assertEqual(combined, COMBINED_EXPECTED_CATEGORY_COUNTS, "swap must be count-preserving")
+                self.assertEqual(combined, BASE_EXPECTED_CATEGORY_COUNTS, "swap must be count-preserving")
 
                 with self.assertRaises(AssertionError):
                     self._assert_exact_category_membership(mutated)
@@ -1065,7 +1267,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         mutated = json.loads(self.manifest_text)
         by_id = {a["id"]: a for a in mutated["assertions"]}
         expected_b_ids = (
-            frozenset(by_id) - COMBINED_EXPECTED_A_IDS - COMBINED_EXPECTED_C_IDS - COMBINED_EXPECTED_D_IDS
+            frozenset(by_id) - BASE_EXPECTED_A_IDS - BASE_EXPECTED_C_IDS - BASE_EXPECTED_D_IDS
         )
         prefix = SECURITY_REQUIREMENTS_SOURCE_FILE + "::Bl031AcceptanceAndBl032RegistrationTest::"
         b_entry = by_id[sorted(i for i in expected_b_ids if i.startswith(prefix))[0]]
@@ -1076,7 +1278,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         combined = {"A": 0, "B": 0, "C": 0, "D": 0}
         for entry in mutated["assertions"]:
             combined[entry["category"]] += 1
-        self.assertEqual(combined, COMBINED_EXPECTED_CATEGORY_COUNTS, "swap must be count-preserving")
+        self.assertEqual(combined, BASE_EXPECTED_CATEGORY_COUNTS, "swap must be count-preserving")
         with self.assertRaises(AssertionError):
             self._assert_exact_category_membership(mutated)
 
@@ -1490,7 +1692,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         start = next(i for i, l in enumerate(lines) if l.strip() == '"assertions": [')
         end = next(i for i, l in enumerate(lines) if i > start and l.strip() == "]")
         entry_lines = lines[start + 1 : end]
-        self.assertEqual(len(entry_lines), COMBINED_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(len(entry_lines), BASE_EXPECTED_ASSERTION_COUNT)
         for line in entry_lines:
             stripped = line.strip().rstrip(",")
             parsed = json.loads(stripped)
@@ -1502,48 +1704,324 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         self.assertEqual(reread, self.manifest)
 
 
+class Tranche3hClassificationShardTest(unittest.TestCase):
+    """BL-038 tranche 3h: the first ADDITIONAL shard. Deliberately separate
+    from DocumentTestClassificationScopeTest, whose literals describe the
+    frozen base manifest and must not absorb tranche 3h's values; the two
+    records are combined -- never merged -- in ClassificationShardIndexTest."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.shard_text = SHARD_001_PATH.read_text(encoding="utf-8")
+        cls.shard = json.loads(cls.shard_text)
+        cls.entries = cls.shard["assertions"]
+        cls.by_id = {e["id"]: e for e in cls.entries}
+        source = (ROOT / SHARD_001_SOURCE_FILE).read_text(encoding="utf-8")
+        cls.live_records = dti.enumerate_assertions(
+            source, SHARD_001_SOURCE_FILE, list(SHARD_001_EXPECTED_CLASSES)
+        )
+        cls.source_classes = [
+            n.name for n in ast.parse(source, filename=SHARD_001_SOURCE_FILE).body
+            if isinstance(n, ast.ClassDef)
+        ]
+
+    def expected_ids_in_source_order(self):
+        """The shard's complete id list expanded from hardcoded literals."""
+        return [
+            f"{SHARD_001_SOURCE_FILE}::{cls_name}::{method}::assert-{ordinal:02d}"
+            for cls_name, method, count in SHARD_001_EXPECTED_METHOD_ORDER
+            for ordinal in range(1, count + 1)
+        ]
+
+    def test_shard_is_scoped_to_exactly_the_two_selected_classes_in_source_order(self):
+        self.assertEqual(self.shard["schema_version"], 1)
+        self.assertIs(type(self.shard["schema_version"]), int)
+        self.assertEqual(SHARD_001_PATH.name, SHARD_001_FILENAME)
+        self.assertEqual(len(self.shard["scope"]), 1)
+        scope_entry = self.shard["scope"][0]
+        self.assertEqual(scope_entry["file"], SHARD_001_SOURCE_FILE)
+        self.assertEqual(tuple(scope_entry["classes"]), SHARD_001_EXPECTED_CLASSES)
+        # Declared class order equals the order the classes appear in source.
+        self.assertEqual(
+            [c for c in self.source_classes if c in SHARD_001_EXPECTED_CLASSES],
+            list(SHARD_001_EXPECTED_CLASSES),
+        )
+        # The file's third class stays unclassified: including it would be
+        # 170 assertions, over this tranche's 150-assertion cap.
+        self.assertIn(SHARD_001_UNOWNED_CLASS, self.source_classes)
+        self.assertNotIn(SHARD_001_UNOWNED_CLASS, scope_entry["classes"])
+
+    def test_shard_ids_are_exactly_the_hardcoded_source_order_expansion(self):
+        expected = self.expected_ids_in_source_order()
+        self.assertEqual(len(expected), SHARD_001_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(len(SHARD_001_EXPECTED_METHOD_ORDER), SHARD_001_EXPECTED_METHOD_COUNT)
+        self.assertEqual([e["id"] for e in self.entries], expected)
+        self.assertEqual(len(set(expected)), len(expected))
+        # ... and the same list is what the live source actually enumerates.
+        self.assertEqual([r.id for r in self.live_records], expected)
+        self.assertEqual(len(self.entries), SHARD_001_EXPECTED_ASSERTION_COUNT)
+
+    def test_shard_entries_match_the_live_source_inventory_fields(self):
+        live_by_id = {r.id: r for r in self.live_records}
+        for entry in self.entries:
+            with self.subTest(id=entry["id"]):
+                record = live_by_id[entry["id"]]
+                self.assertEqual(entry["file"], SHARD_001_SOURCE_FILE)
+                self.assertEqual(entry["class"], record.cls)
+                self.assertEqual(entry["method"], record.method)
+                self.assertEqual(entry["ordinal"], record.ordinal)
+                self.assertEqual(entry["assertion_api"], record.assertion_api)
+                self.assertEqual(entry["fingerprint"], record.fingerprint)
+        failures, summary = dti.validate_manifest(self.shard, root=ROOT)
+        self.assertEqual([f.format() for f in failures], [])
+        self.assertEqual(summary["inventoried_assertions"], SHARD_001_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(summary["manifest_assertions"], SHARD_001_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(summary["scoped_classes"], len(SHARD_001_EXPECTED_CLASSES))
+        self.assertEqual((summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]), (0, 0, 0))
+
+    def test_exact_category_membership_matches_hardcoded_id_sets(self):
+        all_ids = frozenset(self.by_id)
+        expected_b_ids = (
+            all_ids
+            - SHARD_001_EXPECTED_A_IDS
+            - SHARD_001_EXPECTED_C_IDS
+            - SHARD_001_EXPECTED_D_IDS
+        )
+        # Category A is 0 for tranche 3h -- pinned explicitly, not implied.
+        self.assertEqual(SHARD_001_EXPECTED_A_IDS, frozenset())
+        self.assertEqual(SHARD_001_EXPECTED_CATEGORY_COUNTS["A"], 0)
+        self.assertEqual([e["id"] for e in self.entries if e["category"] == "A"], [])
+        for id_, category in (
+            [(i, "A") for i in SHARD_001_EXPECTED_A_IDS]
+            + [(i, "C") for i in SHARD_001_EXPECTED_C_IDS]
+            + [(i, "D") for i in SHARD_001_EXPECTED_D_IDS]
+            + [(i, "B") for i in expected_b_ids]
+        ):
+            with self.subTest(id=id_, category=category):
+                self.assertIn(id_, self.by_id)
+                self.assertEqual(self.by_id[id_]["category"], category)
+                self.assertEqual(self.by_id[id_]["action"], dti.CATEGORY_TO_ACTION[category])
+        counts = Counter(e["category"] for e in self.entries)
+        self.assertEqual(dict(counts), {k: v for k, v in SHARD_001_EXPECTED_CATEGORY_COUNTS.items() if v})
+        for category in ("A", "B", "C", "D"):
+            with self.subTest(category=category):
+                self.assertEqual(counts[category], SHARD_001_EXPECTED_CATEGORY_COUNTS[category])
+        self.assertEqual(sum(counts.values()), SHARD_001_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(len(expected_b_ids), SHARD_001_EXPECTED_CATEGORY_COUNTS["B"])
+
+    def test_entries_are_well_formed_and_use_the_fixed_key_order(self):
+        for entry in self.entries:
+            with self.subTest(id=entry["id"]):
+                self.assertEqual(tuple(entry.keys()), EXPECTED_ENTRY_KEY_ORDER)
+                self.assertNotIn("target", entry)
+                self.assertIsInstance(entry["targets"], list)
+                self.assertTrue(entry["targets"])
+                for target in entry["targets"]:
+                    self.assertTrue((ROOT / target).exists(), target)
+                for field in ("contract_summary", "rationale"):
+                    text = entry[field]
+                    self.assertTrue(text.strip())
+                    for word in _PLACEHOLDER_WORDS:
+                        self.assertNotIn(word, text.lower())
+                markers = _CATEGORY_MARKERS[entry["category"]]
+                self.assertTrue(
+                    any(m in entry["rationale"].lower() for m in markers),
+                    f"{entry['id']}: rationale gives no category-{entry['category']} reasoning",
+                )
+
+    def test_raw_file_meets_the_shard_format_contract_within_the_line_cap(self):
+        failures = dti.validate_shard_file_format(SHARD_001_PATH, self.shard, shard=SHARD_001_FILENAME)
+        self.assertEqual([f.format() for f in failures], [])
+        lines = self.shard_text.splitlines()
+        self.assertEqual(len(lines), SHARD_001_EXPECTED_LINE_COUNT)
+        self.assertLessEqual(len(lines), dti.SHARD_LINE_CAP)
+        self.assertEqual(dti.SHARD_LINE_CAP, BASE_MANIFEST_LINE_CAP)  # cap not raised
+        self.assertTrue(self.shard_text.endswith("\n"))
+        start = lines.index('  "assertions": [')
+        entry_lines = lines[start + 1 : lines.index("  ]", start)]
+        self.assertEqual(len(entry_lines), SHARD_001_EXPECTED_ASSERTION_COUNT)
+        for offset, line in enumerate(entry_lines):
+            with self.subTest(line=start + 2 + offset):
+                parsed = json.loads(line.strip().rstrip(","), object_pairs_hook=OrderedDict)
+                self.assertEqual(tuple(parsed.keys()), EXPECTED_ENTRY_KEY_ORDER)
+        self.assertEqual(json.loads(self.shard_text), self.shard)
+
+    def test_shard_claims_no_id_or_class_already_owned_by_the_base_manifest(self):
+        base = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+        base_ids = {e["id"] for e in base["assertions"]}
+        self.assertEqual(base_ids & frozenset(self.by_id), frozenset())
+        base_pairs = {(s["file"], c) for s in base["scope"] for c in s["classes"]}
+        shard_pairs = {(s["file"], c) for s in self.shard["scope"] for c in s["classes"]}
+        self.assertEqual(base_pairs & shard_pairs, set())
+        self.assertNotIn(SHARD_001_SOURCE_FILE, {s["file"] for s in base["scope"]})
+        self.assertEqual(len(base_ids), BASE_EXPECTED_ASSERTION_COUNT)
+
+    def test_fingerprint_duplicate_groups_are_not_category_a(self):
+        """Every fingerprint collision here was reviewed at whole-method /
+        extraction-context level and rejected as a Category A candidate."""
+        by_fingerprint = {}
+        for entry in self.entries:
+            by_fingerprint.setdefault(entry["fingerprint"], []).append(entry["id"])
+        groups = sorted(tuple(ids) for ids in by_fingerprint.values() if len(ids) > 1)
+        self.assertEqual(groups, sorted(SHARD_001_FINGERPRINT_DUPLICATE_GROUPS))
+        for group in groups:
+            with self.subTest(group=group):
+                for id_ in group:
+                    self.assertNotIn(id_, SHARD_001_EXPECTED_A_IDS)
+                    self.assertNotEqual(self.by_id[id_]["category"], "A")
+                    # The rationale must SAY why the collision is not A.
+                    self.assertIn("not a category a candidate", self.by_id[id_]["rationale"].lower())
+        # The second group collides only because both call sites are the bare
+        # loop call `self.assertIn(contract, compact)`; their enclosing `for`
+        # tuples are different, which the assertion fingerprint cannot see.
+        spurious = SHARD_001_FINGERPRINT_DUPLICATE_GROUPS[1]
+        loops = {
+            id_: len(self._loop_literals_for(id_)) for id_ in spurious
+        }
+        self.assertEqual(sorted(loops.values()), [9, 10])
+        self.assertNotEqual(*[frozenset(self._loop_literals_for(i)) for i in spurious])
+
+    def _loop_literals_for(self, entry_id):
+        """The string literals of the `for` tuple enclosing an assertion."""
+        _file, class_name, method_name, _ordinal = entry_id.split("::")
+        source = (ROOT / SHARD_001_SOURCE_FILE).read_text(encoding="utf-8")
+        method = _find_method(source, SHARD_001_SOURCE_FILE, class_name, method_name)
+        literals = []
+        for node in ast.walk(method):
+            if isinstance(node, ast.For) and isinstance(node.iter, ast.Tuple):
+                literals.extend(
+                    e.value for e in node.iter.elts if isinstance(e, ast.Constant)
+                )
+        return literals
+
+    def test_scope_shrinkage_mutation_of_the_new_shard_is_detected(self):
+        """Demonstrated, not asserted: dropping the second class and its
+        entries leaves an internally consistent manifest dti accepts -- only
+        the hardcoded literals above catch it."""
+        mutated = json.loads(json.dumps(self.shard))
+        dropped = SHARD_001_EXPECTED_CLASSES[1]
+        mutated["scope"][0]["classes"] = [SHARD_001_EXPECTED_CLASSES[0]]
+        mutated["assertions"] = [e for e in mutated["assertions"] if e["class"] != dropped]
+        failures, _summary = dti.validate_manifest(mutated, root=ROOT)
+        self.assertEqual([f.format() for f in failures], [], "dti alone cannot see the shrinkage")
+        self.assertNotEqual(tuple(mutated["scope"][0]["classes"]), SHARD_001_EXPECTED_CLASSES)
+        self.assertLess(len(mutated["assertions"]), SHARD_001_EXPECTED_ASSERTION_COUNT)
+        with self.assertRaises(AssertionError):
+            self.assertEqual(
+                tuple(mutated["scope"][0]["classes"]), SHARD_001_EXPECTED_CLASSES
+            )
+
+
 class ClassificationShardIndexTest(unittest.TestCase):
-    """BL-038 tranche 3g: the repository-level shard-index contract. The
-    index -- not a glob -- says which manifests make up the classification;
-    today, exactly one, unchanged."""
+    """BL-038 tranche 3h: the shard-index contract. The index -- not a glob
+    -- says which manifests make up the classification and in what order; as
+    of tranche 3h, the frozen base manifest then shard 001. Tranche 3g's own
+    one-shard state is kept only as history and asserted NOT to be current."""
 
     def setUp(self):
         self.index_text = INDEX_PATH.read_text(encoding="utf-8")
         self.index = json.loads(self.index_text, object_pairs_hook=OrderedDict)
 
-    def test_index_declares_exactly_the_base_manifest_and_combines_to_the_same_result(self):
+    def test_index_declares_the_base_manifest_then_shard_001_in_that_order(self):
         self.assertEqual(tuple(self.index.keys()), dti.INDEX_TOP_LEVEL_KEYS)
         self.assertIs(type(self.index["schema_version"]), int)
-        self.assertEqual(json.loads(self.index_text), {"schema_version": 1, "shards": [MANIFEST_PATH.name]})
+        self.assertEqual(
+            json.loads(self.index_text),
+            {"schema_version": 1, "shards": [MANIFEST_PATH.name, SHARD_001_FILENAME]},
+        )
         self.assertTrue(self.index_text.endswith("\n"))
+        # Order is part of the contract: it fixes combined assertion order.
+        self.assertEqual(tuple(self.index["shards"]), EXPECTED_SHARD_ORDER)
+        self.assertEqual(self.index["shards"][0], MANIFEST_PATH.name)
+        self.assertEqual(self.index["shards"][1], SHARD_001_FILENAME)
+        self.assertEqual(len(self.index["shards"]), EXPECTED_SHARD_COUNT)
+        self.assertEqual(len(set(self.index["shards"])), EXPECTED_SHARD_COUNT)
         # An unregistered shard file would silently vanish from the check.
-        self.assertEqual(dti.discover_shard_filenames(ROOT), self.index["shards"])
-        self.assertTrue(dti.is_allowed_shard_filename("document_test_classification_001.json"))
+        self.assertEqual(dti.discover_shard_filenames(ROOT), sorted(EXPECTED_SHARD_ORDER))
+        self.assertTrue(dti.is_allowed_shard_filename(SHARD_001_FILENAME))
         self.assertFalse(dti.is_allowed_shard_filename(dti.INDEX_FILENAME))
+        # Tranche 3g shipped a one-shard index; that is history, not now.
+        self.assertEqual(TRANCHE_3G_HISTORICAL_SHARD_COUNT, 1)
+        self.assertNotEqual(len(self.index["shards"]), TRANCHE_3G_HISTORICAL_SHARD_COUNT)
+
+    def test_combined_index_validation_reports_the_two_shard_totals(self):
         failures, combined = dti.validate_indexed_manifests(root=ROOT)
         self.assertEqual([f.format() for f in failures], [])
-        self.assertEqual((combined["shard_count"], combined["shard_files"]), (1, [MANIFEST_PATH.name]))
-        manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
-        legacy_failures, legacy = dti.validate_manifest(manifest, root=ROOT)
-        self.assertEqual([f.format() for f in legacy_failures], [])
-        for key in legacy:
-            with self.subTest(key=key):
-                self.assertEqual(combined[key], legacy[key])
-        self.assertEqual(combined["manifest_assertions"], COMBINED_EXPECTED_ASSERTION_COUNT)
-        self.assertEqual(combined["category_counts"], COMBINED_EXPECTED_CATEGORY_COUNTS)
-        self.assertEqual((combined["unclassified"], combined["stale"], combined["fingerprint_mismatch"]), (0, 0, 0))
-        load_failures, loaded = dti.load_shard_manifests(combined["shard_files"], root=ROOT)
-        self.assertEqual(load_failures, [])
-        self.assertEqual(dti.combined_assertion_ids(loaded), [e["id"] for e in manifest["assertions"]])
+        self.assertEqual(
+            (combined["shard_count"], combined["shard_files"]),
+            (EXPECTED_SHARD_COUNT, list(EXPECTED_SHARD_ORDER)),
+        )
+        self.assertEqual(combined["manifest_assertions"], INDEX_COMBINED_ASSERTION_COUNT)
+        self.assertEqual(combined["inventoried_assertions"], INDEX_COMBINED_ASSERTION_COUNT)
+        self.assertEqual(INDEX_COMBINED_ASSERTION_COUNT, 585 + 136)
+        self.assertEqual(combined["category_counts"], INDEX_COMBINED_CATEGORY_COUNTS)
+        self.assertEqual(sum(combined["category_counts"].values()), INDEX_COMBINED_ASSERTION_COUNT)
+        self.assertEqual(
+            (combined["unclassified"], combined["stale"], combined["fingerprint_mismatch"]), (0, 0, 0)
+        )
+        # Combined counts are base + tranche 3h, never a re-derived tally.
+        for category in ("A", "B", "C", "D"):
+            with self.subTest(category=category):
+                self.assertEqual(
+                    combined["category_counts"][category],
+                    BASE_EXPECTED_CATEGORY_COUNTS[category]
+                    + SHARD_001_EXPECTED_CATEGORY_COUNTS[category],
+                )
+        self.assertEqual(
+            sorted(combined["scoped_files"]),
+            sorted({f for f, _ in EXPECTED_SCOPE_ORDER} | {SHARD_001_SOURCE_FILE}),
+        )
+        self.assertEqual(combined["file_counts"][SHARD_001_SOURCE_FILE], SHARD_001_EXPECTED_ASSERTION_COUNT)
 
-    def test_base_manifest_is_byte_identical_and_meets_the_shard_format_contract(self):
-        # The validator every added shard is held to, run on the base shard.
+    def test_combined_assertion_order_is_base_entries_then_shard_001_entries(self):
+        load_failures, loaded = dti.load_shard_manifests(list(EXPECTED_SHARD_ORDER), root=ROOT)
+        self.assertEqual(load_failures, [])
+        base = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+        shard_001 = json.loads(SHARD_001_PATH.read_text(encoding="utf-8"))
+        base_ids = [e["id"] for e in base["assertions"]]
+        shard_ids = [e["id"] for e in shard_001["assertions"]]
+        combined_ids = dti.combined_assertion_ids(loaded)
+        self.assertEqual(combined_ids, base_ids + shard_ids)
+        self.assertEqual(len(combined_ids), INDEX_COMBINED_ASSERTION_COUNT)
+        self.assertEqual(len(set(combined_ids)), len(combined_ids))  # no cross-shard duplicate id
+        # No cross-shard ownership overlap either.
+        owners = {}
+        for shard, manifest in loaded:
+            for scope_entry in manifest["scope"]:
+                for class_name in scope_entry["classes"]:
+                    key = (scope_entry["file"], class_name)
+                    with self.subTest(pair=key):
+                        self.assertNotIn(key, owners)
+                    owners[key] = shard
+        self.assertEqual(owners[(SHARD_001_SOURCE_FILE, SHARD_001_EXPECTED_CLASSES[0])], SHARD_001_FILENAME)
+        self.assertNotIn((SHARD_001_SOURCE_FILE, SHARD_001_UNOWNED_CLASS), owners)
+
+    def test_legacy_single_manifest_path_still_validates_the_base_alone(self):
+        """`--manifest` keeps working and keeps reporting the BASE record --
+        585 entries, A22/B175/C268/D120 -- untouched by the new shard."""
+        manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
+        failures, legacy = dti.validate_manifest(manifest, root=ROOT)
+        self.assertEqual([f.format() for f in failures], [])
+        self.assertEqual(legacy["manifest_assertions"], BASE_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(legacy["inventoried_assertions"], BASE_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(legacy["category_counts"], BASE_EXPECTED_CATEGORY_COUNTS)
+        self.assertEqual(legacy["scoped_files"], sorted(f for f, _ in EXPECTED_SCOPE_ORDER))
+        self.assertNotIn(SHARD_001_SOURCE_FILE, legacy["scoped_files"])
+        self.assertEqual((legacy["unclassified"], legacy["stale"], legacy["fingerprint_mismatch"]), (0, 0, 0))
+
+    def test_every_indexed_shard_meets_the_shard_format_contract(self):
+        # The validator every added shard is held to, run on all of them.
         for shard in self.index["shards"]:
-            manifest = json.loads((ROOT / shard).read_text(encoding="utf-8"))
-            failures = dti.validate_shard_file_format(ROOT / shard, manifest, shard=shard)
-            self.assertEqual([f.format() for f in failures], [])
+            with self.subTest(shard=shard):
+                manifest = json.loads((ROOT / shard).read_text(encoding="utf-8"))
+                failures = dti.validate_shard_file_format(ROOT / shard, manifest, shard=shard)
+                self.assertEqual([f.format() for f in failures], [])
+                self.assertLessEqual(len((ROOT / shard).read_text(encoding="utf-8").splitlines()),
+                                     dti.SHARD_LINE_CAP)
         self.assertIn(EXPECTED_ENTRY_KEY_ORDER, dti.ENTRY_KEY_ORDERS)
         self.assertEqual(dti.SHARD_LINE_CAP, BASE_MANIFEST_LINE_CAP)
+
+    def test_base_manifest_is_byte_identical_and_unchanged_by_tranche_3h(self):
         raw = MANIFEST_PATH.read_bytes()
         self.assertEqual(hashlib.sha256(raw).hexdigest(), BASE_MANIFEST_SHA256)
         text = raw.decode("utf-8")
@@ -1551,11 +2029,13 @@ class ClassificationShardIndexTest(unittest.TestCase):
         self.assertEqual(len(text.splitlines()), BASE_MANIFEST_LINE_COUNT)
         self.assertEqual(BASE_MANIFEST_LINE_CAP - BASE_MANIFEST_LINE_COUNT, 4)
         manifest = json.loads(text)
-        self.assertEqual(len(manifest["assertions"]), COMBINED_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(len(manifest["assertions"]), BASE_EXPECTED_ASSERTION_COUNT)
         self.assertEqual(Counter(e["category"] for e in manifest["assertions"]),
-                         Counter(COMBINED_EXPECTED_CATEGORY_COUNTS))
+                         Counter(BASE_EXPECTED_CATEGORY_COUNTS))
         self.assertEqual([s["file"] for s in manifest["scope"]], [f for f, _ in EXPECTED_SCOPE_ORDER])
-        self.assertEqual(self.index["shards"], [MANIFEST_PATH.name])  # no added shard
+        # Tranche 3h added its 136 entries to a NEW file, not to this one.
+        self.assertNotIn(SHARD_001_SOURCE_FILE, text)
+        self.assertLess(BASE_EXPECTED_ASSERTION_COUNT, INDEX_COMBINED_ASSERTION_COUNT)
 
 
 if __name__ == "__main__":
