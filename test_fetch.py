@@ -5747,46 +5747,63 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
 
 
 class Bl038Tranche3gRecordSyncTest(unittest.TestCase):
-    """BL-038 tranche 3g (PR #88/tranche 3f closeout sync + classification
-    manifest sharding infrastructure) record-sync checks. Infrastructure only:
-    no classification, no Category C conversion. Readers reused; the base
-    manifest byte-identity guard lives in the classification suite."""
+    """BL-038 tranche 3g record-sync checks, re-anchored by tranche 3h to
+    HISTORICAL facts: tranche 3g is accepted (PR #89, merged), it came after
+    3f and before 3h, and it shipped the sharding infrastructure with zero
+    classification -- including the fact that NO additional shard existed
+    yet at that time. Nothing here asserts a current state; the current
+    shard count and combined totals belong to Bl038Tranche3hRecordSyncTest
+    and to the classification suite."""
 
     ROOT = Bl038Tranche3eRecordSyncTest.ROOT
     _read = Bl038Tranche3eRecordSyncTest._read
     _bl038_section = Bl038Tranche3eRecordSyncTest._bl038_section
     _status_bl038_line = Bl038Tranche3eRecordSyncTest._status_bl038_line
 
-    def test_backlog_bl038_state_and_residual_work_reflect_tranche3g_in_progress(self):
+    def test_tranche3g_is_recorded_as_accepted_after_3f_and_before_3h(self):
         bl038 = self._bl038_section()
         own_state_line = next(l for l in bl038.splitlines() if l.startswith("- **状態:**"))
-        self.assertIn("tranche 3g実装中", own_state_line)
         accepted = own_state_line.split("(", 1)[1].split("受入済み", 1)[0].split("・")
         self.assertIn("3f", accepted)
-        self.assertNotIn("3g", accepted)
-        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
-        residual = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE).group(0)
-        for required in (
-            "tranche 3gのDraft PR独立レビュー・最終受入・Ready化・merge",
-            "document_test_classification_001.json",
-            "tranche 1・2・3a・3b・3c・3d・3e・3fは受入済み、tranche 3gは実装中",
-            "BL-038全体の最終受入は上記残作業が完了するまで行わない",
+        self.assertIn("3g", accepted)  # 3g is now accepted, not in progress
+        self.assertNotIn("3h", accepted)
+        self.assertNotIn("tranche 3g実装中", own_state_line)
+        # 3g sits strictly between 3f and 3h in the record.
+        self.assertLess(bl038.index("tranche 3f最終受入日:"), bl038.index("tranche 3g最終受入日:"))
+        self.assertLess(bl038.index("tranche 3g最終受入日:"), bl038.index("tranche 3h着手(2026-08-07)"))
+
+    def test_backlog_records_the_tranche3g_final_acceptance_and_merge_evidence(self):
+        lines = self._bl038_section().splitlines()
+        for prefix, requirements in (
+            ("- **tranche 3g最終受入日:**", ("2026-08-07",)),
+            ("- **tranche 3g最終受入原文:**", ("「ok」", "上記19", "別の発言")),
+            ("- **tranche 3g最終受入原文の解釈:**",
+             ("PR #89", "Ready化", "通常のmerge commit方式",
+              "Category C source conversion承認ではなく", "BL-038全体の完了承認でもなく")),
+            ("- **tranche 3g最終受入証跡:**",
+             ("c4d467f8e69f99e8a5f9bf5bf403980560b4e150", "31173107249", "Accept／Blocker 0",
+              "1939 tests OK", "156 tests OK", "classification 34・inventory 95・utils 27",
+              "104 tests OK", "111 tests OK", "120 tests OK",
+              "962 insertions／37 deletions", "999 changed lines")),
+            ("- **tranche 3g merge記録:**",
+             ("0f8acc24355262c9325d8dea6a7b86960fb53615",
+              "66ef88e54ab6245f83af44c696834569af2b58f2",
+              "c4d467f8e69f99e8a5f9bf5bf403980560b4e150",
+              "31173887656", "attempt 1", "dynamic", "success",
+              "automatic run")),
         ):
-            with self.subTest(required=required):
-                self.assertIn(required, residual)
+            line = next(l for l in lines if l.startswith(prefix))
+            for required in requirements:
+                with self.subTest(prefix=prefix, required=required):
+                    self.assertIn(required, line)
 
     def test_backlog_records_entries_seventeen_and_eighteen(self):
         bl038 = self._bl038_section()
         history_start = bl038.index("ユーザー原文の履歴")
         history = bl038[history_start : bl038.index("着手時ユーザー原文:", history_start)]
-        # 「ok」 5 -> 6 with 3f's acceptance; 「次へ」 is a NEW string, distinct
-        # from the existing 「次へ進めて」.
-        self.assertIn("「ok」6回・「おk」7回・「次へ進めて」1回・「次へ」1回・「はい」1回", history)
-        self.assertNotIn("「ok」5回", history)
         entries = re.findall(
             r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL
         )
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 19)])
         for number, requirements in (
             ("17", ("tranche 3f final acceptance original", "2026-08-07", "「ok」", "PR #88",
                     "Ready化と通常のmerge commit方式によるmerge",
@@ -5812,13 +5829,23 @@ class Bl038Tranche3gRecordSyncTest(unittest.TestCase):
                 "tranche 3f最終受入・merge(2026-08-07)", "Pull Request CI run 31139149826",
                 "tranche 3g着手(2026-08-07)", "test/bl038-tranche3g-manifest-sharding",
                 "容量問題(tranche 3g)", "実装証跡(tranche 3g、infrastructure only)", "invalid UTF-8",
-                "新規classification entryは0件", "current shard countは1", "BL-038全体は未完了",
+                "新規classification entryは0件", "tranche 3g時点のcurrent shard countは1",
+                "BL-038全体は未完了",
                 "round 1修正(tranche 3g", "round 2修正(tranche 3g", "symlink", "raw-file format",
                 "index directory entry自身のsymlinkも禁止", "round 3修正(tranche 3g", "shard-discovery-error")),
         ):
             for required in requirements:
                 with self.subTest(required=required):
                     self.assertIn(required, text)
+
+    def test_status_no_longer_claims_tranche3g_is_the_current_shard_state(self):
+        status = self._status_bl038_line()
+        # The one-shard state is history now, explicitly dated to tranche 3g.
+        self.assertIn("tranche 3g時点のcurrent shard countは1で(tranche 3hで2へ増えた)", status)
+        self.assertNotIn("current shard countは1で、combined summary", status)
+        self.assertIn("この時点で追加classification shardはrepositoryへまだ作成していなかった", status)
+        self.assertIn("この時点でadditional repository shardは未作成", status)
+        self.assertNotIn("追加classification shardはrepositoryへまだ作成していない。", status)
 
     def test_backlog_records_the_capacity_problem_and_the_shard_contract(self):
         lines = self._bl038_section().splitlines()
@@ -5844,6 +5871,190 @@ class Bl038Tranche3gRecordSyncTest(unittest.TestCase):
             for required in requirements:
                 with self.subTest(prefix=prefix, required=required):
                     self.assertIn(required, line)
+
+
+class Bl038Tranche3hRecordSyncTest(unittest.TestCase):
+    """BL-038 tranche 3h (PR #89/tranche 3g closeout sync + the FIRST
+    additional classification shard) record-sync checks. Tranche 3h is in
+    progress: tranche 1 through 3g are accepted, 3h is not, and BL-038 as a
+    whole is not complete."""
+
+    ROOT = Bl038Tranche3eRecordSyncTest.ROOT
+    _read = Bl038Tranche3eRecordSyncTest._read
+    _bl038_section = Bl038Tranche3eRecordSyncTest._bl038_section
+    _status_bl038_line = Bl038Tranche3eRecordSyncTest._status_bl038_line
+
+    def test_backlog_state_and_residual_work_reflect_tranche3h_in_progress(self):
+        bl038 = self._bl038_section()
+        own_state_line = next(l for l in bl038.splitlines() if l.startswith("- **状態:**"))
+        self.assertIn("tranche 3h実装中", own_state_line)
+        accepted = own_state_line.split("(", 1)[1].split("受入済み", 1)[0].split("・")
+        self.assertEqual(accepted, ["tranche 1", "2", "3a", "3b", "3c", "3d", "3e", "3f", "3g"])
+        self.assertNotIn("3h", accepted)
+        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
+        residual = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE).group(0)
+        for required in (
+            "tranche 3hのDraft PR独立レビュー・最終受入・Ready化・merge",
+            "tranche 3hの91件",
+            "追加先shardは事前に固定しない",
+            "実測上必要になった時点で作成する",
+            "tranche 1・2・3a・3b・3c・3d・3e・3f・3gは受入済み、tranche 3hは実装中",
+            "BL-038全体の最終受入は上記残作業が完了するまで行わない",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, residual)
+        self.assertNotIn("tranche 3gのDraft PR独立レビュー", residual)
+        # PR #90 round 1: no specific future shard filename is pre-committed
+        # in the residual work. Where the next tranche's entries land is
+        # decided by that tranche's own measured scope/ownership/line-cap/
+        # diff budget. (The round 1 record may still NAME the retracted
+        # filename; only the forward-looking residual must stay neutral.)
+        for premature in ("document_test_classification_002.json",
+                          "document_test_classification_003.json"):
+            with self.subTest(premature=premature):
+                self.assertNotIn(premature, residual)
+        self.assertIn("先行固定していた点を撤回した", self._bl038_section())
+
+    def test_backlog_records_entries_nineteen_and_twenty_with_updated_header_counts(self):
+        bl038 = self._bl038_section()
+        history_start = bl038.index("ユーザー原文の履歴")
+        history = bl038[history_start : bl038.index("着手時ユーザー原文:", history_start)]
+        # 「ok」 6 -> 7 with 3g's acceptance; 「次へ」 1 -> 2 with 3h's kickoff.
+        # 「次へ」 and 「次へ進めて」 stay distinct strings with distinct counts.
+        self.assertIn("「ok」7回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」1回", history)
+        self.assertNotIn("「ok」6回", history)
+        self.assertNotIn("「次へ」1回", history)
+        self.assertIn("「次へ進めて」1回", history)
+        self.assertIn("長文の作業指示1回", history)
+        self.assertIn("「A」1回", history)
+        entries = re.findall(
+            r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL
+        )
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 21)])
+        for number, requirements in (
+            ("19", ("tranche 3g final acceptance original", "2026-08-07", "「ok」", "PR #89",
+                    "Draft解除・Ready化", "通常のmerge commit方式によるmerge",
+                    "Category C source conversionの承認ではなく",
+                    "tranche 3h implementationの先行受入でもなく",
+                    "tranche 3全体またはBL-038全体の完了承認でもなく",
+                    "workflow_dispatch")),
+            ("20", ("tranche 3h kickoff original", "2026-08-07", "「次へ」",
+                    "tranche 3g closeout", "再測定", "document_test_classification_001.json",
+                    "「次へ進めて」とは別文字列・別発言",
+                    "tranche 3h実装内容の最終受入ではなく", "Ready化・merge承認でもなく",
+                    "Category C source conversionの承認でもなく",
+                    "tranche 3全体またはBL-038全体の完了承認でもない")),
+        ):
+            entry = next(text for n, text in entries if n == number)
+            for required in requirements:
+                with self.subTest(entry=number, required=required):
+                    self.assertIn(required, entry)
+
+    def test_backlog_records_the_candidate_remeasurement_and_the_unique_maximum(self):
+        lines = self._bl038_section().splitlines()
+        kickoff = next(l for l in lines if l.startswith("- **tranche 3h着手(2026-08-07):**"))
+        for required in (
+            "test/bl038-tranche3h-first-classification-shard",
+            "0f8acc24355262c9325d8dea6a7b86960fb53615",
+            "document_test_classification_001.json",
+            "Category C source conversionは行わない",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, kickoff)
+        survey = next(l for l in lines if l.startswith("- **候補実測(tranche 3h):**"))
+        for required in (
+            "test_security_operations.py", "108", "28", "34",
+            "test_security_requirements.py", "403", "123", "17",
+            "test_pr_ci_workflow.py", "27", "test_workflow_action_pinning.py", "23",
+            "test_source_usage_policy.py", "177",
+            "runtime-behavioral test除外", "150 assertions",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, survey)
+        selection = next(l for l in lines if l.startswith("- **選択(tranche 3h):**"))
+        for required in (
+            "最大は136で一意である", "tieなし", "次点は123",
+            "SecurityOperationsContractTest", "Bl031SecurityOperationsReconciliationTest",
+            "2 classes・24 methods・136 assertions",
+            "assertIn 115／assertNotIn 10／assertNotRegex 5／assertLess 4／assertTrue 2",
+            "custom assertion helperは3 classいずれにも存在せず",
+            "Bl035DraftSyncTest", "170件で上限超過",
+            "stop condition", "いずれも該当しない",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, selection)
+
+    def test_backlog_records_the_classification_result_and_the_untouched_base_manifest(self):
+        lines = self._bl038_section().splitlines()
+        evidence = next(l for l in lines if l.startswith("- **実装証跡(tranche 3h):**"))
+        for required in (
+            "**分類結果(round 1訂正後): A 0／B 38／C 91／D 7(total 136)**",
+            "document_test_classification_001.json",
+            "136 entries・144行",
+            "document_test_classification_index.json",
+            '["document_test_classification.json", "document_test_classification_001.json"]',
+            "byte-identical",
+            "640585ca03d7836cbdd66edcc8e2b21df7ea1de946b767ae20fa5c12e0c5f15a",
+            "585 entries、596行、A22/B175/C268/D120",
+            "document_test_inventory.py`と`test_document_test_inventory.py`は変更していない",
+            "shards 2", "combined 721 entries", "A=22 B=213 C=359 D=127",
+            "unclassified/stale/fingerprint mismatch いずれも0",
+            "Tranche3hClassificationShardTest",
+            "TRANCHE_3G_HISTORICAL_SHARD_COUNT",
+            "Category C 91件はこのPRでのsource変換対象ではない",
+            "carry-forwardによる機械的決定は行っていない",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, evidence)
+        # Category A is 0 for this tranche and both fingerprint duplicate
+        # groups were reviewed and rejected as Category A candidates.
+        self.assertIn("Category A該当なし", evidence)
+        self.assertIn("spurious duplicate", evidence)
+
+    def test_status_line_carries_the_tranche3g_closeout_and_tranche3h_scope(self):
+        status = self._status_bl038_line()
+        for required in (
+            "tranche 3g最終受入・merge(2026-08-07)",
+            "c4d467f8e69f99e8a5f9bf5bf403980560b4e150",
+            "31173107249", "0f8acc24355262c9325d8dea6a7b86960fb53615",
+            "31173887656", "merge-triggered automatic run",
+            "999 changed lines", "Accept／Blocker 0",
+            "tranche 3h着手(2026-08-07)",
+            "test/bl038-tranche3h-first-classification-shard",
+            "候補実測・選択(tranche 3h)", "最大は136の一意選択(tieなし)",
+            "実装証跡(tranche 3h)", "**A 0／B 38／C 91／D 7**(round 1訂正後)",
+            "document_test_classification_001.json",
+            "current shard countは2", "combined 721 entries",
+            "A 22／B 213／C 359／D 127",
+            "tranche 3hではCategory C source conversionを行っていない",
+            "BL-038全体は未完了",
+        ):
+            with self.subTest(required=required):
+                self.assertIn(required, status)
+        self.assertIn(
+            "tranche 1・2・3a・3b・3c・3d・3e・3f・3gはいずれも受入済みとなり", status
+        )
+        self.assertNotIn("tranche 3hは受入済み", status)
+
+    def test_repository_state_matches_the_recorded_shard_and_classification_facts(self):
+        index = json.loads((self.ROOT / "document_test_classification_index.json").read_text(encoding="utf-8"))
+        self.assertEqual(
+            index["shards"],
+            ["document_test_classification.json", "document_test_classification_001.json"],
+        )
+        from collections import Counter
+
+        shard = json.loads((self.ROOT / "document_test_classification_001.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(shard["assertions"]), 136)
+        self.assertEqual(
+            [s["file"] for s in shard["scope"]], ["test_security_operations.py"]
+        )
+        counts = Counter(e["category"] for e in shard["assertions"])
+        self.assertEqual(dict(counts), {"B": 38, "C": 91, "D": 7})
+        self.assertEqual(counts["A"], 0)
+        base = json.loads((self.ROOT / "document_test_classification.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(base["assertions"]), 585)
+        self.assertEqual(len(base["assertions"]) + len(shard["assertions"]), 721)
 
 
 if __name__ == "__main__":

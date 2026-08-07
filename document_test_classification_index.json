@@ -1,4 +1,4 @@
 {
   "schema_version": 1,
-  "shards": ["document_test_classification.json"]
+  "shards": ["document_test_classification.json", "document_test_classification_001.json"]
 }
