@@ -44,6 +44,31 @@ This module has two jobs:
    596, so further classification goes into ADDITIONAL shards, declared by
    the index -- never by glob, never followed through a symlink.
 
+4. A shard declares what it covers in its `scope`, in one of two forms. The
+   original WHOLE-CLASS form owns every test method of every class it names,
+   and validates exactly as it always has -- `file` and `classes` are checked
+   and any other key is ignored, not rejected:
+
+       {"file": "example.py", "classes": ["ExampleTest"]}
+
+   The METHOD-RANGE form (BL-038 tranche 3n) narrows one class to an
+   inclusive, source-order contiguous window of its own test methods, and
+   does have a closed key set:
+
+       {"file": "example.py", "classes": ["ExampleTest"],
+        "method_range": {"start": "test_first", "end": "test_last"}}
+
+   It exists because a class can hold more assertions than a single review
+   tranche can responsibly classify, and the alternative -- splitting a class
+   mid-METHOD, at some assertion boundary -- would scatter one method's
+   assertions across shards. A window is defined by its two boundaries, so
+   every method between them is inside it whether or not the manifest names
+   it, and windows must together cover an unbroken prefix of the class.
+   Between them those two rules mean a method can never end up silently owned
+   by nobody: one inserted inside a window is `unclassified`, one left between
+   windows is a `method-range-prefix-gap`, and only the tail past the last
+   window is legitimately unclassified future work.
+
 This is a project-management/test-maintenance tool, not a general Python
 analyzer. It is deliberately narrow: it does not resolve control flow, does
 not evaluate expressions, and does not attempt to guess an assertion's
@@ -106,6 +131,19 @@ ENTRY_KEY_ORDERS = tuple(
     for style in ("target", "targets")
 )
 
+# Scope-entry forms. The original whole-class form is unchanged; the
+# method-range form (BL-038 tranche 3n) narrows ONE class to an inclusive,
+# source-order contiguous window of its own test methods, so a class too
+# large to classify in one tranche can be split at method boundaries
+# without ever splitting a method's assertions apart.
+# Only the METHOD-RANGE form has a closed key set. The whole-class form keeps
+# the accepted schema_version 1 semantics exactly: `file` and `classes` are
+# validated, and any other key is ignored rather than rejected. Tightening it
+# here would narrow legacy validation, which a backward-compatible extension
+# must not do (PR #96 round 1, Blocker 1).
+SCOPE_KEYS_METHOD_RANGE = frozenset(("file", "classes", "method_range"))
+METHOD_RANGE_KEYS = ("start", "end")
+
 VALID_CATEGORIES = ("A", "B", "C", "D")
 VALID_ACTIONS = ("keep", "refactor_later", "already_structural", "historical_keep")
 
@@ -126,6 +164,14 @@ CATEGORY_TO_ACTION = {
 
 class InventoryError(Exception):
     """Raised for malformed input (unparseable source, unknown scope)."""
+
+
+class MethodRangeError(InventoryError):
+    """Raised when a scope entry's `method_range` does not resolve against the
+    class's real source-order test methods: a boundary that names no test method
+    of that class, or a start that follows its end. Kept distinct from its base
+    class so validate_manifest can report it as `invalid-method-range` rather
+    than a generic `inventory-error`."""
 
 
 class AssertionRecord:
@@ -409,7 +455,67 @@ def _enumerate_method_assertions(file_name, class_name, method_node, helper_defs
     return records
 
 
-def scan_classes(source_text, file_name, scoped_classes):
+def _class_test_methods_in_source_order(class_node):
+    """The class's own `test_*`/`async def test_*` method nodes, in source
+    order. Only direct body members count, matching enumeration: a method
+    nested inside another statement is not a test method of this class."""
+    return [
+        item
+        for item in class_node.body
+        if isinstance(item, _METHOD_DEF_TYPES) and item.name.startswith("test_")
+    ]
+
+
+def _resolve_method_range(file_name, class_name, method_names, method_range):
+    """Resolve a `method_range` against `method_names` (one class's source-order
+    test methods) to the inclusive `(first, last)` index pair it covers, raising
+    MethodRangeError if it does not resolve.
+
+    The window is defined by its two BOUNDARIES, not by an enumeration of the
+    methods inside it: every test method that lies between them belongs to the
+    window whether or not the manifest knows about it. That is what makes a
+    method later inserted into an already-classified range surface as
+    `unclassified` instead of being silently skipped -- an explicit
+    method-name list would have skipped it without a word.
+    """
+    where = f"{file_name}::{class_name}"
+    bounds = []
+    for key in METHOD_RANGE_KEYS:
+        name = method_range[key]
+        if name not in method_names:
+            raise MethodRangeError(
+                f"{where}: method_range {key} {name!r} is not a test method of this class")
+        bounds.append(method_names.index(name))
+    first, last = bounds
+    if first > last:
+        raise MethodRangeError(f"{where}: method_range start {method_range['start']!r} comes "
+                               f"after end {method_range['end']!r} in source order")
+    return first, last
+
+
+def _method_range_shape_problem(method_range, classes):
+    """Static shape check for a scope entry's `method_range`, needing no
+    source file: returns a one-line problem description, or None when the
+    shape is valid. Whether the named methods EXIST, and in what order, can
+    only be answered against the real class and is checked later by
+    _resolve_method_range()."""
+    if not isinstance(method_range, dict):
+        return f"scope entry 'method_range' must be an object, got {type(method_range).__name__}"
+    if tuple(method_range) != METHOD_RANGE_KEYS:
+        return (f"method_range keys must be exactly {list(METHOD_RANGE_KEYS)} in that order, "
+                f"got {list(method_range)}")
+    for key in METHOD_RANGE_KEYS:
+        value = method_range[key]
+        if not isinstance(value, str) or not value.strip():
+            return f"method_range {key!r} must be a nonblank string, got {value!r}"
+        if not value.startswith("test_"):
+            return f"method_range {key!r} must name a test_* method, got {value!r}"
+    if len(classes) != 1:
+        return f"a method_range scope entry must name exactly one class, got {list(classes)}"
+    return None
+
+
+def scan_classes(source_text, file_name, scoped_classes, method_ranges=None):
     """Parse `source_text` (the contents of `file_name`) and return
     `(records, known_methods)`:
 
@@ -425,8 +531,17 @@ def scan_classes(source_text, file_name, scoped_classes):
       which is a different problem from an entry whose ordinal doesn't
       match any assertion in a method that DOES exist (`stale-entry`).
 
+    `method_ranges` is an optional {class_name: {"start": ..., "end": ...}}
+    narrowing individual classes to an inclusive, source-order contiguous
+    window of their own test methods; a class with no entry (the default for
+    every caller that omits the argument) is scanned whole, exactly as before.
+    Narrowing a class narrows BOTH its records and its `known_methods`, so a
+    manifest entry naming one of its out-of-window methods is `unknown-method`
+    -- an entry may not reach outside the window its own scope declares.
+
     Raises InventoryError if `source_text` does not parse, or if a name in
-    `scoped_classes` is not a class defined in this file.
+    `scoped_classes` is not a class defined in this file, and the
+    MethodRangeError subclass if a `method_ranges` window does not resolve.
     """
     try:
         tree = ast.parse(source_text, filename=file_name)
@@ -440,26 +555,31 @@ def scan_classes(source_text, file_name, scoped_classes):
     if missing:
         raise InventoryError(f"{file_name}: unknown class(es) in scope: {missing}")
 
+    ranges = method_ranges or {}
     records = []
     known_methods = {}
     for class_name in scoped_classes:
         class_node = classes_by_name[class_name]
+        # Helper definitions stay class-wide: a windowed method may still
+        # call a helper defined anywhere in its class.
         helper_defs = _helper_defs_for_class(class_node)
+        method_nodes = _class_test_methods_in_source_order(class_node)
+        if class_name in ranges:
+            first, last = _resolve_method_range(file_name, class_name,
+                                                [node.name for node in method_nodes], ranges[class_name])
+            method_nodes = method_nodes[first : last + 1]
         methods = set()
-        for item in class_node.body:
-            if isinstance(item, _METHOD_DEF_TYPES) and item.name.startswith("test_"):
-                methods.add(item.name)
-                records.extend(
-                    _enumerate_method_assertions(file_name, class_name, item, helper_defs)
-                )
+        for item in method_nodes:
+            methods.add(item.name)
+            records.extend(_enumerate_method_assertions(file_name, class_name, item, helper_defs))
         known_methods[(file_name, class_name)] = methods
     return records, known_methods
 
 
-def enumerate_assertions(source_text, file_name, scoped_classes):
+def enumerate_assertions(source_text, file_name, scoped_classes, method_ranges=None):
     """Convenience wrapper around scan_classes() for callers that only need
     the assertion records, not each class's known test-method names."""
-    records, _ = scan_classes(source_text, file_name, scoped_classes)
+    records, _ = scan_classes(source_text, file_name, scoped_classes, method_ranges=method_ranges)
     return records
 
 
@@ -621,6 +741,7 @@ def validate_manifest(manifest, root=None):
 
     scope_files = set()
     scoped_classes_by_file = {}
+    method_ranges_by_file = {}
     for scope_entry in scope_raw:
         if not isinstance(scope_entry, dict):
             failures.append(
@@ -650,6 +771,21 @@ def validate_manifest(manifest, root=None):
                 )
             )
             continue
+        # Presence of the KEY, not its value: `"method_range": null` is a
+        # method-range entry with a malformed window, not a whole-class entry.
+        if "method_range" in scope_entry:
+            keys = set(scope_entry)
+            problem = (
+                f"a method_range scope entry's keys must be exactly "
+                f"{sorted(SCOPE_KEYS_METHOD_RANGE)}, got {sorted(keys)}"
+                if keys != SCOPE_KEYS_METHOD_RANGE
+                else _method_range_shape_problem(scope_entry["method_range"], classes))
+            if problem:
+                failures.append(ValidationFailure(
+                    "invalid-scope-shape", problem, file=file_name,
+                    cls=classes[0] if len(classes) == 1 else None))
+                continue
+            method_ranges_by_file.setdefault(file_name, {})[classes[0]] = scope_entry["method_range"]
         if file_name in scope_files:
             failures.append(
                 ValidationFailure("duplicate-scope-file", f"file {file_name!r} listed twice")
@@ -681,7 +817,12 @@ def validate_manifest(manifest, root=None):
             )
             continue
         try:
-            records, known_methods = scan_classes(source_text, file_name, classes)
+            records, known_methods = scan_classes(source_text, file_name, classes,
+                                                  method_ranges=method_ranges_by_file.get(file_name))
+        except MethodRangeError as exc:
+            # Checked before InventoryError: MethodRangeError is a subclass.
+            failures.append(ValidationFailure("invalid-method-range", str(exc), file=file_name))
+            continue
         except InventoryError as exc:
             failures.append(ValidationFailure("inventory-error", str(exc), file=file_name))
             continue
@@ -1149,15 +1290,110 @@ def _combined_summary(shard_filenames):
     return summary
 
 
-def _scope_pairs(manifest):
-    """(file, class) pairs a manifest declares, skipping malformed ones."""
+def _scope_claims(manifest):
+    """(file, class, method_range-or-None) ownership claims a manifest
+    declares, skipping malformed ones -- validate_manifest reports those
+    separately, and a malformed claim must not also distort ownership."""
     scope = manifest.get("scope") if isinstance(manifest, dict) else None
     for entry in scope if isinstance(scope, list) else ():
         if not isinstance(entry, dict) or not isinstance(entry.get("file"), str):
             continue
-        for cls in entry["classes"] if isinstance(entry.get("classes"), list) else ():
+        classes = entry["classes"] if isinstance(entry.get("classes"), list) else []
+        method_range = entry["method_range"] if "method_range" in entry else None
+        if "method_range" in entry and _method_range_shape_problem(method_range, classes):
+            continue
+        for cls in classes:
             if isinstance(cls, str):
-                yield entry["file"], cls
+                yield entry["file"], cls, method_range
+
+
+def _source_order_test_methods(root, file_name, cache):
+    """{class name: [test method names in source order]} for one file,
+    parsed at most once per validation run. An unreadable or unparseable
+    file yields {}; validate_manifest already reports that as its own
+    failure, and ownership must not invent a second one."""
+    if file_name not in cache:
+        by_class = {}
+        try:
+            tree = ast.parse((Path(root) / file_name).read_text(encoding="utf-8"), filename=file_name)
+        except (OSError, UnicodeError, SyntaxError, ValueError):
+            tree = None
+        for node in ast.walk(tree) if tree is not None else ():
+            if isinstance(node, ast.ClassDef):
+                by_class[node.name] = [m.name for m in _class_test_methods_in_source_order(node)]
+        cache[file_name] = by_class
+    return cache[file_name]
+
+
+def _ownership_failures(claims_by_class, root):
+    """Cross-shard ownership for both scope forms, resolved down to
+    individual test methods.
+
+    A whole-class scope owns the CLASS ITSELF plus every one of its test
+    methods; a method_range scope owns only the methods inside its inclusive
+    window. Two shards may therefore share a (file, class) exactly when their
+    windows are disjoint -- and a whole-class scope, owning everything, can
+    never share one. The class-level unit is what keeps the accepted
+    (file, class) exclusivity intact for a class with NO test methods at all:
+    expanding a whole-class claim to its methods alone would own nothing
+    there, so two shards claiming it would both pass (PR #96 round 1, Blocker 2).
+
+    On top of that, the windows a class is split into must together cover an
+    unbroken PREFIX of its source-order test methods, starting at the very
+    first one. Without that rule, moving from class-sized to method-sized
+    scopes would make it possible to classify methods 1-5 and 8-12 and have
+    method 6 quietly belong to nobody. The uncovered tail past the last window
+    is different: it is deliberate, legitimate future work, not a gap.
+    """
+    failures = []
+    source_cache = {}
+    for (file_name, cls), claims in sorted(claims_by_class.items()):
+        method_names = _source_order_test_methods(root, file_name, source_cache).get(cls)
+        if method_names is None:
+            continue  # unknown class in an unreadable file: reported elsewhere
+        # Ownership units: None is the class itself, an int is that method's
+        # source-order position.
+        owner_by_unit, conflicts, windowed = {}, {}, False
+        for shard, method_range in claims:
+            if method_range is None:
+                units = [None, *range(len(method_names))]
+            else:
+                windowed = True
+                try:
+                    first, last = _resolve_method_range(file_name, cls, method_names, method_range)
+                except MethodRangeError:
+                    continue  # invalid-method-range is reported by validate_manifest
+                units = range(first, last + 1)
+            for unit in units:
+                owner = owner_by_unit.setdefault(unit, shard)
+                if owner != shard:
+                    # One failure per pair of shards, named by the first unit they
+                    # collide on, so a duplicated whole-class scope reads the way
+                    # it always did instead of once per method.
+                    conflicts.setdefault((owner, shard), unit)
+        for (owner, shard), unit in conflicts.items():
+            method = None if unit is None else method_names[unit]
+            failures.append(
+                ValidationFailure(
+                    "cross-shard-duplicate-ownership",
+                    f"{file_name}::{cls}{'' if method is None else '::' + method} is claimed "
+                    f"by both {owner!r} and {shard!r}",
+                    file=file_name, cls=cls, method=method,
+                )
+            )
+        covered = sorted(unit for unit in owner_by_unit if unit is not None)
+        if windowed and covered and covered != list(range(len(covered))):
+            uncovered = [method_names[i] for i in range(covered[-1] + 1) if i not in owner_by_unit]
+            failures.append(
+                ValidationFailure(
+                    "method-range-prefix-gap",
+                    f"method_range scopes must cover an unbroken prefix of this class's "
+                    f"test methods starting at {method_names[0]!r}; unowned before the "
+                    f"last owned method: {uncovered}",
+                    file=file_name, cls=cls,
+                )
+            )
+    return failures
 
 
 def validate_shard_manifests(shard_manifests, root=None):
@@ -1166,15 +1402,19 @@ def validate_shard_manifests(shard_manifests, root=None):
     `(failures, summary)` for the COMBINED classification. The summary keeps
     every single-manifest key -- so a one-shard index reports exactly what
     the single-manifest path reports -- and adds `shard_count`/`shard_files`.
-    Cross-shard invariants: no assertion ID in two shards, no `file`+`class`
-    pair in two shards. Splitting ONE file BY CLASS is the growth path."""
+    Cross-shard invariants: no assertion ID in two shards, and no test
+    method owned by two shards -- a `file`+`class` pair may only appear in
+    two shards when they scope disjoint method_range windows that together
+    cover an unbroken prefix of the class (see _ownership_failures).
+    Splitting ONE file BY CLASS, then one class BY METHOD RANGE, is the
+    growth path."""
     if root is None:
         root = REPOSITORY_ROOT
 
     failures = []
     summary = _combined_summary([name for name, _ in shard_manifests])
     scope_files = set()
-    owner_by_class = {}
+    claims_by_class = {}
     owner_by_id = {}
 
     for shard, manifest in shard_manifests:
@@ -1189,19 +1429,16 @@ def validate_shard_manifests(shard_manifests, root=None):
         for file_name, count in shard_summary["file_counts"].items():
             summary["file_counts"][file_name] = summary["file_counts"].get(file_name, 0) + count
 
-        for file_name, cls in _scope_pairs(manifest):
-            owner = owner_by_class.setdefault((file_name, cls), shard)
-            if owner != shard:
-                failures.append(ValidationFailure(
-                    "cross-shard-duplicate-ownership",
-                    f"{file_name}::{cls} is claimed by both {owner!r} and {shard!r}",
-                    file=file_name, cls=cls))
+        for file_name, cls, method_range in _scope_claims(manifest):
+            claims_by_class.setdefault((file_name, cls), []).append((shard, method_range))
         for entry_id in combined_assertion_ids([(shard, manifest)]):
             owner = owner_by_id.setdefault(entry_id, shard) if isinstance(entry_id, str) else shard
             if owner != shard:
                 failures.append(ValidationFailure(
                     "cross-shard-duplicate-id",
                     f"assertion id is listed by both {owner!r} and {shard!r}", id_=entry_id))
+
+    failures.extend(_ownership_failures(claims_by_class, root))
 
     summary["scoped_files"] = sorted(scope_files)
     summary["unclassified"] = sum(1 for f in failures if f.mismatch_type == "unclassified")
