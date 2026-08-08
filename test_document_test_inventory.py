@@ -1511,5 +1511,352 @@ class ShardIndexCliTest(ShardIndexTestCase):
         self.assertEqual(ctx.exception.code, 2)
 
 
+class MethodRangeScopeTestCase(ShardIndexTestCase):
+    """BL-038 tranche 3n method-range scope infrastructure. Every fixture
+    here is synthetic and lives in a temp dir; the repository's own
+    manifests are never written to, only read (once, to prove they still
+    validate under the extended schema)."""
+
+    RANGE_FILE = "range_fixture.py"
+    RANGE_SRC = ("import unittest\nclass RangeTest(unittest.TestCase):\n"
+        "    def test_a(self):\n        self.assertEqual('a', 'a')\n        self.assertIn('a', 'abc')\n"
+        "    def test_b(self):\n        self.assertEqual('b', 'b')\n" "    def test_c(self):\n        self.assertEqual('c', 'c')\n"
+        "    def test_d(self):\n        self.assertEqual('d', 'd')\n"
+        "class SideTest(unittest.TestCase):\n    def test_side(self):\n        self.assertEqual('side', 'side')\n"
+        "class EmptyTest(unittest.TestCase):\n    pass\n")
+    A_TO_B = {"start": "test_a", "end": "test_b"}
+    C_TO_D = {"start": "test_c", "end": "test_d"}
+
+    def _range_shard(self, method_range, *, cls="RangeTest", src=None, category="A", action="keep"):
+        """A one-scope-entry shard covering `method_range` of `cls`, whose
+        assertions are exactly the ones that window enumerates. Passing
+        method_range=None gives the unchanged whole-class form."""
+        src = self.RANGE_SRC if src is None else src
+        ranges = {cls: method_range} if method_range else None
+        records = dti.enumerate_assertions(src, self.RANGE_FILE, [cls], method_ranges=ranges)
+        scope = {"file": self.RANGE_FILE, "classes": [cls]}
+        if method_range:
+            scope["method_range"] = method_range
+        return {"schema_version": 1, "scope": [scope],
+                "assertions": _records_to_manifest_entries(records, category=category, action=action)}
+
+    def _single(self, method_range, **kwargs):
+        """Write the fixture source plus a one-shard index scoping it."""
+        self._write(self.RANGE_FILE, kwargs.pop("src", None) or self.RANGE_SRC)
+        self._write_shard(self.BASE, self._range_shard(method_range, **kwargs))
+        self._write_index([self.BASE])
+
+    def _whole_class_shard(self, classes, *, category="A", action="keep"):
+        """A whole-class shard over `classes` of the fixture file -- the legacy
+        scope form, with no `method_range` key anywhere in it."""
+        records = dti.enumerate_assertions(self.RANGE_SRC, self.RANGE_FILE, classes)
+        return {"schema_version": 1, "scope": [{"file": self.RANGE_FILE, "classes": classes}],
+                "assertions": _records_to_manifest_entries(records, category=category, action=action)}
+
+    def _two_class_shards(self, base_classes, second_classes):
+        """Two shards over the fixture file, each claiming whole classes."""
+        self._write(self.RANGE_FILE, self.RANGE_SRC)
+        self._write_shard(self.BASE, self._whole_class_shard(base_classes))
+        self._write_shard(self.SECOND, self._whole_class_shard(second_classes, category="B", action="already_structural"))
+        self._write_index([self.BASE, self.SECOND])
+
+    def _pair(self, first_range, second_range, **kwargs):
+        """Two shards over the same class, each owning its own window."""
+        self._write(self.RANGE_FILE, self.RANGE_SRC)
+        self._write_shard(self.BASE, self._range_shard(first_range))
+        self._write_shard(self.SECOND, self._range_shard(second_range, category="B", action="already_structural", **kwargs))
+        self._write_index([self.BASE, self.SECOND])
+
+    def _methods(self, failures):
+        return sorted(f.method for f in failures if f.method)
+
+
+class MethodRangeBackwardCompatibilityTest(MethodRangeScopeTestCase):
+    def test_repository_manifests_and_index_still_validate_unchanged(self):
+        # The extension must be invisible to the three real shards, which use
+        # only the original whole-class form.
+        failures, summary = dti.validate_indexed_manifests(root=Path(__file__).resolve().parent)
+        self.assertEqual(_failure_types(failures), set())
+        self.assertEqual((summary["inventoried_assertions"], summary["category_counts"]),
+                         (945, {"A": 28, "B": 337, "C": 435, "D": 145}))
+        self.assertEqual((summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]), (0, 0, 0))
+
+    def test_whole_class_scope_shape_is_accepted_and_owns_every_method(self):
+        self._single(None)
+        failures, summary = self._validate()
+        self.assertEqual(_failure_types(failures), set())
+        # All four methods of RangeTest, i.e. 5 assertions, not a window.
+        self.assertEqual(summary["inventoried_assertions"], 5)
+
+    def test_legacy_whole_class_scope_still_ignores_extra_keys(self):
+        """PR #96 round 1 (Blocker 1). The accepted schema_version 1 whole-class
+        form validates `file` and `classes` and ignores any other key. A
+        backward-compatible extension may not start rejecting those entries."""
+        self._write(self.RANGE_FILE, self.RANGE_SRC)
+        plain = self._whole_class_shard(["RangeTest"])
+        annotated = json.loads(json.dumps(plain))
+        annotated["scope"][0]["note"] = "legacy metadata"
+        for label, manifest in (("plain", plain), ("extra key", annotated)):
+            with self.subTest(scope=label):  # identical outcome, key or no key
+                self._write_shard(self.BASE, manifest)
+                self._write_index([self.BASE])
+                failures, summary = self._validate()
+                self.assertEqual((_failure_types(failures), summary["inventoried_assertions"]), (set(), 5))
+
+    def test_omitted_none_and_empty_method_ranges_all_scan_the_whole_class(self):
+        args = (self.RANGE_SRC, self.RANGE_FILE, ["RangeTest"])
+        baseline = dti.scan_classes(*args)
+        for ranges in (None, {}, {"SideTest": self.A_TO_B}):
+            with self.subTest(ranges=ranges):
+                records, known = dti.scan_classes(*args, method_ranges=ranges)
+                self.assertEqual(([r.id for r in records], known), ([r.id for r in baseline[0]], baseline[1]))
+        self.assertEqual(sorted(baseline[1][(self.RANGE_FILE, "RangeTest")]), ["test_a", "test_b", "test_c", "test_d"])
+
+
+class MethodRangeEnumerationTest(MethodRangeScopeTestCase):
+    def test_range_inventories_only_the_windowed_methods(self):
+        records, known = dti.scan_classes(self.RANGE_SRC, self.RANGE_FILE, ["RangeTest"], method_ranges={"RangeTest": self.A_TO_B})
+        self.assertEqual([(r.method, r.ordinal) for r in records], [("test_a", 1), ("test_a", 2), ("test_b", 1)])
+        # known_methods narrows with the window, so an entry naming an
+        # out-of-window method cannot pass as a known method.
+        self.assertEqual(known[(self.RANGE_FILE, "RangeTest")], {"test_a", "test_b"})
+
+    def test_assertion_ids_and_ordinals_are_unchanged_by_windowing(self):
+        whole = dti.enumerate_assertions(self.RANGE_SRC, self.RANGE_FILE, ["RangeTest"])
+        window = dti.enumerate_assertions(self.RANGE_SRC, self.RANGE_FILE, ["RangeTest"], method_ranges={"RangeTest": self.C_TO_D})
+        by_id = {r.id: r for r in whole}
+        self.assertEqual([r.id for r in window], [f"{self.RANGE_FILE}::RangeTest::test_c::assert-01",
+                                                  f"{self.RANGE_FILE}::RangeTest::test_d::assert-01"])
+        for record in window:  # same ID, ordinal and fingerprint as the whole-class scan
+            self.assertEqual((record.ordinal, record.fingerprint), (by_id[record.id].ordinal, by_id[record.id].fingerprint))
+
+    def test_single_method_range_start_equals_end_is_valid(self):
+        self._single({"start": "test_a", "end": "test_a"})
+        failures, summary = self._validate()
+        self.assertEqual(_failure_types(failures), set())
+        self.assertEqual(summary["inventoried_assertions"], 2)
+
+    def test_valid_range_validates_and_leaves_the_tail_out_of_scope(self):
+        self._single(self.A_TO_B)
+        failures, summary = self._validate()
+        self.assertEqual(_failure_types(failures), set())
+        self.assertEqual(summary["inventoried_assertions"], 3)
+
+    def test_entry_naming_a_method_outside_the_window_is_unknown_method(self):
+        self._write(self.RANGE_FILE, self.RANGE_SRC)
+        shard = self._range_shard(self.A_TO_B)
+        shard["assertions"].extend(_records_to_manifest_entries(dti.enumerate_assertions(
+            self.RANGE_SRC, self.RANGE_FILE, ["RangeTest"], method_ranges={"RangeTest": self.C_TO_D})))
+        self._write_shard(self.BASE, shard)
+        self._write_index([self.BASE])
+        failures = self._failures()
+        self.assertEqual(_failure_types(failures), {"unknown-method"})
+        self.assertEqual(self._methods(failures), ["test_c", "test_d"])
+
+
+class MethodRangeInsertedMethodTest(MethodRangeScopeTestCase):
+    """A window is its two boundaries, not a method list -- so a method
+    added INSIDE an already-classified window is picked up and reported,
+    never silently skipped."""
+
+    def _insert(self, after, name="test_inserted"):
+        marker = f"    def {after}(self):\n"
+        assert marker in self.RANGE_SRC
+        return self.RANGE_SRC.replace(marker, f"    def {name}(self):\n        self.assertEqual('ins', 'ins')\n" + marker, 1)
+
+    def test_method_inserted_inside_the_window_becomes_unclassified(self):
+        self._single(self.A_TO_B)
+        self._write(self.RANGE_FILE, self._insert("test_b"))  # between a and b
+        failures = self._failures()
+        self.assertEqual(_failure_types(failures), {"unclassified"})
+        self.assertEqual(self._methods(failures), ["test_inserted"])
+
+    def test_method_inserted_before_the_first_window_breaks_the_prefix(self):
+        self._single(self.A_TO_B)
+        self._write(self.RANGE_FILE, self._insert("test_a", name="test_aa"))
+        failures = self._failures()
+        self.assertEqual(_failure_types(failures), {"method-range-prefix-gap"})
+        self.assertIn("test_aa", failures[0].detail)
+
+    def test_method_inserted_after_the_classified_prefix_stays_valid(self):
+        # The uncovered tail is deliberate future work, not a gap: adding
+        # to it must not fail the current, still-correct classification.
+        self._single(self.A_TO_B)
+        self._write(self.RANGE_FILE, self.RANGE_SRC + "    def test_e(self):\n        self.assertEqual('e', 'e')\n")
+        self.assertEqual(_failure_types(self._failures()), set())
+
+
+class MethodRangeBoundaryRejectionTest(MethodRangeScopeTestCase):
+    """Every malformed or unresolvable window fails closed."""
+
+    # Rejecting a scope entry necessarily orphans the assertion entries that
+    # lived under it, so a second, knock-on mismatch type is expected: a DROPPED
+    # entry leaves its file out of scope entirely (`out-of-scope-file`), while an
+    # entry whose window merely fails to resolve keeps the file in scope but
+    # inventories nothing from it, so its entries name methods nothing knows
+    # about (`unknown-method`). Either way the knock-on is a consequence of
+    # failing closed, never a substitute for the real failure -- which is what
+    # these tests pin.
+    ORPHANED = "out-of-scope-file"
+    NOT_INVENTORIED = "unknown-method"
+
+    def _scope_with(self, scope_entry):
+        self._write(self.RANGE_FILE, self.RANGE_SRC)
+        shard = self._range_shard(self.A_TO_B)
+        shard["scope"] = [scope_entry]
+        self._write_shard(self.BASE, shard)
+        self._write_index([self.BASE])
+        return self._failures()
+
+    def _assert_rejected_as(self, failures, mismatch_type, knock_on=ORPHANED):
+        types = _failure_types(failures)
+        self.assertIn(mismatch_type, types)
+        self.assertEqual(types - {knock_on}, {mismatch_type})
+        return [f for f in failures if f.mismatch_type == mismatch_type]
+
+    def test_shape_violations_are_invalid_scope_shape(self):
+        base = {"file": self.RANGE_FILE, "classes": ["RangeTest"]}
+        cases = {"wrong type": "not-an-object", "list not object": ["test_a", "test_b"],
+            "missing end": {"start": "test_a"}, "blank end": {"start": "test_a", "end": ""},
+            "extra key": {"start": "test_a", "end": "test_b", "step": 1}, "reversed keys": {"end": "test_b", "start": "test_a"},
+            "blank start": {"start": "   ", "end": "test_b"}, "non-test start": {"start": "helper_a", "end": "test_b"},
+            "non-test end": {"start": "test_a", "end": "setUp"}, "non-string start": {"start": 1, "end": "test_b"}}
+        for label, method_range in cases.items():
+            with self.subTest(case=label):
+                self._assert_rejected_as(self._scope_with(dict(base, method_range=method_range)), "invalid-scope-shape")
+
+    def test_method_range_entry_must_name_exactly_one_class(self):
+        # A window is a window into ONE class's method order; two classes
+        # would make "contiguous" meaningless. (The empty list is already
+        # rejected as a nonempty-classes violation before this check.)
+        shape = self._assert_rejected_as(self._scope_with({"file": self.RANGE_FILE, "classes": ["RangeTest", "SideTest"],
+                              "method_range": self.A_TO_B}), "invalid-scope-shape")
+        self.assertIn("exactly one class", shape[0].detail)
+
+    def test_method_range_scope_entry_rejects_extra_keys_and_a_null_window(self):
+        # Presence of the KEY decides the form, so an extra key is rejected here
+        # (never in the legacy form) and `"method_range": null` is a malformed
+        # window rather than a whole-class entry.
+        base = {"file": self.RANGE_FILE, "classes": ["RangeTest"]}
+        shape = self._assert_rejected_as(self._scope_with(dict(base, method_range=self.A_TO_B, note="not allowed")),
+            "invalid-scope-shape")
+        self.assertIn("keys must be exactly", shape[0].detail)
+        self._assert_rejected_as(self._scope_with(dict(base, method_range=None)), "invalid-scope-shape")
+
+    def test_unresolvable_boundaries_are_invalid_method_range(self):
+        cases = {"unknown start": {"start": "test_nope", "end": "test_b"}, "unknown end": {"start": "test_a", "end": "test_nope"},
+            "reversed order": {"start": "test_c", "end": "test_a"}, "other class's method": {"start": "test_a", "end": "test_side"}}
+        for label, method_range in cases.items():
+            with self.subTest(case=label):
+                self._assert_rejected_as(self._scope_with({"file": self.RANGE_FILE, "classes": ["RangeTest"],
+                                      "method_range": method_range}), "invalid-method-range", knock_on=self.NOT_INVENTORIED)
+
+    def test_scan_classes_raises_method_range_error_for_bad_boundaries(self):
+        for method_range in ({"start": "test_zzz", "end": "test_b"}, {"start": "test_d", "end": "test_a"}):
+            with self.subTest(method_range=method_range), self.assertRaises(dti.MethodRangeError):
+                dti.scan_classes(self.RANGE_SRC, self.RANGE_FILE, ["RangeTest"], method_ranges={"RangeTest": method_range})
+        # MethodRangeError stays an InventoryError for existing handlers.
+        self.assertTrue(issubclass(dti.MethodRangeError, dti.InventoryError))
+
+
+class MethodRangeSourceDriftTest(MethodRangeScopeTestCase):
+    """A window pins two real method names; drifting either one out from
+    under the manifest must fail rather than silently re-slice the class."""
+
+    def test_renaming_a_boundary_method_fails(self):
+        self._single(self.A_TO_B)
+        self._write(self.RANGE_FILE, self.RANGE_SRC.replace("test_b", "test_b_renamed"))
+        self.assertIn("invalid-method-range", _failure_types(self._failures()))
+
+    def test_deleting_a_boundary_method_fails(self):
+        self._single(self.A_TO_B)
+        self._write(self.RANGE_FILE, self.RANGE_SRC.replace("    def test_b(self):\n        self.assertEqual('b', 'b')\n", ""))
+        self.assertIn("invalid-method-range", _failure_types(self._failures()))
+
+    def test_reordering_methods_past_each_other_fails(self):
+        self._single(self.A_TO_B)
+        a = "    def test_a(self):\n        self.assertEqual('a', 'a')\n        self.assertIn('a', 'abc')\n"
+        b = "    def test_b(self):\n        self.assertEqual('b', 'b')\n"
+        reordered = self.RANGE_SRC.replace(a + b, b + a)
+        self.assertNotEqual(reordered, self.RANGE_SRC)
+        self._write(self.RANGE_FILE, reordered)
+        self.assertIn("invalid-method-range", _failure_types(self._failures()))
+
+
+class MethodRangeCrossShardOwnershipTest(MethodRangeScopeTestCase):
+    """One class may span shards only as disjoint windows that together
+    cover an unbroken prefix of it."""
+
+    def test_adjacent_disjoint_windows_split_one_class_across_shards(self):
+        self._pair(self.A_TO_B, self.C_TO_D)
+        failures, summary = self._validate()
+        self.assertEqual(_failure_types(failures), set())
+        self.assertEqual((summary["inventoried_assertions"], summary["category_counts"]), (5, {"A": 3, "B": 2, "C": 0, "D": 0}))
+
+    def test_overlapping_windows_are_rejected(self):
+        self._pair({"start": "test_a", "end": "test_c"}, self.C_TO_D)
+        failures = self._failures()
+        self.assertIn("cross-shard-duplicate-ownership", _failure_types(failures))
+        self.assertEqual(self._methods(failures), ["test_c"])
+
+    def test_identical_windows_are_rejected_by_ownership_and_by_id(self):
+        self._pair(self.A_TO_B, self.A_TO_B)
+        self.assertLessEqual({"cross-shard-duplicate-ownership", "cross-shard-duplicate-id"}, _failure_types(self._failures()))
+
+    def test_a_gap_between_two_windows_is_rejected(self):
+        self._pair({"start": "test_a", "end": "test_a"}, self.C_TO_D)
+        failures = self._failures()
+        self.assertEqual(_failure_types(failures), {"method-range-prefix-gap"})
+        self.assertIn("test_b", failures[0].detail)
+
+    def test_windows_must_start_at_the_first_test_method_of_the_class(self):
+        self._single({"start": "test_b", "end": "test_c"})
+        failures = self._failures()
+        self.assertEqual(_failure_types(failures), {"method-range-prefix-gap"})
+        self.assertIn("test_a", failures[0].detail)
+
+    def test_out_of_order_windows_across_shards_are_still_a_prefix(self):
+        # Which SHARD owns which window does not matter; only that the
+        # union of the windows is an unbroken prefix of the class.
+        self._pair(self.C_TO_D, self.A_TO_B)
+        self.assertEqual(_failure_types(self._failures()), set())
+
+    def test_whole_class_scope_conflicts_with_any_window_of_that_class(self):
+        for other in (self.A_TO_B, self.C_TO_D):
+            with self.subTest(method_range=other):
+                self._pair(None, other)
+                self.assertIn("cross-shard-duplicate-ownership", _failure_types(self._failures()))
+
+    def test_two_shards_claiming_a_class_with_no_test_methods_still_conflict(self):
+        """PR #96 round 1 (Blocker 2). `EmptyTest` has no `test_*` methods, so
+        expanding a whole-class claim to its METHODS alone would own nothing and
+        both shards would pass. The accepted (file, class) exclusivity has to
+        survive the move to method-level ownership."""
+        self.assertEqual(dti.enumerate_assertions(self.RANGE_SRC, self.RANGE_FILE, ["EmptyTest"]), [])
+        self._two_class_shards(["RangeTest", "EmptyTest"], ["SideTest", "EmptyTest"])
+        failures = self._failures()
+        self.assertEqual(_failure_types(failures), {"cross-shard-duplicate-ownership"})
+        # Exactly one failure, naming the class itself -- not one per method.
+        # The classes that ARE disjoint across the shards stay uncontested.
+        self.assertEqual([(f.cls, f.method) for f in failures], [("EmptyTest", None)])
+        for uncontested in ("RangeTest", "SideTest"):
+            with self.subTest(uncontested=uncontested):
+                self.assertNotIn(uncontested, failures[0].detail)
+
+    def test_duplicate_whole_class_scopes_report_the_class_once_not_each_method(self):
+        self._two_class_shards(["RangeTest"], ["RangeTest"])
+        ownership = [f for f in self._failures() if f.mismatch_type == "cross-shard-duplicate-ownership"]
+        self.assertEqual([(f.cls, f.method) for f in ownership], [("RangeTest", None)])
+
+    def test_a_window_does_not_conflict_with_another_class_in_the_same_file(self):
+        self._write(self.RANGE_FILE, self.RANGE_SRC)
+        self._write_shard(self.BASE, self._range_shard({"start": "test_a", "end": "test_d"}))
+        self._write_shard(self.SECOND, self._range_shard(None, cls="SideTest", category="B", action="already_structural"))
+        self._write_index([self.BASE, self.SECOND])
+        failures, summary = self._validate()
+        self.assertEqual(_failure_types(failures), set())
+        self.assertEqual(summary["inventoried_assertions"], 6)
+
+
 if __name__ == "__main__":
     unittest.main()
