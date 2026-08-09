@@ -1508,8 +1508,13 @@ SHARD_003_PATH = ROOT / SHARD_003_FILENAME
 SHARD_003_CURRENT_ENTRY_COUNT = 146
 SHARD_003_CURRENT_LINE_COUNT = 154
 SHARD_003_CURRENT_CATEGORY_COUNTS = {"A": 0, "B": 70, "C": 54, "D": 22}
+SHARD_004_FILENAME = "document_test_classification_004.json"
+SHARD_004_PATH = ROOT / SHARD_004_FILENAME
+SHARD_004_CURRENT_ENTRY_COUNT = 140
+SHARD_004_CURRENT_LINE_COUNT = 148
+SHARD_004_CURRENT_CATEGORY_COUNTS = {"A": 2, "B": 80, "C": 50, "D": 8}
 EXPECTED_SHARD_ORDER = (MANIFEST_PATH.name, SHARD_001_FILENAME, SHARD_002_FILENAME,
-                        SHARD_003_FILENAME)
+                        SHARD_003_FILENAME, SHARD_004_FILENAME)
 EXPECTED_SHARD_COUNT = len(EXPECTED_SHARD_ORDER)
 TRANCHE_3G_HISTORICAL_SHARD_COUNT = 1
 TRANCHE_3I_HISTORICAL_SHARD_COUNT = 2
@@ -1527,17 +1532,20 @@ TRANCHE_3J_TO_3N_HISTORICAL_SHARD_COUNT = 3
 # these historical records'.
 TRANCHE_3M_HISTORICAL_SHARD_ORDER = (MANIFEST_PATH.name, SHARD_001_FILENAME, SHARD_002_FILENAME)
 TRANCHE_3O_HISTORICAL_SHARD_ORDER = TRANCHE_3M_HISTORICAL_SHARD_ORDER + (SHARD_003_FILENAME,)
+TRANCHE_3P_HISTORICAL_SHARD_ORDER = TRANCHE_3O_HISTORICAL_SHARD_ORDER + (SHARD_004_FILENAME,)
 INDEX_COMBINED_ASSERTION_COUNT = (
     BASE_EXPECTED_ASSERTION_COUNT
     + SHARD_001_CURRENT_ENTRY_COUNT
     + SHARD_002_CURRENT_ENTRY_COUNT
     + SHARD_003_CURRENT_ENTRY_COUNT
+    + SHARD_004_CURRENT_ENTRY_COUNT
 )
 INDEX_COMBINED_CATEGORY_COUNTS = {
     cat: BASE_EXPECTED_CATEGORY_COUNTS[cat]
     + SHARD_001_CURRENT_CATEGORY_COUNTS[cat]
     + SHARD_002_CURRENT_CATEGORY_COUNTS[cat]
     + SHARD_003_CURRENT_CATEGORY_COUNTS[cat]
+    + SHARD_004_CURRENT_CATEGORY_COUNTS[cat]
     for cat in ("A", "B", "C", "D")
 }
 
@@ -3327,7 +3335,7 @@ class Tranche3kClassificationShard002AppendTest(unittest.TestCase):
         # tranche 3o's, not 3k's.
         self.assertEqual(index["shards"][:3], list(EXPECTED_SHARD_ORDER[:3]))
         self.assertEqual((EXPECTED_SHARD_COUNT, dti.discover_shard_filenames(ROOT)),
-                         (4, sorted(EXPECTED_SHARD_ORDER)))
+                         (5, sorted(EXPECTED_SHARD_ORDER)))
         self.assertEqual(TRANCHE_3J_TO_3N_HISTORICAL_SHARD_COUNT, 3)
 
     # -- membership --------------------------------------------------------
@@ -3686,7 +3694,7 @@ class Tranche3lClassificationShard002AppendTest(unittest.TestCase):
         self.assertEqual(json.loads(INDEX_PATH.read_text(encoding="utf-8"))["shards"][:3],
                          list(EXPECTED_SHARD_ORDER[:3]))
         self.assertEqual((EXPECTED_SHARD_COUNT, dti.discover_shard_filenames(ROOT)),
-                         (4, sorted(EXPECTED_SHARD_ORDER)))
+                         (5, sorted(EXPECTED_SHARD_ORDER)))
         self.assertEqual(TRANCHE_3J_TO_3N_HISTORICAL_SHARD_COUNT, 3)
 
     # -- membership --------------------------------------------------------
@@ -4089,7 +4097,7 @@ class Tranche3mClassificationShard002AppendTest(unittest.TestCase):
         self.assertEqual(TRANCHE_3J_TO_3N_HISTORICAL_SHARD_COUNT, 3)
         self.assertEqual(json.loads(INDEX_PATH.read_text(encoding="utf-8"))["shards"], list(EXPECTED_SHARD_ORDER))
         self.assertEqual(json.loads(INDEX_PATH.read_text(encoding="utf-8"))["shards"][:3], list(EXPECTED_SHARD_ORDER[:3]))
-        self.assertEqual((EXPECTED_SHARD_COUNT, dti.discover_shard_filenames(ROOT)), (4, sorted(EXPECTED_SHARD_ORDER)))
+        self.assertEqual((EXPECTED_SHARD_COUNT, dti.discover_shard_filenames(ROOT)), (5, sorted(EXPECTED_SHARD_ORDER)))
 
     def test_no_class_is_owned_by_two_shards_and_the_84_keep_their_place(self):
         """Tranche 3m HISTORICAL evidence, anchored on the three shards that
@@ -4171,7 +4179,9 @@ class Tranche3mClassificationShard002AppendTest(unittest.TestCase):
         self.assertEqual([f.format() for f in failures], [])
         self.assertEqual(945, 928 + TRANCHE_3M_EXPECTED_ASSERTION_COUNT)
         self.assertEqual(summary["inventoried_assertions"], INDEX_COMBINED_ASSERTION_COUNT)
-        self.assertNotEqual(summary["inventoried_assertions"], 945)
+        for historical in (945, 1091):
+            with self.subTest(historical=historical):
+                self.assertNotEqual(summary["inventoried_assertions"], historical)
         self.assertEqual({k: summary["category_counts"][k] for k in ("A", "B", "C", "D")},
                          INDEX_COMBINED_CATEGORY_COUNTS)
         self.assertEqual(sum(summary["category_counts"][k] for k in ("A", "B", "C", "D")),
@@ -4507,7 +4517,7 @@ class ClassificationShardIndexTest(unittest.TestCase):
             json.loads(self.index_text),
             {"schema_version": 1,
              "shards": [MANIFEST_PATH.name, SHARD_001_FILENAME, SHARD_002_FILENAME,
-                        SHARD_003_FILENAME]},
+                        SHARD_003_FILENAME, SHARD_004_FILENAME]},
         )
         self.assertTrue(self.index_text.endswith("\n"))
         # Order is part of the contract: it fixes combined assertion order.
@@ -4516,14 +4526,16 @@ class ClassificationShardIndexTest(unittest.TestCase):
         self.assertEqual(self.index["shards"][1], SHARD_001_FILENAME)
         self.assertEqual(self.index["shards"][2], SHARD_002_FILENAME)
         self.assertEqual(self.index["shards"][3], SHARD_003_FILENAME)
+        self.assertEqual(self.index["shards"][4], SHARD_004_FILENAME)
         self.assertEqual(len(self.index["shards"]), EXPECTED_SHARD_COUNT)
-        self.assertEqual(EXPECTED_SHARD_COUNT, 4)
+        self.assertEqual(EXPECTED_SHARD_COUNT, 5)
         self.assertEqual(len(set(self.index["shards"])), EXPECTED_SHARD_COUNT)
         # An unregistered shard file would silently vanish from the check.
         self.assertEqual(dti.discover_shard_filenames(ROOT), sorted(EXPECTED_SHARD_ORDER))
         self.assertTrue(dti.is_allowed_shard_filename(SHARD_001_FILENAME))
         self.assertTrue(dti.is_allowed_shard_filename(SHARD_002_FILENAME))
         self.assertTrue(dti.is_allowed_shard_filename(SHARD_003_FILENAME))
+        self.assertTrue(dti.is_allowed_shard_filename(SHARD_004_FILENAME))
         self.assertFalse(dti.is_allowed_shard_filename(dti.INDEX_FILENAME))
         # Tranche 3g shipped a one-shard index, 3i a two-shard one and 3j-3n a
         # three-shard one; all three are history, not now.
@@ -4535,7 +4547,7 @@ class ClassificationShardIndexTest(unittest.TestCase):
             with self.subTest(historical=historical):
                 self.assertNotEqual(len(self.index["shards"]), historical)
 
-    def test_combined_index_validation_reports_the_four_shard_totals(self):
+    def test_combined_index_validation_reports_the_five_shard_totals(self):
         failures, combined = dti.validate_indexed_manifests(root=ROOT)
         self.assertEqual([f.format() for f in failures], [])
         self.assertEqual(
@@ -4544,8 +4556,8 @@ class ClassificationShardIndexTest(unittest.TestCase):
         )
         self.assertEqual(combined["manifest_assertions"], INDEX_COMBINED_ASSERTION_COUNT)
         self.assertEqual(combined["inventoried_assertions"], INDEX_COMBINED_ASSERTION_COUNT)
-        self.assertEqual(INDEX_COMBINED_ASSERTION_COUNT, 585 + 136 + 123 + 34 + 27 + 23 + 17 + 146)
-        self.assertEqual(INDEX_COMBINED_ASSERTION_COUNT, 1091)
+        self.assertEqual(INDEX_COMBINED_ASSERTION_COUNT, 585 + 136 + 123 + 34 + 27 + 23 + 17 + 146 + 140)
+        self.assertEqual(INDEX_COMBINED_ASSERTION_COUNT, 1231)
         # 844 was the tranche 3i combined total, 878 the 3j one, 905 the 3k one,
         # 928 the 3l one and 945 the 3m one (3n classified nothing, so 945 stood
         # through it too); all five are history.
@@ -4554,7 +4566,8 @@ class ClassificationShardIndexTest(unittest.TestCase):
         self.assertEqual(585 + 136 + 123 + 34 + 27, 905)
         self.assertEqual(585 + 136 + 123 + 34 + 27 + 23, 928)
         self.assertEqual(585 + 136 + 123 + 34 + 27 + 23 + 17, 945)
-        for historical_total in (844, 878, 905, 928, 945):
+        self.assertEqual(585 + 136 + 123 + 34 + 27 + 23 + 17 + 146, 1091)  # the 3o total
+        for historical_total in (844, 878, 905, 928, 945, 1091):
             with self.subTest(historical_total=historical_total):
                 self.assertNotEqual(INDEX_COMBINED_ASSERTION_COUNT, historical_total)
         self.assertEqual(combined["category_counts"], INDEX_COMBINED_CATEGORY_COUNTS)
@@ -4562,8 +4575,8 @@ class ClassificationShardIndexTest(unittest.TestCase):
         self.assertEqual(
             (combined["unclassified"], combined["stale"], combined["fingerprint_mismatch"]), (0, 0, 0)
         )
-        # Combined = base + 3h + 3i + 3j + 3k + 3l + 3m + 3o, never a re-derived
-        # tally. (Tranche 3n classified nothing, so it contributes no term.)
+        # Combined = base + 3h + 3i + 3j + 3k + 3l + 3m + 3o + 3p, never a
+        # re-derived tally. (3n classified nothing, so it contributes no term.)
         for category in ("A", "B", "C", "D"):
             with self.subTest(category=category):
                 self.assertEqual(
@@ -4575,11 +4588,14 @@ class ClassificationShardIndexTest(unittest.TestCase):
                     + TRANCHE_3K_EXPECTED_CATEGORY_COUNTS[category]
                     + TRANCHE_3L_EXPECTED_CATEGORY_COUNTS[category]
                     + TRANCHE_3M_EXPECTED_CATEGORY_COUNTS[category]
-                    + SHARD_003_CURRENT_CATEGORY_COUNTS[category],
+                    + SHARD_003_CURRENT_CATEGORY_COUNTS[category]
+                    + SHARD_004_CURRENT_CATEGORY_COUNTS[category],
                 )
-        self.assertEqual(combined["category_counts"], {"A": 28, "B": 407, "C": 489, "D": 167})
-        # A 28 / B 337 / C 435 / D 145 was the tranche 3m-through-3n breakdown.
-        self.assertNotEqual(combined["category_counts"], {"A": 28, "B": 337, "C": 435, "D": 145})
+        self.assertEqual(combined["category_counts"], {"A": 30, "B": 487, "C": 539, "D": 175})
+        # A28/B337/C435/D145 was the 3m-3n breakdown and A28/B407/C489/D167 the 3o one.
+        for historical in ({"A": 28, "B": 337, "C": 435, "D": 145}, {"A": 28, "B": 407, "C": 489, "D": 167}):
+            with self.subTest(historical=tuple(sorted(historical.items()))):
+                self.assertNotEqual(combined["category_counts"], historical)
         # A22/B284/C403/D135 was the 3i tally, A22/B296/C417/D143 the 3j one,
         # A22/B318/C422/D143 the 3k one and A28/B329/C428/D143 the 3l one; all
         # four are history, not now. Tranche 3m moves B, C and D but not A.
@@ -4595,7 +4611,8 @@ class ClassificationShardIndexTest(unittest.TestCase):
             sorted(combined["scoped_files"]),
             sorted(
                 {f for f, _ in EXPECTED_SCOPE_ORDER}
-                | {SHARD_001_SOURCE_FILE, TRANCHE_3K_SOURCE_FILE, TRANCHE_3L_SOURCE_FILE}
+                | {SHARD_001_SOURCE_FILE, TRANCHE_3K_SOURCE_FILE, TRANCHE_3L_SOURCE_FILE,
+                   TRANCHE_3O_RIVAL_FILE}  # tranche 3p brought the runner-up file into scope
             ),
         )
         # Tranche 3l's file arrived whole too: both its classes, 23 assertions,
@@ -4627,6 +4644,7 @@ class ClassificationShardIndexTest(unittest.TestCase):
             + TRANCHE_3M_EXPECTED_ASSERTION_COUNT + SHARD_003_CURRENT_ENTRY_COUNT,
         )
         self.assertEqual(combined["file_counts"][TRANCHE_3M_SOURCE_FILE], 491)
+        self.assertEqual(combined["file_counts"][TRANCHE_3O_RIVAL_FILE], SHARD_004_CURRENT_ENTRY_COUNT)
         self.assertEqual(491, 345 + SHARD_003_CURRENT_ENTRY_COUNT)  # 345 was 3m's
         # One source file, two shards: 001 owns 136 of it, 002 the other 34.
         self.assertEqual(
@@ -4642,12 +4660,14 @@ class ClassificationShardIndexTest(unittest.TestCase):
         shard_001 = json.loads(SHARD_001_PATH.read_text(encoding="utf-8"))
         shard_002 = json.loads(SHARD_002_PATH.read_text(encoding="utf-8"))
         shard_003 = json.loads(SHARD_003_PATH.read_text(encoding="utf-8"))
+        shard_004 = json.loads(SHARD_004_PATH.read_text(encoding="utf-8"))
         base_ids = [e["id"] for e in base["assertions"]]
         shard_ids = [e["id"] for e in shard_001["assertions"]]
         shard_002_ids = [e["id"] for e in shard_002["assertions"]]
         shard_003_ids = [e["id"] for e in shard_003["assertions"]]
+        shard_004_ids = [e["id"] for e in shard_004["assertions"]]
         combined_ids = dti.combined_assertion_ids(loaded)
-        self.assertEqual(combined_ids, base_ids + shard_ids + shard_002_ids + shard_003_ids)
+        self.assertEqual(combined_ids, base_ids + shard_ids + shard_002_ids + shard_003_ids + shard_004_ids)
         self.assertEqual(len(combined_ids), INDEX_COMBINED_ASSERTION_COUNT)
         self.assertEqual(len(set(combined_ids)), len(combined_ids))  # no cross-shard duplicate id
         # No cross-shard ownership overlap either.
@@ -4885,6 +4905,7 @@ class Tranche3oMethodRangeSelectionTest(unittest.TestCase):
                 self.assertNotIn(TRANCHE_3O_RIVAL_FILE,
                                  {e["file"] for e in json.loads((ROOT / name).read_text(encoding="utf-8"))["scope"]})
         self.assertEqual(len(TRANCHE_3O_HISTORICAL_SHARD_ORDER), 4)
+        self.assertEqual(len(EXPECTED_SHARD_ORDER), 5)  # 3p added the fifth
 
 
 class Tranche3oShard003Test(unittest.TestCase):
@@ -5014,6 +5035,481 @@ class Tranche3oShard003Test(unittest.TestCase):
                 mutated["scope"].append(json.loads(json.dumps(self.shard["scope"][0])))
                 self.assertIn("duplicate-scope-file",
                               {f.mismatch_type for f in dti.validate_manifest(mutated, root=ROOT)[0]})
+
+
+# -- BL-038 tranche 3p -------------------------------------------------------
+# The second method-range scope, and the first on a class no shard had touched.
+TRANCHE_3P_SOURCE_FILE = "test_source_usage_policy.py"
+TRANCHE_3P_CLASS = "SourceUsagePolicyTest"
+TRANCHE_3P_RANGE_START = "test_gemini_gate_references_point_to_chapter_5"
+TRANCHE_3P_RANGE_END = "test_cisa_has_no_url_in_official_evidence_url_and_is_terms_not_identified"
+TRANCHE_3P_METHOD_RANGE = {"start": TRANCHE_3P_RANGE_START, "end": TRANCHE_3P_RANGE_END}
+TRANCHE_3P_SELECTION_CAP = 150
+TRANCHE_3P_CLASS_METHOD_COUNT = 36
+TRANCHE_3P_CLASS_ASSERTION_COUNT = 177
+TRANCHE_3P_EXPECTED_METHOD_COUNT = 32
+TRANCHE_3P_EXPECTED_ASSERTION_COUNT = 140
+TRANCHE_3P_NEXT_METHOD = "test_mandiant_distinguishes_rss_evidence_from_terms_evidence"
+TRANCHE_3P_NEXT_METHOD_ASSERTION_COUNT = 11
+TRANCHE_3P_NEXT_METHOD_RUNNING_TOTAL = 151
+TRANCHE_3P_TAIL_METHOD_COUNT = 4
+TRANCHE_3P_TAIL_ASSERTION_COUNT = 37
+# The runner-up this tranche beat: SecurityRequirementsTest's next window.
+TRANCHE_3P_RIVAL_FILE = SECURITY_REQUIREMENTS_SOURCE_FILE
+TRANCHE_3P_RIVAL_CLASS = "SecurityRequirementsTest"
+TRANCHE_3P_RIVAL_START = "test_bl029_is_recorded_verbatim_as_complete"
+TRANCHE_3P_RIVAL_METHOD_COUNT = 11
+TRANCHE_3P_RIVAL_ASSERTION_COUNT = 124
+TRANCHE_3P_EXPECTED_CATEGORY_COUNTS = {"A": 2, "B": 80, "C": 50, "D": 8}
+TRANCHE_3P_EXPECTED_API_COUNTS = {"assertEqual": 27, "assertIn": 89, "assertNotIn": 18, "assertNotRegex": 1, "assertTrue": 5}
+TRANCHE_3P_EXPECTED_A_METHODS = ("test_metadata_only_disallows_ai_processing", "test_disabled_legal_review_disallows_network_fetch")
+_S3P = f"{TRANCHE_3P_SOURCE_FILE}::{TRANCHE_3P_CLASS}::"
+
+
+class Tranche3pMethodRangeSelectionTest(unittest.TestCase):
+    """BL-038 tranche 3p SELECTION, re-derivable from live source: the window,
+    why it stops where it does, and why it beat the other candidate. Unlike
+    tranche 3o's class, this one had no prior classification at all, so its
+    window starts at the class's very first test method."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.source = (ROOT / TRANCHE_3P_SOURCE_FILE).read_text(encoding="utf-8")
+        cls.node = next(n for n in ast.parse(cls.source, filename=TRANCHE_3P_SOURCE_FILE).body
+                        if isinstance(n, ast.ClassDef) and n.name == TRANCHE_3P_CLASS)
+        cls.order = [m.name for m in dti._class_test_methods_in_source_order(cls.node)]
+        cls.per = Counter(r.method for r in dti.enumerate_assertions(cls.source, TRANCHE_3P_SOURCE_FILE, [TRANCHE_3P_CLASS]))
+        cls.window = dti.enumerate_assertions(cls.source, TRANCHE_3P_SOURCE_FILE, [TRANCHE_3P_CLASS],
+                                              method_ranges={TRANCHE_3P_CLASS: TRANCHE_3P_METHOD_RANGE})
+
+    def test_the_selected_file_class_and_boundaries_are_exactly_these(self):
+        self.assertEqual((TRANCHE_3P_SOURCE_FILE, TRANCHE_3P_CLASS), ("test_source_usage_policy.py", "SourceUsagePolicyTest"))
+        self.assertEqual(TRANCHE_3P_METHOD_RANGE, {"start": TRANCHE_3P_RANGE_START, "end": TRANCHE_3P_RANGE_END})
+        self.assertIn(TRANCHE_3P_RANGE_START, self.order)
+        self.assertIn(TRANCHE_3P_RANGE_END, self.order)
+        self.assertLess(self.order.index(TRANCHE_3P_RANGE_START), self.order.index(TRANCHE_3P_RANGE_END))
+        self.assertEqual((len(self.order), sum(self.per.values())), (TRANCHE_3P_CLASS_METHOD_COUNT, TRANCHE_3P_CLASS_ASSERTION_COUNT))
+
+    def test_the_window_starts_at_the_first_unclassified_method_of_the_class(self):
+        """Pinned as tranche 3p evidence: every shard that preceded `_004` owned
+        none of this class, and `_004` owns exactly the window, which begins at
+        source index 0. It is not a ceiling on what a later shard may own."""
+        def methods_owned_by(name):
+            return {e["method"] for e in json.loads((ROOT / name).read_text(encoding="utf-8"))["assertions"]
+                    if (e["file"], e["class"]) == (TRANCHE_3P_SOURCE_FILE, TRANCHE_3P_CLASS)}
+        for name in TRANCHE_3O_HISTORICAL_SHARD_ORDER:
+            with self.subTest(before=name): self.assertEqual(methods_owned_by(name), set())
+        self.assertEqual(methods_owned_by(SHARD_004_FILENAME), {r.method for r in self.window})
+        self.assertEqual(self.order.index(TRANCHE_3P_RANGE_START), 0)
+
+    def test_the_window_is_thirtytwo_methods_and_one_hundred_forty_assertions(self):
+        self.assertEqual(len(self.window), TRANCHE_3P_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(len({r.method for r in self.window}), TRANCHE_3P_EXPECTED_METHOD_COUNT)
+        self.assertEqual(self.order[TRANCHE_3P_EXPECTED_METHOD_COUNT - 1], TRANCHE_3P_RANGE_END)
+        # Whole methods only: every assertion of every windowed method is in.
+        self.assertEqual(Counter(r.method for r in self.window), Counter({m: self.per[m] for m in self.order[:TRANCHE_3P_EXPECTED_METHOD_COUNT]}))
+        self.assertLessEqual(TRANCHE_3P_EXPECTED_ASSERTION_COUNT, TRANCHE_3P_SELECTION_CAP)
+
+    def test_the_window_stops_because_the_next_whole_method_would_overflow(self):
+        nxt = self.order[TRANCHE_3P_EXPECTED_METHOD_COUNT]
+        self.assertEqual((nxt, self.per[nxt]), (TRANCHE_3P_NEXT_METHOD, TRANCHE_3P_NEXT_METHOD_ASSERTION_COUNT))
+        self.assertEqual(TRANCHE_3P_EXPECTED_ASSERTION_COUNT + self.per[nxt], TRANCHE_3P_NEXT_METHOD_RUNNING_TOTAL)
+        self.assertGreater(TRANCHE_3P_NEXT_METHOD_RUNNING_TOTAL, TRANCHE_3P_SELECTION_CAP)
+        self.assertLessEqual(max(self.per.values()), TRANCHE_3P_SELECTION_CAP)
+        self.assertEqual(min(self.per.values()), 1)  # and none is empty
+
+    def test_the_uncovered_tail_is_four_methods_and_thirtyseven_assertions(self):
+        """Legitimate future work, deliberately left: the tail must stay
+        classifiable by a later disjoint range, so this records its size rather
+        than forbidding anything."""
+        tail = self.order[TRANCHE_3P_EXPECTED_METHOD_COUNT:]
+        self.assertEqual(len(tail), TRANCHE_3P_TAIL_METHOD_COUNT)
+        self.assertEqual(sum(self.per[m] for m in tail), TRANCHE_3P_TAIL_ASSERTION_COUNT)
+        self.assertEqual(tail[0], TRANCHE_3P_NEXT_METHOD)
+        self.assertEqual(TRANCHE_3P_EXPECTED_ASSERTION_COUNT + TRANCHE_3P_TAIL_ASSERTION_COUNT, TRANCHE_3P_CLASS_ASSERTION_COUNT)
+
+    def test_the_competing_candidate_is_smaller_so_the_winner_is_unique(self):
+        """The rival is the NEXT window of the class tranche 3o started: its own
+        greedy prefix from its first still-unclassified method."""
+        rival_source = (ROOT / TRANCHE_3P_RIVAL_FILE).read_text(encoding="utf-8")
+        rival_node = next(n for n in ast.parse(rival_source, filename=TRANCHE_3P_RIVAL_FILE).body
+                          if isinstance(n, ast.ClassDef) and n.name == TRANCHE_3P_RIVAL_CLASS)
+        rival_order = [m.name for m in dti._class_test_methods_in_source_order(rival_node)]
+        rival_per = Counter(r.method for r in dti.enumerate_assertions(rival_source, TRANCHE_3P_RIVAL_FILE, [TRANCHE_3P_RIVAL_CLASS]))
+        owned = {e["method"] for name in TRANCHE_3O_HISTORICAL_SHARD_ORDER
+                 for e in json.loads((ROOT / name).read_text(encoding="utf-8"))["assertions"]
+                 if (e["file"], e["class"]) == (TRANCHE_3P_RIVAL_FILE, TRANCHE_3P_RIVAL_CLASS)}
+        start = next(i for i, m in enumerate(rival_order) if m not in owned)
+        self.assertEqual(rival_order[start], TRANCHE_3P_RIVAL_START)
+        run, index = 0, start
+        while index < len(rival_order) and run + rival_per[rival_order[index]] <= TRANCHE_3P_SELECTION_CAP:
+            run += rival_per[rival_order[index]]; index += 1
+        self.assertEqual((index - start, run), (TRANCHE_3P_RIVAL_METHOD_COUNT, TRANCHE_3P_RIVAL_ASSERTION_COUNT))
+        self.assertGreater(TRANCHE_3P_EXPECTED_ASSERTION_COUNT, TRANCHE_3P_RIVAL_ASSERTION_COUNT)
+        self.assertNotEqual(TRANCHE_3P_EXPECTED_ASSERTION_COUNT, TRANCHE_3P_RIVAL_ASSERTION_COUNT)  # no tie
+
+
+class Tranche3pShard004Test(unittest.TestCase):
+    """The shard: scope shape, entry-to-source agreement, the measured basis for
+    the two Category A entries, and the prefix invariant."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.text = SHARD_004_PATH.read_text(encoding="utf-8")
+        cls.shard = json.loads(cls.text, object_pairs_hook=OrderedDict)
+        cls.entries = cls.shard["assertions"]
+        cls.source = (ROOT / TRANCHE_3P_SOURCE_FILE).read_text(encoding="utf-8")
+
+    def test_the_scope_is_one_method_range_over_one_class(self):
+        self.assertEqual(self.shard["schema_version"], 1)
+        self.assertEqual(len(self.shard["scope"]), 1)
+        scope = self.shard["scope"][0]
+        self.assertEqual(tuple(scope), ("file", "classes", "method_range"))
+        self.assertEqual((scope["file"], scope["classes"]), (TRANCHE_3P_SOURCE_FILE, [TRANCHE_3P_CLASS]))
+        self.assertEqual(tuple(scope["method_range"]), ("start", "end"))
+        self.assertEqual(scope["method_range"], TRANCHE_3P_METHOD_RANGE)
+        self.assertEqual(len(self.text.splitlines()), SHARD_004_CURRENT_LINE_COUNT)
+        self.assertLessEqual(len(self.text.splitlines()), dti.SHARD_LINE_CAP)
+
+    def test_every_entry_matches_live_source_in_inventory_id_order(self):
+        live = dti.enumerate_assertions(self.source, TRANCHE_3P_SOURCE_FILE, [TRANCHE_3P_CLASS],
+                                        method_ranges={TRANCHE_3P_CLASS: TRANCHE_3P_METHOD_RANGE})
+        self.assertEqual([e["id"] for e in self.entries], [r.id for r in live])
+        self.assertEqual(len(self.entries), TRANCHE_3P_EXPECTED_ASSERTION_COUNT)
+        by_id = {r.id: r for r in live}
+        for entry in self.entries:
+            with self.subTest(id=entry["id"]):
+                record = by_id[entry["id"]]
+                self.assertEqual((entry["file"], entry["class"], entry["method"], entry["ordinal"]),
+                                 (record.file, record.cls, record.method, record.ordinal))
+                self.assertEqual((entry["assertion_api"], entry["fingerprint"]), (record.assertion_api, record.fingerprint))
+                self.assertEqual(tuple(entry), EXPECTED_ENTRY_KEY_ORDER)
+                self.assertEqual(entry["action"], dti.CATEGORY_TO_ACTION[entry["category"]])
+
+    def test_the_category_and_api_breakdowns_are_the_recorded_ones(self):
+        self.assertEqual(dict(Counter(e["category"] for e in self.entries)), TRANCHE_3P_EXPECTED_CATEGORY_COUNTS)
+        self.assertEqual(sum(TRANCHE_3P_EXPECTED_CATEGORY_COUNTS.values()), TRANCHE_3P_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(dict(Counter(e["assertion_api"] for e in self.entries)), TRANCHE_3P_EXPECTED_API_COUNTS)
+        self.assertEqual(sum(TRANCHE_3P_EXPECTED_API_COUNTS.values()), TRANCHE_3P_EXPECTED_ASSERTION_COUNT)
+
+    def test_category_a_rests_on_a_measured_whole_method_parameterisation(self):
+        """A is two entries, and the evidence is the METHODS, not the
+        fingerprints (which differ). The two methods have identical AST
+        skeletons and differ in exactly one (mode, column) parameter pair."""
+        a_methods = sorted({e["method"] for e in self.entries if e["category"] == "A"})
+        self.assertEqual(a_methods, sorted(TRANCHE_3P_EXPECTED_A_METHODS))
+        self.assertEqual(sum(1 for e in self.entries if e["category"] == "A"), 2)
+        nodes = {m.name: m for m in dti._class_test_methods_in_source_order(
+            next(n for n in ast.parse(self.source, filename=TRANCHE_3P_SOURCE_FILE).body
+                 if isinstance(n, ast.ClassDef) and n.name == TRANCHE_3P_CLASS))}
+        skeletons = [tuple(type(x).__name__ for x in ast.walk(nodes[m])) for m in TRANCHE_3P_EXPECTED_A_METHODS]
+        self.assertEqual(skeletons[0], skeletons[1])
+        fingerprints = {e["fingerprint"] for e in self.entries if e["category"] == "A"}
+        self.assertEqual(len(fingerprints), 2)  # NOT a fingerprint duplicate
+        # Normalising the one parameter pair makes the two bodies identical.
+        lines = self.source.split("\n")
+        bodies = ["\n".join(lines[nodes[m].lineno:nodes[m].end_lineno]) for m in TRANCHE_3P_EXPECTED_A_METHODS]
+        normalised = [bodies[0].replace("metadata_only", "M").replace("ai_processing", "C"),
+                      bodies[1].replace("disabled_legal_review", "M").replace("network_fetch", "C")]
+        self.assertEqual(normalised[0], normalised[1])
+
+    def test_the_combined_index_covers_an_unbroken_prefix_and_leaves_the_tail(self):
+        failures, summary = dti.validate_indexed_manifests(root=ROOT)
+        self.assertEqual([f.format() for f in failures], [])
+        self.assertNotIn("method-range-prefix-gap", {f.mismatch_type for f in failures})
+        self.assertEqual(summary["inventoried_assertions"], INDEX_COMBINED_ASSERTION_COUNT)
+        order = [m.name for m in dti._class_test_methods_in_source_order(next(n for n in ast.parse(self.source, filename=TRANCHE_3P_SOURCE_FILE).body
+                 if isinstance(n, ast.ClassDef) and n.name == TRANCHE_3P_CLASS))]
+        owned = {e["method"] for e in self.entries}
+        self.assertEqual(owned, set(order[:TRANCHE_3P_EXPECTED_METHOD_COUNT]))
+        self.assertEqual(len(order) - len(owned), TRANCHE_3P_TAIL_METHOD_COUNT)
+
+    def test_the_four_accepted_shards_are_byte_identical_and_unshared(self):
+        for path, sha, entries in ((MANIFEST_PATH, BASE_MANIFEST_SHA256, 585),
+                                   (SHARD_001_PATH, SHARD_001_CURRENT_SHA256, SHARD_001_CURRENT_ENTRY_COUNT),
+                                   (SHARD_002_PATH, SHARD_002_CURRENT_SHA256, SHARD_002_CURRENT_ENTRY_COUNT),
+                                   (SHARD_003_PATH, None, SHARD_003_CURRENT_ENTRY_COUNT)):
+            with self.subTest(path=path.name):
+                text = path.read_text(encoding="utf-8")
+                if sha: self.assertEqual(hashlib.sha256(path.read_bytes()).hexdigest(), sha)
+                self.assertEqual(len(json.loads(text)["assertions"]), entries)
+                self.assertNotIn(TRANCHE_3P_CLASS, text)
+        # Appending here to the BASE would have blown the line cap; that is the
+        # measured reason tranche 3p opened `_004` rather than extending it.
+        self.assertGreater(BASE_MANIFEST_LINE_COUNT + SHARD_004_CURRENT_ENTRY_COUNT, dti.SHARD_LINE_CAP)
+
+
+# The load-bearing bindings an assertion fingerprint cannot see: for each
+# selected method, the string literals OUTSIDE its assertion and subTest calls --
+# section boundaries, table column names, source_id and mode filters, required
+# tuples, the audit-date exception set and the blacklist. Compared as a MULTISET,
+# because ast.walk is breadth-first: introducing a harmless alias reshuffles the
+# order without changing a single manifest claim. Where order does carry meaning
+# -- the per-source trigger pairing -- a dedicated guard pins it below.
+# This deliberately does NOT digest the whole outer AST: that also failed on
+# harmless equivalences such as `{}` versus `dict()` or an added alias, which
+# change no manifest claim (PR #98 round 3). Non-string outer semantics that DO
+# carry manifest meaning are pinned individually below.
+TRANCHE_3P_USED_OUTER_LITERALS = {
+    "test_required_chapters_are_present": ( '## 1. Purpose', '## 2. Legal and policy framework', '## 3. Content usage modes',
+         '## 4. Source-by-source audit matrix', '## 5. Gemini data-use gate', '## 6. Attribution requirements',
+         '## 7. Output-similarity and quotation controls', '## 8. Recheck triggers', '## 9. Unknowns and owner verification',
+         '## 10. Relationship to BL-032 and BL-009'), "test_17_source_ids_match_source_definitions_exactly": ( 'source_id',),
+    "test_checked_at_is_2026_07_29_except_google_terms_sources": ( 'google_tag', 'mandiant', '2026-07-30', '2026-07-29', 'source_id'),
+    "test_mode_counts_are_5_4_2_2_4_by_proposed_mode_column": ( 'source_id', 'proposed_mode'),
+    "test_proposed_mode_matches_the_table_the_row_appears_in": ( 'structured_open', '### structured_open (5件)', '### feed_summary (4件)',
+         'feed_summary', '### feed_summary (4件)', '### limited_feed_analysis (2件)', 'limited_feed_analysis', '### limited_feed_analysis (2件)',
+         '### metadata_only (2件)', 'metadata_only', '### metadata_only (2件)', '### disabled_legal_review (4件)', '### disabled_legal_review (4件)'),
+    "test_metadata_only_disallows_ai_processing": ( 'metadata_only', 'proposed_mode'),
+    "test_disabled_legal_review_disallows_network_fetch": ( 'disabled_legal_review', 'proposed_mode'),
+    "test_feed_summary_is_gated_by_gemini_paid_service_confirmation": ( '### limited_feed_analysis (2件)', '## 6. Attribution requirements',
+         '### feed_summary (4件)', '## 5. Gemini data-use gate'),
+    "test_gemini_data_use_status_is_paid_verified": ( '## 6. Attribution requirements', '## 5. Gemini data-use gate'),
+    "test_gemini_owner_verification_is_recorded_without_secrets": ( '## 6. Attribution requirements', '## 5. Gemini data-use gate'),
+    "test_gemini_gate_no_longer_lists_unknown_as_current_unresolved_issue": ( '## 10. Relationship to BL-032 and BL-009',
+         '## 9. Unknowns and owner verification'),
+    "test_feed_summary_production_enforcement_still_deferred_to_bl032": ( '## 6. Attribution requirements', '## 5. Gemini data-use gate'),
+    "test_google_terms_2026_07_30_recheck_is_recorded_as_completed": ( '## 9. Unknowns and owner verification', '## 8. Recheck triggers'),
+    "test_mandiant_and_google_tag_recheck_triggers_are_specific": ( 'mandiant', 'google_tag', 'Google Cloud Threat Intelligence固有の利用条件の変更',
+         'Google Security Blog/Blogger固有の利用条件の変更', 'recheck_trigger'),
+    "test_google_terms_recheck_moved_to_confirmed_in_unknowns_section": ( '## 10. Relationship to BL-032 and BL-009',
+         '## 9. Unknowns and owner verification'),
+    "test_attribution_requirements_are_recorded_for_each_group": ( '`fsa`', '`nist`', '`nist_nvd`', '`ncsc`', '`cisa_kev`', 'jpcert_cc',
+         'limited_feed_analysis', 'metadata_only', 'disabled_legal_review', '## 7. Output-similarity and quotation controls',
+         '## 6. Attribution requirements'),
+    "test_limited_feed_analysis_mode_definition_is_present": ( '## 4. Source-by-source audit matrix', '## 3. Content usage modes'),
+    "test_limited_feed_analysis_rows_have_expected_allow_flags": ( 'the_hacker_news', 'krebs_on_security'),
+    "test_risk_acceptance_rationale_is_recorded_and_not_asserted_as_permission": ( '## 4. Source-by-source audit matrix', '## 3. Content usage modes'),
+    "test_metadata_only_allows_metadata_fetch_and_does_not_prohibit_human_browsing": ( '## 4. Source-by-source audit matrix',
+         '## 3. Content usage modes'), "test_cisco_talos_and_krebs_uncertainty_is_not_asserted_as_definitive": ( 'cisco_talos', 'krebs_on_security',
+         '## 10. Relationship to BL-032 and BL-009', '## 9. Unknowns and owner verification'),
+    "test_official_evidence_url_contains_only_urls_or_a_bare_dash": ( 'official_evidence_url',),
+    "test_official_evidence_url_has_no_descriptive_text_mixed_in": ( '証跡', 'supporting:', 'URL未特定', '見つからなかった', 'terms文書ではなく'),
+    "test_multi_url_rows_have_matching_evidence_type_count_when_types_differ": ( 'official_evidence_url', 'evidence_type'),
+    "test_krebs_about_page_is_recorded_as_supporting_source_page_not_a_terms_url": ( 'krebs_on_security', 'official_evidence_url'),
+    "test_cisa_has_no_url_in_official_evidence_url_and_is_terms_not_identified": ( 'cisa',), }
+TRANCHE_3P_USED_OUTER_LITERAL_COUNT = 90
+TRANCHE_3P_HELPER_OUTER_LITERALS = { "parse_rows": ( '|---', 'source_id', '| ', '|', '|'), "_split_cell": ( '；',), }
+# Which source_id row each source-specific assertion ultimately reads. The outer
+# literal multiset cannot see the RHS of two row bindings swapped -- the literals
+# and all 140 fingerprints survive it -- yet every one of those manifest entries
+# names its source explicitly (PR #98 round 4). Resolved through the bindings, so
+# renaming a local row variable is free.
+_KREBS, _TALOS, _CISA = "krebs_on_security", "cisco_talos", "cisa"
+TRANCHE_3P_SOURCE_ROW_READS = { "test_cisco_talos_and_krebs_uncertainty_is_not_asserted_as_definitive":
+        {1: _TALOS, 2: _KREBS, 3: _KREBS, 4: _KREBS}, "test_krebs_about_page_is_recorded_as_supporting_source_page_not_a_terms_url":
+        {n: _KREBS for n in range(1, 6)},
+    "test_cisa_has_no_url_in_official_evidence_url_and_is_terms_not_identified": {n: _CISA for n in range(1, 4)}, }
+def _row_source_of(method):
+    """Map each local variable to the source_id whose matrix row it ultimately reads.
+    `self.rows_by_id` resolves to a marker any harmless local alias inherits, row
+    bindings resolve through that marker rather than through a literal
+    `self.rows_by_id[...]` shape, and a variable derived from exactly one resolved row
+    inherits it -- to fixpoint, so no local name (a row's or the alias's) is a contract."""
+    env, changed, REGISTRY = {}, True, object()
+    def registry(node):  # `self.rows_by_id` itself, or any local alias of it
+        return (isinstance(node, ast.Attribute) and node.attr == "rows_by_id") or (isinstance(node, ast.Name) and env.get(node.id) is REGISTRY)
+    while changed:
+        changed = False
+        for a in ast.walk(method):
+            if not (isinstance(a, ast.Assign) and len(a.targets) == 1 and isinstance(a.targets[0], ast.Name) and a.targets[0].id not in env):
+                continue  # first binding wins, so the fixpoint is monotone and terminates
+            value, resolved = a.value, None
+            if registry(value): resolved = REGISTRY
+            elif isinstance(value, ast.Subscript) and isinstance(value.slice, ast.Constant) and registry(value.value):
+                resolved = value.slice.value
+            else:
+                seen = {env[n.id] for n in ast.walk(value) if isinstance(n, ast.Name) and n.id in env} - {REGISTRY}
+                resolved = seen.pop() if len(seen) == 1 else None
+            if resolved is not None: env[a.targets[0].id], changed = resolved, True
+    return {name: sid for name, sid in env.items() if sid is not REGISTRY}
+TRANCHE_3P_REQUIRED_CHAPTERS = ("## 1. Purpose", "## 2. Legal and policy framework", "## 3. Content usage modes",
+    "## 4. Source-by-source audit matrix", "## 5. Gemini data-use gate",
+    "## 6. Attribution requirements", "## 7. Output-similarity and quotation controls",
+    "## 8. Recheck triggers", "## 9. Unknowns and owner verification", "## 10. Relationship to BL-032 and BL-009")
+
+
+class Tranche3pUsedBindingGuardTest(unittest.TestCase):
+    """PR #98 round 1, Blocker 2. An ordinary assertion fingerprint covers the
+    assertion CALL and nothing else, so a manifest entry whose meaning rests on
+    an assignment, tuple, slice boundary or helper outside that call can be
+    falsified without any fingerprint moving. Following the tranche 3m
+    precedent, this pins ONLY the bindings the tranche 3p manifest actually
+    uses -- audited entry by entry, with cosmetic subTest labels and unused
+    fields deliberately left free."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.source = (ROOT / TRANCHE_3P_SOURCE_FILE).read_text(encoding="utf-8")
+        cls.tree = ast.parse(cls.source, filename=TRANCHE_3P_SOURCE_FILE)
+        cls.class_node = next(n for n in cls.tree.body if isinstance(n, ast.ClassDef) and n.name == TRANCHE_3P_CLASS)
+        cls.methods = {m.name: m for m in dti._class_test_methods_in_source_order(cls.class_node)}
+
+    @staticmethod
+    def _expr(text):
+        """`text` rendered by THIS interpreter's unparse, so both sides of an
+        expression comparison are normalised the same way and no expected value
+        written here can depend on a CPython release's rendering choices."""
+        return ast.unparse(ast.parse(text, mode="eval").body)
+
+    @staticmethod
+    def _outer_literals(method, skip_docstring=False):
+        """String literals the fingerprint cannot see: everything outside an
+        assertion call, minus subTest labels (cosmetic)."""
+        hidden = set()
+        if (skip_docstring and method.body and isinstance(method.body[0], ast.Expr) and isinstance(method.body[0].value, ast.Constant)):
+            hidden.add(id(method.body[0].value))
+        for node in ast.walk(method):
+            if (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+                    and isinstance(node.func.value, ast.Name) and node.func.value.id == "self"
+                    and (node.func.attr.startswith("assert") or node.func.attr == "subTest")):
+                hidden |= {id(x) for x in ast.walk(node)}
+        return tuple(n.value for n in ast.walk(method) if isinstance(n, ast.Constant) and isinstance(n.value, str) and id(n) not in hidden)
+
+    def test_the_documents_the_manifest_targets_are_the_ones_read(self):
+        """Every entry targets SOURCE_USAGE_POLICY.md, and one targets
+        source_definitions.json. Retargeting either path would falsify all 140
+        summaries without moving a single fingerprint."""
+        paths = {t.targets[0].id: ast.unparse(t.value) for t in self.tree.body if isinstance(t, ast.Assign) and isinstance(t.targets[0], ast.Name)
+                 and t.targets[0].id in ("POLICY_PATH", "SOURCE_DEFINITIONS_PATH")}
+        self.assertEqual(paths, {"POLICY_PATH": "ROOT / 'SOURCE_USAGE_POLICY.md'", "SOURCE_DEFINITIONS_PATH": "ROOT / 'source_definitions.json'"})
+
+    def test_setupclass_binds_the_matrix_rows_and_ids_the_manifest_describes(self):
+        """`matrix`, `rows`, `rows_by_id` and `source_ids` decide what "the audit
+        matrix", "the row", and "the registry's id set" mean in 140 summaries."""
+        setup = next(m for m in self.class_node.body if isinstance(m, ast.FunctionDef) and m.name == "setUpClass")
+        assigns = {ast.unparse(a.targets[0]): ast.unparse(a.value) for a in setup.body if isinstance(a, ast.Assign)}
+        self.assertEqual(assigns["cls.policy"], "POLICY_PATH.read_text(encoding='utf-8')")
+        self.assertEqual(assigns["cls.rows"], "parse_rows(cls.matrix)")
+        self.assertEqual(assigns["cls.rows_by_id"], "{row['source_id']: row for row in cls.rows}")
+        # The matrix binding is pinned as an EXPRESSION, not as "these markers
+        # appear somewhere": chapter 4 opened, [1] taken, chapter 5 closed, [0]
+        # taken, each with maxsplit 1.
+        self.assertEqual(assigns["cls.matrix"], self._expr(
+            "cls.policy.split('## 4. Source-by-source audit matrix', 1)[1].split('## 5. Gemini data-use gate', 1)[0]"))
+        # The id set comes from the registry's own `sources[].id`.
+        for fragment in ("SOURCE_DEFINITIONS_PATH.read_text", "'sources'", "s['id']"):
+            with self.subTest(fragment=fragment): self.assertIn(fragment, assigns["cls.source_ids"])
+
+    def test_parse_rows_still_resolves_columns_by_header(self):
+        """Every "cell"/"column" claim in the manifest assumes header-keyed
+        parsing across the four per-mode tables. A positional parser would keep
+        the same fingerprints and make those summaries wrong."""
+        parse_rows = next(n for n in self.tree.body if isinstance(n, ast.FunctionDef) and n.name == "parse_rows")
+        self.assertEqual(self._outer_literals(parse_rows, skip_docstring=True), TRANCHE_3P_HELPER_OUTER_LITERALS["parse_rows"])
+        # ... and the header/cell zip itself, which no literal can express.
+        zips = [n for n in ast.walk(parse_rows) if isinstance(n, ast.Call) and isinstance(n.func, ast.Name) and n.func.id == "zip"]
+        self.assertEqual([len(z.args) for z in zips], [2])
+
+    def test_split_cell_still_splits_on_the_full_width_separator(self):
+        """`official_evidence_url` and `evidence_type` are `；`-separated lists;
+        the URL-shape, count-matching and Krebs entries all depend on it."""
+        split_cell = next(m for m in self.class_node.body if isinstance(m, ast.FunctionDef) and m.name == "_split_cell")
+        self.assertEqual(self._outer_literals(split_cell), TRANCHE_3P_HELPER_OUTER_LITERALS["_split_cell"])
+        # The delimiter is a literal, but stripping and the empty-token filter
+        # are structure: dropping `if part.strip()` keeps every literal and every
+        # fingerprint, and would let a blank token through (PR #98 round 2).
+        comps = [n for n in ast.walk(split_cell) if isinstance(n, ast.comprehension)]
+        self.assertEqual(len(comps), 1)
+        strips = [n for n in ast.walk(split_cell) if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute) and n.func.attr == "strip"]
+        self.assertEqual(len(strips), 2)  # the element and the filter
+        self.assertEqual([type(n).__name__ for n in comps[0].ifs], ["Call"])
+
+    def test_the_audit_date_exception_set_and_dates_are_pinned(self):
+        """Blocker 2-1: the assertion is only `assertEqual(row['checked_at'],
+        expected)`. The two exception sources and both dates live outside it,
+        yet the manifest records them as exact audit evidence (D)."""
+        body = ast.unparse(self.methods["test_checked_at_is_2026_07_29_except_google_terms_sources"])
+        self.assertIn("updated = {'google_tag', 'mandiant'}", body)
+        self.assertIn("expected = '2026-07-30' if row['source_id'] in updated else '2026-07-29'", body)
+        self.assertIn("assertEqual(row['checked_at'], expected)", body)
+
+    def test_the_required_chapter_tuple_is_pinned(self):
+        """Blocker 2-2: the assertion is only `assertIn(heading, self.policy)`;
+        all ten headings live in the loop tuple."""
+        literals = self._outer_literals(self.methods["test_required_chapters_are_present"])
+        self.assertEqual(sorted(literals), sorted(TRANCHE_3P_REQUIRED_CHAPTERS))
+        self.assertEqual(len(literals), 10)
+
+    def test_the_descriptive_text_blacklist_is_pinned(self):
+        """Blocker 2-3: the assertion is only `assertNotIn(forbidden, ...)`; the
+        five blacklisted fragments the C rationale names live in the tuple."""
+        literals = self._outer_literals(self.methods["test_official_evidence_url_has_no_descriptive_text_mixed_in"])
+        self.assertEqual(sorted(literals), sorted(("証跡", "supporting:", "URL未特定", "見つからなかった", "terms文書ではなく")))
+
+    def test_every_selected_method_keeps_its_used_outer_literals(self):
+        """The full audit across all 32 selected methods, narrowed in round 3 to
+        the values a manifest entry actually rests on -- compared as multisets so
+        an alias or a reordered statement cannot fail it."""
+        selected = [m.name for m in dti._class_test_methods_in_source_order(self.class_node)][:TRANCHE_3P_EXPECTED_METHOD_COUNT]
+        actual = {name: Counter(self._outer_literals(self.methods[name])) for name in selected}
+        self.assertEqual({k: v for k, v in actual.items() if v}, {k: Counter(v) for k, v in TRANCHE_3P_USED_OUTER_LITERALS.items()})
+        self.assertEqual(sum(len(v) for v in TRANCHE_3P_USED_OUTER_LITERALS.values()), TRANCHE_3P_USED_OUTER_LITERAL_COUNT)
+        # Six methods read only self.policy in-node and are left entirely free.
+        self.assertEqual(len(selected) - len(TRANCHE_3P_USED_OUTER_LITERALS), 6)
+
+    def test_each_recheck_source_keeps_its_own_source_specific_trigger(self):
+        """The multiset sweep cannot see a swap of the two trigger phrases, but
+        the manifest says each row records "its own source-specific" trigger.
+        Resolved through the row bindings, so a local rename cannot fail it."""
+        method = self.methods["test_mandiant_and_google_tag_recheck_triggers_are_specific"]
+        rows = {a.targets[0].id: a.value.slice.value for a in ast.walk(method) if isinstance(a, ast.Assign) and isinstance(a.targets[0], ast.Name)
+                and isinstance(a.value, ast.Subscript) and isinstance(a.value.slice, ast.Constant)}
+        loop = next(n for n in ast.walk(method) if isinstance(n, ast.For) and isinstance(n.iter, ast.Tuple))
+        self.assertEqual({rows[e.elts[0].id]: e.elts[1].value for e in loop.iter.elts}, {"mandiant": "Google Cloud Threat Intelligence固有の利用条件の変更",
+                          "google_tag": "Google Security Blog/Blogger固有の利用条件の変更"})
+
+    def test_each_source_specific_assertion_reads_its_own_source_row(self):
+        """PR #98 round 4. Swapping the RHS of two `self.rows_by_id[...]` bindings
+        leaves the assertion calls, all 140 fingerprints and the outer literal
+        multiset untouched, but sends each assertion at a different source's row --
+        and every one of these manifest entries names its source. Pinned as
+        assertion ordinal -> source_id, resolved semantically by _row_source_of, so
+        renaming a local row variable -- or aliasing the registry itself -- is free.
+        Membership loops such as the two limited_feed_analysis rows apply the same
+        assertions to both sources and are deliberately left unordered."""
+        for name, expected in TRANCHE_3P_SOURCE_ROW_READS.items():
+            method = self.methods[name]
+            source_of = _row_source_of(method)
+            actual, ordinal = {}, 0
+            for node in ast.walk(method):
+                if not (isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute)
+                        and isinstance(node.func.value, ast.Name) and node.func.value.id == "self" and node.func.attr.startswith("assert")):
+                    continue
+                ordinal += 1
+                read = {source_of[n.id] for n in ast.walk(node) if isinstance(n, ast.Name) and n.id in source_of}
+                if len(read) == 1: actual[ordinal] = read.pop()
+            with self.subTest(method=name): self.assertEqual(actual, expected)
+
+    def test_the_multi_url_count_rule_keeps_its_comparator_and_threshold(self):
+        """Blocker 1 of round 2: `if len(types) > 1:` sits OUTSIDE the assertion,
+        so `> 2` would leave all 140 fingerprints and every outer string intact
+        while silently exempting every 2-type row -- and the manifest's "more
+        than one distinct evidence_type" summary would be wrong."""
+        method = self.methods["test_multi_url_rows_have_matching_evidence_type_count_when_types_differ"]
+        compares = [n for n in ast.walk(method) if isinstance(n, ast.Compare)]
+        self.assertEqual(len(compares), 1)
+        self.assertEqual([type(o).__name__ for o in compares[0].ops], ["Gt"])
+        self.assertEqual([c.value for c in compares[0].comparators], [1])
+
+    def test_method_local_section_bindings_keep_their_slice_topology(self):
+        """Round 2: pinning the marker strings is not enough. Each section slice
+        is pinned as a whole EXPRESSION -- source object, ordered start/end,
+        maxsplit and the [1]/[0] direction -- so swapping an index cannot leave
+        every fingerprint and every outer string unchanged."""
+        expected = { "gate": "self.policy.split('## 5. Gemini data-use gate', 1)[1]" ".split('## 6. Attribution requirements', 1)[0]",
+            "unknowns": "self.policy.split('## 9. Unknowns and owner verification', 1)[1]" ".split('## 10. Relationship to BL-032 and BL-009', 1)[0]",
+            "modes": "self.policy.split('## 3. Content usage modes', 1)[1]" ".split('## 4. Source-by-source audit matrix', 1)[0]",
+            "recheck": "self.policy.split('## 8. Recheck triggers', 1)[1]" ".split('## 9. Unknowns and owner verification', 1)[0]",
+            "attribution": "self.policy.split('## 6. Attribution requirements', 1)[1]"
+                           ".split('## 7. Output-similarity and quotation controls', 1)[0]",
+            "feed_summary_section": "self.matrix.split('### feed_summary (4件)', 1)[1]" ".split('### limited_feed_analysis (2件)', 1)[0]", }
+        seen = {}
+        for name in [m.name for m in dti._class_test_methods_in_source_order(self.class_node)][:TRANCHE_3P_EXPECTED_METHOD_COUNT]:
+            for node in ast.walk(self.methods[name]):
+                if (isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name) and node.targets[0].id in expected):
+                    seen.setdefault(node.targets[0].id, set()).add(ast.unparse(node.value))
+        self.assertEqual({k: sorted(v) for k, v in seen.items()}, {k: [self._expr(v)] for k, v in expected.items()})
 
 
 if __name__ == "__main__":
