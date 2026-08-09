@@ -1573,12 +1573,13 @@ class MethodRangeScopeTestCase(ShardIndexTestCase):
 
 class MethodRangeBackwardCompatibilityTest(MethodRangeScopeTestCase):
     def test_repository_manifests_and_index_still_validate_unchanged(self):
-        # The extension is invisible to the three whole-class shards, and the
-        # fourth (tranche 3o) is the first real user of the method-range form.
+        # The extension is invisible to the three whole-class shards; the fourth
+        # (tranche 3o) and fifth (tranche 3p) both use the method-range form, on
+        # different classes of different files.
         failures, summary = dti.validate_indexed_manifests(root=Path(__file__).resolve().parent)
         self.assertEqual(_failure_types(failures), set())
         self.assertEqual((summary["inventoried_assertions"], summary["category_counts"]),
-                         (1091, {"A": 28, "B": 407, "C": 489, "D": 167}))
+                         (1231, {"A": 30, "B": 487, "C": 539, "D": 175}))
         self.assertEqual((summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]), (0, 0, 0))
 
     def test_whole_class_scope_shape_is_accepted_and_owns_every_method(self):
