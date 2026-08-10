@@ -664,7 +664,7 @@ class SecurityRequirementsTest(unittest.TestCase):
 
     def test_sd027_partially_supersedes_sd021_and_preserves_its_other_contracts(self):
         decisions = self.decisions
-        sd027 = decisions[decisions.index("## SD-027"):]
+        sd027 = decisions[decisions.index("## SD-027"):decisions.index("## SD-028")]
         self.assertIn(
             "SD-027 — Redesign digest navigation to a left-aligned two-row layout "
             "shared by PC and 390px",
