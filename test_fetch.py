@@ -5293,8 +5293,8 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         ):
             with self.subTest(required=required):
                 self.assertIn(required, residual)
-        # The compact current acceptance summary now uses the inclusive 1〜3p form.
-        self.assertIn("tranche 1〜3pは受入済み", residual)
+        # The compact current acceptance summary now includes accepted tranche 3q.
+        self.assertIn("tranche 1〜3qは受入済み", residual)
 
     def test_tranche3e_final_acceptance_original_and_evidence_are_recorded(self):
         # PR #88 round 1 Blocker 1: PR #86 records the tranche 3e acceptance
@@ -5777,7 +5777,7 @@ class Bl038Tranche3gRecordSyncTest(unittest.TestCase):
         self.assertIn("3m", accepted)  # accepted since PR #95 merged
         self.assertIn("3n", accepted)  # accepted since PR #96 merged
         self.assertIn("3o", accepted)  # accepted since PR #97 merged
-        self.assertNotIn("3q", accepted)  # the tranche in progress today
+        self.assertIn("3q", accepted)  # accepted by PR #99 final acceptance
         self.assertNotIn("tranche 3g実装中", own_state_line)
         # 3g sits strictly between 3f and 3h in the record.
         self.assertLess(bl038.index("tranche 3f最終受入日:"), bl038.index("tranche 3g最終受入日:"))
@@ -6240,7 +6240,7 @@ class Bl038Tranche3jRecordSyncTest(unittest.TestCase):
         )
         # Entries 23 and 24 keep their meaning verbatim after tranches 3k-3p
         # appended 25-37; the header tally is asserted in the 3p class.
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 41)])
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 42)])
         for number, requirements in (
             ("23", ("tranche 3i final acceptance original", "2026-08-08", "「ok」", "PR #91",
                     "Draft解除・Ready化", "通常のmerge commit方式によるmerge",
@@ -6473,7 +6473,7 @@ class Bl038Tranche3kRecordSyncTest(unittest.TestCase):
         entries = re.findall(
             r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL
         )
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 41)])
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 42)])
         for number, requirements in (
             ("25", ("tranche 3j final acceptance original", "2026-08-08", "「ok」", "PR #92",
                     "Draft解除・Ready化", "通常のmerge commit方式によるmerge", "workflow_dispatch",
@@ -6645,12 +6645,12 @@ class Bl038Tranche3lRecordSyncTest(unittest.TestCase):
         bl038 = self._bl038_section()
         own_state_line = next(l for l in bl038.splitlines() if l.startswith("- **状態:**"))
         self.assertNotIn("tranche 3l実装中", own_state_line)
-        self.assertIn("tranche 3q実装中", own_state_line)
+        self.assertIn("3q受入済み／次tranche未着手", own_state_line)
         accepted = own_state_line.split("(", 1)[1].split("受入済み", 1)[0].split("・")
         self.assertEqual(accepted, ["tranche 1", "2", "3a", "3b", "3c", "3d", "3e", "3f", "3g",
-                                    "3h", "3i", "3j", "3k", "3l", "3m", "3n", "3o", "3p"])
+                                    "3h", "3i", "3j", "3k", "3l", "3m", "3n", "3o", "3p", "3q"])
         self.assertIn("3l", accepted)
-        self.assertNotIn("3q", accepted)
+        self.assertIn("3q", accepted)
         self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
         residual = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE).group(0)
         # 3l's own Category C count survives in the conversion inventory, with
@@ -6678,7 +6678,7 @@ class Bl038Tranche3lRecordSyncTest(unittest.TestCase):
         # Entries 27/28 took 「ok」 to 11 and introduced 「うん」; 29/30, 32/33,
         # 34/35 and 36/37 took them on to 15 and 7, so the CURRENT header is the
         # tranche 3p one and the 3l-era tally is history.
-        self.assertIn("「ok」16回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」9回・"
+        self.assertIn("「ok」17回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」9回・"
                       "「進んで」1回・「うん」1回", history)
         for stale in ("「ok」14回", "「ok」13回", "「ok」12回", "「ok」11回", "「ok」10回", "「ok」9回",
                       "「はい」6回", "「はい」5回", "「はい」4回", "「はい」3回"):
@@ -6689,7 +6689,7 @@ class Bl038Tranche3lRecordSyncTest(unittest.TestCase):
         self.assertIn("「A」1回", history)  # unchanged by 27/28
         entries = re.findall(r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history,
                              re.MULTILINE | re.DOTALL)
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 41)])
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 42)])
         for number, requirements in (
             ("27", ("tranche 3k final acceptance original", "2026-08-08", "「ok」", "PR #93",
                     "Draft解除・Ready化", "通常のmerge commit方式によるmerge",
@@ -6818,10 +6818,9 @@ class Bl038Tranche3lRecordSyncTest(unittest.TestCase):
             "combined A 28／B 329／C 428／D 143", ):
             with self.subTest(required=required):
                 self.assertIn(required, status)
-        # Tranche 3l IS accepted, and so is 3m since PR #95 merged; 3n is the
-        # unaccepted one.
+        # Historical 3l acceptance remains true; current state has advanced through 3q.
         self.assertIn("tranche 1〜3lはいずれも受入済み", status)
-        self.assertIn("**tranche 3qは未受入**", status)
+        self.assertIn("**tranche 3qは最終受入済み・PR #99 merge待ち**", status)
         self.assertNotIn("**tranche 3oは未受入**", status)
 
     def test_repository_state_matches_the_recorded_append_and_combined_totals(self):
@@ -6924,14 +6923,14 @@ class Bl038Tranche3mRecordSyncTest(unittest.TestCase):
         history = bl038[history_start : bl038.index("着手時ユーザー原文:", history_start)]
         # 「ok」 11->12 (entry 29); 「はい」 3->4 (entry 30). Entries 32/33 took
         # them to 13 and 5, and 34/35 to 14 and 6, which is the header now.
-        self.assertIn("「ok」16回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」9回・" "「進んで」1回・「うん」1回", history)
+        self.assertIn("「ok」17回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」9回・" "「進んで」1回・「うん」1回", history)
         for stale in ("「ok」14回", "「ok」13回", "「ok」12回", "「はい」6回", "「はい」5回", "「はい」4回"):
             with self.subTest(stale=stale): self.assertNotIn(stale, history)
         self.assertIn("長文の作業指示2回", history)
         self.assertNotIn("長文の作業指示1回", history)
         self.assertIn("「A」1回", history)  # unchanged by 29/30, 32/33 and 34/35
         entries = re.findall(r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL)
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 41)])
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 42)])
         for number, requirements in (("29", ("tranche 3l final acceptance original", "2026-08-08", "「ok」", "PR #94",
                     "Draft解除・Ready化", "通常のmerge commit方式によるmerge", "#1・#3・#5・#7・#9・#17・#19・#21・#23・#25・#27と同一文字列だが",
                     "Category C source conversionの承認ではなく", "tranche 3m implementationの先行受入でもなく",
@@ -7200,12 +7199,12 @@ class Bl038Tranche3nRecordSyncTest(unittest.TestCase):
         history = bl038[history_start : bl038.index("着手時ユーザー原文:", history_start)]
         # 「ok」 12->13 (entry 32); 「はい」 4->5 (entry 33). Entries 34/35 then
         # took them to 14 and 6, which is the header this now reads.
-        self.assertIn("「ok」16回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」9回・" "「進んで」1回・「うん」1回", history)
+        self.assertIn("「ok」17回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」9回・" "「進んで」1回・「うん」1回", history)
         for stale in ("「ok」14回", "「ok」13回", "「はい」6回", "「はい」5回"):
             with self.subTest(stale=stale): self.assertNotIn(stale, history)
         self.assertIn("長文の作業指示2回", history)  # unchanged by 32/33 and 34/35
         entries = re.findall(r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL)
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 41)])
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 42)])
         for number, requirements in (("32", ("tranche 3m final acceptance original", "2026-08-08", "** `ok` —", "PR #95",
                     "Draft解除・Ready化", "通常のmerge commit方式によるmerge", "#1・#3・#5・#7・#9・#17・#19・#21・#23・#25・#27・#29と同一文字列だが", "Category C source conversionの承認ではなく",
                     "Category A helper conversionの承認でもなく", "method-scope rule変更の承認でもなく", "tranche 3n implementationの先行受入でもなく", "tranche 3全体またはBL-038全体の完了承認でもなく", "workflow_dispatch")),
@@ -7342,7 +7341,7 @@ class Bl038Tranche3nRecordSyncTest(unittest.TestCase):
         bullet must still name both figures while no longer calling 3n current."""
         residual = re.search(r"^- \*\*残作業:\*\* .*$", self._bl038_section(), re.MULTILINE).group(0)
         for required in ("19 methods", "146", "32 methods",
-                         "tranche 3qのDraft PR独立レビュー・最終受入・Ready化・merge"):
+                         "次trancheの候補再測定・着手"):
             with self.subTest(required=required): self.assertIn(required, residual)
         for stale in ("tranche 3nのDraft PR独立レビュー", "tranche 3oのDraft PR独立レビュー",
                       "現行ruleでのeligible candidateは0件", "tranche 3nは実装中"):
@@ -7437,12 +7436,12 @@ class Bl038Tranche3oRecordSyncTest(unittest.TestCase):
         history = bl038[history_start : bl038.index("着手時ユーザー原文:", history_start)]
         # 「ok」 13->14 (entry 34); 「はい」 5->6 (entry 35). Entries 36/37 then
         # took them to 15 and 7, which is the header this now reads.
-        self.assertIn("「ok」16回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」9回・" "「進んで」1回・「うん」1回", history)
+        self.assertIn("「ok」17回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」9回・" "「進んで」1回・「うん」1回", history)
         for stale in ("「ok」14回", "「ok」13回", "「はい」6回", "「はい」5回"):
             with self.subTest(stale=stale): self.assertNotIn(stale, history)
         self.assertIn("長文の作業指示2回", history)  # unchanged by 34/35
         entries = re.findall(r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL)
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 41)])
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 42)])
         for number, requirements in (
             ("34", ("tranche 3n final acceptance original", "2026-08-09", "** `ok` —", "PR #96",
                     "Draft解除・Ready化", "通常のmerge commit方式によるmerge",
@@ -7646,11 +7645,11 @@ class Bl038Tranche3pRecordSyncTest(unittest.TestCase):
         history_start = bl038.index("ユーザー原文の履歴")
         history = bl038[history_start : bl038.index("着手時ユーザー原文:", history_start)]
         # 「ok」 14->15 (entry 36); 「はい」 6->7 (entry 37).
-        self.assertIn("「ok」16回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」9回・" "「進んで」1回・「うん」1回", history)
+        self.assertIn("「ok」17回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」9回・" "「進んで」1回・「うん」1回", history)
         for stale in ("「ok」14回", "「はい」6回"):
             with self.subTest(stale=stale): self.assertNotIn(stale, history)
         entries = re.findall(r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL)
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 41)])
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 42)])
         for number, requirements in (
             # Raw originals: the corner brackets are display quoting, not the message.
             ("36", ("tranche 3o final acceptance original", "2026-08-09", "** `ok` —", "PR #97", "表示上の`「」`は原文の一部ではない", "Draft解除・Ready化", "通常のmerge commit方式によるmerge",
@@ -7739,18 +7738,18 @@ class Bl038Tranche3pRecordSyncTest(unittest.TestCase):
             "**独立レビューround 5(2026-08-09):**", "over-pin", "**fixpoint反復**", "**local変数名は非contractのまま、blanket AST digestなし**",
             "**A(alias)は140 IDs／fingerprints／literals不変で新guard PASS、B(semantic RHS swap)は同じく全不変のまま新guard FAIL、C(既存rename)はPASS**",
             "per-round Post-correction stateが1 roundずれていた", "**残り(post-3q):**", "tail **4 methods／37 assertions**", "tail **9 methods／133 assertions**",
-            "**次trancheのcandidateは必ずlatest sourceから再測定すること。**", "**tranche 3qは未受入**", "BL-038全体は未完了", ):
+            "**次trancheのcandidateは必ずlatest sourceから再測定すること。**", "**tranche 3qは最終受入済み・PR #99 merge待ち**", "BL-038全体は未完了", ):
             with self.subTest(required=required): self.assertIn(required, status)
         for stale in ("**tranche 3oは未受入**", "tranche 3pは受入済み", "BL-038は完了"):
             with self.subTest(stale=stale): self.assertNotIn(stale, status)
 
     def test_current_residual_work_line_reflects_tranche3p(self):
         residual = re.search(r"^- \*\*残作業:\*\* .*$", self._bl038_section(), re.MULTILINE).group(0)
-        for required in ("tranche 3pの50件", "tranche 3qのDraft PR独立レビュー・最終受入・Ready化・merge", "**`test_source_usage_policy.py::SourceUsagePolicyTest`のtail 4 methods・37 assertions**",
+        for required in ("tranche 3pの50件", "次trancheの候補再測定・着手", "**`test_source_usage_policy.py::SourceUsagePolicyTest`のtail 4 methods・37 assertions**",
                 "tranche 3pはprefix 32 methods・140件のみを分類し、tailには着手していない", "**`test_security_requirements.py::SecurityRequirementsTest`のtail 9 methods・133 assertions**",
                 "tranche 3qで11 methods・124 assertionsを分類済み。残り9 methods・133 assertions", "**次trancheのcandidateはtranche 3nのselection ruleでその時点のlatest source上から必ず再測定すること**",
-                "記録値を優先しない", "既存accepted shardをbyte-identicalに保てる唯一の選択肢として`_004`を選んだ", "shard004 148/600行", "tranche 3p 2件", "tranche 1〜3pは受入済み",
-                "tranche 3pはPR #98で受入・merge済み"):
+                "記録値を優先しない", "既存accepted shardをbyte-identicalに保てる唯一の選択肢として`_004`を選んだ", "shard004 148/600行", "tranche 3p 2件", "tranche 1〜3qは受入済み",
+                "tranche 3qはPR #99で最終受入済み・merge待ち"):
             with self.subTest(required=required): self.assertIn(required, residual)
         for stale in ("tranche 3oのDraft PR独立レビュー", "tranche 3oは実装中"):
             with self.subTest(stale=stale): self.assertNotIn(stale, residual)
@@ -7797,21 +7796,24 @@ class Bl038Tranche3qRecordSyncTest(unittest.TestCase):
 
     def test_current_state_and_user_history_are_synced(self):
         state = next(line for line in self.bl038.splitlines() if line.startswith("- **状態:**"))
-        self.assertIn("3p受入済み／tranche 3q実装中", state)
+        self.assertIn("3p・3q受入済み／次tranche未着手", state)
         history = self.bl038[self.bl038.index("ユーザー原文の履歴"):self.bl038.index("着手時ユーザー原文:")]
-        self.assertIn("「ok」16回", history)
+        self.assertIn("「ok」17回", history)
         self.assertIn("「はい」9回", history)
         entries = re.findall(r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL)
-        self.assertEqual([n for n, _ in entries], [str(i) for i in range(1, 41)])
+        self.assertEqual([n for n, _ in entries], [str(i) for i in range(1, 42)])
         e38 = next(text for n, text in entries if n == "38")
         e39 = next(text for n, text in entries if n == "39")
         e40 = next(text for n, text in entries if n == "40")
+        e41 = next(text for n, text in entries if n == "41")
         for token in ("tranche 3p final acceptance original", "`ok`", "PR #98", "cf1cb2ab", "4890795812", "4890815821", "31300179831"):
             self.assertIn(token, e38)
         for token in ("tranche 3q kickoff original", "`はい`", "latest main", "一意winner", "最終受入／Ready化／merge"):
             self.assertIn(token, e39)
         for token in ("tranche 3q continuation original", "`はい`", "bootstrap", "technical verification", "最終受入／Ready化／merge"):
             self.assertIn(token, e40)
+        for token in ("tranche 3q final acceptance original", "`ok`", "PR #99", "275591e7", "4894000902", "4894940035", "31359746299", "806 changed lines"):
+            self.assertIn(token, e41)
 
     def test_current_backlog_and_status_record_3q_evidence(self):
         for token in (
@@ -7820,12 +7822,12 @@ class Bl038Tranche3qRecordSyncTest(unittest.TestCase):
             "combined **1355(A30/B536/C581/D208)**", "wide-span masking", "124 fingerprints不変のままguard FAIL",
             "B 3件", "Cはmeaning-preserving reword 2件", "D 3件", "full unittest 2163 OK",
             "独立レビューround 1(tranche 3q", "4893945240", "Blocker 3件", "entry 40", "unittest.main()", "31358989984",
-            "独立レビューround 2(tranche 3q", "4893982010", "matching group 0件", "fingerprint collision 2組", "**tranche 3qは未受入**",
+            "独立レビューround 2(tranche 3q", "4893982010", "matching group 0件", "fingerprint collision 2組", "tranche 3q最終受入(2026-08-10 JST)", "4894940035", "tranche 3qはPR #99で最終受入済み・merge待ち",
             "tail **9 methods／133 assertions**", "tail **4 methods／37 assertions**",
         ):
             with self.subTest(token=token):
                 self.assertIn(token, self.bl038)
-        for token in ("entry 38 raw `ok`", "entry 39 raw `はい`", "**1355・A30/B536/C581/D208**", "full unittest **2163 OK**", "**独立レビューround 1(2026-08-10):**", "4893945240", "31359415777", "**独立レビューround 2(2026-08-10):**", "4893982010", "matching group **0件**", "**残り(post-3q):**", "**tranche 3qは未受入**"):
+        for token in ("entry 38 raw `ok`", "entry 39 raw `はい`", "**1355・A30/B536/C581/D208**", "full unittest **2163 OK**", "**独立レビューround 1(2026-08-10):**", "4893945240", "31359415777", "**独立レビューround 2(2026-08-10):**", "4893982010", "matching group **0件**", "**tranche 3q最終受入(2026-08-10):**", "4894940035", "**残り(post-3q):**", "**tranche 3qは最終受入済み・PR #99 merge待ち**"):
             with self.subTest(token=token):
                 self.assertIn(token, self.status)
 
