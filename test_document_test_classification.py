@@ -1518,8 +1518,14 @@ SHARD_005_PATH = ROOT / SHARD_005_FILENAME
 SHARD_005_CURRENT_ENTRY_COUNT = 124
 SHARD_005_CURRENT_LINE_COUNT = 130
 SHARD_005_CURRENT_CATEGORY_COUNTS = {"A": 0, "B": 49, "C": 42, "D": 33}
+SHARD_006_FILENAME = "document_test_classification_006.json"
+SHARD_006_PATH = ROOT / SHARD_006_FILENAME
+SHARD_006_CURRENT_ENTRY_COUNT = 133
+SHARD_006_CURRENT_LINE_COUNT = 141
+SHARD_006_CURRENT_CATEGORY_COUNTS = {"A": 0, "B": 60, "C": 37, "D": 36}
 EXPECTED_SHARD_ORDER = (MANIFEST_PATH.name, SHARD_001_FILENAME, SHARD_002_FILENAME,
-                        SHARD_003_FILENAME, SHARD_004_FILENAME, SHARD_005_FILENAME)
+                        SHARD_003_FILENAME, SHARD_004_FILENAME, SHARD_005_FILENAME,
+                        SHARD_006_FILENAME)
 EXPECTED_SHARD_COUNT = len(EXPECTED_SHARD_ORDER)
 TRANCHE_3G_HISTORICAL_SHARD_COUNT = 1
 TRANCHE_3I_HISTORICAL_SHARD_COUNT = 2
@@ -1545,6 +1551,7 @@ INDEX_COMBINED_ASSERTION_COUNT = (
     + SHARD_003_CURRENT_ENTRY_COUNT
     + SHARD_004_CURRENT_ENTRY_COUNT
     + SHARD_005_CURRENT_ENTRY_COUNT
+    + SHARD_006_CURRENT_ENTRY_COUNT
 )
 INDEX_COMBINED_CATEGORY_COUNTS = {
     cat: BASE_EXPECTED_CATEGORY_COUNTS[cat]
@@ -1553,6 +1560,7 @@ INDEX_COMBINED_CATEGORY_COUNTS = {
     + SHARD_003_CURRENT_CATEGORY_COUNTS[cat]
     + SHARD_004_CURRENT_CATEGORY_COUNTS[cat]
     + SHARD_005_CURRENT_CATEGORY_COUNTS[cat]
+    + SHARD_006_CURRENT_CATEGORY_COUNTS[cat]
     for cat in ("A", "B", "C", "D")
 }
 
@@ -3342,7 +3350,7 @@ class Tranche3kClassificationShard002AppendTest(unittest.TestCase):
         # tranche 3o's, not 3k's.
         self.assertEqual(index["shards"][:3], list(EXPECTED_SHARD_ORDER[:3]))
         self.assertEqual((EXPECTED_SHARD_COUNT, dti.discover_shard_filenames(ROOT)),
-                         (6, sorted(EXPECTED_SHARD_ORDER)))
+                         (7, sorted(EXPECTED_SHARD_ORDER)))
         self.assertEqual(TRANCHE_3J_TO_3N_HISTORICAL_SHARD_COUNT, 3)
 
     # -- membership --------------------------------------------------------
@@ -3701,7 +3709,7 @@ class Tranche3lClassificationShard002AppendTest(unittest.TestCase):
         self.assertEqual(json.loads(INDEX_PATH.read_text(encoding="utf-8"))["shards"][:3],
                          list(EXPECTED_SHARD_ORDER[:3]))
         self.assertEqual((EXPECTED_SHARD_COUNT, dti.discover_shard_filenames(ROOT)),
-                         (6, sorted(EXPECTED_SHARD_ORDER)))
+                         (7, sorted(EXPECTED_SHARD_ORDER)))
         self.assertEqual(TRANCHE_3J_TO_3N_HISTORICAL_SHARD_COUNT, 3)
 
     # -- membership --------------------------------------------------------
@@ -4104,7 +4112,7 @@ class Tranche3mClassificationShard002AppendTest(unittest.TestCase):
         self.assertEqual(TRANCHE_3J_TO_3N_HISTORICAL_SHARD_COUNT, 3)
         self.assertEqual(json.loads(INDEX_PATH.read_text(encoding="utf-8"))["shards"], list(EXPECTED_SHARD_ORDER))
         self.assertEqual(json.loads(INDEX_PATH.read_text(encoding="utf-8"))["shards"][:3], list(EXPECTED_SHARD_ORDER[:3]))
-        self.assertEqual((EXPECTED_SHARD_COUNT, dti.discover_shard_filenames(ROOT)), (6, sorted(EXPECTED_SHARD_ORDER)))
+        self.assertEqual((EXPECTED_SHARD_COUNT, dti.discover_shard_filenames(ROOT)), (7, sorted(EXPECTED_SHARD_ORDER)))
 
     def test_no_class_is_owned_by_two_shards_and_the_84_keep_their_place(self):
         """Tranche 3m HISTORICAL evidence, anchored on the three shards that
@@ -4524,7 +4532,8 @@ class ClassificationShardIndexTest(unittest.TestCase):
             json.loads(self.index_text),
             {"schema_version": 1,
              "shards": [MANIFEST_PATH.name, SHARD_001_FILENAME, SHARD_002_FILENAME,
-                        SHARD_003_FILENAME, SHARD_004_FILENAME, SHARD_005_FILENAME]},
+                        SHARD_003_FILENAME, SHARD_004_FILENAME, SHARD_005_FILENAME,
+                        SHARD_006_FILENAME]},
         )
         self.assertTrue(self.index_text.endswith("\n"))
         # Order is part of the contract: it fixes combined assertion order.
@@ -4535,8 +4544,9 @@ class ClassificationShardIndexTest(unittest.TestCase):
         self.assertEqual(self.index["shards"][3], SHARD_003_FILENAME)
         self.assertEqual(self.index["shards"][4], SHARD_004_FILENAME)
         self.assertEqual(self.index["shards"][5], SHARD_005_FILENAME)
+        self.assertEqual(self.index["shards"][6], SHARD_006_FILENAME)
         self.assertEqual(len(self.index["shards"]), EXPECTED_SHARD_COUNT)
-        self.assertEqual(EXPECTED_SHARD_COUNT, 6)
+        self.assertEqual(EXPECTED_SHARD_COUNT, 7)
         self.assertEqual(len(set(self.index["shards"])), EXPECTED_SHARD_COUNT)
         # An unregistered shard file would silently vanish from the check.
         self.assertEqual(dti.discover_shard_filenames(ROOT), sorted(EXPECTED_SHARD_ORDER))
@@ -4545,6 +4555,7 @@ class ClassificationShardIndexTest(unittest.TestCase):
         self.assertTrue(dti.is_allowed_shard_filename(SHARD_003_FILENAME))
         self.assertTrue(dti.is_allowed_shard_filename(SHARD_004_FILENAME))
         self.assertTrue(dti.is_allowed_shard_filename(SHARD_005_FILENAME))
+        self.assertTrue(dti.is_allowed_shard_filename(SHARD_006_FILENAME))
         self.assertFalse(dti.is_allowed_shard_filename(dti.INDEX_FILENAME))
         # Tranche 3g shipped a one-shard index, 3i a two-shard one and 3j-3n a
         # three-shard one; all three are history, not now.
@@ -4565,8 +4576,8 @@ class ClassificationShardIndexTest(unittest.TestCase):
         )
         self.assertEqual(combined["manifest_assertions"], INDEX_COMBINED_ASSERTION_COUNT)
         self.assertEqual(combined["inventoried_assertions"], INDEX_COMBINED_ASSERTION_COUNT)
-        self.assertEqual(INDEX_COMBINED_ASSERTION_COUNT, 585 + 136 + 123 + 34 + 27 + 23 + 17 + 146 + 140 + 124)
-        self.assertEqual(INDEX_COMBINED_ASSERTION_COUNT, 1355)
+        self.assertEqual(INDEX_COMBINED_ASSERTION_COUNT, 585 + 136 + 123 + 34 + 27 + 23 + 17 + 146 + 140 + 124 + 133)
+        self.assertEqual(INDEX_COMBINED_ASSERTION_COUNT, 1488)
         # 844 was the tranche 3i combined total, 878 the 3j one, 905 the 3k one,
         # 928 the 3l one and 945 the 3m one (3n classified nothing, so 945 stood
         # through it too); all five are history.
@@ -4599,9 +4610,10 @@ class ClassificationShardIndexTest(unittest.TestCase):
                     + TRANCHE_3M_EXPECTED_CATEGORY_COUNTS[category]
                     + SHARD_003_CURRENT_CATEGORY_COUNTS[category]
                     + SHARD_004_CURRENT_CATEGORY_COUNTS[category]
-                    + SHARD_005_CURRENT_CATEGORY_COUNTS[category],
+                    + SHARD_005_CURRENT_CATEGORY_COUNTS[category]
+                    + SHARD_006_CURRENT_CATEGORY_COUNTS[category],
                 )
-        self.assertEqual(combined["category_counts"], {"A": 30, "B": 536, "C": 581, "D": 208})
+        self.assertEqual(combined["category_counts"], {"A": 30, "B": 596, "C": 618, "D": 244})
         # A28/B337/C435/D145 was the 3m-3n breakdown and A28/B407/C489/D167 the 3o one.
         for historical in ({"A": 28, "B": 337, "C": 435, "D": 145}, {"A": 28, "B": 407, "C": 489, "D": 167}):
             with self.subTest(historical=tuple(sorted(historical.items()))):
@@ -4652,11 +4664,12 @@ class ClassificationShardIndexTest(unittest.TestCase):
             combined["file_counts"][TRANCHE_3I_SOURCE_FILE],
             SECURITY_REQUIREMENTS_EXPECTED_ASSERTION_COUNT + TRANCHE_3I_EXPECTED_ASSERTION_COUNT
             + TRANCHE_3M_EXPECTED_ASSERTION_COUNT + SHARD_003_CURRENT_ENTRY_COUNT
-            + SHARD_005_CURRENT_ENTRY_COUNT,
+            + SHARD_005_CURRENT_ENTRY_COUNT + SHARD_006_CURRENT_ENTRY_COUNT,
         )
-        self.assertEqual(combined["file_counts"][TRANCHE_3M_SOURCE_FILE], 615)
+        self.assertEqual(combined["file_counts"][TRANCHE_3M_SOURCE_FILE], 748)
         self.assertEqual(combined["file_counts"][TRANCHE_3O_RIVAL_FILE], SHARD_004_CURRENT_ENTRY_COUNT)
-        self.assertEqual(615, 345 + SHARD_003_CURRENT_ENTRY_COUNT + SHARD_005_CURRENT_ENTRY_COUNT)
+        self.assertEqual(748, 345 + SHARD_003_CURRENT_ENTRY_COUNT + SHARD_005_CURRENT_ENTRY_COUNT
+                         + SHARD_006_CURRENT_ENTRY_COUNT)
         # One source file, two shards: 001 owns 136 of it, 002 the other 34.
         self.assertEqual(
             combined["file_counts"][TRANCHE_3J_SOURCE_FILE],
@@ -4673,14 +4686,16 @@ class ClassificationShardIndexTest(unittest.TestCase):
         shard_003 = json.loads(SHARD_003_PATH.read_text(encoding="utf-8"))
         shard_004 = json.loads(SHARD_004_PATH.read_text(encoding="utf-8"))
         shard_005 = json.loads(SHARD_005_PATH.read_text(encoding="utf-8"))
+        shard_006 = json.loads(SHARD_006_PATH.read_text(encoding="utf-8"))
         base_ids = [e["id"] for e in base["assertions"]]
         shard_ids = [e["id"] for e in shard_001["assertions"]]
         shard_002_ids = [e["id"] for e in shard_002["assertions"]]
         shard_003_ids = [e["id"] for e in shard_003["assertions"]]
         shard_004_ids = [e["id"] for e in shard_004["assertions"]]
         shard_005_ids = [e["id"] for e in shard_005["assertions"]]
+        shard_006_ids = [e["id"] for e in shard_006["assertions"]]
         combined_ids = dti.combined_assertion_ids(loaded)
-        self.assertEqual(combined_ids, base_ids + shard_ids + shard_002_ids + shard_003_ids + shard_004_ids + shard_005_ids)
+        self.assertEqual(combined_ids, base_ids + shard_ids + shard_002_ids + shard_003_ids + shard_004_ids + shard_005_ids + shard_006_ids)
         self.assertEqual(len(combined_ids), INDEX_COMBINED_ASSERTION_COUNT)
         self.assertEqual(len(set(combined_ids)), len(combined_ids))  # no cross-shard duplicate id
         # Whole-class ownership is unique except where the indexed validator
@@ -4920,7 +4935,7 @@ class Tranche3oMethodRangeSelectionTest(unittest.TestCase):
                                  {e["file"] for e in json.loads((ROOT / name).read_text(encoding="utf-8"))["scope"]})
         self.assertEqual(len(TRANCHE_3O_HISTORICAL_SHARD_ORDER), 4)
         self.assertEqual(len(TRANCHE_3P_HISTORICAL_SHARD_ORDER), 5)  # 3p added the fifth
-        self.assertEqual(len(EXPECTED_SHARD_ORDER), 6)  # 3q added the sixth
+        self.assertEqual(len(EXPECTED_SHARD_ORDER), 7)  # 3r later added the seventh; 3o's selection history is unchanged
 
 
 class Tranche3oShard003Test(unittest.TestCase):
