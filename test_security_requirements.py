@@ -889,7 +889,7 @@ class SecurityRequirementsTest(unittest.TestCase):
             "proportionate security roadmap",
             self.decisions,
         )
-        sd024 = self.decisions.split("## SD-024", 1)[1]
+        sd024 = self.decisions.split("## SD-024", 1)[1].split("## SD-025", 1)[0]
         self.assertIn("「ok」", sd024)
         self.assertIn("PR #44", sd024)
         self.assertIn("**Status:** Accepted / Version 1.0 merged", sd024)
@@ -905,7 +905,7 @@ class SecurityRequirementsTest(unittest.TestCase):
             "minimal incident and correction policy",
             self.decisions,
         )
-        sd025 = self.decisions.split("## SD-025", 1)[1]
+        sd025 = self.decisions.split("## SD-025", 1)[1].split("## SD-026", 1)[0]
         self.assertIn("Completed by documentation", sd025)
         self.assertIn("PR #46", sd025)
         self.assertIn("「ok」", sd025)

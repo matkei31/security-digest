@@ -65,6 +65,9 @@ PRE_3Q_SHARDS = (
     "document_test_classification_004.json",
 )
 EXPECTED_INDEX = PRE_3Q_SHARDS + (SHARD_FILENAME,)
+CURRENT_INDEX = EXPECTED_INDEX + ("document_test_classification_006.json",)
+CURRENT_COMBINED_ASSERTIONS = 1488
+CURRENT_COMBINED_CATEGORIES = {"A": 30, "B": 596, "C": 618, "D": 244}
 EXPECTED_DUPLICATE_GROUPS = (
     (
         SOURCE_FILE + "::" + CLASS_NAME + "::test_bl028_bl029_registration_does_not_reopen_or_merge_other_tickets::assert-04",
@@ -106,8 +109,9 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
 
     def test_index_and_scope_are_exactly_the_new_disjoint_range(self):
         index = json.loads(INDEX_PATH.read_text(encoding="utf-8"))
-        self.assertEqual(tuple(index["shards"]), EXPECTED_INDEX)
-        self.assertEqual(dti.discover_shard_filenames(ROOT), sorted(EXPECTED_INDEX))
+        self.assertEqual(tuple(index["shards"]), CURRENT_INDEX)
+        self.assertEqual(tuple(index["shards"][:len(EXPECTED_INDEX)]), EXPECTED_INDEX)
+        self.assertEqual(dti.discover_shard_filenames(ROOT), sorted(CURRENT_INDEX))
         self.assertEqual(self.shard["schema_version"], 1)
         self.assertEqual(self.shard["scope"], [{
             "file": SOURCE_FILE,
@@ -126,11 +130,15 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
     def test_combined_index_is_clean_at_the_post_3q_totals(self):
         failures, summary = dti.validate_indexed_manifests(root=ROOT)
         self.assertEqual([f.format() for f in failures], [])
-        self.assertEqual(summary["shard_count"], len(EXPECTED_INDEX))
-        self.assertEqual(summary["shard_files"], list(EXPECTED_INDEX))
-        self.assertEqual(summary["inventoried_assertions"], EXPECTED_COMBINED_ASSERTIONS)
-        self.assertEqual(summary["manifest_assertions"], EXPECTED_COMBINED_ASSERTIONS)
-        self.assertEqual(summary["category_counts"], EXPECTED_COMBINED_CATEGORIES)
+        # EXPECTED_COMBINED_* above remains the exact post-3q historical
+        # snapshot. The live repository has since legally appended tranche 3r.
+        self.assertEqual((EXPECTED_COMBINED_ASSERTIONS, EXPECTED_COMBINED_CATEGORIES),
+                         (1355, {"A": 30, "B": 536, "C": 581, "D": 208}))
+        self.assertEqual(summary["shard_count"], len(CURRENT_INDEX))
+        self.assertEqual(summary["shard_files"], list(CURRENT_INDEX))
+        self.assertEqual(summary["inventoried_assertions"], CURRENT_COMBINED_ASSERTIONS)
+        self.assertEqual(summary["manifest_assertions"], CURRENT_COMBINED_ASSERTIONS)
+        self.assertEqual(summary["category_counts"], CURRENT_COMBINED_CATEGORIES)
         self.assertEqual(
             (summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]),
             (0, 0, 0),
