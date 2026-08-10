@@ -1,0 +1,303 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-08-11",
+  "generated_at": "2026-08-11T07:36:21.707388+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 5,
+    "ai_attempted_count": 3,
+    "ai_success_count": 3,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 2,
+    "ai_eligible_count": 3
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 2,
+      "低": 1,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 1,
+      "参考": 2,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 0,
+      "攻撃・脅威動向": 1,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "掲載3件｜重要度「高」0件｜本日確認0件｜今週確認1件\n本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が1件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "Microsoftは、中国に関連する金銭目的の脅威アクター「Storm-1175」が、これまで文書化されていなかった新しいランサムウェア「StormEncryptor」を展開していることを明らかにしました。このランサムウェアはC++で書かれており、暗号化されたファイルに「.encrypted」という拡張子を付加します。\n金融機関への直接的な影響は記事からは確認できません。しかし、ランサムウェア攻撃は業種を問わず発生し得るため、一般的な脅威動向として把握しておく必要があります。"
+    ],
+    "check_items": [
+      "N-central製品の利用有無と、その脆弱性への対応状況を確認する",
+      "ランサムウェア「StormEncryptor」のIOCや挙動に関する追加情報を収集し、自社の防御・検知体制への適用を検討する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:a74baf056ca8de8ded696f13e16cf8f0aeb6bda2e4306465efb001feef580cc7",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/shipping-1050-more-code-watch-this.html",
+      "canonical_url": "https://thehackernews.com/2026/08/shipping-1050-more-code-watch-this.html",
+      "published_at": "2026-08-11T02:29:17+09:00",
+      "fetched_at": "2026-08-11T07:35:30.023842+09:00",
+      "title": "Shipping 10–50× More Code? Watch This Webinar on Securing AI-Speed Development",
+      "raw_title": "Shipping 10–50× More Code? Watch This Webinar on Securing AI-Speed Development",
+      "raw_excerpt": null,
+      "content_hash": "sha256:dad2a34ad8a2ac576afae4d375c473ef80da202f1100518ba2bb95eb8330df36",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-11T07:35:32.322726+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIを活用したソフトウェア開発におけるセキュリティ課題が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AIの活用により開発チームはコード生成速度を大幅に向上させていますが、セキュリティチームは脆弱性レビュー、依存関係管理、修正の優先順位付け、リスク管理を人間の速度で行う必要があります。ソフトウェアの出力が10〜50倍に増加する中で、セキュリティがボトルネックになることや、出荷されるコードの管理を失うことを防ぐための課題が提起されています。",
+        "financial_impact": "金融機関においてもAIを活用したソフトウェア開発を導入・検討している場合、開発速度の向上に伴うセキュリティリスク管理の課題は共通して発生し得るため、参考情報として関係します。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIを活用した開発におけるセキュリティ課題という中長期的なテーマであり、特定の製品やインシデントに関するものではないため「中」です。確認目安は、ウェビナーの告知であり、具体的な対応期限や緊急性を示す情報がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4c624f6c9bd5a27e21068cdbd69f5edad2ff19100e24304eb67662e9c7e37ef6",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/china-linked-hackers-deploy-new.html",
+      "canonical_url": "https://thehackernews.com/2026/08/china-linked-hackers-deploy-new.html",
+      "published_at": "2026-08-11T01:38:37+09:00",
+      "fetched_at": "2026-08-11T07:35:30.023842+09:00",
+      "title": "China-Linked Hackers Deploy New StormEncryptor Ransomware, Likely via N-central Flaw",
+      "raw_title": "China-Linked Hackers Deploy New StormEncryptor Ransomware, Likely via N-central Flaw",
+      "raw_excerpt": null,
+      "content_hash": "sha256:29198a2c46eaf0005c9631f87905de81d6d4690f4399f0fb535f115327f3dd9f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-11T07:35:49.876568+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国関連の攻撃グループによる新しいランサムウェアの展開と攻撃手法が主題であるため。",
+        "tags": [
+          "ランサムウェア",
+          "APT",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Microsoftは、中国に関連する金銭目的の脅威アクター「Storm-1175」が、これまで文書化されていなかった新しいランサムウェア「StormEncryptor」を展開していることを明らかにしました。このランサムウェアはC++で書かれており、暗号化されたファイルに「.encrypted」という拡張子を付加します。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。しかし、ランサムウェア攻撃は業種を問わず発生し得るため、一般的な脅威動向として把握しておく必要があります。",
+        "recommended_actions": [
+          "N-central製品の利用有無と、その脆弱性への対応状況を確認する",
+          "ランサムウェア「StormEncryptor」のIOCや挙動に関する追加情報を収集し、自社の防御・検知体制への適用を検討する"
+        ],
+        "reason": "重要度は、特定の製品の脆弱性が悪用されたランサムウェア攻撃であり、金融機関への直接的な関連が不明なため「中」です。確認目安は、新たなランサムウェアの展開が確認されたものの、緊急対応を要する具体的な時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0774a4f9f5ede01dd9bf35164e09ddef9e4f21392d9435d72b5b1de43ad3dd7a",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/08/10/microsoft-named-a-leader-in-the-2026-idc-marketscape-for-mdr-mxdr-for-the-enterprise/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/08/10/microsoft-named-a-leader-in-the-2026-idc-marketscape-for-mdr-mxdr-for-the-enterprise/",
+      "published_at": "2026-08-11T01:00:00+09:00",
+      "fetched_at": "2026-08-11T07:35:30.023842+09:00",
+      "title": "Microsoft named a Leader in the 2026 IDC MarketScape for MDR/MXDR for the Enterprise",
+      "raw_title": "Microsoft named a Leader in the 2026 IDC MarketScape for MDR/MXDR for the Enterprise",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bd259241eb7573ca210d860050ba4456460a22c661188236b16f34d333092052",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ab9fcef0eed7ce972e79363eeeffbc9cded1469b5a315b872e4364441ff35fc9",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/weekly-recap-ai-goes-rogue-metabase-0.html",
+      "canonical_url": "https://thehackernews.com/2026/08/weekly-recap-ai-goes-rogue-metabase-0.html",
+      "published_at": "2026-08-11T00:00:29+09:00",
+      "fetched_at": "2026-08-11T07:35:30.023842+09:00",
+      "title": "⚡ Weekly Recap: AI Goes Rogue, Metabase 0-Day, MCP Supply-Chain Attacks, and Router Backdoors",
+      "raw_title": "⚡ Weekly Recap: AI Goes Rogue, Metabase 0-Day, MCP Supply-Chain Attacks, and Router Backdoors",
+      "raw_excerpt": null,
+      "content_hash": "sha256:20c40bca31e71e133b12715f639a288ed4bc4726a1e6379ff1aeb3274c513b5e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-11T07:36:06.706933+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数のセキュリティ問題に関する週次まとめ記事であり、特定の主題に絞られていないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、AIの誤動作、Metabaseのゼロデイ脆弱性、MCPサプライチェーン攻撃、ルーターのバックドアなど、様々なセキュリティ問題を取り上げた週次まとめです。",
+        "financial_impact": "金融機関への直接的な関係は確認できず、一般的なセキュリティ動向の参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や詳細な分析を伴わない週次まとめ記事であるため「低」です。確認目安は、具体的な短期アクションを要する情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:686d9ca1aebb579139f9aa2016fc4ba79f8c4016def5b2e9d95df41c2fabb3e7",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/08/10/deadlock-ransomware-breaking-down-a-rust-based-encryptor-with-decentralized-recovery-infrastructure/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/08/10/deadlock-ransomware-breaking-down-a-rust-based-encryptor-with-decentralized-recovery-infrastructure/",
+      "published_at": "2026-08-11T00:00:00+09:00",
+      "fetched_at": "2026-08-11T07:35:30.023842+09:00",
+      "title": "DeadLock ransomware: Breaking down a Rust-based encryptor with decentralized recovery infrastructure",
+      "raw_title": "DeadLock ransomware: Breaking down a Rust-based encryptor with decentralized recovery infrastructure",
+      "raw_excerpt": null,
+      "content_hash": "sha256:adfc8248ab66891d0444ffb2a9be393ce00b3cf36c2be7d9a9d4fd4cda04bfd2",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
