@@ -8502,43 +8502,57 @@ class Bl038Tranche3wCouplingRetargetRecordSyncTest(unittest.TestCase):
                       "121f0a1ab1597723f5cf8c9d7c0fa9c8facab002",
                       "**C024〜C061の38 rowsのみ**",
                       "**rewrite 33件・remove_obsolete 5件**",
-                      "**3w residual 0**"):
+                      "**3w known G1 residual 0**"):
             with self.subTest(token=token):
                 self.assertIn(token, self.bl038)
-        self.assertIn("**rewrite 33／remove_obsolete 5**", self.status)
+        self.assertIn("frozen **rewrite 33／remove 5**", self.status)
 
     def test_no_new_framework_was_added_and_the_ledgers_are_untouched(self):
-        self.assertIn("新しいledger／snapshot／migration mechanism／分類体系は追加していない", self.bl038)
-        self.assertIn("**retroactive ledger追加は0件**", self.bl038)
-        self.assertIn("**validatorは弱めていない**", self.bl038)
-        self.assertIn("**real Category C conversion 0件**", self.bl038)
-        snapshot = json.loads((self.root / "document_test_coupling_inventory_3v.json")
-                              .read_text(encoding="utf-8"))
+        for token in ("新しいledger／snapshot／migration mechanism／分類体系は追加していない",
+                      "**retroactive ledger追加は0件**", "**validatorは弱めていない**",
+                      "**real Category C conversion 0件**"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        snapshot = json.loads((self.root / "document_test_coupling_inventory_3v.json").read_text(encoding="utf-8"))
         self.assertEqual(snapshot["candidate_count"], 106)  # population untouched
         self.assertEqual([c["id"] for c in snapshot["corrections"]],
-                         ["R0.1-1", "R0.1-2", "R0.1-3", "R0.2-1", "3v-1", "3v-2"])
-        migrations = json.loads((self.root / "document_test_classification_migrations.json")
-                                .read_text(encoding="utf-8"))
+                         ["R0.1-1", "R0.1-2", "R0.1-3", "R0.2-1", "3v-1", "3v-2", "3w-1", "3w-2"])
+        migrations = json.loads((self.root / "document_test_classification_migrations.json").read_text(encoding="utf-8"))
         self.assertEqual(migrations["migrations"], [])
-
-    def test_the_residual_accounting_after_3v_and_3w_is_stated_in_the_current_paragraph(self):
+        # Residual accounting after 3v+3w, stated in the CURRENT paragraph.
         current = self.bl038[self.bl038.rindex("- **残作業:**"):]
         self.assertIn("3v＋3wでfrozen 61件を実施済み", current)
         self.assertIn("**frozen-inventory residual 45にknown false-negative correction 1があり、"
                       "known residualはat least 46**", current)
         self.assertIn("**final repo-wide residual scanは未実施**", current)
-        # No bare residual figure may stand as the total.
         for bare in ("residual 45)", "residual 45。", "residual 45、"):
             with self.subTest(bare=bare):
-                self.assertNotIn(bare, current)
+                self.assertNotIn(bare, current)  # no bare figure as the total
         self.assertIn("known residual at least 46", self.status)
+
+    def test_the_two_out_of_population_false_negatives_are_recorded_and_handled(self):
+        """Round 1: two genuine H7-A couplings outside the frozen 106 were found and
+        removed here, so the plan (33/5) and the implementation total (40 methods, 33/7)
+        are distinct, and 3v-1 stays the only unresolved correction."""
+        for token in ("**frozen 106 population外のgenuine H7-A false negativeを2件**",
+                      "test_no_two_of_the_34_share_a_fingerprint",
+                      "test_no_two_of_the_seventeen_share_a_fingerprint",
+                      "**frozen C001〜C106 populationは変更せず**",
+                      "**3w implementation total = 40 coupling methods handled"
+                      "／rewrite 33・remove_obsolete 7**",
+                      "unresolved known out-of-inventory correctionは**`3v-1`のみ**",
+                      "8 prohibited shapeのcandidate-scope residual auditは**0 hits**"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        self.assertIn("**3w implementation total 40 methods／rewrite 33・remove 7**", self.status)
+        self.assertNotIn("新しいgenuine couplingの発見は0件", self.bl038)
+        self.assertNotIn("新規coupling発見0", self.status)
 
     def test_the_conversion_proof_and_its_failure_buckets_are_recorded(self):
         for token in ("tranche 3w representative conversion proof(2026-08-12)",
                       "**migration metadata 0**",
                       "**3v handled rows failure 0・3w handled rows failure 0**",
                       "**other unexpected noncandidate failure 0**",
-                      "**新しいgenuine couplingの発見は0件**",
                       "couplingが解消したわけではなく、3yで対応する"):
             with self.subTest(token=token):
                 self.assertIn(token, self.bl038)
