@@ -8074,6 +8074,36 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         # Tranche 3t ships no migration ledger; that is tranche 3u.
         self.assertFalse((self.root / "document_test_classification_migrations.json").exists())
 
+    def test_the_current_residual_paragraph_states_the_post_3s_merge_state(self):
+        """Final-review Blocker 1: the CURRENT `残作業` paragraph still said PR #101's
+        Ready/merge was yet to happen, contradicting the tranche 3s record in the same
+        ticket. Scoped deliberately to the slice BEFORE the
+        `historical post-3r residual snapshot` marker: the snapshot below it keeps its
+        older values on purpose and must NOT be dragged forward."""
+        start = self.bl038.index("- **残作業:** assertion classification自体は完了し、")
+        marker = "**historical post-3r residual snapshot"
+        end = self.bl038.index(marker, start)
+        current = self.bl038[start:end]
+        for stale in ("PR #101のReady化・mergeはこれから",
+                      "Ready化・mergeはこれから行う",
+                      "PR #101のReady化・mergeは未了"):
+            with self.subTest(stale=stale):
+                self.assertNotIn(stale, current)
+        for fact in ("tranche 1〜3sはいずれも最終受入済み",
+                     "83b7ab1ae59ca0a246142ee2e8b1d2c7eb6cf7e8",
+                     "merge済みである",
+                     "Category C 638件はsource conversion未着手",
+                     "unblockはtranche 3uの範囲",
+                     "Category A 30件はtranche 3tで判断完了",
+                     "BL-038全体は未完了"):
+            with self.subTest(fact=fact):
+                self.assertIn(fact, current)
+        # The marker itself must stay, since it is what bounds the current slice -- but
+        # this guard deliberately asserts NOTHING about the wording or the values below
+        # it. That snapshot is history and a later tranche may restate it.
+        self.assertIn(marker + "（現在の未分類残件を意味しない）", self.bl038)
+        self.assertLess(start, end)
+
     def test_current_totals_are_unchanged_by_the_foundation_tranche(self):
         """3t converts nothing and consolidates nothing, so the live classification is
         bit-for-bit the accepted tranche 3s result."""
