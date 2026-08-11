@@ -7836,13 +7836,13 @@ class Bl038Tranche3qRecordSyncTest(unittest.TestCase):
 
     def test_repository_state_matches_current_record(self):
         index = json.loads((Path(__file__).resolve().parent / "document_test_classification_index.json").read_text(encoding="utf-8"))
-        self.assertEqual(index["shards"][-1], "document_test_classification_006.json")
-        self.assertEqual(len(index["shards"]), 7)
+        self.assertEqual(index["shards"][-1], "document_test_classification_007.json")
+        self.assertEqual(len(index["shards"]), 8)
         entries = []
         for name in index["shards"]:
             entries.extend(json.loads((Path(__file__).resolve().parent / name).read_text(encoding="utf-8"))["assertions"])
-        self.assertEqual((len(entries), len({e["id"] for e in entries})), (1488, 1488))
-        self.assertEqual({cat: sum(1 for e in entries if e["category"] == cat) for cat in ("A", "B", "C", "D")}, {"A": 30, "B": 596, "C": 618, "D": 244})
+        self.assertEqual((len(entries), len({e["id"] for e in entries})), (1525, 1525))
+        self.assertEqual({cat: sum(1 for e in entries if e["category"] == cat) for cat in ("A", "B", "C", "D")}, {"A": 30, "B": 612, "C": 638, "D": 245})
         shard = json.loads((Path(__file__).resolve().parent / "document_test_classification_005.json").read_text(encoding="utf-8"))
         self.assertEqual(len(shard["assertions"]), 124)
         self.assertEqual({cat: sum(1 for e in shard["assertions"] if e["category"] == cat) for cat in ("A", "B", "C", "D")}, {"A": 0, "B": 49, "C": 42, "D": 33})
@@ -7879,14 +7879,14 @@ class Bl038Tranche3rRecordSyncTest(unittest.TestCase):
 
     def test_live_index_matches_the_recorded_post_3r_totals(self):
         index = json.loads((self.root / "document_test_classification_index.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(index["shards"]), 7)
-        self.assertEqual(index["shards"][-1], "document_test_classification_006.json")
-        shard = json.loads((self.root / index["shards"][-1]).read_text(encoding="utf-8"))
+        self.assertEqual(len(index["shards"]), 8)
+        self.assertEqual(index["shards"][-1], "document_test_classification_007.json")
+        shard = json.loads((self.root / "document_test_classification_006.json").read_text(encoding="utf-8"))
         self.assertEqual(len(shard["assertions"]), 133)
         self.assertEqual({c: sum(e["category"] == c for e in shard["assertions"]) for c in ("A","B","C","D")}, {"A":0,"B":60,"C":37,"D":36})
         all_entries = [e for name in index["shards"] for e in json.loads((self.root / name).read_text(encoding="utf-8"))["assertions"]]
-        self.assertEqual((len(all_entries), len({e["id"] for e in all_entries})), (1488,1488))
-        self.assertEqual({c: sum(e["category"] == c for e in all_entries) for c in ("A","B","C","D")}, {"A":30,"B":596,"C":618,"D":244})
+        self.assertEqual((len(all_entries), len({e["id"] for e in all_entries})), (1525,1525))
+        self.assertEqual({c: sum(e["category"] == c for e in all_entries) for c in ("A","B","C","D")}, {"A":30,"B":612,"C":638,"D":245})
 
 if __name__ == "__main__":
     unittest.main()
