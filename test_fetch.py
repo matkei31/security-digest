@@ -7975,5 +7975,117 @@ class Bl038Tranche3sAcceptanceRecordTest(unittest.TestCase):
         self.assertEqual([failure.format() for failure in failures], [])
         self.assertEqual((summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]), (0, 0, 0))
 
+
+class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
+    """BL-038 tranche 3t: the Category A closeout, the accepted-history foundation and
+    the explicit scope boundary (Category C still blocked) are recorded in the
+    repository's canonical documents, and the offline ledger agrees with them."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.root = Path(__file__).resolve().parent
+        cls.backlog = (cls.root / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (cls.root / "STATUS.md").read_text(encoding="utf-8")
+        start = cls.backlog.index("## BL-038")
+        end = cls.backlog.find("\n## ", start + 8)
+        cls.bl038 = cls.backlog[start:] if end < 0 else cls.backlog[start:end]
+        cls.ledger = json.loads(
+            (cls.root / "document_test_classification_history.json").read_text(encoding="utf-8"))
+
+    def test_category_a_closeout_is_recorded_as_decided_without_consolidation(self):
+        for token in (
+            "tranche 3t着手・Category A再監査(2026-08-11 JST)",
+            "83b7ab1ae59ca0a246142ee2e8b1d2c7eb6cf7e8",
+            "**7 helper family**",
+            "**Category A helper consolidationは追加実装なしで判断完了**",
+            "CNAME survival 6", "no-wildcard-DNS 2", "SD-030 vs SD-002 4",
+            "workflow action pinning 6", "SourceUsagePolicy (mode,column) 2",
+            "historical independence", "InventoryError",
+            "**Category C 638件はsource conversion未着手**",
+        ):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        self.assertNotIn("BL-038全体最終受入済み", self.bl038)
+
+    def test_the_history_foundation_and_the_split_decision_are_recorded(self):
+        for token in (
+            "tranche 3t(classification history foundation、2026-08-11)",
+            "document_test_classification_history.json",
+            "document_test_history.py",
+            "LEDGER_DIGEST",
+            "**historical evidence値は1つも書き換えていない。**",
+            "12 record",
+            "Round 1",
+            "assertion-level freeze",
+            "index-slice coupling",
+            "cap例外は採用せず分割",
+            "tranche 3t初版の追記方法が持ち込んだもの",
+            "5557行中5556行目",
+            "tranche 3u",
+            "Category C source conversionはtranche 3t後も引き続きblocked",
+        ):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        for token in (
+            "BL-038 tranche 3t (classification history foundation, 2026-08-11 JST)",
+            "Category A helper consolidationは判断完了・追加実装なし",
+            "Category C source conversionは未着手・未unblock",
+            "tranche 3u",
+        ):
+            with self.subTest(status_token=token):
+                self.assertIn(token, self.status)
+        # Never claimed: the things tranche 3t does NOT deliver. Checked as affirmative
+        # phrases -- "BL-038完了" alone appears legitimately inside a NEGATING sentence
+        # elsewhere in STATUS.md ("これはBL-038完了を意味せず"), so a bare substring test
+        # would be measuring the wrong thing.
+        for over_claim in ("Category C conversion fully unblocked", "migration lifecycle完成",
+                           "BL-038全体最終受入済み", "Category C 638件をunblock済み",
+                           "Category C source conversion開始"):
+            with self.subTest(not_claimed=over_claim):
+                self.assertNotIn(over_claim, self.bl038)
+                self.assertNotIn(over_claim, self.status)
+        self.assertIn("「Category C 638件をunblockした」とは記録しない", self.bl038)
+
+    def test_the_planned_tranche_3u_scope_is_recorded(self):
+        for token in ("tranche 3uのplanned scope", "23", "migration ledger",
+                      "1対1 conversion", "identity-changing conversion",
+                      "nested accepted window", "silent deletion",
+                      "wip/bl038-tranche3t-round1-full"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+
+    def test_every_ledger_record_is_anchored_in_the_backlog_acceptance_record(self):
+        self.assertEqual(len(self.ledger["accepted"]), 12)
+        for record in self.ledger["accepted"]:
+            with self.subTest(tranche=record["tranche"]):
+                self.assertIn(record["historical"]["sha256"], self.backlog)
+                self.assertIn(record["merge_commit"], self.bl038)
+
+    def test_the_ledger_is_offline_and_pinned_and_adds_no_migration_layer(self):
+        module = (self.root / "document_test_history.py").read_text(encoding="utf-8")
+        for token in ("subprocess", "urllib", "requests", "socket", "os.system"):
+            with self.subTest(token=token):
+                self.assertNotIn(token, module)
+        digest = hashlib.sha256(json.dumps(self.ledger, ensure_ascii=False, sort_keys=True,
+                                           separators=(",", ":")).encode("utf-8")).hexdigest()
+        self.assertIn(f'LEDGER_DIGEST = "{digest}"', module)
+        self.assertIn(digest, (self.root / "test_document_test_classification.py")
+                      .read_text(encoding="utf-8"))
+        # Tranche 3t ships no migration ledger; that is tranche 3u.
+        self.assertFalse((self.root / "document_test_classification_migrations.json").exists())
+
+    def test_current_totals_are_unchanged_by_the_foundation_tranche(self):
+        """3t converts nothing and consolidates nothing, so the live classification is
+        bit-for-bit the accepted tranche 3s result."""
+        failures, summary = dti.validate_indexed_manifests(root=self.root)
+        self.assertEqual([failure.format() for failure in failures], [])
+        self.assertEqual(summary["inventoried_assertions"], 1525)
+        self.assertEqual(summary["category_counts"], {"A": 30, "B": 612, "C": 638, "D": 245})
+        self.assertEqual((summary["unclassified"], summary["stale"],
+                          summary["fingerprint_mismatch"]), (0, 0, 0))
+        self.assertIn("**1525件・A30/B612/C638/D245・unclassified/stale/fingerprint mismatch 0/0/0**",
+                      self.bl038)
+
+
 if __name__ == "__main__":
     unittest.main()
