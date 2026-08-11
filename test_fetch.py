@@ -8301,11 +8301,11 @@ class Bl038Tranche3uMigrationLifecycleRecordSyncTest(unittest.TestCase):
     def test_the_lifecycle_and_the_corrected_guard_count_are_recorded(self):
         for token in ("tranche 3u(migration-aware current lifecycle、2026-08-11)",
                       "fbb49e547b2bfadf88d040ae1b9253a83b300e53",
-                      "**25件**", "過少計数",
+                      "**25件**", "過少計数", "これはcoupling全体の件数ではない",
                       "live - successors + retired == accepted",
                       "`(file, class, method, targets)`",
                       "pure ordinal driftはmigration metadataを一切必要としない",
-                      "ACCEPTED_SCOPES_DIGEST", "positional sliceを全廃",
+                      "ACCEPTED_SCOPES_DIGEST", "lifecycle completionはpending",
                       "1件のmigration記録が3 windowすべてを満たす",
                       "document_test_classification_migrations.json",
                       "**historical ledgerは0 diff**",
@@ -8344,7 +8344,7 @@ class Bl038Tranche3uMigrationLifecycleRecordSyncTest(unittest.TestCase):
         self.assertEqual(hashlib.sha256(
             (self.root / "document_test_classification_history.json").read_bytes()).hexdigest(),
             "763637f1d88e6690363f8d30cc66a5cb76d95d654cd789c8863e6e26d604028a")
-        self.assertIn("Category C 638件は依然**source conversion未着手**", self.bl038)
+        self.assertIn("Category C 638件は依然**source conversion未着手かつunblocked扱いにしない**", self.bl038)
         for over_claim in ("Category C conversion完了", "BL-038全体最終受入済み",
                            "Category C 638件を変換済み"):
             with self.subTest(not_claimed=over_claim):
