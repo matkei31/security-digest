@@ -2591,26 +2591,44 @@ class Tranche3hClassificationShardTest(unittest.TestCase):
     def test_fingerprint_duplicate_groups_are_not_category_a(self):
         """BL-038 tranche 3v (C012, H7-A+B). The accepted collision groups, their
         category calls and the measured loop-literal sizes were an accepted-time
-        measurement: a legal Category C conversion changes fingerprints, so requiring
-        them of the current corpus blocked conversion and they are gone. What remains
-        is the algorithm fact that made the second group spurious, proven on a
-        synthetic fixture: grouping is by fingerprint equality alone, and a fingerprint
-        cannot see the enclosing loop context that distinguishes two call sites."""
-        fixture = [
-            {"id": "a", "fingerprint": "f", "loop": ("x", "y")},
-            {"id": "b", "fingerprint": "f", "loop": ("z",)},
-            {"id": "c", "fingerprint": "g", "loop": ()},
-        ]
-        by_fingerprint = {}
-        for entry in fixture:
-            by_fingerprint.setdefault(entry["fingerprint"], []).append(entry["id"])
-        groups = sorted(tuple(ids) for ids in by_fingerprint.values() if len(ids) > 1)
-        self.assertEqual(groups, [("a", "b")])
-        # Same fingerprint, different enclosing loop: the collision is a call-site
-        # coincidence, which is why a collision never implied a shared category.
-        collided = [e for e in fixture if e["id"] in groups[0]]
-        self.assertEqual(len({e["fingerprint"] for e in collided}), 1)
-        self.assertNotEqual(*[e["loop"] for e in collided])
+        measurement -- a legal Category C conversion changes fingerprints, so requiring
+        them of the current corpus blocked conversion and they are gone. What remains is
+        the single algorithm fact that made the second group spurious, proven through the
+        REAL inventory/fingerprint generator on synthetic source: fingerprint generation
+        is blind to the enclosing loop context. No accepted collision set, no category,
+        no live corpus id is involved."""
+        source = (
+            "import unittest\n\n\n"
+            "class SyntheticFingerprintTest(unittest.TestCase):\n"
+            "    def test_first_call_site(self):\n"
+            "        compact = \"x\"\n"
+            "        for contract in (\"alpha\", \"beta\", \"gamma\"):\n"
+            "            with self.subTest(contract=contract):\n"
+            "                self.assertIn(contract, compact)\n\n"
+            "    def test_second_call_site(self):\n"
+            "        compact = \"x\"\n"
+            "        for contract in (\"delta\",):\n"
+            "            with self.subTest(contract=contract):\n"
+            "                self.assertIn(contract, compact)\n"
+        )
+        records = dti.enumerate_assertions(
+            source, "synthetic_fingerprint.py", ["SyntheticFingerprintTest"])
+        self.assertEqual(len(records), 2)
+        self.assertEqual({r.assertion_api for r in records}, {"assertIn"})
+        # The real generator gives the two call sites ONE fingerprint...
+        self.assertEqual(len({r.fingerprint for r in records}), 1)
+        self.assertNotEqual(records[0].id, records[1].id)
+        # ...while the enclosing `for` tuples in the very same fixture differ, which is
+        # why a fingerprint collision never implied a shared contract or category.
+        tree = ast.parse(source)
+        loops = {}
+        for method in [n for n in ast.walk(tree) if isinstance(n, ast.FunctionDef)]:
+            for node in ast.walk(method):
+                if isinstance(node, ast.For) and isinstance(node.iter, ast.Tuple):
+                    loops[method.name] = tuple(e.value for e in node.iter.elts)
+        self.assertEqual(sorted(loops), ["test_first_call_site", "test_second_call_site"])
+        self.assertNotEqual(*loops.values())
+        self.assertEqual(sorted(len(v) for v in loops.values()), [1, 3])
 
     def _loop_literals_for(self, entry_id):
         """The string literals of the `for` tuple enclosing an assertion."""
@@ -2761,20 +2779,6 @@ class Tranche3iClassificationShardAppendTest(unittest.TestCase):
                 )
         multi = {e["id"]: tuple(e["targets"]) for e in self.entries if len(e["targets"]) > 1}
         self.assertEqual(multi, TRANCHE_3I_MULTI_TARGETS)
-
-    def test_fingerprint_duplicate_groups_are_not_category_a(self):
-        # BL-038 tranche 3v (C021): the accepted duplicate-group set and the category
-        # calls made for it were an accepted-time measurement over this shard; a legal
-        # Category C conversion changes fingerprints, so they are not required of the
-        # current corpus. The grouping mechanics are proven on a synthetic fixture.
-        fixture = [{"id": "a", "fingerprint": "f"}, {"id": "b", "fingerprint": "f"},
-                   {"id": "c", "fingerprint": "g"}]
-        by_fingerprint = {}
-        for entry in fixture:
-            by_fingerprint.setdefault(entry["fingerprint"], []).append(entry["id"])
-        groups = sorted(tuple(ids) for ids in by_fingerprint.values() if len(ids) > 1)
-        self.assertEqual(groups, [("a", "b")])
-        self.assertNotIn(("c",), groups)
 
     def test_current_shard_file_meets_the_format_contract_within_the_line_cap(self):
         failures = dti.validate_shard_file_format(SHARD_001_PATH, self.shard, shard=SHARD_001_FILENAME)
@@ -6391,7 +6395,7 @@ class CouplingInventorySnapshotTest(unittest.TestCase):
     def test_the_corrections_are_recorded_rather_than_silently_applied(self):
         corrections = {c["id"]: c for c in self.snapshot["corrections"]}
         self.assertEqual(sorted(corrections),
-                         ["3v-1", "R0.1-1", "R0.1-2", "R0.1-3", "R0.2-1"])
+                         ["3v-1", "3v-2", "R0.1-1", "R0.1-2", "R0.1-3", "R0.2-1"])
         # The tranche 3v conversion proof found one measurement false negative. It is
         # recorded with its root cause and deferred to tranche 3y; the frozen 106
         # population is deliberately NOT edited to absorb it.
@@ -6425,10 +6429,56 @@ class CouplingInventorySnapshotTest(unittest.TestCase):
         rows = [c for c in self.candidates if c["tranche"] == "3v"]
         self.assertEqual(len(rows), 23)
         self.assertEqual(sorted({c["group"] for c in rows}), ["G2", "G3", "G6"])
+        # PLANNED disposition, kept as the planning-time record: 21 rewrite / 2 remove.
         self.assertEqual(len([c for c in rows if c["keep_or_remove"] == "remove_obsolete"]), 2)
         self.assertEqual(len([c for c in rows if c["keep_or_remove"] == "rewrite"]), 21)
-        # The 83 rows deliberately left for tranches 3w/3x/3y.
+        # The 83 frozen-inventory rows left for tranches 3w/3x/3y.
         self.assertEqual(len([c for c in self.candidates if c["tranche"] != "3v"]), 83)
+
+    def test_the_actual_3v_disposition_differs_from_the_plan_only_via_correction_3v_2(self):
+        """Correction 3v-2 moved C021 from the planned H5/H6 mixed/rewrite to H7-A
+        none/remove_obsolete, so the ACTUAL tranche 3v result is 20 rewrite / 3 removed.
+        The frozen row keeps its planning-time values; the two must not be conflated."""
+        correction = {c["id"]: c for c in self.snapshot["corrections"]}["3v-2"]
+        self.assertEqual(correction["field"], "C021 mechanisms / disposition")
+        self.assertEqual(correction["original_frozen_planning"],
+                         {"mechanisms": ["H5", "H6"], "retarget_destination": "mixed",
+                          "keep_or_remove": "rewrite"})
+        self.assertEqual(correction["implementation_ruling"],
+                         {"h7_class": "H7-A", "retarget_destination": "none",
+                          "keep_or_remove": "remove_obsolete"})
+        self.assertEqual((correction["population_change"], correction["group_change"],
+                          correction["tranche_change"]), (0, 0, 0))
+        self.assertEqual(correction["effect_on_tranche_3v_totals"],
+                         {"planned": {"rewrite": 21, "remove_obsolete": 2},
+                          "actual": {"rewrite": 20, "remove_obsolete": 3}})
+        # The frozen C021 row itself was NOT rewritten to match the ruling.
+        c021 = {c["candidate_id"]: c for c in self.candidates}["C021"]
+        self.assertEqual((c021["mechanisms"], c021["retarget_destination"],
+                          c021["keep_or_remove"]), (["H5", "H6"], "mixed", "rewrite"))
+        self.assertEqual((c021["group"], c021["tranche"]), ("G2", "3v"))
+
+    def test_the_planned_h7_a_plus_b_rows_are_c012_in_3v_and_c077_in_3x(self):
+        planned = {c["candidate_id"]: c["tranche"] for c in self.candidates
+                   if c.get("h7_class") == "H7-A+B"}
+        self.assertEqual(planned, {"C012": "3v", "C077": "3x"})
+
+    def test_the_residual_accounting_never_claims_a_complete_universe(self):
+        acc = self.snapshot["residual_accounting"]
+        self.assertEqual(acc["frozen_planning_population"], 106)
+        self.assertEqual(acc["frozen_3v_handled"], 23)
+        self.assertEqual(acc["frozen_inventory_residual"], 83)
+        self.assertEqual(acc["known_out_of_inventory_false_negatives"], 1)
+        self.assertEqual(acc["known_future_residual_at_least"], 84)
+        self.assertEqual(acc["frozen_inventory_residual"]
+                         + acc["known_out_of_inventory_false_negatives"],
+                         acc["known_future_residual_at_least"])
+        self.assertEqual(acc["tranche_3y_frozen_rows"], 18)
+        self.assertEqual(acc["tranche_3y_known_additional_corrections"], 1)
+        self.assertEqual(acc["tranche_3y_frozen_rows"]
+                         + acc["tranche_3y_known_additional_corrections"],
+                         acc["tranche_3y_known_work_at_least"])
+        self.assertIn("NOT a proven-complete coupling universe", acc["note"])
 
 
 if __name__ == "__main__":

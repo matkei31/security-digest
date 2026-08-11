@@ -8384,11 +8384,59 @@ class Bl038Tranche3vCouplingRetargetRecordSyncTest(unittest.TestCase):
                 self.assertIn(token, self.bl038)
 
     def test_the_residual_split_is_recorded_without_claiming_repo_wide_success(self):
-        self.assertIn("**3v residual 0／future residual 83**", self.bl038)
-        self.assertIn("**repo-wide coupling eliminatedではない**", self.bl038)
+        """Round 1 Blocker 1: the frozen-inventory residual and the KNOWN residual are
+        different numbers, because one out-of-inventory false negative is already known.
+        The docs must state both and must not present 106 as a complete coupling
+        universe in the present tense."""
+        for token in ("**frozen-inventory residual 83＋known false-negative correction 1＝"
+                      "known residual at least 84**",
+                      "**frozen 18＋known correction 1(＝known work at least 19)**",
+                      "**final repo-wide residual scanは未実施**",
+                      "**repo-wide coupling eliminatedではない**"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        self.assertIn("frozen-inventory residual 83＋known false-negative 1＝known residual "
+                      "at least 84", self.status)
+        self.assertIn("**final repo-wide scanは未実施**", self.status)
         self.assertIn("repo-wide coupling eliminatedではない", self.status)
         # The snapshot must not be described as a live tracker.
         self.assertIn("**CURRENT state trackerではない**", self.status)
+        # The bare "future residual 83" phrasing must not survive anywhere current.
+        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        self.assertNotIn("future residual 83", current)
+        for text in (self.bl038, self.status):
+            with self.subTest():
+                self.assertNotIn("**3v residual 0／future residual 83**", text)
+
+    def test_the_c021_classification_error_is_recorded_as_correction_3v_2(self):
+        """Round 1 Blocker 2: C021 was planned H5/H6 mixed/rewrite but is actually H7-A
+        remove_obsolete. Recorded as a correction; the frozen row is not rewritten, and
+        planned 21/2 stays distinguishable from the actual 20/3."""
+        for token in ("correction `3v-2`",
+                      "**H7-A／whole method remove_obsolete**",
+                      "**actual結果はrewrite 20件・remove_obsolete 3件**",
+                      "planning時点で**rewrite 21件・remove_obsolete 2件**",
+                      "population／group／trancheの変更は0"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        self.assertIn("**actual rewrite 20／remove 3**", self.status)
+        snapshot = json.loads((self.root / "document_test_coupling_inventory_3v.json")
+                              .read_text(encoding="utf-8"))
+        correction = {c["id"]: c for c in snapshot["corrections"]}["3v-2"]
+        self.assertEqual(correction["population_change"], 0)
+        c021 = {c["candidate_id"]: c for c in snapshot["candidates"]}["C021"]
+        self.assertEqual(c021["keep_or_remove"], "rewrite")  # planning record intact
+        self.assertEqual(snapshot["candidate_count"], 106)
+
+    def test_the_planned_h7_a_plus_b_rows_are_named_precisely(self):
+        """Round 1: the earlier "H7-A+B 2件(3h/3i)" wording was wrong. The planned pair is
+        C012 (3h, tranche 3v) and C077 (3q, tranche 3x); only C012 is implemented here."""
+        self.assertIn("**C012(3h、tranche 3v)とC077(3q、tranche 3x)**", self.bl038)
+        self.assertIn("今回3vで実装したのは**C012のみ**", self.bl038)
+        self.assertIn("**C012(3h/3v)とC077(3q/3x)**", self.status)
+        for text in (self.bl038, self.status):
+            with self.subTest():
+                self.assertNotIn("H7-A+B 2件(3h/3i", text)
 
     def test_the_category_c_unblock_boundary_now_names_tranche_3y(self):
         self.assertIn("unblockはtranche 3y acceptance後", self.status)
