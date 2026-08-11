@@ -8097,7 +8097,8 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
                      "83b7ab1ae59ca0a246142ee2e8b1d2c7eb6cf7e8",
                      "merge済みである",
                      "Category C 638件はsource conversion未着手",
-                     "**Category Cのunblockはtranche 3v acceptance後**",
+                     # BL-038 tranche 3v: the 4-PR split moved the boundary from 3v to 3y.
+                     "**Category Cのunblockはtranche 3y acceptance後**",
                      "Category A 30件はtranche 3tで判断完了",
                      "BL-038全体は未完了"):
             with self.subTest(fact=fact):
@@ -8332,10 +8333,13 @@ class Bl038Tranche3uMigrationEngineRecordSyncTest(unittest.TestCase):
         current = self.bl038[:self.bl038.index(marker)]
         for stale in ("unblockはtranche 3uの範囲",
                       "unblockはtranche 3uのscope",
-                      "Category Cのunblockはtranche 3u"):
+                      "Category Cのunblockはtranche 3u",
+                      # BL-038 tranche 3v: the 4-PR split superseded the 3v promise too.
+                      "Category Cのunblockはtranche 3v acceptance後",
+                      "3v acceptanceまでunblocked扱いにしない"):
             with self.subTest(stale=stale):
                 self.assertNotIn(stale, current)
-        self.assertIn("**Category Cのunblockはtranche 3v acceptance後**", current)
+        self.assertIn("**Category Cのunblockはtranche 3y acceptance後**", current)
         self.assertIn("tranche 3uはmigration engine foundationのみを確定", current)
 
     def test_category_c_is_still_unconverted_and_the_ledgers_agree(self):
@@ -8354,6 +8358,131 @@ class Bl038Tranche3uMigrationEngineRecordSyncTest(unittest.TestCase):
         self.assertEqual(hashlib.sha256(
             (self.root / "document_test_classification_history.json").read_bytes()).hexdigest(),
             "763637f1d88e6690363f8d30cc66a5cb76d95d654cd789c8863e6e26d604028a")
+
+class Bl038Tranche3vCouplingRetargetRecordSyncTest(unittest.TestCase):
+    """BL-038 tranche 3v: the frozen 106-candidate measurement, the 23-row scope actually
+    handled, the residual split and the moved Category C unblock boundary are recorded as
+    facts -- including the one measurement false negative, recorded rather than absorbed."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.root = Path(__file__).resolve().parent
+        cls.backlog = (cls.root / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (cls.root / "STATUS.md").read_text(encoding="utf-8")
+        start = cls.backlog.index("## BL-038")
+        end = cls.backlog.find("\n## ", start + 8)
+        cls.bl038 = cls.backlog[start:] if end < 0 else cls.backlog[start:end]
+
+    def test_the_frozen_measurement_and_tranche_split_are_recorded(self):
+        for token in ("tranche 3v(coupling retarget、first groups、2026-08-12)",
+                      "22af028435f759077b6b4d6352dda35afc5d88de",
+                      "106 distinct test methods",
+                      "document_test_coupling_inventory_3v.json",
+                      "**3v 23件・3w 38件・3x 27件・3y 18件**",
+                      "**rewrite 21件・remove_obsolete 2件**"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+
+    def test_the_residual_split_is_recorded_without_claiming_repo_wide_success(self):
+        """Round 1 Blocker 1: the frozen-inventory residual and the KNOWN residual are
+        different numbers, because one out-of-inventory false negative is already known.
+        The docs must state both and must not present 106 as a complete coupling
+        universe in the present tense."""
+        for token in ("**frozen-inventory residual 83＋known false-negative correction 1＝"
+                      "known residual at least 84**",
+                      "**frozen 18＋known correction 1(＝known work at least 19)**",
+                      "**final repo-wide residual scanは未実施**",
+                      "**repo-wide coupling eliminatedではない**"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        self.assertIn("frozen-inventory residual 83＋known false-negative 1＝known residual "
+                      "at least 84", self.status)
+        self.assertIn("**final repo-wide scanは未実施**", self.status)
+        self.assertIn("repo-wide coupling eliminatedではない", self.status)
+        # The snapshot must not be described as a live tracker.
+        self.assertIn("**CURRENT state trackerではない**", self.status)
+        # Round 2: the CURRENT 残作業 paragraph must not leave a bare residual figure
+        # standing as the total. "frozen-inventory residual 83" is correct and stays
+        # allowed; an unqualified "residual 83" as the whole story does not.
+        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        self.assertNotIn("future residual 83", current)
+        self.assertNotIn("実施済み、residual 83", current)
+        for bare in ("residual 83)", "residual 83。", "residual 83、"):
+            with self.subTest(bare=bare):
+                self.assertNotIn(bare, current)
+        self.assertIn("**frozen-inventory residual 83にknown false-negative correction 1があり、"
+                      "known residualはat least 84**", current)
+        self.assertIn("**frozen 18＋known correction 1でknown work at least 19**", current)
+        self.assertIn("**final repo-wide residual scanは未実施**", current)
+        # The qualified planning-context phrasing is legitimate and must remain.
+        self.assertIn("frozen-inventory residual 83", self.bl038)
+        for text in (self.bl038, self.status):
+            with self.subTest():
+                self.assertNotIn("**3v residual 0／future residual 83**", text)
+
+    def test_the_c021_classification_error_is_recorded_as_correction_3v_2(self):
+        """Round 1 Blocker 2: C021 was planned H5/H6 mixed/rewrite but is actually H7-A
+        remove_obsolete. Recorded as a correction; the frozen row is not rewritten, and
+        planned 21/2 stays distinguishable from the actual 20/3."""
+        for token in ("correction `3v-2`",
+                      "**H7-A／whole method remove_obsolete**",
+                      "**actual結果はrewrite 20件・remove_obsolete 3件**",
+                      "planning時点で**rewrite 21件・remove_obsolete 2件**",
+                      "population／group／trancheの変更は0"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        self.assertIn("**actual rewrite 20／remove 3**", self.status)
+        snapshot = json.loads((self.root / "document_test_coupling_inventory_3v.json")
+                              .read_text(encoding="utf-8"))
+        correction = {c["id"]: c for c in snapshot["corrections"]}["3v-2"]
+        self.assertEqual(correction["population_change"], 0)
+        c021 = {c["candidate_id"]: c for c in snapshot["candidates"]}["C021"]
+        self.assertEqual(c021["keep_or_remove"], "rewrite")  # planning record intact
+        self.assertEqual(snapshot["candidate_count"], 106)
+
+    def test_the_planned_h7_a_plus_b_rows_are_named_precisely(self):
+        """Round 1: the earlier "H7-A+B 2件(3h/3i)" wording was wrong. The planned pair is
+        C012 (3h, tranche 3v) and C077 (3q, tranche 3x); only C012 is implemented here."""
+        self.assertIn("**C012(3h、tranche 3v)とC077(3q、tranche 3x)**", self.bl038)
+        self.assertIn("今回3vで実装したのは**C012のみ**", self.bl038)
+        self.assertIn("**C012(3h/3v)とC077(3q/3x)**", self.status)
+        for text in (self.bl038, self.status):
+            with self.subTest():
+                self.assertNotIn("H7-A+B 2件(3h/3i", text)
+
+    def test_the_category_c_unblock_boundary_now_names_tranche_3y(self):
+        self.assertIn("unblockはtranche 3y acceptance後", self.status)
+        self.assertIn("Category Cのunblockはtranche 3y acceptance後", self.bl038)
+        self.assertIn("real Category C conversion 0件", self.bl038)
+        # The current-state text must not still promise an unblock at 3v.
+        # The LAST 残作業 bullet is the current-state one; earlier ones are history.
+        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        self.assertNotIn("tranche 3v acceptance後", current)
+        self.assertNotIn("3v acceptanceまでunblocked扱いにしない", current)
+
+    def test_the_measurement_false_negative_is_recorded_not_absorbed(self):
+        for token in ("measurement definitionのfalse negative 1件を発見",
+                      "test_tranche3h_shard_subset_survives_the_tranche3i_append",
+                      "frozen 106 populationは指示どおり変更せず",
+                      "correction `3v-1`"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        snapshot = json.loads((self.root / "document_test_coupling_inventory_3v.json")
+                              .read_text(encoding="utf-8"))
+        self.assertEqual(snapshot["candidate_count"], 106)
+        self.assertEqual(len(snapshot["known_false_negatives"]), 1)
+
+    def test_the_representative_conversion_proof_is_recorded_and_restored(self):
+        for token in ("tranche 3v representative conversion proof(2026-08-12)",
+                      "**migration metadata 0**", "**tranche 3v candidate failure 0**",
+                      "mutationは完全復元済み"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        # Restored means restored: the ledgers are untouched and empty as before.
+        migrations = json.loads((self.root / "document_test_classification_migrations.json")
+                                .read_text(encoding="utf-8"))
+        self.assertEqual(migrations["migrations"], [])
+
 
 if __name__ == "__main__":
     unittest.main()
