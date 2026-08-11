@@ -294,9 +294,18 @@ def accepted_window(root, tranche, entries=None):
 
 
 def window_boundary_failures(root, tranche, entries=None):
-    """Fail closed when a method_range's accepted boundary method no longer exists:
-    the window would otherwise silently shrink and take accepted coverage with it."""
+    """Fail closed when a method_range's accepted boundary method has vanished with
+    nothing accounting for it: the window would otherwise silently shrink and take
+    accepted coverage with it.
+
+    A boundary whose contracts were explicitly retired by a recorded migration IS
+    accounted for, so a legitimate move out of the boundary method is not blocked --
+    only an unexplained disappearance or rename is.
+    """
     entries = live_entries(root) if entries is None else entries
+    retired_methods = {m["id"].split("::")[2]
+                       for migration in migrations_for(root, tranche)
+                       for m in migration["retired"] if _member_owned(tranche, m)}
     problems = []
     for scope in ACCEPTED_SCOPES[tranche]:
         if "method_range" not in scope:
@@ -306,7 +315,7 @@ def window_boundary_failures(root, tranche, entries=None):
                     if e["file"] == scope["file"] and e["class"] == class_name}
             for edge in ("start", "end"):
                 method = scope["method_range"][edge]
-                if method not in live:
+                if method not in live and method not in retired_methods:
                     problems.append(f"{tranche}:{edge}-boundary-method-missing:{method}")
     return problems
 
@@ -335,13 +344,26 @@ def migrations_for(root, tranche):
     return picked
 
 
+def _member_owned(tranche, member):
+    file_name, class_name, method, _ = member["id"].split("::")
+    return owns(tranche, file_name, class_name, method)
+
+
 def reconstruct_accepted_contracts(root, tranche, live_window_entries):
-    """Undo the recorded migrations against the live window. LookupError if a
-    migration claims a successor contract the window lacks, so a wrong or invented
-    successor cannot silently balance the equation."""
+    """Undo the recorded migrations against the live window.
+
+    Each side is filtered by whether THIS window owns it, which is what lets an
+    accepted contract move to another method or range: the losing window adds its
+    retired contract back and ignores a successor that landed outside it, while the
+    window the successor landed in subtracts it and ignores the retired side. A
+    successor this window DOES own must be present, so a wrong or invented in-window
+    successor still cannot silently balance the equation.
+    """
     contracts = window_contracts(live_window_entries)
     for migration in migrations_for(root, tranche):
         for successor in migration["successors"]:
+            if not _member_owned(tranche, successor):
+                continue
             contract = _member_contract(successor)
             if contract not in contracts:
                 raise LookupError(
@@ -349,7 +371,8 @@ def reconstruct_accepted_contracts(root, tranche, live_window_entries):
                     f"contract of accepted tranche {tranche}")
             contracts.remove(contract)
         for retired in migration["retired"]:
-            contracts.append(_member_contract(retired))
+            if _member_owned(tranche, retired):
+                contracts.append(_member_contract(retired))
     return contracts
 
 

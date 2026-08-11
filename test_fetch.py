@@ -8097,7 +8097,7 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
                      "83b7ab1ae59ca0a246142ee2e8b1d2c7eb6cf7e8",
                      "merge済みである",
                      "Category C 638件はsource conversion未着手",
-                     "unblockはtranche 3uの範囲",
+                     "**Category Cのunblockはtranche 3v acceptance後**",
                      "Category A 30件はtranche 3tで判断完了",
                      "BL-038全体は未完了"):
             with self.subTest(fact=fact):
@@ -8184,7 +8184,7 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
             "`workflow_dispatch` runは0件",
             "**production fetchは実行していない**",
             "**Category C 638件はsource conversion未着手で引き続きblocked**",
-            "unblockはtranche 3uのscope", "migration lifecycleは未完成",
+            "unblockはtranche 3v acceptance後", "migration lifecycleは未完成",
             "**BL-038全体は未完了**",
             "**supersededとしてclose**", "entry 47(`tranche 3t kickoff original`)",
         ):
@@ -8322,6 +8322,21 @@ class Bl038Tranche3uMigrationEngineRecordSyncTest(unittest.TestCase):
             with self.subTest(not_claimed=over_claim):
                 self.assertNotIn(over_claim, self.bl038)
                 self.assertNotIn(over_claim, self.status)
+
+    def test_the_current_slice_never_says_3u_unblocks_category_c(self):
+        """Round 2 Blocker 3. The current `残作業` paragraph said the unblock was in
+        tranche 3u's scope, contradicting the same paragraph's 3v statement. Scoped to
+        the text BEFORE the `historical post-3r residual snapshot` marker, so wording
+        that legitimately described tranche 3u at the time is not policed there."""
+        marker = "**historical post-3r residual snapshot"
+        current = self.bl038[:self.bl038.index(marker)]
+        for stale in ("unblockはtranche 3uの範囲",
+                      "unblockはtranche 3uのscope",
+                      "Category Cのunblockはtranche 3u"):
+            with self.subTest(stale=stale):
+                self.assertNotIn(stale, current)
+        self.assertIn("**Category Cのunblockはtranche 3v acceptance後**", current)
+        self.assertIn("tranche 3uはmigration engine foundationのみを確定", current)
 
     def test_category_c_is_still_unconverted_and_the_ledgers_agree(self):
         """3u fixes the engine without converting anything: the tree is still the
