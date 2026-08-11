@@ -15,6 +15,7 @@ from pathlib import Path
 from unittest.mock import patch
 import unittest
 
+import document_test_inventory as dti
 import fetch
 import vulnerability_facts as vf
 
@@ -5068,7 +5069,7 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         self.assertIn("「おk」7回", history)
         # Entry 13 is one of the 「はい」; 3j/3k/3m/3n/3o/3p added entries 24, 26,
         # 30, 33, 35 and 37, so the running tally is now 7.
-        self.assertIn("「はい」10回", history)
+        self.assertIn("「はい」11回", history)
         self.assertNotIn("「はい」6回", history)
         entries = re.findall(
             r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL
@@ -6240,7 +6241,7 @@ class Bl038Tranche3jRecordSyncTest(unittest.TestCase):
         )
         # Entries 23 and 24 keep their meaning verbatim after tranches 3k-3p
         # appended 25-37; the header tally is asserted in the 3p class.
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 44)])
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 47)])
         for number, requirements in (
             ("23", ("tranche 3i final acceptance original", "2026-08-08", "「ok」", "PR #91",
                     "Draft解除・Ready化", "通常のmerge commit方式によるmerge",
@@ -6473,7 +6474,7 @@ class Bl038Tranche3kRecordSyncTest(unittest.TestCase):
         entries = re.findall(
             r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL
         )
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 44)])
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 47)])
         for number, requirements in (
             ("25", ("tranche 3j final acceptance original", "2026-08-08", "「ok」", "PR #92",
                     "Draft解除・Ready化", "通常のmerge commit方式によるmerge", "workflow_dispatch",
@@ -6645,10 +6646,10 @@ class Bl038Tranche3lRecordSyncTest(unittest.TestCase):
         bl038 = self._bl038_section()
         own_state_line = next(l for l in bl038.splitlines() if l.startswith("- **状態:**"))
         self.assertNotIn("tranche 3l実装中", own_state_line)
-        self.assertIn("3q・3r受入済み／次tranche未着手", own_state_line)
+        self.assertIn("3q・3r・3s受入済み／document・static-contract assertion classificationは全件分類済み", own_state_line)
         accepted = own_state_line.split("(", 1)[1].split("受入済み", 1)[0].split("・")
         self.assertEqual(accepted, ["tranche 1", "2", "3a", "3b", "3c", "3d", "3e", "3f", "3g",
-                                    "3h", "3i", "3j", "3k", "3l", "3m", "3n", "3o", "3p", "3q", "3r"])
+                                    "3h", "3i", "3j", "3k", "3l", "3m", "3n", "3o", "3p", "3q", "3r", "3s"])
         self.assertIn("3l", accepted)
         self.assertIn("3q", accepted)
         self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
@@ -6678,8 +6679,8 @@ class Bl038Tranche3lRecordSyncTest(unittest.TestCase):
         # Entries 27/28 took 「ok」 to 11 and introduced 「うん」; 29/30, 32/33,
         # 34/35 and 36/37 took them on to 15 and 7, so the CURRENT header is the
         # tranche 3p one and the 3l-era tally is history.
-        self.assertIn("「ok」18回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」10回・"
-                      "「進んで」1回・「うん」1回", history)
+        self.assertIn("「ok」19回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」11回・"
+                      "「進んで」1回・「うん」1回・「うん。進めて」1回", history)
         for stale in ("「ok」14回", "「ok」13回", "「ok」12回", "「ok」11回", "「ok」10回", "「ok」9回",
                       "「はい」6回", "「はい」5回", "「はい」4回", "「はい」3回"):
             with self.subTest(stale=stale):
@@ -6689,7 +6690,7 @@ class Bl038Tranche3lRecordSyncTest(unittest.TestCase):
         self.assertIn("「A」1回", history)  # unchanged by 27/28
         entries = re.findall(r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history,
                              re.MULTILINE | re.DOTALL)
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 44)])
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 47)])
         for number, requirements in (
             ("27", ("tranche 3k final acceptance original", "2026-08-08", "「ok」", "PR #93",
                     "Draft解除・Ready化", "通常のmerge commit方式によるmerge",
@@ -6923,14 +6924,14 @@ class Bl038Tranche3mRecordSyncTest(unittest.TestCase):
         history = bl038[history_start : bl038.index("着手時ユーザー原文:", history_start)]
         # 「ok」 11->12 (entry 29); 「はい」 3->4 (entry 30). Entries 32/33 took
         # them to 13 and 5, and 34/35 to 14 and 6, which is the header now.
-        self.assertIn("「ok」18回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」10回・" "「進んで」1回・「うん」1回", history)
+        self.assertIn("「ok」19回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」11回・" "「進んで」1回・「うん」1回・「うん。進めて」1回", history)
         for stale in ("「ok」14回", "「ok」13回", "「ok」12回", "「はい」6回", "「はい」5回", "「はい」4回"):
             with self.subTest(stale=stale): self.assertNotIn(stale, history)
         self.assertIn("長文の作業指示2回", history)
         self.assertNotIn("長文の作業指示1回", history)
         self.assertIn("「A」1回", history)  # unchanged by 29/30, 32/33 and 34/35
         entries = re.findall(r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL)
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 44)])
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 47)])
         for number, requirements in (("29", ("tranche 3l final acceptance original", "2026-08-08", "「ok」", "PR #94",
                     "Draft解除・Ready化", "通常のmerge commit方式によるmerge", "#1・#3・#5・#7・#9・#17・#19・#21・#23・#25・#27と同一文字列だが",
                     "Category C source conversionの承認ではなく", "tranche 3m implementationの先行受入でもなく",
@@ -7199,12 +7200,12 @@ class Bl038Tranche3nRecordSyncTest(unittest.TestCase):
         history = bl038[history_start : bl038.index("着手時ユーザー原文:", history_start)]
         # 「ok」 12->13 (entry 32); 「はい」 4->5 (entry 33). Entries 34/35 then
         # took them to 14 and 6, which is the header this now reads.
-        self.assertIn("「ok」18回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」10回・" "「進んで」1回・「うん」1回", history)
+        self.assertIn("「ok」19回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」11回・" "「進んで」1回・「うん」1回・「うん。進めて」1回", history)
         for stale in ("「ok」14回", "「ok」13回", "「はい」6回", "「はい」5回"):
             with self.subTest(stale=stale): self.assertNotIn(stale, history)
         self.assertIn("長文の作業指示2回", history)  # unchanged by 32/33 and 34/35
         entries = re.findall(r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL)
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 44)])
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 47)])
         for number, requirements in (("32", ("tranche 3m final acceptance original", "2026-08-08", "** `ok` —", "PR #95",
                     "Draft解除・Ready化", "通常のmerge commit方式によるmerge", "#1・#3・#5・#7・#9・#17・#19・#21・#23・#25・#27・#29と同一文字列だが", "Category C source conversionの承認ではなく",
                     "Category A helper conversionの承認でもなく", "method-scope rule変更の承認でもなく", "tranche 3n implementationの先行受入でもなく", "tranche 3全体またはBL-038全体の完了承認でもなく", "workflow_dispatch")),
@@ -7436,12 +7437,12 @@ class Bl038Tranche3oRecordSyncTest(unittest.TestCase):
         history = bl038[history_start : bl038.index("着手時ユーザー原文:", history_start)]
         # 「ok」 13->14 (entry 34); 「はい」 5->6 (entry 35). Entries 36/37 then
         # took them to 15 and 7, which is the header this now reads.
-        self.assertIn("「ok」18回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」10回・" "「進んで」1回・「うん」1回", history)
+        self.assertIn("「ok」19回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」11回・" "「進んで」1回・「うん」1回・「うん。進めて」1回", history)
         for stale in ("「ok」14回", "「ok」13回", "「はい」6回", "「はい」5回"):
             with self.subTest(stale=stale): self.assertNotIn(stale, history)
         self.assertIn("長文の作業指示2回", history)  # unchanged by 34/35
         entries = re.findall(r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL)
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 44)])
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 47)])
         for number, requirements in (
             ("34", ("tranche 3n final acceptance original", "2026-08-09", "** `ok` —", "PR #96",
                     "Draft解除・Ready化", "通常のmerge commit方式によるmerge",
@@ -7645,11 +7646,11 @@ class Bl038Tranche3pRecordSyncTest(unittest.TestCase):
         history_start = bl038.index("ユーザー原文の履歴")
         history = bl038[history_start : bl038.index("着手時ユーザー原文:", history_start)]
         # 「ok」 14->15 (entry 36); 「はい」 6->7 (entry 37).
-        self.assertIn("「ok」18回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」10回・" "「進んで」1回・「うん」1回", history)
+        self.assertIn("「ok」19回・「おk」7回・「次へ進めて」1回・「次へ」2回・「はい」11回・" "「進んで」1回・「うん」1回・「うん。進めて」1回", history)
         for stale in ("「ok」14回", "「はい」6回"):
             with self.subTest(stale=stale): self.assertNotIn(stale, history)
         entries = re.findall(r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL)
-        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 44)])
+        self.assertEqual([number for number, _ in entries], [str(i) for i in range(1, 47)])
         for number, requirements in (
             # Raw originals: the corner brackets are display quoting, not the message.
             ("36", ("tranche 3o final acceptance original", "2026-08-09", "** `ok` —", "PR #97", "表示上の`「」`は原文の一部ではない", "Draft解除・Ready化", "通常のmerge commit方式によるmerge",
@@ -7796,12 +7797,12 @@ class Bl038Tranche3qRecordSyncTest(unittest.TestCase):
 
     def test_current_state_and_user_history_are_synced(self):
         state = next(line for line in self.bl038.splitlines() if line.startswith("- **状態:**"))
-        self.assertIn("3p・3q・3r受入済み／次tranche未着手", state)
+        self.assertIn("3p・3q・3r・3s受入済み／document・static-contract assertion classificationは全件分類済み", state)
         history = self.bl038[self.bl038.index("ユーザー原文の履歴"):self.bl038.index("着手時ユーザー原文:")]
-        self.assertIn("「ok」18回", history)
-        self.assertIn("「はい」10回", history)
+        self.assertIn("「ok」19回", history)
+        self.assertIn("「はい」11回", history)
         entries = re.findall(r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s|\Z)", history, re.MULTILINE | re.DOTALL)
-        self.assertEqual([n for n, _ in entries], [str(i) for i in range(1, 44)])
+        self.assertEqual([n for n, _ in entries], [str(i) for i in range(1, 47)])
         e38 = next(text for n, text in entries if n == "38")
         e39 = next(text for n, text in entries if n == "39")
         e40 = next(text for n, text in entries if n == "40")
@@ -7836,13 +7837,13 @@ class Bl038Tranche3qRecordSyncTest(unittest.TestCase):
 
     def test_repository_state_matches_current_record(self):
         index = json.loads((Path(__file__).resolve().parent / "document_test_classification_index.json").read_text(encoding="utf-8"))
-        self.assertEqual(index["shards"][-1], "document_test_classification_006.json")
-        self.assertEqual(len(index["shards"]), 7)
+        self.assertEqual(index["shards"][-1], "document_test_classification_007.json")
+        self.assertEqual(len(index["shards"]), 8)
         entries = []
         for name in index["shards"]:
             entries.extend(json.loads((Path(__file__).resolve().parent / name).read_text(encoding="utf-8"))["assertions"])
-        self.assertEqual((len(entries), len({e["id"] for e in entries})), (1488, 1488))
-        self.assertEqual({cat: sum(1 for e in entries if e["category"] == cat) for cat in ("A", "B", "C", "D")}, {"A": 30, "B": 596, "C": 618, "D": 244})
+        self.assertEqual((len(entries), len({e["id"] for e in entries})), (1525, 1525))
+        self.assertEqual({cat: sum(1 for e in entries if e["category"] == cat) for cat in ("A", "B", "C", "D")}, {"A": 30, "B": 612, "C": 638, "D": 245})
         shard = json.loads((Path(__file__).resolve().parent / "document_test_classification_005.json").read_text(encoding="utf-8"))
         self.assertEqual(len(shard["assertions"]), 124)
         self.assertEqual({cat: sum(1 for e in shard["assertions"] if e["category"] == cat) for cat in ("A", "B", "C", "D")}, {"A": 0, "B": 49, "C": 42, "D": 33})
@@ -7863,7 +7864,7 @@ class Bl038Tranche3rRecordSyncTest(unittest.TestCase):
         for token in ("tranche 3q closeout(2026-08-10 JST)", "4b970c75", "0c0300b3", "signature verified／valid", "31371275732", "10 files／814 changed lines",
                       "tranche 3r kickoff original(2026-08-10)", "entry 42 raw `はい`", "tranche 3r着手・候補再測定", "133 > 37、tieなし"):
             with self.subTest(token=token): self.assertIn(token, self.bl038)
-        self.assertIn("3p・3q・3r受入済み／次tranche未着手", self.bl038)
+        self.assertIn("3p・3q・3r・3s受入済み／document・static-contract assertion classificationは全件分類済み", self.bl038)
         self.assertNotIn("／tranche 3r実装中", self.bl038)
         for token in ("tranche 3r final acceptance original(2026-08-10)", "entry 43", "raw `ok`", "014c0b48d6b19cd5339a60f369bf7bd1fd92cf50", "4895868311", "31379567027", "10 files／481 changed lines"):
             with self.subTest(token=token): self.assertIn(token, self.bl038)
@@ -7879,14 +7880,100 @@ class Bl038Tranche3rRecordSyncTest(unittest.TestCase):
 
     def test_live_index_matches_the_recorded_post_3r_totals(self):
         index = json.loads((self.root / "document_test_classification_index.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(index["shards"]), 7)
-        self.assertEqual(index["shards"][-1], "document_test_classification_006.json")
-        shard = json.loads((self.root / index["shards"][-1]).read_text(encoding="utf-8"))
+        self.assertEqual(len(index["shards"]), 8)
+        self.assertEqual(index["shards"][-1], "document_test_classification_007.json")
+        shard = json.loads((self.root / "document_test_classification_006.json").read_text(encoding="utf-8"))
         self.assertEqual(len(shard["assertions"]), 133)
         self.assertEqual({c: sum(e["category"] == c for e in shard["assertions"]) for c in ("A","B","C","D")}, {"A":0,"B":60,"C":37,"D":36})
         all_entries = [e for name in index["shards"] for e in json.loads((self.root / name).read_text(encoding="utf-8"))["assertions"]]
-        self.assertEqual((len(all_entries), len({e["id"] for e in all_entries})), (1488,1488))
-        self.assertEqual({c: sum(e["category"] == c for e in all_entries) for c in ("A","B","C","D")}, {"A":30,"B":596,"C":618,"D":244})
+        self.assertEqual((len(all_entries), len({e["id"] for e in all_entries})), (1525,1525))
+        self.assertEqual({c: sum(e["category"] == c for e in all_entries) for c in ("A","B","C","D")}, {"A":30,"B":612,"C":638,"D":245})
+
+
+class Bl038Tranche3sAcceptanceRecordTest(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.root = Path(__file__).resolve().parent
+        cls.backlog = (cls.root / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (cls.root / "STATUS.md").read_text(encoding="utf-8")
+        start = cls.backlog.index("## BL-038")
+        end = cls.backlog.find("\n## ", start + 8)
+        cls.bl038 = cls.backlog[start:] if end < 0 else cls.backlog[start:end]
+
+    def test_user_history_keeps_kickoff_conditional_ok_and_continuation_distinct(self):
+        history = self.bl038[self.bl038.index("ユーザー原文の履歴"):self.bl038.index("着手時ユーザー原文:")]
+        self.assertIn("「ok」19回", history)
+        self.assertIn("「はい」11回", history)
+        self.assertIn("「うん。進めて」1回", history)
+        entries = re.findall(r"^\s*(\d+)\.\s+(.*?)(?=^\s*\d+\.\s+|\Z)", history, re.MULTILINE | re.DOTALL)
+        self.assertEqual([n for n, _ in entries], [str(i) for i in range(1, 47)])
+        e44 = next(body for n, body in entries if n == "44")
+        e45 = next(body for n, body in entries if n == "45")
+        e46 = next(body for n, body in entries if n == "46")
+        self.assertIn("tranche 3s kickoff original", e44)
+        self.assertIn("`うん。進めて`", e44)
+        self.assertIn("tranche 3s final acceptance authorization original", e45)
+        self.assertIn("`ok`", e45)
+        self.assertIn("すべてgreenにできた場合に限り", e45)
+        self.assertIn("tranche 3s continuation original", e46)
+        self.assertIn("`はい`", e46)
+        self.assertIn("`ok`へ読み替えず", e46)
+
+    def test_final_acceptance_evidence_and_scope_are_recorded(self):
+        for token in (
+            "tranche 3r closeout(2026-08-10 JST)",
+            "cf9a6d74a7a453ee0c28d7fd27385dbfb8b9e7b9",
+            "31392417301",
+            "tranche 3s着手・候補再測定(2026-08-10)",
+            "**4 methods／37 assertions**",
+            "**A 0／B 16／C 20／D 1**",
+            "24674dbc4707baa94782428a4600cd1addd920dcddf0960aa137b0080e33d441",
+            "**1525(A30/B612/C638/D245)**",
+            "8d66082861f274454300cd0941e5a0ab050a9e69",
+            "31450770842",
+            "4902388560",
+            "未解決review thread 0",
+            "tranche 3s最終受入(2026-08-11 JST)",
+            "classification tailは0",
+        ):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        self.assertIn("Category C source conversion", self.bl038)
+        self.assertIn("Category A helper consolidation", self.bl038)
+        self.assertNotIn("BL-038全体最終受入済み", self.bl038)
+
+    def test_status_matches_the_acceptance_record_without_over_authorization(self):
+        for token in (
+            "tranche 3s final acceptance (2026-08-11 JST)",
+            "entry 45 raw `ok`",
+            "8d660828",
+            "31450770842",
+            "4902388560",
+            "classification tailは0",
+            "entry 46 raw `はい`",
+            "Category C source conversion",
+            "BL-038全体完了",
+        ):
+            with self.subTest(token=token):
+                self.assertIn(token, self.status)
+
+    def test_live_index_is_fully_classified_at_accepted_3s_totals(self):
+        index = json.loads((self.root / "document_test_classification_index.json").read_text(encoding="utf-8"))
+        self.assertEqual(len(index["shards"]), 8)
+        self.assertEqual(index["shards"][-1], "document_test_classification_007.json")
+        entries = [
+            entry
+            for name in index["shards"]
+            for entry in json.loads((self.root / name).read_text(encoding="utf-8"))["assertions"]
+        ]
+        self.assertEqual((len(entries), len({entry["id"] for entry in entries})), (1525, 1525))
+        self.assertEqual(
+            {c: sum(entry["category"] == c for entry in entries) for c in ("A", "B", "C", "D")},
+            {"A": 30, "B": 612, "C": 638, "D": 245},
+        )
+        failures, summary = dti.validate_indexed_manifests(root=self.root)
+        self.assertEqual([failure.format() for failure in failures], [])
+        self.assertEqual((summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]), (0, 0, 0))
 
 if __name__ == "__main__":
     unittest.main()

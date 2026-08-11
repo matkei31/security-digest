@@ -1579,7 +1579,7 @@ class MethodRangeBackwardCompatibilityTest(MethodRangeScopeTestCase):
         failures, summary = dti.validate_indexed_manifests(root=Path(__file__).resolve().parent)
         self.assertEqual(_failure_types(failures), set())
         self.assertEqual((summary["inventoried_assertions"], summary["category_counts"]),
-                         (1488, {"A": 30, "B": 596, "C": 618, "D": 244}))
+                         (1525, {"A": 30, "B": 612, "C": 638, "D": 245}))
         self.assertEqual((summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]), (0, 0, 0))
 
     def test_whole_class_scope_shape_is_accepted_and_owns_every_method(self):

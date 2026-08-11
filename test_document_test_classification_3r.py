@@ -19,6 +19,7 @@ RANGE_END = 'test_security_requirements_internal_markdown_links_resolve'
 METHOD_RANGE = {"start": RANGE_START, "end": RANGE_END}
 PRE_SHARDS = ('document_test_classification.json', 'document_test_classification_001.json', 'document_test_classification_002.json', 'document_test_classification_003.json', 'document_test_classification_004.json', 'document_test_classification_005.json')
 EXPECTED_INDEX = PRE_SHARDS + (SHARD_FILENAME,)
+CURRENT_INDEX = EXPECTED_INDEX + ('document_test_classification_007.json',)
 EXPECTED_ASSERTIONS = 133
 EXPECTED_METHODS = 9
 EXPECTED_METHOD_COUNTS = (('test_sd024_sd025_and_follow_up_tickets_are_recorded', 81), ('test_owner_checklist_mandatory_items_are_resolved_without_sensitive_data', 5), ('test_agents_references_security_docs_without_blanket_authorization', 12), ('test_agents_ui_spec_reference_delegates_version_too', 3), ('test_agents_describes_pr_ci_and_fetch_yml_triggers_accurately', 14), ('test_agents_pr_ci_checkout_target_is_the_merge_candidate_not_the_head', 5), ('test_agents_distinguishes_unittest_target_diff_check_range_and_head_association', 6), ('test_agents_pr_ci_secret_and_token_wording_is_precise', 4), ('test_security_requirements_internal_markdown_links_resolve', 3))
@@ -29,8 +30,10 @@ EXPECTED_C_IDS = ('test_security_requirements.py::SecurityRequirementsTest::test
 EXPECTED_D_IDS = ('test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-02', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-03', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-05', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-06', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-07', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-10', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-13', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-14', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-16', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-17', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-18', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-19', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-23', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-27', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-28', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-29', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-38', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-39', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-40', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-41', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-42', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-45', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-46', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-47', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-48', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-51', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-52', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-53', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-54', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-55', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-56', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-69', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-70', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-74', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-75', 'test_security_requirements.py::SecurityRequirementsTest::test_sd024_sd025_and_follow_up_tickets_are_recorded::assert-76')
 EXPECTED_SHA256 = 'f8abbc6e80d9762115540ee340050df7d9dc7e196752aa8876bdaed048c604f9'
 EXPECTED_LINE_COUNT = 141
-EXPECTED_COMBINED_ASSERTIONS = 1488
-EXPECTED_COMBINED_CATEGORIES = {"A": 30, "B": 596, "C": 618, "D": 244}
+HISTORICAL_COMBINED_ASSERTIONS = 1488
+HISTORICAL_COMBINED_CATEGORIES = {"A": 30, "B": 596, "C": 618, "D": 244}
+CURRENT_COMBINED_ASSERTIONS = 1525
+CURRENT_COMBINED_CATEGORIES = {"A": 30, "B": 612, "C": 638, "D": 245}
 RIVAL_FILE = 'test_source_usage_policy.py'
 RIVAL_CLASS = 'SourceUsagePolicyTest'
 RIVAL_START = 'test_mandiant_distinguishes_rss_evidence_from_terms_evidence'
@@ -55,8 +58,9 @@ class Tranche3rClassificationTest(unittest.TestCase):
         self.assertEqual(len(self.text.splitlines()), EXPECTED_LINE_COUNT)
         self.assertLessEqual(EXPECTED_LINE_COUNT, dti.SHARD_LINE_CAP)
         index = json.loads((ROOT / dti.INDEX_FILENAME).read_text(encoding="utf-8"))
-        self.assertEqual(tuple(index["shards"]), EXPECTED_INDEX)
-        self.assertEqual(dti.discover_shard_filenames(ROOT), sorted(EXPECTED_INDEX))
+        self.assertEqual(tuple(index["shards"]), CURRENT_INDEX)
+        self.assertEqual(tuple(index["shards"][:len(EXPECTED_INDEX)]), EXPECTED_INDEX)
+        self.assertEqual(dti.discover_shard_filenames(ROOT), sorted(CURRENT_INDEX))
 
     def test_every_entry_matches_live_source_and_hardcoded_categories(self):
         self.assertEqual([e["id"] for e in self.entries], [r.id for r in self.window])
@@ -105,9 +109,10 @@ class Tranche3rClassificationTest(unittest.TestCase):
     def test_combined_index_is_clean_and_security_class_is_fully_owned(self):
         failures,summary=dti.validate_indexed_manifests(root=ROOT)
         self.assertEqual([f.format() for f in failures],[])
-        self.assertEqual(summary["inventoried_assertions"],EXPECTED_COMBINED_ASSERTIONS)
-        self.assertEqual(summary["manifest_assertions"],EXPECTED_COMBINED_ASSERTIONS)
-        self.assertEqual(summary["category_counts"],EXPECTED_COMBINED_CATEGORIES)
+        self.assertEqual((HISTORICAL_COMBINED_ASSERTIONS, HISTORICAL_COMBINED_CATEGORIES), (1488, {"A":30,"B":596,"C":618,"D":244}))
+        self.assertEqual(summary["inventoried_assertions"],CURRENT_COMBINED_ASSERTIONS)
+        self.assertEqual(summary["manifest_assertions"],CURRENT_COMBINED_ASSERTIONS)
+        self.assertEqual(summary["category_counts"],CURRENT_COMBINED_CATEGORIES)
         self.assertEqual((summary["unclassified"],summary["stale"],summary["fingerprint_mismatch"]),(0,0,0))
         owned={e["method"] for name in EXPECTED_INDEX for e in json.loads((ROOT/name).read_text(encoding="utf-8"))["assertions"]
                if (e["file"],e["class"])==(SOURCE_FILE,CLASS_NAME)}
