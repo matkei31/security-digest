@@ -195,3 +195,180 @@ def assert_accepted_history(case, root, tranche, sha256=None, content_digest=Non
         if expected is not None:
             case.assertEqual(record["historical"][label], expected, f"{tranche}.{label}")
     return record
+
+
+# ---------------------------------------------------------------------------
+# BL-038 tranche 3u: the MIGRATION layer. 3t gave the accepted facts an offline home
+# but left the pre-3t guards holding the current tree to accepted BYTES and
+# POSITIONS, so Category C conversion stayed blocked. 3u replaces that with
+# `live_contracts - successors + retired == accepted contracts_digest`, where a
+# contract is (file, class, method, targets) -- deliberately NOT id or ordinal. That
+# is what makes pure ordinal drift free: a split renumbers every later assertion in
+# its method without changing which contract any of them covers, so only a genuinely
+# retired, split, merged or re-targeted contract needs an entry.
+MIGRATIONS_FILENAME = "document_test_classification_migrations.json"
+MIGRATION_SCHEMA_VERSION = 1
+MIGRATION_KINDS = ("split", "merge", "retarget", "replace")
+_MIGRATION_KEYS = ("id", "tranche", "kind", "reason", "retired", "successors")
+_MEMBER_KEYS = ("id", "targets")
+
+# Each tranche's accepted scope descriptor, recorded once from the ACCEPTING MERGE
+# COMMIT rather than re-derived from where those entries sit today. Windows are
+# selected by (file, class) ownership, never by a positional slice, so an append or
+# insert elsewhere cannot move them. Pinned by ACCEPTED_SCOPES_DIGEST.
+ACCEPTED_SCOPES = {
+    "3f": [{"file":"test_custom_domain.py","classes":["DocsCnameFileTest","CnameSurvivesGenerationTest","ArticleBriefContractUnchangedTest","Bl007DocumentationTest","ReadmePublicUrlTest","Bl007ClosureRecordTest","TicketIdTypoTest"]},{"file":"test_ui_spec.py","classes":["UiSpecDocumentTest","Bl036ArticleAttributionUiSpecTest"]},{"file":"test_status.py","classes":["StatusSourceOfTruthTest","Sd031DecisionTest","Bl035ActiveWorkTest","StatusSecurityOperationsSourceOfTruthTest","Bl036PostMergeRecordFixTest","Bl036ProductionEvidenceSyncTest"]},{"file":"test_security_requirements.py","classes":["Bl031AcceptanceAndBl032RegistrationTest","Bl034Round2ReviewCorrectionsTest","Bl034ImplementationAcceptanceTest","Bl034CloseoutTest","StatusSecurityRequirementsSourceOfTruthTest"]}],
+    "3h": [{"file":"test_security_operations.py","classes":["SecurityOperationsContractTest","Bl031SecurityOperationsReconciliationTest"]}],
+    "3i": [{"file":"test_security_operations.py","classes":["SecurityOperationsContractTest","Bl031SecurityOperationsReconciliationTest"]},{"file":"test_security_requirements.py","classes":["Bl031SecurityRequirementsReconciliationTest"]}],
+    "3j": [{"file":"test_security_operations.py","classes":["Bl035DraftSyncTest"]}],
+    "3k": [{"file":"test_security_operations.py","classes":["Bl035DraftSyncTest"]},{"file":"test_pr_ci_workflow.py","classes":["PullRequestCIWorkflowTest"]}],
+    "3l": [{"file":"test_security_operations.py","classes":["Bl035DraftSyncTest"]},{"file":"test_pr_ci_workflow.py","classes":["PullRequestCIWorkflowTest"]},{"file":"test_workflow_action_pinning.py","classes":["WorkflowActionPinningTest","DependabotConfigurationTest"]}],
+    "3m": [{"file":"test_security_operations.py","classes":["Bl035DraftSyncTest"]},{"file":"test_pr_ci_workflow.py","classes":["PullRequestCIWorkflowTest"]},{"file":"test_workflow_action_pinning.py","classes":["WorkflowActionPinningTest","DependabotConfigurationTest"]},{"file":"test_security_requirements.py","classes":["Bl034Round1ReviewCorrectionsTest"]}],
+    "3o": [{"file":"test_security_requirements.py","classes":["SecurityRequirementsTest"],"method_range":{"start":"test_document_is_approved_version_14_maintenance_update","end":"test_bl028_is_recorded_verbatim_as_complete"}}],
+    "3p": [{"file":"test_source_usage_policy.py","classes":["SourceUsagePolicyTest"],"method_range":{"start":"test_gemini_gate_references_point_to_chapter_5","end":"test_cisa_has_no_url_in_official_evidence_url_and_is_terms_not_identified"}}],
+    "3q": [{"file":"test_security_requirements.py","classes":["SecurityRequirementsTest"],"method_range":{"start":"test_bl029_is_recorded_verbatim_as_complete","end":"test_bl015_is_complete_and_removed_from_active_work"}}],
+    "3r": [{"file":"test_security_requirements.py","classes":["SecurityRequirementsTest"],"method_range":{"start":"test_sd024_sd025_and_follow_up_tickets_are_recorded","end":"test_security_requirements_internal_markdown_links_resolve"}}],
+    "3s": [{"file":"test_source_usage_policy.py","classes":["SourceUsagePolicyTest"],"method_range":{"start":"test_mandiant_distinguishes_rss_evidence_from_terms_evidence","end":"test_relationship_section_defers_enforcement_to_bl032"}}],
+}
+ACCEPTED_SCOPES_DIGEST = "243fd2d139f75bffb8a887fc3c797ce75dcca5601c11518a4657d55f2a1ec991"
+
+
+def accepted_scopes_digest():
+    return hashlib.sha256(_canonical(ACCEPTED_SCOPES)).hexdigest()
+
+
+def load_migrations(root):
+    """Parsed migration ledger. Empty until a real conversion tranche retires an
+    accepted contract; tranche 3u ships it empty on purpose."""
+    return json.loads((root / MIGRATIONS_FILENAME).read_text(encoding="utf-8"))
+
+
+def _member_contract(member):
+    file_name, class_name, method, _ = member["id"].split("::")
+    return contract_of({"file": file_name, "class": class_name, "method": method,
+                        "targets": member["targets"]})
+
+
+def accepted_window(root, tranche):
+    """(accepted scope descriptor, live entries it owns), by (file, class) ownership,
+    so the window survives renumbering, appends and inserts elsewhere in the shard."""
+    record = accepted(root, tranche)
+    scope = ACCEPTED_SCOPES[tranche]
+    owned = {(s["file"], c) for s in scope for c in s["classes"]}
+    shard = json.loads((root / record["shard"]).read_text(encoding="utf-8"))
+    return scope, [e for e in shard["assertions"] if (e["file"], e["class"]) in owned]
+
+
+def migrations_for(root, tranche):
+    """Migrations touching this window, matched by (file, class) ownership rather than
+    a declared tranche name. Accepted windows nest -- shard 002's 3k/3l/3m are
+    prefixes of one another -- so one split departs from all three accepted states and
+    must satisfy each from a SINGLE recorded migration."""
+    scope = ACCEPTED_SCOPES[tranche]
+    owned = {(s["file"], c) for s in scope for c in s["classes"]}
+    picked = []
+    for migration in load_migrations(root)["migrations"]:
+        members = migration["retired"] + migration["successors"]
+        if any(tuple(m["id"].split("::")[:2]) in owned for m in members):
+            picked.append(migration)
+    return picked
+
+
+def reconstruct_accepted_contracts(root, tranche, live_entries):
+    """Undo the recorded migrations against the live window. LookupError if a migration
+    claims a successor the live window lacks, so a wrong or invented successor cannot
+    silently balance the equation."""
+    contracts = window_contracts(live_entries)
+    for migration in migrations_for(root, tranche):
+        for successor in migration["successors"]:
+            contract = _member_contract(successor)
+            if contract not in contracts:
+                raise LookupError(
+                    f"{migration['id']}: successor {successor['id']} is not a live "
+                    f"contract of accepted tranche {tranche}")
+            contracts.remove(contract)
+        for retired in migration["retired"]:
+            contracts.append(_member_contract(retired))
+    return contracts
+
+
+def migration_shape_failures(root):
+    """Fail-closed shape and cross-record checks for the migration ledger."""
+    problems = []
+    data = load_migrations(root)
+    if tuple(data.keys()) != ("schema_version", "migrations"):
+        problems.append(f"migrations-keys:{tuple(data.keys())}")
+    version = data.get("schema_version")
+    if isinstance(version, bool) or version != MIGRATION_SCHEMA_VERSION:
+        problems.append(f"migrations-schema-version:{version!r}")
+    if not isinstance(data.get("migrations"), list):
+        return problems + ["migrations-not-a-list"]
+    seen_ids, retired_ids, successor_ids = set(), set(), set()
+    for index, migration in enumerate(data["migrations"]):
+        label = migration.get("id", f"#{index}") if isinstance(migration, dict) else f"#{index}"
+        if not isinstance(migration, dict) or tuple(migration.keys()) != _MIGRATION_KEYS:
+            problems.append(f"{label}:migration-keys")
+            continue
+        if not (isinstance(migration["id"], str) and migration["id"].strip()):
+            problems.append(f"{label}:migration-id")
+        elif migration["id"] in seen_ids:
+            problems.append(f"{label}:duplicate-migration-id")
+        seen_ids.add(migration["id"])
+        if not (isinstance(migration["tranche"], str) and migration["tranche"].strip()):
+            problems.append(f"{label}:tranche")
+        if migration["kind"] not in MIGRATION_KINDS:
+            problems.append(f"{label}:unknown-kind:{migration['kind']!r}")
+        if not (isinstance(migration["reason"], str) and migration["reason"].strip()):
+            problems.append(f"{label}:empty-reason")
+        sides = {}
+        for side, pool in (("retired", retired_ids), ("successors", successor_ids)):
+            members = migration[side]
+            if not (isinstance(members, list) and members):
+                problems.append(f"{label}:{side}-empty")
+                continue
+            local, contracts = set(), []
+            for member in members:
+                if not isinstance(member, dict) or tuple(member.keys()) != _MEMBER_KEYS:
+                    problems.append(f"{label}:{side}-member-keys")
+                    continue
+                mid = member["id"]
+                if not (isinstance(mid, str) and mid.count("::") == 3
+                        and all(mid.split("::")) and mid.split("::")[3].startswith("assert-")):
+                    problems.append(f"{label}:{side}-id:{mid!r}")
+                    continue
+                if mid in local:
+                    problems.append(f"{label}:duplicate-{side}-id:{mid}")
+                local.add(mid)
+                if mid in pool:
+                    problems.append(f"{label}:{side}-id-claimed-twice:{mid}")
+                pool.add(mid)
+                if not (isinstance(member["targets"], list) and member["targets"]
+                        and all(isinstance(t, str) and t for t in member["targets"])):
+                    problems.append(f"{label}:{side}-targets:{member['targets']!r}")
+                    continue
+                contracts.append(_member_contract(member))
+            sides[side] = sorted(contracts)
+        if sides.get("retired") and sides.get("retired") == sides.get("successors"):
+            problems.append(f"{label}:no-op-migration")
+    return problems
+
+
+def assert_accepted_contracts_accounted_for(case, root, tranche):
+    """Every accepted contract is still live, or explicitly retired by a recorded
+    migration. One-to-one conversion and pure ordinal drift need NO entry; a split,
+    merge or retarget passes only once recorded; a silent deletion cannot pass."""
+    scope, live = accepted_window(root, tranche)
+    rebuilt = reconstruct_accepted_contracts(root, tranche, live)
+    case.assertEqual(
+        contracts_digest(scope, rebuilt), accepted(root, tranche)["historical"]["contracts_digest"],
+        f"{tranche}: accepted contracts are not accounted for by the live window plus the "
+        f"recorded migrations ({len(live)} live, {len(rebuilt)} reconstructed)")
+
+
+def assert_accepted(case, root, tranche, **historical):
+    """Both halves at one call site: accepted facts from the offline ledger, and the
+    current tree still accounting for every accepted contract."""
+    case.assertEqual(accepted_scopes_digest(), ACCEPTED_SCOPES_DIGEST)
+    record = assert_accepted_history(case, root, tranche, **historical)
+    assert_accepted_contracts_accounted_for(case, root, tranche)
+    return record

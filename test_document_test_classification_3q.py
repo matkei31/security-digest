@@ -15,6 +15,7 @@ import unittest
 from collections import Counter, defaultdict
 from pathlib import Path
 
+import document_test_history as dth
 import document_test_inventory as dti
 
 ROOT = Path(__file__).resolve().parent
@@ -120,7 +121,9 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
         }])
         self.assertEqual(len(self.text.splitlines()), EXPECTED_LINE_COUNT)
         self.assertLessEqual(EXPECTED_LINE_COUNT, dti.SHARD_LINE_CAP)
-        self.assertEqual(hashlib.sha256(SHARD_PATH.read_bytes()).hexdigest(), EXPECTED_SHA256)
+        # Tranche 3u: the accepted bytes are ledger history; the live contract is
+        # that shard 005 still accounts for every contract tranche 3q accepted.
+        dth.assert_accepted(self, ROOT, "3q", sha256=EXPECTED_SHA256)
         self.assertEqual(
             [f.format() for f in dti.validate_shard_file_format(SHARD_PATH, self.shard, shard=SHARD_FILENAME)],
             [],

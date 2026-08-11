@@ -6,6 +6,7 @@ import json
 import unittest
 from collections import Counter, defaultdict
 from pathlib import Path
+import document_test_history as dth
 import document_test_inventory as dti
 from test_document_test_classification_3q_bindings import _narrow_section_facts
 
@@ -37,6 +38,13 @@ CURRENT_COMBINED_CATEGORIES = {"A": 30, "B": 612, "C": 638, "D": 245}
 RIVAL_FILE = 'test_source_usage_policy.py'
 RIVAL_CLASS = 'SourceUsagePolicyTest'
 RIVAL_START = 'test_mandiant_distinguishes_rss_evidence_from_terms_evidence'
+# Which accepted tranche each prior shard's recorded SHA belongs to, so tranche 3u
+# asserts that SHA against the offline ledger and the shard against the
+# migration-aware continuity rule, instead of freezing six live files.
+ACCEPTED_TRANCHE_BY_SHARD = {'document_test_classification.json': '3f',
+    'document_test_classification_001.json': '3i', 'document_test_classification_002.json': '3m',
+    'document_test_classification_003.json': '3o', 'document_test_classification_004.json': '3p',
+    'document_test_classification_005.json': '3q'}
 PRE_SHARD_HASHES = {'document_test_classification.json': '640585ca03d7836cbdd66edcc8e2b21df7ea1de946b767ae20fa5c12e0c5f15a', 'document_test_classification_001.json': '0e1893593594daf44fb52e32ea610f2f7deb572148338faf90f2edfa7949b2cd', 'document_test_classification_002.json': 'd86d521627dabfed4b4555b8759a50c9a3538a9d89d55c8f2e5d928845e39f46', 'document_test_classification_003.json': 'f3c28245d708cdd1fc20432e4f02cd01d2ecc5eb13da976beb0cc94872674ceb', 'document_test_classification_004.json': '26522ff5c37ce8a30d0f2dc61bd1b1cfcbdc60929e059d984890e97e1544f792', 'document_test_classification_005.json': '4eae57a35e144fd3480fba94a0f5e6ec9b32e3d757abb820238f75926809aac6'}
 
 class Tranche3rClassificationTest(unittest.TestCase):
@@ -54,7 +62,7 @@ class Tranche3rClassificationTest(unittest.TestCase):
 
     def test_scope_hash_line_budget_and_index_are_exact(self):
         self.assertEqual(self.shard["scope"], [{"file": SOURCE_FILE, "classes": [CLASS_NAME], "method_range": METHOD_RANGE}])
-        self.assertEqual(hashlib.sha256(SHARD_PATH.read_bytes()).hexdigest(), EXPECTED_SHA256)
+        dth.assert_accepted(self, ROOT, "3r", sha256=EXPECTED_SHA256)
         self.assertEqual(len(self.text.splitlines()), EXPECTED_LINE_COUNT)
         self.assertLessEqual(EXPECTED_LINE_COUNT, dti.SHARD_LINE_CAP)
         index = json.loads((ROOT / dti.INDEX_FILENAME).read_text(encoding="utf-8"))
@@ -118,9 +126,15 @@ class Tranche3rClassificationTest(unittest.TestCase):
                if (e["file"],e["class"])==(SOURCE_FILE,CLASS_NAME)}
         self.assertEqual(owned,set(self.order))
 
-    def test_prior_accepted_shards_are_byte_identical(self):
-        for name,sha in PRE_SHARD_HASHES.items():
-            with self.subTest(name=name): self.assertEqual(hashlib.sha256((ROOT/name).read_bytes()).hexdigest(),sha)
+    def test_prior_accepted_shards_keep_their_accepted_windows(self):
+        """Was `test_prior_accepted_shards_are_byte_identical`. That proved tranche 3r
+        appended without rewriting earlier work, but it did so by freezing six live
+        shards forever, which blocked Category C conversion in all of them. Tranche 3u
+        keeps both halves: the accepted SHAs are asserted against the offline ledger,
+        and each prior shard must still account for every contract it accepted."""
+        for name, sha in PRE_SHARD_HASHES.items():
+            with self.subTest(name=name):
+                dth.assert_accepted(self, ROOT, ACCEPTED_TRANCHE_BY_SHARD[name], sha256=sha)
 
     def test_duplicate_fingerprints_keep_category_consistency(self):
         old=defaultdict(set)

@@ -15,6 +15,7 @@ from pathlib import Path
 from unittest.mock import patch
 import unittest
 
+import document_test_history as dth
 import document_test_inventory as dti
 import fetch
 import vulnerability_facts as vf
@@ -7356,11 +7357,24 @@ class Bl038Tranche3nRecordSyncTest(unittest.TestCase):
         a proper subset of the combined classification rather than all of it."""
         from collections import Counter
 
-        self.assertEqual(tuple(hashlib.sha256((self.ROOT / name).read_bytes()).hexdigest()
-                               for name in self.MANIFESTS[:3]), TRANCHE_3N_RS_SHAS[:3])
+        # Tranche 3u: "untouched" is the accepted windows still accounting for every
+        # contract, not the files keeping their bytes -- the accepted SHAs stay pinned,
+        # but against the offline ledger. 945/A28-B337-C435-D145 is what those three
+        # shards held AT TRANCHE 3N and is asserted as ledger history for the same
+        # reason; a later Category C conversion in them may legitimately move the live
+        # counts without touching what 3n accepted.
+        for tranche, sha in zip(("3f", "3i", "3m"), TRANCHE_3N_RS_SHAS[:3]):
+            with self.subTest(accepted=tranche):
+                dth.assert_accepted(self, self.ROOT, tranche, sha256=sha)
+        accepted_total = sum(dth.accepted(self.ROOT, t)["historical"]["entry_count"]
+                             for t in ("3f", "3i", "3m"))
+        self.assertEqual(accepted_total, 945)
+        accepted_counts = Counter()
+        for t in ("3f", "3i", "3m"):
+            accepted_counts.update(dth.accepted(self.ROOT, t)["historical"]["category_counts"])
+        self.assertEqual(dict(accepted_counts), {"A": 28, "B": 337, "C": 435, "D": 145})
         total = [e for name in self.MANIFESTS[:3] for e in json.loads((self.ROOT / name).read_text(encoding="utf-8"))["assertions"]]
-        self.assertEqual((len(total), len({e["id"] for e in total})), (945, 945))
-        self.assertEqual(dict(Counter(e["category"] for e in total)), {"A": 28, "B": 337, "C": 435, "D": 145})
+        self.assertEqual(len(total), len({e["id"] for e in total}))
         # The index is the one file tranche 3o touched: same three shards first,
         # in the same order, plus `_003`. No `_004`.
         index = json.loads((self.ROOT / self.MANIFESTS[3]).read_text(encoding="utf-8"))
@@ -7368,7 +7382,7 @@ class Bl038Tranche3nRecordSyncTest(unittest.TestCase):
         # 3o appended `_003` and 3p `_004`; 3n's own three still lead the index.
         self.assertEqual(index["shards"][:4], list(self.MANIFESTS[:3]) + ["document_test_classification_003.json"])
         self.assertNotEqual(hashlib.sha256((self.ROOT / self.MANIFESTS[3]).read_bytes()).hexdigest(),
-                            TRANCHE_3N_RS_SHAS[3])
+                            TRANCHE_3N_RS_SHAS[3])  # the index DID change; it is not an accepted shard
         # Neither class 3n MEASURED was classified by 3n itself; tranche 3o took
         # a method range of the winner, and left the runner-up alone entirely.
         classified = {(e["file"], e["class"]) for e in total}
@@ -8061,7 +8075,7 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
                 self.assertIn(record["historical"]["sha256"], self.backlog)
                 self.assertIn(record["merge_commit"], self.bl038)
 
-    def test_the_ledger_is_offline_and_pinned_and_adds_no_migration_layer(self):
+    def test_the_ledger_is_offline_and_pinned_and_the_migration_ledger_is_empty(self):
         module = (self.root / "document_test_history.py").read_text(encoding="utf-8")
         for token in ("subprocess", "urllib", "requests", "socket", "os.system"):
             with self.subTest(token=token):
@@ -8071,8 +8085,11 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         self.assertIn(f'LEDGER_DIGEST = "{digest}"', module)
         self.assertIn(digest, (self.root / "test_document_test_classification.py")
                       .read_text(encoding="utf-8"))
-        # Tranche 3t ships no migration ledger; that is tranche 3u.
-        self.assertFalse((self.root / "document_test_classification_migrations.json").exists())
+        # Tranche 3t shipped no migration ledger; tranche 3u introduces it, empty,
+        # because 3u converts nothing either.
+        migrations = json.loads((self.root / "document_test_classification_migrations.json")
+                                .read_text(encoding="utf-8"))
+        self.assertEqual(migrations, {"schema_version": 1, "migrations": []})
 
     def test_the_current_residual_paragraph_states_the_post_3s_merge_state(self):
         """Final-review Blocker 1: the CURRENT `残作業` paragraph still said PR #101's
@@ -8265,6 +8282,73 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
                           summary["fingerprint_mismatch"]), (0, 0, 0))
         self.assertIn("**1525件・A30/B612/C638/D245・unclassified/stale/fingerprint mismatch 0/0/0**",
                       self.bl038)
+
+
+
+class Bl038Tranche3uMigrationLifecycleRecordSyncTest(unittest.TestCase):
+    """BL-038 tranche 3u: the migration-aware lifecycle, the corrected coupled-guard
+    count, and the standing scope boundary are recorded as facts."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.root = Path(__file__).resolve().parent
+        cls.backlog = (cls.root / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (cls.root / "STATUS.md").read_text(encoding="utf-8")
+        start = cls.backlog.index("## BL-038")
+        end = cls.backlog.find("\n## ", start + 8)
+        cls.bl038 = cls.backlog[start:] if end < 0 else cls.backlog[start:end]
+
+    def test_the_lifecycle_and_the_corrected_guard_count_are_recorded(self):
+        for token in ("tranche 3u(migration-aware current lifecycle、2026-08-11)",
+                      "fbb49e547b2bfadf88d040ae1b9253a83b300e53",
+                      "**25件**", "過少計数",
+                      "live - successors + retired == accepted",
+                      "`(file, class, method, targets)`",
+                      "pure ordinal driftはmigration metadataを一切必要としない",
+                      "ACCEPTED_SCOPES_DIGEST", "positional sliceを全廃",
+                      "1件のmigration記録が3 windowすべてを満たす",
+                      "document_test_classification_migrations.json",
+                      "**historical ledgerは0 diff**",
+                      "current validatorは一切緩めていない"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+
+    def test_the_dry_run_evidence_is_recorded(self):
+        for token in ("tranche 3u検証(2026-08-11)",
+                      "test_ui_spec.py::UiSpecDocumentTest::"
+                      "test_ui_spec_exists_with_version_metadata::assert-11",
+                      "renumberされた後続assertionsのmapping追加は不要",
+                      "continuity FAIL", "silent deletion",
+                      "zero-successor retirementはschemaが拒否",
+                      "residue 0"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        for token in ("BL-038 tranche 3u (migration-aware current lifecycle, 2026-08-11 JST)",
+                      "**B3はsplit自身のmapping 1件だけでgreen**",
+                      "**real Category C conversion 0件**", "0 diff"):
+            with self.subTest(status_token=token):
+                self.assertIn(token, self.status)
+
+    def test_category_c_is_still_unconverted_and_the_ledgers_agree(self):
+        """3u unblocks conversion without performing any: the committed tree is still the
+        accepted 3s classification, with an empty migration ledger."""
+        failures, summary = dti.validate_indexed_manifests(root=self.root)
+        self.assertEqual([f.format() for f in failures], [])
+        self.assertEqual(summary["inventoried_assertions"], 1525)
+        self.assertEqual(summary["category_counts"], {"A": 30, "B": 612, "C": 638, "D": 245})
+        self.assertEqual((summary["unclassified"], summary["stale"],
+                          summary["fingerprint_mismatch"]), (0, 0, 0))
+        self.assertEqual(dth.load_migrations(self.root),
+                         {"schema_version": 1, "migrations": []})
+        self.assertEqual(dth.migration_shape_failures(self.root), [])
+        self.assertEqual(hashlib.sha256(
+            (self.root / "document_test_classification_history.json").read_bytes()).hexdigest(),
+            "763637f1d88e6690363f8d30cc66a5cb76d95d654cd789c8863e6e26d604028a")
+        self.assertIn("Category C 638件は依然**source conversion未着手**", self.bl038)
+        for over_claim in ("Category C conversion完了", "BL-038全体最終受入済み",
+                           "Category C 638件を変換済み"):
+            with self.subTest(not_claimed=over_claim):
+                self.assertNotIn(over_claim, self.bl038)
 
 
 if __name__ == "__main__":
