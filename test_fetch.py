@@ -7975,5 +7975,189 @@ class Bl038Tranche3sAcceptanceRecordTest(unittest.TestCase):
         self.assertEqual([failure.format() for failure in failures], [])
         self.assertEqual((summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]), (0, 0, 0))
 
+
+class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
+    """BL-038 tranche 3t: the Category A closeout, the accepted-history foundation and
+    the explicit scope boundary (Category C still blocked) are recorded in the
+    repository's canonical documents, and the offline ledger agrees with them."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.root = Path(__file__).resolve().parent
+        cls.backlog = (cls.root / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (cls.root / "STATUS.md").read_text(encoding="utf-8")
+        start = cls.backlog.index("## BL-038")
+        end = cls.backlog.find("\n## ", start + 8)
+        cls.bl038 = cls.backlog[start:] if end < 0 else cls.backlog[start:end]
+        cls.ledger = json.loads(
+            (cls.root / "document_test_classification_history.json").read_text(encoding="utf-8"))
+
+    def test_category_a_closeout_is_recorded_as_decided_without_consolidation(self):
+        for token in (
+            "tranche 3t着手・Category A再監査(2026-08-11 JST)",
+            "83b7ab1ae59ca0a246142ee2e8b1d2c7eb6cf7e8",
+            "**7 helper family**",
+            "**Category A helper consolidationは追加実装なしで判断完了**",
+            "CNAME survival 6", "no-wildcard-DNS 2", "SD-030 vs SD-002 4",
+            "workflow action pinning 6", "SourceUsagePolicy (mode,column) 2",
+            "historical independence", "InventoryError",
+            "**Category C 638件はsource conversion未着手**",
+        ):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        self.assertNotIn("BL-038全体最終受入済み", self.bl038)
+
+    def test_the_history_foundation_and_the_split_decision_are_recorded(self):
+        for token in (
+            "tranche 3t(classification history foundation、2026-08-11)",
+            "document_test_classification_history.json",
+            "document_test_history.py",
+            "LEDGER_DIGEST",
+            "**historical evidence値は1つも書き換えていない。**",
+            "12 record",
+            "Round 1",
+            "assertion-level freeze",
+            "index-slice coupling",
+            "cap例外は採用せず分割",
+            "tranche 3t初版の追記方法が持ち込んだもの",
+            "5557行中5556行目",
+            "tranche 3u",
+            "Category C source conversionはtranche 3t後も引き続きblocked",
+        ):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        for token in (
+            "BL-038 tranche 3t (classification history foundation, 2026-08-11 JST)",
+            "Category A helper consolidationは判断完了・追加実装なし",
+            "Category C source conversionは未着手・未unblock",
+            "tranche 3u",
+        ):
+            with self.subTest(status_token=token):
+                self.assertIn(token, self.status)
+        # Never claimed: the things tranche 3t does NOT deliver. Checked as affirmative
+        # phrases -- "BL-038完了" alone appears legitimately inside a NEGATING sentence
+        # elsewhere in STATUS.md ("これはBL-038完了を意味せず"), so a bare substring test
+        # would be measuring the wrong thing.
+        for over_claim in ("Category C conversion fully unblocked", "migration lifecycle完成",
+                           "BL-038全体最終受入済み", "Category C 638件をunblock済み",
+                           "Category C source conversion開始"):
+            with self.subTest(not_claimed=over_claim):
+                self.assertNotIn(over_claim, self.bl038)
+                self.assertNotIn(over_claim, self.status)
+        self.assertIn("「Category C 638件をunblockした」とは記録しない", self.bl038)
+
+    def test_the_planned_tranche_3u_scope_is_recorded(self):
+        for token in ("tranche 3uのplanned scope", "23", "migration ledger",
+                      "1対1 conversion", "identity-changing conversion",
+                      "nested accepted window", "silent deletion",
+                      "wip/bl038-tranche3t-round1-full"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+
+    def test_every_ledger_record_is_anchored_in_the_backlog_acceptance_record(self):
+        self.assertEqual(len(self.ledger["accepted"]), 12)
+        for record in self.ledger["accepted"]:
+            with self.subTest(tranche=record["tranche"]):
+                self.assertIn(record["historical"]["sha256"], self.backlog)
+                self.assertIn(record["merge_commit"], self.bl038)
+
+    def test_the_ledger_is_offline_and_pinned_and_adds_no_migration_layer(self):
+        module = (self.root / "document_test_history.py").read_text(encoding="utf-8")
+        for token in ("subprocess", "urllib", "requests", "socket", "os.system"):
+            with self.subTest(token=token):
+                self.assertNotIn(token, module)
+        digest = hashlib.sha256(json.dumps(self.ledger, ensure_ascii=False, sort_keys=True,
+                                           separators=(",", ":")).encode("utf-8")).hexdigest()
+        self.assertIn(f'LEDGER_DIGEST = "{digest}"', module)
+        self.assertIn(digest, (self.root / "test_document_test_classification.py")
+                      .read_text(encoding="utf-8"))
+        # Tranche 3t ships no migration ledger; that is tranche 3u.
+        self.assertFalse((self.root / "document_test_classification_migrations.json").exists())
+
+    def test_the_current_residual_paragraph_states_the_post_3s_merge_state(self):
+        """Final-review Blocker 1: the CURRENT `残作業` paragraph still said PR #101's
+        Ready/merge was yet to happen, contradicting the tranche 3s record in the same
+        ticket. Scoped deliberately to the slice BEFORE the
+        `historical post-3r residual snapshot` marker: the snapshot below it keeps its
+        older values on purpose and must NOT be dragged forward."""
+        start = self.bl038.index("- **残作業:** assertion classification自体は完了し、")
+        marker = "**historical post-3r residual snapshot"
+        end = self.bl038.index(marker, start)
+        current = self.bl038[start:end]
+        for stale in ("PR #101のReady化・mergeはこれから",
+                      "Ready化・mergeはこれから行う",
+                      "PR #101のReady化・mergeは未了"):
+            with self.subTest(stale=stale):
+                self.assertNotIn(stale, current)
+        for fact in ("tranche 1〜3sはいずれも最終受入済み",
+                     "83b7ab1ae59ca0a246142ee2e8b1d2c7eb6cf7e8",
+                     "merge済みである",
+                     "Category C 638件はsource conversion未着手",
+                     "unblockはtranche 3uの範囲",
+                     "Category A 30件はtranche 3tで判断完了",
+                     "BL-038全体は未完了"):
+            with self.subTest(fact=fact):
+                self.assertIn(fact, current)
+        # The marker itself must stay, since it is what bounds the current slice -- but
+        # this guard deliberately asserts NOTHING about the wording or the values below
+        # it. That snapshot is history and a later tranche may restate it.
+        self.assertIn(marker + "（現在の未分類残件を意味しない）", self.bl038)
+        self.assertLess(start, end)
+
+    def test_the_technical_acceptance_record_never_claims_a_github_approve(self):
+        """The tranche 3t technical acceptance record states Accept/Blocker 0 AND that no
+        GitHub APPROVE review exists, because the reviewer connector authenticates as the
+        PR author and GitHub refuses self-approval. Guards the two prohibitions: no
+        fabricated review ID, and no claim that an independent GitHub APPROVE exists."""
+        for record in (self.bl038, self.status):
+            for fact in ("5226bbc56e46bdaa433d0717954db1d395a92930",
+                         "Accept／Blocker 0", "31472464106", "757 changed lines",
+                         "Review Can not approve your own pull request"):
+                with self.subTest(fact=fact):
+                    self.assertIn(fact, record)
+        self.assertIn("**GitHub上のAPPROVE reviewは存在しない**", self.bl038)
+        self.assertIn("架空のreview IDを記録しない", self.bl038)
+        # No review id may be attributed to tranche 3t. GitHub review ids are 10-digit
+        # numbers; the only long digit runs allowed near this record are the CI run id
+        # and the accepted head, so check the 3t acceptance sentence itself.
+        start = self.bl038.index("- **tranche 3t technical acceptance(2026-08-11 JST")
+        end = self.bl038.index("\n- **", start + 10)
+        sentence = self.bl038[start:end]
+        allowed = {"31472464106"}
+        # Pin the accepted facts inside the SENTENCE, not merely somewhere in the
+        # section: a wrong run id here would otherwise be masked by the correct one in
+        # STATUS.md.
+        for fact in ("5226bbc56e46bdaa433d0717954db1d395a92930", "31472464106",
+                     "757 changed lines", "2205 OK", "12 record"):
+            with self.subTest(in_sentence=fact):
+                self.assertIn(fact, sentence)
+        found = set(re.findall(r"\b\d{9,10}\b", sentence)) - allowed
+        self.assertEqual(found, set(), f"unexplained review-id-like number(s): {found}")
+        # Only unambiguous markers of a real review OBJECT are forbidden. A substring
+        # like "independent APPROVE" appears inside this record's own DENIAL
+        # ("GitHub上のindependent APPROVEが存在するとは記録しない"), so blacklisting it
+        # would measure the wrong thing -- the same mistake the current-residual guard
+        # avoids for the historical snapshot.
+        for object_marker in ("pullrequestreview", "#pullrequestreview-"):
+            with self.subTest(no_review_object=object_marker):
+                self.assertNotIn(object_marker, sentence)
+        self.assertIn("GitHub上のindependent APPROVEが存在するとは記録しない", sentence)
+        # And the record must not pretend this is merge authorization.
+        self.assertIn("Ready化・mergeは未実施", sentence)
+        self.assertIn("merge承認ではない", sentence)
+
+    def test_current_totals_are_unchanged_by_the_foundation_tranche(self):
+        """3t converts nothing and consolidates nothing, so the live classification is
+        bit-for-bit the accepted tranche 3s result."""
+        failures, summary = dti.validate_indexed_manifests(root=self.root)
+        self.assertEqual([failure.format() for failure in failures], [])
+        self.assertEqual(summary["inventoried_assertions"], 1525)
+        self.assertEqual(summary["category_counts"], {"A": 30, "B": 612, "C": 638, "D": 245})
+        self.assertEqual((summary["unclassified"], summary["stale"],
+                          summary["fingerprint_mismatch"]), (0, 0, 0))
+        self.assertIn("**1525件・A30/B612/C638/D245・unclassified/stale/fingerprint mismatch 0/0/0**",
+                      self.bl038)
+
+
 if __name__ == "__main__":
     unittest.main()

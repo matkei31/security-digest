@@ -46,6 +46,7 @@ import unittest
 from collections import Counter, OrderedDict
 from pathlib import Path
 
+import document_test_history as dth
 import document_test_inventory as dti
 import document_test_utils as dtu
 
@@ -54,6 +55,10 @@ MANIFEST_PATH = ROOT / "document_test_classification.json"
 INDEX_PATH = ROOT / dti.INDEX_FILENAME
 # The manifest as accepted and merged in PR #88 (merge commit 66ef88e5).
 # Sharding exists so the 585 classified entries never have to move.
+# BL-038 tranche 3t: the accepted-history ledger's own pin, spelled out here as
+# well as in `document_test_history.LEDGER_DIGEST`, so editing the ledger and that
+# module together still fails.
+ACCEPTED_LEDGER_DIGEST = "5ed8d7b27837589ab3571a02a0fbdbd3c94db1f93cfa3fc687227320ef59160d"
 BASE_MANIFEST_SHA256 = "640585ca03d7836cbdd66edcc8e2b21df7ea1de946b767ae20fa5c12e0c5f15a"
 BASE_MANIFEST_LINE_COUNT = 596
 BASE_MANIFEST_LINE_CAP = 600
@@ -860,8 +865,12 @@ SHARD_001_FINGERPRINT_DUPLICATE_GROUPS = (
 )
 
 # What shard 001 WAS at tranche 3h merge; history, asserted NOT to be now.
-TRANCHE_3H_HISTORICAL_ENTRY_COUNT = SHARD_001_EXPECTED_ASSERTION_COUNT
-TRANCHE_3H_HISTORICAL_LINE_COUNT = SHARD_001_EXPECTED_LINE_COUNT
+# BL-038 tranche 3t: accepted literals, NOT derived from the CURRENT expected
+# counts. A later Category C conversion inside an accepted window legitimately
+# moves those, and history must not move with them. Second copy of every value:
+# TRANCHE_3T_ACCEPTED_FACTS, and the offline ledger.
+TRANCHE_3H_HISTORICAL_ENTRY_COUNT = 136
+TRANCHE_3H_HISTORICAL_LINE_COUNT = 144
 TRANCHE_3H_HISTORICAL_SHA256 = \
     "2d03c748b9136f324d597e9f539ba4738abfdd05e30d0cd69bd51081168442c4"
 
@@ -1162,7 +1171,7 @@ TRANCHE_3J_VS_SHARD_001_COLLISION_IDS = {
 # Shard 002 AS ACCEPTED AT TRANCHE 3J's MERGE (commit f068270e5e...). These
 # are HISTORY: tranche 3k appended to the same file, so the current file has
 # different stats. Every one of these is asserted NOT to be current below.
-TRANCHE_3J_HISTORICAL_ENTRY_COUNT = TRANCHE_3J_EXPECTED_ASSERTION_COUNT
+TRANCHE_3J_HISTORICAL_ENTRY_COUNT = 34  # accepted literal; see the 3h note
 TRANCHE_3J_HISTORICAL_LINE_COUNT = 42
 TRANCHE_3J_HISTORICAL_SHA256 = \
     "3772b37ff4de747a594ec2bef2025e199f9ee967c5dc83a9cae550663c924dbb"
@@ -1248,16 +1257,13 @@ TRANCHE_3K_VS_TRANCHE_3J_COLLISION_IDS = {}
 # 764da66947a9b480ee2f074d553111a8e5bb278c: the tranche 3j 34 followed by the
 # tranche 3k 27. Tranche 3l appended a THIRD scope entry, so every value here
 # is HISTORY -- each one is asserted below NOT to be the current state.
-TRANCHE_3K_HISTORICAL_ENTRY_COUNT = (TRANCHE_3J_HISTORICAL_ENTRY_COUNT
-                                     + TRANCHE_3K_EXPECTED_ASSERTION_COUNT)
+TRANCHE_3K_HISTORICAL_ENTRY_COUNT = 61  # accepted literal; see the 3h note
 TRANCHE_3K_HISTORICAL_LINE_COUNT = 70
 TRANCHE_3K_HISTORICAL_SHA256 = \
     "1aee40fda499ac4308daa24fbd6fe622daab0dabd9390ecdb3014f36c7ae9da1"
 TRANCHE_3K_HISTORICAL_SCOPE_ORDER = ((TRANCHE_3J_SOURCE_FILE, (TRANCHE_3J_CLASS,)),
                                      (TRANCHE_3K_SOURCE_FILE, (TRANCHE_3K_CLASS,)))
-TRANCHE_3K_HISTORICAL_CATEGORY_COUNTS = {
-    cat: TRANCHE_3J_EXPECTED_CATEGORY_COUNTS[cat] + TRANCHE_3K_EXPECTED_CATEGORY_COUNTS[cat]
-    for cat in ("A", "B", "C", "D")}
+TRANCHE_3K_HISTORICAL_CATEGORY_COUNTS = {"A": 0, "B": 34, "C": 19, "D": 8}
 # Parsed-content digest of scope[0:2] + the historical first 61, DERIVED FROM
 # SHARD 002 AS ACCEPTED at merge 764da669... -- NOT regenerated here.
 TRANCHE_3K_HISTORICAL_CONTENT_SHA256 = \
@@ -1341,16 +1347,13 @@ TRANCHE_3L_VS_TRANCHE_3K_HISTORICAL_COLLISION_IDS = {}
 # tranche 3l closed out with: 84 entries, 94 lines, scope[0:3], A6/B45/C25/D8.
 # Tranche 3m appended a FOURTH scope entry, so every value here is HISTORY and
 # is asserted below NOT to be the current state.
-TRANCHE_3L_HISTORICAL_ENTRY_COUNT = (TRANCHE_3K_HISTORICAL_ENTRY_COUNT
-                                     + TRANCHE_3L_EXPECTED_ASSERTION_COUNT)
+TRANCHE_3L_HISTORICAL_ENTRY_COUNT = 84  # accepted literal; see the 3h note
 TRANCHE_3L_HISTORICAL_LINE_COUNT = 94
 TRANCHE_3L_HISTORICAL_SHA256 = \
     "c0f81d1489109e1fe9a6a8dcef497496b7c3b39ad435a84ca06944a43409aaa2"
 TRANCHE_3L_HISTORICAL_SCOPE_ORDER = ((TRANCHE_3J_SOURCE_FILE, (TRANCHE_3J_CLASS,)),
     (TRANCHE_3K_SOURCE_FILE, (TRANCHE_3K_CLASS,)), (TRANCHE_3L_SOURCE_FILE, TRANCHE_3L_CLASSES), )
-TRANCHE_3L_HISTORICAL_CATEGORY_COUNTS = {
-    cat: TRANCHE_3K_HISTORICAL_CATEGORY_COUNTS[cat] + TRANCHE_3L_EXPECTED_CATEGORY_COUNTS[cat]
-    for cat in ("A", "B", "C", "D")}
+TRANCHE_3L_HISTORICAL_CATEGORY_COUNTS = {"A": 6, "B": 45, "C": 25, "D": 8}
 # Parsed-content digest of scope[0:3] plus the historical first 84, DERIVED FROM
 # SHARD 002 AS ACCEPTED at merge 48cc4fdf383030... -- NOT regenerated here.
 TRANCHE_3L_HISTORICAL_CONTENT_SHA256 = \
@@ -5551,6 +5554,366 @@ class Tranche3pUsedBindingGuardTest(unittest.TestCase):
                 if (isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name) and node.targets[0].id in expected):
                     seen.setdefault(node.targets[0].id, set()).add(ast.unparse(node.value))
         self.assertEqual({k: sorted(v) for k, v in seen.items()}, {k: [self._expr(v)] for k, v in expected.items()})
+
+
+# ---------------------------------------------------------------------------
+# BL-038 tranche 3t: the accepted-classification history FOUNDATION.
+#
+# Tranches 3f..3s asserted "shard X was exactly this at tranche N's merge" by hashing
+# the CURRENT shard against the accepted value. That conflates a fact about the past
+# with a claim about the present, and freezing the present is what blocks the
+# Category C conversions BL-038 exists to make.
+#
+# 3t is the foundation half only: the accepted facts get an independent offline home
+# (`document_test_history`), the couplings where HISTORY was DERIVED from current
+# constants are undone, and the ledger is pinned, shape-checked and cross-checked
+# against BL-038's acceptance record. Every pre-existing byte/index guard is left
+# exactly as it was, so Category C conversion is still blocked after 3t. Retargeting
+# those guards onto a migration-aware current contract is tranche 3u.
+TRANCHE_3T_LEDGER_RECORD_COUNT = 12
+TRANCHE_3T_ACCEPTED_TRANCHES = ("3f", "3h", "3i", "3j", "3k", "3l", "3m",
+                                "3o", "3p", "3q", "3r", "3s")
+# Second independent copy of every scalar accepted fact, so an edit to the ledger is
+# caught even if `LEDGER_DIGEST` is re-pinned to match.
+# (tranche, pull_request, shard suffix, scope_slice, line_count, entry_count, counts)
+TRANCHE_3T_ACCEPTED_FACTS = (
+    ("3f", 88, "", [0, 4], 596, 585, {"A": 22, "B": 175, "C": 268, "D": 120}),
+    ("3h", 90, "_001", [0, 1], 144, 136, {"A": 0, "B": 38, "C": 91, "D": 7}),
+    ("3i", 91, "_001", [0, 2], 268, 259, {"A": 0, "B": 109, "C": 135, "D": 15}),
+    ("3j", 92, "_002", [0, 1], 42, 34, {"A": 0, "B": 12, "C": 14, "D": 8}),
+    ("3k", 93, "_002", [0, 2], 70, 61, {"A": 0, "B": 34, "C": 19, "D": 8}),
+    ("3l", 94, "_002", [0, 3], 94, 84, {"A": 6, "B": 45, "C": 25, "D": 8}),
+    ("3m", 95, "_002", [0, 4], 112, 101, {"A": 6, "B": 53, "C": 32, "D": 10}),
+    ("3o", 97, "_003", [0, 1], 154, 146, {"A": 0, "B": 70, "C": 54, "D": 22}),
+    ("3p", 98, "_004", [0, 1], 148, 140, {"A": 2, "B": 80, "C": 50, "D": 8}),
+    ("3q", 99, "_005", [0, 1], 130, 124, {"A": 0, "B": 49, "C": 42, "D": 33}),
+    ("3r", 100, "_006", [0, 1], 141, 133, {"A": 0, "B": 60, "C": 37, "D": 36}),
+    ("3s", 101, "_007", [0, 1], 45, 37, {"A": 0, "B": 16, "C": 20, "D": 1}),
+)
+# Second copy of the accepted contract multiset digests. Tranche 3u compares these
+# against the live tree plus a migration ledger; 3t only keeps them honest.
+TRANCHE_3T_ACCEPTED_CONTRACTS_DIGESTS = {
+    "3f": "4971c083471d9987488bab2687be533d42ff48ddac1fc7ae9ee6cd8ca1fab2c8",
+    "3h": "4973b69efc1c5c6b2db8d89bdb8ffa49ba796014d2f2a2c8c509844b84ced912",
+    "3i": "176be3153b5adf5814775128c44876dc979fc6995b3c831574dc5562efb6a8c1",
+    "3j": "84a52ec44295b9fb93837c5b442174de5b49ee4f1357ee38e65a2a4ce259f648",
+    "3k": "e2f5a68d982d3be73ff24bac999a287a053c7a022e0f3b705d0fe1b72b6596b6",
+    "3l": "8539d9986038cbcd6315d3f2f286a4dca670a65983e7031c32e808a1ebcb11ec",
+    "3m": "39bb1af577eddb06c7809d9f5b2906bbaafd3bba5f49fc25dc3970d7b8982a06",
+    "3o": "88d0cbc32ee7dc90c79df1d03fd74d47f4efc67ddae2b949b1ddc0e52c79635f",
+    "3p": "1c335eaa6d31db5405644485614171a2ce9986348224b884285805dc4c86f0d7",
+    "3q": "8a7deefc5ca142a9922ecea2ebe494975ce45c5d50e20bc7358a5dff86479abb",
+    "3r": "a3daf507a0a1805ec6936927e2b141e5f2132477829613418d87ddecf4fea2c8",
+    "3s": "cf0ec672e88b9ad81459e59e32c881bf26c4f6cd7dfb681290575c87353e56ac",
+}
+# Exactly these four accepted records carry a parsed-content digest; the rest were
+# pinned by bytes alone. Hardcoded so a null<->value edit cannot drift.
+TRANCHE_3T_TRANCHES_WITH_CONTENT_DIGEST = ("3h", "3j", "3k", "3l")
+# The inline constants that already recorded an accepted fact: two copies must agree.
+TRANCHE_3T_INLINE_ACCEPTED_SHAS = {
+    "3f": BASE_MANIFEST_SHA256, "3h": TRANCHE_3H_HISTORICAL_SHA256,
+    "3i": SHARD_001_CURRENT_SHA256, "3j": TRANCHE_3J_HISTORICAL_SHA256,
+    "3k": TRANCHE_3K_HISTORICAL_SHA256, "3l": TRANCHE_3L_HISTORICAL_SHA256,
+    "3m": SHARD_002_CURRENT_SHA256,
+}
+TRANCHE_3T_INLINE_ACCEPTED_CONTENT_DIGESTS = {
+    "3h": TRANCHE_3H_HISTORICAL_CONTENT_SHA256, "3j": TRANCHE_3J_HISTORICAL_CONTENT_SHA256,
+    "3k": TRANCHE_3K_HISTORICAL_CONTENT_SHA256, "3l": TRANCHE_3L_HISTORICAL_CONTENT_SHA256,
+}
+# A Category C conversion rewrites these entry fields; the contracts digest is blind
+# to them by design, which is what 3u builds its continuity rule on.
+TRANCHE_3T_CONVERSION_FIELDS = ("assertion_api", "fingerprint", "category", "action",
+                                "contract_summary", "rationale")
+TRANCHE_3T_FORBIDDEN_IN_HISTORY_MODULE = ("subprocess", "urllib", "requests", "socket",
+                                          "http.client", "os.system")
+
+
+def _setter(path, value):
+    """A one-mutation edit function for a (path, value) schema case."""
+    def apply(payload):
+        target = payload
+        for key in path[:-1]:
+            target = target[key]
+        target[path[-1]] = value
+    return apply
+
+
+def _record_facts(record):
+    """One ledger record's scalar facts, in TRANCHE_3T_ACCEPTED_FACTS order minus the
+    tranche name -- the shape the second copy is compared against."""
+    historical = record["historical"]
+    return (record["pull_request"],
+            record["shard"].replace("document_test_classification", "").replace(".json", ""),
+            record["scope_slice"], historical["line_count"], historical["entry_count"],
+            historical["category_counts"])
+
+
+class ClassificationHistoryLedgerTest(unittest.TestCase):
+    """The accepted-history ledger: pinned, well-formed, offline, and agreeing with the
+    inline accepted constants and with BL-038's own acceptance record."""
+
+    def test_the_ledger_is_pinned_well_formed_and_completely_populated(self):
+        indexed = set(json.loads(INDEX_PATH.read_text(encoding="utf-8"))["shards"])
+        self.assertEqual(dth.ledger_digest(ROOT), ACCEPTED_LEDGER_DIGEST)
+        self.assertEqual(dth.LEDGER_DIGEST, ACCEPTED_LEDGER_DIGEST)
+        self.assertEqual(dth.ledger_shape_failures(ROOT, indexed_shards=indexed), [])
+        ledger = dth.load_ledger(ROOT)
+        self.assertEqual(ledger["schema_version"], dth.LEDGER_SCHEMA_VERSION)
+        self.assertEqual(len(ledger["accepted"]), TRANCHE_3T_LEDGER_RECORD_COUNT)
+        self.assertEqual(tuple(r["tranche"] for r in ledger["accepted"]),
+                         TRANCHE_3T_ACCEPTED_TRANCHES)
+        self.assertEqual({r["shard"] for r in ledger["accepted"]} - indexed, set())
+
+    def test_every_accepted_fact_has_a_second_independent_copy(self):
+        """What makes "any accepted fact is caught" true even against a re-pinned
+        ledger: the tables above live in a different file from the ledger."""
+        self.assertEqual(tuple(f[0] for f in TRANCHE_3T_ACCEPTED_FACTS),
+                         TRANCHE_3T_ACCEPTED_TRANCHES)
+        for tranche, pr, suffix, span, lines, entries, counts in TRANCHE_3T_ACCEPTED_FACTS:
+            with self.subTest(tranche=tranche):
+                record = dth.accepted(ROOT, tranche)
+                self.assertEqual(_record_facts(record),
+                                 (pr, suffix, span, lines, entries, counts))
+                self.assertEqual(sum(counts.values()), entries)
+                self.assertEqual(record["historical"]["contracts_digest"],
+                                 TRANCHE_3T_ACCEPTED_CONTRACTS_DIGESTS[tranche])
+                self.assertIs(record["historical"]["content_digest"] is None,
+                              tranche not in TRANCHE_3T_TRANCHES_WITH_CONTENT_DIGEST)
+
+    def test_the_ledger_agrees_with_every_inline_accepted_constant(self):
+        for tranche, sha in TRANCHE_3T_INLINE_ACCEPTED_SHAS.items():
+            with self.subTest(tranche=tranche, field="sha256"):
+                dth.assert_accepted_history(self, ROOT, tranche, sha256=sha)
+        for tranche, digest in TRANCHE_3T_INLINE_ACCEPTED_CONTENT_DIGESTS.items():
+            with self.subTest(tranche=tranche, field="content_digest"):
+                dth.assert_accepted_history(self, ROOT, tranche, content_digest=digest)
+        for tranche, counts in (("3k", TRANCHE_3K_HISTORICAL_CATEGORY_COUNTS),
+                                ("3l", TRANCHE_3L_HISTORICAL_CATEGORY_COUNTS)):
+            with self.subTest(tranche=tranche, field="category_counts"):
+                dth.assert_accepted_history(self, ROOT, tranche, category_counts=counts)
+        for tranche, entries, lines in (("3h", TRANCHE_3H_HISTORICAL_ENTRY_COUNT,
+                                         TRANCHE_3H_HISTORICAL_LINE_COUNT),
+                                        ("3j", TRANCHE_3J_HISTORICAL_ENTRY_COUNT,
+                                         TRANCHE_3J_HISTORICAL_LINE_COUNT),
+                                        ("3k", TRANCHE_3K_HISTORICAL_ENTRY_COUNT,
+                                         TRANCHE_3K_HISTORICAL_LINE_COUNT),
+                                        ("3l", TRANCHE_3L_HISTORICAL_ENTRY_COUNT,
+                                         TRANCHE_3L_HISTORICAL_LINE_COUNT)):
+            with self.subTest(tranche=tranche, field="counts"):
+                dth.assert_accepted_history(self, ROOT, tranche, entry_count=entries,
+                                            line_count=lines)
+
+    def test_the_historical_constants_are_no_longer_derived_from_current_counts(self):
+        """The foundation half of Round 1 finding 1: these were computed from CURRENT
+        expected counts, so a conversion inside an accepted window would have silently
+        rewritten history. They are accepted literals now, and the module-level source
+        text is checked so the derivation cannot creep back."""
+        source = (ROOT / "test_document_test_classification.py").read_text(encoding="utf-8")
+        for constant, literal in (("TRANCHE_3H_HISTORICAL_ENTRY_COUNT", "136"),
+                                  ("TRANCHE_3H_HISTORICAL_LINE_COUNT", "144"),
+                                  ("TRANCHE_3J_HISTORICAL_ENTRY_COUNT", "34"),
+                                  ("TRANCHE_3K_HISTORICAL_ENTRY_COUNT", "61"),
+                                  ("TRANCHE_3L_HISTORICAL_ENTRY_COUNT", "84")):
+            with self.subTest(constant=constant):
+                self.assertIn(f"{constant} = {literal}", source)
+        for constant, counts in (("TRANCHE_3K_HISTORICAL_CATEGORY_COUNTS",
+                                  '{"A": 0, "B": 34, "C": 19, "D": 8}'),
+                                 ("TRANCHE_3L_HISTORICAL_CATEGORY_COUNTS",
+                                  '{"A": 6, "B": 45, "C": 25, "D": 8}')):
+            with self.subTest(constant=constant):
+                self.assertIn(f"{constant} = {counts}", source)
+        # The values did not change, only where they come from.
+        self.assertEqual((TRANCHE_3H_HISTORICAL_ENTRY_COUNT, TRANCHE_3J_HISTORICAL_ENTRY_COUNT,
+                          TRANCHE_3K_HISTORICAL_ENTRY_COUNT, TRANCHE_3L_HISTORICAL_ENTRY_COUNT),
+                         (136, 34, 61, 84))
+
+    def test_backlog_independently_records_the_same_accepted_evidence(self):
+        """Not the only copy: BL-038's acceptance record already carries every accepted
+        shard SHA and merge commit, so a lone ledger edit contradicts the repository."""
+        backlog = (ROOT / "BACKLOG.md").read_text(encoding="utf-8")
+        for record in dth.load_ledger(ROOT)["accepted"]:
+            with self.subTest(tranche=record["tranche"]):
+                self.assertIn(record["historical"]["sha256"], backlog)
+                self.assertIn(record["merge_commit"], backlog)
+
+    def test_history_is_offline_and_never_derived_from_a_live_shard(self):
+        """No network, no subprocess, no git -- and nothing in the module reads a shard,
+        because history recomputed from the current tree is the coupling 3t undoes."""
+        source = (ROOT / "document_test_history.py").read_text(encoding="utf-8")
+        for token in TRANCHE_3T_FORBIDDEN_IN_HISTORY_MODULE:
+            with self.subTest(token=token):
+                self.assertNotIn(token, source)
+        for token in ("_index", "INDEX_FILENAME", "document_test_classification_0",
+                      "document_test_inventory"):
+            with self.subTest(token=token):
+                self.assertNotIn(token, source)
+        self.assertEqual(source.count("read_text"), 1)  # the ledger, and nothing else
+
+    def test_the_ledger_schema_is_validated_fail_closed(self):
+        """Round 1 finding 3: `is not` identity comparison on schema_version, and no
+        shape contract on the rest. Every field is checked now, bools are rejected as
+        ints, and the category breakdown must sum to the accepted entry count."""
+        indexed = set(json.loads(INDEX_PATH.read_text(encoding="utf-8"))["shards"])
+        good = dth.load_ledger(ROOT)
+        R0, H0, H1 = ("accepted", 0), ("accepted", 0, "historical"), ("accepted", 1, "historical")
+        cases = (
+            (("schema_version",), True), (("schema_version",), 2), (("schema_version",), "1"),
+            (("note",), "x"), (("accepted",), []),
+            (R0 + ("pull_request",), True), (R0 + ("pull_request",), 0),
+            (R0 + ("pull_request",), "88"), (R0 + ("merge_commit",), "abc"),
+            (R0 + ("merge_commit",), "z" * 40), (R0 + ("shard",), ""),
+            (R0 + ("shard",), "nope.json"), (R0 + ("scope_slice",), [0]),
+            (R0 + ("scope_slice",), [-1, 2]), (R0 + ("scope_slice",), [2, 2]),
+            (R0 + ("scope_slice",), [False, True]), (H0 + ("sha256",), "ab"),
+            (H0 + ("contracts_digest",), "g" * 64), (H1 + ("content_digest",), "ab"),
+            (H0 + ("line_count",), True), (H0 + ("line_count",), 0),
+            (H0 + ("entry_count",), "585"),
+            (H0 + ("category_counts",), {"A": 1, "B": 2, "C": 3}),
+            (H0 + ("category_counts", "A"), True), (H0 + ("category_counts", "A"), -1),
+            (H0 + ("category_counts", "A"), 23), (H0 + ("x",), 1),
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+
+            def failures_for(mutate):
+                ledger = json.loads(json.dumps(good))
+                mutate(ledger)
+                (root / dth.LEDGER_FILENAME).write_text(
+                    json.dumps(ledger, ensure_ascii=False), encoding="utf-8")
+                return dth.ledger_shape_failures(root, indexed_shards=indexed)
+
+            self.assertEqual(failures_for(lambda l: None), [])
+            for path, value in cases:
+                with self.subTest(path=path, value=value):
+                    self.assertNotEqual(failures_for(_setter(path, value)), [])
+            self.assertNotEqual(failures_for(
+                lambda l: l["accepted"].append(json.loads(json.dumps(l["accepted"][0])))), [])
+        self.assertEqual(dth.ledger_shape_failures(ROOT, indexed_shards=indexed), [])
+
+    def test_editing_any_accepted_fact_in_the_ledger_is_detected(self):
+        """Every accepted field, in the first and last record, is tamper-evident -- and
+        against a witness that survives an attacker who also re-pins `LEDGER_DIGEST`:
+        the second-copy tables, or BACKLOG.md's acceptance record."""
+        original = (ROOT / dth.LEDGER_FILENAME).read_text(encoding="utf-8")
+        backlog = (ROOT / "BACKLOG.md").read_text(encoding="utf-8")
+        mutations = (
+            ("historical", "sha256", "0" * 64),
+            ("historical", "content_digest", "1" * 64),
+            ("historical", "contracts_digest", "2" * 64),
+            ("historical", "line_count", 999),
+            ("historical", "entry_count", 999),
+            ("historical", "category_counts", {"A": 9, "B": 9, "C": 9, "D": 9}),
+            (None, "merge_commit", "f" * 40),
+            (None, "pull_request", 4242),
+            (None, "shard", "document_test_classification_003.json"),
+            (None, "scope_slice", [1, 2]),
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            for block, field, value in mutations:
+                for index in (0, TRANCHE_3T_LEDGER_RECORD_COUNT - 1):
+                    with self.subTest(field=field, record=index):
+                        ledger = json.loads(original)
+                        record = ledger["accepted"][index]
+                        target = record if block is None else record[block]
+                        self.assertNotEqual(target.get(field), value)
+                        target[field] = value
+                        (root / dth.LEDGER_FILENAME).write_text(
+                            json.dumps(ledger, ensure_ascii=False), encoding="utf-8")
+                        self.assertNotEqual(dth.ledger_digest(root), ACCEPTED_LEDGER_DIGEST)
+                        self.assertTrue(self._witnesses(root, index, backlog),
+                                        f"re-pinning would hide a {field} edit")
+        self.assertEqual((ROOT / dth.LEDGER_FILENAME).read_text(encoding="utf-8"), original)
+        self.assertEqual(dth.ledger_digest(ROOT), ACCEPTED_LEDGER_DIGEST)
+
+    def _witnesses(self, root, index, backlog):
+        """Which copies of the accepted facts OTHER than LEDGER_DIGEST disagree with the
+        ledger at `root`. Non-empty means a re-pinned edit is still caught."""
+        tranche = TRANCHE_3T_ACCEPTED_TRANCHES[index]
+        record = dth.accepted(root, tranche)
+        historical = record["historical"]
+        disagree = set()
+        if _record_facts(record) != TRANCHE_3T_ACCEPTED_FACTS[index][1:]:
+            disagree.add("second-copy-scalars")
+        if historical["contracts_digest"] != TRANCHE_3T_ACCEPTED_CONTRACTS_DIGESTS[tranche]:
+            disagree.add("second-copy-contracts-digest")
+        if record["merge_commit"] not in backlog:
+            disagree.add("backlog-merge-commit")
+        if historical["sha256"] not in backlog:
+            disagree.add("backlog-sha256")
+        if (historical["content_digest"] is None) is not (
+                tranche not in TRANCHE_3T_TRANCHES_WITH_CONTENT_DIGEST):
+            disagree.add("content-digest-presence")
+        return disagree
+
+    def test_a_dropped_or_renamed_accepted_record_cannot_pass_silently(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            ledger = dth.load_ledger(ROOT)
+            ledger["accepted"] = [r for r in ledger["accepted"] if r["tranche"] != "3l"]
+            (root / dth.LEDGER_FILENAME).write_text(json.dumps(ledger, ensure_ascii=False),
+                                                    encoding="utf-8")
+            with self.assertRaises(KeyError):
+                dth.accepted(root, "3l")
+            self.assertNotEqual(dth.ledger_digest(root), ACCEPTED_LEDGER_DIGEST)
+
+    def test_the_foundation_does_not_yet_gate_the_current_tree(self):
+        """Tranche 3t's scope boundary, asserted rather than just documented: the ledger
+        is additive. No pre-existing guard was retargeted onto it, the existing
+        byte/index guards still stand, and Category C conversion is still blocked until
+        tranche 3u supplies the migration-aware current contract."""
+        source = (ROOT / "test_document_test_classification.py").read_text(encoding="utf-8")
+        module = (ROOT / "document_test_history.py").read_text(encoding="utf-8")
+        # The history module offers no current-side machinery yet, and nothing calls any.
+        for token in ("assert_accepted_contracts_accounted_for", "live_window",
+                      "reconstruct_accepted_contracts", "load_migrations"):
+            with self.subTest(token=token):
+                self.assertNotIn(token, module)
+                self.assertNotIn(f"dth.{token}", source)
+        self.assertEqual(sorted(n for n in dir(dth) if n.startswith("assert_")),
+                         ["assert_accepted_history"])
+        # The byte guards 3u will retarget are still present and still live-facing.
+        self.assertIn("hashlib.sha256(MANIFEST_PATH.read_bytes()).hexdigest(), "
+                      "BASE_MANIFEST_SHA256", source)
+        self.assertIn("hashlib.sha256(SHARD_001_PATH.read_bytes()).hexdigest()", source)
+
+
+class AcceptedContractsDigestTest(unittest.TestCase):
+    """The contracts digest's semantics, proved on a synthetic fixture. Tranche 3t only
+    records the digests; 3u builds `live - successors + retired == accepted` on exactly
+    these properties, so they are pinned here before anything depends on them."""
+
+    SCOPE = [{"file": "x.py", "classes": ["XTest"]}]
+    FIXTURE = [{"id": "x.py::XTest::test_a::assert-01", "file": "x.py", "class": "XTest",
+                "method": "test_a", "ordinal": 1, "assertion_api": "assertIn",
+                "fingerprint": "a" * 64, "targets": ["DOC.md"], "category": "C",
+                "action": "refactor_later", "contract_summary": "s", "rationale": "r"}]
+
+    def test_the_digest_covers_exactly_the_documented_fields(self):
+        base = dth.contracts_digest(self.SCOPE, dth.window_contracts(self.FIXTURE))
+        self.assertEqual(dth.CONTRACT_FIELDS, ("file", "class", "method", "targets"))
+        for field in dth.CONTRACT_FIELDS:
+            with self.subTest(sensitive_to=field):
+                mutated = json.loads(json.dumps(self.FIXTURE))
+                mutated[0][field] = ["Z.md"] if field == "targets" else "z"
+                self.assertNotEqual(
+                    dth.contracts_digest(self.SCOPE, dth.window_contracts(mutated)), base)
+        # Blind to what a conversion rewrites, and to a split's renumbering.
+        for field in TRANCHE_3T_CONVERSION_FIELDS + ("id", "ordinal"):
+            with self.subTest(blind_to=field):
+                mutated = json.loads(json.dumps(self.FIXTURE))
+                mutated[0][field] = 9 if field == "ordinal" else "z"
+                self.assertEqual(
+                    dth.contracts_digest(self.SCOPE, dth.window_contracts(mutated)), base)
+        # Sensitive to losing, gaining or re-scoping a contract -- the properties a
+        # migration-aware continuity rule needs.
+        for label, scope, entries in (("dropped", self.SCOPE, []),
+                                      ("added", self.SCOPE, self.FIXTURE * 2),
+                                      ("scope", [{"file": "y.py", "classes": []}], self.FIXTURE)):
+            with self.subTest(sensitive_to=label):
+                self.assertNotEqual(
+                    dth.contracts_digest(scope, dth.window_contracts(entries)), base)
+        self.assertNotEqual(base, _subset_content_digest(self.SCOPE[0], self.FIXTURE))
 
 
 if __name__ == "__main__":
