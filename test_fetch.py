@@ -8401,9 +8401,21 @@ class Bl038Tranche3vCouplingRetargetRecordSyncTest(unittest.TestCase):
         self.assertIn("repo-wide coupling eliminatedではない", self.status)
         # The snapshot must not be described as a live tracker.
         self.assertIn("**CURRENT state trackerではない**", self.status)
-        # The bare "future residual 83" phrasing must not survive anywhere current.
+        # Round 2: the CURRENT 残作業 paragraph must not leave a bare residual figure
+        # standing as the total. "frozen-inventory residual 83" is correct and stays
+        # allowed; an unqualified "residual 83" as the whole story does not.
         current = self.bl038[self.bl038.rindex("- **残作業:**"):]
         self.assertNotIn("future residual 83", current)
+        self.assertNotIn("実施済み、residual 83", current)
+        for bare in ("residual 83)", "residual 83。", "residual 83、"):
+            with self.subTest(bare=bare):
+                self.assertNotIn(bare, current)
+        self.assertIn("**frozen-inventory residual 83にknown false-negative correction 1があり、"
+                      "known residualはat least 84**", current)
+        self.assertIn("**frozen 18＋known correction 1でknown work at least 19**", current)
+        self.assertIn("**final repo-wide residual scanは未実施**", current)
+        # The qualified planning-context phrasing is legitimate and must remain.
+        self.assertIn("frozen-inventory residual 83", self.bl038)
         for text in (self.bl038, self.status):
             with self.subTest():
                 self.assertNotIn("**3v residual 0／future residual 83**", text)
