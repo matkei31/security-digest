@@ -15,6 +15,7 @@ from pathlib import Path
 from unittest.mock import patch
 import unittest
 
+import document_test_history as dth
 import document_test_inventory as dti
 import fetch
 import vulnerability_facts as vf
@@ -8061,7 +8062,7 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
                 self.assertIn(record["historical"]["sha256"], self.backlog)
                 self.assertIn(record["merge_commit"], self.bl038)
 
-    def test_the_ledger_is_offline_and_pinned_and_adds_no_migration_layer(self):
+    def test_the_ledger_is_offline_and_pinned_and_the_migration_ledger_is_empty(self):
         module = (self.root / "document_test_history.py").read_text(encoding="utf-8")
         for token in ("subprocess", "urllib", "requests", "socket", "os.system"):
             with self.subTest(token=token):
@@ -8071,8 +8072,11 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         self.assertIn(f'LEDGER_DIGEST = "{digest}"', module)
         self.assertIn(digest, (self.root / "test_document_test_classification.py")
                       .read_text(encoding="utf-8"))
-        # Tranche 3t ships no migration ledger; that is tranche 3u.
-        self.assertFalse((self.root / "document_test_classification_migrations.json").exists())
+        # Tranche 3t shipped no migration ledger; tranche 3u introduces it, empty,
+        # because 3u fixes the engine contract without converting anything.
+        self.assertEqual(json.loads((self.root / "document_test_classification_migrations.json")
+                                    .read_text(encoding="utf-8")),
+                         {"schema_version": 1, "migrations": []})
 
     def test_the_current_residual_paragraph_states_the_post_3s_merge_state(self):
         """Final-review Blocker 1: the CURRENT `残作業` paragraph still said PR #101's
@@ -8093,7 +8097,7 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
                      "83b7ab1ae59ca0a246142ee2e8b1d2c7eb6cf7e8",
                      "merge済みである",
                      "Category C 638件はsource conversion未着手",
-                     "unblockはtranche 3uの範囲",
+                     "**Category Cのunblockはtranche 3v acceptance後**",
                      "Category A 30件はtranche 3tで判断完了",
                      "BL-038全体は未完了"):
             with self.subTest(fact=fact):
@@ -8180,7 +8184,7 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
             "`workflow_dispatch` runは0件",
             "**production fetchは実行していない**",
             "**Category C 638件はsource conversion未着手で引き続きblocked**",
-            "unblockはtranche 3uのscope", "migration lifecycleは未完成",
+            "unblockはtranche 3v acceptance後", "migration lifecycleは未完成",
             "**BL-038全体は未完了**",
             "**supersededとしてclose**", "entry 47(`tranche 3t kickoff original`)",
         ):
@@ -8266,6 +8270,90 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         self.assertIn("**1525件・A30/B612/C638/D245・unclassified/stale/fingerprint mismatch 0/0/0**",
                       self.bl038)
 
+
+
+class Bl038Tranche3uMigrationEngineRecordSyncTest(unittest.TestCase):
+    """BL-038 tranche 3u: the engine scope, the corrected coupling measurement, and the
+    standing boundary (Category C stays blocked until 3v) are recorded as facts."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.root = Path(__file__).resolve().parent
+        cls.backlog = (cls.root / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (cls.root / "STATUS.md").read_text(encoding="utf-8")
+        start = cls.backlog.index("## BL-038")
+        end = cls.backlog.find("\n## ", start + 8)
+        cls.bl038 = cls.backlog[start:] if end < 0 else cls.backlog[start:end]
+
+    def test_the_engine_scope_and_corrected_measurement_are_recorded(self):
+        for token in ("tranche 3u(migration engine foundation、2026-08-11)",
+                      "fbb49e547b2bfadf88d040ae1b9253a83b300e53",
+                      "**約67件**",
+                      "**25はSHA/digest/known positional familyの実測件数であり、coupling universeではない。**",
+                      "responsibility migrationはtranche 3vのscope",
+                      "live - successors + retired == accepted",
+                      "`(file, class, method, targets)`",
+                      "pure ordinal driftはmigration metadata不要",
+                      "ACCEPTED_RANGE_METHODS", "3p/3sのように同一classを異なるrangeで分割",
+                      "current indexed manifests全体",
+                      "exactly 1件実在し、file/class/method/targetsが一致すること",
+                      "historical locatorに留め",
+                      "**real Category C conversionは0件**"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+
+    def test_the_engine_verification_and_the_3v_boundary_are_recorded(self):
+        for token in ("tranche 3u検証(2026-08-11)",
+                      "nonexistent successor id(`assert-99`、contract一致)",
+                      "true nested whole-class windows", "disjoint same-class method ranges",
+                      "boundary method消失のfail closed", "re-shard",
+                      "**3uがgreenでもCategory C 638件はunblockedとして扱わない**",
+                      "tranche 3vのacceptance条件"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        for token in ("BL-038 tranche 3u (migration engine foundation, 2026-08-11 JST)",
+                      "**約67件**", "Blocker 1修正", "Blocker 2修正",
+                      "**3uがgreenでもCategory Cはunblockedとしない**", "tranche 3v"):
+            with self.subTest(status_token=token):
+                self.assertIn(token, self.status)
+        for over_claim in ("migration-aware current lifecycle complete",
+                           "all coupled guards retargeted", "Category C unblocked",
+                           "positional coupling eliminated"):
+            with self.subTest(not_claimed=over_claim):
+                self.assertNotIn(over_claim, self.bl038)
+                self.assertNotIn(over_claim, self.status)
+
+    def test_the_current_slice_never_says_3u_unblocks_category_c(self):
+        """Round 2 Blocker 3. The current `残作業` paragraph said the unblock was in
+        tranche 3u's scope, contradicting the same paragraph's 3v statement. Scoped to
+        the text BEFORE the `historical post-3r residual snapshot` marker, so wording
+        that legitimately described tranche 3u at the time is not policed there."""
+        marker = "**historical post-3r residual snapshot"
+        current = self.bl038[:self.bl038.index(marker)]
+        for stale in ("unblockはtranche 3uの範囲",
+                      "unblockはtranche 3uのscope",
+                      "Category Cのunblockはtranche 3u"):
+            with self.subTest(stale=stale):
+                self.assertNotIn(stale, current)
+        self.assertIn("**Category Cのunblockはtranche 3v acceptance後**", current)
+        self.assertIn("tranche 3uはmigration engine foundationのみを確定", current)
+
+    def test_category_c_is_still_unconverted_and_the_ledgers_agree(self):
+        """3u fixes the engine without converting anything: the tree is still the
+        accepted 3s classification, with an empty migration ledger."""
+        failures, summary = dti.validate_indexed_manifests(root=self.root)
+        self.assertEqual([f.format() for f in failures], [])
+        self.assertEqual(summary["inventoried_assertions"], 1525)
+        self.assertEqual(summary["category_counts"], {"A": 30, "B": 612, "C": 638, "D": 245})
+        self.assertEqual((summary["unclassified"], summary["stale"],
+                          summary["fingerprint_mismatch"]), (0, 0, 0))
+        self.assertEqual(dth.load_migrations(self.root),
+                         {"schema_version": 1, "migrations": []})
+        self.assertEqual(dth.migration_shape_failures(self.root), [])
+        self.assertEqual(dth.successor_reference_failures(self.root), [])
+        self.assertEqual(hashlib.sha256(
+            (self.root / "document_test_classification_history.json").read_bytes()).hexdigest(),
+            "763637f1d88e6690363f8d30cc66a5cb76d95d654cd789c8863e6e26d604028a")
 
 if __name__ == "__main__":
     unittest.main()
