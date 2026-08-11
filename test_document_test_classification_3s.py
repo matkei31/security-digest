@@ -7,7 +7,6 @@ import unittest
 from collections import Counter, defaultdict
 from pathlib import Path
 
-import document_test_history as dth
 import document_test_inventory as dti
 
 ROOT = Path(__file__).resolve().parent
@@ -254,7 +253,7 @@ class Tranche3sClassificationTest(unittest.TestCase):
         self.assertEqual(len(self.entries), EXPECTED_ASSERTIONS)
         self.assertEqual(len(self.text.splitlines()), EXPECTED_LINE_COUNT)
         self.assertLessEqual(EXPECTED_LINE_COUNT, dti.SHARD_LINE_CAP)
-        dth.assert_accepted(self, ROOT, "3s", sha256=EXPECTED_SHA256)
+        self.assertEqual(hashlib.sha256(self.text.encode("utf-8")).hexdigest(), EXPECTED_SHA256)
         index = json.loads((ROOT / dti.INDEX_FILENAME).read_text(encoding="utf-8"))
         self.assertEqual(tuple(index["shards"]), EXPECTED_INDEX)
 

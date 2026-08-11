@@ -198,24 +198,30 @@ def assert_accepted_history(case, root, tranche, sha256=None, content_digest=Non
 
 
 # ---------------------------------------------------------------------------
-# BL-038 tranche 3u: the MIGRATION layer. 3t gave the accepted facts an offline home
-# but left the pre-3t guards holding the current tree to accepted BYTES and
-# POSITIONS, so Category C conversion stayed blocked. 3u replaces that with
-# `live_contracts - successors + retired == accepted contracts_digest`, where a
-# contract is (file, class, method, targets) -- deliberately NOT id or ordinal. That
-# is what makes pure ordinal drift free: a split renumbers every later assertion in
-# its method without changing which contract any of them covers, so only a genuinely
-# retired, split, merged or re-targeted contract needs an entry.
+# BL-038 tranche 3u: the MIGRATION ENGINE. 3t gave the accepted facts an offline
+# home; 3u supplies the rule a later tranche will hold the current tree to:
+#
+#     live_contracts - successors + retired == accepted contracts_digest
+#
+# A contract is (file, class, method, targets) -- deliberately NOT id or ordinal.
+# That is what makes pure ordinal drift free: a split renumbers every later
+# assertion in its method without changing which contract any of them covers, so
+# only a genuinely retired, split, merged or re-targeted contract needs an entry.
+#
+# Retargeting the repository's ~67 historical/current coupled tests onto this rule
+# is tranche 3v. 3u fixes the engine contract only, so Category C stays blocked.
+INDEX_FILENAME = "document_test_classification_index.json"
 MIGRATIONS_FILENAME = "document_test_classification_migrations.json"
 MIGRATION_SCHEMA_VERSION = 1
 MIGRATION_KINDS = ("split", "merge", "retarget", "replace")
 _MIGRATION_KEYS = ("id", "tranche", "kind", "reason", "retired", "successors")
 _MEMBER_KEYS = ("id", "targets")
 
-# Each tranche's accepted scope descriptor, recorded once from the ACCEPTING MERGE
-# COMMIT rather than re-derived from where those entries sit today. Windows are
-# selected by (file, class) ownership, never by a positional slice, so an append or
-# insert elsewhere cannot move them. Pinned by ACCEPTED_SCOPES_DIGEST.
+# Each tranche's accepted scope descriptor, taken once from its ACCEPTING MERGE
+# COMMIT rather than re-derived from where those entries sit today, and pinned by
+# ACCEPTED_SCOPES_DIGEST. Windows are resolved by LOGICAL ownership against these,
+# never by a positional slice or by the shard a record happens to name, so a later
+# tranche may re-shard an accepted contract without history moving.
 ACCEPTED_SCOPES = {
     "3f": [{"file":"test_custom_domain.py","classes":["DocsCnameFileTest","CnameSurvivesGenerationTest","ArticleBriefContractUnchangedTest","Bl007DocumentationTest","ReadmePublicUrlTest","Bl007ClosureRecordTest","TicketIdTypoTest"]},{"file":"test_ui_spec.py","classes":["UiSpecDocumentTest","Bl036ArticleAttributionUiSpecTest"]},{"file":"test_status.py","classes":["StatusSourceOfTruthTest","Sd031DecisionTest","Bl035ActiveWorkTest","StatusSecurityOperationsSourceOfTruthTest","Bl036PostMergeRecordFixTest","Bl036ProductionEvidenceSyncTest"]},{"file":"test_security_requirements.py","classes":["Bl031AcceptanceAndBl032RegistrationTest","Bl034Round2ReviewCorrectionsTest","Bl034ImplementationAcceptanceTest","Bl034CloseoutTest","StatusSecurityRequirementsSourceOfTruthTest"]}],
     "3h": [{"file":"test_security_operations.py","classes":["SecurityOperationsContractTest","Bl031SecurityOperationsReconciliationTest"]}],
@@ -230,17 +236,79 @@ ACCEPTED_SCOPES = {
     "3r": [{"file":"test_security_requirements.py","classes":["SecurityRequirementsTest"],"method_range":{"start":"test_sd024_sd025_and_follow_up_tickets_are_recorded","end":"test_security_requirements_internal_markdown_links_resolve"}}],
     "3s": [{"file":"test_source_usage_policy.py","classes":["SourceUsagePolicyTest"],"method_range":{"start":"test_mandiant_distinguishes_rss_evidence_from_terms_evidence","end":"test_relationship_section_defers_enforcement_to_bl032"}}],
 }
-ACCEPTED_SCOPES_DIGEST = "243fd2d139f75bffb8a887fc3c797ce75dcca5601c11518a4657d55f2a1ec991"
+# For method_range scopes, the accepted method list of that range -- also taken from
+# the accepting merge commit. A range owns exactly these methods: the current source
+# order is never consulted, so a later insertion cannot silently widen a historical
+# range, and a boundary method that disappears fails closed rather than shrinking it.
+ACCEPTED_RANGE_METHODS = {
+    "3o": {"test_security_requirements.py::SecurityRequirementsTest":["test_document_is_approved_version_14_maintenance_update","test_required_sections_are_present","test_sr_ids_are_stable_unique_and_contiguous_through_047","test_published_output_correction_requirement_and_gap_are_recorded","test_operations_requirements_are_met_by_documentation_only","test_semantic_risk_is_evidenced_without_impossibility_generalization","test_gap_ids_and_classifications_are_complete_and_limited","test_current_control_mapping_breakdowns_match_individual_sr_states","test_met_definition_is_repository_limited","test_exception_output_inventory_is_comprehensive_and_precise","test_external_response_size_audit_and_gap_are_recorded","test_custom_domain_preflight_is_future_only_and_complete","test_dast_is_not_duplicated","test_translation_cache_gap_is_resolved_by_bl030","test_approved_roadmap_decisions_are_bounded_and_not_implemented","test_workflows_and_dependabot_reflect_bl026_implementation","test_bl006_backlog_entry_records_completed_brand_migration","test_bl006_accepted_head_final_head_and_merge_commit_are_distinct","test_bl028_is_recorded_verbatim_as_complete"]},
+    "3p": {"test_source_usage_policy.py::SourceUsagePolicyTest":["test_gemini_gate_references_point_to_chapter_5","test_attribution_references_point_to_chapter_6","test_no_stale_chapter_7_attribution_references_remain","test_document_is_approved_01","test_required_chapters_are_present","test_17_source_ids_match_source_definitions_exactly","test_every_table_has_proposed_mode_and_checked_at_columns","test_checked_at_is_2026_07_29_except_google_terms_sources","test_mode_counts_are_5_4_2_2_4_by_proposed_mode_column","test_proposed_mode_matches_the_table_the_row_appears_in","test_all_17_sources_disallow_rich_content","test_metadata_only_disallows_ai_processing","test_disabled_legal_review_disallows_network_fetch","test_feed_summary_is_gated_by_gemini_paid_service_confirmation","test_gemini_data_use_status_is_paid_verified","test_gemini_owner_verification_is_recorded_without_secrets","test_gemini_gate_no_longer_lists_unknown_as_current_unresolved_issue","test_feed_summary_production_enforcement_still_deferred_to_bl032","test_google_terms_2026_07_30_recheck_is_recorded_as_completed","test_mandiant_and_google_tag_recheck_triggers_are_specific","test_google_terms_recheck_moved_to_confirmed_in_unknowns_section","test_attribution_requirements_are_recorded_for_each_group","test_limited_feed_analysis_mode_definition_is_present","test_limited_feed_analysis_rows_have_expected_allow_flags","test_risk_acceptance_rationale_is_recorded_and_not_asserted_as_permission","test_metadata_only_allows_metadata_fetch_and_does_not_prohibit_human_browsing","test_cisco_talos_and_krebs_uncertainty_is_not_asserted_as_definitive","test_official_evidence_url_contains_only_urls_or_a_bare_dash","test_official_evidence_url_has_no_descriptive_text_mixed_in","test_multi_url_rows_have_matching_evidence_type_count_when_types_differ","test_krebs_about_page_is_recorded_as_supporting_source_page_not_a_terms_url","test_cisa_has_no_url_in_official_evidence_url_and_is_terms_not_identified"]},
+    "3q": {"test_security_requirements.py::SecurityRequirementsTest":["test_bl029_is_recorded_verbatim_as_complete","test_bl028_bl029_registration_does_not_reopen_or_merge_other_tickets","test_sd027_partially_supersedes_sd021_and_preserves_its_other_contracts","test_bl028_kickoff_does_not_reopen_bl017_or_bl022","test_bl027_acceptance_head_is_distinct_from_pr54_final_head","test_bl027_backlog_entry_records_completed_workflow_dispatch_validation","test_bl026_closure_records_pending_run_limitation_and_leaves_other_gaps_unchanged","test_current_gaps_non_required_and_triggers_are_distinct","test_future_components_are_not_misstated_as_current","test_no_secret_value_or_local_absolute_path_is_present","test_bl015_is_complete_and_removed_from_active_work"]},
+    "3r": {"test_security_requirements.py::SecurityRequirementsTest":["test_sd024_sd025_and_follow_up_tickets_are_recorded","test_owner_checklist_mandatory_items_are_resolved_without_sensitive_data","test_agents_references_security_docs_without_blanket_authorization","test_agents_ui_spec_reference_delegates_version_too","test_agents_describes_pr_ci_and_fetch_yml_triggers_accurately","test_agents_pr_ci_checkout_target_is_the_merge_candidate_not_the_head","test_agents_distinguishes_unittest_target_diff_check_range_and_head_association","test_agents_pr_ci_secret_and_token_wording_is_precise","test_security_requirements_internal_markdown_links_resolve"]},
+    "3s": {"test_source_usage_policy.py::SourceUsagePolicyTest":["test_mandiant_distinguishes_rss_evidence_from_terms_evidence","test_output_similarity_controls_are_recorded_as_bl032_merged","test_output_similarity_controls_distinguish_mechanical_from_residual_risk","test_relationship_section_defers_enforcement_to_bl032"]},
+}
+ACCEPTED_SCOPES_DIGEST = "5dd7454cfdbcbbafcbf5d3a9d231d47c1592c24271e8a16d2d194b62d9e8c4b5"
 
 
 def accepted_scopes_digest():
-    return hashlib.sha256(_canonical(ACCEPTED_SCOPES)).hexdigest()
+    return hashlib.sha256(_canonical([ACCEPTED_SCOPES, ACCEPTED_RANGE_METHODS])).hexdigest()
+
+
+def owns(tranche, file_name, class_name, method):
+    """Does this tranche's accepted scope own that assertion?
+
+    Whole-class scope: every method of the class. Method-range scope: only the
+    methods the range accepted, listed explicitly in ACCEPTED_RANGE_METHODS. The two
+    forms share one predicate, so 3k/3l/3m (nested whole-class) and 3o/3q/3r plus
+    3p/3s (disjoint ranges over ONE class) are decided by the same rule.
+    """
+    for scope in ACCEPTED_SCOPES[tranche]:
+        if scope["file"] != file_name or class_name not in scope["classes"]:
+            continue
+        if "method_range" not in scope:
+            return True
+        if method in ACCEPTED_RANGE_METHODS[tranche][f"{file_name}::{class_name}"]:
+            return True
+    return False
 
 
 def load_migrations(root):
-    """Parsed migration ledger. Empty until a real conversion tranche retires an
-    accepted contract; tranche 3u ships it empty on purpose."""
+    """Parsed migration ledger. Empty until a conversion tranche retires a contract."""
     return json.loads((root / MIGRATIONS_FILENAME).read_text(encoding="utf-8"))
+
+
+def live_entries(root):
+    """Every classified entry, from every manifest the index lists -- NOT from the
+    shard a historical record happens to name. An accepted contract may therefore be
+    re-sharded by a later tranche without the accepted evidence moving with it."""
+    index = json.loads((root / INDEX_FILENAME).read_text(encoding="utf-8"))
+    return [entry for name in index["shards"]
+            for entry in json.loads((root / name).read_text(encoding="utf-8"))["assertions"]]
+
+
+def accepted_window(root, tranche, entries=None):
+    """(accepted scope descriptor, the live entries it logically owns)."""
+    entries = live_entries(root) if entries is None else entries
+    return ACCEPTED_SCOPES[tranche], [e for e in entries
+                                      if owns(tranche, e["file"], e["class"], e["method"])]
+
+
+def window_boundary_failures(root, tranche, entries=None):
+    """Fail closed when a method_range's accepted boundary method no longer exists:
+    the window would otherwise silently shrink and take accepted coverage with it."""
+    entries = live_entries(root) if entries is None else entries
+    problems = []
+    for scope in ACCEPTED_SCOPES[tranche]:
+        if "method_range" not in scope:
+            continue
+        for class_name in scope["classes"]:
+            live = {e["method"] for e in entries
+                    if e["file"] == scope["file"] and e["class"] == class_name}
+            for edge in ("start", "end"):
+                method = scope["method_range"][edge]
+                if method not in live:
+                    problems.append(f"{tranche}:{edge}-boundary-method-missing:{method}")
+    return problems
 
 
 def _member_contract(member):
@@ -249,36 +317,29 @@ def _member_contract(member):
                         "targets": member["targets"]})
 
 
-def accepted_window(root, tranche):
-    """(accepted scope descriptor, live entries it owns), by (file, class) ownership,
-    so the window survives renumbering, appends and inserts elsewhere in the shard."""
-    record = accepted(root, tranche)
-    scope = ACCEPTED_SCOPES[tranche]
-    owned = {(s["file"], c) for s in scope for c in s["classes"]}
-    shard = json.loads((root / record["shard"]).read_text(encoding="utf-8"))
-    return scope, [e for e in shard["assertions"] if (e["file"], e["class"]) in owned]
-
-
 def migrations_for(root, tranche):
-    """Migrations touching this window, matched by (file, class) ownership rather than
-    a declared tranche name. Accepted windows nest -- shard 002's 3k/3l/3m are
-    prefixes of one another -- so one split departs from all three accepted states and
-    must satisfy each from a SINGLE recorded migration."""
-    scope = ACCEPTED_SCOPES[tranche]
-    owned = {(s["file"], c) for s in scope for c in s["classes"]}
+    """Migrations touching this accepted window, decided by the SAME ownership
+    predicate as the window itself -- not by a declared tranche name.
+
+    Nested whole-class windows (shard 002's 3k/3l/3m) therefore all see one recorded
+    split, while disjoint ranges over one class (3o/3q/3r, 3p/3s) never see each
+    other's migrations.
+    """
     picked = []
     for migration in load_migrations(root)["migrations"]:
-        members = migration["retired"] + migration["successors"]
-        if any(tuple(m["id"].split("::")[:2]) in owned for m in members):
-            picked.append(migration)
+        for member in migration["retired"] + migration["successors"]:
+            file_name, class_name, method, _ = member["id"].split("::")
+            if owns(tranche, file_name, class_name, method):
+                picked.append(migration)
+                break
     return picked
 
 
-def reconstruct_accepted_contracts(root, tranche, live_entries):
-    """Undo the recorded migrations against the live window. LookupError if a migration
-    claims a successor the live window lacks, so a wrong or invented successor cannot
-    silently balance the equation."""
-    contracts = window_contracts(live_entries)
+def reconstruct_accepted_contracts(root, tranche, live_window_entries):
+    """Undo the recorded migrations against the live window. LookupError if a
+    migration claims a successor contract the window lacks, so a wrong or invented
+    successor cannot silently balance the equation."""
+    contracts = window_contracts(live_window_entries)
     for migration in migrations_for(root, tranche):
         for successor in migration["successors"]:
             contract = _member_contract(successor)
@@ -292,6 +353,39 @@ def reconstruct_accepted_contracts(root, tranche, live_entries):
     return contracts
 
 
+def successor_reference_failures(root, entries=None):
+    """Successor ids are load-bearing, not decoration: each must name exactly one
+    live entry whose file/class/method/targets match the member.
+
+    The asymmetry is deliberate. A SUCCESSOR is a claim about the CURRENT tree, so it
+    is checked against it exactly. A RETIRED member is a historical locator only --
+    its ordinal belonged to a state that no longer exists -- so its semantic identity
+    is the contract (file, class, method, targets) and its id is never required to
+    exist now. Requiring retired ids to resolve would re-freeze exactly the ordinal
+    identity this tranche exists to release.
+    """
+    entries = live_entries(root) if entries is None else entries
+    by_id = {}
+    for entry in entries:
+        by_id.setdefault(entry["id"], []).append(entry)
+    problems = []
+    for migration in load_migrations(root)["migrations"]:
+        for member in migration["successors"]:
+            found = by_id.get(member["id"], [])
+            if len(found) != 1:
+                problems.append(f"{migration['id']}:successor-id-resolves-to-{len(found)}"
+                                f"-live-entries:{member['id']}")
+                continue
+            entry, parts = found[0], member["id"].split("::")
+            if [entry["file"], entry["class"], entry["method"]] != parts[:3]:
+                problems.append(f"{migration['id']}:successor-id-does-not-match-its-entry:"
+                                f"{member['id']}")
+            if entry["targets"] != member["targets"]:
+                problems.append(f"{migration['id']}:successor-targets-mismatch:"
+                                f"{member['id']} {member['targets']} != {entry['targets']}")
+    return problems
+
+
 def migration_shape_failures(root):
     """Fail-closed shape and cross-record checks for the migration ledger."""
     problems = []
@@ -303,7 +397,7 @@ def migration_shape_failures(root):
         problems.append(f"migrations-schema-version:{version!r}")
     if not isinstance(data.get("migrations"), list):
         return problems + ["migrations-not-a-list"]
-    seen_ids, retired_ids, successor_ids = set(), set(), set()
+    seen_ids, pools = set(), {"retired": set(), "successors": set()}
     for index, migration in enumerate(data["migrations"]):
         label = migration.get("id", f"#{index}") if isinstance(migration, dict) else f"#{index}"
         if not isinstance(migration, dict) or tuple(migration.keys()) != _MIGRATION_KEYS:
@@ -321,7 +415,7 @@ def migration_shape_failures(root):
         if not (isinstance(migration["reason"], str) and migration["reason"].strip()):
             problems.append(f"{label}:empty-reason")
         sides = {}
-        for side, pool in (("retired", retired_ids), ("successors", successor_ids)):
+        for side in ("retired", "successors"):
             members = migration[side]
             if not (isinstance(members, list) and members):
                 problems.append(f"{label}:{side}-empty")
@@ -339,9 +433,9 @@ def migration_shape_failures(root):
                 if mid in local:
                     problems.append(f"{label}:duplicate-{side}-id:{mid}")
                 local.add(mid)
-                if mid in pool:
+                if mid in pools[side]:
                     problems.append(f"{label}:{side}-id-claimed-twice:{mid}")
-                pool.add(mid)
+                pools[side].add(mid)
                 if not (isinstance(member["targets"], list) and member["targets"]
                         and all(isinstance(t, str) and t for t in member["targets"])):
                     problems.append(f"{label}:{side}-targets:{member['targets']!r}")
@@ -354,15 +448,18 @@ def migration_shape_failures(root):
 
 
 def assert_accepted_contracts_accounted_for(case, root, tranche):
-    """Every accepted contract is still live, or explicitly retired by a recorded
-    migration. One-to-one conversion and pure ordinal drift need NO entry; a split,
-    merge or retarget passes only once recorded; a silent deletion cannot pass."""
-    scope, live = accepted_window(root, tranche)
-    rebuilt = reconstruct_accepted_contracts(root, tranche, live)
+    """Every contract the tranche accepted is still live, or explicitly retired by a
+    recorded migration. One-to-one conversion and pure ordinal drift need NO entry; a
+    split, merge or retarget passes only once recorded; a silent deletion cannot."""
+    entries = live_entries(root)
+    case.assertEqual(window_boundary_failures(root, tranche, entries), [])
+    case.assertEqual(successor_reference_failures(root, entries), [])
+    scope, window = accepted_window(root, tranche, entries)
+    rebuilt = reconstruct_accepted_contracts(root, tranche, window)
     case.assertEqual(
         contracts_digest(scope, rebuilt), accepted(root, tranche)["historical"]["contracts_digest"],
         f"{tranche}: accepted contracts are not accounted for by the live window plus the "
-        f"recorded migrations ({len(live)} live, {len(rebuilt)} reconstructed)")
+        f"recorded migrations ({len(window)} live, {len(rebuilt)} reconstructed)")
 
 
 def assert_accepted(case, root, tranche, **historical):
