@@ -8104,6 +8104,48 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         self.assertIn(marker + "（現在の未分類残件を意味しない）", self.bl038)
         self.assertLess(start, end)
 
+    def test_the_technical_acceptance_record_never_claims_a_github_approve(self):
+        """The tranche 3t technical acceptance record states Accept/Blocker 0 AND that no
+        GitHub APPROVE review exists, because the reviewer connector authenticates as the
+        PR author and GitHub refuses self-approval. Guards the two prohibitions: no
+        fabricated review ID, and no claim that an independent GitHub APPROVE exists."""
+        for record in (self.bl038, self.status):
+            for fact in ("5226bbc56e46bdaa433d0717954db1d395a92930",
+                         "Accept／Blocker 0", "31472464106", "757 changed lines",
+                         "Review Can not approve your own pull request"):
+                with self.subTest(fact=fact):
+                    self.assertIn(fact, record)
+        self.assertIn("**GitHub上のAPPROVE reviewは存在しない**", self.bl038)
+        self.assertIn("架空のreview IDを記録しない", self.bl038)
+        # No review id may be attributed to tranche 3t. GitHub review ids are 10-digit
+        # numbers; the only long digit runs allowed near this record are the CI run id
+        # and the accepted head, so check the 3t acceptance sentence itself.
+        start = self.bl038.index("- **tranche 3t technical acceptance(2026-08-11 JST")
+        end = self.bl038.index("\n- **", start + 10)
+        sentence = self.bl038[start:end]
+        allowed = {"31472464106"}
+        # Pin the accepted facts inside the SENTENCE, not merely somewhere in the
+        # section: a wrong run id here would otherwise be masked by the correct one in
+        # STATUS.md.
+        for fact in ("5226bbc56e46bdaa433d0717954db1d395a92930", "31472464106",
+                     "757 changed lines", "2205 OK", "12 record"):
+            with self.subTest(in_sentence=fact):
+                self.assertIn(fact, sentence)
+        found = set(re.findall(r"\b\d{9,10}\b", sentence)) - allowed
+        self.assertEqual(found, set(), f"unexplained review-id-like number(s): {found}")
+        # Only unambiguous markers of a real review OBJECT are forbidden. A substring
+        # like "independent APPROVE" appears inside this record's own DENIAL
+        # ("GitHub上のindependent APPROVEが存在するとは記録しない"), so blacklisting it
+        # would measure the wrong thing -- the same mistake the current-residual guard
+        # avoids for the historical snapshot.
+        for object_marker in ("pullrequestreview", "#pullrequestreview-"):
+            with self.subTest(no_review_object=object_marker):
+                self.assertNotIn(object_marker, sentence)
+        self.assertIn("GitHub上のindependent APPROVEが存在するとは記録しない", sentence)
+        # And the record must not pretend this is merge authorization.
+        self.assertIn("Ready化・mergeは未実施", sentence)
+        self.assertIn("merge承認ではない", sentence)
+
     def test_current_totals_are_unchanged_by_the_foundation_tranche(self):
         """3t converts nothing and consolidates nothing, so the live classification is
         bit-for-bit the accepted tranche 3s result."""
