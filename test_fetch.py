@@ -8146,6 +8146,62 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         self.assertIn("Ready化・mergeは未実施", sentence)
         self.assertIn("merge承認ではない", sentence)
 
+    def test_the_post_merge_state_of_tranche_3t_is_recorded(self):
+        """Post-merge record sync. Pins the merge facts inside the closeout BULLET (not
+        merely somewhere in the section -- several of these SHAs and ids legitimately
+        appear more than once, so a section-wide check would let a wrong value hide
+        behind a correct one) and asserts the pre-merge wording cannot return to the
+        CURRENT slice. Scoped before the `historical post-3r residual snapshot` marker:
+        historical wording legitimately describes a Draft/unmerged past."""
+        marker = "**historical post-3r residual snapshot"
+        current = self.bl038[:self.bl038.index(marker)]
+        head = "- **tranche 3t最終受入・merge・Pages(2026-08-11 JST):**"
+        self.assertIn(head, current)
+        bullet = current[current.index(head):]
+        bullet = bullet[:bullet.index("\n- **")]
+        # Exact phrasings, each of which encodes one fact uniquely.
+        for fact in (
+            "merge commit **`dfa5df2c859ee353b531d0d9f8ed080d28a62377`**",
+            "final technical accepted head `5226bbc56e46bdaa433d0717954db1d395a92930`",
+            "acceptance-record head `a0ccf723e496dc8c1a6a056606ebe5fd854aa0fc`",
+            "parent 1 = merge直前main `83b7ab1ae59ca0a246142ee2e8b1d2c7eb6cf7e8`",
+            "parent 2 = `a0ccf723e496dc8c1a6a056606ebe5fd854aa0fc`",
+            "parent 2個の真のmerge commit",
+            "**通常のmerge commit方式**", "squash・rebase mergeは使用していない",
+            "signature **verified=true／reason valid**", "PR state **MERGED**",
+            "**803 changed lines**",
+            "[run 31473501774](https://github.com/matkei31/security-digest/actions/runs/31473501774)",
+            "full unittest **2206 OK**",
+            "**1525件・A30/B612/C638/D245・unclassified/stale/fingerprint mismatch 0/0/0**",
+            "accepted-history ledger **12 record**",
+            "[run 31474158474](https://github.com/matkei31/security-digest/actions/runs/31474158474)",
+            "`pages build and deployment`", "event **`dynamic`**",
+            "**手動Pages実行ではなく`workflow_dispatch`でもない**",
+            "`workflow_dispatch` runは0件",
+            "**production fetchは実行していない**",
+            "**Category C 638件はsource conversion未着手で引き続きblocked**",
+            "unblockはtranche 3uのscope", "migration lifecycleは未完成",
+            "**BL-038全体は未完了**",
+            "**supersededとしてclose**", "user original history entry 47",
+        ):
+            with self.subTest(fact=fact):
+                self.assertIn(fact, bullet)
+        # No OTHER 40-hex commit may be presented as this merge commit.
+        for wrong in re.findall(r"merge commit \*\*`([0-9a-f]{40})`\*\*", bullet):
+            with self.subTest(merge_commit=wrong):
+                self.assertEqual(wrong, "dfa5df2c859ee353b531d0d9f8ed080d28a62377")
+        # tranche 3t must read as merged, not as an open Draft, anywhere in current.
+        for stale in ("はDraftのままで、Ready化・mergeは未了", "現在実装中のtranche 3t",
+                      "tranche 3tのReady化・mergeはこれから"):
+            with self.subTest(stale=stale):
+                self.assertNotIn(stale, current)
+        self.assertIn("tranche 3t([PR #103](https://github.com/matkei31/security-digest/pull/103)"
+                      "、classification history foundation)も最終受入済み", current)
+        for token in ("`dfa5df2c859ee353b531d0d9f8ed080d28a62377`", "`31474158474`",
+                      "workflow_dispatch 0件", "**BL-038全体未完了。**"):
+            with self.subTest(status_token=token):
+                self.assertIn(token, self.status)
+
     def test_current_totals_are_unchanged_by_the_foundation_tranche(self):
         """3t converts nothing and consolidates nothing, so the live classification is
         bit-for-bit the accepted tranche 3s result."""
