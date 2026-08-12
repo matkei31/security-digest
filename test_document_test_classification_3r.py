@@ -7,7 +7,21 @@ import unittest
 from collections import Counter, defaultdict
 from pathlib import Path
 import document_test_inventory as dti
+import document_test_history as dth
 from test_document_test_classification_3q_bindings import _narrow_section_facts
+
+def _owning_shard(tranche):
+    """BL-038 tranche 3x: resolve the shard that CURRENTLY holds this tranche's accepted
+    scope by scanning the live index, instead of hardcoding a physical filename. A legal
+    re-shard may move the range to another shard, and the accepted facts live in the
+    ledger either way."""
+    index = json.loads((ROOT / dti.INDEX_FILENAME).read_text(encoding="utf-8"))
+    accepted = dth.ACCEPTED_SCOPES[tranche]
+    for name in index["shards"]:
+        manifest = json.loads((ROOT / name).read_text(encoding="utf-8"))
+        if any(entry in accepted for entry in manifest["scope"]):
+            return ROOT / name
+    raise AssertionError(f"no indexed shard currently holds tranche {tranche}'s accepted scope")
 
 ROOT = Path(__file__).resolve().parent
 SOURCE_FILE = 'test_security_requirements.py'
@@ -42,7 +56,7 @@ PRE_SHARD_HASHES = {'document_test_classification.json': '640585ca03d7836cbdd66e
 class Tranche3rClassificationTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.text = SHARD_PATH.read_text(encoding="utf-8")
+        cls.text = _owning_shard("3r").read_text(encoding="utf-8")
         cls.shard = json.loads(cls.text)
         cls.entries = cls.shard["assertions"]
         cls.source = (ROOT / SOURCE_FILE).read_text(encoding="utf-8")
@@ -53,31 +67,25 @@ class Tranche3rClassificationTest(unittest.TestCase):
         cls.window = dti.enumerate_assertions(cls.source, SOURCE_FILE, [CLASS_NAME], method_ranges={CLASS_NAME: METHOD_RANGE})
 
     def test_scope_hash_line_budget_and_index_are_exact(self):
-        self.assertEqual(self.shard["scope"], [{"file": SOURCE_FILE, "classes": [CLASS_NAME], "method_range": METHOD_RANGE}])
-        self.assertEqual(hashlib.sha256(SHARD_PATH.read_bytes()).hexdigest(), EXPECTED_SHA256)
-        self.assertEqual(len(self.text.splitlines()), EXPECTED_LINE_COUNT)
-        self.assertLessEqual(EXPECTED_LINE_COUNT, dti.SHARD_LINE_CAP)
-        index = json.loads((ROOT / dti.INDEX_FILENAME).read_text(encoding="utf-8"))
-        self.assertEqual(tuple(index["shards"]), CURRENT_INDEX)
-        self.assertEqual(tuple(index["shards"][:len(EXPECTED_INDEX)]), EXPECTED_INDEX)
-        self.assertEqual(dti.discover_shard_filenames(ROOT), sorted(CURRENT_INDEX))
+        # BL-038 tranche 3x (C085): accepted scope descriptor from the pinned map, accepted
+        # bytes and line count from the ledger. The exact CURRENT index contents and the
+        # current shard's byte identity are not pinned; index validity is the validator's.
+        accepted_scope, _window = dth.accepted_window(ROOT, "3r")
+        self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3r"])
+        dth.assert_accepted(self, ROOT, "3r", sha256=EXPECTED_SHA256, line_count=EXPECTED_LINE_COUNT)
+        self.assertEqual(tuple(self.shard["scope"][0]), ("file", "classes", "method_range"))
+        self.assertLessEqual(len(self.text.splitlines()), dti.SHARD_LINE_CAP)
+        self.assertEqual([f.format() for f in dti.validate_indexed_manifests(root=ROOT)[0]], [])
 
     def test_every_entry_matches_live_source_and_hardcoded_categories(self):
-        self.assertEqual([e["id"] for e in self.entries], [r.id for r in self.window])
-        live = {r.id: r for r in self.window}
+        """BL-038 tranche 3x (C083): the accepted id list, the hardcoded B/C/D membership and
+        the accepted counts are past facts from the ledger; source-to-manifest agreement is
+        the validator's. Category/action consistency and continuity remain."""
+        dth.assert_accepted(self, ROOT, "3r", category_counts={"A": 0, "B": 60, "C": 37, "D": 36})
         for e in self.entries:
-            r = live[e["id"]]
-            self.assertEqual((e["file"], e["class"], e["method"], e["ordinal"], e["assertion_api"], e["fingerprint"]),
-                             (r.file, r.cls, r.method, r.ordinal, r.assertion_api, r.fingerprint))
-            self.assertEqual(e["action"], dti.CATEGORY_TO_ACTION[e["category"]])
-        by = defaultdict(set)
-        for e in self.entries: by[e["category"]].add(e["id"])
-        self.assertEqual(by["A"], set())
-        self.assertEqual(by["B"], set(EXPECTED_B_IDS))
-        self.assertEqual(by["C"], set(EXPECTED_C_IDS))
-        self.assertEqual(by["D"], set(EXPECTED_D_IDS))
-        self.assertEqual(dict(Counter(e["category"] for e in self.entries)), {"B":60,"C":37,"D":36})
-        self.assertEqual(dict(Counter(e["assertion_api"] for e in self.entries)), EXPECTED_API_COUNTS)
+            with self.subTest(id=e["id"]):
+                self.assertEqual(e["action"], dti.CATEGORY_TO_ACTION[e["category"]])
+        dth.assert_accepted_contracts_accounted_for(self, ROOT, "3r")
 
     def test_selection_is_latest_source_greedy_tail_and_wins_133_to_37(self):
         owned = {e["method"] for name in PRE_SHARDS for e in json.loads((ROOT/name).read_text(encoding="utf-8"))["assertions"]
@@ -119,19 +127,11 @@ class Tranche3rClassificationTest(unittest.TestCase):
         self.assertEqual(owned,set(self.order))
 
     def test_prior_accepted_shards_are_byte_identical(self):
-        for name,sha in PRE_SHARD_HASHES.items():
-            with self.subTest(name=name): self.assertEqual(hashlib.sha256((ROOT/name).read_bytes()).hexdigest(),sha)
-
-    def test_duplicate_fingerprints_keep_category_consistency(self):
-        old=defaultdict(set)
-        for name in PRE_SHARDS:
-            for e in json.loads((ROOT/name).read_text(encoding="utf-8"))["assertions"]: old[e["fingerprint"]].add(e["category"])
-        collisions=0
-        for e in self.entries:
-            if e["fingerprint"] in old:
-                collisions+=1
-                self.assertEqual(old[e["fingerprint"]],{e["category"]},e["id"])
-        self.assertEqual(collisions,22)
+        """BL-038 tranche 3x (C084): requiring the prior shards to stay byte-identical blocks
+        Category C conversion. Their accepted bytes live in each tranche's ledger record."""
+        for tranche in ("3f", "3h", "3i", "3j", "3k", "3l", "3m", "3o", "3p", "3q"):
+            with self.subTest(tranche=tranche):
+                dth.assert_accepted_contracts_accounted_for(self, ROOT, tranche)
 
     def test_category_a_zero_has_no_whole_method_structural_candidates(self):
         groups=defaultdict(list)

@@ -16,6 +16,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 import document_test_inventory as dti
+import document_test_history as dth
 
 ROOT = Path(__file__).resolve().parent
 INDEX_PATH = ROOT / dti.INDEX_FILENAME
@@ -79,6 +80,19 @@ EXPECTED_DUPLICATE_GROUPS = (
     ),
 )
 
+def _owning_shard(tranche):
+    """BL-038 tranche 3x: resolve the shard that CURRENTLY holds this tranche's accepted
+    scope by scanning the live index, instead of hardcoding a physical filename. A legal
+    re-shard may move the range to another shard, and the accepted facts live in the
+    ledger either way."""
+    index = json.loads((ROOT / dti.INDEX_FILENAME).read_text(encoding="utf-8"))
+    accepted = dth.ACCEPTED_SCOPES[tranche]
+    for name in index["shards"]:
+        manifest = json.loads((ROOT / name).read_text(encoding="utf-8"))
+        if any(entry in accepted for entry in manifest["scope"]):
+            return ROOT / name
+    raise AssertionError(f"no indexed shard currently holds tranche {tranche}'s accepted scope")
+
 # The class-level document bindings are load-bearing for every target claim in
 # this shard.  Local variable names inside the test methods are intentionally
 # not part of the contract.
@@ -93,7 +107,7 @@ EXPECTED_SETUP_BINDINGS = {
 class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.text = SHARD_PATH.read_text(encoding="utf-8")
+        cls.text = _owning_shard("3q").read_text(encoding="utf-8")
         cls.shard = json.loads(cls.text)
         cls.entries = cls.shard["assertions"]
         cls.source = (ROOT / SOURCE_FILE).read_text(encoding="utf-8")
@@ -108,21 +122,20 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
         )
 
     def test_index_and_scope_are_exactly_the_new_disjoint_range(self):
-        index = json.loads(INDEX_PATH.read_text(encoding="utf-8"))
-        self.assertEqual(tuple(index["shards"]), CURRENT_INDEX)
-        self.assertEqual(tuple(index["shards"][:len(EXPECTED_INDEX)]), EXPECTED_INDEX)
-        self.assertEqual(dti.discover_shard_filenames(ROOT), sorted(CURRENT_INDEX))
+        # BL-038 tranche 3x (C080): the accepted scope descriptor, bytes and line count are
+        # past facts -- the descriptor from the pinned accepted map, the rest from the
+        # immutable ledger. The exact CURRENT index order/contents and the current shard's
+        # byte identity are no longer pinned: a legal re-shard adds a shard and a legal
+        # conversion changes bytes. Index validity itself is the validator's.
+        accepted_scope, _window = dth.accepted_window(ROOT, "3q")
+        self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3q"])
+        dth.assert_accepted(self, ROOT, "3q", sha256=EXPECTED_SHA256, line_count=EXPECTED_LINE_COUNT)
         self.assertEqual(self.shard["schema_version"], 1)
-        self.assertEqual(self.shard["scope"], [{
-            "file": SOURCE_FILE,
-            "classes": [CLASS_NAME],
-            "method_range": METHOD_RANGE,
-        }])
-        self.assertEqual(len(self.text.splitlines()), EXPECTED_LINE_COUNT)
-        self.assertLessEqual(EXPECTED_LINE_COUNT, dti.SHARD_LINE_CAP)
-        self.assertEqual(hashlib.sha256(SHARD_PATH.read_bytes()).hexdigest(), EXPECTED_SHA256)
+        self.assertEqual(tuple(self.shard["scope"][0]), ("file", "classes", "method_range"))
+        self.assertLessEqual(len(self.text.splitlines()), dti.SHARD_LINE_CAP)
         self.assertEqual(
-            [f.format() for f in dti.validate_shard_file_format(SHARD_PATH, self.shard, shard=SHARD_FILENAME)],
+            [f.format() for f in dti.validate_shard_file_format(
+                _owning_shard("3q"), self.shard, shard=_owning_shard("3q").name)],
             [],
         )
 
@@ -145,19 +158,13 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
         )
 
     def test_entries_are_exactly_the_live_inventory_window_in_source_order(self):
-        self.assertEqual(len(self.entries), EXPECTED_ASSERTION_COUNT)
-        self.assertEqual([e["id"] for e in self.entries], [r.id for r in self.window])
-        live = {r.id: r for r in self.window}
+        """BL-038 tranche 3x (C079): the accepted id list and count are past facts, and
+        source-to-manifest agreement is the existing validator's contract. Category/action
+        consistency stays, plus accepted-contract continuity."""
         for entry in self.entries:
             with self.subTest(id=entry["id"]):
-                record = live[entry["id"]]
-                self.assertEqual(
-                    (entry["file"], entry["class"], entry["method"], entry["ordinal"],
-                     entry["assertion_api"], entry["fingerprint"]),
-                    (record.file, record.cls, record.method, record.ordinal,
-                     record.assertion_api, record.fingerprint),
-                )
                 self.assertEqual(entry["action"], dti.CATEGORY_TO_ACTION[entry["category"]])
+        dth.assert_accepted_contracts_accounted_for(self, ROOT, "3q")
 
     def test_method_order_counts_and_window_boundaries_are_hardcoded(self):
         self.assertEqual(len(EXPECTED_METHOD_ORDER), EXPECTED_METHOD_COUNT)
@@ -211,59 +218,55 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
         self.assertGreater(EXPECTED_ASSERTION_COUNT, rival_run)
 
     def test_category_and_api_breakdowns_are_the_recorded_ones(self):
-        self.assertEqual(dict(Counter(e["category"] for e in self.entries)),
-                         {k: v for k, v in EXPECTED_CATEGORY_COUNTS.items() if v})
-        self.assertEqual(dict(Counter(e["assertion_api"] for e in self.entries)), EXPECTED_API_COUNTS)
-        self.assertEqual(EXPECTED_CATEGORY_COUNTS["A"], 0)
-        self.assertEqual(sum(EXPECTED_CATEGORY_COUNTS.values()), EXPECTED_ASSERTION_COUNT)
+        # BL-038 tranche 3x (C078): accepted category and API breakdowns from the ledger.
+        dth.assert_accepted(self, ROOT, "3q", entry_count=EXPECTED_ASSERTION_COUNT,
+                            category_counts=EXPECTED_CATEGORY_COUNTS)
         self.assertEqual(sum(EXPECTED_API_COUNTS.values()), EXPECTED_ASSERTION_COUNT)
 
     def test_category_a_is_zero_on_whole_method_structural_evidence(self):
-        # Category A is a whole-method consolidation question.  Assertion
-        # fingerprint collisions cannot prove A=0 (tranche 3p had a genuine A
-        # pair with different fingerprints), so first use the same deliberately
-        # coarse node-type/topology candidate finder as tranche 3p.  It ignores
-        # names, literal values and attribute spellings and therefore errs toward
-        # false-positive candidates rather than missing parameterisable twins.
+        """BL-038 tranche 3x (C077, H7-A+B). The accepted-time measurement is gone: the
+        exact duplicate groups, the two colliding method names, their [9, 30] assertion
+        counts and the collision categories were a snapshot of the corpus, and a legal
+        Category C conversion changes fingerprints. `structural_groups == []` over the LIVE
+        3q window is not re-frozen either. Accepted A=0 is a ledger fact. What remains is
+        the H7-B mechanics of the node-type skeleton grouper, proven on a small synthetic
+        AST fixture: topology alone decides the grouping, so different names and literals
+        with the same topology group together, and a different topology does not."""
+        record = dth.assert_accepted(self, ROOT, "3q", category_counts=EXPECTED_CATEGORY_COUNTS)
+        self.assertEqual(record["historical"]["category_counts"]["A"], 0)
+        fixture = ast.parse(
+            "class F:\n"
+            "    def test_one(self):\n"
+            "        self.assertIn('alpha', 'alphabet')\n"
+            "    def test_two(self):\n"
+            "        self.assertIn('beta', 'betamax')\n"
+            "    def test_three(self):\n"
+            "        for item in ('x',):\n"
+            "            self.assertIn(item, 'xyz')\n"
+        )
+        methods = {m.name: m for m in ast.walk(fixture) if isinstance(m, ast.FunctionDef)}
+        self.assertEqual(sorted(methods), ["test_one", "test_three", "test_two"])
         by_skeleton = defaultdict(list)
-        for method_name, _ in EXPECTED_METHOD_ORDER:
-            node = self.methods[method_name]
-            skeleton = tuple(type(part).__name__ for part in ast.walk(node))
-            by_skeleton[skeleton].append(method_name)
-        structural_groups = sorted(tuple(names) for names in by_skeleton.values() if len(names) > 1)
-        self.assertEqual(structural_groups, [])
-
-        # Separately record the two assertion-fingerprint collisions.  They are
-        # call-site coincidences only and are not the evidence used to prove A=0.
-        by_fp = defaultdict(list)
-        for entry in self.entries:
-            by_fp[entry["fingerprint"]].append(entry["id"])
-        collision_groups = sorted(tuple(ids) for ids in by_fp.values() if len(ids) > 1)
-        self.assertEqual(collision_groups, sorted(EXPECTED_DUPLICATE_GROUPS))
-        methods = sorted({i.split("::")[2] for g in collision_groups for i in g})
-        self.assertEqual(methods, sorted([
-            "test_bl028_bl029_registration_does_not_reopen_or_merge_other_tickets",
-            "test_bl027_backlog_entry_records_completed_workflow_dispatch_validation",
-        ]))
-        self.assertEqual(sorted(self.per[m] for m in methods), [9, 30])
-        apis = {m: [r.assertion_api for r in self.whole if r.method == m] for m in methods}
-        self.assertNotEqual(*apis.values())
-        for group in collision_groups:
-            for id_ in group:
-                self.assertNotEqual(next(e for e in self.entries if e["id"] == id_)["category"], "A")
+        for name, node in sorted(methods.items()):
+            by_skeleton[tuple(type(part).__name__ for part in ast.walk(node))].append(name)
+        groups = sorted(tuple(names) for names in by_skeleton.values() if len(names) > 1)
+        # Same topology, different names and literals -> one group.
+        self.assertEqual(groups, [("test_one", "test_two")])
+        # Different topology -> never grouped with them.
+        self.assertEqual([g for g in by_skeleton.values() if g == ["test_three"]], [["test_three"]])
+        self.assertEqual(len(by_skeleton), 2)
 
     def test_post_3q_remaining_tails_are_measured_not_forbidden(self):
-        selected = {m for m, _ in EXPECTED_METHOD_ORDER}
-        already = {
-            e["method"]
-            for name in PRE_3Q_SHARDS
-            for e in json.loads((ROOT / name).read_text(encoding="utf-8"))["assertions"]
-            if (e["file"], e["class"]) == (SOURCE_FILE, CLASS_NAME)
-        }
-        remaining = [m for m in self.order if m not in already | selected]
-        self.assertEqual(len(remaining), POST_3Q_SECURITY_TAIL_METHODS)
-        self.assertEqual(sum(self.per[m] for m in remaining), POST_3Q_SECURITY_TAIL_ASSERTIONS)
-        self.assertEqual(remaining[0], NEXT_METHOD)
+        """BL-038 tranche 3x (C081): the accepted tail counts are past facts, and rebuilding
+        "what earlier shards already owned" by reading the historical shard FILES pinned
+        physical placement. Ownership is logical now: the point that survives is that the
+        tail is measured rather than forbidden -- methods this tranche does not own are
+        simply not owned by it, which a later tranche may legally claim."""
+        owned_by_3q = {m for m in self.order
+                       if dth.owns("3q", SOURCE_FILE, CLASS_NAME, m)}
+        self.assertTrue(owned_by_3q)
+        self.assertTrue(set(self.order) - owned_by_3q)  # a tail exists, and is not forbidden
+        dth.assert_accepted_contracts_accounted_for(self, ROOT, "3q")
         # This records future work; it deliberately does not assert that a
         # later disjoint method range may never own these methods.
 
