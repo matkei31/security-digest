@@ -8637,24 +8637,123 @@ class Bl038Tranche3wbCouplingRetargetRecordSyncTest(unittest.TestCase):
                 self.assertNotIn(stale, self.bl038)
         self.assertNotIn("**未解決finding**", self.status)
 
-    def test_the_current_residual_accounting_is_the_post_3w_state(self):
-        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
-        self.assertIn("3v＋3w-a＋3w-bでfrozen 61件を実施済み", current)
-        self.assertIn("**3w全体のfrozen 38は完了**", current)
-        self.assertIn("**frozen-inventory residual 45にunresolved known out-of-population "
-                      "correction 1件(`3v-1`)があり、known residualはat least 46**", current)
-        self.assertIn("**final repo-wide residual scanは未実施**", current)
-        for bare in ("residual 45)", "residual 45。", "residual 45、"):
-            with self.subTest(bare=bare):
-                self.assertNotIn(bare, current)  # no bare figure as the total
-        self.assertIn("known residual at least 46", self.status)
-        # The superseded 3w-a-era figures must not linger in the current paragraph.
-        for stale in ("frozen 51件", "residual 55", "at least 57"):
-            with self.subTest(stale=stale):
-                self.assertNotIn(stale, current)
+    def test_the_3wb_entry_records_its_own_accounting(self):
+        """3w-b's own paragraph keeps the accounting as of 3w (handled 61 / residual 45 /
+        at least 46). The CURRENT 残作業 paragraph is owned by the latest tranche."""
+        self.assertIn("frozen handled(3v 23＋3w-a 28＋3w-b 10) **61**", self.bl038)
+        self.assertIn("**frozen residual 45**", self.bl038)
+        self.assertIn("**known residual at least 46**", self.bl038)
 
     def test_category_c_is_still_blocked_until_tranche_3y(self):
         self.assertIn("Category C 638件は引き続きblockedで、unblockはtranche 3y acceptance後。**", self.bl038)
+        self.assertIn("unblockはtranche 3y acceptance後", self.status)
+
+
+class Bl038Tranche3xCouplingRetargetRecordSyncTest(unittest.TestCase):
+    """BL-038 tranche 3x: the method-range scope, the C077/C082/C086 rulings, the three
+    proofs and the current residual accounting are recorded as facts. One class for the
+    whole tranche -- no per-family record-sync classes, no new detector."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.root = Path(__file__).resolve().parent
+        cls.backlog = (cls.root / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (cls.root / "STATUS.md").read_text(encoding="utf-8")
+        start = cls.backlog.index("## BL-038")
+        end = cls.backlog.find("\n## ", start + 8)
+        cls.bl038 = cls.backlog[start:] if end < 0 else cls.backlog[start:end]
+
+    def test_the_scope_and_disposition_are_recorded(self):
+        for token in ("tranche 3x(method-range coupling retarget、3o〜3s、2026-08-12)",
+                      "143e97a61fd2e738a0172986f6455424f8263244",
+                      "frozen **C062〜C088の27 rows**",
+                      "3o C062-C069 8件・3p C070-C076 7件・3q C077-C081 5件・"
+                      "3r C082-C085 4件・3s C086-C088 3件",
+                      "**rewrite 25件・remove_obsolete 2件**",
+                      "**3x residual 0**"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        self.assertIn("**rewrite 25／remove_obsolete 2**", self.status)
+
+    def test_the_h7_rulings_are_recorded(self):
+        for token in ("**node-type skeleton grouperのmechanicsのみをsmall synthetic AST fixture**",
+                      "accepted A=0はledger",
+                      "**C082/C086**はaccepted-time collision measurementとしてwhole method削除",
+                      "新current collision ruleへの置換なし・ledger追加なし・synthetic replacementなし"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+
+    def test_the_physical_shard_and_index_decoupling_is_recorded(self):
+        for token in ("**physical shard filename依存の除去(round 1 Blocker 1で完全化)**",
+                      "**3o/3p/3q/3r/3sの5 classすべて**のcandidate entriesを",
+                      "`_owning_shard(tranche)` helper(physical owning shardを解決する方式)は"
+                      "**3コピーすべて削除**",
+                      "9 prohibited shapeのcandidate-scope residual auditは**0 hits**(surviving 25 rows全件)",
+                      "reverse coupling(`HISTORICAL != CURRENT`)も**0**",
+                      "**retroactive ledger追加0件**", "**validatorは弱めていない**",
+                      # The ledger has no API-counts field; the docs must not claim it does.
+                      "**ledgerが保持しているのはsha256／line_count／entry_count／category_counts／"
+                      "contracts_digestであり、API breakdownはledgerのfieldではない**"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        self.assertIn("新しいledger／snapshot／detector／meta-test／migration mechanismは追加していない",
+                      self.bl038)
+        self.assertIn("**API breakdownはledger fieldではなく、CURRENT freezeを除去しただけ**", self.status)
+
+    def test_the_round_one_blocker_fixes_are_recorded(self):
+        for token in ("**C063/C071**はaccepted membershipをCURRENT source再enumerate",
+                      "**C067/C074**のmanual CURRENT prefix再実装は削除",
+                      "**C064**はlive structural recomputationを削除した",
+                      "false assurance"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+
+    def test_the_three_proofs_are_recorded(self):
+        for token in ("tranche 3x proofs(2026-08-12)",
+                      "**C069/C075/C084がgreen**",
+                      "**migration metadata 0**",
+                      "**handled 3v/3w/3x failure 0**",
+                      "**other unexpected noncandidate 0**",
+                      "合法形は**実測で決定**した",
+                      "**handled rows(3v+3w+3x) failing 0**",
+                      "setUpClassごと落ちる",
+                      "**physical decouplingのfocused re-shard proofを3件追加**",
+                      "**Proof C3**(co-resident: 3q＋3sを同一temporary shardへ",
+                      "**3q window 124件(security_requirements only)／"
+                      "3s window 37件(source_usage_policy only)でcross-contamination 0**",
+                      "**setUpClass physical failure 0**",
+                      "**6件のmutationはすべて完全復元済み。**"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+
+    def test_the_current_residual_accounting_is_the_post_3x_state(self):
+        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        self.assertIn("3v＋3w＋3xでfrozen 88件を実施済み", current)
+        self.assertIn("**frozen-inventory residual 18にunresolved known out-of-population "
+                      "correction 1件(`3v-1`)があり、known residualはat least 19**", current)
+        self.assertIn("**final repo-wide residual scanは未実施**", current)
+        for bare in ("residual 18)", "residual 18。", "residual 18、"):
+            with self.subTest(bare=bare):
+                self.assertNotIn(bare, current)  # no bare figure as the total
+        for stale in ("frozen 61件", "residual 45", "at least 46"):
+            with self.subTest(stale=stale):
+                self.assertNotIn(stale, current)
+        self.assertIn("known residual at least 19", self.status)
+
+    def test_the_snapshot_is_untouched_and_category_c_is_blocked(self):
+        snapshot = json.loads((self.root / "document_test_coupling_inventory_3v.json")
+                              .read_text(encoding="utf-8"))
+        self.assertEqual(snapshot["candidate_count"], 106)
+        self.assertEqual(len(snapshot["candidates"]), 106)
+        self.assertEqual([c["id"] for c in snapshot["corrections"]],
+                         ["R0.1-1", "R0.1-2", "R0.1-3", "R0.2-1", "3v-1", "3v-2", "3w-1", "3w-2"])
+        accounting = snapshot["residual_accounting"]
+        self.assertEqual(accounting["recorded_at"], "tranche 3v acceptance")
+        self.assertIs(accounting["is_current_tracker"], False)
+        self.assertEqual([k for k in accounting if "3x" in k], [])
+        self.assertIn("**frozen 106をcomplete coupling universeとは主張しない**", self.bl038)
+        self.assertIn("Category C 638件は引き続きblockedで、unblockはtranche 3y acceptance後。**",
+                      self.bl038)
         self.assertIn("unblockはtranche 3y acceptance後", self.status)
 
 

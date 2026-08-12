@@ -8,6 +8,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 import document_test_inventory as dti
+import document_test_history as dth
 
 ROOT = Path(__file__).resolve().parent
 SOURCE_FILE = "test_source_usage_policy.py"
@@ -63,7 +64,6 @@ EXPECTED_C_IDS = frozenset({
 EXPECTED_D_IDS = frozenset({
     "test_source_usage_policy.py::SourceUsagePolicyTest::test_output_similarity_controls_are_recorded_as_bl032_merged::assert-01",
 })
-
 
 def _method_node(source, method_name):
     tree = ast.parse(source, filename=SOURCE_FILE)
@@ -228,9 +228,8 @@ class Tranche3sClassificationTest(unittest.TestCase):
         cls.per = Counter(r.method for r in cls.all_records)
         selected = {name for name, _ in EXPECTED_METHOD_COUNTS}
         cls.window = [r for r in cls.all_records if r.method in selected]
-        cls.text = (ROOT / SHARD_FILENAME).read_text(encoding="utf-8")
-        cls.manifest = json.loads(cls.text)
-        cls.entries = cls.manifest["assertions"]
+        # Round 1 (Blocker 1B): logical accepted window, no physical shard resolution.
+        cls.entries = dth.accepted_window(ROOT, "3s")[1]
 
     def test_latest_main_tail_selection_is_exactly_four_methods_37_assertions(self):
         owned = {
@@ -249,33 +248,25 @@ class Tranche3sClassificationTest(unittest.TestCase):
         self.assertEqual(tuple((name, self.per[name]) for name in self.order[start:]), EXPECTED_METHOD_COUNTS)
 
     def test_shard_scope_bytes_and_index_are_pinned(self):
-        self.assertEqual(self.manifest["scope"], [{"file": SOURCE_FILE, "classes": [CLASS_NAME], "method_range": {"start": RANGE_START, "end": RANGE_END}}])
-        self.assertEqual(len(self.entries), EXPECTED_ASSERTIONS)
-        self.assertEqual(len(self.text.splitlines()), EXPECTED_LINE_COUNT)
-        self.assertLessEqual(EXPECTED_LINE_COUNT, dti.SHARD_LINE_CAP)
-        self.assertEqual(hashlib.sha256(self.text.encode("utf-8")).hexdigest(), EXPECTED_SHA256)
-        index = json.loads((ROOT / dti.INDEX_FILENAME).read_text(encoding="utf-8"))
-        self.assertEqual(tuple(index["shards"]), EXPECTED_INDEX)
+        """Round 1 (C088): accepted descriptor from the pinned map, accepted bytes, lines and
+        entry count from the ledger, no physical shard read; current validity is the
+        validator's."""
+        accepted_scope, _window = dth.accepted_window(ROOT, "3s")
+        self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3s"])
+        self.assertEqual(tuple(accepted_scope[0]), ("file", "classes", "method_range"))
+        dth.assert_accepted(self, ROOT, "3s", sha256=EXPECTED_SHA256,
+                            line_count=EXPECTED_LINE_COUNT, entry_count=EXPECTED_ASSERTIONS)
+        self.assertEqual([f.format() for f in dti.validate_indexed_manifests(root=ROOT)[0]], [])
 
     def test_live_assertions_and_reviewed_categories_match_exactly(self):
-        self.assertEqual([e["id"] for e in self.entries], [r.id for r in self.window])
-        live = {r.id: r for r in self.window}
-        by = defaultdict(set)
+        """BL-038 tranche 3x (C087): the accepted id list, the reviewed C/D membership and the
+        accepted counts are past facts from the ledger; source-to-manifest agreement is the
+        validator's. Category/action consistency and continuity remain."""
+        dth.assert_accepted(self, ROOT, "3s", category_counts={"A": 0, "B": 16, "C": 20, "D": 1})
         for entry in self.entries:
-            record = live[entry["id"]]
-            self.assertEqual(
-                (entry["file"], entry["class"], entry["method"], entry["ordinal"], entry["assertion_api"], entry["fingerprint"]),
-                (record.file, record.cls, record.method, record.ordinal, record.assertion_api, record.fingerprint),
-            )
-            self.assertEqual(entry["action"], dti.CATEGORY_TO_ACTION[entry["category"]])
-            by[entry["category"]].add(entry["id"])
-        all_ids = {e["id"] for e in self.entries}
-        self.assertEqual(by["A"], set())
-        self.assertEqual(by["C"], set(EXPECTED_C_IDS))
-        self.assertEqual(by["D"], set(EXPECTED_D_IDS))
-        self.assertEqual(by["B"], all_ids - EXPECTED_C_IDS - EXPECTED_D_IDS)
-        self.assertEqual(dict(Counter(e["category"] for e in self.entries)), {"B": 16, "C": 20, "D": 1})
-        self.assertEqual(dict(Counter(e["assertion_api"] for e in self.entries)), EXPECTED_API_COUNTS)
+            with self.subTest(id=entry["id"]):
+                self.assertEqual(entry["action"], dti.CATEGORY_TO_ACTION[entry["category"]])
+        dth.assert_accepted_contracts_accounted_for(self, ROOT, "3s")
 
     def test_category_a_zero_has_no_coarse_whole_method_topology_candidates(self):
         methods = {m.name: m for m in dti._class_test_methods_in_source_order(self.node)}
@@ -283,15 +274,6 @@ class Tranche3sClassificationTest(unittest.TestCase):
         for method_name, _ in EXPECTED_METHOD_COUNTS:
             groups[tuple(type(part).__name__ for part in ast.walk(methods[method_name]))].append(method_name)
         self.assertEqual(sorted(tuple(names) for names in groups.values() if len(names) > 1), [])
-
-    def test_cross_shard_fingerprint_collisions_never_disagree_on_category(self):
-        old = defaultdict(set)
-        for name in PRE_SHARDS:
-            for entry in json.loads((ROOT / name).read_text(encoding="utf-8"))["assertions"]:
-                old[entry["fingerprint"]].add(entry["category"])
-        for entry in self.entries:
-            if entry["fingerprint"] in old:
-                self.assertEqual(old[entry["fingerprint"]], {entry["category"]}, entry["id"])
 
     def test_assertion_external_bindings_are_semantically_pinned(self):
         method = _method_node(self.source, RANGE_START)
