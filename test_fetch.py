@@ -4310,50 +4310,25 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
                 self.assertIn(required, entry9)
 
     def test_manifest_custom_domain_portion_still_matches_tranche3b_corrected_counts(self):
-        self.assertTrue(self.MANIFEST_PATH.is_file())
-        manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
-        self.assertEqual(manifest["schema_version"], 1)
-        # tranche 3c expanded scope to 2 files; test_custom_domain.py's own
-        # declared scope entry and its 97 assertions must remain unchanged.
-        custom_domain_scope = next(
-            s for s in manifest["scope"] if s["file"] == "test_custom_domain.py"
-        )
-        self.assertEqual(
-            custom_domain_scope["classes"],
-            [
-                "DocsCnameFileTest",
-                "CnameSurvivesGenerationTest",
-                "ArticleBriefContractUnchangedTest",
-                "Bl007DocumentationTest",
-                "ReadmePublicUrlTest",
-                "Bl007ClosureRecordTest",
-                "TicketIdTypoTest",
-            ],
-        )
-        custom_domain_entries = [
-            a for a in manifest["assertions"] if a["file"] == "test_custom_domain.py"
-        ]
-        self.assertEqual(len(custom_domain_entries), 97)
-        from collections import Counter
-
-        counts = Counter(a["category"] for a in custom_domain_entries)
-        # round 2 review corrected this tally further: 11 more B entries
-        # (raw `.index()` ordering anchors and short-but-brittle prose
-        # fragments) moved to C (see BACKLOG round 2 evidence). tranche 3c
-        # must not have touched this file's classification.
-        self.assertEqual(dict(counts), {"A": 8, "B": 37, "C": 41, "D": 11})
-        self.assertEqual(sum(counts.values()), 97)
-        # every entry uses `targets` (round 1 fix, Blocker 2), never the
-        # old single-string `target`
-        for entry in custom_domain_entries:
-            self.assertIn("targets", entry)
-            self.assertNotIn("target", entry)
+        """BL-038 tranche 3y (C090): tranche 3b's accepted per-file scope and its corrected
+        A8/B37/C41/D11 tally were recomputed from the CURRENT base manifest, which freezes
+        that file's classification and blocks Category C conversion. There is no per-file
+        breakdown in the history ledger, so this is NOT claimed to live there: the accepted
+        tally is asserted as the historical BACKLOG acceptance witness that records it, and
+        the current tree owes only accepted-contract continuity. Current per-entry key shape
+        and category/action consistency are the validator's."""
+        self.assertIn("A 8／B 37／C 41／D 11", self._bl038_section())
+        dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3f")
 
     def test_manifest_line_count_is_within_budget(self):
         lines = self.MANIFEST_PATH.read_text(encoding="utf-8").splitlines()
         self.assertLessEqual(len(lines), 1000)
 
     def test_backlog_records_tranche3b_kickoff_evidence_and_no_source_conversion(self):
+        """BL-038 tranche 3y (C089): tranche 3b's kickoff evidence, including that it
+        classified without converting source, is a HISTORICAL acceptance witness in the
+        BACKLOG record. It is asserted as that record -- not as a claim about the current
+        tree, which a legal Category C conversion may legitimately change."""
         bl038 = self._bl038_section()
         for required in (
             "tranche 3b着手",
@@ -4361,7 +4336,6 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
             "bfa6c7281c760597b865a425de2f3df6759c1a3d",
             "8435dcc32518037b96b736ad7f81e4a1b951c348",
             "A 8／B 48／C 30／D 11",
-            "97",
             "validate_manifest",
             "test_document_test_classification.py",
         ):
@@ -4615,27 +4589,11 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
         self.assertNotIn("**A 10／B 61／C 80／D 34(total 185)**", bl038_line)
 
     def test_manifest_ui_spec_portion_still_matches_tranche3c_corrected_counts(self):
-        # tranche 3d expanded scope to 3 files; test_ui_spec.py's own
-        # declared scope entry and its 185 (round-2-corrected) assertions
-        # must remain unchanged.
-        manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
-        self.assertEqual(manifest["schema_version"], 1)
-        ui_spec_scope = next(s for s in manifest["scope"] if s["file"] == "test_ui_spec.py")
-        self.assertEqual(
-            ui_spec_scope["classes"],
-            ["UiSpecDocumentTest", "Bl036ArticleAttributionUiSpecTest"],
-        )
-        ui_spec_entries = [a for a in manifest["assertions"] if a["file"] == "test_ui_spec.py"]
-        self.assertEqual(len(ui_spec_entries), 185)
-        from collections import Counter
-
-        ui_spec_counts = Counter(a["category"] for a in ui_spec_entries)
-        # round 1 review corrected this tally: 7 mixed-contract D/B entries
-        # moved to C. round 2 review found 4 more and moved those to C too.
-        self.assertEqual(dict(ui_spec_counts), {"A": 10, "B": 59, "C": 84, "D": 32})
-        for entry in ui_spec_entries:
-            self.assertIn("targets", entry)
-            self.assertNotIn("target", entry)
+        """BL-038 tranche 3y (C091): as C090 -- tranche 3c's accepted per-file tally is the
+        historical BACKLOG acceptance witness, not a property required of the current base
+        manifest, and the ledger holds no per-file breakdown to claim it from."""
+        self.assertIn("A 10／B 59／C 84／D 32", self._bl038_section())
+        dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3f")
 
     def test_manifest_validates_with_zero_failures_via_document_test_inventory(self):
         import document_test_inventory as dti
@@ -4874,41 +4832,13 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
         self.assertNotIn("最終分類: **test_status.py: A 5／B 28／C 39／D 26", bl038_line)
 
     def test_manifest_status_portion_still_matches_tranche3d_corrected_counts(self):
-        # tranche 3e expanded scope to 4 files; test_status.py's own
-        # declared scope entry and its 98 (round-2-corrected) assertions
-        # must remain unchanged. (Matches the analogous tranche-3c-portion
-        # test in Bl038Tranche3cRecordSyncTest, applied one tranche later.)
-        manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
-        self.assertEqual(manifest["schema_version"], 1)
-        status_scope = next(s for s in manifest["scope"] if s["file"] == "test_status.py")
-        self.assertEqual(
-            status_scope["classes"],
-            [
-                "StatusSourceOfTruthTest",
-                "Sd031DecisionTest",
-                "Bl035ActiveWorkTest",
-                "StatusSecurityOperationsSourceOfTruthTest",
-                "Bl036PostMergeRecordFixTest",
-                "Bl036ProductionEvidenceSyncTest",
-            ],
-        )
-        from collections import Counter
-
-        # PR #85 round 1 review had (incorrectly) moved 5 fixed Version/
-        # Status/enum/machine-readable-key entries in test_status.py to A,
-        # based on a misreading of the classification definition. Round 2
-        # review determined round 1's instructed definition was itself a
-        # misapplication of BL-038's established Category A policy (a
-        # repeated structural pattern with shared-helper consolidation
-        # value is required, not merely a fixed/exact value) and reverted
-        # those 5 entries to B/D.
-        status_entries = [a for a in manifest["assertions"] if a["file"] == "test_status.py"]
-        self.assertEqual(len(status_entries), 98)
-        status_counts = Counter(a["category"] for a in status_entries)
-        self.assertEqual(dict(status_counts), {"B": 31, "C": 39, "D": 28})
-        for entry in status_entries:
-            self.assertIn("targets", entry)
-            self.assertNotIn("target", entry)
+        """BL-038 tranche 3y (C092): tranche 3d's accepted per-file scope and its
+        round-2-corrected A0/B31/C39/D28 tally are the historical BACKLOG acceptance
+        witness. Recomputing them from the CURRENT manifest froze test_status.py's
+        classification; the ledger has no per-file breakdown, so nothing here claims it
+        does, and the current tree owes only accepted-contract continuity."""
+        self.assertIn("A 0／B 31／C 39／D 28", self._bl038_section())
+        dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3f")
 
     def test_status_py_fixed_version_status_fields_are_b_or_d_not_a(self):
         # PR #85 round 2 review: round 1 had misread the classification
@@ -4942,18 +4872,14 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
                 )
 
     def test_status_py_has_no_category_a_entries_without_helper_consolidation_rationale(self):
-        # Category A in this manifest requires a repeated structural/
-        # assertion pattern with clear shared-helper consolidation value
-        # (see CUSTOM_DOMAIN_EXPECTED_A_IDS/UI_SPEC_EXPECTED_A_IDS' own
-        # rationale text for the established pattern). test_status.py has
-        # no fingerprint duplicates (confirmed at kickoff) and no entries
-        # meeting that bar, so it must have zero Category A entries.
-        manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
-        status_a_entries = [
-            a for a in manifest["assertions"]
-            if a["file"] == "test_status.py" and a["category"] == "A"
-        ]
-        self.assertEqual(status_a_entries, [])
+        """BL-038 tranche 3y (C093): "test_status.py has no Category A" was tranche 3d's
+        accepted RESULT, recorded in the BACKLOG acceptance witness as A 0. Requiring the
+        CURRENT manifest to keep zero Category A entries for that file freezes its
+        classification, which is exactly what blocks conversion, so the accepted result is
+        asserted as history instead. The current Category A design decision was settled
+        separately in tranche 3t and is not restated here."""
+        self.assertIn("A 0／B 31／C 39／D 28", self._bl038_section())
+        dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3f")
 
     def test_backlog_still_records_tranche3d_own_manifest_line_count_as_390(self):
         # tranche 3d's own budget/exact-line-count guards checked the LIVE
@@ -5156,48 +5082,11 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
                 self.assertIn(required, bl038)
 
     def test_manifest_security_requirements_tranche3e_portion_is_unchanged(self):
-        # tranche 3f added a fifth class to the same scope entry, so the
-        # combined-count guard moved to Bl038Tranche3fRecordSyncTest. What
-        # stays checkable here is that tranche 3e's OWN four classes and
-        # their 143 round-1-corrected entries are unchanged.
-        manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
-        self.assertEqual(manifest["schema_version"], 1)
-        self.assertEqual(
-            [s["file"] for s in manifest["scope"]],
-            ["test_custom_domain.py", "test_ui_spec.py", "test_status.py", "test_security_requirements.py"],
-        )
-        tranche3e_classes = [
-            "Bl034Round2ReviewCorrectionsTest",
-            "Bl034ImplementationAcceptanceTest",
-            "Bl034CloseoutTest",
-            "StatusSecurityRequirementsSourceOfTruthTest",
-        ]
-        sr_scope = next(
-            s for s in manifest["scope"] if s["file"] == "test_security_requirements.py"
-        )
-        self.assertEqual(
-            [c for c in sr_scope["classes"] if c in tranche3e_classes], tranche3e_classes
-        )
-        from collections import Counter
-
-        # PR #86 round 1 review corrected 12 test_security_requirements.py
-        # entries misclassified B: 9 to C (raw negative multi-token
-        # substrings, a stylistic ID-range embedded in prose, a raw noun
-        # compound not extracted to a field, a multi-word phrase with a
-        # common-noun suffix, a mixed atomic/noun-phrase loop check) and 3
-        # to D (bare "PR #NN" mentions -- substrings of this document's
-        # always-fully-linked PR references, matching this manifest's own
-        # established PR-reference precedent of C/D, never B).
-        sr_entries = [
-            a for a in manifest["assertions"]
-            if a["file"] == "test_security_requirements.py" and a["class"] in tranche3e_classes
-        ]
-        self.assertEqual(len(sr_entries), 143)
-        sr_counts = Counter(a["category"] for a in sr_entries)
-        self.assertEqual(dict(sr_counts), {"B": 37, "C": 71, "D": 35})
-        for entry in sr_entries:
-            self.assertIn("targets", entry)
-            self.assertNotIn("target", entry)
+        """BL-038 tranche 3y (C094): tranche 3e's accepted per-file scope and its
+        A0/B37/C71/D35 tally are the historical BACKLOG acceptance witness, not a
+        requirement on the current base manifest; the ledger holds no per-file breakdown."""
+        self.assertIn("A 0／B 37／C 71／D 35", self._bl038_section())
+        dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3f")
 
     def test_security_requirements_five_reviewer_flagged_ids_are_correctly_classified(self):
         # PR #86 round 1 review Blocker 2: 5 specific entries were
@@ -5532,63 +5421,26 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
         self.assertIn("最終受入・Ready化・merge承認ではない", selection_line)
 
     def test_manifest_is_scoped_to_four_files_with_tranche3f_combined_counts(self):
-        manifest = self._manifest()
-        self.assertEqual(manifest["schema_version"], 1)
-        self.assertEqual(
-            [s["file"] for s in manifest["scope"]],
-            ["test_custom_domain.py", "test_ui_spec.py", "test_status.py", "test_security_requirements.py"],
-        )
-        sr_scope = next(
-            s for s in manifest["scope"] if s["file"] == "test_security_requirements.py"
-        )
-        # Source order: the tranche 3f class is declared FIRST because its
-        # `class` statement precedes tranche 3e's four in the source file.
-        self.assertEqual(
-            sr_scope["classes"],
-            [
-                self.TRANCHE_3F_CLASS,
-                "Bl034Round2ReviewCorrectionsTest",
-                "Bl034ImplementationAcceptanceTest",
-                "Bl034CloseoutTest",
-                "StatusSecurityRequirementsSourceOfTruthTest",
-            ],
-        )
-        self.assertEqual(len(manifest["assertions"]), 585)
-        from collections import Counter
-
-        counts = Counter(a["category"] for a in manifest["assertions"])
-        self.assertEqual(dict(counts), {"A": 22, "B": 175, "C": 268, "D": 120})
-        sr_entries = [a for a in manifest["assertions"] if a["file"] == "test_security_requirements.py"]
-        self.assertEqual(len(sr_entries), 205)
-        new_entries = [a for a in sr_entries if a["class"] == self.TRANCHE_3F_CLASS]
-        self.assertEqual(len(new_entries), 62)
-        self.assertEqual(
-            dict(Counter(a["category"] for a in new_entries)),
-            {"A": 4, "B": 11, "C": 33, "D": 14},
-        )
-        for entry in new_entries:
-            with self.subTest(id=entry["id"]):
-                self.assertIn("targets", entry)
-                self.assertNotIn("target", entry)
+        """BL-038 tranche 3y (C095): tranche 3f's accepted combined state -- 585 entries and
+        A22/B175/C268/D120 -- is an immutable ledger fact, asserted from there rather than
+        recounted on the current manifest. The accepted scope descriptor comes from the
+        pinned accepted map, and 3f's own per-class sub-tally (62 new entries, A4/B11/C33/D14)
+        is the historical BACKLOG acceptance witness, since the ledger stores no per-class
+        breakdown. Current scope legality and entry shape are the validator's."""
+        dth.assert_accepted(self, self.ROOT, "3f", entry_count=585,
+                            category_counts={"A": 22, "B": 175, "C": 268, "D": 120})
+        accepted_scope, _window = dth.accepted_window(self.ROOT, "3f")
+        self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3f"])
+        self.assertIn("A 4／B 11／C 33／D 14", self._bl038_section())
 
     def test_tranche3f_entries_are_appended_without_disturbing_the_existing_523(self):
-        # The 523 entries accepted through tranche 3e must survive verbatim and
-        # in order: inserting the 3f class moves where the new block lands only.
-        manifest = self._manifest()
-        existing = [
-            a for a in manifest["assertions"] if a["class"] != self.TRANCHE_3F_CLASS
-        ]
-        self.assertEqual(len(existing), 523)
-        by_file = [a["file"] for a in existing]
-        self.assertEqual(
-            [by_file[0], by_file[96], by_file[97], by_file[281], by_file[282], by_file[379], by_file[380], by_file[522]],
-            [
-                "test_custom_domain.py", "test_custom_domain.py",
-                "test_ui_spec.py", "test_ui_spec.py",
-                "test_status.py", "test_status.py",
-                "test_security_requirements.py", "test_security_requirements.py",
-            ],
-        )
+        """BL-038 tranche 3y (C096): "the existing 523 survive verbatim and in order" was
+        proven by slicing the CURRENT manifest at fixed positions (by_file[96], [281], [379],
+        [522]), which is positional H3 coupling. The accepted totals are ledger facts and the
+        survival of every accepted contract is contract continuity -- neither needs a
+        position in the current file."""
+        dth.assert_accepted(self, self.ROOT, "3f", entry_count=585)
+        dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3f")
 
     def test_tranche3f_category_a_is_a_duplicated_method_pair_not_a_recurring_value(self):
         # The four Category A entries are the one substantive difference from
@@ -6054,23 +5906,15 @@ class Bl038Tranche3hRecordSyncTest(unittest.TestCase):
                 self.assertIn(required, status)
 
     def test_tranche3h_shard_subset_survives_the_tranche3i_append(self):
-        """Tranche 3h's 136 are still shard 001's FIRST 136, unchanged."""
-        from collections import Counter
-
-        shard = json.loads((self.ROOT / "document_test_classification_001.json").read_text(encoding="utf-8"))
-        subset = [e for e in shard["assertions"] if e["file"] == "test_security_operations.py"]
-        self.assertEqual(len(subset), 136)
-        self.assertEqual(subset, shard["assertions"][:136])
-        self.assertEqual(shard["scope"][0]["file"], "test_security_operations.py")
-        self.assertEqual(
-            shard["scope"][0]["classes"],
-            ["SecurityOperationsContractTest", "Bl031SecurityOperationsReconciliationTest"],
-        )
-        counts = Counter(e["category"] for e in subset)
-        self.assertEqual(dict(counts), {"B": 38, "C": 91, "D": 7})
-        self.assertEqual(counts["A"], 0)
-        # 136/144 is tranche 3h HISTORY, not the file today.
-        self.assertNotEqual(len(shard["assertions"]), 136)
+        """BL-038 tranche 3y, correction `3v-1`. This row used to rebuild tranche 3h's
+        accepted subset from the CURRENT shard 001 -- `len(subset) == 136`, the positional
+        first-136 slice, the accepted category breakdown and the physical scope entry -- which
+        is H3/H4/H6 coupling and the false negative the 3v conversion probe exposed. The
+        accepted facts now come from the immutable ledger, and what the current tree owes is
+        contract continuity, not a byte/position/category match."""
+        dth.assert_accepted(self, self.ROOT, "3h", entry_count=136,
+                            category_counts={"A": 0, "B": 38, "C": 91, "D": 7})
+        dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3h")
 
 
 class Bl038Tranche3iRecordSyncTest(unittest.TestCase):
@@ -6129,8 +5973,11 @@ class Bl038Tranche3iRecordSyncTest(unittest.TestCase):
                 self.assertIn(required, line)
 
     def test_tranche3i_classification_and_shard_state_are_recorded_as_history(self):
-        from collections import Counter
-
+        """BL-038 tranche 3y (C097): tranche 3i's accepted shard state -- bytes, 268 lines,
+        259 entries and B109/C135/D15 -- is an immutable ledger fact, asserted from there
+        instead of recomputed on the current shard 001, whose bytes a legal conversion or
+        re-shard may change. The BACKLOG implementation-evidence line stays as the historical
+        acceptance witness, and the current tree owes accepted-contract continuity."""
         evidence = next(
             l for l in self._bl038_section().splitlines()
             if l.startswith("- **実装証跡(tranche 3i):**")
@@ -6143,23 +5990,11 @@ class Bl038Tranche3iRecordSyncTest(unittest.TestCase):
         ):
             with self.subTest(required=required):
                 self.assertIn(required, evidence)
-        # The accepted shard 001 is still exactly what 3i left behind.
-        shard = self.ROOT / "document_test_classification_001.json"
-        raw = shard.read_bytes()
-        self.assertEqual(hashlib.sha256(raw).hexdigest(), self.SHARD_001_SHA)
-        text = raw.decode("utf-8")
-        self.assertEqual(len(text.splitlines()), 268)
-        parsed = json.loads(text)
-        self.assertEqual(len(parsed["assertions"]), 259)
-        self.assertEqual(
-            dict(Counter(e["category"] for e in parsed["assertions"])),
-            {"B": 109, "C": 135, "D": 15},
-        )
-        self.assertEqual(
-            [s["file"] for s in parsed["scope"]],
-            ["test_security_operations.py", "test_security_requirements.py"],
-        )
-        self.assertNotIn("Bl035DraftSyncTest", text)
+        dth.assert_accepted(self, self.ROOT, "3i", sha256=self.SHARD_001_SHA, line_count=268,
+                            entry_count=259, category_counts={"A": 0, "B": 109, "C": 135, "D": 15})
+        accepted_scope, _window = dth.accepted_window(self.ROOT, "3i")
+        self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3i"])
+        dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3i")
 
     def test_status_line_records_the_tranche3i_closeout(self):
         status = self._status_bl038_line()
@@ -6370,29 +6205,16 @@ class Bl038Tranche3jRecordSyncTest(unittest.TestCase):
         self.assertNotIn("BL-038は完了", status)
 
     def test_shard_002_still_carries_the_accepted_tranche3j_subset_exactly(self):
-        """Tranche 3j's accepted 34 are pinned as a SUBSET of the current
-        shard 002, by canonical parsed-content digest derived from the file as
-        accepted at merge commit f068270e5e... -- not regenerated from the
-        appended file."""
-        from collections import Counter
-
-        raw = (self.ROOT / self.SHARD_002).read_bytes()
-        shard_002 = json.loads(raw.decode("utf-8"))
-        historical, scope_0 = shard_002["assertions"][:34], shard_002["scope"][0]
-        self.assertEqual((scope_0["file"], scope_0["classes"]),
-                         ("test_security_operations.py", ["Bl035DraftSyncTest"]))
-        self.assertTrue(all(e["file"] == scope_0["file"] for e in historical))
-        digest = hashlib.sha256(
-            json.dumps({"scope": scope_0, "assertions": historical}, ensure_ascii=False,
-                       sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
-        self.assertEqual(digest, self.TRANCHE_3J_HISTORICAL_CONTENT_SHA)
-        self.assertEqual(dict(Counter(e["category"] for e in historical)),
-                         {"B": 12, "C": 14, "D": 8})
-        # 34 / 42 / SHA 3772b37f describe the ACCEPTED file, not today's.
-        self.assertNotEqual(hashlib.sha256(raw).hexdigest(), self.SHARD_002_SHA)
-        self.assertNotEqual(len(raw.decode("utf-8").splitlines()), 42)
-        self.assertNotEqual(len(shard_002["assertions"]), 34)
-        # The selected source test file itself was NOT modified.
+        """BL-038 tranche 3y (C098): tranche 3j's accepted 34 were pinned by slicing the
+        CURRENT shard 002 at [:34] and re-deriving the parsed-content digest from it, plus
+        negative byte assertions that the current file differs. All of that is history: the
+        accepted counts and content digest come from the ledger, survival of the accepted
+        contracts is continuity, and nothing requires the current file to differ from -- or
+        match -- its accepted bytes. The source class still existing is a current contract."""
+        dth.assert_accepted(self, self.ROOT, "3j", entry_count=34,
+                            category_counts={"A": 0, "B": 12, "C": 14, "D": 8},
+                            content_digest=self.TRANCHE_3J_HISTORICAL_CONTENT_SHA)
+        dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3j")
         source = (self.ROOT / "test_security_operations.py").read_text(encoding="utf-8")
         self.assertIn("class Bl035DraftSyncTest", source)
 
@@ -6446,25 +6268,15 @@ class Bl038Tranche3kRecordSyncTest(unittest.TestCase):
                     self.assertIn(required, record)
 
     def test_the_accepted_tranche3k_shard_state_is_history_not_the_current_file(self):
-        """61 / 70 / SHA 1aee40fd describe shard 002 as ACCEPTED, and the
-        parsed-content digest was derived from the accepted file rather than
-        regenerated here. The live file has moved on -- tranche 3l appended."""
-        raw = (self.ROOT / self.SHARD_002).read_bytes()
-        self.assertNotEqual(hashlib.sha256(raw).hexdigest(), self.SHARD_002_ACCEPTED_SHA)
-        shard_002 = json.loads(raw.decode("utf-8"))
-        self.assertGreater(len(shard_002["assertions"]), 61)
-        accepted = shard_002["assertions"][:61]
-        payload = {"scope": shard_002["scope"][:2], "assertions": accepted}
-        self.assertEqual(
-            hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True,
-                                      separators=(",", ":")).encode("utf-8")).hexdigest(),
-            self.TRANCHE_3K_HISTORICAL_CONTENT_SHA)
-        from collections import Counter
-        self.assertEqual(dict(Counter(e["category"] for e in accepted)),
-                         {"B": 34, "C": 19, "D": 8})
-        self.assertEqual([(e["file"], e["classes"]) for e in shard_002["scope"][:2]],
-                         [("test_security_operations.py", ["Bl035DraftSyncTest"]),
-                          ("test_pr_ci_workflow.py", ["PullRequestCIWorkflowTest"])])
+        """BL-038 tranche 3y (C099): 61 / 70 / SHA 1aee40fd and the accepted parsed-content
+        digest are ledger facts. The positional [:61] slice, the scope-prefix comparison and
+        the "current bytes must differ" negative are all gone -- a legal re-shard can even
+        make the current file byte-identical to an accepted state again."""
+        dth.assert_accepted(self, self.ROOT, "3k", sha256=self.SHARD_002_ACCEPTED_SHA,
+                            line_count=70, entry_count=61,
+                            category_counts={"A": 0, "B": 34, "C": 19, "D": 8},
+                            content_digest=self.TRANCHE_3K_HISTORICAL_CONTENT_SHA)
+        dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3k")
 
     def test_backlog_records_entries_twentyfive_and_twentysix_with_updated_counts(self):
         bl038 = self._bl038_section()
@@ -6826,58 +6638,20 @@ class Bl038Tranche3lRecordSyncTest(unittest.TestCase):
         self.assertNotIn("**tranche 3oは未受入**", status)
 
     def test_repository_state_matches_the_recorded_append_and_combined_totals(self):
-        """The numbers the record claims are the numbers on disk. Per-entry and
-        per-manifest contracts live in the classification tests."""
-        from collections import Counter
-
-        raw = (self.ROOT / self.SHARD_002).read_bytes()
-        text = raw.decode("utf-8")
-        shard_002 = json.loads(text)
-        # Tranche 3m appended 17 more, so tranche 3l's whole-file numbers are
-        # HISTORY: 84 entries / 94 lines / SHA c0f81d14... is a subset boundary
-        # now, not the file. The accepted-84 digest is pinned in the 3m class.
-        self.assertEqual((hashlib.sha256(raw).hexdigest(), len(text.splitlines()),
-                          len(shard_002["assertions"])),
-                         (self.SHARD_002_TRANCHE_3M_SHA, 112, 101))
-        for superseded in (self.SHARD_002_CURRENT_SHA, self.SHARD_002_ACCEPTED_SHA):
-            with self.subTest(superseded=superseded):
-                self.assertNotEqual(hashlib.sha256(raw).hexdigest(), superseded)
-        # Tranche 3l added no shard; the `_003` that exists today is tranche 3o's
-        # and carries neither 3l's file nor 3l's classes.
-        third = json.loads((self.ROOT / "document_test_classification_003.json").read_text(encoding="utf-8"))
-        self.assertEqual([e["file"] for e in third["scope"]], ["test_security_requirements.py"])
-        self.assertEqual([(e["file"], e["classes"]) for e in shard_002["scope"]],
-                         [("test_security_operations.py", ["Bl035DraftSyncTest"]),
-                          ("test_pr_ci_workflow.py", ["PullRequestCIWorkflowTest"]),
-                          (self.SOURCE_FILE, list(self.CLASSES)),
-                          ("test_security_requirements.py",
-                           ["Bl034Round1ReviewCorrectionsTest"])])
-        appended = shard_002["assertions"][61:84]
-        self.assertEqual(len(appended), 23)
-        self.assertEqual(dict(Counter(e["category"] for e in appended)), {"A": 6, "B": 11, "C": 6})
-        self.assertEqual({e["file"] for e in appended}, {self.SOURCE_FILE})
-        self.assertEqual({t for e in appended for t in e["targets"]}, set(self.TARGETS))
-        # The accepted 61 are preserved exactly, parsed-content digest included.
-        payload = {"scope": shard_002["scope"][:2], "assertions": shard_002["assertions"][:61]}
-        self.assertEqual(hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True,
-                                      separators=(",", ":")).encode("utf-8")).hexdigest(),
-            self.TRANCHE_3K_HISTORICAL_CONTENT_SHA)
-        # Both older manifests are byte-identical to their accepted states, and
-        # the recorded combined total is the real one.
-        base_raw = (self.ROOT / "document_test_classification.json").read_bytes()
-        shard_001_raw = (self.ROOT / "document_test_classification_001.json").read_bytes()
-        self.assertEqual((hashlib.sha256(shard_001_raw).hexdigest(),
-                          hashlib.sha256(base_raw).hexdigest()),
-                         (self.SHARD_001_SHA, self.BASE_SHA))
-        total = (json.loads(base_raw)["assertions"] + json.loads(shard_001_raw)["assertions"]
-                 + shard_002["assertions"])
-        # 928 / A28 B329 C428 D143 was the tranche 3l combined total; tranche 3m
-        # moved it to 945, so this class asserts the 3l figure is now history.
-        self.assertEqual((len(total), len({e["id"] for e in total})), (945, 945))
-        self.assertEqual(dict(Counter(e["category"] for e in total)),
-                         {"A": 28, "B": 337, "C": 435, "D": 145})
-        self.assertNotEqual(len(total), 928)
-        # Neither the selected source test nor any of its three targets moved.
+        """BL-038 tranche 3y (C100): this row pinned the current shard 002's bytes, line and
+        entry count, the whole current scope composition, the positional [61:84] append slice,
+        the accepted-61 digest recomputed from the current file, the older manifests' current
+        byte identity and the combined 945 / A28-B337-C435-D145 total. All of those are
+        accepted-time facts; each tranche's own ledger record holds them, and the current tree
+        owes contract continuity. What stays current is that the selected source class and its
+        three target workflow documents are still present."""
+        dth.assert_accepted(self, self.ROOT, "3l", line_count=94, entry_count=84,
+                            category_counts={"A": 6, "B": 45, "C": 25, "D": 8})
+        dth.assert_accepted(self, self.ROOT, "3k",
+                            content_digest=self.TRANCHE_3K_HISTORICAL_CONTENT_SHA)
+        for tranche in ("3f", "3i", "3k", "3l"):
+            with self.subTest(tranche=tranche):
+                dth.assert_accepted_contracts_accounted_for(self, self.ROOT, tranche)
         source = (self.ROOT / self.SOURCE_FILE).read_text(encoding="utf-8")
         self.assertTrue(all(f"class {c}" in source for c in self.CLASSES))
         for target, marker in zip(self.TARGETS, ("name: Daily Security Digest",
@@ -7116,49 +6890,24 @@ class Bl038Tranche3mRecordSyncTest(unittest.TestCase):
                 self.assertGreater(wide.count(literal), 1)
 
     def test_repository_state_matches_the_recorded_append_and_combined_totals(self):
-        """The numbers the record claims are the numbers on disk, including the
-        accepted-84 parsed-content digest derived from PR #94's merge."""
-        from collections import Counter
-
-        raw = (self.ROOT / self.SHARD_002).read_bytes()
-        text = raw.decode("utf-8")
-        shard_002 = json.loads(text)
-        self.assertEqual((hashlib.sha256(raw).hexdigest(), len(text.splitlines()),
-                          len(shard_002["assertions"])), (self.SHARD_002_CURRENT_SHA, 112, 101))
-        self.assertNotEqual(hashlib.sha256(raw).hexdigest(), self.SHARD_002_ACCEPTED_3L_SHA)
-        # Tranche 3m created no `_003`: today's is tranche 3o's method-range shard,
-        # and 3m's 17 stay in shard 002 where 3m put them.
-        third = json.loads((self.ROOT / "document_test_classification_003.json").read_text(encoding="utf-8"))
-        self.assertEqual([e["classes"] for e in third["scope"]], [["SecurityRequirementsTest"]])
-        self.assertNotIn(self.CLASS, {e["class"] for e in third["assertions"]})
-        self.assertEqual([(e["file"], e["classes"]) for e in shard_002["scope"]], [("test_security_operations.py", ["Bl035DraftSyncTest"]),
-                          ("test_pr_ci_workflow.py", ["PullRequestCIWorkflowTest"]), ("test_workflow_action_pinning.py",
-                           ["WorkflowActionPinningTest", "DependabotConfigurationTest"]), (self.SOURCE_FILE, [self.CLASS])])
-        appended = shard_002["assertions"][84:]
-        self.assertEqual(len(appended), 17)
-        self.assertEqual(dict(Counter(e["category"] for e in appended)), {"B": 8, "C": 7, "D": 2})
-        self.assertEqual({e["file"] for e in appended}, {self.SOURCE_FILE})
-        self.assertEqual({e["class"] for e in appended}, {self.CLASS})
-        self.assertEqual({t.split("#")[0] for e in appended for t in e["targets"]}, set(self.TARGET_DOCUMENTS))
-        self.assertEqual({e["action"] for e in appended if e["category"] == "C"}, {"refactor_later"})
-        # The accepted 84 are preserved exactly, parsed-content digest included,
-        # and the digest was derived from the accepted file at PR #94's merge.
-        payload = {"scope": shard_002["scope"][:3], "assertions": shard_002["assertions"][:84]}
-        self.assertEqual(hashlib.sha256(json.dumps(payload, ensure_ascii=False, sort_keys=True,
-                                      separators=(",", ":")).encode("utf-8")).hexdigest(), self.TRANCHE_3L_HISTORICAL_CONTENT_SHA)
-        # Both older manifests are byte-identical to their accepted states, and
-        # the recorded combined total is the real one.
-        base_raw = (self.ROOT / "document_test_classification.json").read_bytes()
-        shard_001_raw = (self.ROOT / "document_test_classification_001.json").read_bytes()
-        self.assertEqual((hashlib.sha256(shard_001_raw).hexdigest(), hashlib.sha256(base_raw).hexdigest()), (self.SHARD_001_SHA, self.BASE_SHA))
-        total = (json.loads(base_raw)["assertions"] + json.loads(shard_001_raw)["assertions"] + shard_002["assertions"])
-        self.assertEqual((len(total), len({e["id"] for e in total})), (945, 945))
-        self.assertEqual(dict(Counter(e["category"] for e in total)), {"A": 28, "B": 337, "C": 435, "D": 145})
-        # Neither the selected source test nor either target document moved.
+        """BL-038 tranche 3y (C101): as C100, plus the H8 "every appended C entry is still
+        refactor_later" claim, which a legal conversion legitimately breaks. The accepted
+        state -- bytes, 112 lines, 101 entries, A6/B53/C32/D10 and the accepted-84 digest --
+        comes from the ledger; continuity covers the contracts. The current source class and
+        target documents still existing are current contracts and stay."""
+        dth.assert_accepted(self, self.ROOT, "3m", sha256=self.SHARD_002_CURRENT_SHA,
+                            line_count=112, entry_count=101,
+                            category_counts={"A": 6, "B": 53, "C": 32, "D": 10})
+        dth.assert_accepted(self, self.ROOT, "3l",
+                            content_digest=self.TRANCHE_3L_HISTORICAL_CONTENT_SHA)
+        for tranche in ("3f", "3i", "3l", "3m"):
+            with self.subTest(tranche=tranche):
+                dth.assert_accepted_contracts_accounted_for(self, self.ROOT, tranche)
         source = (self.ROOT / self.SOURCE_FILE).read_text(encoding="utf-8")
         self.assertIn(f"class {self.CLASS}(unittest.TestCase):", source)
         for document, marker in zip(self.TARGET_DOCUMENTS, ("## BL-034", "## 8. Gap register")):
-            with self.subTest(document=document): self.assertIn(marker, (self.ROOT / document).read_text(encoding="utf-8"))
+            with self.subTest(document=document):
+                self.assertIn(marker, (self.ROOT / document).read_text(encoding="utf-8"))
 
 
 TRANCHE_3N_RS_SHAS = ("640585ca03d7836cbdd66edcc8e2b21df7ea1de946b767ae20fa5c12e0c5f15a",
@@ -7350,35 +7099,22 @@ class Bl038Tranche3nRecordSyncTest(unittest.TestCase):
             with self.subTest(stale=stale): self.assertNotIn(stale, residual)
 
     def test_the_three_manifests_tranche_3n_left_untouched_are_still_untouched(self):
-        """Tranche 3n classified nothing, so the three CLASSIFICATION manifests it
-        inherited had to come out byte-identical -- and they still are. What
-        tranche 3o changed is the index (a fourth shard) and nothing else: the
-        945/A28-B337-C435-D145 those three still hold is exactly 3n's total, now
-        a proper subset of the combined classification rather than all of it."""
-        from collections import Counter
-
-        self.assertEqual(tuple(hashlib.sha256((self.ROOT / name).read_bytes()).hexdigest()
-                               for name in self.MANIFESTS[:3]), TRANCHE_3N_RS_SHAS[:3])
-        total = [e for name in self.MANIFESTS[:3] for e in json.loads((self.ROOT / name).read_text(encoding="utf-8"))["assertions"]]
-        self.assertEqual((len(total), len({e["id"] for e in total})), (945, 945))
-        self.assertEqual(dict(Counter(e["category"] for e in total)), {"A": 28, "B": 337, "C": 435, "D": 145})
-        # The index is the one file tranche 3o touched: same three shards first,
-        # in the same order, plus `_003`. No `_004`.
-        index = json.loads((self.ROOT / self.MANIFESTS[3]).read_text(encoding="utf-8"))
-        self.assertEqual(index["shards"][:3], list(self.MANIFESTS[:3]))
-        # 3o appended `_003` and 3p `_004`; 3n's own three still lead the index.
-        self.assertEqual(index["shards"][:4], list(self.MANIFESTS[:3]) + ["document_test_classification_003.json"])
-        self.assertNotEqual(hashlib.sha256((self.ROOT / self.MANIFESTS[3]).read_bytes()).hexdigest(),
-                            TRANCHE_3N_RS_SHAS[3])
-        # Neither class 3n MEASURED was classified by 3n itself; tranche 3o took
-        # a method range of the winner, and left the runner-up alone entirely.
-        classified = {(e["file"], e["class"]) for e in total}
-        for name, cls, *_rest in TRANCHE_3N_CANDIDATES:
-            with self.subTest(cls=cls): self.assertNotIn((name, cls), classified)
-        third = json.loads((self.ROOT / "document_test_classification_003.json").read_text(encoding="utf-8"))
-        self.assertEqual([(e["file"], e["classes"]) for e in third["scope"]],
-                         [(TRANCHE_3N_CANDIDATES[0][0], [TRANCHE_3N_CANDIDATES[0][1]])])
-        self.assertNotIn(TRANCHE_3N_CANDIDATES[1][1], {e["class"] for e in third["assertions"]})
+        """BL-038 tranche 3y (C102): tranche 3n classified nothing, so it left three
+        manifests byte-identical -- a past fact. Re-applying it as CURRENT byte equality (plus
+        the 945 total, the index prefix and the unclassified-candidate set) freezes the tree,
+        and tranche 3n has no ledger record of its own, so no new record is invented for it.
+        The accepted states of the tranches it inherited are asserted through their own
+        existing evidence via contract continuity, and 3n's own claim stays as the historical
+        BACKLOG acceptance witness."""
+        bl038 = self._bl038_section()
+        self.assertIn("tranche 3n", bl038)
+        for tranche in ("3f", "3i", "3m"):
+            with self.subTest(tranche=tranche):
+                dth.assert_accepted_contracts_accounted_for(self, self.ROOT, tranche)
+        # Tranche 3n classified nothing, so it owns no accepted scope at all -- which is why
+        # it has no ledger record and why none is invented for it here.
+        self.assertNotIn("3n", dth.ACCEPTED_SCOPES)
+        self.assertTrue(TRANCHE_3N_CANDIDATES)  # the classes it measured are still recorded
 
     def test_the_recorded_candidate_measurement_reproduces_from_live_source(self):
         """Every candidate figure in the record is re-derived here from the
@@ -7572,46 +7308,26 @@ class Bl038Tranche3oRecordSyncTest(unittest.TestCase):
             with self.subTest(stale=stale): self.assertNotIn(stale, residual)
 
     def test_repository_state_matches_the_recorded_method_range_append(self):
-        """The numbers the record claims are the numbers on disk: a fourth shard
-        holding exactly the window, three frozen shards, and a combined 1091."""
-        from collections import Counter
-
-        raw = (self.ROOT / self.SHARDS[3]).read_bytes()
-        text = raw.decode("utf-8")
-        shard = json.loads(text)
-        self.assertEqual((hashlib.sha256(raw).hexdigest(), len(text.splitlines()),
-                          len(shard["assertions"])), (TRANCHE_3O_SHARD_003_SHA, 154, 146))
-        self.assertLessEqual(len(text.splitlines()), 600)
-        self.assertEqual(shard["scope"], [{"file": self.SOURCE_FILE, "classes": [self.CLASS],
-                                           "method_range": {"start": TRANCHE_3O_RANGE[0],
-                                                            "end": TRANCHE_3O_RANGE[1]}}])
-        self.assertEqual(dict(Counter(e["category"] for e in shard["assertions"])),
-                         {"B": 70, "C": 54, "D": 22})
-        self.assertEqual({e["action"] for e in shard["assertions"] if e["category"] == "C"}, {"refactor_later"})
-        self.assertEqual({(e["file"], e["class"]) for e in shard["assertions"]}, {(self.SOURCE_FILE, self.CLASS)})
-        self.assertEqual(len({e["method"] for e in shard["assertions"]}), 19)
-        # The three accepted shards are byte-identical, and the index gained one entry.
-        self.assertEqual(tuple(hashlib.sha256((self.ROOT / n).read_bytes()).hexdigest()
-                               for n in self.SHARDS[:3]), TRANCHE_3O_FROZEN_SHAS)
-        # Tranche 3o's four shards still lead the index in the same order, and
-        # the 1091/A28-B407-C489-D167 they hold is exactly 3o's combined total --
-        # now a prefix of the classification rather than all of it, because
-        # tranche 3p appended `_004`.
-        index = json.loads((self.ROOT / "document_test_classification_index.json").read_text(encoding="utf-8"))
-        self.assertEqual(index["shards"][:4], list(self.SHARDS))
-        total = [e for n in self.SHARDS for e in json.loads((self.ROOT / n).read_text(encoding="utf-8"))["assertions"]]
-        self.assertEqual((len(total), len({e["id"] for e in total})), (1091, 1091))
-        self.assertEqual(dict(Counter(e["category"] for e in total)), {"A": 28, "B": 407, "C": 489, "D": 167})
-        # THROUGH tranche 3o the runner-up class was untouched; tranche 3p is
-        # what classified it, so this is pinned over 3o's snapshot only.
-        self.assertNotIn("test_source_usage_policy.py",
-                         {e["file"] for n in self.SHARDS
-                          for e in json.loads((self.ROOT / n).read_text(encoding="utf-8"))["scope"]})
-        # Neither the selected source test nor its target documents moved.
+        """BL-038 tranche 3y (C103): the accepted fourth-shard state -- bytes, 154 lines, 146
+        entries, B70/C54/D22 -- is a ledger fact, and the accepted scope descriptor comes from
+        the pinned accepted map. The three "frozen" shards' current byte identity, the exact
+        index prefix, the combined 1091 total, the runner-up's absence from the current scopes
+        and the H8 "still refactor_later" claim are all gone: each is accepted-time state that
+        a legal conversion or re-shard may change. The source class and its target documents
+        still existing are current contracts."""
+        dth.assert_accepted(self, self.ROOT, "3o", sha256=TRANCHE_3O_SHARD_003_SHA,
+                            line_count=154, entry_count=146,
+                            category_counts={"A": 0, "B": 70, "C": 54, "D": 22})
+        accepted_scope, window = dth.accepted_window(self.ROOT, "3o")
+        self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3o"])
+        self.assertEqual(len({e["method"] for e in window}), 19)
+        dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3o")
         source = (self.ROOT / self.SOURCE_FILE).read_text(encoding="utf-8")
         self.assertIn(f"class {self.CLASS}(unittest.TestCase):", source)
-        for document, marker in (("SECURITY_REQUIREMENTS.md", "## 8. Gap register"), ("BACKLOG.md", "## BL-028")):
-            with self.subTest(document=document): self.assertIn(marker, (self.ROOT / document).read_text(encoding="utf-8"))
+        for document, marker in (("SECURITY_REQUIREMENTS.md", "## 8. Gap register"),
+                                 ("BACKLOG.md", "## BL-028")):
+            with self.subTest(document=document):
+                self.assertIn(marker, (self.ROOT / document).read_text(encoding="utf-8"))
 
 
 TRANCHE_3P_SHARD_004_SHA = "26522ff5c37ce8a30d0f2dc61bd1b1cfcbdc60929e059d984890e97e1544f792"
@@ -7757,34 +7473,23 @@ class Bl038Tranche3pRecordSyncTest(unittest.TestCase):
             with self.subTest(stale=stale): self.assertNotIn(stale, residual)
 
     def test_repository_state_matches_the_recorded_second_method_range(self):
-        """The numbers the record claims are the numbers on disk: a fifth shard
-        holding exactly the window, four frozen shards, and a combined 1231."""
-        from collections import Counter
-
-        raw = (self.ROOT / self.SHARDS[4]).read_bytes()
-        text = raw.decode("utf-8")
-        shard = json.loads(text)
-        self.assertEqual((hashlib.sha256(raw).hexdigest(), len(text.splitlines()), len(shard["assertions"])), (TRANCHE_3P_SHARD_004_SHA, 148, 140))
-        self.assertLessEqual(len(text.splitlines()), 600)
-        self.assertEqual(shard["scope"], [{"file": self.SOURCE_FILE, "classes": [self.CLASS], "method_range": {"start": TRANCHE_3P_RANGE[0], "end": TRANCHE_3P_RANGE[1]}}])
-        self.assertEqual(dict(Counter(e["category"] for e in shard["assertions"])), {"A": 2, "B": 80, "C": 50, "D": 8})
-        self.assertEqual({e["action"] for e in shard["assertions"] if e["category"] == "C"}, {"refactor_later"})
-        self.assertEqual({e["action"] for e in shard["assertions"] if e["category"] == "A"}, {"keep"})
-        self.assertEqual({(e["file"], e["class"]) for e in shard["assertions"]}, {(self.SOURCE_FILE, self.CLASS)})
-        self.assertEqual(len({e["method"] for e in shard["assertions"]}), 32)
-        # The four accepted shards are byte-identical, and the index gained one.
-        self.assertEqual(tuple(hashlib.sha256((self.ROOT / n).read_bytes()).hexdigest() for n in self.SHARDS[:4]), TRANCHE_3P_FROZEN_SHAS)
-        index = json.loads((self.ROOT / "document_test_classification_index.json").read_text(encoding="utf-8"))
-        self.assertEqual(index["shards"][:5], list(self.SHARDS))
-        self.assertNotIn("document_test_classification_005.json", self.SHARDS)
-        total = [e for n in self.SHARDS for e in json.loads((self.ROOT / n).read_text(encoding="utf-8"))["assertions"]]
-        self.assertEqual((len(total), len({e["id"] for e in total})), (1231, 1231))
-        self.assertEqual(dict(Counter(e["category"] for e in total)), {"A": 30, "B": 487, "C": 539, "D": 175})
-        # Neither the selected source test nor its targets moved.
+        """BL-038 tranche 3y (C104): as C103 for the fifth shard -- accepted bytes, 148 lines,
+        140 entries and A2/B80/C50/D8 from the ledger, accepted scope from the pinned map. The
+        four frozen shards' current bytes, the exact index prefix, the combined 1231 total and
+        the H8 action claims are removed."""
+        dth.assert_accepted(self, self.ROOT, "3p", sha256=TRANCHE_3P_SHARD_004_SHA,
+                            line_count=148, entry_count=140,
+                            category_counts={"A": 2, "B": 80, "C": 50, "D": 8})
+        accepted_scope, window = dth.accepted_window(self.ROOT, "3p")
+        self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3p"])
+        self.assertEqual(len({e["method"] for e in window}), 32)
+        dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3p")
         source = (self.ROOT / self.SOURCE_FILE).read_text(encoding="utf-8")
         self.assertIn(f"class {self.CLASS}(unittest.TestCase):", source)
-        for document, marker in (("SOURCE_USAGE_POLICY.md", "## 4. Source-by-source audit matrix"), ("source_definitions.json", '"sources"')):
-            with self.subTest(document=document): self.assertIn(marker, (self.ROOT / document).read_text(encoding="utf-8"))
+        for document, marker in (("SOURCE_USAGE_POLICY.md", "## 4. Source-by-source audit matrix"),
+                                 ("source_definitions.json", '"sources"')):
+            with self.subTest(document=document):
+                self.assertIn(marker, (self.ROOT / document).read_text(encoding="utf-8"))
 
 
 class Bl038Tranche3qRecordSyncTest(unittest.TestCase):
@@ -7837,17 +7542,14 @@ class Bl038Tranche3qRecordSyncTest(unittest.TestCase):
                 self.assertIn(token, self.status)
 
     def test_repository_state_matches_current_record(self):
-        index = json.loads((Path(__file__).resolve().parent / "document_test_classification_index.json").read_text(encoding="utf-8"))
-        self.assertEqual(index["shards"][-1], "document_test_classification_007.json")
-        self.assertEqual(len(index["shards"]), 8)
-        entries = []
-        for name in index["shards"]:
-            entries.extend(json.loads((Path(__file__).resolve().parent / name).read_text(encoding="utf-8"))["assertions"])
-        self.assertEqual((len(entries), len({e["id"] for e in entries})), (1525, 1525))
-        self.assertEqual({cat: sum(1 for e in entries if e["category"] == cat) for cat in ("A", "B", "C", "D")}, {"A": 30, "B": 612, "C": 638, "D": 245})
-        shard = json.loads((Path(__file__).resolve().parent / "document_test_classification_005.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(shard["assertions"]), 124)
-        self.assertEqual({cat: sum(1 for e in shard["assertions"] if e["category"] == cat) for cat in ("A", "B", "C", "D")}, {"A": 0, "B": 49, "C": 42, "D": 33})
+        """BL-038 tranche 3y (C105): the exact current index length and last entry, the
+        combined 1525 / A30-B612-C638-D245 total and shard 005's accepted counts were all
+        pinned on the current tree. The accepted 3q state is a ledger fact; the current
+        combined totals are the validator's business and are not frozen here."""
+        root = Path(__file__).resolve().parent
+        dth.assert_accepted(self, root, "3q", line_count=130, entry_count=124,
+                            category_counts={"A": 0, "B": 49, "C": 42, "D": 33})
+        dth.assert_accepted_contracts_accounted_for(self, root, "3q")
 
 
 class Bl038Tranche3rRecordSyncTest(unittest.TestCase):
@@ -7880,15 +7582,13 @@ class Bl038Tranche3rRecordSyncTest(unittest.TestCase):
             with self.subTest(token=token): self.assertIn(token, self.status)
 
     def test_live_index_matches_the_recorded_post_3r_totals(self):
-        index = json.loads((self.root / "document_test_classification_index.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(index["shards"]), 8)
-        self.assertEqual(index["shards"][-1], "document_test_classification_007.json")
-        shard = json.loads((self.root / "document_test_classification_006.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(shard["assertions"]), 133)
-        self.assertEqual({c: sum(e["category"] == c for e in shard["assertions"]) for c in ("A","B","C","D")}, {"A":0,"B":60,"C":37,"D":36})
-        all_entries = [e for name in index["shards"] for e in json.loads((self.root / name).read_text(encoding="utf-8"))["assertions"]]
-        self.assertEqual((len(all_entries), len({e["id"] for e in all_entries})), (1525,1525))
-        self.assertEqual({c: sum(e["category"] == c for e in all_entries) for c in ("A","B","C","D")}, {"A":30,"B":612,"C":638,"D":245})
+        """BL-038 tranche 3y (C106): the accepted 3r state -- 141 lines, 133 entries,
+        B60/C37/D36 -- is a ledger fact. The current index length/last entry and the combined
+        1525 / A30-B612-C638-D245 totals are not pinned: a legal conversion moves the category
+        totals and a legal re-shard moves the index."""
+        dth.assert_accepted(self, self.root, "3r", line_count=141, entry_count=133,
+                            category_counts={"A": 0, "B": 60, "C": 37, "D": 36})
+        dth.assert_accepted_contracts_accounted_for(self, self.root, "3r")
 
 
 class Bl038Tranche3sAcceptanceRecordTest(unittest.TestCase):
