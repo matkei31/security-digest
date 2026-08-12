@@ -8524,5 +8524,93 @@ class Bl038Tranche3xCouplingRetargetRecordSyncTest(unittest.TestCase):
         self.assertIn("unblockはtranche 3y acceptance後", self.status)
 
 
+class Bl038Tranche3yBLifecycleUnblockRecordSyncTest(unittest.TestCase):
+    """BL-038 tranche 3y-b: the ONE completion guard for the technical Category C unblock.
+
+    It deliberately does NOT pin the current Category C count or require the migration
+    ledger to be empty -- those were the lifecycle pins this tranche removed, and
+    re-introducing either here would undo the tranche in the act of recording it. What
+    it checks is the set of CURRENT conditions that must hold whatever the lifecycle
+    does next, plus the record that the two conversion-path proofs actually ran. That
+    absence is deliberate and reviewable by reading the three methods below: no exact
+    category distribution, no `migrations == []`, and no reverse pin standing in for
+    either. A source-scanning meta-test asserting its own absence was tried and dropped
+    -- it is a detector, not a record, and this tranche adds no detectors.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.root = Path(__file__).resolve().parent
+        cls.backlog = (cls.root / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (cls.root / "STATUS.md").read_text(encoding="utf-8")
+        start = cls.backlog.index("## BL-038")
+        end = cls.backlog.find("\n## ", start + 8)
+        cls.bl038 = cls.backlog[start:] if end < 0 else cls.backlog[start:end]
+
+    def test_the_current_tree_satisfies_the_unblock_conditions(self):
+        """Criterion J, and the current half of C: clean, fully classified, and with
+        both ledgers agreeing -- stated without freezing any of it in place."""
+        failures, summary = dti.validate_indexed_manifests(root=self.root)
+        self.assertEqual([f.format() for f in failures], [])
+        self.assertEqual((summary["unclassified"], summary["stale"],
+                          summary["fingerprint_mismatch"]), (0, 0, 0))
+        self.assertEqual(sum(summary["category_counts"][c] for c in ("A", "B", "C", "D")),
+                         summary["inventoried_assertions"])
+        self.assertEqual(dth.migration_shape_failures(self.root), [])
+        self.assertEqual(dth.successor_reference_failures(self.root), [])
+        self.assertEqual(dth.ledger_shape_failures(self.root), [])
+        for record in dth.load_ledger(self.root)["accepted"]:
+            with self.subTest(tranche=record["tranche"]):
+                dth.assert_accepted_contracts_accounted_for(self, self.root, record["tranche"])
+
+    def test_the_3y_b_record_states_the_proofs_and_the_standing_boundary(self):
+        for fact in (
+            "tranche 3y-b(lifecycle retarget＋conversion-path proofs、2026-08-13)",
+            "b1c9f589d1c040af328ec796fdfc85292242b11a",
+            "**tranche 3y-aはcomplete**",
+            "tranche 3y-b proofs(2026-08-13)",
+            "Proof 5(realistic 1:1 Category C → B conversion)",
+            "**full unittest 2258 OK(完全green、O2 bucket 0・unexpected failure 0)**",
+            "**1525・A30/B613/C637/D245**",
+            "**migration metadata 0(`migrations []`のまま)**",
+            "Proof 6(identity-changing migration)",
+            "**`migrations != []`の状態でfull unittest 2258 OK(完全green)**",
+            "**accepted-contract continuityは12 accepted tranche全てgreen**",
+            "**load-bearingであり装飾ではない**",
+            "**Proof 6のmigration recordはtemporary evidenceでありcommitしない",
+            "**historyは両proofとも0 diff、snapshotも0 diff**",
+            "**tranche 3y implementationはtechnical Category C unblock criteriaを満たす**",
+        ):
+            with self.subTest(fact=fact):
+                self.assertIn(fact, self.bl038)
+        for fact in ("BL-038 tranche 3y-b (lifecycle retarget＋conversion-path proofs, 2026-08-13 JST)",
+                     "**technical unblock criteria A〜J 10条件すべて充足**",
+                     "**real Category C conversion 0件committed**"):
+            with self.subTest(status_fact=fact):
+                self.assertIn(fact, self.status)
+
+    def test_the_record_never_claims_the_unblock_or_the_ticket_is_done(self):
+        """Criteria are satisfied at IMPLEMENTATION level only. Until this tranche is
+        independently accepted and merged, Category C stays blocked, and bulk conversion
+        is a separate approval either way."""
+        for over_claim in ("Category C is technically unblocked",
+                           "Category C technically unblocked",
+                           "Category C conversion開始可",
+                           "Category Cをunblock済み",
+                           "bulk conversion開始",
+                           "BL-038全体最終受入済み",
+                           "BL-038 complete"):
+            with self.subTest(not_claimed=over_claim):
+                self.assertNotIn(over_claim, self.bl038)
+                self.assertNotIn(over_claim, self.status)
+        for stated in ("**Category Cはindependent acceptanceとmergeが完了するまで引き続きblocked**",
+                       "**real Category C conversionは0件committed**",
+                       "bulk conversionは未着手",
+                       "**BL-038全体は未完了**"):
+            with self.subTest(stated=stated):
+                self.assertIn(stated, self.bl038)
+        self.assertIn("**BL-038全体未完了。**", self.status)
+
+
 if __name__ == "__main__":
     unittest.main()
