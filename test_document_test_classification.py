@@ -3248,16 +3248,11 @@ class Tranche3kClassificationShard002AppendTest(unittest.TestCase):
                 mutated = json.loads(json.dumps(historical))
                 mutated[-1][field] = value
                 self.assertNotEqual(_subset_content_digest(accepted_scope, mutated), baseline)
-        # History, not now: the accepted statistics differ from the current ones.
-        self.assertNotEqual(TRANCHE_3K_HISTORICAL_ENTRY_COUNT, SHARD_002_CURRENT_ENTRY_COUNT)
-        self.assertNotEqual(TRANCHE_3K_HISTORICAL_LINE_COUNT, SHARD_002_CURRENT_LINE_COUNT)
-        self.assertNotEqual(TRANCHE_3K_HISTORICAL_SHA256, SHARD_002_CURRENT_SHA256)
-        self.assertNotEqual(TRANCHE_3K_HISTORICAL_CATEGORY_COUNTS,
-                            SHARD_002_CURRENT_CATEGORY_COUNTS)
-        self.assertNotEqual(
-            hashlib.sha256(SHARD_002_PATH.read_bytes()).hexdigest(),
-            TRANCHE_3K_HISTORICAL_SHA256,
-        )
+        # BL-038 tranche 3w-b: same reverse coupling as C048, removed for the same reason.
+        # Measured: dropping tranche 3m leaves shard 002 byte-identical to the accepted 3l
+        # state, and dropping 3l and 3m leaves it identical to this accepted 3k state --
+        # both legal. The accepted state is protected by the ledger above, not by
+        # requiring the current file to keep differing from it.
         dth.assert_accepted(self, ROOT, "3j", content_digest=TRANCHE_3J_HISTORICAL_CONTENT_SHA256)
 
     def test_dropping_the_appended_scope_entry_is_detected(self):
@@ -3477,11 +3472,13 @@ class Tranche3lClassificationShard002AppendTest(unittest.TestCase):
     def test_the_accepted_tranche_3l_shard_002_state_is_pinned_as_history(self):
         """Shard 002 AS ACCEPTED at PR #94's merge commit
         48cc4fdf38303e9693cf870fb2f73a595d4908b2: 84 entries, 94 lines, SHA
-        `c0f81d14...`, scope[0:3], A6/B45/C25/D8. Tranche 3m appended 17 more,
-        so each is asserted to be HISTORY and NOT the current state. The
-        parsed-content digest was derived from the accepted file, not
-        regenerated here, so it pins targets/action/contract_summary/rationale
-        for all 84 -- the fields the id, category and order guards cannot see."""
+        `c0f81d14...`, scope[0:3], A6/B45/C25/D8. That accepted state is HISTORICAL
+        EVIDENCE, held by the immutable ledger. The CURRENT shard may differ from it or
+        may legally coincide with it again -- for instance once a legal re-shard moves a
+        later tranche's class out -- so nothing here requires the two to stay different.
+        The parsed-content digest was derived from the accepted file, not regenerated
+        here, so it pins targets/action/contract_summary/rationale for all 84 -- the
+        fields the id, category and order guards cannot see."""
         # BL-038 tranche 3w (C048): accepted statistics come from the ledger; the positional [:84] window and exact accepted id list are gone.
         dth.assert_accepted(self, ROOT, "3l", sha256=TRANCHE_3L_HISTORICAL_SHA256,
                             line_count=TRANCHE_3L_HISTORICAL_LINE_COUNT,
@@ -3497,14 +3494,10 @@ class Tranche3lClassificationShard002AppendTest(unittest.TestCase):
                 mutated = json.loads(json.dumps(historical))
                 mutated[-1][field] = value
                 self.assertNotEqual(_subset_content_digest(accepted_scope, mutated), baseline)
-        # History, not now: the accepted statistics differ from the current ones.
-        self.assertNotEqual(TRANCHE_3L_HISTORICAL_ENTRY_COUNT, SHARD_002_CURRENT_ENTRY_COUNT)
-        self.assertNotEqual(TRANCHE_3L_HISTORICAL_LINE_COUNT, SHARD_002_CURRENT_LINE_COUNT)
-        self.assertNotEqual(TRANCHE_3L_HISTORICAL_SHA256, SHARD_002_CURRENT_SHA256)
-        self.assertNotEqual(TRANCHE_3L_HISTORICAL_CATEGORY_COUNTS,
-                            SHARD_002_CURRENT_CATEGORY_COUNTS)
-        self.assertNotEqual(hashlib.sha256(SHARD_002_PATH.read_bytes()).hexdigest(),
-                            TRANCHE_3L_HISTORICAL_SHA256)
+        # BL-038 tranche 3w-b: the "current must keep differing from history" assertions
+        # are gone. They were reverse coupling, not preservation: a legal re-shard that
+        # moves tranche 3m out leaves shard 002 byte-identical to its accepted tranche-3l
+        # state, which is legitimate. The accepted state is protected by the ledger above.
         # PR #95 round 1 (Blocker 3): the accepted 84 are preserved by PARSED content, NOT
         # raw bytes, so raw-byte identity is never claimed. Round 2: the physical scope-entry
         # count and raw comma layout are the shard-format validator's contract, not pinned
