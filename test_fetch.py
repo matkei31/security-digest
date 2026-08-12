@@ -5089,15 +5089,19 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3f")
 
     def test_security_requirements_five_reviewer_flagged_ids_are_correctly_classified(self):
-        # PR #86 round 1 review Blocker 2: 5 specific entries were
-        # misclassified B and are pinned here to their corrected category
-        # (2 to C: raw negative multi-token substrings/noun compounds not
-        # extracted to a field; 3 to D: bare PR-number mentions that are
-        # part of a historical-acceptance-evidence bundle alongside a
-        # sibling SHA/CI-run-ID assertion in the same method).
-        manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
-        by_id = {a["id"]: a for a in manifest["assertions"]}
-        expected_categories = {
+        # PR #86 round 1 review Blocker 2: 5 specific entries were misclassified B and
+        # their corrected verdicts are ACCEPTED HISTORY -- 3 to C (raw negative
+        # multi-token substrings/noun compounds not extracted to a field) and 2 to D
+        # (bare PR-number mentions inside a historical-acceptance-evidence bundle
+        # alongside a sibling SHA/CI-run-ID assertion in the same method).
+        # BL-038 tranche 3y-a-2 (3y-11), round 1 Blocker 1: all FIVE accepted per-ID
+        # verdicts stay guarded, as history, against a second independent copy in the
+        # BACKLOG record -- deleting one or flipping a C to a D breaks this test. What is
+        # NOT asserted is that the CURRENT tree still calls them C or D: three of them are
+        # Category C, so a routine conversion, an identity-changing migration, a retired
+        # id or a legal re-shard must all stay possible.
+        by_id = {a["id"]: a for a in dth.live_entries(self.ROOT)}
+        accepted_verdicts = {
             "test_security_requirements.py::Bl034ImplementationAcceptanceTest::"
             "test_dashboard_and_search_console_are_confirmed_by_closeout::assert-01": "C",
             "test_security_requirements.py::Bl034CloseoutTest::"
@@ -5110,15 +5114,26 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
             "test_final_acceptance_record_does_not_touch_out_of_scope_documents::assert-03": "D",
         }
         import document_test_inventory as dti
+        from collections import Counter
 
-        for entry_id, expected_category in expected_categories.items():
-            with self.subTest(id=entry_id):
-                self.assertIn(entry_id, by_id)
-                self.assertEqual(by_id[entry_id]["category"], expected_category)
-                self.assertNotEqual(by_id[entry_id]["category"], "B")
-                self.assertEqual(
-                    by_id[entry_id]["action"], dti.CATEGORY_TO_ACTION[expected_category]
-                )
+        # HISTORY: every one of the five accepted verdicts, against the second copy.
+        witness = self._bl038_section()
+        for entry_id, accepted_category in accepted_verdicts.items():
+            with self.subTest(historical=entry_id):
+                short = entry_id.split("::", 2)[2]
+                self.assertIn(short, witness)
+                self.assertIn(f"`{short}`={accepted_category}", witness)
+        self.assertEqual(dict(Counter(accepted_verdicts.values())), {"C": 3, "D": 2})
+        self.assertIn("**accepted C×3／D×2**", witness)
+        # CURRENT: lineage, plus category/action consistency for whichever are still live.
+        # Deliberately NOT compared against the accepted verdict above.
+        dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3f")
+        for entry_id in accepted_verdicts:
+            with self.subTest(current=entry_id):
+                entry = by_id.get(entry_id)
+                if entry is None:
+                    continue      # a legal conversion or migration may retire this id
+                self.assertEqual(entry["action"], dti.CATEGORY_TO_ACTION[entry["category"]])
 
     def test_backlog_still_records_tranche3e_own_manifest_line_count_as_534(self):
         # Same re-anchoring as tranche 3d's: tranche 3f's growth (534 -> 596
@@ -5445,9 +5460,11 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
     def test_tranche3f_category_a_is_a_duplicated_method_pair_not_a_recurring_value(self):
         # The four Category A entries are the one substantive difference from
         # the provisional A 0/B 19/C 30/D 13 tally, so pin exactly which.
-        manifest = self._manifest()
+        # BL-038 tranche 3y-a-2 (3y-11): a CURRENT classification lookup over the complete
+        # indexed population -- these Category A contracts stay live wherever a legal
+        # re-shard puts them, so this no longer requires the base manifest to hold them.
         a_ids = sorted(
-            a["id"] for a in manifest["assertions"]
+            a["id"] for a in dth.live_entries(self.ROOT)
             if a["file"] == "test_security_requirements.py" and a["category"] == "A"
         )
         prefix = "test_security_requirements.py::" + self.TRANCHE_3F_CLASS + "::"
@@ -5462,7 +5479,7 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
         )
         import document_test_inventory as dti
 
-        by_id = {a["id"]: a for a in manifest["assertions"]}
+        by_id = {a["id"]: a for a in dth.live_entries(self.ROOT)}
         for entry_id in a_ids:
             with self.subTest(id=entry_id):
                 self.assertEqual(by_id[entry_id]["action"], dti.CATEGORY_TO_ACTION["A"])
@@ -5485,15 +5502,17 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
     def test_tranche2_sd030_d_classification_is_carried_forward_unchanged(self):
         # BL-038 tranche 2 classified the SD-030 146-character sentence as D
         # and locked it in BACKLOG.md; tranche 3f's entry must agree.
-        manifest = self._manifest()
-        entry = next(
-            a for a in manifest["assertions"]
-            if a["id"].endswith(
-                "::test_sd030_records_that_mode_restrictions_are_not_yet_enforced_in_production::assert-04"
-            )
-        )
-        self.assertEqual(entry["category"], "D")
-        self.assertEqual(entry["action"], "historical_keep")
+        # BL-038 tranche 3y-a-2 (3y-11): "carried forward unchanged" is a statement about
+        # tranche 2's acceptance, not a permanent freeze of the current category, and the
+        # entry was located only inside this physical manifest. The accepted D call stays a
+        # historical BACKLOG witness; the current side is looked up over the complete
+        # indexed population and held to category/action consistency.
+        self.assertIn("SD-030の146文字candidateをD(historical exact evidence)として維持した",
+                      self._bl038_section())
+        matches = [a for a in dth.live_entries(self.ROOT) if a["id"].endswith(
+            "::test_sd030_records_that_mode_restrictions_are_not_yet_enforced_in_production::assert-04")]
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0]["action"], dti.CATEGORY_TO_ACTION[matches[0]["category"]])
 
     def test_manifest_line_count_is_within_the_600_line_cap(self):
         """BL-038 tranche 3y-a (N2): the accepted 596 lines are a 3f ledger fact. Requiring
@@ -5521,14 +5540,17 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
     def test_classification_scope_guard_class_has_32_tests(self):
         # 26 before tranche 3f, 28 after its round 1; round 2 added four (two
         # guards, each with its mutation test). Re-anchored at tranche 3g on
-        # the tranche 3f guard CLASS, not the whole file.
+        # the tranche 3f guard CLASS, not the whole file. BL-038 tranche 3y-a-2
+        # (correction 3y-9) removed three accepted-composition guards from that class
+        # -- the exact four-file scope assertion and the two mutation tests that existed
+        # only to prove it -- so the current count is 29 against 32 at tranche 3f.
         source = self.CLASSIFICATION_TEST_PATH.read_text(encoding="utf-8")
         block = next(
             b for b in re.split(r"^class ", source, flags=re.MULTILINE)
             if b.startswith("DocumentTestClassificationScopeTest")
         )
         method_count = len(re.findall(r"^    def test_", block, re.MULTILINE))
-        self.assertEqual(method_count, 32)
+        self.assertEqual(method_count, 29)
 
     def test_round2_structural_guards_are_present_in_the_classification_suite(self):
         # These guards are narrow: one loop binding, one Category A method
@@ -8447,7 +8469,9 @@ class Bl038Tranche3xCouplingRetargetRecordSyncTest(unittest.TestCase):
                       self.bl038)
         self.assertIn("**known residual at least 19**", self.bl038)
         self.assertIn("**final repo-wide residual scanは3yまで未実施**", self.bl038)
-        self.assertIn("**残るgenuine residualは6件(R4〜R9)**", current)
+        # BL-038 tranche 3y-a-2: R4-R9 and the closure-review families are handled, so the
+        # current paragraph records closure under the defined boundary instead.
+        self.assertIn("**defined closure boundary下でunresolved genuine coupling 0**", current)
         for bare in ("residual 18)", "residual 18。", "residual 18、"):
             with self.subTest(bare=bare):
                 self.assertNotIn(bare, current)  # no bare figure as the total
