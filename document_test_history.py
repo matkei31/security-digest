@@ -109,10 +109,18 @@ def window_contracts(entries):
     return [contract_of(entry) for entry in entries]
 
 
-def ledger_shape_failures(root, indexed_shards=None):
+def ledger_shape_failures(root):
     """Shape problems in the accepted ledger; empty means well-formed. Fail-closed on
     unknown keys, wrong types, bools posing as ints, and a category breakdown that
-    disagrees with the accepted entry count."""
+    disagrees with the accepted entry count.
+
+    BL-038 tranche 3y-a (N5): `record["shard"]` is validated as a non-empty historical
+    LOCATOR only. It is deliberately NOT required to name a currently indexed shard.
+    Requiring that contradicted this module's own contract -- `live_entries` reads every
+    indexed manifest rather than the shard a record names, precisely so a later legal
+    re-shard leaves accepted history where it is -- and it would have forced the accepted
+    ledger (and `LEDGER_DIGEST`) to be rewritten to follow the current physical layout.
+    """
     problems = []
     ledger = load_ledger(root)
     if tuple(ledger.keys()) != ("schema_version", "accepted"):
@@ -139,10 +147,8 @@ def ledger_shape_failures(root, indexed_shards=None):
         if not _is_hex(record["merge_commit"], 40):
             problems.append(f"{tranche}:merge-commit:{record['merge_commit']!r}")
         shard = record["shard"]
-        if not (isinstance(shard, str) and shard.strip()):
+        if not (isinstance(shard, str) and shard.strip() and shard.endswith(".json")):
             problems.append(f"{tranche}:shard:{shard!r}")
-        elif indexed_shards is not None and shard not in indexed_shards:
-            problems.append(f"{tranche}:shard-not-indexed:{shard}")
         span = record["scope_slice"]
         if not (isinstance(span, list) and len(span) == 2
                 and all(type(v) is int and not isinstance(v, bool) and v >= 0 for v in span)

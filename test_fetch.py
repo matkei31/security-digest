@@ -5496,21 +5496,27 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
         self.assertEqual(entry["action"], "historical_keep")
 
     def test_manifest_line_count_is_within_the_600_line_cap(self):
+        """BL-038 tranche 3y-a (N2): the accepted 596 lines are a 3f ledger fact. Requiring
+        the CURRENT file to still be exactly 596 lines froze the physical layout, so a legal
+        re-shard or a split migration could not add a line. The live contract is the cap."""
+        dth.assert_accepted(self, self.ROOT, "3f", line_count=596)
         lines = self.MANIFEST_PATH.read_text(encoding="utf-8").splitlines()
-        self.assertEqual(len(lines), 596)
-        self.assertLessEqual(len(lines), 600)
+        self.assertLessEqual(len(lines), dti.SHARD_LINE_CAP)
 
     def test_manifest_validates_with_zero_failures_via_document_test_inventory(self):
+        """BL-038 tranche 3y-a (N1): the accepted 3f category breakdown is a ledger fact.
+        Requiring the CURRENT manifest to reproduce A22/B175/C268/D120 froze the live
+        category distribution and blocked every Category C conversion in this manifest.
+        What stays current is that the manifest still validates cleanly."""
         import document_test_inventory as dti
 
+        dth.assert_accepted(self, self.ROOT, "3f",
+                            category_counts={"A": 22, "B": 175, "C": 268, "D": 120})
         failures, summary = dti.validate_manifest(self._manifest(), root=self.ROOT)
         self.assertEqual(failures, [])
-        self.assertEqual(summary["unclassified"], 0)
-        self.assertEqual(summary["stale"], 0)
-        self.assertEqual(summary["fingerprint_mismatch"], 0)
-        self.assertEqual(
-            summary["category_counts"], {"A": 22, "B": 175, "C": 268, "D": 120}
-        )
+        self.assertEqual((summary["unclassified"], summary["stale"],
+                          summary["fingerprint_mismatch"]), (0, 0, 0))
+        self.assertEqual(summary["manifest_assertions"], summary["inventoried_assertions"])
 
     def test_classification_scope_guard_class_has_32_tests(self):
         # 26 before tranche 3f, 28 after its round 1; round 2 added four (two
@@ -6395,16 +6401,21 @@ class Bl038Tranche3kRecordSyncTest(unittest.TestCase):
                 self.assertIn(required, status)
 
     def test_repository_state_still_matches_the_recorded_tranche3k_append(self):
-        from collections import Counter
-
-        shard_002 = json.loads((self.ROOT / self.SHARD_002).read_text(encoding="utf-8"))
-        appended = shard_002["assertions"][34:61]
-        self.assertEqual(len(appended), 27)
-        self.assertEqual(dict(Counter(e["category"] for e in appended)), {"B": 22, "C": 5})
-        self.assertEqual({e["targets"][0] for e in appended}, {".github/workflows/pr-ci.yml"})
-        self.assertEqual(shard_002["scope"][1],
-                         {"file": "test_pr_ci_workflow.py",
-                          "classes": ["PullRequestCIWorkflowTest"]})
+        """BL-038 tranche 3y-a (N3): the accepted 27-entry append, its B22/C5 split and its
+        scope descriptor were reconstructed from the CURRENT shard 002 by positional slice
+        [34:61] and an exact scope[1] comparison -- accepted-time physical state that a legal
+        conversion or re-shard may change. The accepted totals come from the ledger, the
+        accepted scope from the pinned map, the survival of every accepted contract from
+        continuity, and current legality from the validator. The source class and its
+        workflow still existing are current contracts."""
+        dth.assert_accepted(self, self.ROOT, "3k",
+                            category_counts={"A": 0, "B": 34, "C": 19, "D": 8})
+        accepted_scope, window = dth.accepted_window(self.ROOT, "3k")
+        self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3k"])
+        self.assertIn({"file": "test_pr_ci_workflow.py",
+                       "classes": ["PullRequestCIWorkflowTest"]}, accepted_scope)
+        dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3k")
+        self.assertIn("A 0／B 22／C 5／D 0", self._bl038_section())
         # Neither the selected source test nor its workflow was modified.
         self.assertIn("class PullRequestCIWorkflowTest",
                       (self.ROOT / "test_pr_ci_workflow.py").read_text(encoding="utf-8"))
@@ -8112,8 +8123,9 @@ class Bl038Tranche3vCouplingRetargetRecordSyncTest(unittest.TestCase):
         for bare in ("residual 83)", "residual 83。", "residual 83、"):
             with self.subTest(bare=bare):
                 self.assertNotIn(bare, current)
-        self.assertIn("**frozen 18＋known correction 1でknown work at least 19**", current)
-        self.assertIn("**final repo-wide residual scanは未実施**", current)
+        # Tranche 3y-a: "frozen 18 + correction 1" and "scan not yet run" were the
+        # THEN-current plan; both are recorded above as tranche 3v/3x history and the
+        # current paragraph has moved on. The bare-figure prohibitions above still hold.
         # The qualified planning-context phrasing is legitimate and must remain.
         self.assertIn("frozen-inventory residual 83", self.bl038)
         for text in (self.bl038, self.status):
@@ -8429,10 +8441,15 @@ class Bl038Tranche3xCouplingRetargetRecordSyncTest(unittest.TestCase):
 
     def test_the_current_residual_accounting_is_the_post_3x_state(self):
         current = self.bl038[self.bl038.rindex("- **残作業:**"):]
-        self.assertIn("3v＋3w＋3xでfrozen 88件を実施済み", current)
-        self.assertIn("**frozen-inventory residual 18にunresolved known out-of-population "
-                      "correction 1件(`3v-1`)があり、known residualはat least 19**", current)
-        self.assertIn("**final repo-wide residual scanは未実施**", current)
+        # Tranche 3y-a: 3x's own accounting stays as history in its own paragraph; the
+        # CURRENT paragraph records the post-3y-a state instead.
+        self.assertIn("frozen handled (3v 23＋3w 38＋3x 27)＝**88**、**frozen residual 18**",
+                      self.bl038)
+        self.assertIn("**known residual at least 19**", self.bl038)
+        self.assertIn("**final repo-wide residual scanは3yまで未実施**", self.bl038)
+        self.assertIn("**全件handled・frozen-inventory residual 0**", current)
+        self.assertIn("**final repo-wide static residual scanはv2 definitionで実施済みで"
+                      "unresolved genuine coupling 0**", current)
         for bare in ("residual 18)", "residual 18。", "residual 18、"):
             with self.subTest(bare=bare):
                 self.assertNotIn(bare, current)  # no bare figure as the total

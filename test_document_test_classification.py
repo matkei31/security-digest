@@ -4881,16 +4881,19 @@ class ClassificationHistoryLedgerTest(unittest.TestCase):
     inline accepted constants and with BL-038's own acceptance record."""
 
     def test_the_ledger_is_pinned_well_formed_and_completely_populated(self):
-        indexed = set(json.loads(INDEX_PATH.read_text(encoding="utf-8"))["shards"])
+        # BL-038 tranche 3y-a (N5): every accepted record still carries a historical shard
+        # LOCATOR, but it is not required to name a currently indexed shard -- a legal
+        # re-shard must not force the accepted ledger to be rewritten.
         self.assertEqual(dth.ledger_digest(ROOT), ACCEPTED_LEDGER_DIGEST)
         self.assertEqual(dth.LEDGER_DIGEST, ACCEPTED_LEDGER_DIGEST)
-        self.assertEqual(dth.ledger_shape_failures(ROOT, indexed_shards=indexed), [])
+        self.assertEqual(dth.ledger_shape_failures(ROOT), [])
         ledger = dth.load_ledger(ROOT)
         self.assertEqual(ledger["schema_version"], dth.LEDGER_SCHEMA_VERSION)
         self.assertEqual(len(ledger["accepted"]), TRANCHE_3T_LEDGER_RECORD_COUNT)
         self.assertEqual(tuple(r["tranche"] for r in ledger["accepted"]),
                          TRANCHE_3T_ACCEPTED_TRANCHES)
-        self.assertEqual({r["shard"] for r in ledger["accepted"]} - indexed, set())
+        self.assertEqual([r for r in ledger["accepted"]
+                          if not r["shard"].endswith(".json")], [])
 
     def test_every_accepted_fact_has_a_second_independent_copy(self):
         """What makes "any accepted fact is caught" true even against a re-pinned
@@ -4985,7 +4988,6 @@ class ClassificationHistoryLedgerTest(unittest.TestCase):
         """Round 1 finding 3: `is not` identity comparison on schema_version, and no
         shape contract on the rest. Every field is checked now, bools are rejected as
         ints, and the category breakdown must sum to the accepted entry count."""
-        indexed = set(json.loads(INDEX_PATH.read_text(encoding="utf-8"))["shards"])
         good = dth.load_ledger(ROOT)
         R0, H0, H1 = ("accepted", 0), ("accepted", 0, "historical"), ("accepted", 1, "historical")
         cases = (
@@ -4994,7 +4996,8 @@ class ClassificationHistoryLedgerTest(unittest.TestCase):
             (R0 + ("pull_request",), True), (R0 + ("pull_request",), 0),
             (R0 + ("pull_request",), "88"), (R0 + ("merge_commit",), "abc"),
             (R0 + ("merge_commit",), "z" * 40), (R0 + ("shard",), ""),
-            (R0 + ("shard",), "nope.json"), (R0 + ("scope_slice",), [0]),
+            (R0 + ("shard",), "   "), (R0 + ("shard",), 7),
+            (R0 + ("shard",), "not-a-manifest"), (R0 + ("scope_slice",), [0]),
             (R0 + ("scope_slice",), [-1, 2]), (R0 + ("scope_slice",), [2, 2]),
             (R0 + ("scope_slice",), [False, True]), (H0 + ("sha256",), "ab"),
             (H0 + ("contracts_digest",), "g" * 64), (H1 + ("content_digest",), "ab"),
@@ -5012,7 +5015,7 @@ class ClassificationHistoryLedgerTest(unittest.TestCase):
                 mutate(ledger)
                 (root / dth.LEDGER_FILENAME).write_text(
                     json.dumps(ledger, ensure_ascii=False), encoding="utf-8")
-                return dth.ledger_shape_failures(root, indexed_shards=indexed)
+                return dth.ledger_shape_failures(root)
 
             self.assertEqual(failures_for(lambda l: None), [])
             for path, value in cases:
@@ -5020,7 +5023,7 @@ class ClassificationHistoryLedgerTest(unittest.TestCase):
                     self.assertNotEqual(failures_for(_setter(path, value)), [])
             self.assertNotEqual(failures_for(
                 lambda l: l["accepted"].append(json.loads(json.dumps(l["accepted"][0])))), [])
-        self.assertEqual(dth.ledger_shape_failures(ROOT, indexed_shards=indexed), [])
+        self.assertEqual(dth.ledger_shape_failures(ROOT), [])
 
     def test_editing_any_accepted_fact_in_the_ledger_is_detected(self):
         """Every accepted field, in the first and last record, is tamper-evident -- and
