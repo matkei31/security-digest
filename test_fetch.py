@@ -8388,9 +8388,11 @@ class Bl038Tranche3vCouplingRetargetRecordSyncTest(unittest.TestCase):
         different numbers, because one out-of-inventory false negative is already known.
         The docs must state both and must not present 106 as a complete coupling
         universe in the present tense."""
+        # The tranche 3v paragraph keeps ITS OWN accounting (83 + 1 = 84); the current
+        # 残作業 paragraph moves on as later tranches land, and is checked separately by
+        # the tranche 3w guard.
         for token in ("**frozen-inventory residual 83＋known false-negative correction 1＝"
                       "known residual at least 84**",
-                      "**frozen 18＋known correction 1(＝known work at least 19)**",
                       "**final repo-wide residual scanは未実施**",
                       "**repo-wide coupling eliminatedではない**"):
             with self.subTest(token=token):
@@ -8410,8 +8412,6 @@ class Bl038Tranche3vCouplingRetargetRecordSyncTest(unittest.TestCase):
         for bare in ("residual 83)", "residual 83。", "residual 83、"):
             with self.subTest(bare=bare):
                 self.assertNotIn(bare, current)
-        self.assertIn("**frozen-inventory residual 83にknown false-negative correction 1があり、"
-                      "known residualはat least 84**", current)
         self.assertIn("**frozen 18＋known correction 1でknown work at least 19**", current)
         self.assertIn("**final repo-wide residual scanは未実施**", current)
         # The qualified planning-context phrasing is legitimate and must remain.
@@ -8482,6 +8482,94 @@ class Bl038Tranche3vCouplingRetargetRecordSyncTest(unittest.TestCase):
         migrations = json.loads((self.root / "document_test_classification_migrations.json")
                                 .read_text(encoding="utf-8"))
         self.assertEqual(migrations["migrations"], [])
+
+
+class Bl038Tranche3waCouplingRetargetRecordSyncTest(unittest.TestCase):
+    """BL-038 tranche 3w-a: the split (3j/3k/3l here, 3m in 3w-b), the frozen and actual
+    dispositions, the C002/C003 re-shard finding and the current residual accounting are
+    recorded as facts. The planning snapshot must stay a planning record."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.root = Path(__file__).resolve().parent
+        cls.backlog = (cls.root / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (cls.root / "STATUS.md").read_text(encoding="utf-8")
+        start = cls.backlog.index("## BL-038")
+        end = cls.backlog.find("\n## ", start + 8)
+        cls.bl038 = cls.backlog[start:] if end < 0 else cls.backlog[start:end]
+
+    def test_the_split_scope_and_dispositions_are_recorded(self):
+        for token in ("tranche 3w-a(shard002 coupling retarget、3j/3k/3l、2026-08-12)",
+                      "121f0a1ab1597723f5cf8c9d7c0fa9c8facab002",
+                      "**C024〜C051の28 frozen rows(3j/3k/3l)のみ**",
+                      "**3m family C052〜C061の10 rowsはtranche 3w-bへ移した**",
+                      "**rewrite 25件・remove_obsolete 3件**",
+                      "**3w-a implementation total = 29 coupling methods handled／"
+                      "rewrite 25・remove_obsolete 4**",
+                      "**cap exceptionを採らずscopeを分割**"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        self.assertIn("**rewrite 25／remove 3**", self.status)
+        self.assertIn("**3w-a implementation total 29 methods／rewrite 25・remove 4**", self.status)
+
+    def test_the_3w1_correction_is_here_and_3w2_is_deferred(self):
+        self.assertIn("`3w-1`", self.bl038)
+        self.assertIn("`3w-2`(3m側のH7-A false negative)はsnapshotへ追加せず3w-bで処理する", self.bl038)
+        snapshot = json.loads((self.root / "document_test_coupling_inventory_3v.json").read_text(encoding="utf-8"))
+        ids = [c["id"] for c in snapshot["corrections"]]
+        self.assertEqual(ids, ["R0.1-1", "R0.1-2", "R0.1-3", "R0.2-1", "3v-1", "3v-2", "3w-1"])
+        self.assertNotIn("3w-2", ids)
+
+    def test_the_snapshot_stays_a_planning_record_not_a_progress_tracker(self):
+        snapshot = json.loads((self.root / "document_test_coupling_inventory_3v.json").read_text(encoding="utf-8"))
+        self.assertEqual(snapshot["candidate_count"], 106)
+        self.assertEqual(len(snapshot["candidates"]), 106)
+        accounting = snapshot["residual_accounting"]
+        self.assertEqual(accounting["recorded_at"], "tranche 3v acceptance")
+        self.assertIs(accounting["is_current_tracker"], False)
+        # No current-progress figures may leak into the snapshot.
+        self.assertEqual([k for k in accounting if "3w" in k], [])
+        self.assertEqual(accounting["frozen_inventory_residual"], 83)  # the 3v-era record
+        for token in ("新しいledger／snapshot／migration mechanism／分類体系は追加していない",
+                      "**retroactive ledger追加は0件**", "**validatorは弱めていない**",
+                      "**real Category C conversion 0件**"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        migrations = json.loads((self.root / "document_test_classification_migrations.json").read_text(encoding="utf-8"))
+        self.assertEqual(migrations["migrations"], [])
+
+    def test_the_current_residual_accounting_lives_here_not_in_the_snapshot(self):
+        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        self.assertIn("3v＋3w-aでfrozen 51件を実施済み", current)
+        self.assertIn("**frozen-inventory residual 55にunresolved known out-of-population "
+                      "correction 2件(`3v-1`／`3w-2`)があり、known residualはat least 57**", current)
+        self.assertIn("**final repo-wide residual scanは未実施**", current)
+        for bare in ("residual 55)", "residual 55。", "residual 55、"):
+            with self.subTest(bare=bare):
+                self.assertNotIn(bare, current)  # no bare figure as the total
+        self.assertIn("known residual at least 57", self.status)
+        # Superseded 3w-wide figures must not survive in the current paragraph.
+        for stale in ("frozen 61件", "residual 45", "at least 46", "40 coupling methods"):
+            with self.subTest(stale=stale):
+                self.assertNotIn(stale, current)
+
+    def test_the_proofs_and_the_c002_c003_finding_are_recorded(self):
+        for token in ("tranche 3w-a proofs(2026-08-12)", "**migration metadata 0**",
+                      "**3v handled rows failure 0・3w-a handled rows failure 0**",
+                      "**other unexpected noncandidate failure 0**",
+                      "3w-bへ移した3m frozen row C059 1件",
+                      "**legal re-shard probe**",
+                      "**3j/3k/3l candidate methods全green**",
+                      "**3v accepted rowsのC002/C003にremaining physical/index-layout couplingを検出**",
+                      "**implementation remediationとしてtranche 3w-bで修正する**"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        self.assertIn("**3w-bでremediate**", self.status)
+
+    def test_category_c_is_still_blocked_until_tranche_3y(self):
+        self.assertIn("Category C 638件は引き続きblockedで、\nunblockはtranche 3y acceptance後。**"
+                      .replace("\n", ""), self.bl038)
+        self.assertIn("unblockはtranche 3y acceptance後", self.status)
 
 
 if __name__ == "__main__":
