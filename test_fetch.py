@@ -8512,13 +8512,15 @@ class Bl038Tranche3waCouplingRetargetRecordSyncTest(unittest.TestCase):
         self.assertIn("**rewrite 25／remove 3**", self.status)
         self.assertIn("**3w-a implementation total 29 methods／rewrite 25・remove 4**", self.status)
 
-    def test_the_3w1_correction_is_here_and_3w2_is_deferred(self):
+    def test_the_3w1_correction_is_here_and_the_3w2_deferral_was_honoured(self):
+        """3w-a handled 3w-1 and deferred 3w-2 to 3w-b. The deferral must be honoured, not
+        dropped: once 3w-b lands, 3w-2 appears in the appendix marked handled there."""
         self.assertIn("`3w-1`", self.bl038)
         self.assertIn("`3w-2`(3m側のH7-A false negative)はsnapshotへ追加せず3w-bで処理する", self.bl038)
         snapshot = json.loads((self.root / "document_test_coupling_inventory_3v.json").read_text(encoding="utf-8"))
-        ids = [c["id"] for c in snapshot["corrections"]]
-        self.assertEqual(ids, ["R0.1-1", "R0.1-2", "R0.1-3", "R0.2-1", "3v-1", "3v-2", "3w-1"])
-        self.assertNotIn("3w-2", ids)
+        corrections = {c["id"]: c for c in snapshot["corrections"]}
+        self.assertEqual(corrections["3w-1"]["status"], "handled in tranche 3w")
+        self.assertEqual(corrections["3w-2"]["status"], "handled in tranche 3w-b")
 
     def test_the_snapshot_stays_a_planning_record_not_a_progress_tracker(self):
         snapshot = json.loads((self.root / "document_test_coupling_inventory_3v.json").read_text(encoding="utf-8"))
@@ -8538,20 +8540,14 @@ class Bl038Tranche3waCouplingRetargetRecordSyncTest(unittest.TestCase):
         migrations = json.loads((self.root / "document_test_classification_migrations.json").read_text(encoding="utf-8"))
         self.assertEqual(migrations["migrations"], [])
 
-    def test_the_current_residual_accounting_lives_here_not_in_the_snapshot(self):
-        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
-        self.assertIn("3v＋3w-aでfrozen 51件を実施済み", current)
-        self.assertIn("**frozen-inventory residual 55にunresolved known out-of-population "
-                      "correction 2件(`3v-1`／`3w-2`)があり、known residualはat least 57**", current)
-        self.assertIn("**final repo-wide residual scanは未実施**", current)
-        for bare in ("residual 55)", "residual 55。", "residual 55、"):
-            with self.subTest(bare=bare):
-                self.assertNotIn(bare, current)  # no bare figure as the total
-        self.assertIn("known residual at least 57", self.status)
-        # Superseded 3w-wide figures must not survive in the current paragraph.
-        for stale in ("frozen 61件", "residual 45", "at least 46", "40 coupling methods"):
-            with self.subTest(stale=stale):
-                self.assertNotIn(stale, current)
+    def test_the_3wa_entry_records_its_own_accounting(self):
+        """3w-a's own paragraph keeps the accounting as of 3w-a (51 handled / residual 55 /
+        at least 57). The CURRENT 残作業 paragraph moves on as later tranches land and is
+        checked by the tranche that owns it, not here."""
+        self.assertIn("frozen handled through 3v＋3w-a **51**", self.bl038)
+        self.assertIn("**frozen residual 55**", self.bl038)
+        self.assertIn("**known residual at least 57**", self.bl038)
+        self.assertIn("**final repo-wide residual scanは未実施**", self.bl038)
 
     def test_the_proofs_and_the_c002_c003_finding_are_recorded(self):
         for token in ("tranche 3w-a proofs(2026-08-12)", "**migration metadata 0**",
@@ -8569,6 +8565,87 @@ class Bl038Tranche3waCouplingRetargetRecordSyncTest(unittest.TestCase):
     def test_category_c_is_still_blocked_until_tranche_3y(self):
         self.assertIn("Category C 638件は引き続きblockedで、\nunblockはtranche 3y acceptance後。**"
                       .replace("\n", ""), self.bl038)
+        self.assertIn("unblockはtranche 3y acceptance後", self.status)
+
+
+class Bl038Tranche3wbCouplingRetargetRecordSyncTest(unittest.TestCase):
+    """BL-038 tranche 3w-b: the 3m frozen rows, correction 3w-2, the C002/C003 remediation,
+    the unresolved C048 finding and the current residual accounting are recorded as facts."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.root = Path(__file__).resolve().parent
+        cls.backlog = (cls.root / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (cls.root / "STATUS.md").read_text(encoding="utf-8")
+        start = cls.backlog.index("## BL-038")
+        end = cls.backlog.find("\n## ", start + 8)
+        cls.bl038 = cls.backlog[start:] if end < 0 else cls.backlog[start:end]
+
+    def test_the_scope_disposition_and_3w2_are_recorded(self):
+        for token in ("tranche 3w-b(shard002 coupling retarget完了、3m＋remediation、2026-08-12)",
+                      "045ab17a48f4616a203ab4589db194e54b314ac7",
+                      "**C052〜C061の10 rows(3m family)**",
+                      "**rewrite 8件・remove_obsolete 2件**",
+                      "**`3w-2`**",
+                      "**3w全体のfrozen 38 rowsが完了**",
+                      "**known G1 residual 0**"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        self.assertIn("**rewrite 8／remove 2**", self.status)
+        snapshot = json.loads((self.root / "document_test_coupling_inventory_3v.json").read_text(encoding="utf-8"))
+        corrections = {c["id"]: c for c in snapshot["corrections"]}
+        self.assertEqual(corrections["3w-2"]["status"], "handled in tranche 3w-b")
+        self.assertEqual(corrections["3w-2"]["population_change"], 0)
+
+    def test_the_c002_c003_remediation_is_recorded_without_new_snapshot_entries(self):
+        self.assertIn("C002/C003の\nremaining physical/index-layout couplingをremediate"
+                      .replace("\n", ""), self.bl038)
+        self.assertIn("**C002/C003はsnapshotのnew candidate/correctionとしては追加していない**", self.bl038)
+        snapshot = json.loads((self.root / "document_test_coupling_inventory_3v.json").read_text(encoding="utf-8"))
+        self.assertEqual(snapshot["candidate_count"], 106)
+        self.assertEqual(len(snapshot["candidates"]), 106)
+        self.assertEqual([c["id"] for c in snapshot["corrections"]],
+                         ["R0.1-1", "R0.1-2", "R0.1-3", "R0.2-1", "3v-1", "3v-2", "3w-1", "3w-2"])
+        accounting = snapshot["residual_accounting"]
+        self.assertEqual(accounting["recorded_at"], "tranche 3v acceptance")
+        self.assertIs(accounting["is_current_tracker"], False)
+        self.assertEqual([k for k in accounting if "3w" in k], [])
+
+    def test_the_backup_was_reused_selectively_not_wholesale(self):
+        self.assertIn("3m classのhunkのみ選択的に再利用し、"
+                      "whole-file restoreやcherry-pickは行っていない", self.bl038)
+
+    def test_the_proofs_and_the_c048_finding_are_recorded(self):
+        for token in ("tranche 3w-b proofs(2026-08-12)", "**legal re-shard probe**",
+                      "**C002/C003 green・C052〜C061 surviving rows green・"
+                      "`3w-2` method absent・3w-a candidate rowsにregression 0**",
+                      "**3v/3w-a/3w-b handled rows failure 0**",
+                      "**other unexpected noncandidate failure 0**",
+                      "**C052のAST skeleton group histogram pin**",
+                      "**未解決のfinding**", "pre-existing", "3w-bのregressionではない",
+                      "独断で修正・振替せず、判断を仰ぐ"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
+        self.assertIn("**未解決finding**", self.status)
+
+    def test_the_current_residual_accounting_is_the_post_3w_state(self):
+        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        self.assertIn("3v＋3w-a＋3w-bでfrozen 61件を実施済み", current)
+        self.assertIn("**3w全体のfrozen 38は完了**", current)
+        self.assertIn("**frozen-inventory residual 45にunresolved known out-of-population "
+                      "correction 1件(`3v-1`)があり、known residualはat least 46**", current)
+        self.assertIn("**final repo-wide residual scanは未実施**", current)
+        for bare in ("residual 45)", "residual 45。", "residual 45、"):
+            with self.subTest(bare=bare):
+                self.assertNotIn(bare, current)  # no bare figure as the total
+        self.assertIn("known residual at least 46", self.status)
+        # The superseded 3w-a-era figures must not linger in the current paragraph.
+        for stale in ("frozen 51件", "residual 55", "at least 57"):
+            with self.subTest(stale=stale):
+                self.assertNotIn(stale, current)
+
+    def test_category_c_is_still_blocked_until_tranche_3y(self):
+        self.assertIn("Category C 638件は引き続きblockedで、unblockはtranche 3y acceptance後。**", self.bl038)
         self.assertIn("unblockはtranche 3y acceptance後", self.status)
 
 
