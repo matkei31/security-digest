@@ -5521,14 +5521,17 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
     def test_classification_scope_guard_class_has_32_tests(self):
         # 26 before tranche 3f, 28 after its round 1; round 2 added four (two
         # guards, each with its mutation test). Re-anchored at tranche 3g on
-        # the tranche 3f guard CLASS, not the whole file.
+        # the tranche 3f guard CLASS, not the whole file. BL-038 tranche 3y-a-2
+        # (correction 3y-9) removed three accepted-composition guards from that class
+        # -- the exact four-file scope assertion and the two mutation tests that existed
+        # only to prove it -- so the current count is 29 against 32 at tranche 3f.
         source = self.CLASSIFICATION_TEST_PATH.read_text(encoding="utf-8")
         block = next(
             b for b in re.split(r"^class ", source, flags=re.MULTILINE)
             if b.startswith("DocumentTestClassificationScopeTest")
         )
         method_count = len(re.findall(r"^    def test_", block, re.MULTILINE))
-        self.assertEqual(method_count, 32)
+        self.assertEqual(method_count, 29)
 
     def test_round2_structural_guards_are_present_in_the_classification_suite(self):
         # These guards are narrow: one loop binding, one Category A method

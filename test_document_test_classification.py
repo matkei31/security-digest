@@ -1739,58 +1739,36 @@ _CATEGORY_MARKERS = {
 class DocumentTestClassificationScopeTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
+        # BL-038 tranche 3y-a-2 (F-A, correction 3y-9): reading MANIFEST_PATH stays -- this
+        # class OWNS the current base manifest and its legacy single-manifest path. What
+        # changes is where the live population comes from: the manifest's OWN declared
+        # scope, in its own scope order, instead of the accepted tranche-3f four-file /
+        # expected-class constants. Deriving the fixture from accepted composition made
+        # every test here depend on accepted contracts still living in this physical file,
+        # so a legal re-shard broke tests that have nothing to do with placement.
         cls.manifest_text = MANIFEST_PATH.read_text(encoding="utf-8")
         cls.manifest = json.loads(cls.manifest_text)
-        cls.sources = {
-            CUSTOM_DOMAIN_SOURCE_FILE: (ROOT / CUSTOM_DOMAIN_SOURCE_FILE).read_text(encoding="utf-8"),
-            UI_SPEC_SOURCE_FILE: (ROOT / UI_SPEC_SOURCE_FILE).read_text(encoding="utf-8"),
-            STATUS_SOURCE_FILE: (ROOT / STATUS_SOURCE_FILE).read_text(encoding="utf-8"),
-            SECURITY_REQUIREMENTS_SOURCE_FILE: (ROOT / SECURITY_REQUIREMENTS_SOURCE_FILE).read_text(encoding="utf-8"),
-        }
+        cls.scoped_files = [scope["file"] for scope in cls.manifest["scope"]]
+        cls.sources = {name: (ROOT / name).read_text(encoding="utf-8") for name in cls.scoped_files}
         cls.live_records_by_file = {
-            CUSTOM_DOMAIN_SOURCE_FILE: dti.enumerate_assertions(
-                cls.sources[CUSTOM_DOMAIN_SOURCE_FILE], CUSTOM_DOMAIN_SOURCE_FILE,
-                list(CUSTOM_DOMAIN_EXPECTED_CLASSES),
-            ),
-            UI_SPEC_SOURCE_FILE: dti.enumerate_assertions(
-                cls.sources[UI_SPEC_SOURCE_FILE], UI_SPEC_SOURCE_FILE,
-                list(UI_SPEC_EXPECTED_CLASSES),
-            ),
-            STATUS_SOURCE_FILE: dti.enumerate_assertions(
-                cls.sources[STATUS_SOURCE_FILE], STATUS_SOURCE_FILE,
-                list(STATUS_EXPECTED_CLASSES),
-            ),
-            SECURITY_REQUIREMENTS_SOURCE_FILE: dti.enumerate_assertions(
-                cls.sources[SECURITY_REQUIREMENTS_SOURCE_FILE], SECURITY_REQUIREMENTS_SOURCE_FILE,
-                list(SECURITY_REQUIREMENTS_EXPECTED_CLASSES),
-            ),
+            scope["file"]: dti.enumerate_assertions(
+                cls.sources[scope["file"]], scope["file"], list(scope["classes"]))
+            for scope in cls.manifest["scope"]
         }
-        # Concatenation order matches the manifest's own required layout:
-        # test_custom_domain.py's 97 entries first (unchanged from tranche
-        # 3b), then test_ui_spec.py's 185 entries (unchanged from tranche
-        # 3c), then test_status.py's 98 entries (unchanged from tranche 3d),
-        # then test_security_requirements.py's 143 entries (tranche 3e), in
-        # source order within each file.
-        cls.live_records = (
-            cls.live_records_by_file[CUSTOM_DOMAIN_SOURCE_FILE]
-            + cls.live_records_by_file[UI_SPEC_SOURCE_FILE]
-            + cls.live_records_by_file[STATUS_SOURCE_FILE]
-            + cls.live_records_by_file[SECURITY_REQUIREMENTS_SOURCE_FILE]
-        )
+        # Concatenated in the manifest's own scope order, source order within each file.
+        cls.live_records = [r for name in cls.scoped_files for r in cls.live_records_by_file[name]]
 
     # -- shared helper, used both directly and against mutated copies in
     # the scope-shrinkage/reordering mutation tests below --
-    def _assert_expected_scope(self, manifest):
-        scope = manifest["scope"]
-        self.assertEqual(len(scope), 4, "scope must list exactly 4 files")
-        for entry, (expected_file, expected_classes) in zip(scope, EXPECTED_SCOPE_ORDER):
-            self.assertEqual(entry["file"], expected_file)
-            self.assertEqual(
-                tuple(entry["classes"]),
-                expected_classes,
-                f"declared scope classes for {expected_file} must exactly equal "
-                "the hardcoded literal expected-class tuple (order and membership)",
-            )
+    # BL-038 tranche 3y-a-2 (A1/A5/A6, correction 3y-9): three members are gone.
+    # `_assert_expected_scope()` held the CURRENT manifest to the accepted tranche-3f
+    # four-file / expected-class composition; `test_scope_is_exactly_four_files_...` was
+    # only that helper, and the scope-shrinkage and file-order-swap mutation tests existed
+    # only to prove that helper caught what the validator missed. All three froze where
+    # accepted contracts may live, which Proof P1 showed blocks a validator-clean re-shard.
+    # MEASURED and reported, not silently absorbed: the indexed validator does NOT detect a
+    # silent base scope shrink (unclassified stays 0), so removing these guards removes real
+    # coverage. No replacement constant, detector or meta-test is introduced here.
 
     def _assert_ids_match_source_order(self, manifest):
         # List (not set) equality: the manifest must list assertions in the
@@ -1809,40 +1787,20 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         self.assertEqual(self.manifest["schema_version"], 1)
         self.assertIs(type(self.manifest["schema_version"]), int)
 
-    def test_scope_is_exactly_four_files_in_order_with_expected_classes(self):
-        self._assert_expected_scope(self.manifest)
 
     def test_assertion_and_live_inventory_counts_match_expected_totals(self):
-        self.assertEqual(len(self.manifest["assertions"]), BASE_EXPECTED_ASSERTION_COUNT)
-        self.assertEqual(len(self.live_records), BASE_EXPECTED_ASSERTION_COUNT)
-        self.assertEqual(
-            len(self.live_records_by_file[CUSTOM_DOMAIN_SOURCE_FILE]),
-            CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT,
-        )
-        self.assertEqual(
-            len(self.live_records_by_file[UI_SPEC_SOURCE_FILE]),
-            UI_SPEC_EXPECTED_ASSERTION_COUNT,
-        )
-        self.assertEqual(
-            len(self.live_records_by_file[STATUS_SOURCE_FILE]),
-            STATUS_EXPECTED_ASSERTION_COUNT,
-        )
-        self.assertEqual(
-            len(self.live_records_by_file[SECURITY_REQUIREMENTS_SOURCE_FILE]),
-            SECURITY_REQUIREMENTS_EXPECTED_ASSERTION_COUNT,
-        )
+        """BL-038 tranche 3y-a-2 (A2, correction 3y-9): the accepted 585 total and the
+        accepted per-file tallies were required of the CURRENT manifest, so no accepted
+        contract could ever leave this file. They are tranche 3f ledger facts now, and
+        what stays here is the CURRENT self-consistency that the ledger cannot express:
+        this manifest holds exactly what its own declared scope enumerates, per file."""
+        dth.assert_accepted(self, ROOT, "3f", entry_count=BASE_EXPECTED_ASSERTION_COUNT)
+        self.assertEqual(len(self.manifest["assertions"]), len(self.live_records))
         manifest_counts_by_file = {}
         for entry in self.manifest["assertions"]:
             manifest_counts_by_file[entry["file"]] = manifest_counts_by_file.get(entry["file"], 0) + 1
-        self.assertEqual(
-            manifest_counts_by_file,
-            {
-                CUSTOM_DOMAIN_SOURCE_FILE: CUSTOM_DOMAIN_EXPECTED_ASSERTION_COUNT,
-                UI_SPEC_SOURCE_FILE: UI_SPEC_EXPECTED_ASSERTION_COUNT,
-                STATUS_SOURCE_FILE: STATUS_EXPECTED_ASSERTION_COUNT,
-                SECURITY_REQUIREMENTS_SOURCE_FILE: SECURITY_REQUIREMENTS_EXPECTED_ASSERTION_COUNT,
-            },
-        )
+        self.assertEqual(manifest_counts_by_file,
+                         {name: len(records) for name, records in self.live_records_by_file.items()})
 
     def test_manifest_ids_match_live_inventory_ids_in_source_order(self):
         self._assert_ids_match_source_order(self.manifest)
@@ -1873,12 +1831,9 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         self.assertEqual(summary["fingerprint_mismatch"], 0)
 
     def test_category_counts_match_corrected_final_tally(self):
-        counts_by_file = {
-            CUSTOM_DOMAIN_SOURCE_FILE: {"A": 0, "B": 0, "C": 0, "D": 0},
-            UI_SPEC_SOURCE_FILE: {"A": 0, "B": 0, "C": 0, "D": 0},
-            STATUS_SOURCE_FILE: {"A": 0, "B": 0, "C": 0, "D": 0},
-            SECURITY_REQUIREMENTS_SOURCE_FILE: {"A": 0, "B": 0, "C": 0, "D": 0},
-        }
+        # BL-038 tranche 3y-a-2 (A3, correction 3y-9): keyed by the files this manifest
+        # actually declares, not by the accepted tranche-3f four.
+        counts_by_file = {name: {"A": 0, "B": 0, "C": 0, "D": 0} for name in self.scoped_files}
         for entry in self.manifest["assertions"]:
             counts_by_file[entry["file"]][entry["category"]] += 1
         # BL-038 tranche 3v (C005): the per-file and combined ACCEPTED tallies are a
@@ -1886,13 +1841,8 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         # current manifest, which a legal Category C conversion may legitimately move.
         dth.assert_accepted(self, ROOT, "3f", entry_count=BASE_EXPECTED_ASSERTION_COUNT,
                             category_counts=BASE_EXPECTED_CATEGORY_COUNTS)
-        combined = {
-            cat: counts_by_file[CUSTOM_DOMAIN_SOURCE_FILE][cat]
-            + counts_by_file[UI_SPEC_SOURCE_FILE][cat]
-            + counts_by_file[STATUS_SOURCE_FILE][cat]
-            + counts_by_file[SECURITY_REQUIREMENTS_SOURCE_FILE][cat]
-            for cat in ("A", "B", "C", "D")
-        }
+        combined = {cat: sum(counts[cat] for counts in counts_by_file.values())
+                    for cat in ("A", "B", "C", "D")}
         # Current-side property only: the per-file breakdown adds up to the manifest.
         self.assertEqual(sum(combined.values()), len(self.manifest["assertions"]))
 
@@ -2236,106 +2186,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
     # -- rather than just proving unequal tuples fail assertEqual. Tranche
     # 3c adds the whole-file-drop scenario alongside the original
     # single-class-drop scenario, table-driven via subTest.
-    def test_scope_shrinkage_mutations_are_caught_by_the_guard(self):
-        def drop_ui_spec_class(mutated):
-            mutated["scope"][1]["classes"] = [
-                c for c in mutated["scope"][1]["classes"] if c != "Bl036ArticleAttributionUiSpecTest"
-            ]
-            mutated["assertions"] = [
-                a for a in mutated["assertions"]
-                if not (a["file"] == UI_SPEC_SOURCE_FILE and a["class"] == "Bl036ArticleAttributionUiSpecTest")
-            ]
 
-        def drop_ui_spec_file_entirely(mutated):
-            mutated["scope"] = [s for s in mutated["scope"] if s["file"] != UI_SPEC_SOURCE_FILE]
-            mutated["assertions"] = [a for a in mutated["assertions"] if a["file"] != UI_SPEC_SOURCE_FILE]
-
-        def drop_status_class(mutated):
-            status_scope = next(s for s in mutated["scope"] if s["file"] == STATUS_SOURCE_FILE)
-            status_scope["classes"] = [
-                c for c in status_scope["classes"] if c != "Bl036ProductionEvidenceSyncTest"
-            ]
-            mutated["assertions"] = [
-                a for a in mutated["assertions"]
-                if not (a["file"] == STATUS_SOURCE_FILE and a["class"] == "Bl036ProductionEvidenceSyncTest")
-            ]
-
-        def drop_status_file_entirely(mutated):
-            mutated["scope"] = [s for s in mutated["scope"] if s["file"] != STATUS_SOURCE_FILE]
-            mutated["assertions"] = [a for a in mutated["assertions"] if a["file"] != STATUS_SOURCE_FILE]
-
-        def drop_security_requirements_class(mutated):
-            sr_scope = next(s for s in mutated["scope"] if s["file"] == SECURITY_REQUIREMENTS_SOURCE_FILE)
-            sr_scope["classes"] = [
-                c for c in sr_scope["classes"] if c != "StatusSecurityRequirementsSourceOfTruthTest"
-            ]
-            mutated["assertions"] = [
-                a for a in mutated["assertions"]
-                if not (
-                    a["file"] == SECURITY_REQUIREMENTS_SOURCE_FILE
-                    and a["class"] == "StatusSecurityRequirementsSourceOfTruthTest"
-                )
-            ]
-
-        def drop_tranche3f_class(mutated):
-            # Tranche 3f's own class, whose 62 entries are the newest and
-            # therefore the easiest to lose silently: the validator alone
-            # cannot see the scope shrink back to tranche 3e's four classes.
-            sr_scope = next(s for s in mutated["scope"] if s["file"] == SECURITY_REQUIREMENTS_SOURCE_FILE)
-            sr_scope["classes"] = [
-                c for c in sr_scope["classes"] if c != "Bl031AcceptanceAndBl032RegistrationTest"
-            ]
-            mutated["assertions"] = [
-                a for a in mutated["assertions"]
-                if not (
-                    a["file"] == SECURITY_REQUIREMENTS_SOURCE_FILE
-                    and a["class"] == "Bl031AcceptanceAndBl032RegistrationTest"
-                )
-            ]
-
-        def drop_security_requirements_file_entirely(mutated):
-            mutated["scope"] = [s for s in mutated["scope"] if s["file"] != SECURITY_REQUIREMENTS_SOURCE_FILE]
-            mutated["assertions"] = [
-                a for a in mutated["assertions"] if a["file"] != SECURITY_REQUIREMENTS_SOURCE_FILE
-            ]
-
-        scenarios = {
-            "class-shrink-within-ui-spec": drop_ui_spec_class,
-            "file-shrink-drop-ui-spec-entirely": drop_ui_spec_file_entirely,
-            "class-shrink-within-status": drop_status_class,
-            "file-shrink-drop-status-entirely": drop_status_file_entirely,
-            "class-shrink-within-security-requirements": drop_security_requirements_class,
-            "class-shrink-drop-tranche3f-class": drop_tranche3f_class,
-            "file-shrink-drop-security-requirements-entirely": drop_security_requirements_file_entirely,
-        }
-        for name, mutate in scenarios.items():
-            with self.subTest(scenario=name):
-                mutated = json.loads(self.manifest_text)
-                mutate(mutated)
-                # Step 1: prove the gap this guard exists to close -- a
-                # manifest that shrank its own declared scope,
-                # self-consistently, passes validate_manifest() with zero
-                # failures.
-                failures, _ = dti.validate_manifest(mutated, root=ROOT)
-                self.assertEqual(failures, [])
-                # Step 2: prove the structural guard (the same helper the
-                # real test above uses) actually catches what the
-                # validator missed.
-                with self.assertRaises(AssertionError):
-                    self._assert_expected_scope(mutated)
-
-    def test_file_order_swap_mutation_is_detected_by_deterministic_scope_order_guard(self):
-        # All 6 pairs of the now-4-file scope (itertools.combinations), not
-        # just 3 hand-picked pairs -- every adjacent and non-adjacent swap
-        # must be individually caught.
-        swap_pairs = tuple(itertools.combinations(range(len(SCOPE_FILES)), 2))
-        for i, j in swap_pairs:
-            with self.subTest(swap=(i, j)):
-                mutated = json.loads(self.manifest_text)
-                scope = mutated["scope"]
-                scope[i], scope[j] = scope[j], scope[i]
-                with self.assertRaises(AssertionError):
-                    self._assert_expected_scope(mutated)
 
     def test_assertion_order_swap_mutation_is_detected_by_source_order_guard(self):
         # Swap two adjacent entries within the SAME file's block (for each
@@ -2409,7 +2260,9 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         start = next(i for i, l in enumerate(lines) if l.strip() == '"assertions": [')
         end = next(i for i, l in enumerate(lines) if i > start and l.strip() == "]")
         entry_lines = lines[start + 1 : end]
-        self.assertEqual(len(entry_lines), BASE_EXPECTED_ASSERTION_COUNT)
+        # BL-038 tranche 3y-a-2 (A7, correction 3y-9): the one-entry-per-line FORMAT is a
+        # current contract; the accepted 585 count is not. Measured against this manifest.
+        self.assertEqual(len(entry_lines), len(self.manifest["assertions"]))
         for line in entry_lines:
             stripped = line.strip().rstrip(",")
             parsed = json.loads(stripped)
@@ -2598,8 +2451,11 @@ class Tranche3hClassificationShardTest(unittest.TestCase):
         _text, shard = self._current_shard_001()   # O2: this test owns the current layout
         shard_pairs = {(s["file"], c) for s in shard["scope"] for c in s["classes"]}
         self.assertEqual(base_pairs & shard_pairs, set())
-        self.assertNotIn(SHARD_001_SOURCE_FILE, {s["file"] for s in base["scope"]})
-        self.assertEqual(len(base_ids), BASE_EXPECTED_ASSERTION_COUNT)
+        # BL-038 tranche 3y-a-2 (A8, correction 3y-9): the accepted 585 count and the
+        # accepted physical separation ("this file may never appear in the base scope")
+        # are history. The real current contract is that indexed manifests do not
+        # duplicate ownership, which the global validator enforces.
+        self.assertEqual([f.format() for f in dti.validate_indexed_manifests(root=ROOT)[0]], [])
 
     def test_fingerprint_duplicate_groups_are_not_category_a(self):
         """BL-038 tranche 3v (C012, H7-A+B). The accepted collision groups, their
@@ -2876,9 +2732,11 @@ class Tranche3jClassificationShard002Test(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.shard_text = SHARD_002_PATH.read_text(encoding="utf-8")
-        cls.shard = json.loads(cls.shard_text, object_pairs_hook=OrderedDict)
-        cls.all_entries = cls.shard["assertions"]
+        # BL-038 tranche 3y-a-2 (F-B, correction 3y-10): the logical entry population was
+        # already decoupled at 3w, but this fixture still opened shard 002 unconditionally,
+        # so a legal rename or re-shard of that physical file made class setup ERROR and
+        # took the logical and historical tests down with it. The physical shard is now
+        # loaded only by the O2 tests that own its layout.
         # BL-038 tranche 3w round 2: candidate logic works on the LOGICAL window -- dth.live_entries(ROOT) over the indexed manifests -- filtered by the tranche's own
         # file and class, so a legal re-shard cannot empty it. cls.all_entries stays physical and is used only by the current shard-format tests.
         cls.entries = [e for e in dth.live_entries(ROOT) if e["file"] == TRANCHE_3J_SOURCE_FILE
@@ -2892,6 +2750,12 @@ class Tranche3jClassificationShard002Test(unittest.TestCase):
             n.name for n in ast.parse(source, filename=TRANCHE_3J_SOURCE_FILE).body
             if isinstance(n, ast.ClassDef)
         ]
+    @staticmethod
+    def _current_shard_002():
+        """The CURRENT physical shard 002, loaded only by the tests that own its layout."""
+        text = SHARD_002_PATH.read_text(encoding="utf-8")
+        return text, json.loads(text, object_pairs_hook=OrderedDict)
+
 
     def expected_ids_in_source_order(self):
         return [
@@ -2904,13 +2768,14 @@ class Tranche3jClassificationShard002Test(unittest.TestCase):
 
     def test_shard_002_scope_0_is_still_exactly_the_tranche_3j_class(self):
         """BL-038 tranche 3w (C031): accepted scope from the pinned map. Current physical placement is not pinned -- that is dth.owns() and the validator."""
+        _text, shard = self._current_shard_002()   # O2: this test owns the current layout
         accepted_scope, _window = dth.accepted_window(ROOT, "3j")
         self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3j"])
         self.assertEqual(len(SHARD_002_HISTORICAL_SCOPE_ORDER), 1)
         self.assertTrue(dth.owns("3j", TRANCHE_3J_SOURCE_FILE, TRANCHE_3J_CLASS, self.entries[0]["method"]))
-        self.assertIs(type(self.shard["schema_version"]), int)
-        self.assertEqual(self.shard["schema_version"], 1)
-        self.assertEqual(tuple(self.shard.keys()), ("schema_version", "scope", "assertions"))
+        self.assertIs(type(shard["schema_version"]), int)
+        self.assertEqual(shard["schema_version"], 1)
+        self.assertEqual(tuple(shard.keys()), ("schema_version", "scope", "assertions"))
 
     # -- shard-allocation decision, measured -------------------------------
 
@@ -3044,7 +2909,8 @@ class Tranche3jClassificationShard002Test(unittest.TestCase):
     def test_scope_shrinkage_mutation_of_shard_002_is_detected(self):
         """Dropping the class from scope must not silently pass: the entries
         would then belong to no scoped class at all."""
-        mutated = json.loads(json.dumps(self.shard))
+        _text, shard = self._current_shard_002()   # O2: this test owns the current layout
+        mutated = json.loads(json.dumps(shard))
         mutated["scope"][0]["classes"] = []
         failures, _ = dti.validate_manifest(mutated, root=ROOT)
         self.assertNotEqual([f.format() for f in failures], [])
@@ -3069,9 +2935,11 @@ class Tranche3kClassificationShard002AppendTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.shard_text = SHARD_002_PATH.read_text(encoding="utf-8")
-        cls.shard = json.loads(cls.shard_text, object_pairs_hook=OrderedDict)
-        cls.all_entries = cls.shard["assertions"]  # physical: shard-format tests only
+        # BL-038 tranche 3y-a-2 (F-B, correction 3y-10): the logical entry population was
+        # already decoupled at 3w, but this fixture still opened shard 002 unconditionally,
+        # so a legal rename or re-shard of that physical file made class setup ERROR and
+        # took the logical and historical tests down with it. The physical shard is now
+        # loaded only by the O2 tests that own its layout.
         cls.entries = [e for e in dth.live_entries(ROOT) if e["file"] == TRANCHE_3K_SOURCE_FILE
                        and e["class"] == TRANCHE_3K_CLASS]
         cls.by_id = {e["id"]: e for e in cls.entries}
@@ -3080,6 +2948,12 @@ class Tranche3kClassificationShard002AppendTest(unittest.TestCase):
                                                     [TRANCHE_3K_CLASS])
         cls.source_classes = [n.name for n in ast.parse(source).body
                               if isinstance(n, ast.ClassDef)]
+    @staticmethod
+    def _current_shard_002():
+        """The CURRENT physical shard 002, loaded only by the tests that own its layout."""
+        text = SHARD_002_PATH.read_text(encoding="utf-8")
+        return text, json.loads(text, object_pairs_hook=OrderedDict)
+
 
     def expected_ids_in_source_order(self):
         return [f"{_PRC}{method}::assert-{ordinal:02d}"
@@ -3090,12 +2964,13 @@ class Tranche3kClassificationShard002AppendTest(unittest.TestCase):
 
     def test_shard_002_scope_is_the_tranche_3j_class_then_the_tranche_3k_one(self):
         """BL-038 tranche 3w (C039): accepted scope from the pinned map; no current physical placement pin."""
+        _text, shard = self._current_shard_002()   # O2: this test owns the current layout
         accepted_scope, _window = dth.accepted_window(ROOT, "3k")
         self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3k"])
         self.assertTrue(dth.owns("3k", TRANCHE_3K_SOURCE_FILE, TRANCHE_3K_CLASS, self.entries[0]["method"]))
         self.assertEqual(self.source_classes, [TRANCHE_3K_CLASS])  # whole selected file
-        self.assertIs(type(self.shard["schema_version"]), int)
-        self.assertEqual(tuple(self.shard.keys()), ("schema_version", "scope", "assertions"))
+        self.assertIs(type(shard["schema_version"]), int)
+        self.assertEqual(tuple(shard.keys()), ("schema_version", "scope", "assertions"))
 
     # -- shard-allocation decision, measured -------------------------------
 
@@ -3277,7 +3152,8 @@ class Tranche3kClassificationShard002AppendTest(unittest.TestCase):
     def test_dropping_the_appended_scope_entry_is_detected(self):
         """The appended 27 must not sit in the file with their class removed
         from scope -- they would then belong to no scoped class at all."""
-        mutated = json.loads(json.dumps(self.shard))
+        _text, shard = self._current_shard_002()   # O2: this test owns the current layout
+        mutated = json.loads(json.dumps(shard))
         del mutated["scope"][1]
         self.assertNotEqual(dti.validate_manifest(mutated, root=ROOT)[0], [])
 
@@ -3300,9 +3176,11 @@ class Tranche3lClassificationShard002AppendTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.shard_text = SHARD_002_PATH.read_text(encoding="utf-8")
-        cls.shard = json.loads(cls.shard_text, object_pairs_hook=OrderedDict)
-        cls.all_entries = cls.shard["assertions"]  # physical: shard-format tests only
+        # BL-038 tranche 3y-a-2 (F-B, correction 3y-10): the logical entry population was
+        # already decoupled at 3w, but this fixture still opened shard 002 unconditionally,
+        # so a legal rename or re-shard of that physical file made class setup ERROR and
+        # took the logical and historical tests down with it. The physical shard is now
+        # loaded only by the O2 tests that own its layout.
         cls.entries = [e for e in dth.live_entries(ROOT) if e["file"] == TRANCHE_3L_SOURCE_FILE
                        and e["class"] in TRANCHE_3L_CLASSES]
         cls.by_id = {e["id"]: e for e in cls.entries}
@@ -3557,9 +3435,11 @@ class Tranche3mClassificationShard002AppendTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.shard_text = SHARD_002_PATH.read_text(encoding="utf-8")
-        cls.shard = json.loads(cls.shard_text, object_pairs_hook=OrderedDict)
-        cls.all_entries = cls.shard["assertions"]  # physical: shard-format tests only
+        # BL-038 tranche 3y-a-2 (F-B, correction 3y-10): the logical entry population was
+        # already decoupled at 3w, but this fixture still opened shard 002 unconditionally,
+        # so a legal rename or re-shard of that physical file made class setup ERROR and
+        # took the logical and historical tests down with it. The physical shard is now
+        # loaded only by the O2 tests that own its layout.
         cls.entries = [e for e in dth.live_entries(ROOT) if e["file"] == TRANCHE_3M_SOURCE_FILE
                        and e["class"] == TRANCHE_3M_CLASS]
         cls.by_id = {e["id"]: e for e in cls.entries}
@@ -3569,6 +3449,12 @@ class Tranche3mClassificationShard002AppendTest(unittest.TestCase):
         cls.source_classes = [n.name for n in cls.tree.body if isinstance(n, ast.ClassDef)]
         cls.class_node = next(n for n in cls.tree.body if isinstance(n, ast.ClassDef) and n.name == TRANCHE_3M_CLASS)
         cls.methods = {m.name: m for m in cls.class_node.body if isinstance(m, (ast.FunctionDef, ast.AsyncFunctionDef))}
+    @staticmethod
+    def _current_shard_002():
+        """The CURRENT physical shard 002, loaded only by the tests that own its layout."""
+        text = SHARD_002_PATH.read_text(encoding="utf-8")
+        return text, json.loads(text, object_pairs_hook=OrderedDict)
+
 
     def expected_ids_in_source_order(self): return [f"{_B34}{method}::assert-{ordinal:02d}"
                 for method, count in TRANCHE_3M_EXPECTED_METHOD_ORDER for ordinal in range(1, count + 1)]
@@ -3606,12 +3492,13 @@ class Tranche3mClassificationShard002AppendTest(unittest.TestCase):
         """Scope[3] is the whole selected class. Shard 001 could not take it: a
         second same-file scope entry is `duplicate-scope-file`, and widening its
         entry rewrites a byte-frozen file. The cap did not decide it (268+17 fits)."""
+        _text, shard = self._current_shard_002()   # O2: this test owns the current layout
         # BL-038 tranche 3w round 2 (C060): accepted scope from the pinned map; no current physical position, and duplicate-scope enforcement stays the validator's.
         accepted_scope, _window = dth.accepted_window(ROOT, "3m")
         self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3m"])
-        self.assertEqual(tuple(self.shard.keys()), ("schema_version", "scope", "assertions"))
-        self.assertIs(type(self.shard["schema_version"]), int)
-        self.assertEqual(self.shard["schema_version"], 1)
+        self.assertEqual(tuple(shard.keys()), ("schema_version", "scope", "assertions"))
+        self.assertIs(type(shard["schema_version"]), int)
+        self.assertEqual(shard["schema_version"], 1)
         # BL-038 tranche 3w (C060): the older manifests' accepted bytes, lines and entry counts come from the ledger, not the current files.
         dth.assert_accepted(self, ROOT, "3f", sha256=BASE_MANIFEST_SHA256, line_count=BASE_MANIFEST_LINE_COUNT,
                             entry_count=585)
@@ -3878,23 +3765,24 @@ class Tranche3mClassificationShard002AppendTest(unittest.TestCase):
     # -- physical file (shard 002 CURRENT) ---------------------------------
 
     def test_shard_002_file_meets_the_format_contract_within_the_line_cap(self):
-        self.assertEqual([f.format() for f in dti.validate_shard_file_format(SHARD_002_PATH, self.shard, shard=SHARD_002_FILENAME)], [])
+        shard_text, shard = self._current_shard_002()   # O2: this test owns the current layout
+        self.assertEqual([f.format() for f in dti.validate_shard_file_format(SHARD_002_PATH, shard, shard=SHARD_002_FILENAME)], [])
         # BL-038 tranche 3w (C059): shard 002's accepted bytes, lines and entry count are the ledger's tranche 3m record; the file is held to the format contract and cap.
         dth.assert_accepted(self, ROOT, "3m", sha256=SHARD_002_CURRENT_SHA256,
                             line_count=SHARD_002_CURRENT_LINE_COUNT, entry_count=SHARD_002_CURRENT_ENTRY_COUNT)
-        lines = self.shard_text.splitlines()
+        lines = shard_text.splitlines()
         self.assertLessEqual(len(lines), dti.SHARD_LINE_CAP)
         self.assertEqual(dti.SHARD_LINE_CAP, BASE_MANIFEST_LINE_CAP)  # cap not raised
-        self.assertTrue(self.shard_text.endswith("\n"))
+        self.assertTrue(shard_text.endswith("\n"))
         start = lines.index('  "assertions": [')
         entry_lines = lines[start + 1 : lines.index("  ]", start)]
-        self.assertEqual(len(entry_lines), len(self.all_entries))
+        self.assertEqual(len(entry_lines), len(shard["assertions"]))
         for offset, line in enumerate(entry_lines):
             with self.subTest(line=start + 2 + offset): self.assertEqual(tuple(json.loads(line.strip().rstrip(","),
                                                   object_pairs_hook=OrderedDict).keys()), EXPECTED_ENTRY_KEY_ORDER)
-        self.assertEqual(json.loads(self.shard_text), self.shard)
-        self.assertEqual(len({e["id"] for e in self.all_entries}), len(self.all_entries))
-        failures, summary = dti.validate_manifest(self.shard, root=ROOT)
+        self.assertEqual(json.loads(shard_text), shard)
+        self.assertEqual(len({e["id"] for e in shard["assertions"]}), len(shard["assertions"]))
+        failures, summary = dti.validate_manifest(shard, root=ROOT)
         self.assertEqual([f.format() for f in failures], [])
         self.assertEqual(summary["manifest_assertions"], summary["inventoried_assertions"])
         self.assertEqual((summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]), (0, 0, 0))
