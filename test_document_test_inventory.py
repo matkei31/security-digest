@@ -1576,10 +1576,14 @@ class MethodRangeBackwardCompatibilityTest(MethodRangeScopeTestCase):
         # The extension is invisible to the legacy whole-class shards. Tranches
         # 3o, 3p, 3q and 3r use method ranges; 3q/3r add consecutive disjoint
         # later ranges of the same SecurityRequirementsTest class ranged by 3o.
+        # BL-038 tranche 3y-b lifecycle retarget: this test is about the method-range
+        # extension staying invisible to the legacy whole-class shards, so it needs the
+        # repository index to VALIDATE -- not to hold one particular category tally. The
+        # exact 1525 / A30 B612 C638 D245 pin made every legal conversion fail here.
         failures, summary = dti.validate_indexed_manifests(root=Path(__file__).resolve().parent)
         self.assertEqual(_failure_types(failures), set())
-        self.assertEqual((summary["inventoried_assertions"], summary["category_counts"]),
-                         (1525, {"A": 30, "B": 612, "C": 638, "D": 245}))
+        self.assertEqual(sum(summary["category_counts"][c] for c in ("A", "B", "C", "D")),
+                         summary["inventoried_assertions"])
         self.assertEqual((summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]), (0, 0, 0))
 
     def test_whole_class_scope_shape_is_accepted_and_owns_every_method(self):

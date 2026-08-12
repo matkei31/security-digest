@@ -7691,7 +7691,14 @@ class Bl038Tranche3sAcceptanceRecordTest(unittest.TestCase):
             with self.subTest(token=token):
                 self.assertIn(token, self.status)
 
-    def test_live_index_is_fully_classified_at_accepted_3s_totals(self):
+    def test_live_index_is_fully_classified_and_internally_consistent(self):
+        """BL-038 tranche 3y-b lifecycle retarget. Was
+        `test_live_index_is_fully_classified_at_accepted_3s_totals`, which required the
+        LIVE index to still show the accepted 3s tally. That tally is history and the
+        acceptance record above witnesses it (**1525(A30/B612/C638/D245)**); requiring
+        the current tree to keep reproducing it is what turned a legal Category C -> B
+        conversion into a test failure. What the live index owes at any point in the
+        lifecycle is that it is fully classified, internally consistent and clean."""
         index = json.loads((self.root / "document_test_classification_index.json").read_text(encoding="utf-8"))
         self.assertEqual(len(index["shards"]), 8)
         self.assertEqual(index["shards"][-1], "document_test_classification_007.json")
@@ -7700,13 +7707,12 @@ class Bl038Tranche3sAcceptanceRecordTest(unittest.TestCase):
             for name in index["shards"]
             for entry in json.loads((self.root / name).read_text(encoding="utf-8"))["assertions"]
         ]
-        self.assertEqual((len(entries), len({entry["id"] for entry in entries})), (1525, 1525))
-        self.assertEqual(
-            {c: sum(entry["category"] == c for entry in entries) for c in ("A", "B", "C", "D")},
-            {"A": 30, "B": 612, "C": 638, "D": 245},
-        )
+        self.assertEqual(len(entries), len({entry["id"] for entry in entries}))
         failures, summary = dti.validate_indexed_manifests(root=self.root)
         self.assertEqual([failure.format() for failure in failures], [])
+        self.assertEqual(summary["inventoried_assertions"], len(entries))
+        self.assertEqual(sum(summary["category_counts"][c] for c in ("A", "B", "C", "D")),
+                         len(entries))
         self.assertEqual((summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]), (0, 0, 0))
 
 
@@ -7795,7 +7801,7 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
                 self.assertIn(record["historical"]["sha256"], self.backlog)
                 self.assertIn(record["merge_commit"], self.bl038)
 
-    def test_the_ledger_is_offline_and_pinned_and_the_migration_ledger_is_empty(self):
+    def test_the_ledger_is_offline_and_pinned_and_the_migration_ledger_is_well_formed(self):
         module = (self.root / "document_test_history.py").read_text(encoding="utf-8")
         for token in ("subprocess", "urllib", "requests", "socket", "os.system"):
             with self.subTest(token=token):
@@ -7805,11 +7811,13 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         self.assertIn(f'LEDGER_DIGEST = "{digest}"', module)
         self.assertIn(digest, (self.root / "test_document_test_classification.py")
                       .read_text(encoding="utf-8"))
-        # Tranche 3t shipped no migration ledger; tranche 3u introduces it, empty,
-        # because 3u fixes the engine contract without converting anything.
-        self.assertEqual(json.loads((self.root / "document_test_classification_migrations.json")
-                                    .read_text(encoding="utf-8")),
-                         {"schema_version": 1, "migrations": []})
+        # BL-038 tranche 3y-b lifecycle retarget. That tranche 3t shipped no migration
+        # ledger, and that 3u introduced it empty, are facts about those tranches and are
+        # recorded in their BACKLOG paragraphs. Demanding the CURRENT ledger stay empty
+        # forever forbade the very migrations the engine exists to record, so what is
+        # measured here is that the committed ledger is well formed and resolves.
+        self.assertEqual(dth.migration_shape_failures(self.root), [])
+        self.assertEqual(dth.successor_reference_failures(self.root), [])
 
     def test_the_current_residual_paragraph_states_the_post_3s_merge_state(self):
         """Final-review Blocker 1: the CURRENT `残作業` paragraph still said PR #101's
@@ -7829,7 +7837,11 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         for fact in ("tranche 1〜3sはいずれも最終受入済み",
                      "83b7ab1ae59ca0a246142ee2e8b1d2c7eb6cf7e8",
                      "merge済みである",
-                     "Category C 638件はsource conversion未着手",
+                     # BL-038 tranche 3y-b: the CURRENT slice states that bulk
+                     # conversion has not started -- WITHOUT the live count, which a
+                     # legal conversion moves. The 638 figure stays where it is a fact:
+                     # in the 3s/3t/3u/3w/3x paragraphs that recorded it at the time.
+                     "Category C source conversionは未着手であり引き続きblockedである",
                      # BL-038 tranche 3v: the 4-PR split moved the boundary from 3v to 3y.
                      "**Category Cのunblockはtranche 3y acceptance後**",
                      "Category A 30件はtranche 3tで判断完了",
@@ -7992,13 +8004,19 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
             with self.subTest(stale=stale):
                 self.assertNotIn(stale, line)
 
-    def test_current_totals_are_unchanged_by_the_foundation_tranche(self):
-        """3t converts nothing and consolidates nothing, so the live classification is
-        bit-for-bit the accepted tranche 3s result."""
+    def test_the_foundation_tranche_converted_nothing_and_the_live_tree_is_clean(self):
+        """BL-038 tranche 3y-b lifecycle retarget. Was
+        `test_current_totals_are_unchanged_by_the_foundation_tranche`. That tranche 3t
+        converted and consolidated nothing is a fact ABOUT 3t, and the tally it left
+        behind is recorded in 3t's own closeout bullet -- asserted below as history, and
+        pinned inside that bullet by `test_the_post_merge_state_of_tranche_3t_is_recorded`.
+        Requiring the CURRENT tree to keep reproducing those counts turned one tranche's
+        acceptance into a permanent invariant, which is what blocked Category C
+        conversion."""
         failures, summary = dti.validate_indexed_manifests(root=self.root)
         self.assertEqual([failure.format() for failure in failures], [])
-        self.assertEqual(summary["inventoried_assertions"], 1525)
-        self.assertEqual(summary["category_counts"], {"A": 30, "B": 612, "C": 638, "D": 245})
+        self.assertEqual(sum(summary["category_counts"][c] for c in ("A", "B", "C", "D")),
+                         summary["inventoried_assertions"])
         self.assertEqual((summary["unclassified"], summary["stale"],
                           summary["fingerprint_mismatch"]), (0, 0, 0))
         self.assertIn("**1525件・A30/B612/C638/D245・unclassified/stale/fingerprint mismatch 0/0/0**",
@@ -8075,17 +8093,20 @@ class Bl038Tranche3uMigrationEngineRecordSyncTest(unittest.TestCase):
         self.assertIn("**Category Cのunblockはtranche 3y acceptance後**", current)
         self.assertIn("tranche 3uはmigration engine foundationのみを確定", current)
 
-    def test_category_c_is_still_unconverted_and_the_ledgers_agree(self):
-        """3u fixes the engine without converting anything: the tree is still the
-        accepted 3s classification, with an empty migration ledger."""
+    def test_the_engine_ships_and_the_ledgers_agree(self):
+        """BL-038 tranche 3y-b lifecycle retarget. Was
+        `test_category_c_is_still_unconverted_and_the_ledgers_agree`, which was three
+        lifecycle pins in one method: the exact category distribution, Category C == 638,
+        and `migrations == []`. That tranche 3u converted nothing is a fact about 3u and
+        stays recorded in its own paragraph (**real Category C conversionは0件**, asserted
+        by `test_the_engine_scope_and_corrected_measurement_are_recorded`). What the
+        current tree owes is that its ledgers AGREE -- not that they stand still."""
         failures, summary = dti.validate_indexed_manifests(root=self.root)
         self.assertEqual([f.format() for f in failures], [])
-        self.assertEqual(summary["inventoried_assertions"], 1525)
-        self.assertEqual(summary["category_counts"], {"A": 30, "B": 612, "C": 638, "D": 245})
+        self.assertEqual(sum(summary["category_counts"][c] for c in ("A", "B", "C", "D")),
+                         summary["inventoried_assertions"])
         self.assertEqual((summary["unclassified"], summary["stale"],
                           summary["fingerprint_mismatch"]), (0, 0, 0))
-        self.assertEqual(dth.load_migrations(self.root),
-                         {"schema_version": 1, "migrations": []})
         self.assertEqual(dth.migration_shape_failures(self.root), [])
         self.assertEqual(dth.successor_reference_failures(self.root), [])
         self.assertEqual(hashlib.sha256(
@@ -8212,10 +8233,12 @@ class Bl038Tranche3vCouplingRetargetRecordSyncTest(unittest.TestCase):
                       "mutationは完全復元済み"):
             with self.subTest(token=token):
                 self.assertIn(token, self.bl038)
-        # Restored means restored: the ledgers are untouched and empty as before.
-        migrations = json.loads((self.root / "document_test_classification_migrations.json")
-                                .read_text(encoding="utf-8"))
-        self.assertEqual(migrations["migrations"], [])
+        # BL-038 tranche 3y-b lifecycle retarget. "The 3v proof needed no migration
+        # metadata" is the historical fact, and the **migration metadata 0** token above
+        # is what records it. Re-reading the LIVE ledger and demanding it still be empty
+        # pinned every later tranche to 3v's restore state instead.
+        self.assertEqual(dth.migration_shape_failures(self.root), [])
+        self.assertEqual(dth.successor_reference_failures(self.root), [])
 
 
 class Bl038Tranche3waCouplingRetargetRecordSyncTest(unittest.TestCase):
@@ -8271,8 +8294,11 @@ class Bl038Tranche3waCouplingRetargetRecordSyncTest(unittest.TestCase):
                       "**real Category C conversion 0件**"):
             with self.subTest(token=token):
                 self.assertIn(token, self.bl038)
-        migrations = json.loads((self.root / "document_test_classification_migrations.json").read_text(encoding="utf-8"))
-        self.assertEqual(migrations["migrations"], [])
+        # BL-038 tranche 3y-b lifecycle retarget: 3w-a recorded **real Category C
+        # conversion 0件** as its own fact (asserted above). Re-checking the live ledger
+        # for emptiness made that a standing requirement on every later tranche.
+        self.assertEqual(dth.migration_shape_failures(self.root), [])
+        self.assertEqual(dth.successor_reference_failures(self.root), [])
 
     def test_the_3wa_entry_records_its_own_accounting(self):
         """3w-a's own paragraph keeps the accounting as of 3w-a (51 handled / residual 55 /

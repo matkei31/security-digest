@@ -32,8 +32,9 @@ EXPECTED_SHA256 = 'f8abbc6e80d9762115540ee340050df7d9dc7e196752aa8876bdaed048c60
 EXPECTED_LINE_COUNT = 141
 HISTORICAL_COMBINED_ASSERTIONS = 1488
 HISTORICAL_COMBINED_CATEGORIES = {"A": 30, "B": 596, "C": 618, "D": 244}
-CURRENT_COMBINED_ASSERTIONS = 1525
-CURRENT_COMBINED_CATEGORIES = {"A": 30, "B": 612, "C": 638, "D": 245}
+# BL-038 tranche 3y-b: the CURRENT_COMBINED_* constants were removed -- see the
+# HISTORICAL_COMBINED_* pair above, which is what this tranche actually recorded. The
+# removed pair froze the live tree onto the post-3s tally.
 RIVAL_FILE = 'test_source_usage_policy.py'
 RIVAL_CLASS = 'SourceUsagePolicyTest'
 RIVAL_START = 'test_mandiant_distinguishes_rss_evidence_from_terms_evidence'
@@ -101,9 +102,9 @@ class Tranche3rClassificationTest(unittest.TestCase):
         failures,summary=dti.validate_indexed_manifests(root=ROOT)
         self.assertEqual([f.format() for f in failures],[])
         self.assertEqual((HISTORICAL_COMBINED_ASSERTIONS, HISTORICAL_COMBINED_CATEGORIES), (1488, {"A":30,"B":596,"C":618,"D":244}))
-        self.assertEqual(summary["inventoried_assertions"],CURRENT_COMBINED_ASSERTIONS)
-        self.assertEqual(summary["manifest_assertions"],CURRENT_COMBINED_ASSERTIONS)
-        self.assertEqual(summary["category_counts"],CURRENT_COMBINED_CATEGORIES)
+        self.assertEqual(summary["manifest_assertions"],summary["inventoried_assertions"])
+        self.assertEqual(sum(summary["category_counts"][c] for c in ("A","B","C","D")),
+                         summary["inventoried_assertions"])
         self.assertEqual((summary["unclassified"],summary["stale"],summary["fingerprint_mismatch"]),(0,0,0))
         owned={e["method"] for name in EXPECTED_INDEX for e in json.loads((ROOT/name).read_text(encoding="utf-8"))["assertions"]
                if (e["file"],e["class"])==(SOURCE_FILE,CLASS_NAME)}

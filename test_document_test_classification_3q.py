@@ -67,8 +67,9 @@ PRE_3Q_SHARDS = (
 )
 EXPECTED_INDEX = PRE_3Q_SHARDS + (SHARD_FILENAME,)
 CURRENT_INDEX = EXPECTED_INDEX + ("document_test_classification_006.json", "document_test_classification_007.json")
-CURRENT_COMBINED_ASSERTIONS = 1525
-CURRENT_COMBINED_CATEGORIES = {"A": 30, "B": 612, "C": 638, "D": 245}
+# BL-038 tranche 3y-b: the CURRENT_COMBINED_* constants were removed. They pinned the
+# live tree to the tally that happened to be current when tranche 3s landed, so a legal
+# Category C -> B conversion failed a test whose subject is tranche 3q.
 EXPECTED_DUPLICATE_GROUPS = (
     (
         SOURCE_FILE + "::" + CLASS_NAME + "::test_bl028_bl029_registration_does_not_reopen_or_merge_other_tickets::assert-04",
@@ -120,7 +121,7 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
         self.assertEqual([f.format() for f in dti.validate_indexed_manifests(root=ROOT)[0]], [])
 
 
-    def test_combined_index_is_clean_at_the_post_3q_totals(self):
+    def test_combined_index_is_clean_and_the_post_3q_totals_are_history(self):
         failures, summary = dti.validate_indexed_manifests(root=ROOT)
         self.assertEqual([f.format() for f in failures], [])
         # EXPECTED_COMBINED_* above remains the exact post-3q historical
@@ -129,9 +130,9 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
                          (1355, {"A": 30, "B": 536, "C": 581, "D": 208}))
         self.assertEqual(summary["shard_count"], len(CURRENT_INDEX))
         self.assertEqual(summary["shard_files"], list(CURRENT_INDEX))
-        self.assertEqual(summary["inventoried_assertions"], CURRENT_COMBINED_ASSERTIONS)
-        self.assertEqual(summary["manifest_assertions"], CURRENT_COMBINED_ASSERTIONS)
-        self.assertEqual(summary["category_counts"], CURRENT_COMBINED_CATEGORIES)
+        self.assertEqual(summary["manifest_assertions"], summary["inventoried_assertions"])
+        self.assertEqual(sum(summary["category_counts"][c] for c in ("A", "B", "C", "D")),
+                         summary["inventoried_assertions"])
         self.assertEqual(
             (summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]),
             (0, 0, 0),

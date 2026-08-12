@@ -1557,27 +1557,12 @@ TRANCHE_3J_TO_3N_HISTORICAL_SHARD_COUNT = 3
 TRANCHE_3M_HISTORICAL_SHARD_ORDER = (MANIFEST_PATH.name, SHARD_001_FILENAME, SHARD_002_FILENAME)
 TRANCHE_3O_HISTORICAL_SHARD_ORDER = TRANCHE_3M_HISTORICAL_SHARD_ORDER + (SHARD_003_FILENAME,)
 TRANCHE_3P_HISTORICAL_SHARD_ORDER = TRANCHE_3O_HISTORICAL_SHARD_ORDER + (SHARD_004_FILENAME,)
-INDEX_COMBINED_ASSERTION_COUNT = (
-    BASE_EXPECTED_ASSERTION_COUNT
-    + SHARD_001_CURRENT_ENTRY_COUNT
-    + SHARD_002_CURRENT_ENTRY_COUNT
-    + SHARD_003_CURRENT_ENTRY_COUNT
-    + SHARD_004_CURRENT_ENTRY_COUNT
-    + SHARD_005_CURRENT_ENTRY_COUNT
-    + SHARD_006_CURRENT_ENTRY_COUNT
-    + SHARD_007_CURRENT_ENTRY_COUNT
-)
-INDEX_COMBINED_CATEGORY_COUNTS = {
-    cat: BASE_EXPECTED_CATEGORY_COUNTS[cat]
-    + SHARD_001_CURRENT_CATEGORY_COUNTS[cat]
-    + SHARD_002_CURRENT_CATEGORY_COUNTS[cat]
-    + SHARD_003_CURRENT_CATEGORY_COUNTS[cat]
-    + SHARD_004_CURRENT_CATEGORY_COUNTS[cat]
-    + SHARD_005_CURRENT_CATEGORY_COUNTS[cat]
-    + SHARD_006_CURRENT_CATEGORY_COUNTS[cat]
-    + SHARD_007_CURRENT_CATEGORY_COUNTS[cat]
-    for cat in ("A", "B", "C", "D")
-}
+# BL-038 tranche 3y-b: INDEX_COMBINED_ASSERTION_COUNT / INDEX_COMBINED_CATEGORY_COUNTS
+# were removed. They recomposed the CURRENT combined tally out of every shard's accepted
+# per-shard constants, so any legal conversion, retirement or migration in any shard broke
+# a method that was only ever meant to say "the combined index still validates". Combined
+# CURRENT integrity is the indexed validator's job; the per-shard accepted numbers stay
+# where they belong, in the history ledger.
 
 
 EXPECTED_ENTRY_KEY_ORDER = (
@@ -3574,14 +3559,14 @@ class Tranche3mClassificationShard002AppendTest(unittest.TestCase):
         failures, summary = dti.validate_indexed_manifests(root=ROOT)
         self.assertEqual([f.format() for f in failures], [])
         self.assertEqual(945, 928 + TRANCHE_3M_EXPECTED_ASSERTION_COUNT)
-        self.assertEqual(summary["inventoried_assertions"], INDEX_COMBINED_ASSERTION_COUNT)
-        for historical in (945, 1091):
-            with self.subTest(historical=historical):
-                self.assertNotEqual(summary["inventoried_assertions"], historical)
-        self.assertEqual({k: summary["category_counts"][k] for k in ("A", "B", "C", "D")},
-                         INDEX_COMBINED_CATEGORY_COUNTS)
+        # BL-038 tranche 3y-b lifecycle retarget: the combined CURRENT total and category
+        # distribution used to be recomposed here from every shard's per-shard constant,
+        # which made a legal Category C -> B conversion in ANY shard fail this method. The
+        # 3m arithmetic above is the historical fact; the live index owes self-consistency.
+        # The old `assertNotEqual(..., 945/1091)` reverse pins went with them: "not the old
+        # value" is the same lifecycle freeze written backwards.
         self.assertEqual(sum(summary["category_counts"][k] for k in ("A", "B", "C", "D")),
-                         INDEX_COMBINED_ASSERTION_COUNT)
+                         summary["inventoried_assertions"])
         self.assertEqual((summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]), (0, 0, 0))
 
     # -- Category A: measured absence, not an unexamined zero ----------------
@@ -5014,7 +4999,7 @@ class ClassificationHistoryLedgerTest(unittest.TestCase):
                 dth.accepted(root, "3l")
             self.assertNotEqual(dth.ledger_digest(root), ACCEPTED_LEDGER_DIGEST)
 
-    def test_the_migration_engine_exists_and_the_ledger_starts_empty(self):
+    def test_the_migration_engine_exists_and_its_ledger_is_well_formed(self):
         """Was `test_the_foundation_does_not_yet_gate_the_current_tree`, tranche 3t's
         boundary: back then the ledger was additive and no current-side machinery
         existed. Tranche 3u supplies the engine, so the boundary moves -- but only to
@@ -5026,8 +5011,12 @@ class ClassificationHistoryLedgerTest(unittest.TestCase):
                       "window_boundary_failures", "assert_accepted_contracts_accounted_for"):
             with self.subTest(token=token):
                 self.assertIn(f"def {token}", module)
-        self.assertEqual(dth.load_migrations(ROOT), {"schema_version": 1, "migrations": []})
+        # BL-038 tranche 3y-b lifecycle retarget: "3u shipped the ledger empty" was a
+        # fact about tranche 3u, not a standing property of the repository. Pinning
+        # `load_migrations(ROOT) == {... "migrations": []}` here made every identity-
+        # changing migration the engine exists to record a test failure.
         self.assertEqual(dth.migration_shape_failures(ROOT), [])
+        self.assertEqual(dth.successor_reference_failures(ROOT), [])
         self.assertEqual(dth.accepted_scopes_digest(), dth.ACCEPTED_SCOPES_DIGEST)
         # 3u does NOT claim the repository's coupled guards are retargeted: the
         # pre-existing byte/positional guards are still exactly as tranche 3t left them.
@@ -5520,8 +5509,12 @@ class MigrationLedgerSchemaTest(unittest.TestCase):
                                                     encoding="utf-8")
         return dth.migration_shape_failures(root)
 
-    def test_the_committed_ledger_is_empty_and_well_formed(self):
-        self.assertEqual(dth.load_migrations(ROOT), {"schema_version": 1, "migrations": []})
+    def test_the_committed_ledger_is_well_formed(self):
+        """BL-038 tranche 3y-b lifecycle retarget: was
+        `test_the_committed_ledger_is_empty_and_well_formed`. Emptiness was 3u's shipping
+        state, not a schema contract -- and this class is the schema contract. Well-formed
+        and resolvable is what the committed ledger owes whatever it contains."""
+        self.assertEqual(dth.load_migrations(ROOT)["schema_version"], 1)
         self.assertEqual(dth.migration_shape_failures(ROOT), [])
         self.assertEqual(dth.successor_reference_failures(ROOT), [])
 
