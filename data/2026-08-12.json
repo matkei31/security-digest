@@ -1,0 +1,615 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-08-12",
+  "generated_at": "2026-08-12T07:41:47.813743+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 9,
+    "ai_attempted_count": 7,
+    "ai_success_count": 7,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 2,
+    "ai_eligible_count": 7
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 5,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 3,
+      "今週確認": 3,
+      "参考": 1,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 5,
+      "攻撃・脅威動向": 1,
+      "インシデント": 0,
+      "規制・ガバナンス": 1,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 0,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "掲載7件｜重要度「高」2件｜本日確認3件｜今週確認3件\n本日中に適用性または初動要否を確認する記事が3件あります。",
+    "important_highlights": [
+      "Microsoftは月例セキュリティ更新プログラムを公開し、Windowsカーネルドライバーのゼロデイ脆弱性CVE-2026-68820を含む398件の欠陥を修正しました。この脆弱性は既に攻撃で悪用されており、攻撃者がシステム上でコードを実行している場合にSYSTEM権限への昇格に利用される可能性があります。",
+      "CISAは2026年8月11日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。MetabaseにSQLインジェクションの脆弱性があり、認証されていないリモート攻撃者が任意のSQLを注入し、管理者アクセス権を取得する可能性があります。",
+      "CISAは2026年8月11日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Microsoft WindowsのWinSock補助機能ドライバーに解放後使用の脆弱性があり、認証された攻撃者がローカルで権限昇格を行う可能性があります。"
+    ],
+    "discussion_points": [
+      "Microsoftは月例セキュリティ更新プログラムを公開し、Windowsカーネルドライバーのゼロデイ脆弱性CVE-2026-68820を含む398件の欠陥を修正しました。この脆弱性は既に攻撃で悪用されており、攻撃者がシステム上でコードを実行している場合にSYSTEM権限への昇格に利用される可能性があります。\n多くの金融機関で利用されているWindows OSのカーネルドライバーに関する脆弱性であり、悪用が確認されているため、適用性確認の対象となります。",
+      "CISAは2026年8月11日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。MetabaseにSQLインジェクションの脆弱性があり、認証されていないリモート攻撃者が任意のSQLを注入し、管理者アクセス権を取得する可能性があります。\nMetabaseはデータ分析・可視化ツールであり、金融機関で利用されている場合、機密データの漏えいやシステム設定の改ざんにつながる可能性があります。利用有無の確認が必要です。"
+    ],
+    "check_items": [
+      "自社および委託先で利用しているWindows OSのバージョンを確認し、CVE-2026-68820の影響を受ける可能性があるシステムを特定する",
+      "Metabaseの利用有無と影響を受けるバージョンを確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:5820ca4abc6847cd6619613056877f71d8b77e252199f95704ba38a752509aad",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/microsoft-patch-tuesday-for-august-2026/",
+      "canonical_url": "https://blog.talosintelligence.com/microsoft-patch-tuesday-for-august-2026/",
+      "published_at": "2026-08-12T07:21:02+09:00",
+      "fetched_at": "2026-08-12T07:39:30.065298+09:00",
+      "title": "Microsoft Patch Tuesday for August 2026 — Snort rules and prominent vulnerabilities",
+      "raw_title": "Microsoft Patch Tuesday for August 2026 — Snort rules and prominent vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ee48cce69bf8462797638ae4cba6da2397cc2d937fd6922a1a56e8f45bc0bb88",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:215b91448d4dcac63401a2e548b268e9d5c33c947d306527c444e9b6e89c0561",
+      "source_id": "krebs_on_security",
+      "source_name": "Krebs on Security",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://krebsonsecurity.com/2026/08/microsoft-plugs-nearly-400-security-holes/",
+      "canonical_url": "https://krebsonsecurity.com/2026/08/microsoft-plugs-nearly-400-security-holes/",
+      "published_at": "2026-08-12T06:28:35+09:00",
+      "fetched_at": "2026-08-12T07:39:30.065298+09:00",
+      "title": "Microsoft Plugs Nearly 400 Security Holes",
+      "raw_title": "Microsoft Plugs Nearly 400 Security Holes",
+      "raw_excerpt": null,
+      "content_hash": "sha256:437bf508533cb3154b064bd93a45702bfb16365b2a668f7aa1fffc0c4f51c561",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-12T07:39:32.474550+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Microsoft製品の多数の脆弱性に対するパッチ公開が主題であるため。",
+        "tags": [
+          "パッチ",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "MicrosoftはWindowsオペレーティングシステムおよび関連ソフトウェアにおける約400件のセキュリティ脆弱性に対処するアップデートを公開しました。これには、既に悪用が確認されている1件と、公開前に詳細が公表されていた2件の脆弱性が含まれます。",
+        "financial_impact": "多くの金融機関でMicrosoft製品が基盤システムとして広く利用されているため、これらの脆弱性は広範な影響を及ぼす可能性があります。特に悪用が確認されている脆弱性については、早急な対応が求められます。",
+        "recommended_actions": [
+          "自社および委託先で利用しているMicrosoft製品の脆弱性影響有無を確認する",
+          "Microsoftが公開したアップデート情報を参照し、対応計画を策定する"
+        ],
+        "reason": "重要度は、Microsoft製品が金融機関で広く利用されているものの、個々の脆弱性の詳細や金融機関への直接的な影響が記事からは不明確なため「中」です。確認目安は、悪用が確認されている脆弱性が含まれるものの、KEV新規追加の記載がなく、即時対応の明確な期限が示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:36069f37dfa6017d292528387b0134058316f42baa88358384ad8588e7660f17",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/microsoft-patches-398-flaws-including.html",
+      "canonical_url": "https://thehackernews.com/2026/08/microsoft-patches-398-flaws-including.html",
+      "published_at": "2026-08-12T05:10:55+09:00",
+      "fetched_at": "2026-08-12T07:39:30.065298+09:00",
+      "title": "Microsoft Patches 398 Flaws Including a Windows Driver Zero-Day Under Active Attack",
+      "raw_title": "Microsoft Patches 398 Flaws Including a Windows Driver Zero-Day Under Active Attack",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7bc8ddf6c8e5cf20afa66d7cc7c4d56280da4a4e4e43ff28c787a261630201b2",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-12T07:39:50.124287+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Microsoft製品の多数の脆弱性修正と、その中の一つのゼロデイ脆弱性が主題であるため。",
+        "tags": [
+          "ゼロデイ",
+          "悪用確認済み",
+          "パッチ",
+          "CVE"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "Microsoftは月例セキュリティ更新プログラムを公開し、Windowsカーネルドライバーのゼロデイ脆弱性CVE-2026-68820を含む398件の欠陥を修正しました。この脆弱性は既に攻撃で悪用されており、攻撃者がシステム上でコードを実行している場合にSYSTEM権限への昇格に利用される可能性があります。",
+        "financial_impact": "多くの金融機関で利用されているWindows OSのカーネルドライバーに関する脆弱性であり、悪用が確認されているため、適用性確認の対象となります。",
+        "recommended_actions": [
+          "自社および委託先で利用しているWindows OSのバージョンを確認し、CVE-2026-68820の影響を受ける可能性があるシステムを特定する",
+          "Microsoftが公開した月例セキュリティ更新プログラムを速やかに適用し、脆弱性を修正する",
+          "システムログやセキュリティ監視ツールを確認し、CVE-2026-68820の悪用を示す兆候がないか調査する"
+        ],
+        "reason": "重要度は、広く利用されるWindows OSのカーネルドライバーに存在する悪用確認済みのゼロデイ脆弱性であり、SYSTEM権限昇格の可能性があるため「高」です。確認目安は、既に攻撃で悪用が確認されており、緊急の対応が求められるため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:04af503b5714c1c91b1ef420b979e8ab76508aca412d5498bd1794fe6b37e428",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/kimwolf-v7-android-botnet-makes-http2.html",
+      "canonical_url": "https://thehackernews.com/2026/08/kimwolf-v7-android-botnet-makes-http2.html",
+      "published_at": "2026-08-12T04:36:37+09:00",
+      "fetched_at": "2026-08-12T07:39:30.065298+09:00",
+      "title": "Kimwolf v7 Android Botnet Makes HTTP/2 DDoS Traffic Look Like Legitimate Browsing",
+      "raw_title": "Kimwolf v7 Android Botnet Makes HTTP/2 DDoS Traffic Look Like Legitimate Browsing",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d74d418d306f937e88b736f1d0395e225667de844bf26d95e723eb49ba26c609",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-12T07:40:07.306047+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Kimwolf v7ボットネットによるDDoS攻撃手法の進化が主題であるため。",
+        "tags": [
+          "APT",
+          "DORA"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、Kimwolf/AISURU AndroidおよびIoTボットネットの新しいバージョン「Kimwolf v7」を発見しました。この新バージョンは、運用回復力を向上させ、HTTP/2ベースのDDoS攻撃を正規の閲覧トラフィックに見せかける機能が強化されています。",
+        "financial_impact": "金融機関が直接的な標的となる可能性は低いですが、DDoS攻撃はサービス停止を引き起こす可能性があり、金融機関のウェブサービスやオンラインバンキングが間接的に影響を受ける可能性があります。",
+        "recommended_actions": [
+          "自社および委託先が提供するサービスへのDDoS攻撃対策の状況を確認する",
+          "DDoS攻撃の兆候を検知するための監視体制と対応手順を評価する"
+        ],
+        "reason": "重要度は、金融機関が直接的な標的となる可能性は低いものの、DDoS攻撃によるサービス停止リスクがあるため「中」です。確認目安は、新たなボットネットの動向であり、即時対応を要する具体的な脅威や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:be56bbf2c6cceb7decc372833425db1942c7e601f96b8bec2740dbea41f9b056",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/zoom-annotation-flaws-could-let-meeting.html",
+      "canonical_url": "https://thehackernews.com/2026/08/zoom-annotation-flaws-could-let-meeting.html",
+      "published_at": "2026-08-12T04:08:47+09:00",
+      "fetched_at": "2026-08-12T07:39:30.065298+09:00",
+      "title": "Zoom Annotation Flaws Could Let a Meeting Participant Hijack Another Attendee's Client",
+      "raw_title": "Zoom Annotation Flaws Could Let a Meeting Participant Hijack Another Attendee's Client",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5e85604521c95fb44ca11e46f211beda7e53f8396a728cd04ba0f67962ea56fc",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-12T07:40:24.514108+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Zoomの注釈機能における脆弱性が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Zoomの画面共有機能における注釈ツールに脆弱性が発見されました。これにより、会議参加者が他の参加者のクライアントを乗っ取ることが可能でした。この脆弱性は、被害者が会議に参加しているだけで、クリックやダウンロードなどの操作なしに悪用される可能性がありました。",
+        "financial_impact": "金融機関でZoomを会議ツールとして利用している場合に限り、適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "自社および委託先におけるZoomの利用状況と影響を受けるバージョンを確認する",
+          "Zoomベンダーからの公式情報やパッチ、緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、Zoomの利用有無により影響が異なるため「中」です。確認目安は、記事に実悪用や短期的な対応期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0711d7f3ba538207c2545d432b63a88a1b9e17de6cc4057db9f73263a18cb29f",
+      "source_id": "ncsc",
+      "source_name": "NCSC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.ncsc.gov.uk/blogs/water-sector-example-added-to-the-ncscs-secure-connectivity-principles",
+      "canonical_url": "https://www.ncsc.gov.uk/blogs/water-sector-example-added-to-the-ncscs-secure-connectivity-principles",
+      "published_at": "2026-08-11T21:00:00+09:00",
+      "fetched_at": "2026-08-12T07:39:30.065298+09:00",
+      "title": "NCSCのセキュア接続原則に水道分野の事例が追加",
+      "raw_title": "Water sector example added to the NCSC’s Secure connectivity principles",
+      "raw_excerpt": "New guidance is the first content authored by the Industrial Control System COI to appear on ncsc.gov.uk.",
+      "content_hash": "sha256:45a4f833a8b1088897b5405c4d314c4bbe19de1ddfc26d9389e2cc0bb2109f5c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-12T07:40:41.198126+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "NCSCが公開したガイドラインの更新に関する記事であり、規制やガバナンスに関連するため。",
+        "tags": [
+          "ガイドライン"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "NCSCは、産業用制御システム(ICS)のコミュニティが作成したコンテンツとして初めて、セキュア接続原則に水道分野の事例を追加しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。産業用制御システムに関する一般的なセキュリティ原則として、参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な適用性が低く、一般的なセキュリティ原則の更新情報であるため「中」です。確認目安は、具体的な脅威や緊急対応の必要性が記事にないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:707cc93d67674e76f921c853e4322bee2eb7d2ae57a22733da458bedfc1751e9",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-08-12T07:39:30.065298+09:00",
+      "title": "CVE-2026-20349 — Cisco Secure Firewall Adaptive Security Appliance (ASA) and Secure Firewall Threat Defense (FTD) Heap Inspection Vulnerability",
+      "raw_title": "CVE-2026-20349 — Cisco Secure Firewall Adaptive Security Appliance (ASA) and Secure Firewall Threat Defense (FTD) Heap Inspection Vulnerability",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8baaa9af6c4e7ec4fa82da9833dcb0d4502900a16d4402ed1b27ebc17fcce196",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "output_length_violation",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-20349",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-11T22:39:30Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-20349",
+              "vuln_status": "Undergoing Analysis",
+              "published_at": "2026-08-11T17:17:48Z",
+              "last_modified_at": "2026-08-11T20:17:38Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 8.6,
+                "base_severity": "HIGH",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:N/I:N/A:H",
+                "source": "psirt@cisco.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-11T22:39:30Z",
+              "date_added": "2026-08-11"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:34c818ea2fa779bd01263baa5cb0064019ba121a6c116a7f3c0fc87c25a2c164",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-08-12T07:39:30.065298+09:00",
+      "title": "CISA、Microsoft Windows WinSock補助機能ドライバーの解放後使用脆弱性をKEVへ追加",
+      "raw_title": "CVE-2026-68820 — Microsoft Windows Ancillary Function Driver for WinSock Use-After-Free Vulnerability",
+      "raw_excerpt": "Microsoft Windows Ancillary Function Driver for WinSock contains a use-after-free vulnerability that allows an authorized attacker to elevate privileges locally.",
+      "content_hash": "sha256:4cf383d2b02537ec6efc27153de0753588be3540816798835808d56cf6365230",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-12T07:41:15.354202+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CISA KEVに新規追加されたMicrosoft Windowsの脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "本日確認",
+        "summary": "CISAは2026年8月11日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Microsoft WindowsのWinSock補助機能ドライバーに解放後使用の脆弱性があり、認証された攻撃者がローカルで権限昇格を行う可能性があります。",
+        "financial_impact": "金融機関でMicrosoft Windowsを利用している場合に関係します。ローカルでの権限昇格であるため、外部からの直接的な攻撃経路は限定的ですが、内部ネットワークからの攻撃や他の脆弱性と組み合わせた悪用リスクがあります。",
+        "recommended_actions": [
+          "CVE-2026-68820の対象となるMicrosoft Windows環境の利用有無と影響バージョンを確認する",
+          "Microsoftからのパッチ情報や緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、Microsoft Windowsのローカル権限昇格の脆弱性であり、適用範囲が限定的であるため「中」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-68820",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-11T22:39:30Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-68820",
+              "vuln_status": "Undergoing Analysis",
+              "published_at": "2026-08-11T17:19:06Z",
+              "last_modified_at": "2026-08-11T22:18:58Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 7.0,
+                "base_severity": "HIGH",
+                "vector": "CVSS:3.1/AV:L/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:H",
+                "source": "secure@microsoft.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-11T22:39:30Z",
+              "date_added": "2026-08-11"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:a42875b9881b812b63219be9571e914f06ec5d62d4f1ee7fb847e481b4a00422",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-08-12T07:39:30.065298+09:00",
+      "title": "MetabaseのSQLインジェクション脆弱性「CVE-2026-72898」",
+      "raw_title": "CVE-2026-72898 — Metabase SQL Injection Vulnerability",
+      "raw_excerpt": "Metabase contains a SQL Injection vulnerability that allows an unauthenticated remote attacker to inject arbitrary SQL into the Metabase application database, which can give them administrator access ",
+      "content_hash": "sha256:b416b12dcc5014d88460fa7370e125b3551d81e2d8a7b3e1410024c7c32931be",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-12T07:41:32.813136+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題が特定の製品のSQLインジェクション脆弱性に関するものであるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "CISAは2026年8月11日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。MetabaseにSQLインジェクションの脆弱性があり、認証されていないリモート攻撃者が任意のSQLを注入し、管理者アクセス権を取得する可能性があります。",
+        "financial_impact": "Metabaseはデータ分析・可視化ツールであり、金融機関で利用されている場合、機密データの漏えいやシステム設定の改ざんにつながる可能性があります。利用有無の確認が必要です。",
+        "recommended_actions": [
+          "Metabaseの利用有無と影響を受けるバージョンを確認する",
+          "ベンダーの一次情報を参照し、パッチ適用または緩和策の実施を検討する",
+          "Metabaseのログを監視し、不審なSQLクエリや管理者権限でのアクセスがないか確認する"
+        ],
+        "reason": "重要度は、CVSSv4.0で深刻度CRITICALのSQLインジェクション脆弱性であり、管理者アクセス権取得により機密データ漏えいやシステム改ざんの可能性があるため「高」です。確認目安は、CISA KEVへ直近3日以内に新規追加され、実悪用が確認されているため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-72898",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-11T22:39:30Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-72898",
+              "vuln_status": "Undergoing Analysis",
+              "published_at": "2026-08-10T18:18:53Z",
+              "last_modified_at": "2026-08-11T20:18:45Z",
+              "cvss": {
+                "version": "4.0",
+                "base_score": 10.0,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                "source": "9119a7d8-5eab-497f-8521-727c672e3725",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-11T22:39:30Z",
+              "date_added": "2026-08-11"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
