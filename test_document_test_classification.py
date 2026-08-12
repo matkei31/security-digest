@@ -2428,10 +2428,13 @@ class Tranche3hClassificationShardTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.shard_text = SHARD_001_PATH.read_text(encoding="utf-8")
-        cls.shard = json.loads(cls.shard_text)
-        cls.all_entries = cls.shard["assertions"]
-        cls.entries = [e for e in cls.all_entries if e["file"] == SHARD_001_SOURCE_FILE]
+        # BL-038 tranche 3y-a-2 (R8, correction 3y-8): the accepted population is tranche
+        # 3h's LOGICAL window, and no physical shard file is opened at class-setup time.
+        # Reading SHARD_001_PATH here made a legal re-shard -- which may rename or remove
+        # that file -- an ERROR for every test in this class, including the logical and
+        # historical ones that do not own the physical layout. Measured equivalence: the
+        # same 136 entries in the same order. The O2 layout tests read the file themselves.
+        cls.entries = dth.accepted_window(ROOT, "3h")[1]
         cls.by_id = {e["id"]: e for e in cls.entries}
         source = (ROOT / SHARD_001_SOURCE_FILE).read_text(encoding="utf-8")
         cls.live_records = dti.enumerate_assertions(
@@ -2441,6 +2444,12 @@ class Tranche3hClassificationShardTest(unittest.TestCase):
             n.name for n in ast.parse(source, filename=SHARD_001_SOURCE_FILE).body
             if isinstance(n, ast.ClassDef)
         ]
+
+    @staticmethod
+    def _current_shard_001():
+        """The CURRENT physical shard 001, loaded only by the tests that own its layout."""
+        text = SHARD_001_PATH.read_text(encoding="utf-8")
+        return text, json.loads(text)
 
     def expected_ids_in_source_order(self):
         """The shard's complete id list expanded from hardcoded literals."""
@@ -2458,8 +2467,9 @@ class Tranche3hClassificationShardTest(unittest.TestCase):
         ordering from the validator, and the source-level facts stay source-level."""
         accepted_scope, _window = dth.accepted_window(ROOT, "3h")
         self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3h"])
-        self.assertEqual(self.shard["schema_version"], 1)
-        self.assertIs(type(self.shard["schema_version"]), int)
+        _text, shard = self._current_shard_001()   # O2: this test owns the current layout
+        self.assertEqual(shard["schema_version"], 1)
+        self.assertIs(type(shard["schema_version"]), int)
         # Source-level: the classes exist and keep their source order; the third one is a
         # real class of the file, whose ownership today is the validator's business.
         self.assertEqual(
@@ -2490,7 +2500,8 @@ class Tranche3hClassificationShardTest(unittest.TestCase):
                 self.assertEqual(entry["ordinal"], record.ordinal)
                 self.assertEqual(entry["assertion_api"], record.assertion_api)
                 self.assertEqual(entry["fingerprint"], record.fingerprint)
-        failures, summary = dti.validate_manifest(self.shard, root=ROOT)
+        _text, shard = self._current_shard_001()   # O2: current shard validity
+        failures, summary = dti.validate_manifest(shard, root=ROOT)
         self.assertEqual([f.format() for f in failures], [])
         # Per-FILE tally here; whole-file totals belong to tranche 3i.
         self.assertEqual(summary["file_counts"][SHARD_001_SOURCE_FILE],
@@ -2543,7 +2554,10 @@ class Tranche3hClassificationShardTest(unittest.TestCase):
         # exactly the freeze that blocked structural conversion. What stays here is the
         # digest function's sensitivity, measured against the current file's own value.
         dth.assert_accepted(self, ROOT, "3h", content_digest=TRANCHE_3H_HISTORICAL_CONTENT_SHA256)
-        baseline = _subset_content_digest(self.shard["scope"][0], self.entries)
+        # BL-038 tranche 3y-a-2 (R8): the descriptor comes from the pinned accepted scope
+        # map, so this digest-sensitivity demonstration no longer needs the physical file.
+        accepted_descriptor = dth.ACCEPTED_SCOPES["3h"][0]
+        baseline = _subset_content_digest(accepted_descriptor, self.entries)
         # Demonstrated: the digest moves for each blind-spot field.
         for field, value in (
             ("targets", ["README.md"]),
@@ -2556,12 +2570,12 @@ class Tranche3hClassificationShardTest(unittest.TestCase):
                 self.assertNotEqual(mutated[0][field], value)
                 mutated[0][field] = value
                 self.assertNotEqual(
-                    _subset_content_digest(self.shard["scope"][0], mutated), baseline)
+                    _subset_content_digest(accepted_descriptor, mutated), baseline)
         # A scope edit and a reordering are caught as well.
         self.assertNotEqual(
             _subset_content_digest({"file": "x.py", "classes": []}, self.entries), baseline)
         self.assertNotEqual(
-            _subset_content_digest(self.shard["scope"][0], self.entries[::-1]), baseline)
+            _subset_content_digest(accepted_descriptor, self.entries[::-1]), baseline)
 
     def test_tranche_3h_file_snapshot_is_history_not_the_current_file(self):
         """136 / 144 / SHA 2d03c748 was shard 001 AT TRANCHE 3H MERGE: history held by
@@ -2581,7 +2595,8 @@ class Tranche3hClassificationShardTest(unittest.TestCase):
         base_ids = {e["id"] for e in base["assertions"]}
         self.assertEqual(base_ids & frozenset(self.by_id), frozenset())
         base_pairs = {(s["file"], c) for s in base["scope"] for c in s["classes"]}
-        shard_pairs = {(s["file"], c) for s in self.shard["scope"] for c in s["classes"]}
+        _text, shard = self._current_shard_001()   # O2: this test owns the current layout
+        shard_pairs = {(s["file"], c) for s in shard["scope"] for c in s["classes"]}
         self.assertEqual(base_pairs & shard_pairs, set())
         self.assertNotIn(SHARD_001_SOURCE_FILE, {s["file"] for s in base["scope"]})
         self.assertEqual(len(base_ids), BASE_EXPECTED_ASSERTION_COUNT)
@@ -2648,10 +2663,11 @@ class Tranche3hClassificationShardTest(unittest.TestCase):
         # BL-038 tranche 3v (C013): the shrinkage is measured against the shard's OWN
         # current scope rather than the accepted class tuple, so the guard still catches
         # a silent drop without pinning which classes the shard must own today.
-        original_classes = tuple(self.shard["scope"][0]["classes"])
-        original_count = len([e for e in self.shard["assertions"]
+        _text, shard = self._current_shard_001()   # O2: this test owns the current layout
+        original_classes = tuple(shard["scope"][0]["classes"])
+        original_count = len([e for e in shard["assertions"]
                               if e["file"] == SHARD_001_SOURCE_FILE])
-        mutated = json.loads(json.dumps(self.shard))
+        mutated = json.loads(json.dumps(shard))
         dropped = original_classes[1]
         mutated["scope"][0]["classes"] = [original_classes[0]]
         mutated["assertions"] = [e for e in mutated["assertions"] if e["class"] != dropped]
@@ -2673,10 +2689,12 @@ class Tranche3iClassificationShardAppendTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.shard_text = SHARD_001_PATH.read_text(encoding="utf-8")
-        cls.shard = json.loads(cls.shard_text)
-        cls.all_entries = cls.shard["assertions"]
-        cls.entries = [e for e in cls.all_entries if e["file"] == TRANCHE_3I_SOURCE_FILE]
+        # BL-038 tranche 3y-a-2 (R9, correction 3y-8): as R8 -- the accepted population is
+        # tranche 3i's own LOGICAL block (its file and class inside the 3i accepted window,
+        # the same filter tranches 3j-3m already use), and no physical shard is opened at
+        # class-setup time. Measured equivalence: the same 123 entries in the same order.
+        cls.entries = [e for e in dth.accepted_window(ROOT, "3i")[1]
+                       if e["file"] == TRANCHE_3I_SOURCE_FILE and e["class"] == TRANCHE_3I_CLASS]
         cls.by_id = {e["id"]: e for e in cls.entries}
         source = (ROOT / TRANCHE_3I_SOURCE_FILE).read_text(encoding="utf-8")
         cls.live_records = dti.enumerate_assertions(
@@ -2686,6 +2704,12 @@ class Tranche3iClassificationShardAppendTest(unittest.TestCase):
             n.name for n in ast.parse(source, filename=TRANCHE_3I_SOURCE_FILE).body
             if isinstance(n, ast.ClassDef)
         ]
+
+    @staticmethod
+    def _current_shard_001():
+        """The CURRENT physical shard 001, loaded only by the tests that own its layout."""
+        text = SHARD_001_PATH.read_text(encoding="utf-8")
+        return text, json.loads(text)
 
     def expected_ids_in_source_order(self):
         return [
@@ -2718,8 +2742,10 @@ class Tranche3iClassificationShardAppendTest(unittest.TestCase):
         ids = [e["id"] for e in self.entries]
         self.assertEqual(ids, [r.id for r in self.live_records])
         self.assertEqual(len(set(ids)), len(ids))
-        # Appended as a trailing block, never interleaved with what came before.
-        self.assertEqual([e["id"] for e in self.all_entries[-len(ids):]], ids)
+        # Appended as a trailing block in the CURRENT shard 001 -- physical placement, so
+        # this test reads the file itself (BL-038 tranche 3y-a-2, R9).
+        _text, shard = self._current_shard_001()
+        self.assertEqual([e["id"] for e in shard["assertions"][-len(ids):]], ids)
         dth.assert_accepted_contracts_accounted_for(self, ROOT, "3i")
 
     def test_entries_match_the_live_source_inventory_fields(self):
@@ -2775,29 +2801,31 @@ class Tranche3iClassificationShardAppendTest(unittest.TestCase):
         self.assertEqual(multi, TRANCHE_3I_MULTI_TARGETS)
 
     def test_current_shard_file_meets_the_format_contract_within_the_line_cap(self):
-        failures = dti.validate_shard_file_format(SHARD_001_PATH, self.shard, shard=SHARD_001_FILENAME)
+        shard_text, shard = self._current_shard_001()   # O2: this test owns the current layout
+        all_entries = shard["assertions"]
+        failures = dti.validate_shard_file_format(SHARD_001_PATH, shard, shard=SHARD_001_FILENAME)
         self.assertEqual([f.format() for f in failures], [])
         # BL-038 tranche 3v (C019): shard 001's accepted bytes, line count and entry
         # count are the ledger's tranche 3i record; the current file is held to the
         # format contract and the line cap, not to a byte identity.
         dth.assert_accepted(self, ROOT, "3i", sha256=SHARD_001_CURRENT_SHA256,
                             line_count=SHARD_001_CURRENT_LINE_COUNT, entry_count=SHARD_001_CURRENT_ENTRY_COUNT)
-        lines = self.shard_text.splitlines()
+        lines = shard_text.splitlines()
         self.assertLessEqual(len(lines), dti.SHARD_LINE_CAP)
         self.assertEqual(dti.SHARD_LINE_CAP, BASE_MANIFEST_LINE_CAP)  # cap not raised
-        self.assertTrue(self.shard_text.endswith("\n"))
+        self.assertTrue(shard_text.endswith("\n"))
         start = lines.index('  "assertions": [')
         entry_lines = lines[start + 1 : lines.index("  ]", start)]
-        self.assertEqual(len(entry_lines), len(self.all_entries))
+        self.assertEqual(len(entry_lines), len(all_entries))
         for offset, line in enumerate(entry_lines):
             with self.subTest(line=start + 2 + offset):
                 parsed = json.loads(line.strip().rstrip(","), object_pairs_hook=OrderedDict)
                 self.assertEqual(tuple(parsed.keys()), EXPECTED_ENTRY_KEY_ORDER)
-        self.assertEqual(json.loads(self.shard_text), self.shard)
-        self.assertEqual(len({e["id"] for e in self.all_entries}), len(self.all_entries))
-        failures, summary = dti.validate_manifest(self.shard, root=ROOT)
+        self.assertEqual(json.loads(shard_text), shard)
+        self.assertEqual(len({e["id"] for e in all_entries}), len(all_entries))
+        failures, summary = dti.validate_manifest(shard, root=ROOT)
         self.assertEqual([f.format() for f in failures], [])
-        self.assertEqual(summary["manifest_assertions"], len(self.all_entries))
+        self.assertEqual(summary["manifest_assertions"], len(all_entries))
         self.assertEqual((summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]), (0, 0, 0))
 
     def test_tranche_3i_two_shard_index_is_history_not_the_current_index(self):
@@ -2825,12 +2853,14 @@ class Tranche3iClassificationShardAppendTest(unittest.TestCase):
         )
 
     def test_appending_to_shard_001_does_not_disturb_the_base_manifest(self):
-        # BL-038 tranche 3v (C017): the base manifest's accepted bytes and line count are
-        # asserted from the immutable ledger; what stays current is that this tranche's
-        # class did not leak into the base manifest.
+        # BL-038 tranche 3y-a-2 (R6, correction 3y-7): that tranche 3i left the base
+        # manifest alone is an accepted-time fact -- the ledger's 3f record plus the
+        # historical BACKLOG witness -- not a permanent prohibition on the current base
+        # manifest ever holding this class. The negative assertion on the current bytes is
+        # gone; lineage is contract continuity and legality is the validator's.
         dth.assert_accepted(self, ROOT, "3f", sha256=BASE_MANIFEST_SHA256, line_count=BASE_MANIFEST_LINE_COUNT)
-        raw = MANIFEST_PATH.read_bytes()
-        self.assertNotIn(TRANCHE_3I_CLASS, raw.decode("utf-8"))
+        dth.assert_accepted_contracts_accounted_for(self, ROOT, "3f")
+        dth.assert_accepted_contracts_accounted_for(self, ROOT, "3i")
 
 
 class Tranche3jClassificationShard002Test(unittest.TestCase):
@@ -3694,10 +3724,14 @@ class Tranche3mClassificationShard002AppendTest(unittest.TestCase):
         strip = lambda n: [ast.unparse(s) for s in n.body if not (isinstance(s, ast.Expr) and isinstance(s.value, ast.Constant))]
         self.assertEqual(strip(mine), strip(twin_node))
         self.assertNotEqual(mine.name, twin_node.name)
-        base_ids = {e["id"] for e in json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))["assertions"]}
-        self.assertTrue({f"{TRANCHE_3M_SOURCE_FILE}::{twin_class}::{twin_method}::assert-01",
-                         f"{TRANCHE_3M_SOURCE_FILE}::{twin_class}::{twin_method}::assert-02"} <= base_ids)
-        self.assertNotIn(TRANCHE_3M_CLASS, {i.split("::")[1] for i in base_ids})
+        # BL-038 tranche 3y-a-2 (R7, correction 3y-7): the twin's exact assertion ids being
+        # present in the CURRENT base manifest -- one of them accepted-time Category C --
+        # and this tranche's class being absent from it were accepted-time classification
+        # and physical-location facts. A routine C->B conversion or a split migration may
+        # retire or renumber those ids, so requiring them of the current tree blocked the
+        # very conversion this work exists to enable. The structural source comparison
+        # above is the surviving CURRENT contract; accepted A=0 stays in the ledger and
+        # the declined-consolidation rationale in the historical BACKLOG record.
 
     # -- Category C / D: the exact edit each one breaks ----------------------
 
@@ -4004,17 +4038,19 @@ class ClassificationShardIndexTest(unittest.TestCase):
                 dth.assert_accepted_contracts_accounted_for(self, ROOT, tranche)
 
     def test_legacy_single_manifest_path_still_validates_the_base_alone(self):
-        """`--manifest` keeps working and keeps reporting the BASE manifest alone,
-        untouched by the new shard. BL-038 tranche 3v (C004): the accepted 585 /
-        A22/B175/C268/D120 record is a past fact in the ledger, no longer required of
-        the current base manifest, which a legal conversion may move."""
+        """`--manifest` keeps working: the legacy single-manifest path still validates one
+        manifest on its own, reporting exactly what that manifest declares. BL-038 tranche
+        3y-a-2 (R5, correction 3y-7): the CAPABILITY is the current contract, but which
+        files that manifest is scoped to is accepted 3f history -- requiring the current
+        base manifest to still hold exactly the accepted four files, and never a later
+        tranche's file, froze where accepted contracts may live."""
         manifest = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
         failures, legacy = dti.validate_manifest(manifest, root=ROOT)
         self.assertEqual([f.format() for f in failures], [])
         self.assertEqual(legacy["manifest_assertions"], legacy["inventoried_assertions"])
         self.assertEqual(sum(legacy["category_counts"].values()), legacy["manifest_assertions"])
-        self.assertEqual(legacy["scoped_files"], sorted(f for f, _ in EXPECTED_SCOPE_ORDER))
-        self.assertNotIn(SHARD_001_SOURCE_FILE, legacy["scoped_files"])
+        # Reported scope is the manifest's OWN declared scope, whatever that is today.
+        self.assertEqual(legacy["scoped_files"], sorted({s["file"] for s in manifest["scope"]}))
         self.assertEqual((legacy["unclassified"], legacy["stale"], legacy["fingerprint_mismatch"]), (0, 0, 0))
 
     def test_every_indexed_shard_meets_the_shard_format_contract(self):
@@ -4030,36 +4066,23 @@ class ClassificationShardIndexTest(unittest.TestCase):
         self.assertEqual(dti.SHARD_LINE_CAP, BASE_MANIFEST_LINE_CAP)
 
     def test_base_manifest_is_byte_identical_and_unchanged_by_tranche_3l(self):
-        # BL-038 tranche 3v (C001): the accepted bytes, line count, entry count and
-        # category breakdown of the base manifest are past facts, asserted from the
-        # immutable ledger. The CURRENT file is no longer byte-frozen, which is what
-        # blocked Category C conversion; what stays is that tranche 3h-3l's work did
-        # not leak into it and that the line cap was not raised.
+        # BL-038 tranche 3y-a-2 (R4, correction 3y-7): the accepted bytes, line count,
+        # entry count, category breakdown AND scope composition of the base manifest are
+        # all past facts held by the ledger and the pinned accepted scope map. The
+        # negative "no later tranche file or class may ever appear here" assertions and
+        # the exact current scope-file order went with them: a legal re-shard may move an
+        # accepted scope into this manifest, and only the validator decides whether the
+        # result is legal. What stays current is the line cap and contract continuity.
         dth.assert_accepted(self, ROOT, "3f", sha256=BASE_MANIFEST_SHA256, line_count=BASE_MANIFEST_LINE_COUNT,
                             entry_count=BASE_EXPECTED_ASSERTION_COUNT, category_counts=BASE_EXPECTED_CATEGORY_COUNTS)
-        raw = MANIFEST_PATH.read_bytes()
-        text = raw.decode("utf-8")
+        accepted_scope, _window = dth.accepted_window(ROOT, "3f")
+        self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3f"])
+        dth.assert_accepted_contracts_accounted_for(self, ROOT, "3f")
+        text = MANIFEST_PATH.read_text(encoding="utf-8")
         # The cap is why sharding exists: it must not be raised to make room.
         self.assertEqual(BASE_MANIFEST_LINE_CAP - BASE_MANIFEST_LINE_COUNT, 4)
         self.assertLessEqual(len(text.splitlines()), BASE_MANIFEST_LINE_CAP)
-        manifest = json.loads(text)
-        self.assertEqual([s["file"] for s in manifest["scope"]], [f for f, _ in EXPECTED_SCOPE_ORDER])
-        # 3h added 136 to a NEW file, 3i appended 123 there, 3j added 34 to a
-        # SECOND new file -- none of it here.
-        self.assertNotIn(SHARD_001_SOURCE_FILE, text)
-        self.assertNotIn(TRANCHE_3I_CLASS, text)
-        self.assertNotIn(TRANCHE_3J_CLASS, text)
-        # 3k appended a THIRD source file's only class to shard 002 and 3l a
-        # FOURTH file's two classes -- also not here.
-        self.assertNotIn(TRANCHE_3K_SOURCE_FILE, text)
-        self.assertNotIn(TRANCHE_3K_CLASS, text)
-        self.assertNotIn(TRANCHE_3L_SOURCE_FILE, text)
-        for class_name in TRANCHE_3L_CLASSES:
-            with self.subTest(class_name=class_name):
-                self.assertNotIn(class_name, text)
-        self.assertLess(len(manifest["assertions"]),
-                        len(dti.combined_assertion_ids(dti.load_shard_manifests(
-                            list(EXPECTED_SHARD_ORDER), root=ROOT)[1])))
+        self.assertEqual([f.format() for f in dti.validate_indexed_manifests(root=ROOT)[0]], [])
 
 
 # -- BL-038 tranche 3o -------------------------------------------------------
