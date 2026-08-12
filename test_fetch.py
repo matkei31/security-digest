@@ -5095,8 +5095,13 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         # extracted to a field; 3 to D: bare PR-number mentions that are
         # part of a historical-acceptance-evidence bundle alongside a
         # sibling SHA/CI-run-ID assertion in the same method).
-        manifest = json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
-        by_id = {a["id"]: a for a in manifest["assertions"]}
+        # BL-038 tranche 3y-a-2 (3y-11): the corrected categories are an accepted-time
+        # classification fact from PR #86 round 1, and two of the five are Category C, so
+        # requiring the CURRENT tree to still call them C blocked the very conversion this
+        # work exists to enable. The correction stays a historical BACKLOG witness; the
+        # current side owes accepted-contract continuity and category/action consistency
+        # for whichever contracts are live, wherever a legal re-shard puts them.
+        by_id = {a["id"]: a for a in dth.live_entries(self.ROOT)}
         expected_categories = {
             "test_security_requirements.py::Bl034ImplementationAcceptanceTest::"
             "test_dashboard_and_search_console_are_confirmed_by_closeout::assert-01": "C",
@@ -5111,14 +5116,18 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         }
         import document_test_inventory as dti
 
-        for entry_id, expected_category in expected_categories.items():
+        witness = self._bl038_section()
+        for flagged in ("test_dashboard_and_search_console_are_confirmed_by_closeout::assert-01",
+                        "test_sr047_and_gap018_confirm_dashboard_and_search_console_not_unconfirmed::assert-05"):
+            with self.subTest(flagged=flagged):
+                self.assertIn(flagged, witness)
+        dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3f")
+        for entry_id in expected_categories:
             with self.subTest(id=entry_id):
-                self.assertIn(entry_id, by_id)
-                self.assertEqual(by_id[entry_id]["category"], expected_category)
-                self.assertNotEqual(by_id[entry_id]["category"], "B")
-                self.assertEqual(
-                    by_id[entry_id]["action"], dti.CATEGORY_TO_ACTION[expected_category]
-                )
+                entry = by_id.get(entry_id)
+                if entry is None:
+                    continue      # a legal conversion or migration may retire this id
+                self.assertEqual(entry["action"], dti.CATEGORY_TO_ACTION[entry["category"]])
 
     def test_backlog_still_records_tranche3e_own_manifest_line_count_as_534(self):
         # Same re-anchoring as tranche 3d's: tranche 3f's growth (534 -> 596
@@ -5445,9 +5454,11 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
     def test_tranche3f_category_a_is_a_duplicated_method_pair_not_a_recurring_value(self):
         # The four Category A entries are the one substantive difference from
         # the provisional A 0/B 19/C 30/D 13 tally, so pin exactly which.
-        manifest = self._manifest()
+        # BL-038 tranche 3y-a-2 (3y-11): a CURRENT classification lookup over the complete
+        # indexed population -- these Category A contracts stay live wherever a legal
+        # re-shard puts them, so this no longer requires the base manifest to hold them.
         a_ids = sorted(
-            a["id"] for a in manifest["assertions"]
+            a["id"] for a in dth.live_entries(self.ROOT)
             if a["file"] == "test_security_requirements.py" and a["category"] == "A"
         )
         prefix = "test_security_requirements.py::" + self.TRANCHE_3F_CLASS + "::"
@@ -5462,7 +5473,7 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
         )
         import document_test_inventory as dti
 
-        by_id = {a["id"]: a for a in manifest["assertions"]}
+        by_id = {a["id"]: a for a in dth.live_entries(self.ROOT)}
         for entry_id in a_ids:
             with self.subTest(id=entry_id):
                 self.assertEqual(by_id[entry_id]["action"], dti.CATEGORY_TO_ACTION["A"])
@@ -5485,15 +5496,17 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
     def test_tranche2_sd030_d_classification_is_carried_forward_unchanged(self):
         # BL-038 tranche 2 classified the SD-030 146-character sentence as D
         # and locked it in BACKLOG.md; tranche 3f's entry must agree.
-        manifest = self._manifest()
-        entry = next(
-            a for a in manifest["assertions"]
-            if a["id"].endswith(
-                "::test_sd030_records_that_mode_restrictions_are_not_yet_enforced_in_production::assert-04"
-            )
-        )
-        self.assertEqual(entry["category"], "D")
-        self.assertEqual(entry["action"], "historical_keep")
+        # BL-038 tranche 3y-a-2 (3y-11): "carried forward unchanged" is a statement about
+        # tranche 2's acceptance, not a permanent freeze of the current category, and the
+        # entry was located only inside this physical manifest. The accepted D call stays a
+        # historical BACKLOG witness; the current side is looked up over the complete
+        # indexed population and held to category/action consistency.
+        self.assertIn("SD-030の146文字candidateをD(historical exact evidence)として維持した",
+                      self._bl038_section())
+        matches = [a for a in dth.live_entries(self.ROOT) if a["id"].endswith(
+            "::test_sd030_records_that_mode_restrictions_are_not_yet_enforced_in_production::assert-04")]
+        self.assertEqual(len(matches), 1)
+        self.assertEqual(matches[0]["action"], dti.CATEGORY_TO_ACTION[matches[0]["category"]])
 
     def test_manifest_line_count_is_within_the_600_line_cap(self):
         """BL-038 tranche 3y-a (N2): the accepted 596 lines are a 3f ledger fact. Requiring
@@ -8450,7 +8463,9 @@ class Bl038Tranche3xCouplingRetargetRecordSyncTest(unittest.TestCase):
                       self.bl038)
         self.assertIn("**known residual at least 19**", self.bl038)
         self.assertIn("**final repo-wide residual scanは3yまで未実施**", self.bl038)
-        self.assertIn("**残るgenuine residualは6件(R4〜R9)**", current)
+        # BL-038 tranche 3y-a-2: R4-R9 and the closure-review families are handled, so the
+        # current paragraph records closure under the defined boundary instead.
+        self.assertIn("**defined closure boundary下でunresolved genuine coupling 0**", current)
         for bare in ("residual 18)", "residual 18。", "residual 18、"):
             with self.subTest(bare=bare):
                 self.assertNotIn(bare, current)  # no bare figure as the total

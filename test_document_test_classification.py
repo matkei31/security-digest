@@ -1887,8 +1887,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         # BL-038 tranche 3v (C007): the swap target is drawn from the manifest's OWN
         # current C entries. Indexing an accepted C-id set into the current manifest
         # would KeyError once a conversion renumbers or retires that id.
-        for file in (CUSTOM_DOMAIN_SOURCE_FILE, UI_SPEC_SOURCE_FILE, STATUS_SOURCE_FILE,
-                     SECURITY_REQUIREMENTS_SOURCE_FILE):
+        for file in self.scoped_files:      # BL-038 tranche 3y-a-2 (3y-11)
             with self.subTest(file=file):
                 mutated = json.loads(self.manifest_text)
                 by_id = {a["id"]: a for a in mutated["assertions"]}
@@ -1931,14 +1930,18 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
     # the swap above (B<->C only) would not notice an A entry downgraded to
     # B while a B is promoted to A. Exercise that pair explicitly.
     def test_count_preserving_a_to_b_swap_in_security_requirements_is_detected(self):
+        # BL-038 tranche 3y-a-2 (3y-11): the swap pair is drawn from THIS manifest's own
+        # current A and B entries. Locating them through the accepted tranche-3f source
+        # file and class made a legal re-shard look like deletion; the contract being
+        # measured -- a count-preserving A<->B swap is caught by exact membership -- does
+        # not depend on which file the pair comes from.
         mutated = json.loads(self.manifest_text)
         by_id = {a["id"]: a for a in mutated["assertions"]}
         before = {a["id"]: a["category"] for a in mutated["assertions"]}
-        prefix = SECURITY_REQUIREMENTS_SOURCE_FILE + "::Bl031AcceptanceAndBl032RegistrationTest::"
-        b_entry = by_id[sorted(i for i, c in before.items()
-                               if c == "B" and i.startswith(prefix))[0]]
-        a_entry = by_id[sorted(i for i, c in before.items() if c == "A"
-                               and i.startswith(SECURITY_REQUIREMENTS_SOURCE_FILE + "::"))[0]]
+        a_ids = sorted(i for i, c in before.items() if c == "A")
+        b_ids = sorted(i for i, c in before.items() if c == "B")
+        self.assertTrue(a_ids and b_ids)  # not vacuous
+        a_entry, b_entry = by_id[a_ids[0]], by_id[b_ids[0]]
         b_entry["category"], a_entry["category"] = a_entry["category"], b_entry["category"]
         b_entry["action"], a_entry["action"] = a_entry["action"], b_entry["action"]
 
@@ -1954,8 +1957,11 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
     # rationale: the four must cover exactly two methods and two distinct
     # fingerprints, with both methods asserting the same pair.
     def test_security_requirements_category_a_entries_are_a_real_duplicated_method_pair(self):
+        # BL-038 tranche 3y-a-2 (3y-11): a CURRENT classification lookup, so it runs over
+        # the complete indexed population -- the entries stay live wherever a legal
+        # re-shard puts them, and this class no longer has to hold them.
         a_entries = [
-            a for a in self.manifest["assertions"]
+            a for a in dth.live_entries(ROOT)
             if a["file"] == SECURITY_REQUIREMENTS_SOURCE_FILE and a["category"] == "A"
         ]
         self.assertEqual(len(a_entries), 4)
@@ -1970,7 +1976,12 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                 "test_sd030_does_not_mark_sd002_as_implemented_superseded",
             ],
         )
-        live_by_id = {r.id: r for r in self.live_records}
+        # BL-038 tranche 3y-a-2 (3y-11): the fingerprints are a SOURCE fact, enumerated from
+        # the source file itself rather than from this manifest's live-record cache, which
+        # only covers the files this manifest happens to scope today.
+        live_by_id = {r.id: r for r in dti.enumerate_assertions(
+            (ROOT / SECURITY_REQUIREMENTS_SOURCE_FILE).read_text(encoding="utf-8"),
+            SECURITY_REQUIREMENTS_SOURCE_FILE, sorted({a["class"] for a in a_entries}))}
         fingerprints_by_method = {}
         for entry in a_entries:
             fingerprints_by_method.setdefault(entry["method"], set()).add(
@@ -2037,12 +2048,15 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         self.assertEqual(len(matches), 1, "one assertIn must consume the binding")
 
     def test_version_marker_loop_binding_matches_the_recorded_category_d_contract(self):
-        self._assert_version_marker_loop_contract(self.sources[SECURITY_REQUIREMENTS_SOURCE_FILE])
+        # BL-038 tranche 3y-a-2 (3y-11): a source fact, so read the source file directly.
+        self._assert_version_marker_loop_contract(
+            (ROOT / SECURITY_REQUIREMENTS_SOURCE_FILE).read_text(encoding="utf-8"))
 
     def test_version_marker_loop_literal_mutation_is_caught_only_by_the_new_guard(self):
         # Editing the loop tuple leaves the fingerprint identical, so only
         # the structural guard fails.
-        source = self.sources[SECURITY_REQUIREMENTS_SOURCE_FILE]
+        # BL-038 tranche 3y-a-2 (3y-11): source fact, read from the source file.
+        source = (ROOT / SECURITY_REQUIREMENTS_SOURCE_FILE).read_text(encoding="utf-8")
         mutated = source.replace('"**Version:** 0.1"),', '"**Version:** 0.2"),')
         self.assertNotEqual(mutated, source)
 
@@ -2092,14 +2106,16 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                 )
 
     def test_category_a_methods_are_whole_method_duplicates_in_live_source(self):
+        # BL-038 tranche 3y-a-2 (3y-11): a source fact, so read the source file directly.
         self._assert_category_a_methods_are_whole_method_duplicates(
-            self.sources[SECURITY_REQUIREMENTS_SOURCE_FILE])
+            (ROOT / SECURITY_REQUIREMENTS_SOURCE_FILE).read_text(encoding="utf-8"))
 
     def test_category_a_extraction_change_in_one_method_is_caught_only_by_the_new_guard(self):
         # Change the SD-002 extraction in ONE method: no fingerprint covers
         # that statement, so the fingerprint comparison stays green while the
         # methods have stopped being duplicates.
-        source = self.sources[SECURITY_REQUIREMENTS_SOURCE_FILE]
+        # BL-038 tranche 3y-a-2 (3y-11): source fact, read from the source file.
+        source = (ROOT / SECURITY_REQUIREMENTS_SOURCE_FILE).read_text(encoding="utf-8")
         mutated = _mutate_within_method(
             source, TRANCHE_3F_CLASS, CATEGORY_A_METHOD_PAIR[1],
             '"## SD-002"', '"## SD-003"')
@@ -2147,7 +2163,9 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                     self.assertTrue(t.strip())
 
     def test_known_multi_target_entries_list_every_real_target_path(self):
-        by_id = {a["id"]: a for a in self.manifest["assertions"]}
+        # BL-038 tranche 3y-a-2 (3y-11): current classification metadata, looked up over the
+        # complete indexed population rather than only this physical manifest.
+        by_id = {a["id"]: a for a in dth.live_entries(ROOT)}
         for entry_id, expected_targets in EXPECTED_MULTI_TARGETS.items():
             with self.subTest(id=entry_id):
                 self.assertIn(entry_id, by_id)
@@ -2193,7 +2211,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
         # of the 3 scoped files in turn) so total counts/category tallies/
         # scope are all untouched -- only the source-order list-equality
         # guard can catch this.
-        for file in SCOPE_FILES:
+        for file in self.scoped_files:      # BL-038 tranche 3y-a-2 (3y-11)
             with self.subTest(file=file):
                 mutated = json.loads(self.manifest_text)
                 idx = next(i for i, a in enumerate(mutated["assertions"]) if a["file"] == file)
@@ -2204,7 +2222,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                     self._assert_ids_match_source_order(mutated)
 
     def test_assertion_deletion_mutation_is_detected_as_unclassified(self):
-        for file in SCOPE_FILES:
+        for file in self.scoped_files:      # BL-038 tranche 3y-a-2 (3y-11)
             with self.subTest(file=file):
                 mutated = json.loads(self.manifest_text)
                 idx = next(i for i, a in enumerate(mutated["assertions"]) if a["file"] == file)
@@ -2214,7 +2232,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                 self.assertIn("unclassified", types)
 
     def test_extra_assertion_mutation_is_detected_as_stale_entry(self):
-        for file in SCOPE_FILES:
+        for file in self.scoped_files:      # BL-038 tranche 3y-a-2 (3y-11)
             with self.subTest(file=file):
                 mutated = json.loads(self.manifest_text)
                 idx = next(i for i, a in enumerate(mutated["assertions"]) if a["file"] == file)
@@ -2227,7 +2245,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                 self.assertIn("stale-entry", types)
 
     def test_fingerprint_mutation_is_detected_as_fingerprint_mismatch(self):
-        for file in SCOPE_FILES:
+        for file in self.scoped_files:      # BL-038 tranche 3y-a-2 (3y-11)
             with self.subTest(file=file):
                 mutated = json.loads(self.manifest_text)
                 idx = next(i for i, a in enumerate(mutated["assertions"]) if a["file"] == file)
@@ -2237,7 +2255,7 @@ class DocumentTestClassificationScopeTest(unittest.TestCase):
                 self.assertIn("fingerprint-mismatch", types)
 
     def test_category_action_inconsistency_mutation_is_detected(self):
-        for file in SCOPE_FILES:
+        for file in self.scoped_files:      # BL-038 tranche 3y-a-2 (3y-11)
             with self.subTest(file=file):
                 mutated = json.loads(self.manifest_text)
                 idx = next(i for i, a in enumerate(mutated["assertions"]) if a["file"] == file)
