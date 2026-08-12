@@ -8447,9 +8447,7 @@ class Bl038Tranche3xCouplingRetargetRecordSyncTest(unittest.TestCase):
                       self.bl038)
         self.assertIn("**known residual at least 19**", self.bl038)
         self.assertIn("**final repo-wide residual scanは3yまで未実施**", self.bl038)
-        self.assertIn("**全件handled・frozen-inventory residual 0**", current)
-        self.assertIn("**final repo-wide static residual scanはv2 definitionで実施済みで"
-                      "unresolved genuine coupling 0**", current)
+        self.assertIn("**残るgenuine residualは6件(R4〜R9)**", current)
         for bare in ("residual 18)", "residual 18。", "residual 18、"):
             with self.subTest(bare=bare):
                 self.assertNotIn(bare, current)  # no bare figure as the total

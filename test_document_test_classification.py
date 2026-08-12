@@ -2564,21 +2564,17 @@ class Tranche3hClassificationShardTest(unittest.TestCase):
             _subset_content_digest(self.shard["scope"][0], self.entries[::-1]), baseline)
 
     def test_tranche_3h_file_snapshot_is_history_not_the_current_file(self):
-        """136 / 144 / SHA 2d03c748 was shard 001 AT TRANCHE 3H MERGE, so
-        those numbers are history, asserted NOT to describe the file today."""
-        # BL-038 tranche 3v (C015): the accepted 136 / 144 / SHA 2d03c748 snapshot comes
-        # from the immutable ledger. The positional prefix reconstruction
-        # (all_entries[:136] == the accepted id order) and the accepted category
-        # breakdown of the current window are gone -- both froze the current file.
+        """136 / 144 / SHA 2d03c748 was shard 001 AT TRANCHE 3H MERGE: history held by
+        the ledger, independent of what the file looks like today."""
+        # BL-038 tranche 3y-a-1 (R1, correction 3y-6): the positional prefix
+        # reconstruction went at 3v; the two negative CURRENT-must-differ-from-HISTORICAL
+        # assertions go here. The current shard may legally differ from OR coincide with
+        # an accepted historical representation, so neither direction is asserted.
         dth.assert_accepted(self, ROOT, "3h", sha256=TRANCHE_3H_HISTORICAL_SHA256,
                             line_count=TRANCHE_3H_HISTORICAL_LINE_COUNT,
                             entry_count=TRANCHE_3H_HISTORICAL_ENTRY_COUNT)
         self.assertEqual(TRANCHE_3H_HISTORICAL_ENTRY_COUNT, 136)
         self.assertEqual(TRANCHE_3H_HISTORICAL_LINE_COUNT, 144)
-        current_lines = len(self.shard_text.splitlines())
-        current_sha = hashlib.sha256(SHARD_001_PATH.read_bytes()).hexdigest()
-        self.assertNotEqual(current_lines, TRANCHE_3H_HISTORICAL_LINE_COUNT)
-        self.assertNotEqual(current_sha, TRANCHE_3H_HISTORICAL_SHA256)
 
     def test_shard_claims_no_id_or_class_already_owned_by_the_base_manifest(self):
         base = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
@@ -2811,13 +2807,12 @@ class Tranche3iClassificationShardAppendTest(unittest.TestCase):
         (it did not; see the line-cap assertion below) but because a second
         `test_security_operations.py` scope entry is rejected as
         `duplicate-scope-file` and editing scope[0] would break the pinned
-        tranche 3h historical digest. This records the 3i state as HISTORY and
-        asserts it is no longer current."""
+        tranche 3h historical digest. This records the 3i state as HISTORY; tranche
+        3y-a-1 (R3, 3y-6) stopped forbidding the current index to hold two again."""
         self.assertEqual(TRANCHE_3I_HISTORICAL_SHARD_COUNT, 2)
         index = json.loads(INDEX_PATH.read_text(encoding="utf-8"))
         self.assertEqual(index["shards"], list(EXPECTED_SHARD_ORDER))
         self.assertEqual(len(index["shards"]), EXPECTED_SHARD_COUNT)
-        self.assertNotEqual(len(index["shards"]), TRANCHE_3I_HISTORICAL_SHARD_COUNT)
         self.assertEqual(index["shards"][:2], [MANIFEST_PATH.name, SHARD_001_FILENAME])
         self.assertEqual(dti.discover_shard_filenames(ROOT), sorted(EXPECTED_SHARD_ORDER))
         self.assertTrue(SHARD_002_PATH.exists())
@@ -3007,16 +3002,14 @@ class Tranche3jClassificationShard002Test(unittest.TestCase):
             self.assertNotEqual(_subset_content_digest(scope, entries), baseline)
 
     def test_tranche_3j_file_snapshot_is_history_not_the_current_file(self):
-        """34 / 42 / SHA 3772b37f was shard 002 AT TRANCHE 3J's MERGE, so those
-        numbers are history, asserted NOT to describe the file today."""
-        # BL-038 tranche 3w (C032): the accepted 34 / 42 / SHA 3772b37f snapshot comes from the ledger; the current file is only asserted NOT to be that snapshot.
+        """34 / 42 / SHA 3772b37f was shard 002 AT TRANCHE 3J's MERGE: history held by
+        the ledger, independent of what the file looks like today."""
+        # BL-038 tranche 3y-a-1 (R2, correction 3y-6): as R1/C015 -- the negative
+        # CURRENT-must-differ-from-HISTORICAL assertions are gone; a legal re-shard may
+        # even make the current file coincide with an accepted representation again.
         dth.assert_accepted(self, ROOT, "3j", sha256=TRANCHE_3J_HISTORICAL_SHA256,
                             line_count=TRANCHE_3J_HISTORICAL_LINE_COUNT,
                             entry_count=TRANCHE_3J_HISTORICAL_ENTRY_COUNT)
-        current_lines = len(self.shard_text.splitlines())
-        current_sha = hashlib.sha256(SHARD_002_PATH.read_bytes()).hexdigest()
-        self.assertNotEqual(current_lines, TRANCHE_3J_HISTORICAL_LINE_COUNT)
-        self.assertNotEqual(current_sha, TRANCHE_3J_HISTORICAL_SHA256)
 
     def test_scope_shrinkage_mutation_of_shard_002_is_detected(self):
         """Dropping the class from scope must not silently pass: the entries
