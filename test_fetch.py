@@ -8305,8 +8305,9 @@ class Bl038Tranche3wbCouplingRetargetRecordSyncTest(unittest.TestCase):
         snapshot = json.loads((self.root / "document_test_coupling_inventory_3v.json").read_text(encoding="utf-8"))
         self.assertEqual(snapshot["candidate_count"], 106)
         self.assertEqual(len(snapshot["candidates"]), 106)
-        self.assertEqual([c["id"] for c in snapshot["corrections"]],
-                         ["R0.1-1", "R0.1-2", "R0.1-3", "R0.2-1", "3v-1", "3v-2", "3w-1", "3w-2"])
+        # Append-only appendix: this tranche's entries must be present, later ones may follow.
+        self.assertLessEqual({"R0.1-1", "R0.1-2", "R0.1-3", "R0.2-1", "3v-1", "3v-2", "3w-1", "3w-2"},
+                             {c["id"] for c in snapshot["corrections"]})
         accounting = snapshot["residual_accounting"]
         self.assertEqual(accounting["recorded_at"], "tranche 3v acceptance")
         self.assertIs(accounting["is_current_tracker"], False)
@@ -8445,8 +8446,9 @@ class Bl038Tranche3xCouplingRetargetRecordSyncTest(unittest.TestCase):
                               .read_text(encoding="utf-8"))
         self.assertEqual(snapshot["candidate_count"], 106)
         self.assertEqual(len(snapshot["candidates"]), 106)
-        self.assertEqual([c["id"] for c in snapshot["corrections"]],
-                         ["R0.1-1", "R0.1-2", "R0.1-3", "R0.2-1", "3v-1", "3v-2", "3w-1", "3w-2"])
+        # Append-only appendix: this tranche's entries must be present, later ones may follow.
+        self.assertLessEqual({"R0.1-1", "R0.1-2", "R0.1-3", "R0.2-1", "3v-1", "3v-2", "3w-1", "3w-2"},
+                             {c["id"] for c in snapshot["corrections"]})
         accounting = snapshot["residual_accounting"]
         self.assertEqual(accounting["recorded_at"], "tranche 3v acceptance")
         self.assertIs(accounting["is_current_tracker"], False)
