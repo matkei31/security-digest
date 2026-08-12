@@ -4119,12 +4119,13 @@ _S3O = f"{TRANCHE_3O_SOURCE_FILE}::{TRANCHE_3O_CLASS}::"
 
 
 class Tranche3oMethodRangeSelectionTest(unittest.TestCase):
-    """BL-038 tranche 3o: the SELECTION is what this class pins. The tranche 3n
-    rule is deterministic -- start at the class's earliest unclassified test
-    method, add whole methods in source order, stop just before the next one
-    would exceed 150 -- so the window, its size, why it stops where it does, and
-    why this candidate beat the other one are all re-derivable from live source.
-    Every number below is measured here, never copied from the manifest."""
+    """BL-038 tranche 3o: the SELECTION. The tranche 3n rule is deterministic -- start at
+    the class's earliest unclassified test method, add whole methods in source order, stop
+    just before the next one would exceed 150. BL-038 tranche 3x split the
+    responsibilities: the tests that verify the RULE and the current mechanics still
+    measure from live source, but tranche 3o's accepted OUTCOME -- its window, size, stop
+    point and the fact that this candidate beat the other -- is history, read from the
+    ledger and the pinned accepted scope rather than re-derived and re-frozen here."""
 
     @classmethod
     def setUpClass(cls):
@@ -4241,8 +4242,9 @@ class Tranche3oShard003Test(unittest.TestCase):
         dth.assert_accepted_contracts_accounted_for(self, ROOT, "3o")
 
     def test_the_category_and_api_breakdowns_are_the_recorded_ones(self):
-        # BL-038 tranche 3x (C066): the accepted category and API breakdowns are past facts,
-        # asserted from the immutable ledger rather than recounted on the current shard.
+        # BL-038 tranche 3x (C066): the accepted CATEGORY counts are read from the immutable
+        # ledger. The API breakdown's CURRENT exact freeze is removed as coupling -- the
+        # ledger does not store API counts, so nothing here claims it does.
         dth.assert_accepted(self, ROOT, "3o", entry_count=TRANCHE_3O_EXPECTED_ASSERTION_COUNT,
                             category_counts=TRANCHE_3O_EXPECTED_CATEGORY_COUNTS)
         self.assertEqual(sum(TRANCHE_3O_EXPECTED_API_COUNTS.values()), TRANCHE_3O_EXPECTED_ASSERTION_COUNT)
@@ -4336,10 +4338,11 @@ _S3P = f"{TRANCHE_3P_SOURCE_FILE}::{TRANCHE_3P_CLASS}::"
 
 
 class Tranche3pMethodRangeSelectionTest(unittest.TestCase):
-    """BL-038 tranche 3p SELECTION, re-derivable from live source: the window,
-    why it stops where it does, and why it beat the other candidate. Unlike
-    tranche 3o's class, this one had no prior classification at all, so its
-    window starts at the class's very first test method."""
+    """BL-038 tranche 3p SELECTION. The current mechanics -- how far the greedy prefix runs
+    and why it stops -- are still measured from live source; tranche 3p's accepted outcome,
+    including why it beat the other candidate, is history read from the ledger (BL-038
+    tranche 3x). Unlike tranche 3o's class, this one had no prior classification at all, so
+    its window starts at the class's very first test method."""
 
     @classmethod
     def setUpClass(cls):
@@ -4442,7 +4445,8 @@ class Tranche3pShard004Test(unittest.TestCase):
         dth.assert_accepted_contracts_accounted_for(self, ROOT, "3p")
 
     def test_the_category_and_api_breakdowns_are_the_recorded_ones(self):
-        # BL-038 tranche 3x (C073): accepted category and API breakdowns from the ledger.
+        # BL-038 tranche 3x (C073): accepted CATEGORY counts from the ledger; the API
+        # breakdown's CURRENT freeze is removed as coupling and the ledger stores no API counts.
         dth.assert_accepted(self, ROOT, "3p", entry_count=TRANCHE_3P_EXPECTED_ASSERTION_COUNT,
                             category_counts=TRANCHE_3P_EXPECTED_CATEGORY_COUNTS)
         self.assertEqual(sum(TRANCHE_3P_EXPECTED_API_COUNTS.values()), TRANCHE_3P_EXPECTED_ASSERTION_COUNT)

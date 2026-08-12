@@ -198,7 +198,8 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
         self.assertGreater(EXPECTED_ASSERTION_COUNT, rival_run)
 
     def test_category_and_api_breakdowns_are_the_recorded_ones(self):
-        # BL-038 tranche 3x (C078): accepted category and API breakdowns from the ledger.
+        # BL-038 tranche 3x (C078): accepted CATEGORY counts from the ledger; the API
+        # breakdown's CURRENT freeze is removed as coupling and the ledger stores no API counts.
         dth.assert_accepted(self, ROOT, "3q", entry_count=EXPECTED_ASSERTION_COUNT,
                             category_counts=EXPECTED_CATEGORY_COUNTS)
         self.assertEqual(sum(EXPECTED_API_COUNTS.values()), EXPECTED_ASSERTION_COUNT)
