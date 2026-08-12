@@ -5089,20 +5089,19 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3f")
 
     def test_security_requirements_five_reviewer_flagged_ids_are_correctly_classified(self):
-        # PR #86 round 1 review Blocker 2: 5 specific entries were
-        # misclassified B and are pinned here to their corrected category
-        # (2 to C: raw negative multi-token substrings/noun compounds not
-        # extracted to a field; 3 to D: bare PR-number mentions that are
-        # part of a historical-acceptance-evidence bundle alongside a
-        # sibling SHA/CI-run-ID assertion in the same method).
-        # BL-038 tranche 3y-a-2 (3y-11): the corrected categories are an accepted-time
-        # classification fact from PR #86 round 1, and two of the five are Category C, so
-        # requiring the CURRENT tree to still call them C blocked the very conversion this
-        # work exists to enable. The correction stays a historical BACKLOG witness; the
-        # current side owes accepted-contract continuity and category/action consistency
-        # for whichever contracts are live, wherever a legal re-shard puts them.
+        # PR #86 round 1 review Blocker 2: 5 specific entries were misclassified B and
+        # their corrected verdicts are ACCEPTED HISTORY -- 3 to C (raw negative
+        # multi-token substrings/noun compounds not extracted to a field) and 2 to D
+        # (bare PR-number mentions inside a historical-acceptance-evidence bundle
+        # alongside a sibling SHA/CI-run-ID assertion in the same method).
+        # BL-038 tranche 3y-a-2 (3y-11), round 1 Blocker 1: all FIVE accepted per-ID
+        # verdicts stay guarded, as history, against a second independent copy in the
+        # BACKLOG record -- deleting one or flipping a C to a D breaks this test. What is
+        # NOT asserted is that the CURRENT tree still calls them C or D: three of them are
+        # Category C, so a routine conversion, an identity-changing migration, a retired
+        # id or a legal re-shard must all stay possible.
         by_id = {a["id"]: a for a in dth.live_entries(self.ROOT)}
-        expected_categories = {
+        accepted_verdicts = {
             "test_security_requirements.py::Bl034ImplementationAcceptanceTest::"
             "test_dashboard_and_search_console_are_confirmed_by_closeout::assert-01": "C",
             "test_security_requirements.py::Bl034CloseoutTest::"
@@ -5115,15 +5114,22 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
             "test_final_acceptance_record_does_not_touch_out_of_scope_documents::assert-03": "D",
         }
         import document_test_inventory as dti
+        from collections import Counter
 
+        # HISTORY: every one of the five accepted verdicts, against the second copy.
         witness = self._bl038_section()
-        for flagged in ("test_dashboard_and_search_console_are_confirmed_by_closeout::assert-01",
-                        "test_sr047_and_gap018_confirm_dashboard_and_search_console_not_unconfirmed::assert-05"):
-            with self.subTest(flagged=flagged):
-                self.assertIn(flagged, witness)
+        for entry_id, accepted_category in accepted_verdicts.items():
+            with self.subTest(historical=entry_id):
+                short = entry_id.split("::", 2)[2]
+                self.assertIn(short, witness)
+                self.assertIn(f"`{short}`={accepted_category}", witness)
+        self.assertEqual(dict(Counter(accepted_verdicts.values())), {"C": 3, "D": 2})
+        self.assertIn("**accepted C×3／D×2**", witness)
+        # CURRENT: lineage, plus category/action consistency for whichever are still live.
+        # Deliberately NOT compared against the accepted verdict above.
         dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3f")
-        for entry_id in expected_categories:
-            with self.subTest(id=entry_id):
+        for entry_id in accepted_verdicts:
+            with self.subTest(current=entry_id):
                 entry = by_id.get(entry_id)
                 if entry is None:
                     continue      # a legal conversion or migration may retire this id
