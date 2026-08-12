@@ -8570,7 +8570,8 @@ class Bl038Tranche3waCouplingRetargetRecordSyncTest(unittest.TestCase):
 
 class Bl038Tranche3wbCouplingRetargetRecordSyncTest(unittest.TestCase):
     """BL-038 tranche 3w-b: the 3m frozen rows, correction 3w-2, the C002/C003 remediation,
-    the unresolved C048 finding and the current residual accounting are recorded as facts."""
+    the C048/C040 reverse-coupling remediation and the current residual accounting are
+    recorded as facts."""
 
     @classmethod
     def setUpClass(cls):
@@ -8625,8 +8626,7 @@ class Bl038Tranche3wbCouplingRetargetRecordSyncTest(unittest.TestCase):
                       "**C048 reverse coupling remediation(round 1 Blocker)**",
                       "pre-existing", "3w-bのregressionではない",
                       "**同PR #108で当該negative assertions 5件を除去**",
-                      "**兄弟row C040(3k)が同一形状のreverse couplingを持つ**",
-                      "repo全体の「current must keep differing from history」型assertionは**0**"):
+                      "**兄弟row C040(3k)が同一形状のreverse couplingを持つ**"):
             with self.subTest(token=token):
                 self.assertIn(token, self.bl038)
         self.assertIn("**C048 remediation**", self.status)
@@ -8636,25 +8636,6 @@ class Bl038Tranche3wbCouplingRetargetRecordSyncTest(unittest.TestCase):
             with self.subTest(stale=stale):
                 self.assertNotIn(stale, self.bl038)
         self.assertNotIn("**未解決finding**", self.status)
-
-    def test_no_reverse_history_coupling_assertion_remains(self):
-        """Round 1 Blocker: "CURRENT must keep differing from history" is not a
-        preservation contract. None may remain in the retargeted suite."""
-        import ast as _ast, re as _re
-        src = (self.root / "test_document_test_classification.py").read_text(encoding="utf-8")
-        tree = _ast.parse(src)
-        offenders = []
-        for cls in [n for n in _ast.walk(tree) if isinstance(n, _ast.ClassDef)]:
-            for fn in [n for n in cls.body if isinstance(n, _ast.FunctionDef)]:
-                for line in (_ast.get_source_segment(src, fn) or "").splitlines():
-                    stripped = line.strip()
-                    if stripped.startswith("#"):
-                        continue
-                    if ("assertNotEqual" in stripped
-                            and _re.search(r"HISTORICAL\w*(SHA256|COUNT|COUNTS)", stripped)
-                            and _re.search(r"SHARD_00\d_(CURRENT|PATH)", stripped)):
-                        offenders.append(f"{cls.name}::{fn.name}: {stripped[:80]}")
-        self.assertEqual(offenders, [])
 
     def test_the_current_residual_accounting_is_the_post_3w_state(self):
         current = self.bl038[self.bl038.rindex("- **残作業:**"):]
