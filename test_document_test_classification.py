@@ -4160,9 +4160,12 @@ class Tranche3oMethodRangeSelectionTest(unittest.TestCase):
         # FILES and pinning ownership to a physical filename. Ownership is now logical, and
         # the accepted window is the ledger's; the accepted method prefix is not required of
         # the current source order.
-        for method in {r.method for r in self.window}:
-            with self.subTest(method=method):
-                self.assertTrue(dth.owns("3o", TRANCHE_3O_SOURCE_FILE, TRANCHE_3O_CLASS, method))
+        # Round 1 (Blocker 1C): accepted membership comes from the LOGICAL accepted window,
+        # never re-derived from the CURRENT source between the accepted boundaries -- a method
+        # inserted there must not silently widen the accepted window.
+        for entry in dth.accepted_window(ROOT, "3o")[1]:
+            with self.subTest(method=entry["method"]):
+                self.assertTrue(dth.owns("3o", entry["file"], entry["class"], entry["method"]))
         dth.assert_accepted(self, ROOT, "3o", entry_count=TRANCHE_3O_EXPECTED_ASSERTION_COUNT)
 
     def test_the_window_is_nineteen_methods_and_one_hundred_forty_six_assertions(self):
@@ -4206,23 +4209,25 @@ class Tranche3oShard003Test(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.text = SHARD_003_PATH.read_text(encoding="utf-8")
-        cls.shard = json.loads(cls.text, object_pairs_hook=OrderedDict)
-        cls.entries = cls.shard["assertions"]
+        # BL-038 tranche 3x round 1 (Blocker 1A): candidate entries come from the LOGICAL
+        # accepted window, not a physical shard file, so a legal re-shard cannot make
+        # setUpClass fail and take the candidate rows with it. Current shard format, index
+        # validity and scope legality are the existing validator's.
+        cls.entries = dth.accepted_window(ROOT, "3o")[1]
         cls.source = (ROOT / TRANCHE_3O_SOURCE_FILE).read_text(encoding="utf-8")
 
     def test_the_scope_is_one_method_range_over_one_class(self):
-        # BL-038 tranche 3x (C068): the accepted scope descriptor and accepted line count are
-        # past facts -- the descriptor from the pinned accepted map, the line count from the
-        # ledger. The current file keeps only its schema shape and the line cap.
+        """BL-038 tranche 3x round 1 (C068): the accepted scope descriptor and line count are
+        past facts -- the descriptor from the pinned accepted map, the count from the ledger.
+        No physical shard is read: current shard format, the line cap and index validity are
+        the existing validator's contract."""
         accepted_scope, _window = dth.accepted_window(ROOT, "3o")
         self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3o"])
-        dth.assert_accepted(self, ROOT, "3o", line_count=SHARD_003_CURRENT_LINE_COUNT)
-        self.assertEqual(self.shard["schema_version"], 1)
-        scope = self.shard["scope"][0]
+        scope = accepted_scope[0]
         self.assertEqual(tuple(scope), ("file", "classes", "method_range"))
         self.assertEqual(tuple(scope["method_range"]), ("start", "end"))
-        self.assertLessEqual(len(self.text.splitlines()), dti.SHARD_LINE_CAP)
+        dth.assert_accepted(self, ROOT, "3o", line_count=SHARD_003_CURRENT_LINE_COUNT)
+        self.assertEqual([f.format() for f in dti.validate_indexed_manifests(root=ROOT)[0]], [])
 
     def test_every_entry_matches_live_source_in_inventory_id_order(self):
         """BL-038 tranche 3x (C065): the accepted id list and its count are past facts, and
@@ -4243,29 +4248,16 @@ class Tranche3oShard003Test(unittest.TestCase):
         self.assertEqual(sum(TRANCHE_3O_EXPECTED_API_COUNTS.values()), TRANCHE_3O_EXPECTED_ASSERTION_COUNT)
 
     def test_category_a_is_empty_on_measured_evidence(self):
-        """Not an unexamined zero: no two methods in the window share an AST
-        node-type skeleton, so there is no whole-method parameterisation to
-        consolidate, and the one internal fingerprint duplicate sits in two
-        methods of different arity and different API mix."""
-        # BL-038 tranche 3x (C064): the accepted A=0 result is a ledger fact. The accepted
-        # method prefix, the exact twin method names, their arities and the accepted category
-        # set were accepted-time measurement and are gone. What stays is the PROPERTY that
-        # justified A=0, measured over the methods this shard currently owns: no two of them
-        # are a whole-method parameterisation of each other.
+        """BL-038 tranche 3x round 1 (Blocker 2): the live structural recomputation is gone.
+        Comparing `ast.unparse` of two skeleton-sharing methods does NOT prove they are not
+        a whole-method parameterisation -- a pair differing in a single literal unparses
+        differently and would have passed. Rather than grow a stronger detector here, the
+        accepted A=0 result is read from the immutable ledger, and the skeleton grouper's
+        mechanics are proven once, on a synthetic fixture, in the tranche 3q row (C077)."""
         record = dth.assert_accepted(self, ROOT, "3o",
                                      category_counts=TRANCHE_3O_EXPECTED_CATEGORY_COUNTS)
         self.assertEqual(record["historical"]["category_counts"]["A"], 0)
-        owned = {e["method"] for e in self.entries}
-        nodes = {m.name: m for m in dti._class_test_methods_in_source_order(
-            next(n for n in ast.parse(self.source, filename=TRANCHE_3O_SOURCE_FILE).body
-                 if isinstance(n, ast.ClassDef) and n.name == TRANCHE_3O_CLASS)) if m.name in owned}
-        groups = {}
-        for name, node in nodes.items():
-            groups.setdefault(tuple(type(x).__name__ for x in ast.walk(node)), []).append(name)
-        for shared in [v for v in groups.values() if len(v) > 1]:
-            for first, second in itertools.combinations(sorted(shared), 2):
-                with self.subTest(pair=(first, second)):
-                    self.assertNotEqual(ast.unparse(nodes[first]), ast.unparse(nodes[second]))
+        dth.assert_accepted_contracts_accounted_for(self, ROOT, "3o")
 
     def test_a_method_inserted_inside_the_window_becomes_unclassified(self):
         """The reason the scope names BOUNDARIES rather than 19 method names: a
@@ -4297,15 +4289,9 @@ class Tranche3oShard003Test(unittest.TestCase):
         self.assertEqual([f.format() for f in failures], [])
         self.assertNotIn("method-range-prefix-gap", {f.mismatch_type for f in failures})
         self.assertEqual(summary["manifest_assertions"], summary["inventoried_assertions"])
-        # BL-038 tranche 3x (C067): the accepted prefix length, the accepted tail counts and
-        # the combined total are past facts. The surviving CURRENT invariant is the one the
-        # method-range form exists for: what this shard owns is an unbroken PREFIX of the
-        # class in source order, with the tail left as deliberate future work.
-        order = [m.name for m in dti._class_test_methods_in_source_order(
-            next(n for n in ast.parse(self.source, filename=TRANCHE_3O_SOURCE_FILE).body
-                 if isinstance(n, ast.ClassDef) and n.name == TRANCHE_3O_CLASS))]
-        owned = {e["method"] for e in self.entries}
-        self.assertEqual([m for m in order if m in owned], order[:len(owned)])
+        # Round 1 (Blocker 1D): the manual CURRENT prefix reconstruction is gone -- method-range
+        # prefix legality and gap detection are the validator's, asserted above. Accepted
+        # coverage is contract continuity.
         dth.assert_accepted_contracts_accounted_for(self, ROOT, "3o")
 
     def test_the_three_accepted_shards_are_byte_identical_and_unshared(self):
@@ -4380,9 +4366,10 @@ class Tranche3pMethodRangeSelectionTest(unittest.TestCase):
         # BL-038 tranche 3x (C071): ownership is logical, not reconstructed by reading the
         # historical shard files and pinning it to a physical filename; the accepted window
         # is the ledger's.
-        for method in {r.method for r in self.window}:
-            with self.subTest(method=method):
-                self.assertTrue(dth.owns("3p", TRANCHE_3P_SOURCE_FILE, TRANCHE_3P_CLASS, method))
+        # Round 1 (Blocker 1C): accepted membership from the LOGICAL accepted window.
+        for entry in dth.accepted_window(ROOT, "3p")[1]:
+            with self.subTest(method=entry["method"]):
+                self.assertTrue(dth.owns("3p", entry["file"], entry["class"], entry["method"]))
         dth.assert_accepted(self, ROOT, "3p", entry_count=TRANCHE_3P_EXPECTED_ASSERTION_COUNT)
 
     def test_the_window_is_thirtytwo_methods_and_one_hundred_forty_assertions(self):
@@ -4429,22 +4416,20 @@ class Tranche3pShard004Test(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.text = SHARD_004_PATH.read_text(encoding="utf-8")
-        cls.shard = json.loads(cls.text, object_pairs_hook=OrderedDict)
-        cls.entries = cls.shard["assertions"]
+        cls.entries = dth.accepted_window(ROOT, "3p")[1]  # logical window, not SHARD_004
         cls.source = (ROOT / TRANCHE_3P_SOURCE_FILE).read_text(encoding="utf-8")
 
     def test_the_scope_is_one_method_range_over_one_class(self):
-        # BL-038 tranche 3x (C076): accepted scope descriptor from the pinned map, accepted
-        # line count from the ledger; the current file keeps its schema shape and the cap.
+        """BL-038 tranche 3x round 1 (C076): as C068 -- accepted descriptor from the pinned
+        map, accepted line count from the ledger, no physical shard read, current validity
+        left to the validator."""
         accepted_scope, _window = dth.accepted_window(ROOT, "3p")
         self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3p"])
-        dth.assert_accepted(self, ROOT, "3p", line_count=SHARD_004_CURRENT_LINE_COUNT)
-        self.assertEqual(self.shard["schema_version"], 1)
-        scope = self.shard["scope"][0]
+        scope = accepted_scope[0]
         self.assertEqual(tuple(scope), ("file", "classes", "method_range"))
         self.assertEqual(tuple(scope["method_range"]), ("start", "end"))
-        self.assertLessEqual(len(self.text.splitlines()), dti.SHARD_LINE_CAP)
+        dth.assert_accepted(self, ROOT, "3p", line_count=SHARD_004_CURRENT_LINE_COUNT)
+        self.assertEqual([f.format() for f in dti.validate_indexed_manifests(root=ROOT)[0]], [])
 
     def test_every_entry_matches_live_source_in_inventory_id_order(self):
         """BL-038 tranche 3x (C072): the accepted id list and count are past facts, and
@@ -4488,12 +4473,8 @@ class Tranche3pShard004Test(unittest.TestCase):
         self.assertEqual([f.format() for f in failures], [])
         self.assertNotIn("method-range-prefix-gap", {f.mismatch_type for f in failures})
         self.assertEqual(summary["manifest_assertions"], summary["inventoried_assertions"])
-        # BL-038 tranche 3x (C074): accepted prefix length, tail count and combined total are
-        # past facts; the surviving CURRENT invariant is unbroken-prefix ownership.
-        order = [m.name for m in dti._class_test_methods_in_source_order(next(n for n in ast.parse(self.source, filename=TRANCHE_3P_SOURCE_FILE).body
-                 if isinstance(n, ast.ClassDef) and n.name == TRANCHE_3P_CLASS))]
-        owned = {e["method"] for e in self.entries}
-        self.assertEqual([m for m in order if m in owned], order[:len(owned)])
+        # Round 1 (Blocker 1D): the manual CURRENT prefix reconstruction is gone; prefix
+        # legality is the validator's, asserted above, and coverage is continuity.
         dth.assert_accepted_contracts_accounted_for(self, ROOT, "3p")
 
     def test_the_four_accepted_shards_are_byte_identical_and_unshared(self):

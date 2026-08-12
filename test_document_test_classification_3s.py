@@ -65,20 +65,6 @@ EXPECTED_D_IDS = frozenset({
     "test_source_usage_policy.py::SourceUsagePolicyTest::test_output_similarity_controls_are_recorded_as_bl032_merged::assert-01",
 })
 
-def _owning_shard(tranche):
-    """BL-038 tranche 3x: resolve the shard that CURRENTLY holds this tranche's accepted
-    scope by scanning the live index, instead of hardcoding a physical filename. A legal
-    re-shard may move the range to another shard, and the accepted facts live in the
-    ledger either way."""
-    index = json.loads((ROOT / dti.INDEX_FILENAME).read_text(encoding="utf-8"))
-    accepted = dth.ACCEPTED_SCOPES[tranche]
-    for name in index["shards"]:
-        manifest = json.loads((ROOT / name).read_text(encoding="utf-8"))
-        if any(entry in accepted for entry in manifest["scope"]):
-            return ROOT / name
-    raise AssertionError(f"no indexed shard currently holds tranche {tranche}'s accepted scope")
-
-
 def _method_node(source, method_name):
     tree = ast.parse(source, filename=SOURCE_FILE)
     cls = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == CLASS_NAME)
@@ -242,9 +228,8 @@ class Tranche3sClassificationTest(unittest.TestCase):
         cls.per = Counter(r.method for r in cls.all_records)
         selected = {name for name, _ in EXPECTED_METHOD_COUNTS}
         cls.window = [r for r in cls.all_records if r.method in selected]
-        cls.text = _owning_shard("3s").read_text(encoding="utf-8")
-        cls.manifest = json.loads(cls.text)
-        cls.entries = cls.manifest["assertions"]
+        # Round 1 (Blocker 1B): logical accepted window, no physical shard resolution.
+        cls.entries = dth.accepted_window(ROOT, "3s")[1]
 
     def test_latest_main_tail_selection_is_exactly_four_methods_37_assertions(self):
         owned = {
@@ -263,15 +248,14 @@ class Tranche3sClassificationTest(unittest.TestCase):
         self.assertEqual(tuple((name, self.per[name]) for name in self.order[start:]), EXPECTED_METHOD_COUNTS)
 
     def test_shard_scope_bytes_and_index_are_pinned(self):
-        # BL-038 tranche 3x (C088): accepted scope descriptor from the pinned map, accepted
-        # bytes/lines/entry count from the ledger; the exact CURRENT index is not pinned and
-        # index validity is the validator's.
+        """Round 1 (C088): accepted descriptor from the pinned map, accepted bytes, lines and
+        entry count from the ledger, no physical shard read; current validity is the
+        validator's."""
         accepted_scope, _window = dth.accepted_window(ROOT, "3s")
         self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3s"])
+        self.assertEqual(tuple(accepted_scope[0]), ("file", "classes", "method_range"))
         dth.assert_accepted(self, ROOT, "3s", sha256=EXPECTED_SHA256,
                             line_count=EXPECTED_LINE_COUNT, entry_count=EXPECTED_ASSERTIONS)
-        self.assertEqual(tuple(self.manifest["scope"][0]), ("file", "classes", "method_range"))
-        self.assertLessEqual(len(self.text.splitlines()), dti.SHARD_LINE_CAP)
         self.assertEqual([f.format() for f in dti.validate_indexed_manifests(root=ROOT)[0]], [])
 
     def test_live_assertions_and_reviewed_categories_match_exactly(self):

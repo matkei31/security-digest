@@ -9,20 +9,6 @@ from pathlib import Path
 import document_test_inventory as dti
 import document_test_history as dth
 from test_document_test_classification_3q_bindings import _narrow_section_facts
-
-def _owning_shard(tranche):
-    """BL-038 tranche 3x: resolve the shard that CURRENTLY holds this tranche's accepted
-    scope by scanning the live index, instead of hardcoding a physical filename. A legal
-    re-shard may move the range to another shard, and the accepted facts live in the
-    ledger either way."""
-    index = json.loads((ROOT / dti.INDEX_FILENAME).read_text(encoding="utf-8"))
-    accepted = dth.ACCEPTED_SCOPES[tranche]
-    for name in index["shards"]:
-        manifest = json.loads((ROOT / name).read_text(encoding="utf-8"))
-        if any(entry in accepted for entry in manifest["scope"]):
-            return ROOT / name
-    raise AssertionError(f"no indexed shard currently holds tranche {tranche}'s accepted scope")
-
 ROOT = Path(__file__).resolve().parent
 SOURCE_FILE = 'test_security_requirements.py'
 CLASS_NAME = 'SecurityRequirementsTest'
@@ -56,9 +42,8 @@ PRE_SHARD_HASHES = {'document_test_classification.json': '640585ca03d7836cbdd66e
 class Tranche3rClassificationTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.text = _owning_shard("3r").read_text(encoding="utf-8")
-        cls.shard = json.loads(cls.text)
-        cls.entries = cls.shard["assertions"]
+        # Round 1 (Blocker 1B): logical accepted window, no physical shard resolution.
+        cls.entries = dth.accepted_window(ROOT, "3r")[1]
         cls.source = (ROOT / SOURCE_FILE).read_text(encoding="utf-8")
         cls.node = next(n for n in ast.parse(cls.source).body if isinstance(n, ast.ClassDef) and n.name == CLASS_NAME)
         cls.order = [m.name for m in dti._class_test_methods_in_source_order(cls.node)]
@@ -67,14 +52,12 @@ class Tranche3rClassificationTest(unittest.TestCase):
         cls.window = dti.enumerate_assertions(cls.source, SOURCE_FILE, [CLASS_NAME], method_ranges={CLASS_NAME: METHOD_RANGE})
 
     def test_scope_hash_line_budget_and_index_are_exact(self):
-        # BL-038 tranche 3x (C085): accepted scope descriptor from the pinned map, accepted
-        # bytes and line count from the ledger. The exact CURRENT index contents and the
-        # current shard's byte identity are not pinned; index validity is the validator's.
+        """Round 1 (C085): accepted descriptor from the pinned map, accepted bytes and line
+        count from the ledger, no physical shard read; current validity is the validator's."""
         accepted_scope, _window = dth.accepted_window(ROOT, "3r")
         self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3r"])
+        self.assertEqual(tuple(accepted_scope[0]), ("file", "classes", "method_range"))
         dth.assert_accepted(self, ROOT, "3r", sha256=EXPECTED_SHA256, line_count=EXPECTED_LINE_COUNT)
-        self.assertEqual(tuple(self.shard["scope"][0]), ("file", "classes", "method_range"))
-        self.assertLessEqual(len(self.text.splitlines()), dti.SHARD_LINE_CAP)
         self.assertEqual([f.format() for f in dti.validate_indexed_manifests(root=ROOT)[0]], [])
 
     def test_every_entry_matches_live_source_and_hardcoded_categories(self):

@@ -79,20 +79,6 @@ EXPECTED_DUPLICATE_GROUPS = (
         SOURCE_FILE + "::" + CLASS_NAME + "::test_bl027_backlog_entry_records_completed_workflow_dispatch_validation::assert-27",
     ),
 )
-
-def _owning_shard(tranche):
-    """BL-038 tranche 3x: resolve the shard that CURRENTLY holds this tranche's accepted
-    scope by scanning the live index, instead of hardcoding a physical filename. A legal
-    re-shard may move the range to another shard, and the accepted facts live in the
-    ledger either way."""
-    index = json.loads((ROOT / dti.INDEX_FILENAME).read_text(encoding="utf-8"))
-    accepted = dth.ACCEPTED_SCOPES[tranche]
-    for name in index["shards"]:
-        manifest = json.loads((ROOT / name).read_text(encoding="utf-8"))
-        if any(entry in accepted for entry in manifest["scope"]):
-            return ROOT / name
-    raise AssertionError(f"no indexed shard currently holds tranche {tranche}'s accepted scope")
-
 # The class-level document bindings are load-bearing for every target claim in
 # this shard.  Local variable names inside the test methods are intentionally
 # not part of the contract.
@@ -107,9 +93,10 @@ EXPECTED_SETUP_BINDINGS = {
 class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.text = _owning_shard("3q").read_text(encoding="utf-8")
-        cls.shard = json.loads(cls.text)
-        cls.entries = cls.shard["assertions"]
+        # BL-038 tranche 3x round 1 (Blocker 1B): candidate entries are the LOGICAL accepted
+        # window. No physical owning shard is resolved, so co-resident unrelated scopes can
+        # never leak in and a legal re-shard cannot break the fixture.
+        cls.entries = dth.accepted_window(ROOT, "3q")[1]
         cls.source = (ROOT / SOURCE_FILE).read_text(encoding="utf-8")
         cls.tree = ast.parse(cls.source, filename=SOURCE_FILE)
         cls.node = next(n for n in cls.tree.body if isinstance(n, ast.ClassDef) and n.name == CLASS_NAME)
@@ -122,22 +109,15 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
         )
 
     def test_index_and_scope_are_exactly_the_new_disjoint_range(self):
-        # BL-038 tranche 3x (C080): the accepted scope descriptor, bytes and line count are
-        # past facts -- the descriptor from the pinned accepted map, the rest from the
-        # immutable ledger. The exact CURRENT index order/contents and the current shard's
-        # byte identity are no longer pinned: a legal re-shard adds a shard and a legal
-        # conversion changes bytes. Index validity itself is the validator's.
+        """BL-038 tranche 3x round 1 (C080): the accepted scope descriptor comes from the
+        pinned map and the accepted bytes and line count from the ledger. No physical shard is
+        read and the exact CURRENT index is not pinned -- index validity, shard format, the
+        line cap and scope legality are all the existing validator's contract."""
         accepted_scope, _window = dth.accepted_window(ROOT, "3q")
         self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3q"])
+        self.assertEqual(tuple(accepted_scope[0]), ("file", "classes", "method_range"))
         dth.assert_accepted(self, ROOT, "3q", sha256=EXPECTED_SHA256, line_count=EXPECTED_LINE_COUNT)
-        self.assertEqual(self.shard["schema_version"], 1)
-        self.assertEqual(tuple(self.shard["scope"][0]), ("file", "classes", "method_range"))
-        self.assertLessEqual(len(self.text.splitlines()), dti.SHARD_LINE_CAP)
-        self.assertEqual(
-            [f.format() for f in dti.validate_shard_file_format(
-                _owning_shard("3q"), self.shard, shard=_owning_shard("3q").name)],
-            [],
-        )
+        self.assertEqual([f.format() for f in dti.validate_indexed_manifests(root=ROOT)[0]], [])
 
 
     def test_combined_index_is_clean_at_the_post_3q_totals(self):

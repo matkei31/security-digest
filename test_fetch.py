@@ -8684,15 +8684,29 @@ class Bl038Tranche3xCouplingRetargetRecordSyncTest(unittest.TestCase):
                 self.assertIn(token, self.bl038)
 
     def test_the_physical_shard_and_index_decoupling_is_recorded(self):
-        for token in ("**physical shard filename依存の除去**",
-                      "3q/3r/3sのfixtureは**live indexからaccepted scopeを持つshardを解決**する",
-                      "9 prohibited shapeのcandidate-scope residual auditは**0 hits**",
+        for token in ("**physical shard filename依存の除去(round 1 Blocker 1で完全化)**",
+                      "**3o/3p/3q/3r/3sの5 classすべて**のcandidate entriesを",
+                      "`_owning_shard(tranche)` helper(physical owning shardを解決する方式)は"
+                      "**3コピーすべて削除**",
+                      "9 prohibited shapeのcandidate-scope residual auditは**0 hits**(surviving 25 rows全件)",
                       "reverse coupling(`HISTORICAL != CURRENT`)も**0**",
-                      "**retroactive ledger追加0件**", "**validatorは弱めていない**"):
+                      "**retroactive ledger追加0件**", "**validatorは弱めていない**",
+                      # The ledger has no API-counts field; the docs must not claim it does.
+                      "**ledgerが保持しているのはsha256／line_count／entry_count／category_counts／"
+                      "contracts_digestであり、API breakdownはledgerのfieldではない**"):
             with self.subTest(token=token):
                 self.assertIn(token, self.bl038)
         self.assertIn("新しいledger／snapshot／detector／meta-test／migration mechanismは追加していない",
                       self.bl038)
+        self.assertIn("**API breakdownはledger fieldではなく、CURRENT freezeを除去しただけ**", self.status)
+
+    def test_the_round_one_blocker_fixes_are_recorded(self):
+        for token in ("**C063/C071**はaccepted membershipをCURRENT source再enumerate",
+                      "**C067/C074**のmanual CURRENT prefix再実装は削除",
+                      "**C064**はlive structural recomputationを削除した",
+                      "false assurance"):
+            with self.subTest(token=token):
+                self.assertIn(token, self.bl038)
 
     def test_the_three_proofs_are_recorded(self):
         for token in ("tranche 3x proofs(2026-08-12)",
@@ -8703,7 +8717,12 @@ class Bl038Tranche3xCouplingRetargetRecordSyncTest(unittest.TestCase):
                       "合法形は**実測で決定**した",
                       "**handled rows(3v+3w+3x) failing 0**",
                       "setUpClassごと落ちる",
-                      "3件のmutationはすべて完全復元済み"):
+                      "**physical decouplingのfocused re-shard proofを3件追加**",
+                      "**Proof C3**(co-resident: 3q＋3sを同一temporary shardへ",
+                      "**3q window 124件(security_requirements only)／"
+                      "3s window 37件(source_usage_policy only)でcross-contamination 0**",
+                      "**setUpClass physical failure 0**",
+                      "**6件のmutationはすべて完全復元済み。**"):
             with self.subTest(token=token):
                 self.assertIn(token, self.bl038)
 
