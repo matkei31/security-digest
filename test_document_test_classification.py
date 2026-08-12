@@ -2451,21 +2451,23 @@ class Tranche3hClassificationShardTest(unittest.TestCase):
         ]
 
     def test_shard_is_scoped_to_exactly_the_two_selected_classes_in_source_order(self):
+        """BL-038 tranche 3y, correction `3y-1` (final-scan finding 1). The accepted tranche
+        3h scope composition was pinned on the CURRENT shard 001 -- its classes, their source
+        order and the third class's absence -- which freezes physical placement. The accepted
+        descriptor now comes from the pinned accepted map, current scope legality and source
+        ordering from the validator, and the source-level facts stay source-level."""
+        accepted_scope, _window = dth.accepted_window(ROOT, "3h")
+        self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3h"])
         self.assertEqual(self.shard["schema_version"], 1)
         self.assertIs(type(self.shard["schema_version"]), int)
-        self.assertEqual(SHARD_001_PATH.name, SHARD_001_FILENAME)
-        scope_entry = self.shard["scope"][0]
-        self.assertEqual(scope_entry["file"], SHARD_001_SOURCE_FILE)
-        self.assertEqual(tuple(scope_entry["classes"]), SHARD_001_EXPECTED_CLASSES)
-        # Declared class order equals the order the classes appear in source.
+        # Source-level: the classes exist and keep their source order; the third one is a
+        # real class of the file, whose ownership today is the validator's business.
         self.assertEqual(
             [c for c in self.source_classes if c in SHARD_001_EXPECTED_CLASSES],
             list(SHARD_001_EXPECTED_CLASSES),
         )
-        # The file's third class stays unclassified: including it would be
-        # 170 assertions, over this tranche's 150-assertion cap.
         self.assertIn(SHARD_001_UNOWNED_CLASS, self.source_classes)
-        self.assertNotIn(SHARD_001_UNOWNED_CLASS, scope_entry["classes"])
+        self.assertEqual([f.format() for f in dti.validate_indexed_manifests(root=ROOT)[0]], [])
 
     def test_shard_ids_are_exactly_the_hardcoded_source_order_expansion(self):
         # BL-038 tranche 3v (C014): the accepted id list, its source order and its count
@@ -2562,21 +2564,17 @@ class Tranche3hClassificationShardTest(unittest.TestCase):
             _subset_content_digest(self.shard["scope"][0], self.entries[::-1]), baseline)
 
     def test_tranche_3h_file_snapshot_is_history_not_the_current_file(self):
-        """136 / 144 / SHA 2d03c748 was shard 001 AT TRANCHE 3H MERGE, so
-        those numbers are history, asserted NOT to describe the file today."""
-        # BL-038 tranche 3v (C015): the accepted 136 / 144 / SHA 2d03c748 snapshot comes
-        # from the immutable ledger. The positional prefix reconstruction
-        # (all_entries[:136] == the accepted id order) and the accepted category
-        # breakdown of the current window are gone -- both froze the current file.
+        """136 / 144 / SHA 2d03c748 was shard 001 AT TRANCHE 3H MERGE: history held by
+        the ledger, independent of what the file looks like today."""
+        # BL-038 tranche 3y-a-1 (R1, correction 3y-6): the positional prefix
+        # reconstruction went at 3v; the two negative CURRENT-must-differ-from-HISTORICAL
+        # assertions go here. The current shard may legally differ from OR coincide with
+        # an accepted historical representation, so neither direction is asserted.
         dth.assert_accepted(self, ROOT, "3h", sha256=TRANCHE_3H_HISTORICAL_SHA256,
                             line_count=TRANCHE_3H_HISTORICAL_LINE_COUNT,
                             entry_count=TRANCHE_3H_HISTORICAL_ENTRY_COUNT)
         self.assertEqual(TRANCHE_3H_HISTORICAL_ENTRY_COUNT, 136)
         self.assertEqual(TRANCHE_3H_HISTORICAL_LINE_COUNT, 144)
-        current_lines = len(self.shard_text.splitlines())
-        current_sha = hashlib.sha256(SHARD_001_PATH.read_bytes()).hexdigest()
-        self.assertNotEqual(current_lines, TRANCHE_3H_HISTORICAL_LINE_COUNT)
-        self.assertNotEqual(current_sha, TRANCHE_3H_HISTORICAL_SHA256)
 
     def test_shard_claims_no_id_or_class_already_owned_by_the_base_manifest(self):
         base = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))
@@ -2697,23 +2695,20 @@ class Tranche3iClassificationShardAppendTest(unittest.TestCase):
         ]
 
     def test_scope_appends_the_selected_class_without_touching_tranche_3h(self):
-        scope = self.shard["scope"]
-        self.assertEqual(
-            tuple((s["file"], tuple(s["classes"])) for s in scope),
-            SHARD_001_CURRENT_SCOPE_ORDER,
-        )
-        # Second class in source order; the base owns 5 later ones.
+        """BL-038 tranche 3y, correction `3y-1` (final-scan finding 2). The exact CURRENT
+        scope order (`SHARD_001_CURRENT_SCOPE_ORDER`) and the neighbours' absence from the
+        base manifest's scope were physical-composition freezes: "3h's scope followed by 3i's
+        class" is accepted history, not a permanent current contract. The accepted descriptor
+        comes from the pinned map and generic scope legality from the validator."""
+        accepted_scope, _window = dth.accepted_window(ROOT, "3i")
+        self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3i"])
+        # Source-level: this tranche's class is the file's second in source order, and the
+        # neighbours it deliberately left alone are still real classes of the same file.
         self.assertEqual(self.source_classes[1], TRANCHE_3I_CLASS)
-        base_scope = json.loads(MANIFEST_PATH.read_text(encoding="utf-8"))["scope"]
-        base_classes = {
-            c for s in base_scope if s["file"] == TRANCHE_3I_SOURCE_FILE for c in s["classes"]
-        }
-        self.assertNotIn(TRANCHE_3I_CLASS, base_classes)
         for neighbour in ("SecurityRequirementsTest", "Bl034Round1ReviewCorrectionsTest"):
             with self.subTest(neighbour=neighbour):
                 self.assertIn(neighbour, self.source_classes)
-                self.assertNotIn(neighbour, base_classes)
-                self.assertNotIn(neighbour, scope[1]["classes"])
+        self.assertEqual([f.format() for f in dti.validate_indexed_manifests(root=ROOT)[0]], [])
 
     def test_ids_are_exactly_the_hardcoded_source_order_expansion(self):
         # BL-038 tranche 3v (C022): the accepted id list, its count and the positional
@@ -2738,11 +2733,10 @@ class Tranche3iClassificationShardAppendTest(unittest.TestCase):
                 self.assertEqual((entry["method"], entry["ordinal"]), (record.method, record.ordinal))
                 self.assertEqual(entry["assertion_api"], record.assertion_api)
                 self.assertEqual(entry["fingerprint"], record.fingerprint)
-        self.assertEqual(
-            dict(Counter(e["assertion_api"] for e in self.entries)),
-            {"assertIn": 77, "assertNotIn": 33, "assertNotRegex": 5,
-             "assertEqual": 3, "assertRegex": 3, "assertFalse": 2},
-        )
+        # BL-038 tranche 3y, correction `3y-2` (finding 3): the accepted API breakdown was
+        # recomputed from the live entries and pinned. It is NOT a history-ledger field, so it
+        # is neither re-frozen here nor moved into the ledger; source-to-manifest API agreement
+        # is asserted per entry above and is the validator's contract.
 
     def test_exact_category_membership_matches_hardcoded_id_sets(self):
         # BL-038 tranche 3v (C020): tranche 3i's accepted membership and category counts
@@ -2813,13 +2807,12 @@ class Tranche3iClassificationShardAppendTest(unittest.TestCase):
         (it did not; see the line-cap assertion below) but because a second
         `test_security_operations.py` scope entry is rejected as
         `duplicate-scope-file` and editing scope[0] would break the pinned
-        tranche 3h historical digest. This records the 3i state as HISTORY and
-        asserts it is no longer current."""
+        tranche 3h historical digest. This records the 3i state as HISTORY; tranche
+        3y-a-1 (R3, 3y-6) stopped forbidding the current index to hold two again."""
         self.assertEqual(TRANCHE_3I_HISTORICAL_SHARD_COUNT, 2)
         index = json.loads(INDEX_PATH.read_text(encoding="utf-8"))
         self.assertEqual(index["shards"], list(EXPECTED_SHARD_ORDER))
         self.assertEqual(len(index["shards"]), EXPECTED_SHARD_COUNT)
-        self.assertNotEqual(len(index["shards"]), TRANCHE_3I_HISTORICAL_SHARD_COUNT)
         self.assertEqual(index["shards"][:2], [MANIFEST_PATH.name, SHARD_001_FILENAME])
         self.assertEqual(dti.discover_shard_filenames(ROOT), sorted(EXPECTED_SHARD_ORDER))
         self.assertTrue(SHARD_002_PATH.exists())
@@ -3009,16 +3002,14 @@ class Tranche3jClassificationShard002Test(unittest.TestCase):
             self.assertNotEqual(_subset_content_digest(scope, entries), baseline)
 
     def test_tranche_3j_file_snapshot_is_history_not_the_current_file(self):
-        """34 / 42 / SHA 3772b37f was shard 002 AT TRANCHE 3J's MERGE, so those
-        numbers are history, asserted NOT to describe the file today."""
-        # BL-038 tranche 3w (C032): the accepted 34 / 42 / SHA 3772b37f snapshot comes from the ledger; the current file is only asserted NOT to be that snapshot.
+        """34 / 42 / SHA 3772b37f was shard 002 AT TRANCHE 3J's MERGE: history held by
+        the ledger, independent of what the file looks like today."""
+        # BL-038 tranche 3y-a-1 (R2, correction 3y-6): as R1/C015 -- the negative
+        # CURRENT-must-differ-from-HISTORICAL assertions are gone; a legal re-shard may
+        # even make the current file coincide with an accepted representation again.
         dth.assert_accepted(self, ROOT, "3j", sha256=TRANCHE_3J_HISTORICAL_SHA256,
                             line_count=TRANCHE_3J_HISTORICAL_LINE_COUNT,
                             entry_count=TRANCHE_3J_HISTORICAL_ENTRY_COUNT)
-        current_lines = len(self.shard_text.splitlines())
-        current_sha = hashlib.sha256(SHARD_002_PATH.read_bytes()).hexdigest()
-        self.assertNotEqual(current_lines, TRANCHE_3J_HISTORICAL_LINE_COUNT)
-        self.assertNotEqual(current_sha, TRANCHE_3J_HISTORICAL_SHA256)
 
     def test_scope_shrinkage_mutation_of_shard_002_is_detected(self):
         """Dropping the class from scope must not silently pass: the entries
@@ -3147,17 +3138,15 @@ class Tranche3kClassificationShard002AppendTest(unittest.TestCase):
         self.assertEqual(dti._helper_defs_for_class(class_node), {})
 
     def test_api_breakdown_matches_the_measured_live_source(self):
-        for measured in (Counter(e["assertion_api"] for e in self.entries),
-                         Counter(r.assertion_api for r in self.live_records)):
-            self.assertEqual(dict(measured), TRANCHE_3K_EXPECTED_API_COUNTS)
+        """BL-038 tranche 3y, correction `3y-2` (finding 4): the accepted API breakdown was
+        reapplied to the CURRENT live entries and manifest. The ledger stores no API counts, so
+        the accepted snapshot stays constant-only historical arithmetic and is not compared
+        against the live corpus; source-to-manifest API agreement is the validator's."""
         self.assertEqual(sum(TRANCHE_3K_EXPECTED_API_COUNTS.values()),
                          TRANCHE_3K_EXPECTED_ASSERTION_COUNT)
         self.assertEqual(TRANCHE_3K_EXPECTED_API_COUNTS,
                          {"assertTrue": 1, "assertIn": 7, "assertNotIn": 9,
                           "assertRegex": 7, "assertNotRegex": 3})
-        # Negative guards are 12 of the 27: this class mostly asserts ABSENCE.
-        self.assertEqual(sum(1 for e in self.entries
-                             if e["assertion_api"].startswith("assertNot")), 12)
 
     def test_exact_category_membership_matches_hardcoded_id_sets(self):
         # BL-038 tranche 3w (C034): accepted membership and counts are past facts from the ledger; the current tree keeps category/action consistency only.
@@ -4170,14 +4159,19 @@ class Tranche3oMethodRangeSelectionTest(unittest.TestCase):
         dth.assert_accepted(self, ROOT, "3o", entry_count=TRANCHE_3O_EXPECTED_ASSERTION_COUNT)
 
     def test_the_window_is_nineteen_methods_and_one_hundred_forty_six_assertions(self):
+        """BL-038 tranche 3y, correction `3y-3` (finding 5): the accepted 19-method /
+        146-assertion outcome was reapplied to the CURRENT source -- the live window length,
+        each live per-method count and the live histogram. That is accepted history: it comes
+        from the ledger and the pinned accepted scope now. The selection RULE and its current
+        mechanics stay in this class's other, non-candidate tests."""
+        dth.assert_accepted(self, ROOT, "3o", entry_count=TRANCHE_3O_EXPECTED_ASSERTION_COUNT)
+        accepted_scope, window = dth.accepted_window(ROOT, "3o")
+        self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3o"])
+        self.assertEqual(len({e["method"] for e in window}), TRANCHE_3O_EXPECTED_METHOD_COUNT)
+        # Constant-only historical arithmetic: the accepted window fits the selection cap.
         self.assertEqual(len(TRANCHE_3O_EXPECTED_METHOD_ORDER), TRANCHE_3O_EXPECTED_METHOD_COUNT)
-        self.assertEqual(len(self.window), TRANCHE_3O_EXPECTED_ASSERTION_COUNT)
-        self.assertEqual(sum(n for _, n in TRANCHE_3O_EXPECTED_METHOD_ORDER), TRANCHE_3O_EXPECTED_ASSERTION_COUNT)
-        for method, count in TRANCHE_3O_EXPECTED_METHOD_ORDER:
-            with self.subTest(method=method): self.assertEqual(self.per[method], count)
-        # Whole methods only: every assertion of every windowed method is in.
-        self.assertEqual(Counter(r.method for r in self.window),
-                         Counter({m: self.per[m] for m, _ in TRANCHE_3O_EXPECTED_METHOD_ORDER}))
+        self.assertEqual(sum(n for _, n in TRANCHE_3O_EXPECTED_METHOD_ORDER),
+                         TRANCHE_3O_EXPECTED_ASSERTION_COUNT)
         self.assertLessEqual(TRANCHE_3O_EXPECTED_ASSERTION_COUNT, TRANCHE_3O_SELECTION_CAP)
 
     def test_the_window_stops_because_the_next_whole_method_would_overflow(self):
@@ -4376,11 +4370,14 @@ class Tranche3pMethodRangeSelectionTest(unittest.TestCase):
         dth.assert_accepted(self, ROOT, "3p", entry_count=TRANCHE_3P_EXPECTED_ASSERTION_COUNT)
 
     def test_the_window_is_thirtytwo_methods_and_one_hundred_forty_assertions(self):
-        self.assertEqual(len(self.window), TRANCHE_3P_EXPECTED_ASSERTION_COUNT)
-        self.assertEqual(len({r.method for r in self.window}), TRANCHE_3P_EXPECTED_METHOD_COUNT)
-        self.assertEqual(self.order[TRANCHE_3P_EXPECTED_METHOD_COUNT - 1], TRANCHE_3P_RANGE_END)
-        # Whole methods only: every assertion of every windowed method is in.
-        self.assertEqual(Counter(r.method for r in self.window), Counter({m: self.per[m] for m in self.order[:TRANCHE_3P_EXPECTED_METHOD_COUNT]}))
+        """BL-038 tranche 3y, correction `3y-3` (finding 6): the accepted 32-method /
+        140-assertion outcome, the `order[31] == accepted end` position and the first-32 live
+        histogram were all reapplied to the CURRENT source. The accepted window is a ledger
+        and accepted-scope fact; current selection mechanics stay in the other tests."""
+        dth.assert_accepted(self, ROOT, "3p", entry_count=TRANCHE_3P_EXPECTED_ASSERTION_COUNT)
+        accepted_scope, window = dth.accepted_window(ROOT, "3p")
+        self.assertEqual(accepted_scope, dth.ACCEPTED_SCOPES["3p"])
+        self.assertEqual(len({e["method"] for e in window}), TRANCHE_3P_EXPECTED_METHOD_COUNT)
         self.assertLessEqual(TRANCHE_3P_EXPECTED_ASSERTION_COUNT, TRANCHE_3P_SELECTION_CAP)
 
     def test_the_window_stops_because_the_next_whole_method_would_overflow(self):
@@ -4392,14 +4389,18 @@ class Tranche3pMethodRangeSelectionTest(unittest.TestCase):
         self.assertEqual(min(self.per.values()), 1)  # and none is empty
 
     def test_the_uncovered_tail_is_four_methods_and_thirtyseven_assertions(self):
-        """Legitimate future work, deliberately left: the tail must stay
-        classifiable by a later disjoint range, so this records its size rather
-        than forbidding anything."""
-        tail = self.order[TRANCHE_3P_EXPECTED_METHOD_COUNT:]
-        self.assertEqual(len(tail), TRANCHE_3P_TAIL_METHOD_COUNT)
-        self.assertEqual(sum(self.per[m] for m in tail), TRANCHE_3P_TAIL_ASSERTION_COUNT)
-        self.assertEqual(tail[0], TRANCHE_3P_NEXT_METHOD)
-        self.assertEqual(TRANCHE_3P_EXPECTED_ASSERTION_COUNT + TRANCHE_3P_TAIL_ASSERTION_COUNT, TRANCHE_3P_CLASS_ASSERTION_COUNT)
+        """BL-038 tranche 3y, correction `3y-3` (finding 7): the tail was measured by slicing
+        the CURRENT source order at the accepted method count and comparing to the accepted
+        4-method / 37-assertion tally -- historical accepted-count slicing. The accepted tally
+        stays as constant-only historical arithmetic; the current source is not required to
+        keep that tail, since a later disjoint range may legally claim it."""
+        self.assertEqual(TRANCHE_3P_EXPECTED_ASSERTION_COUNT + TRANCHE_3P_TAIL_ASSERTION_COUNT,
+                         TRANCHE_3P_CLASS_ASSERTION_COUNT)
+        self.assertEqual(TRANCHE_3P_TAIL_METHOD_COUNT, 4)
+        # The tail's first method is recorded as accepted-time evidence, not required of the
+        # current source order.
+        self.assertTrue(TRANCHE_3P_NEXT_METHOD)
+        dth.assert_accepted_contracts_accounted_for(self, ROOT, "3p")
 
     def test_the_competing_candidate_is_smaller_so_the_winner_is_unique(self):
         """The rival is the NEXT window of the class tranche 3o started: its own
@@ -4697,7 +4698,13 @@ class Tranche3pUsedBindingGuardTest(unittest.TestCase):
         """The full audit across all 32 selected methods, narrowed in round 3 to
         the values a manifest entry actually rests on -- compared as multisets so
         an alias or a reordered statement cannot fail it."""
-        selected = [m.name for m in dti._class_test_methods_in_source_order(self.class_node)][:TRANCHE_3P_EXPECTED_METHOD_COUNT]
+        # BL-038 tranche 3y, correction `3y-3` (finding 8): the guard is unchanged in strength
+        # -- it still inspects every accepted method's real outer literals against
+        # TRANCHE_3P_USED_OUTER_LITERALS. Only the TARGET SELECTION changed: the accepted
+        # method set comes from logical accepted ownership instead of slicing the CURRENT
+        # source order at the accepted count, so inserting an unrelated method cannot shift
+        # which methods are audited, and a vanished accepted method fails closed.
+        selected = list(dth.ACCEPTED_RANGE_METHODS["3p"][f"{TRANCHE_3P_SOURCE_FILE}::{TRANCHE_3P_CLASS}"])
         actual = {name: Counter(self._outer_literals(self.methods[name])) for name in selected}
         self.assertEqual({k: v for k, v in actual.items() if v}, {k: Counter(v) for k, v in TRANCHE_3P_USED_OUTER_LITERALS.items()})
         self.assertEqual(sum(len(v) for v in TRANCHE_3P_USED_OUTER_LITERALS.values()), TRANCHE_3P_USED_OUTER_LITERAL_COUNT)
@@ -4761,7 +4768,9 @@ class Tranche3pUsedBindingGuardTest(unittest.TestCase):
                            ".split('## 7. Output-similarity and quotation controls', 1)[0]",
             "feed_summary_section": "self.matrix.split('### feed_summary (4件)', 1)[1]" ".split('### limited_feed_analysis (2件)', 1)[0]", }
         seen = {}
-        for name in [m.name for m in dti._class_test_methods_in_source_order(self.class_node)][:TRANCHE_3P_EXPECTED_METHOD_COUNT]:
+        # Correction `3y-3` (finding 9): topology guard unchanged; only the target selection
+        # moves from the accepted-count slice to logical accepted method ownership.
+        for name in dth.ACCEPTED_RANGE_METHODS["3p"][f"{TRANCHE_3P_SOURCE_FILE}::{TRANCHE_3P_CLASS}"]:
             for node in ast.walk(self.methods[name]):
                 if (isinstance(node, ast.Assign) and isinstance(node.targets[0], ast.Name) and node.targets[0].id in expected):
                     seen.setdefault(node.targets[0].id, set()).add(ast.unparse(node.value))
@@ -4865,16 +4874,19 @@ class ClassificationHistoryLedgerTest(unittest.TestCase):
     inline accepted constants and with BL-038's own acceptance record."""
 
     def test_the_ledger_is_pinned_well_formed_and_completely_populated(self):
-        indexed = set(json.loads(INDEX_PATH.read_text(encoding="utf-8"))["shards"])
+        # BL-038 tranche 3y-a (N5): every accepted record still carries a historical shard
+        # LOCATOR, but it is not required to name a currently indexed shard -- a legal
+        # re-shard must not force the accepted ledger to be rewritten.
         self.assertEqual(dth.ledger_digest(ROOT), ACCEPTED_LEDGER_DIGEST)
         self.assertEqual(dth.LEDGER_DIGEST, ACCEPTED_LEDGER_DIGEST)
-        self.assertEqual(dth.ledger_shape_failures(ROOT, indexed_shards=indexed), [])
+        self.assertEqual(dth.ledger_shape_failures(ROOT), [])
         ledger = dth.load_ledger(ROOT)
         self.assertEqual(ledger["schema_version"], dth.LEDGER_SCHEMA_VERSION)
         self.assertEqual(len(ledger["accepted"]), TRANCHE_3T_LEDGER_RECORD_COUNT)
         self.assertEqual(tuple(r["tranche"] for r in ledger["accepted"]),
                          TRANCHE_3T_ACCEPTED_TRANCHES)
-        self.assertEqual({r["shard"] for r in ledger["accepted"]} - indexed, set())
+        self.assertEqual([r for r in ledger["accepted"]
+                          if not r["shard"].endswith(".json")], [])
 
     def test_every_accepted_fact_has_a_second_independent_copy(self):
         """What makes "any accepted fact is caught" true even against a re-pinned
@@ -4969,7 +4981,6 @@ class ClassificationHistoryLedgerTest(unittest.TestCase):
         """Round 1 finding 3: `is not` identity comparison on schema_version, and no
         shape contract on the rest. Every field is checked now, bools are rejected as
         ints, and the category breakdown must sum to the accepted entry count."""
-        indexed = set(json.loads(INDEX_PATH.read_text(encoding="utf-8"))["shards"])
         good = dth.load_ledger(ROOT)
         R0, H0, H1 = ("accepted", 0), ("accepted", 0, "historical"), ("accepted", 1, "historical")
         cases = (
@@ -4978,7 +4989,8 @@ class ClassificationHistoryLedgerTest(unittest.TestCase):
             (R0 + ("pull_request",), True), (R0 + ("pull_request",), 0),
             (R0 + ("pull_request",), "88"), (R0 + ("merge_commit",), "abc"),
             (R0 + ("merge_commit",), "z" * 40), (R0 + ("shard",), ""),
-            (R0 + ("shard",), "nope.json"), (R0 + ("scope_slice",), [0]),
+            (R0 + ("shard",), "   "), (R0 + ("shard",), 7),
+            (R0 + ("shard",), "not-a-manifest"), (R0 + ("scope_slice",), [0]),
             (R0 + ("scope_slice",), [-1, 2]), (R0 + ("scope_slice",), [2, 2]),
             (R0 + ("scope_slice",), [False, True]), (H0 + ("sha256",), "ab"),
             (H0 + ("contracts_digest",), "g" * 64), (H1 + ("content_digest",), "ab"),
@@ -4996,7 +5008,7 @@ class ClassificationHistoryLedgerTest(unittest.TestCase):
                 mutate(ledger)
                 (root / dth.LEDGER_FILENAME).write_text(
                     json.dumps(ledger, ensure_ascii=False), encoding="utf-8")
-                return dth.ledger_shape_failures(root, indexed_shards=indexed)
+                return dth.ledger_shape_failures(root)
 
             self.assertEqual(failures_for(lambda l: None), [])
             for path, value in cases:
@@ -5004,7 +5016,7 @@ class ClassificationHistoryLedgerTest(unittest.TestCase):
                     self.assertNotEqual(failures_for(_setter(path, value)), [])
             self.assertNotEqual(failures_for(
                 lambda l: l["accepted"].append(json.loads(json.dumps(l["accepted"][0])))), [])
-        self.assertEqual(dth.ledger_shape_failures(ROOT, indexed_shards=indexed), [])
+        self.assertEqual(dth.ledger_shape_failures(ROOT), [])
 
     def test_editing_any_accepted_fact_in_the_ledger_is_detected(self):
         """Every accepted field, in the first and last record, is tamper-evident -- and
@@ -5735,9 +5747,21 @@ class CouplingInventorySnapshotTest(unittest.TestCase):
 
     def test_the_corrections_are_recorded_rather_than_silently_applied(self):
         corrections = {c["id"]: c for c in self.snapshot["corrections"]}
-        self.assertEqual(sorted(corrections),
-                         ["3v-1", "3v-2", "3w-1", "3w-2",
-                          "R0.1-1", "R0.1-2", "R0.1-3", "R0.2-1"])
+        # The appendix is append-only and grows per tranche; what must hold is that every
+        # Round 0 correction is still present and every entry carries its reason.
+        self.assertLessEqual({"R0.1-1", "R0.1-2", "R0.1-3", "R0.2-1"}, set(corrections))
+        # Tranche 3y's final repo-wide scan found nine out-of-population false negatives,
+        # recorded as three root-cause groups. None changes the frozen population, and the
+        # 3v-1 discovery record is retained while its status advances to handled.
+        for identifier in ("3y-1", "3y-2", "3y-3"):
+            with self.subTest(correction=identifier):
+                self.assertEqual(corrections[identifier]["population_change"], 0)
+                self.assertEqual(corrections[identifier]["status"], "handled in tranche 3y")
+                self.assertTrue(corrections[identifier]["findings"])
+        self.assertEqual(sum(len(corrections[i]["findings"]) for i in ("3y-1", "3y-2", "3y-3")), 9)
+        self.assertIn("NOT stored in the history ledger", corrections["3y-2"]["ruling"])
+        self.assertIn("RETAINED at full strength", corrections["3y-3"]["ruling"])
+        self.assertEqual(corrections["3v-1"]["status"], "handled in tranche 3y")
         # Tranche 3w-a found an out-of-population H7 false negative and handled it in the
         # same tranche, so it is a recorded correction but does NOT join the unresolved
         # future work. 3w-2 belongs to the 3m family and is appended in tranche 3w-b.
@@ -5760,7 +5784,9 @@ class CouplingInventorySnapshotTest(unittest.TestCase):
         # The tranche 3v conversion proof found one measurement false negative. It is
         # recorded with its root cause and deferred to tranche 3y; the frozen 106
         # population is deliberately NOT edited to absorb it.
-        self.assertEqual(corrections["3v-1"]["status"], "open, deferred to tranche 3y")
+        # 3v deferred it to 3y; tranche 3y handled it, so the status has advanced. The
+        # historical discovery record in known_false_negatives is kept either way.
+        self.assertEqual(corrections["3v-1"]["status"], "handled in tranche 3y")
         gap = self.snapshot["known_false_negatives"]
         self.assertEqual([(g["group"], g["tranche"], g["correction"]) for g in gap],
                          [("G5", "3y", "3v-1")])

@@ -9,17 +9,17 @@ Local variable names and two equivalent extraction forms remain free.
 """
 
 import ast
-import json
 import unittest
 from collections import defaultdict
 from pathlib import Path
 
+import document_test_history as dth
 import document_test_inventory as dti
 
 ROOT = Path(__file__).resolve().parent
 SOURCE_FILE = "test_security_requirements.py"
 CLASS_NAME = "SecurityRequirementsTest"
-SHARD_PATH = ROOT / "document_test_classification_005.json"
+TRANCHE = "3q"
 FILE_TO_ATTR = {"BACKLOG.md": "backlog", "DECISIONS.md": "decisions"}
 
 
@@ -132,7 +132,12 @@ class Tranche3qAnchoredSectionBindingTest(unittest.TestCase):
         tree = ast.parse(source, filename=SOURCE_FILE)
         node = next(n for n in tree.body if isinstance(n, ast.ClassDef) and n.name == CLASS_NAME)
         cls.methods = {m.name: m for m in dti._class_test_methods_in_source_order(node)}
-        cls.entries = json.loads(SHARD_PATH.read_text(encoding="utf-8"))["assertions"]
+        # BL-038 tranche 3y-a (N4): the audited population is tranche 3q's accepted
+        # LOGICAL window, not whatever a physical shard file happens to hold. Reading
+        # document_test_classification_005.json directly assumed that file contained
+        # nothing but this class, so a legal re-shard that made another accepted scope
+        # co-resident broke setUpClass. The binding guard itself is unchanged.
+        cls.entries = dth.accepted_window(ROOT, TRANCHE)[1]
 
     def test_every_anchored_target_is_bounded_to_its_own_markdown_section(self):
         targets_by_method = defaultdict(set)
