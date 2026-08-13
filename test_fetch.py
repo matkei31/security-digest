@@ -7822,13 +7822,20 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         self.assertEqual(dth.migration_shape_failures(self.root), [])
         self.assertEqual(dth.successor_reference_failures(self.root), [])
 
-    def test_the_current_residual_paragraph_states_the_post_3s_merge_state(self):
+    def test_the_current_residual_paragraph_states_the_post_merge_state(self):
         """Final-review Blocker 1: the CURRENT `残作業` paragraph still said PR #101's
         Ready/merge was yet to happen, contradicting the tranche 3s record in the same
         ticket. Scoped deliberately to the slice BEFORE the
         `historical post-3r residual snapshot` marker: the snapshot below it keeps its
-        older values on purpose and must NOT be dragged forward."""
-        start = self.bl038.index("- **残作業:** assertion classification自体は完了し、")
+        older values on purpose and must NOT be dragged forward.
+
+        BL-038 tranche 3z: this method sits in a tranche-3t class but is, and always was, a
+        CURRENT-state guard -- it reads the live `残作業` paragraph. Its post-merge
+        responsibility is the state that survives a rollout: tranche 3y merged and the
+        technical unblock complete, conversion permitted only through separately approved
+        controlled rollout work, Category A decided at 3t, and BL-038 incomplete. It
+        asserts no Category C count, no zero-conversion state and no migration state."""
+        start = self.bl038.index("- **残作業:** assertion classification自体は完了している。")
         marker = "**historical post-3r residual snapshot"
         end = self.bl038.index(marker, start)
         current = self.bl038[start:end]
@@ -7840,15 +7847,15 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         for fact in ("tranche 1〜3sはいずれも最終受入済み",
                      "83b7ab1ae59ca0a246142ee2e8b1d2c7eb6cf7e8",
                      "merge済みである",
-                     # BL-038 tranche 3y-b: the CURRENT slice states that bulk
-                     # conversion has not started -- WITHOUT the live count, which a
-                     # legal conversion moves. The 638 figure stays where it is a fact:
-                     # in the 3s/3t/3u/3w/3x paragraphs that recorded it at the time.
-                     # BL-038 tranche 3z: tranche 3y is merged, so the CURRENT slice no
-                     # longer says Category C is blocked. What stays true, and is what this
-                     # paragraph owes, is that no conversion has been committed yet.
-                     "Category C source conversionは**まだ1件もcommitされていない**",
-                     # BL-038 tranche 3v: the 4-PR split moved the boundary from 3v to 3y.
+                     # BL-038 tranche 3z round 1 (Blocker 1): the first version of this
+                     # retarget swapped "still blocked" for "not one conversion committed
+                     # yet". That is the same lifecycle-pin family tranche 3y-b spent two
+                     # rounds removing -- exact count, empty ledger, zero conversions --
+                     # merely phrased as a zero, and a rollout converting its first entry
+                     # would fail the very paragraph that authorises it. What the CURRENT
+                     # slice owes is only what stays true across the whole rollout.
+                     "controlled rollout workを通じてのみ実施する",
+                     "current indexed inventoryを唯一のsource of truthとし",
                      "Category Cはcontrolled conversion workに対してtechnically unblockedである",
                      "Category A 30件はtranche 3tで判断完了",
                      "BL-038全体は未完了"):
@@ -8219,7 +8226,11 @@ class Bl038Tranche3vCouplingRetargetRecordSyncTest(unittest.TestCase):
         boundary has now been reached by merge. The tranche's own STATUS paragraph keeps the
         boundary it set as history; the CURRENT slice records that it was reached."""
         self.assertIn("unblockはtranche 3y acceptance後", self.status)
-        self.assertIn("real Category C conversion 0件", self.bl038)
+        # BL-038 tranche 3z: scoped to tranche 3v's OWN bullet. "conversion 0件" is a fact
+        # about tranche 3v, and a section-wide assertIn would have let a CURRENT paragraph
+        # satisfy it -- exactly the confusion this tranche is separating.
+        own = self.bl038[self.bl038.index("- **tranche 3v(coupling retarget"):]
+        self.assertIn("real Category C conversion 0件", own[:own.index("\n\n- **")])
         current = self.bl038[self.bl038.rindex("- **残作業:**"):]
         self.assertIn("technical Category C unblockは完了している", current)
         # The current-state text must not still promise an unblock at 3v.
