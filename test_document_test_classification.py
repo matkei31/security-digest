@@ -3399,24 +3399,41 @@ class Tranche3lClassificationShard002AppendTest(unittest.TestCase):
             return out
 
         def step_refs(text, action):
-            """Refs from DIRECT `uses` fields of steps -- nothing deeper, nothing else.
+            """Refs reached only by jobs -> a job's own steps -> a step's own `uses`.
 
-            Indentation is the decision, so neither a commented-out line nor a full SHA
-            sitting inside a block scalar (`run: |`, an `env:` value) can pose as a step.
+            Every hop is decided by indentation, which is what makes text inside a block
+            scalar inert: a commented line, a bare `uses:` in a `run: |` body, and even a
+            whole fake `steps:` header nested in one, all sit deeper than the job field
+            they would have to be to count.
             """
             body = [l for l in text.splitlines()
                     if l.strip() and not l.lstrip().startswith("#")]
             refs = []
-            for i, line in enumerate(body):
-                if line.strip() != "steps:":
+            for top, line in enumerate(body):
+                if indent(line) or line.strip() != "jobs:":
                     continue
-                for step in entries(nested(body, i)):
-                    value = fields(step, indent(step[0])).get("uses", "")
-                    # a trailing inert `# vX.Y.Z` is allowed and is not the contract
-                    found = re.fullmatch(re.escape(action) + r"@(\S+)",
-                                         value.split("#")[0].strip())
-                    if found:
-                        refs.append(found.group(1))
+                jobs = nested(body, top)
+                if not jobs:
+                    continue
+                job_at = min(indent(l) for l in jobs)
+                heads = [i for i, l in enumerate(jobs) if indent(l) == job_at]
+                for n, start in enumerate(heads):
+                    stop = heads[n + 1] if n + 1 < len(heads) else len(jobs)
+                    job = jobs[start:stop]
+                    own = job[1:]
+                    if not own:
+                        continue
+                    field_at = min(indent(l) for l in own)
+                    for i, l in enumerate(job):
+                        if indent(l) != field_at or l.strip() != "steps:":
+                            continue
+                        for step in entries(nested(job, i)):
+                            value = fields(step, indent(step[0])).get("uses", "")
+                            # a trailing inert `# vX.Y.Z` is allowed, and is not the contract
+                            found = re.fullmatch(re.escape(action) + r"@(\S+)",
+                                                 value.split("#")[0].strip())
+                            if found:
+                                refs.append(found.group(1))
             return refs
 
         # (a) Supply-chain contract, independent of the inert version comment: both
