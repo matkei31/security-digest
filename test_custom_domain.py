@@ -404,7 +404,7 @@ class Bl007ClosureRecordTest(unittest.TestCase):
 
     def test_sd028_records_minimal_dns_with_no_wildcard(self):
         sd028 = self._section(self.decisions, "## SD-028")
-        self.assertIn("no AAAA records were added and no wildcard DNS is used", sd028)
+        self.assertIn("no AAAA records were added and no wildcard DNS is used", " ".join(sd028.split()))
 
     def test_sd028_evidence_records_merge_commit_and_public_state(self):
         sd028 = self._section(self.decisions, "## SD-028")
