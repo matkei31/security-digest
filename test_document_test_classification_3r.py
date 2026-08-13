@@ -17,9 +17,14 @@ SHARD_PATH = ROOT / SHARD_FILENAME
 RANGE_START = 'test_sd024_sd025_and_follow_up_tickets_are_recorded'
 RANGE_END = 'test_security_requirements_internal_markdown_links_resolve'
 METHOD_RANGE = {"start": RANGE_START, "end": RANGE_END}
-PRE_SHARDS = ('document_test_classification.json', 'document_test_classification_001.json', 'document_test_classification_002.json', 'document_test_classification_003.json', 'document_test_classification_004.json', 'document_test_classification_005.json')
-EXPECTED_INDEX = PRE_SHARDS + (SHARD_FILENAME,)
-CURRENT_INDEX = EXPECTED_INDEX + ('document_test_classification_007.json',)
+# BL-038 tranche 3y-b round 2 (R-A, correction 3y-13): PRE_SHARDS -- the physical
+# filenames that happened to hold the pre-3r work -- was replaced by the accepted TRANCHE
+# identities that did it. Physical shard location is not selection semantics.
+PRE_3R_TRANCHES = ('3f', '3h', '3i', '3j', '3k', '3l', '3m', '3o', '3p', '3q')
+# BL-038 tranche 3y-b (correction 3y-12): the physical pre-/current-index filename
+# tuples below lost their last use when this tranche's CURRENT lookups moved to the
+# logical population. Accepted physical locations are history and the ledger holds
+# what is actually load-bearing about them, so the dead tuples were removed.
 EXPECTED_ASSERTIONS = 133
 EXPECTED_METHODS = 9
 EXPECTED_METHOD_COUNTS = (('test_sd024_sd025_and_follow_up_tickets_are_recorded', 81), ('test_owner_checklist_mandatory_items_are_resolved_without_sensitive_data', 5), ('test_agents_references_security_docs_without_blanket_authorization', 12), ('test_agents_ui_spec_reference_delegates_version_too', 3), ('test_agents_describes_pr_ci_and_fetch_yml_triggers_accurately', 14), ('test_agents_pr_ci_checkout_target_is_the_merge_candidate_not_the_head', 5), ('test_agents_distinguishes_unittest_target_diff_check_range_and_head_association', 6), ('test_agents_pr_ci_secret_and_token_wording_is_precise', 4), ('test_security_requirements_internal_markdown_links_resolve', 3))
@@ -32,8 +37,9 @@ EXPECTED_SHA256 = 'f8abbc6e80d9762115540ee340050df7d9dc7e196752aa8876bdaed048c60
 EXPECTED_LINE_COUNT = 141
 HISTORICAL_COMBINED_ASSERTIONS = 1488
 HISTORICAL_COMBINED_CATEGORIES = {"A": 30, "B": 596, "C": 618, "D": 244}
-CURRENT_COMBINED_ASSERTIONS = 1525
-CURRENT_COMBINED_CATEGORIES = {"A": 30, "B": 612, "C": 638, "D": 245}
+# BL-038 tranche 3y-b: the CURRENT_COMBINED_* constants were removed -- see the
+# HISTORICAL_COMBINED_* pair above, which is what this tranche actually recorded. The
+# removed pair froze the live tree onto the post-3s tally.
 RIVAL_FILE = 'test_source_usage_policy.py'
 RIVAL_CLASS = 'SourceUsagePolicyTest'
 RIVAL_START = 'test_mandiant_distinguishes_rss_evidence_from_terms_evidence'
@@ -71,8 +77,10 @@ class Tranche3rClassificationTest(unittest.TestCase):
         dth.assert_accepted_contracts_accounted_for(self, ROOT, "3r")
 
     def test_selection_is_latest_source_greedy_tail_and_wins_133_to_37(self):
-        owned = {e["method"] for name in PRE_SHARDS for e in json.loads((ROOT/name).read_text(encoding="utf-8"))["assertions"]
-                 if (e["file"], e["class"]) == (SOURCE_FILE, CLASS_NAME)}
+        # BL-038 tranche 3y-b round 2 (R-A, correction 3y-13): pre-3r ownership from the
+        # accepted tranches' scope descriptors. Measured equivalent on this tree: 30 methods.
+        owned = {m for m in self.order
+                 if any(dth.owns(t, SOURCE_FILE, CLASS_NAME, m) for t in PRE_3R_TRANCHES)}
         start = next(i for i,m in enumerate(self.order) if m not in owned)
         run=0; end=start
         while end < len(self.order) and run + self.per[self.order[end]] <= 150:
@@ -83,8 +91,9 @@ class Tranche3rClassificationTest(unittest.TestCase):
         rival_node=next(n for n in ast.parse(rival_text).body if isinstance(n,ast.ClassDef) and n.name==RIVAL_CLASS)
         rival_order=[m.name for m in dti._class_test_methods_in_source_order(rival_node)]
         rival_per=Counter(r.method for r in dti.enumerate_assertions(rival_text,RIVAL_FILE,[RIVAL_CLASS]))
-        rival_owned={e["method"] for name in PRE_SHARDS for e in json.loads((ROOT/name).read_text(encoding="utf-8"))["assertions"]
-                     if (e["file"],e["class"])==(RIVAL_FILE,RIVAL_CLASS)}
+        # Same reconstruction for the rival class. Measured equivalent: 32 methods.
+        rival_owned={m for m in rival_order
+                     if any(dth.owns(t, RIVAL_FILE, RIVAL_CLASS, m) for t in PRE_3R_TRANCHES)}
         rs=next(i for i,m in enumerate(rival_order) if m not in rival_owned); rr=0; re=rs
         while re<len(rival_order) and rr+rival_per[rival_order[re]]<=150:
             rr+=rival_per[rival_order[re]]; re+=1
@@ -101,11 +110,16 @@ class Tranche3rClassificationTest(unittest.TestCase):
         failures,summary=dti.validate_indexed_manifests(root=ROOT)
         self.assertEqual([f.format() for f in failures],[])
         self.assertEqual((HISTORICAL_COMBINED_ASSERTIONS, HISTORICAL_COMBINED_CATEGORIES), (1488, {"A":30,"B":596,"C":618,"D":244}))
-        self.assertEqual(summary["inventoried_assertions"],CURRENT_COMBINED_ASSERTIONS)
-        self.assertEqual(summary["manifest_assertions"],CURRENT_COMBINED_ASSERTIONS)
-        self.assertEqual(summary["category_counts"],CURRENT_COMBINED_CATEGORIES)
+        self.assertEqual(summary["manifest_assertions"],summary["inventoried_assertions"])
+        self.assertEqual(sum(summary["category_counts"][c] for c in ("A","B","C","D")),
+                         summary["inventoried_assertions"])
         self.assertEqual((summary["unclassified"],summary["stale"],summary["fingerprint_mismatch"]),(0,0,0))
-        owned={e["method"] for name in EXPECTED_INDEX for e in json.loads((ROOT/name).read_text(encoding="utf-8"))["assertions"]
+        # BL-038 tranche 3y-b round 1 (P-R3, correction 3y-12): CURRENT class ownership is a
+        # logical question and was being answered by reading a fixed list of physical shard
+        # files, so a legal re-shard broke it even though ownership was still correct. The
+        # population is now the complete indexed one; where those entries physically live is
+        # the index's business, and accepted 3r's physical location is history.
+        owned={e["method"] for e in dth.live_entries(ROOT)
                if (e["file"],e["class"])==(SOURCE_FILE,CLASS_NAME)}
         self.assertEqual(owned,set(self.order))
 

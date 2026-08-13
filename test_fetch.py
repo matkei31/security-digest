@@ -7691,22 +7691,31 @@ class Bl038Tranche3sAcceptanceRecordTest(unittest.TestCase):
             with self.subTest(token=token):
                 self.assertIn(token, self.status)
 
-    def test_live_index_is_fully_classified_at_accepted_3s_totals(self):
+    def test_live_index_is_fully_classified_and_internally_consistent(self):
+        """BL-038 tranche 3y-b lifecycle retarget. Was
+        `test_live_index_is_fully_classified_at_accepted_3s_totals`, which required the
+        LIVE index to still show the accepted 3s tally. That tally is history and the
+        acceptance record above witnesses it (**1525(A30/B612/C638/D245)**); requiring
+        the current tree to keep reproducing it is what turned a legal Category C -> B
+        conversion into a test failure. What the live index owes at any point in the
+        lifecycle is that it is fully classified, internally consistent and clean."""
+        # BL-038 tranche 3y-b round 1 (P-R1, correction 3y-12): the exact shard count and
+        # the final shard's filename were still pinned here. This method is not the index
+        # artifact's owner -- `ClassificationShardIndexTest` is -- so a validator-clean legal
+        # re-shard broke a test whose subject is only that the live index is fully classified
+        # and internally consistent. The shards are now whatever the CURRENT index declares.
         index = json.loads((self.root / "document_test_classification_index.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(index["shards"]), 8)
-        self.assertEqual(index["shards"][-1], "document_test_classification_007.json")
         entries = [
             entry
             for name in index["shards"]
             for entry in json.loads((self.root / name).read_text(encoding="utf-8"))["assertions"]
         ]
-        self.assertEqual((len(entries), len({entry["id"] for entry in entries})), (1525, 1525))
-        self.assertEqual(
-            {c: sum(entry["category"] == c for entry in entries) for c in ("A", "B", "C", "D")},
-            {"A": 30, "B": 612, "C": 638, "D": 245},
-        )
+        self.assertEqual(len(entries), len({entry["id"] for entry in entries}))
         failures, summary = dti.validate_indexed_manifests(root=self.root)
         self.assertEqual([failure.format() for failure in failures], [])
+        self.assertEqual(summary["inventoried_assertions"], len(entries))
+        self.assertEqual(sum(summary["category_counts"][c] for c in ("A", "B", "C", "D")),
+                         len(entries))
         self.assertEqual((summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]), (0, 0, 0))
 
 
@@ -7795,7 +7804,7 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
                 self.assertIn(record["historical"]["sha256"], self.backlog)
                 self.assertIn(record["merge_commit"], self.bl038)
 
-    def test_the_ledger_is_offline_and_pinned_and_the_migration_ledger_is_empty(self):
+    def test_the_ledger_is_offline_and_pinned_and_the_migration_ledger_is_well_formed(self):
         module = (self.root / "document_test_history.py").read_text(encoding="utf-8")
         for token in ("subprocess", "urllib", "requests", "socket", "os.system"):
             with self.subTest(token=token):
@@ -7805,11 +7814,13 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         self.assertIn(f'LEDGER_DIGEST = "{digest}"', module)
         self.assertIn(digest, (self.root / "test_document_test_classification.py")
                       .read_text(encoding="utf-8"))
-        # Tranche 3t shipped no migration ledger; tranche 3u introduces it, empty,
-        # because 3u fixes the engine contract without converting anything.
-        self.assertEqual(json.loads((self.root / "document_test_classification_migrations.json")
-                                    .read_text(encoding="utf-8")),
-                         {"schema_version": 1, "migrations": []})
+        # BL-038 tranche 3y-b lifecycle retarget. That tranche 3t shipped no migration
+        # ledger, and that 3u introduced it empty, are facts about those tranches and are
+        # recorded in their BACKLOG paragraphs. Demanding the CURRENT ledger stay empty
+        # forever forbade the very migrations the engine exists to record, so what is
+        # measured here is that the committed ledger is well formed and resolves.
+        self.assertEqual(dth.migration_shape_failures(self.root), [])
+        self.assertEqual(dth.successor_reference_failures(self.root), [])
 
     def test_the_current_residual_paragraph_states_the_post_3s_merge_state(self):
         """Final-review Blocker 1: the CURRENT `残作業` paragraph still said PR #101's
@@ -7829,7 +7840,11 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         for fact in ("tranche 1〜3sはいずれも最終受入済み",
                      "83b7ab1ae59ca0a246142ee2e8b1d2c7eb6cf7e8",
                      "merge済みである",
-                     "Category C 638件はsource conversion未着手",
+                     # BL-038 tranche 3y-b: the CURRENT slice states that bulk
+                     # conversion has not started -- WITHOUT the live count, which a
+                     # legal conversion moves. The 638 figure stays where it is a fact:
+                     # in the 3s/3t/3u/3w/3x paragraphs that recorded it at the time.
+                     "Category C source conversionは未着手であり引き続きblockedである",
                      # BL-038 tranche 3v: the 4-PR split moved the boundary from 3v to 3y.
                      "**Category Cのunblockはtranche 3y acceptance後**",
                      "Category A 30件はtranche 3tで判断完了",
@@ -7992,13 +8007,19 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
             with self.subTest(stale=stale):
                 self.assertNotIn(stale, line)
 
-    def test_current_totals_are_unchanged_by_the_foundation_tranche(self):
-        """3t converts nothing and consolidates nothing, so the live classification is
-        bit-for-bit the accepted tranche 3s result."""
+    def test_the_foundation_tranche_converted_nothing_and_the_live_tree_is_clean(self):
+        """BL-038 tranche 3y-b lifecycle retarget. Was
+        `test_current_totals_are_unchanged_by_the_foundation_tranche`. That tranche 3t
+        converted and consolidated nothing is a fact ABOUT 3t, and the tally it left
+        behind is recorded in 3t's own closeout bullet -- asserted below as history, and
+        pinned inside that bullet by `test_the_post_merge_state_of_tranche_3t_is_recorded`.
+        Requiring the CURRENT tree to keep reproducing those counts turned one tranche's
+        acceptance into a permanent invariant, which is what blocked Category C
+        conversion."""
         failures, summary = dti.validate_indexed_manifests(root=self.root)
         self.assertEqual([failure.format() for failure in failures], [])
-        self.assertEqual(summary["inventoried_assertions"], 1525)
-        self.assertEqual(summary["category_counts"], {"A": 30, "B": 612, "C": 638, "D": 245})
+        self.assertEqual(sum(summary["category_counts"][c] for c in ("A", "B", "C", "D")),
+                         summary["inventoried_assertions"])
         self.assertEqual((summary["unclassified"], summary["stale"],
                           summary["fingerprint_mismatch"]), (0, 0, 0))
         self.assertIn("**1525件・A30/B612/C638/D245・unclassified/stale/fingerprint mismatch 0/0/0**",
@@ -8075,17 +8096,20 @@ class Bl038Tranche3uMigrationEngineRecordSyncTest(unittest.TestCase):
         self.assertIn("**Category Cのunblockはtranche 3y acceptance後**", current)
         self.assertIn("tranche 3uはmigration engine foundationのみを確定", current)
 
-    def test_category_c_is_still_unconverted_and_the_ledgers_agree(self):
-        """3u fixes the engine without converting anything: the tree is still the
-        accepted 3s classification, with an empty migration ledger."""
+    def test_the_engine_ships_and_the_ledgers_agree(self):
+        """BL-038 tranche 3y-b lifecycle retarget. Was
+        `test_category_c_is_still_unconverted_and_the_ledgers_agree`, which was three
+        lifecycle pins in one method: the exact category distribution, Category C == 638,
+        and `migrations == []`. That tranche 3u converted nothing is a fact about 3u and
+        stays recorded in its own paragraph (**real Category C conversionは0件**, asserted
+        by `test_the_engine_scope_and_corrected_measurement_are_recorded`). What the
+        current tree owes is that its ledgers AGREE -- not that they stand still."""
         failures, summary = dti.validate_indexed_manifests(root=self.root)
         self.assertEqual([f.format() for f in failures], [])
-        self.assertEqual(summary["inventoried_assertions"], 1525)
-        self.assertEqual(summary["category_counts"], {"A": 30, "B": 612, "C": 638, "D": 245})
+        self.assertEqual(sum(summary["category_counts"][c] for c in ("A", "B", "C", "D")),
+                         summary["inventoried_assertions"])
         self.assertEqual((summary["unclassified"], summary["stale"],
                           summary["fingerprint_mismatch"]), (0, 0, 0))
-        self.assertEqual(dth.load_migrations(self.root),
-                         {"schema_version": 1, "migrations": []})
         self.assertEqual(dth.migration_shape_failures(self.root), [])
         self.assertEqual(dth.successor_reference_failures(self.root), [])
         self.assertEqual(hashlib.sha256(
@@ -8212,10 +8236,12 @@ class Bl038Tranche3vCouplingRetargetRecordSyncTest(unittest.TestCase):
                       "mutationは完全復元済み"):
             with self.subTest(token=token):
                 self.assertIn(token, self.bl038)
-        # Restored means restored: the ledgers are untouched and empty as before.
-        migrations = json.loads((self.root / "document_test_classification_migrations.json")
-                                .read_text(encoding="utf-8"))
-        self.assertEqual(migrations["migrations"], [])
+        # BL-038 tranche 3y-b lifecycle retarget. "The 3v proof needed no migration
+        # metadata" is the historical fact, and the **migration metadata 0** token above
+        # is what records it. Re-reading the LIVE ledger and demanding it still be empty
+        # pinned every later tranche to 3v's restore state instead.
+        self.assertEqual(dth.migration_shape_failures(self.root), [])
+        self.assertEqual(dth.successor_reference_failures(self.root), [])
 
 
 class Bl038Tranche3waCouplingRetargetRecordSyncTest(unittest.TestCase):
@@ -8271,8 +8297,11 @@ class Bl038Tranche3waCouplingRetargetRecordSyncTest(unittest.TestCase):
                       "**real Category C conversion 0件**"):
             with self.subTest(token=token):
                 self.assertIn(token, self.bl038)
-        migrations = json.loads((self.root / "document_test_classification_migrations.json").read_text(encoding="utf-8"))
-        self.assertEqual(migrations["migrations"], [])
+        # BL-038 tranche 3y-b lifecycle retarget: 3w-a recorded **real Category C
+        # conversion 0件** as its own fact (asserted above). Re-checking the live ledger
+        # for emptiness made that a standing requirement on every later tranche.
+        self.assertEqual(dth.migration_shape_failures(self.root), [])
+        self.assertEqual(dth.successor_reference_failures(self.root), [])
 
     def test_the_3wa_entry_records_its_own_accounting(self):
         """3w-a's own paragraph keeps the accounting as of 3w-a (51 handled / residual 55 /
@@ -8496,6 +8525,125 @@ class Bl038Tranche3xCouplingRetargetRecordSyncTest(unittest.TestCase):
         self.assertIn("Category C 638件は引き続きblockedで、unblockはtranche 3y acceptance後。**",
                       self.bl038)
         self.assertIn("unblockはtranche 3y acceptance後", self.status)
+
+
+class Bl038Tranche3yBLifecycleUnblockRecordSyncTest(unittest.TestCase):
+    """BL-038 tranche 3y-b: the ONE completion guard for the technical Category C unblock.
+
+    It deliberately does NOT pin the current Category C count or require the migration
+    ledger to be empty -- those were the lifecycle pins this tranche removed, and
+    re-introducing either here would undo the tranche in the act of recording it. What
+    it checks is the set of CURRENT conditions that must hold whatever the lifecycle
+    does next, plus the record that the two conversion-path proofs actually ran. That
+    absence is deliberate and reviewable by reading the three methods below: no exact
+    category distribution, no `migrations == []`, and no reverse pin standing in for
+    either. A source-scanning meta-test asserting its own absence was tried and dropped
+    -- it is a detector, not a record, and this tranche adds no detectors.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.root = Path(__file__).resolve().parent
+        cls.backlog = (cls.root / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (cls.root / "STATUS.md").read_text(encoding="utf-8")
+        start = cls.backlog.index("## BL-038")
+        end = cls.backlog.find("\n## ", start + 8)
+        cls.bl038 = cls.backlog[start:] if end < 0 else cls.backlog[start:end]
+
+    def test_the_current_tree_satisfies_the_unblock_conditions(self):
+        """Criterion J, and the current half of C: clean, fully classified, and with
+        both ledgers agreeing -- stated without freezing any of it in place."""
+        failures, summary = dti.validate_indexed_manifests(root=self.root)
+        self.assertEqual([f.format() for f in failures], [])
+        self.assertEqual((summary["unclassified"], summary["stale"],
+                          summary["fingerprint_mismatch"]), (0, 0, 0))
+        self.assertEqual(sum(summary["category_counts"][c] for c in ("A", "B", "C", "D")),
+                         summary["inventoried_assertions"])
+        self.assertEqual(dth.migration_shape_failures(self.root), [])
+        self.assertEqual(dth.successor_reference_failures(self.root), [])
+        self.assertEqual(dth.ledger_shape_failures(self.root), [])
+        for record in dth.load_ledger(self.root)["accepted"]:
+            with self.subTest(tranche=record["tranche"]):
+                dth.assert_accepted_contracts_accounted_for(self, self.root, record["tranche"])
+
+    def test_the_3y_b_record_states_the_proofs_and_the_standing_boundary(self):
+        for fact in (
+            "tranche 3y-b(lifecycle retarget＋conversion-path proofs、2026-08-13)",
+            "b1c9f589d1c040af328ec796fdfc85292242b11a",
+            "**tranche 3y-aはcomplete**",
+            "tranche 3y-b proofs(2026-08-13)",
+            "Proof 5(realistic 1:1 Category C → B conversion)",
+            "**full unittest 2258 OK(完全green、O2 bucket 0・unexpected failure 0)**",
+            "**1525・A30/B613/C637/D245**",
+            "**migration metadata 0(`migrations []`のまま)**",
+            "Proof 6(identity-changing migration)",
+            "**`migrations != []`の状態でfull unittest 2258 OK(完全green)**",
+            "**accepted-contract continuityは12 accepted tranche全てgreen**",
+            "**load-bearingであり装飾ではない**",
+            "**Proof 6のmigration recordはtemporary evidenceでありcommitしない",
+            "**historyは両proofとも0 diff、snapshotも0 diff**",
+            # BL-038 tranche 3y-b round 1: criteria K and L. `3y-12` and Proof 7 are
+            # load-bearing completion evidence, so the record must carry both.
+            "tranche 3y-b round 1 fix(physical-index population residuals、2026-08-13)",
+            "single grouped correction **`3y-12`**",
+            "tranche 3y-b Proof 7(legal late-shard re-layout、2026-08-13)",
+            "**P-R1〜P-R8は8件すべてgreen**",
+            "**Proof 7: genuine coupling failures 0／unrelated failures 0／legitimate O2 failures 1**",
+            "**`ClassificationShardIndexTest`はindex artifactのlegitimate O2 ownerであり、remediation scope外**",
+            "**同型のgenuine residualがexactly 2件**",
+            "criteriaは**A〜L**へ拡張した",
+            # BL-038 tranche 3y-b round 2: 3y-13 and the re-layout sweep are load-bearing
+            # completion evidence for criteria H, K and L.
+            "tranche 3y-b round 2 fix(historical selection ownership、correction `3y-13`、2026-08-13)",
+            "**`3y-12`は変更していない**",
+            "**accepted tranche identities＋`dth.owns(...)`**",
+            "tranche 3y-b round 2 re-layout probe sweep(2026-08-13)",
+            "**001＋002はillegalであることを実測し、policyを発明せず対象外とした**",
+            "**4本すべてでgenuine coupling failures 0／unrelated failures 0／legitimate O2 failures 1**",
+            "**A〜L 12条件すべて充足**",
+            "**tranche 3y implementationはtechnical Category C unblock criteriaを満たす**",
+            # The closure statement, in the exact wording the review authorised.
+            "**under the defined historical/current coupling boundary plus the tranche 3y-b "
+            "focused physical-index ownership recheck and Proof 7, unresolved genuine "
+            "historical/current coupling detected = 0.**",
+            "**将来couplingが絶対発生しないという主張ではない**",
+        ):
+            with self.subTest(fact=fact):
+                self.assertIn(fact, self.bl038)
+        for fact in ("BL-038 tranche 3y-b (lifecycle retarget＋conversion-path proofs, 2026-08-13 JST)",
+                     "**genuine coupling 0／unrelated 0／legitimate O2 failure 1**",
+                     "**criteria A〜L 12条件すべて充足**",
+                     "**real Category C conversion 0件committed**"):
+            with self.subTest(status_fact=fact):
+                self.assertIn(fact, self.status)
+
+    def test_the_record_never_claims_the_unblock_or_the_ticket_is_done(self):
+        """Criteria are satisfied at IMPLEMENTATION level only. Until this tranche is
+        independently accepted and merged, Category C stays blocked, and bulk conversion
+        is a separate approval either way."""
+        for over_claim in ("Category C is technically unblocked",
+                           "Category C technically unblocked",
+                           # BL-038 tranche 3y-b round 2: criterion H is satisfied again --
+                           # R-A/R-B are closed by correction 3y-13 -- so the criteria claim is
+                           # legitimate and moved to the REQUIRED list below. What stays
+                           # forbidden is the stale A-J form (the criteria are A-L now) and any
+                           # claim that the unblock itself has happened.
+                           "criteria A〜J 10条件すべて充足",
+                           "Category C conversion開始可",
+                           "Category Cをunblock済み",
+                           "bulk conversion開始",
+                           "BL-038全体最終受入済み",
+                           "BL-038 complete"):
+            with self.subTest(not_claimed=over_claim):
+                self.assertNotIn(over_claim, self.bl038)
+                self.assertNotIn(over_claim, self.status)
+        for stated in ("**Category Cはindependent acceptanceとmergeが完了するまで引き続きblocked**",
+                       "**real Category C conversionは0件committed**",
+                       "bulk conversionは未着手",
+                       "**BL-038全体は未完了**"):
+            with self.subTest(stated=stated):
+                self.assertIn(stated, self.bl038)
+        self.assertIn("**BL-038全体未完了。**", self.status)
 
 
 if __name__ == "__main__":

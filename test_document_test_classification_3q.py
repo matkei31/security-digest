@@ -58,17 +58,20 @@ RIVAL_TAIL_METHODS = 4
 RIVAL_TAIL_ASSERTIONS = 37
 POST_3Q_SECURITY_TAIL_METHODS = 9
 POST_3Q_SECURITY_TAIL_ASSERTIONS = 133
-PRE_3Q_SHARDS = (
-    "document_test_classification.json",
-    "document_test_classification_001.json",
-    "document_test_classification_002.json",
-    "document_test_classification_003.json",
-    "document_test_classification_004.json",
-)
-EXPECTED_INDEX = PRE_3Q_SHARDS + (SHARD_FILENAME,)
-CURRENT_INDEX = EXPECTED_INDEX + ("document_test_classification_006.json", "document_test_classification_007.json")
-CURRENT_COMBINED_ASSERTIONS = 1525
-CURRENT_COMBINED_CATEGORIES = {"A": 30, "B": 612, "C": 638, "D": 245}
+# BL-038 tranche 3y-b round 2 (R-B, correction 3y-13): PRE_3Q_SHARDS -- the physical
+# filenames that happened to hold the pre-3q work -- was replaced by the accepted TRANCHE
+# identities that did it. Which shard file a tranche's entries live in is not selection
+# semantics, so a legal re-shard must not change what tranche 3q could have selected.
+PRE_3Q_TRANCHES = ("3f", "3h", "3i", "3j", "3k", "3l", "3m", "3o", "3p")
+# BL-038 tranche 3y-b (correction 3y-12): the physical pre-/current-index filename
+# tuples below lost their last use when this tranche's CURRENT lookups moved to the
+# logical population. Accepted physical locations are history and the ledger holds
+# what is actually load-bearing about them, so the dead tuples were removed.
+# BL-038 tranche 3y-b (P-R2, correction 3y-12): CURRENT_INDEX was removed. It was the
+# CURRENT physical shard list, and its only use pinned `summary["shard_files"]` to it.
+# BL-038 tranche 3y-b: the CURRENT_COMBINED_* constants were removed. They pinned the
+# live tree to the tally that happened to be current when tranche 3s landed, so a legal
+# Category C -> B conversion failed a test whose subject is tranche 3q.
 EXPECTED_DUPLICATE_GROUPS = (
     (
         SOURCE_FILE + "::" + CLASS_NAME + "::test_bl028_bl029_registration_does_not_reopen_or_merge_other_tickets::assert-04",
@@ -120,18 +123,22 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
         self.assertEqual([f.format() for f in dti.validate_indexed_manifests(root=ROOT)[0]], [])
 
 
-    def test_combined_index_is_clean_at_the_post_3q_totals(self):
+    def test_combined_index_is_clean_and_the_post_3q_totals_are_history(self):
         failures, summary = dti.validate_indexed_manifests(root=ROOT)
         self.assertEqual([f.format() for f in failures], [])
         # EXPECTED_COMBINED_* above remains the exact post-3q historical
         # snapshot. The live repository has since legally appended tranches 3r and 3s.
         self.assertEqual((EXPECTED_COMBINED_ASSERTIONS, EXPECTED_COMBINED_CATEGORIES),
                          (1355, {"A": 30, "B": 536, "C": 581, "D": 208}))
-        self.assertEqual(summary["shard_count"], len(CURRENT_INDEX))
-        self.assertEqual(summary["shard_files"], list(CURRENT_INDEX))
-        self.assertEqual(summary["inventoried_assertions"], CURRENT_COMBINED_ASSERTIONS)
-        self.assertEqual(summary["manifest_assertions"], CURRENT_COMBINED_ASSERTIONS)
-        self.assertEqual(summary["category_counts"], CURRENT_COMBINED_CATEGORIES)
+        # BL-038 tranche 3y-b round 1 (P-R2, correction 3y-12): the exact CURRENT shard
+        # count and file list were pinned through `CURRENT_INDEX`, forbidding a legal
+        # re-shard -- and contradicting this class's own
+        # `test_index_and_scope_are_exactly_the_new_disjoint_range`, which already records
+        # that the exact CURRENT index is not pinned. The constant had no other use and
+        # was removed with it.
+        self.assertEqual(summary["manifest_assertions"], summary["inventoried_assertions"])
+        self.assertEqual(sum(summary["category_counts"][c] for c in ("A", "B", "C", "D")),
+                         summary["inventoried_assertions"])
         self.assertEqual(
             (summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]),
             (0, 0, 0),
@@ -158,11 +165,14 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
         self.assertEqual({r.method for r in self.window}, {m for m, _ in EXPECTED_METHOD_ORDER})
 
     def test_selection_is_rederived_from_the_pre_3q_index_and_wins_124_to_37(self):
+        # BL-038 tranche 3y-b round 2 (R-B, correction 3y-13): pre-3q ownership is an
+        # accepted-history question, reconstructed from the accepted tranches' own scope
+        # descriptors. Measured equivalent to the physical form on this tree: 19 methods.
         owned = {
-            e["method"]
-            for name in PRE_3Q_SHARDS
-            for e in json.loads((ROOT / name).read_text(encoding="utf-8"))["assertions"]
-            if (e["file"], e["class"]) == (SOURCE_FILE, CLASS_NAME)
+            method
+            for method in self.order
+            if any(dth.owns(tranche, SOURCE_FILE, CLASS_NAME, method)
+                   for tranche in PRE_3Q_TRANCHES)
         }
         start = next(i for i, m in enumerate(self.order) if m not in owned)
         self.assertEqual((start, self.order[start]), (19, RANGE_START))
@@ -181,11 +191,12 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
                           if isinstance(n, ast.ClassDef) and n.name == RIVAL_CLASS)
         rival_order = [m.name for m in dti._class_test_methods_in_source_order(rival_node)]
         rival_per = Counter(r.method for r in dti.enumerate_assertions(rival_source, RIVAL_FILE, [RIVAL_CLASS]))
+        # Same reconstruction for the rival class. Measured equivalent: 32 methods.
         rival_owned = {
-            e["method"]
-            for name in PRE_3Q_SHARDS
-            for e in json.loads((ROOT / name).read_text(encoding="utf-8"))["assertions"]
-            if (e["file"], e["class"]) == (RIVAL_FILE, RIVAL_CLASS)
+            method
+            for method in rival_order
+            if any(dth.owns(tranche, RIVAL_FILE, RIVAL_CLASS, method)
+                   for tranche in PRE_3Q_TRANCHES)
         }
         rival_start = next(i for i, m in enumerate(rival_order) if m not in rival_owned)
         rival_run = 0
