@@ -3357,27 +3357,74 @@ class Tranche3lClassificationShard002AppendTest(unittest.TestCase):
         legal remediation of either shape fail this guard. A guard must not require the
         defect it describes to survive. The checks below are representation-independent
         and hold for BOTH the current source and a legally converted one."""
+        def indent(line):
+            return len(line) - len(line.lstrip())
+
+        def scalar(raw):
+            """YAML's three equivalent scalar renderings collapse to one string."""
+            raw = raw.strip()
+            paired = len(raw) > 1 and raw[0] == raw[-1] and raw[0] in "\"'"
+            return raw[1:-1] if paired else raw
+
+        def nested(block, start):
+            """The lines indented strictly deeper than block[start]."""
+            body = []
+            for line in block[start + 1:]:
+                if indent(line) <= indent(block[start]):
+                    break
+                body.append(line)
+            return body
+
+        def fields(block, at):
+            found = {}
+            for line in block:
+                if indent(line) == at and ":" in line:
+                    key, _, value = line.strip().partition(":")
+                    found[key.strip()] = scalar(value)
+            return found
+
         # (a) Supply-chain contract, independent of the inert version comment: both
         # workflows pin these actions to a full 40-hex commit SHA, never a mutable tag.
+        # Only ACTIVE `uses:` nodes count -- a commented-out line carrying a full SHA is
+        # a decoy, not a pin -- while a trailing `# vX.Y.Z` comment stays allowed because
+        # that comment is explicitly not the contract.
         for workflow in TRANCHE_3L_BOTH_WORKFLOWS:
             text = (ROOT / workflow).read_text(encoding="utf-8")
             for action in ("actions/checkout", "actions/setup-python"):
                 with self.subTest(workflow=workflow, action=action):
-                    refs = re.findall(r"uses:\s*" + re.escape(action) + r"@(\S+)", text)
+                    refs = []
+                    for line in text.splitlines():
+                        body = line.strip()
+                        if body.startswith("#"):
+                            continue
+                        if body.startswith("- "):
+                            body = body[2:].lstrip()
+                        found = re.match(r"uses:\s*" + re.escape(action) + r"@(\S+)", body)
+                        if found:
+                            refs.append(found.group(1))
                     self.assertTrue(refs)
                     for ref in refs:
                         self.assertRegex(ref, r"^[0-9a-f]{40}$")
-        # (b) Dependabot semantic values, independent of YAML quote style: the durable
-        # contract is the VALUE at the key, and `x: "v"`, `x: 'v'` and `x: v` denote the
-        # identical string. The old form instead required the test source to keep three
-        # double-quote-locked regexes AND required re-quoted YAML to fail.
+        # (b) Dependabot values IN THEIR STRUCTURAL LOCATION, independent of quote style.
+        # `x: "v"`, `x: 'v'` and `x: v` denote the same string, so the quoting is not the
+        # contract -- but the LOCATION is: the values must belong to the single update
+        # entry, and `interval` must sit under that entry's own `schedule`. A key/value
+        # line matching anywhere in the file is not enough.
         dependabot = (ROOT / TRANCHE_3L_TARGET_DEPENDABOT).read_text(encoding="utf-8")
-        for key, value in (("package-ecosystem", "github-actions"),
-                           ("directory", "/"), ("interval", "weekly")):
-            with self.subTest(key=key):
-                quoted = "|".join(re.escape(q + value + q) for q in ('"', "'", ""))
-                self.assertRegex(dependabot, r"(?m)^\s*-?\s*" + re.escape(key)
-                                 + r":\s*(?:" + quoted + r")\s*$")
+        lines = [l for l in dependabot.splitlines()
+                 if l.strip() and not l.lstrip().startswith("#")]
+        top = next(i for i, l in enumerate(lines) if l.startswith("updates:"))
+        updates = nested(lines, top)
+        starts = [i for i, l in enumerate(updates) if l.lstrip().startswith("- ")]
+        self.assertEqual(len(starts), 1)
+        entry = updates[starts[0]:]
+        entry = [re.sub(r"^(\s*)-(\s)", r"\1 \2", entry[0], count=1)] + entry[1:]
+        entry_fields = fields(entry, indent(entry[0]))
+        self.assertEqual(entry_fields.get("package-ecosystem"), "github-actions")
+        self.assertEqual(entry_fields.get("directory"), "/")
+        schedule = next(i for i, l in enumerate(entry) if l.strip() == "schedule:")
+        self.assertEqual(fields(nested(entry, schedule),
+                                indent(entry[schedule]) + 2).get("interval"), "weekly")
         # (c) One raw absence check over ORDINARY ENGLISH WORDS -- what separates
         # it from the negative raw checks kept at B here and in tranche 3k, all of
         # which use non-prose structural tokens. (Exact tuple pinned above.)
