@@ -3455,18 +3455,27 @@ class Tranche3lClassificationShard002AppendTest(unittest.TestCase):
         dependabot = (ROOT / TRANCHE_3L_TARGET_DEPENDABOT).read_text(encoding="utf-8")
         lines = [l for l in dependabot.splitlines()
                  if l.strip() and not l.lstrip().startswith("#")]
-        top = next(i for i, l in enumerate(lines) if l.startswith("updates:"))
-        updates = nested(lines, top)
-        starts = [i for i, l in enumerate(updates) if l.lstrip().startswith("- ")]
-        self.assertEqual(len(starts), 1)
-        entry = updates[starts[0]:]
-        entry = [re.sub(r"^(\s*)-(\s)", r"\1 \2", entry[0], count=1)] + entry[1:]
-        entry_fields = fields(entry, indent(entry[0]))
+        top = next(i for i, l in enumerate(lines)
+                   if not indent(l) and l.strip() == "updates:")
+        # DIRECT update entries only: a nested list such as `labels:` / `- dependencies`
+        # is not another update, and text inside a block scalar is not a field.
+        direct = entries(nested(lines, top))
+        self.assertEqual(len(direct), 1)
+        entry = direct[0]
+        at = indent(entry[0])
+        entry_fields = fields(entry, at)
         self.assertEqual(entry_fields.get("package-ecosystem"), "github-actions")
         self.assertEqual(entry_fields.get("directory"), "/")
-        schedule = next(i for i, l in enumerate(entry) if l.strip() == "schedule:")
-        self.assertEqual(fields(nested(entry, schedule),
-                                indent(entry[schedule]) + 2).get("interval"), "weekly")
+        # `schedule` must be the entry's OWN field, and `interval` that mapping's own
+        # child. The child indentation is read from the block, so an equivalent
+        # indentation width is not part of the contract.
+        schedule = [i for i, l in enumerate(entry)
+                    if indent(l) == at and l.strip() == "schedule:"]
+        self.assertEqual(len(schedule), 1)
+        block = nested(entry, schedule[0])
+        self.assertTrue(block)
+        self.assertEqual(fields(block, min(indent(l) for l in block)).get("interval"),
+                         "weekly")
         # (c) One raw absence check over ORDINARY ENGLISH WORDS -- what separates
         # it from the negative raw checks kept at B here and in tranche 3k, all of
         # which use non-prose structural tokens. (Exact tuple pinned above.)
