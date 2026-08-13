@@ -3345,28 +3345,39 @@ class Tranche3lClassificationShard002AppendTest(unittest.TestCase):
                          (2, {"assertTrue"}))
 
     def test_the_six_c_entries_are_sha_comment_welds_quote_locks_and_prose(self):
-        """Not a keyword tally: each is the exact assertion a meaning-preserving
-        edit of the live target file breaks."""
-        # BL-038 tranche 3w (C051): the accepted C-id breakdown is a past fact and is gone; what remains are CURRENT contracts about the live target files. (a) Two raw
-        # lines weld a full commit SHA to an inert `# vX.Y.Z` comment -- the shape accepted as C in tranche 3k.
-        welded = [n.value for n in ast.walk(self.tree) if isinstance(n, ast.Constant)
-                  and isinstance(n.value, str) and n.value.startswith("# v")]
-        self.assertEqual(sorted(welded), ["# v7.0.0", "# v7.0.1"])
-        for workflow, comment in itertools.product(TRANCHE_3L_BOTH_WORKFLOWS, welded):
-            with self.subTest(workflow=workflow, comment=comment):
-                self.assertRegex((ROOT / workflow).read_text(encoding="utf-8"),
-                                 r"@[0-9a-f]{40} " + re.escape(comment))
-        # (b) Three Dependabot regexes pin DOUBLE QUOTES around values whose
-        # unquoted plain scalar is the identical YAML string.
+        """The live target files still honour the contracts tranche 3l measured.
+
+        BL-038 tranche 4c-prep. The method NAME is kept for identity continuity and is
+        now historically descriptive: it names the shapes tranche 3l accepted as
+        Category C, and that accepted classification is HISTORICAL EVIDENCE held by the
+        immutable ledger (see `test_the_accepted_tranche_3l_shard_002_state_is_pinned_
+        as_history`). What this method used to do was require those Category C DEFECTS
+        to still exist in the live test source -- exactly three `:\\s*"` quote-locked
+        regex literals, and the `# vX.Y.Z` comment welded to the SHA -- which made a
+        legal remediation of either shape fail this guard. A guard must not require the
+        defect it describes to survive. The checks below are representation-independent
+        and hold for BOTH the current source and a legally converted one."""
+        # (a) Supply-chain contract, independent of the inert version comment: both
+        # workflows pin these actions to a full 40-hex commit SHA, never a mutable tag.
+        for workflow in TRANCHE_3L_BOTH_WORKFLOWS:
+            text = (ROOT / workflow).read_text(encoding="utf-8")
+            for action in ("actions/checkout", "actions/setup-python"):
+                with self.subTest(workflow=workflow, action=action):
+                    refs = re.findall(r"uses:\s*" + re.escape(action) + r"@(\S+)", text)
+                    self.assertTrue(refs)
+                    for ref in refs:
+                        self.assertRegex(ref, r"^[0-9a-f]{40}$")
+        # (b) Dependabot semantic values, independent of YAML quote style: the durable
+        # contract is the VALUE at the key, and `x: "v"`, `x: 'v'` and `x: v` denote the
+        # identical string. The old form instead required the test source to keep three
+        # double-quote-locked regexes AND required re-quoted YAML to fail.
         dependabot = (ROOT / TRANCHE_3L_TARGET_DEPENDABOT).read_text(encoding="utf-8")
-        quote_locked = [n.value for n in ast.walk(self.class_node(TRANCHE_3L_CLASSES[1]))
-                        if isinstance(n, ast.Constant) and isinstance(n.value, str)
-                        and ':\\s*"' in n.value]
-        self.assertEqual(len(quote_locked), 3)
-        for pattern in quote_locked:
-            with self.subTest(pattern=pattern):
-                self.assertRegex(dependabot, pattern)
-                self.assertNotRegex(dependabot.replace('"', "'"), pattern)
+        for key, value in (("package-ecosystem", "github-actions"),
+                           ("directory", "/"), ("interval", "weekly")):
+            with self.subTest(key=key):
+                quoted = "|".join(re.escape(q + value + q) for q in ('"', "'", ""))
+                self.assertRegex(dependabot, r"(?m)^\s*-?\s*" + re.escape(key)
+                                 + r":\s*(?:" + quoted + r")\s*$")
         # (c) One raw absence check over ORDINARY ENGLISH WORDS -- what separates
         # it from the negative raw checks kept at B here and in tranche 3k, all of
         # which use non-prose structural tokens. (Exact tuple pinned above.)
