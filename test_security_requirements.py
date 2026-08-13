@@ -1105,7 +1105,7 @@ class SecurityRequirementsTest(unittest.TestCase):
             testing,
         )
         self.assertIn("platform-managed", testing)
-        self.assertIn("not a workflow defined in this repository", testing)
+        self.assertIn("not a workflow defined in this repository", " ".join(testing.split()))
 
     def test_agents_pr_ci_checkout_target_is_the_merge_candidate_not_the_head(self):
         # BL-035 round 2 (Fable 5 review): pr-ci.yml's `actions/checkout` step
@@ -1135,7 +1135,7 @@ class SecurityRequirementsTest(unittest.TestCase):
         self.assertIn("merge-candidate checkout", testing)
         self.assertIn("`base...head`", testing)
         self.assertIn("status-check head SHA", testing)
-        self.assertIn("passed against that run's merge-candidate checkout", testing)
+        self.assertIn("passed against that run's merge-candidate checkout", " ".join(testing.split()))
         self.assertIn("passed over that run's `base...head` range", testing)
 
     def test_agents_pr_ci_secret_and_token_wording_is_precise(self):
@@ -1147,10 +1147,10 @@ class SecurityRequirementsTest(unittest.TestCase):
         testing = self.agents.split("## Testing and review", 1)[1].split(
             "## Git and generated output", 1
         )[0]
-        self.assertIn("does not reference any repository secret", testing)
+        self.assertIn("does not reference any repository secret", " ".join(testing.split()))
         self.assertIn("`GITHUB_TOKEN`", testing)
         self.assertIn("`contents: read`", testing)
-        self.assertIn("not a claim that GitHub withholds a token from the job", testing)
+        self.assertIn("not a claim that GitHub withholds a token from the job", " ".join(testing.split()))
 
     def test_security_requirements_internal_markdown_links_resolve(self):
         docs = {
@@ -1752,7 +1752,7 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
         sd030 = self.decisions.split("## SD-030", 1)[1].split("\n## ", 1)[0]
         self.assertIn("Policy approved; runtime enforcement deferred", sd030)
         self.assertIn("BL-032](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)", sd030)
-        self.assertIn("this decision itself does not implement any enforcement", sd030)
+        self.assertIn("this decision itself does not implement any enforcement", " ".join(sd030.split()))
 
     def test_sd030_does_not_mark_sd002_as_implemented_superseded(self):
         sd030 = self.decisions.split("## SD-030", 1)[1].split("\n## ", 1)[0]
@@ -1814,8 +1814,8 @@ class Bl031AcceptanceAndBl032RegistrationTest(unittest.TestCase):
 
     def test_sd030_records_that_mode_restrictions_are_not_yet_enforced_in_production(self):
         sd030 = self.decisions.split("## SD-030", 1)[1].split("\n## ", 1)[0]
-        self.assertIn("because BL-032 is not yet implemented", sd030)
-        self.assertIn("none of these mode-specific restrictions are enforced in current production", sd030)
+        self.assertIn("because BL-032 is not yet implemented", " ".join(sd030.split()))
+        self.assertIn("none of these mode-specific restrictions are enforced in current production", " ".join(sd030.split()))
         self.assertIn("as recorded in GAP-016", sd030)
         self.assertIn(
             "an enabled `metadata_only` or `limited_feed_analysis` source is currently "
@@ -2060,7 +2060,7 @@ class Bl034Round2ReviewCorrectionsTest(unittest.TestCase):
         self.assertNotIn("session count", sd032)
         self.assertNotIn("unique visitors", sd032)
         self.assertIn("external referrer or direct link", sd032)
-        self.assertIn("one Visit may include multiple page views", sd032)
+        self.assertIn("one Visit may include multiple page views", " ".join(sd032.split()))
         self.assertIn("not a deduplicated unique-person count", sd032)
 
 
@@ -2369,8 +2369,8 @@ class Bl034CloseoutTest(unittest.TestCase):
         self.assertIn("no DNS, proxy, or nameserver migration to Cloudflare was made", intro)
         # The historical framing (unconfirmed AT THE TIME of acceptance) must
         # be preserved, not deleted -- only the present-tense claim was wrong.
-        self.assertIn("both tracked as BL-034's residual post-merge work", intro)
-        self.assertIn("did not block this Version's own approval", intro)
+        self.assertIn("both tracked as BL-034's residual post-merge work", " ".join(intro.split()))
+        self.assertIn("did not block this Version's own approval", " ".join(intro.split()))
 
     def test_sr047_and_gap018_confirm_dashboard_and_search_console_not_unconfirmed(self):
         sr047 = next(
