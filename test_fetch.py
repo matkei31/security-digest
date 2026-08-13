@@ -3024,13 +3024,22 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         # BL-038 closure (2026-08-14): the durable contract is the repository's
         # allocation convention -- IDs are unique and contiguous from BL-001 up to
         # whatever the highest allocated ID currently is -- not a population frozen
-        # at BL-038. Freezing the maximum turned every new backlog item into a test
-        # failure, which is a lifecycle pin rather than a documentation invariant.
+        # at one maximum. Freezing the maximum turned every new backlog item into a
+        # test failure, which is a lifecycle pin rather than a documentation
+        # invariant. The floor records what has ALREADY been allocated: BL-001
+        # through BL-039 exist and must not disappear, while BL-040 and beyond may
+        # be added without touching this test. Combined with contiguity, a floor on
+        # the maximum is what keeps every allocated id present.
+        # Scope note: headings that are not of the form BL-NNN are filtered out
+        # above and are NOT checked here -- this test claims no malformed-id
+        # coverage, which is unchanged from before this closure.
         numbers = sorted(int(i.split("-")[1]) for i in ids)
         self.assertEqual(numbers[0], 1, "BL numbering starts at BL-001")
         self.assertEqual(numbers, list(range(1, numbers[-1] + 1)),
                          f"BL IDs must be contiguous with no gaps: {ids}")
-        self.assertGreaterEqual(numbers[-1], 38, "already-allocated BL IDs must not disappear")
+        self.assertGreaterEqual(
+            numbers[-1], 39,
+            "BL-001..BL-039 are already allocated and must not disappear")
 
     def test_sd_ids_are_unique_and_cover_sd001_to_sd033(self):
         text = self._read("DECISIONS.md")
@@ -8844,6 +8853,64 @@ class Bl038Tranche3yBLifecycleUnblockRecordSyncTest(unittest.TestCase):
                      "**BL-038全体は未完了**"):
             with self.subTest(historical_fact=fact):
                 self.assertIn(fact, bullet)
+
+
+
+class Bl038ClosureCurrentStateTest(unittest.TestCase):
+    """BL-038 closure (2026-08-14): the CURRENT state after closure.
+
+    The per-tranche classes were deliberately made state-agnostic -- accepting a
+    tranche never decided where the ticket sits -- so none of them can hold the
+    closed state down. Without this class, moving BL-038 back into Active work
+    and out of Recently completed would pass the whole suite. Everything here is
+    a claim about the current documents only; no historical evidence is touched.
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        root = Path(__file__).resolve().parent
+        cls.status = (root / "STATUS.md").read_text(encoding="utf-8")
+        cls.backlog = (root / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.active = cls.status.split("## Active work", 1)[1].split(
+            "\n## 5. Recently completed work", 1)[0]
+        cls.completed = cls.status.split("## 5. Recently completed work", 1)[1].split(
+            "\n## 6.", 1)[0]
+
+    def _completed_entry(self):
+        return next(l for l in self.completed.splitlines() if l.startswith("- BL-038 "))
+
+    def test_bl038_is_recorded_as_completed_work(self):
+        self.assertTrue(
+            any(l.startswith("- BL-038 ") for l in self.completed.splitlines()),
+            "BL-038 must be listed in STATUS `## 5. Recently completed work`")
+
+    def test_bl038_is_no_longer_active_work(self):
+        self.assertFalse(
+            any(l.startswith("- BL-038 ") for l in self.active.splitlines()),
+            "BL-038 must not be listed in STATUS `## Active work` after closure")
+
+    def test_completed_entry_makes_no_current_incompleteness_claim(self):
+        entry = self._completed_entry()
+        for stale in ("実装中", "未完了"):
+            with self.subTest(stale=stale):
+                self.assertNotIn(stale, entry,
+                                 "the completed entry must not claim BL-038 is still open")
+
+    def test_completed_entry_points_at_the_authoritative_backlog_record(self):
+        entry = self._completed_entry()
+        self.assertIn("BACKLOG.md#bl-038--", entry,
+                      "the concise entry must point at BL-038's detailed BACKLOG record")
+        self.assertIn("- **STATUS Active work在籍時の記録", self.backlog,
+                      "that detailed record must exist in BACKLOG")
+
+    def test_backlog_state_field_makes_no_current_incompleteness_claim(self):
+        start = self.backlog.index("## BL-038 ")
+        end = self.backlog.find("\n## ", start + len("## BL-038 "))
+        section = self.backlog[start:] if end == -1 else self.backlog[start:end]
+        state = next(l for l in section.splitlines() if l.startswith("- **状態:**"))
+        self.assertNotIn("実装中", state)
+        self.assertNotIn("未完了", state)
+        self.assertIn("完了", state)
 
 
 if __name__ == "__main__":
