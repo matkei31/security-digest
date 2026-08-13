@@ -3383,25 +3383,50 @@ class Tranche3lClassificationShard002AppendTest(unittest.TestCase):
                     found[key.strip()] = scalar(value)
             return found
 
+        def entries(block):
+            """Split a YAML block into its direct `- ` list items, by indentation."""
+            if not block:
+                return []
+            item = min(indent(line) for line in block)
+            starts = [i for i, line in enumerate(block)
+                      if indent(line) == item and line.lstrip().startswith("- ")]
+            out = []
+            for n, start in enumerate(starts):
+                stop = starts[n + 1] if n + 1 < len(starts) else len(block)
+                one = block[start:stop]
+                # normalise `- key: v` to `  key: v` so the item's own fields line up
+                out.append([re.sub(r"^(\s*)-(\s)", r"\1 \2", one[0], count=1)] + one[1:])
+            return out
+
+        def step_refs(text, action):
+            """Refs from DIRECT `uses` fields of steps -- nothing deeper, nothing else.
+
+            Indentation is the decision, so neither a commented-out line nor a full SHA
+            sitting inside a block scalar (`run: |`, an `env:` value) can pose as a step.
+            """
+            body = [l for l in text.splitlines()
+                    if l.strip() and not l.lstrip().startswith("#")]
+            refs = []
+            for i, line in enumerate(body):
+                if line.strip() != "steps:":
+                    continue
+                for step in entries(nested(body, i)):
+                    value = fields(step, indent(step[0])).get("uses", "")
+                    # a trailing inert `# vX.Y.Z` is allowed and is not the contract
+                    found = re.fullmatch(re.escape(action) + r"@(\S+)",
+                                         value.split("#")[0].strip())
+                    if found:
+                        refs.append(found.group(1))
+            return refs
+
         # (a) Supply-chain contract, independent of the inert version comment: both
         # workflows pin these actions to a full 40-hex commit SHA, never a mutable tag.
-        # Only ACTIVE `uses:` nodes count -- a commented-out line carrying a full SHA is
-        # a decoy, not a pin -- while a trailing `# vX.Y.Z` comment stays allowed because
-        # that comment is explicitly not the contract.
+        # Only a step's own active `uses` field counts.
         for workflow in TRANCHE_3L_BOTH_WORKFLOWS:
             text = (ROOT / workflow).read_text(encoding="utf-8")
             for action in ("actions/checkout", "actions/setup-python"):
                 with self.subTest(workflow=workflow, action=action):
-                    refs = []
-                    for line in text.splitlines():
-                        body = line.strip()
-                        if body.startswith("#"):
-                            continue
-                        if body.startswith("- "):
-                            body = body[2:].lstrip()
-                        found = re.match(r"uses:\s*" + re.escape(action) + r"@(\S+)", body)
-                        if found:
-                            refs.append(found.group(1))
+                    refs = step_refs(text, action)
                     self.assertTrue(refs)
                     for ref in refs:
                         self.assertRegex(ref, r"^[0-9a-f]{40}$")
