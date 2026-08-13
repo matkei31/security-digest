@@ -231,7 +231,7 @@ class Bl007DocumentationTest(unittest.TestCase):
         sd028 = self._section(self.decisions, "## SD-028")
         self.assertIn("- **Status:** Accepted", sd028)
         self.assertIn("apex", sd028)
-        self.assertIn("no wildcard DNS records are used", sd028)
+        self.assertIn("no wildcard DNS records are used", " ".join(sd028.split()))
         self.assertIn("`security-digest` is not renamed", sd028)
         self.assertIn("docs/CNAME", sd028)
         self.assertIn("[BL-009]", sd028)
@@ -322,8 +322,8 @@ class Bl007ClosureRecordTest(unittest.TestCase):
 
     def test_sd028_context_is_historical_not_current(self):
         sd028 = self._section(self.decisions, "## SD-028")
-        self.assertIn("At the time this decision was accepted", sd028)
-        self.assertIn("had not yet been configured", sd028)
+        self.assertIn("At the time this decision was accepted", " ".join(sd028.split()))
+        self.assertIn("had not yet been configured", " ".join(sd028.split()))
 
     def test_bl007_records_the_approved_plan_as_a_separate_history_item(self):
         bl007 = self._section(self.backlog, "## BL-007")
@@ -394,8 +394,8 @@ class Bl007ClosureRecordTest(unittest.TestCase):
 
     def test_sd028_records_cname_merge_activation_as_an_observation_not_a_guarantee(self):
         sd028 = self._section(self.decisions, "## SD-028")
-        self.assertIn("Observed behavior for this repository", sd028)
-        self.assertIn("not asserted as a universal GitHub Pages guarantee", sd028)
+        self.assertIn("Observed behavior for this repository", " ".join(sd028.split()))
+        self.assertIn("not asserted as a universal GitHub Pages guarantee", " ".join(sd028.split()))
 
     def test_sd028_records_the_transient_dns_error_and_its_resolution(self):
         sd028 = self._section(self.decisions, "## SD-028")
