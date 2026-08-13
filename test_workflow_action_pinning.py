@@ -107,16 +107,23 @@ class DependabotConfigurationTest(unittest.TestCase):
         self.assertEqual(len(entries), 1)
 
     def test_ecosystem_is_github_actions_only(self):
-        self.assertRegex(self.text, r'package-ecosystem:\s*"github-actions"')
+        self.assertRegex(
+            self.text,
+            r'(?m)^\s*-\s*package-ecosystem:\s*'
+            r'(?:"github-actions"|\'github-actions\'|github-actions)\s*(?:#.*)?$',
+        )
         for other in ("pip", "npm", "docker", "npm-workspaces"):
             with self.subTest(ecosystem=other):
                 self.assertNotIn(f'"{other}"', self.text)
 
     def test_directory_is_repository_root(self):
-        self.assertRegex(self.text, r'directory:\s*"/"')
+        self.assertRegex(
+            self.text, r'(?m)^\s*directory:\s*(?:"/"|\'/\'|/)\s*(?:#.*)?$')
 
     def test_schedule_is_weekly(self):
-        self.assertRegex(self.text, r'interval:\s*"weekly"')
+        self.assertRegex(
+            self.text,
+            r'(?m)^\s*interval:\s*(?:"weekly"|\'weekly\'|weekly)\s*(?:#.*)?$')
 
     def test_does_not_include_optional_policy_fields(self):
         for marker in (
