@@ -107,8 +107,18 @@ class DependabotConfigurationTest(unittest.TestCase):
         self.assertEqual(len(entries), 1)
 
     def test_ecosystem_is_github_actions_only(self):
+        # Only active mapping lines: block-scalar content is plain text,
+        # so a `key: value` inside it is not a field of this document.
+        active, folded = [], None
+        for line in self.text.splitlines():
+            indent = len(line) - len(line.lstrip())
+            if folded is not None and (not line.strip() or indent > folded):
+                continue
+            folded = indent if re.search(
+                r":[ \t]*[|>][-+0-9]*[ \t]*(?:#.*)?$", line) else None
+            active.append(line)
         self.assertRegex(
-            self.text,
+            "\n".join(active),
             r'(?m)^[ \t]*-[ \t]*package-ecosystem:[ \t]*'
             r'(?:"github-actions"|\'github-actions\'|github-actions)'
             r'(?:[ \t]+#.*)?[ \t]*$',
@@ -118,13 +128,33 @@ class DependabotConfigurationTest(unittest.TestCase):
                 self.assertNotIn(f'"{other}"', self.text)
 
     def test_directory_is_repository_root(self):
+        # Only active mapping lines: block-scalar content is plain text,
+        # so a `key: value` inside it is not a field of this document.
+        active, folded = [], None
+        for line in self.text.splitlines():
+            indent = len(line) - len(line.lstrip())
+            if folded is not None and (not line.strip() or indent > folded):
+                continue
+            folded = indent if re.search(
+                r":[ \t]*[|>][-+0-9]*[ \t]*(?:#.*)?$", line) else None
+            active.append(line)
         self.assertRegex(
-            self.text,
+            "\n".join(active),
             r'(?m)^[ \t]*directory:[ \t]*(?:"/"|\'/\'|/)(?:[ \t]+#.*)?[ \t]*$')
 
     def test_schedule_is_weekly(self):
+        # Only active mapping lines: block-scalar content is plain text,
+        # so a `key: value` inside it is not a field of this document.
+        active, folded = [], None
+        for line in self.text.splitlines():
+            indent = len(line) - len(line.lstrip())
+            if folded is not None and (not line.strip() or indent > folded):
+                continue
+            folded = indent if re.search(
+                r":[ \t]*[|>][-+0-9]*[ \t]*(?:#.*)?$", line) else None
+            active.append(line)
         self.assertRegex(
-            self.text,
+            "\n".join(active),
             r'(?m)^[ \t]*interval:[ \t]*(?:"weekly"|\'weekly\'|weekly)'
             r'(?:[ \t]+#.*)?[ \t]*$')
 
