@@ -3345,28 +3345,137 @@ class Tranche3lClassificationShard002AppendTest(unittest.TestCase):
                          (2, {"assertTrue"}))
 
     def test_the_six_c_entries_are_sha_comment_welds_quote_locks_and_prose(self):
-        """Not a keyword tally: each is the exact assertion a meaning-preserving
-        edit of the live target file breaks."""
-        # BL-038 tranche 3w (C051): the accepted C-id breakdown is a past fact and is gone; what remains are CURRENT contracts about the live target files. (a) Two raw
-        # lines weld a full commit SHA to an inert `# vX.Y.Z` comment -- the shape accepted as C in tranche 3k.
-        welded = [n.value for n in ast.walk(self.tree) if isinstance(n, ast.Constant)
-                  and isinstance(n.value, str) and n.value.startswith("# v")]
-        self.assertEqual(sorted(welded), ["# v7.0.0", "# v7.0.1"])
-        for workflow, comment in itertools.product(TRANCHE_3L_BOTH_WORKFLOWS, welded):
-            with self.subTest(workflow=workflow, comment=comment):
-                self.assertRegex((ROOT / workflow).read_text(encoding="utf-8"),
-                                 r"@[0-9a-f]{40} " + re.escape(comment))
-        # (b) Three Dependabot regexes pin DOUBLE QUOTES around values whose
-        # unquoted plain scalar is the identical YAML string.
+        """The live target files still honour the contracts tranche 3l measured.
+
+        BL-038 tranche 4c-prep. The method NAME is kept for identity continuity and is
+        now historically descriptive: it names the shapes tranche 3l accepted as
+        Category C, and that accepted classification is HISTORICAL EVIDENCE held by the
+        immutable ledger (see `test_the_accepted_tranche_3l_shard_002_state_is_pinned_
+        as_history`). What this method used to do was require those Category C DEFECTS
+        to still exist in the live test source -- exactly three `:\\s*"` quote-locked
+        regex literals, and the `# vX.Y.Z` comment welded to the SHA -- which made a
+        legal remediation of either shape fail this guard. A guard must not require the
+        defect it describes to survive. The checks below are representation-independent
+        and hold for BOTH the current source and a legally converted one."""
+        def indent(line):
+            return len(line) - len(line.lstrip())
+
+        def scalar(raw):
+            """YAML's three equivalent scalar renderings collapse to one string."""
+            raw = raw.strip()
+            paired = len(raw) > 1 and raw[0] == raw[-1] and raw[0] in "\"'"
+            return raw[1:-1] if paired else raw
+
+        def nested(block, start):
+            """The lines indented strictly deeper than block[start]."""
+            body = []
+            for line in block[start + 1:]:
+                if indent(line) <= indent(block[start]):
+                    break
+                body.append(line)
+            return body
+
+        def fields(block, at):
+            found = {}
+            for line in block:
+                if indent(line) == at and ":" in line:
+                    key, _, value = line.strip().partition(":")
+                    found[key.strip()] = scalar(value)
+            return found
+
+        def entries(block):
+            """Split a YAML block into its direct `- ` list items, by indentation."""
+            if not block:
+                return []
+            item = min(indent(line) for line in block)
+            starts = [i for i, line in enumerate(block)
+                      if indent(line) == item and line.lstrip().startswith("- ")]
+            out = []
+            for n, start in enumerate(starts):
+                stop = starts[n + 1] if n + 1 < len(starts) else len(block)
+                one = block[start:stop]
+                # normalise `- key: v` to `  key: v` so the item's own fields line up
+                out.append([re.sub(r"^(\s*)-(\s)", r"\1 \2", one[0], count=1)] + one[1:])
+            return out
+
+        def step_refs(text, action):
+            """Refs reached only by jobs -> a job's own steps -> a step's own `uses`.
+
+            Every hop is decided by indentation, which is what makes text inside a block
+            scalar inert: a commented line, a bare `uses:` in a `run: |` body, and even a
+            whole fake `steps:` header nested in one, all sit deeper than the job field
+            they would have to be to count.
+            """
+            body = [l for l in text.splitlines()
+                    if l.strip() and not l.lstrip().startswith("#")]
+            refs = []
+            for top, line in enumerate(body):
+                if indent(line) or line.strip() != "jobs:":
+                    continue
+                jobs = nested(body, top)
+                if not jobs:
+                    continue
+                job_at = min(indent(l) for l in jobs)
+                heads = [i for i, l in enumerate(jobs) if indent(l) == job_at]
+                for n, start in enumerate(heads):
+                    stop = heads[n + 1] if n + 1 < len(heads) else len(jobs)
+                    job = jobs[start:stop]
+                    own = job[1:]
+                    if not own:
+                        continue
+                    field_at = min(indent(l) for l in own)
+                    for i, l in enumerate(job):
+                        if indent(l) != field_at or l.strip() != "steps:":
+                            continue
+                        for step in entries(nested(job, i)):
+                            value = fields(step, indent(step[0])).get("uses", "")
+                            # a trailing inert `# vX.Y.Z` is allowed, and is not the contract
+                            found = re.fullmatch(re.escape(action) + r"@(\S+)",
+                                                 value.split("#")[0].strip())
+                            if found:
+                                refs.append(found.group(1))
+            return refs
+
+        # (a) Supply-chain contract, independent of the inert version comment: both
+        # workflows pin these actions to a full 40-hex commit SHA, never a mutable tag.
+        # Only a step's own active `uses` field counts.
+        for workflow in TRANCHE_3L_BOTH_WORKFLOWS:
+            text = (ROOT / workflow).read_text(encoding="utf-8")
+            for action in ("actions/checkout", "actions/setup-python"):
+                with self.subTest(workflow=workflow, action=action):
+                    refs = step_refs(text, action)
+                    self.assertTrue(refs)
+                    for ref in refs:
+                        self.assertRegex(ref, r"^[0-9a-f]{40}$")
+        # (b) Dependabot values IN THEIR STRUCTURAL LOCATION, independent of quote style.
+        # `x: "v"`, `x: 'v'` and `x: v` denote the same string, so the quoting is not the
+        # contract -- but the LOCATION is: the values must belong to the single update
+        # entry, and `interval` must sit under that entry's own `schedule`. A key/value
+        # line matching anywhere in the file is not enough.
         dependabot = (ROOT / TRANCHE_3L_TARGET_DEPENDABOT).read_text(encoding="utf-8")
-        quote_locked = [n.value for n in ast.walk(self.class_node(TRANCHE_3L_CLASSES[1]))
-                        if isinstance(n, ast.Constant) and isinstance(n.value, str)
-                        and ':\\s*"' in n.value]
-        self.assertEqual(len(quote_locked), 3)
-        for pattern in quote_locked:
-            with self.subTest(pattern=pattern):
-                self.assertRegex(dependabot, pattern)
-                self.assertNotRegex(dependabot.replace('"', "'"), pattern)
+        lines = [l for l in dependabot.splitlines()
+                 if l.strip() and not l.lstrip().startswith("#")]
+        top = next(i for i, l in enumerate(lines)
+                   if not indent(l) and l.strip() == "updates:")
+        # DIRECT update entries only: a nested list such as `labels:` / `- dependencies`
+        # is not another update, and text inside a block scalar is not a field.
+        direct = entries(nested(lines, top))
+        self.assertEqual(len(direct), 1)
+        entry = direct[0]
+        at = indent(entry[0])
+        entry_fields = fields(entry, at)
+        self.assertEqual(entry_fields.get("package-ecosystem"), "github-actions")
+        self.assertEqual(entry_fields.get("directory"), "/")
+        # `schedule` must be the entry's OWN field, and `interval` that mapping's own
+        # child. The child indentation is read from the block, so an equivalent
+        # indentation width is not part of the contract.
+        schedule = [i for i, l in enumerate(entry)
+                    if indent(l) == at and l.strip() == "schedule:"]
+        self.assertEqual(len(schedule), 1)
+        block = nested(entry, schedule[0])
+        self.assertTrue(block)
+        self.assertEqual(fields(block, min(indent(l) for l in block)).get("interval"),
+                         "weekly")
         # (c) One raw absence check over ORDINARY ENGLISH WORDS -- what separates
         # it from the negative raw checks kept at B here and in tranche 3k, all of
         # which use non-prose structural tokens. (Exact tuple pinned above.)
