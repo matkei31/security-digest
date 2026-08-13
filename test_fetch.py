@@ -7844,9 +7844,12 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
                      # conversion has not started -- WITHOUT the live count, which a
                      # legal conversion moves. The 638 figure stays where it is a fact:
                      # in the 3s/3t/3u/3w/3x paragraphs that recorded it at the time.
-                     "Category C source conversionは未着手であり引き続きblockedである",
+                     # BL-038 tranche 3z: tranche 3y is merged, so the CURRENT slice no
+                     # longer says Category C is blocked. What stays true, and is what this
+                     # paragraph owes, is that no conversion has been committed yet.
+                     "Category C source conversionは**まだ1件もcommitされていない**",
                      # BL-038 tranche 3v: the 4-PR split moved the boundary from 3v to 3y.
-                     "**Category Cのunblockはtranche 3y acceptance後**",
+                     "Category Cはcontrolled conversion workに対してtechnically unblockedである",
                      "Category A 30件はtranche 3tで判断完了",
                      "BL-038全体は未完了"):
             with self.subTest(fact=fact):
@@ -8093,7 +8096,10 @@ class Bl038Tranche3uMigrationEngineRecordSyncTest(unittest.TestCase):
                       "3v acceptanceまでunblocked扱いにしない"):
             with self.subTest(stale=stale):
                 self.assertNotIn(stale, current)
-        self.assertIn("**Category Cのunblockはtranche 3y acceptance後**", current)
+        # BL-038 tranche 3z: the boundary this method polices is "3u is not what unblocks
+        # Category C". That is unchanged -- only the answer to "then what did" has moved from
+        # a promise about tranche 3y's acceptance to the fact of its merge.
+        self.assertIn("tranche 3yはmergeまで完了し", current)
         self.assertIn("tranche 3uはmigration engine foundationのみを確定", current)
 
     def test_the_engine_ships_and_the_ledgers_agree(self):
@@ -8208,10 +8214,14 @@ class Bl038Tranche3vCouplingRetargetRecordSyncTest(unittest.TestCase):
             with self.subTest():
                 self.assertNotIn("H7-A+B 2件(3h/3i", text)
 
-    def test_the_category_c_unblock_boundary_now_names_tranche_3y(self):
+    def test_the_category_c_unblock_boundary_named_tranche_3y_and_was_reached(self):
+        """BL-038 tranche 3z: tranche 3v moved the unblock boundary to tranche 3y, and that
+        boundary has now been reached by merge. The tranche's own STATUS paragraph keeps the
+        boundary it set as history; the CURRENT slice records that it was reached."""
         self.assertIn("unblockはtranche 3y acceptance後", self.status)
-        self.assertIn("Category Cのunblockはtranche 3y acceptance後", self.bl038)
         self.assertIn("real Category C conversion 0件", self.bl038)
+        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        self.assertIn("technical Category C unblockは完了している", current)
         # The current-state text must not still promise an unblock at 3v.
         # The LAST 残作業 bullet is the current-state one; earlier ones are history.
         current = self.bl038[self.bl038.rindex("- **残作業:**"):]
@@ -8617,33 +8627,49 @@ class Bl038Tranche3yBLifecycleUnblockRecordSyncTest(unittest.TestCase):
             with self.subTest(status_fact=fact):
                 self.assertIn(fact, self.status)
 
-    def test_the_record_never_claims_the_unblock_or_the_ticket_is_done(self):
-        """Criteria are satisfied at IMPLEMENTATION level only. Until this tranche is
-        independently accepted and merged, Category C stays blocked, and bulk conversion
-        is a separate approval either way."""
-        for over_claim in ("Category C is technically unblocked",
-                           "Category C technically unblocked",
-                           # BL-038 tranche 3y-b round 2: criterion H is satisfied again --
-                           # R-A/R-B are closed by correction 3y-13 -- so the criteria claim is
-                           # legitimate and moved to the REQUIRED list below. What stays
-                           # forbidden is the stale A-J form (the criteria are A-L now) and any
-                           # claim that the unblock itself has happened.
-                           "criteria A〜J 10条件すべて充足",
-                           "Category C conversion開始可",
-                           "Category Cをunblock済み",
-                           "bulk conversion開始",
-                           "BL-038全体最終受入済み",
-                           "BL-038 complete"):
+    def test_the_current_record_states_the_unblock_without_over_claiming(self):
+        """BL-038 tranche 3z: this was `test_the_record_never_claims_the_unblock_or_the_ticket
+        _is_done`, tranche 3y-b's own pre-merge acceptance gate. Tranche 3y is merged, so
+        "Category C is technically unblocked" is now TRUE, and a section-wide ban on saying so
+        would forbid the record from stating what happened. The gate is retired and replaced
+        by two NARROW checks over the CURRENT slice only -- the last `残作業` bullet -- so the
+        historical paragraphs keep their own pre-merge wording untouched and this method
+        cannot fail merely because they still say "blocked". Nothing here pins the Category C
+        count, an empty migration ledger, or a physical shard layout, so a legal conversion or
+        migration cannot break it."""
+        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        for stated in ("Category Cはcontrolled conversion workに対してtechnically unblockedである",
+                       "technical Category C unblockは完了している",
+                       "これはbulk conversionの承認ではなく",
+                       "BL-038全体は未完了"):
+            with self.subTest(current_states=stated):
+                self.assertIn(stated, current)
+        # Still not true after the merge, and checked only where a stale claim would matter.
+        for over_claim in ("bulk conversion開始", "Category C conversionは完了",
+                           "BL-038全体最終受入済み", "BL-038 complete"):
             with self.subTest(not_claimed=over_claim):
-                self.assertNotIn(over_claim, self.bl038)
-                self.assertNotIn(over_claim, self.status)
-        for stated in ("**Category Cはindependent acceptanceとmergeが完了するまで引き続きblocked**",
-                       "**real Category C conversionは0件committed**",
-                       "bulk conversionは未着手",
-                       "**BL-038全体は未完了**"):
-            with self.subTest(stated=stated):
-                self.assertIn(stated, self.bl038)
+                self.assertNotIn(over_claim, current)
+        # The unblock must not be re-frozen onto the very values tranche 3y-b unfroze.
+        for refrozen in ("Category C 638件は引き続きblocked", "migrations == []"):
+            with self.subTest(not_refrozen=refrozen):
+                self.assertNotIn(refrozen, current)
         self.assertIn("**BL-038全体未完了。**", self.status)
+
+    def test_the_3y_b_paragraph_keeps_its_pre_merge_boundary_as_history(self):
+        """The companion to the method above: what tranche 3y-b recorded about ITSELF -- that
+        it was blocked until independently accepted and merged, and that no conversion was
+        committed at the time -- is history and must survive the transition unedited. Scoped
+        to 3y-b's own bullet, never to the whole section."""
+        head = "- **tranche 3y-b technical unblock判定(2026-08-13、round 2 fix後):**"
+        self.assertIn(head, self.bl038)
+        bullet = self.bl038[self.bl038.index(head):]
+        bullet = bullet[:bullet.index("\n\n- **")]
+        for fact in ("**Category Cはindependent acceptanceとmergeが完了するまで引き続きblocked**",
+                     "**real Category C conversionは0件committed**",
+                     "bulk conversionは未着手",
+                     "**BL-038全体は未完了**"):
+            with self.subTest(historical_fact=fact):
+                self.assertIn(fact, bullet)
 
 
 if __name__ == "__main__":
