@@ -175,7 +175,10 @@ class UiSpecDocumentTest(unittest.TestCase):
             "## SD-021 — Unify digest navigation labels and separate direction from global navigation",
             self.decisions,
         )
-        self.assertIn("SD-020's validated earlier-date selection", self.decisions)
+        self.assertIn(
+            "SD-020's validated earlier-date selection",
+            " ".join(self.decisions.split()),
+        )
         self.assertIn("only for navigation labels, date display, placement", self.decisions)
 
     def test_bl020_source_footer_is_plain_user_accepted_and_complete(self):
