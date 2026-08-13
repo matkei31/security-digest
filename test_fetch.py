@@ -8164,8 +8164,11 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         for fact in ("3s・3t受入済み",
                      "document・static-contract assertion classificationは全件分類済み",
                      "**Category A helper consolidation要否判断はtranche 3tで完了し、"
-                     "追加helper consolidationは実施しない**",
-                     "Category C source conversionとBL-038全体最終受入は未完了"):
+                     "追加helper consolidationは実施しない**"):
+            # BL-038 closure (2026-08-14): the summary used to end by naming Category C
+            # conversion and BL-038's own final acceptance as outstanding. Category A's
+            # decision -- this method's actual subject -- is unchanged; the ticket's own
+            # completion state is not this class's fact and is no longer asserted here.
             with self.subTest(fact=fact):
                 self.assertIn(fact, line)
         # The old phrasing listed Category A as an incomplete task; it must not return.
