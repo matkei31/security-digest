@@ -18,8 +18,10 @@ RANGE_START = 'test_sd024_sd025_and_follow_up_tickets_are_recorded'
 RANGE_END = 'test_security_requirements_internal_markdown_links_resolve'
 METHOD_RANGE = {"start": RANGE_START, "end": RANGE_END}
 PRE_SHARDS = ('document_test_classification.json', 'document_test_classification_001.json', 'document_test_classification_002.json', 'document_test_classification_003.json', 'document_test_classification_004.json', 'document_test_classification_005.json')
-EXPECTED_INDEX = PRE_SHARDS + (SHARD_FILENAME,)
-CURRENT_INDEX = EXPECTED_INDEX + ('document_test_classification_007.json',)
+# BL-038 tranche 3y-b (correction 3y-12): the physical pre-/current-index filename
+# tuples below lost their last use when this tranche's CURRENT lookups moved to the
+# logical population. Accepted physical locations are history and the ledger holds
+# what is actually load-bearing about them, so the dead tuples were removed.
 EXPECTED_ASSERTIONS = 133
 EXPECTED_METHODS = 9
 EXPECTED_METHOD_COUNTS = (('test_sd024_sd025_and_follow_up_tickets_are_recorded', 81), ('test_owner_checklist_mandatory_items_are_resolved_without_sensitive_data', 5), ('test_agents_references_security_docs_without_blanket_authorization', 12), ('test_agents_ui_spec_reference_delegates_version_too', 3), ('test_agents_describes_pr_ci_and_fetch_yml_triggers_accurately', 14), ('test_agents_pr_ci_checkout_target_is_the_merge_candidate_not_the_head', 5), ('test_agents_distinguishes_unittest_target_diff_check_range_and_head_association', 6), ('test_agents_pr_ci_secret_and_token_wording_is_precise', 4), ('test_security_requirements_internal_markdown_links_resolve', 3))
@@ -106,7 +108,12 @@ class Tranche3rClassificationTest(unittest.TestCase):
         self.assertEqual(sum(summary["category_counts"][c] for c in ("A","B","C","D")),
                          summary["inventoried_assertions"])
         self.assertEqual((summary["unclassified"],summary["stale"],summary["fingerprint_mismatch"]),(0,0,0))
-        owned={e["method"] for name in EXPECTED_INDEX for e in json.loads((ROOT/name).read_text(encoding="utf-8"))["assertions"]
+        # BL-038 tranche 3y-b round 1 (P-R3, correction 3y-12): CURRENT class ownership is a
+        # logical question and was being answered by reading a fixed list of physical shard
+        # files, so a legal re-shard broke it even though ownership was still correct. The
+        # population is now the complete indexed one; where those entries physically live is
+        # the index's business, and accepted 3r's physical location is history.
+        owned={e["method"] for e in dth.live_entries(ROOT)
                if (e["file"],e["class"])==(SOURCE_FILE,CLASS_NAME)}
         self.assertEqual(owned,set(self.order))
 

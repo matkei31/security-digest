@@ -7699,9 +7699,12 @@ class Bl038Tranche3sAcceptanceRecordTest(unittest.TestCase):
         the current tree to keep reproducing it is what turned a legal Category C -> B
         conversion into a test failure. What the live index owes at any point in the
         lifecycle is that it is fully classified, internally consistent and clean."""
+        # BL-038 tranche 3y-b round 1 (P-R1, correction 3y-12): the exact shard count and
+        # the final shard's filename were still pinned here. This method is not the index
+        # artifact's owner -- `ClassificationShardIndexTest` is -- so a validator-clean legal
+        # re-shard broke a test whose subject is only that the live index is fully classified
+        # and internally consistent. The shards are now whatever the CURRENT index declares.
         index = json.loads((self.root / "document_test_classification_index.json").read_text(encoding="utf-8"))
-        self.assertEqual(len(index["shards"]), 8)
-        self.assertEqual(index["shards"][-1], "document_test_classification_007.json")
         entries = [
             entry
             for name in index["shards"]
@@ -8579,12 +8582,22 @@ class Bl038Tranche3yBLifecycleUnblockRecordSyncTest(unittest.TestCase):
             "**load-bearingであり装飾ではない**",
             "**Proof 6のmigration recordはtemporary evidenceでありcommitしない",
             "**historyは両proofとも0 diff、snapshotも0 diff**",
-            "**tranche 3y implementationはtechnical Category C unblock criteriaを満たす**",
+            # BL-038 tranche 3y-b round 1: criteria K and L. `3y-12` and Proof 7 are
+            # load-bearing completion evidence, so the record must carry both.
+            "tranche 3y-b round 1 fix(physical-index population residuals、2026-08-13)",
+            "single grouped correction **`3y-12`**",
+            "tranche 3y-b Proof 7(legal late-shard re-layout、2026-08-13)",
+            "**P-R1〜P-R8は8件すべてgreen**",
+            "**Proof 7: genuine coupling failures 0／unrelated failures 0／legitimate O2 failures 1**",
+            "**`ClassificationShardIndexTest`はindex artifactのlegitimate O2 ownerであり、remediation scope外**",
+            "**同型のgenuine residualがexactly 2件**",
+            "criteriaは**A〜L**へ拡張した",
         ):
             with self.subTest(fact=fact):
                 self.assertIn(fact, self.bl038)
         for fact in ("BL-038 tranche 3y-b (lifecycle retarget＋conversion-path proofs, 2026-08-13 JST)",
-                     "**technical unblock criteria A〜J 10条件すべて充足**",
+                     "**genuine coupling 0／unrelated 0／legitimate O2 failure 1**",
+                     "**criterion Hは未充足**",
                      "**real Category C conversion 0件committed**"):
             with self.subTest(status_fact=fact):
                 self.assertIn(fact, self.status)
@@ -8595,6 +8608,15 @@ class Bl038Tranche3yBLifecycleUnblockRecordSyncTest(unittest.TestCase):
         is a separate approval either way."""
         for over_claim in ("Category C is technically unblocked",
                            "Category C technically unblocked",
+                           # BL-038 tranche 3y-b round 1: criterion H is not satisfied while
+                           # residuals R-A/R-B are open, so the satisfied-claim may not return
+                           # to the record until they are adjudicated and re-proved. Only the
+                           # AFFIRMATIVE forms are blacklisted: the bare phrases appear inside
+                           # this tranche's own DENIAL of them, so a plain substring test would
+                           # measure the wrong thing -- the same trap the tranche 3t record
+                           # guard documents for "BL-038完了".
+                           "**technical unblock criteria A〜J 10条件すべて充足**",
+                           "**tranche 3y implementationはtechnical Category C unblock criteriaを満たす**",
                            "Category C conversion開始可",
                            "Category Cをunblock済み",
                            "bulk conversion開始",
@@ -8604,6 +8626,9 @@ class Bl038Tranche3yBLifecycleUnblockRecordSyncTest(unittest.TestCase):
                 self.assertNotIn(over_claim, self.bl038)
                 self.assertNotIn(over_claim, self.status)
         for stated in ("**Category Cはindependent acceptanceとmergeが完了するまで引き続きblocked**",
+                       "**H未充足のため、`technical unblock criteria all satisfied`および"
+                       "`tranche 3y implementationはtechnical Category C unblock criteriaを満たす`"
+                       "はcurrent truthとして主張しない。**",
                        "**real Category C conversionは0件committed**",
                        "bulk conversionは未着手",
                        "**BL-038全体は未完了**"):

@@ -2696,13 +2696,19 @@ class Tranche3iClassificationShardAppendTest(unittest.TestCase):
         `duplicate-scope-file` and editing scope[0] would break the pinned
         tranche 3h historical digest. This records the 3i state as HISTORY; tranche
         3y-a-1 (R3, 3y-6) stopped forbidding the current index to hold two again."""
+        # BL-038 tranche 3y-b round 1 (P-R5, correction 3y-12): this method said in its own
+        # name that the two-shard index is HISTORY, then pinned the CURRENT index to
+        # EXPECTED_SHARD_ORDER / EXPECTED_SHARD_COUNT, to a `_002` file existing, and to the
+        # discovered filenames matching that exact tuple. It is not the index owner
+        # (`ClassificationShardIndexTest` is), so a legal re-shard broke it. The historical
+        # count stays; the current side keeps only generic legality.
         self.assertEqual(TRANCHE_3I_HISTORICAL_SHARD_COUNT, 2)
         index = json.loads(INDEX_PATH.read_text(encoding="utf-8"))
-        self.assertEqual(index["shards"], list(EXPECTED_SHARD_ORDER))
-        self.assertEqual(len(index["shards"]), EXPECTED_SHARD_COUNT)
-        self.assertEqual(index["shards"][:2], [MANIFEST_PATH.name, SHARD_001_FILENAME])
-        self.assertEqual(dti.discover_shard_filenames(ROOT), sorted(EXPECTED_SHARD_ORDER))
-        self.assertTrue(SHARD_002_PATH.exists())
+        self.assertEqual([f.format() for f in dti.validate_indexed_manifests(root=ROOT)[0]], [])
+        for shard in index["shards"]:
+            with self.subTest(shard=shard):
+                self.assertTrue(dti.is_allowed_shard_filename(shard) or shard == MANIFEST_PATH.name)
+        self.assertEqual(sorted(index["shards"]), sorted(dti.discover_shard_filenames(ROOT)))
         # Shard 001 keeping room is exactly why this is a structural decision
         # rather than a capacity one.
         self.assertLess(SHARD_001_CURRENT_LINE_COUNT, dti.SHARD_LINE_CAP)
@@ -3468,19 +3474,27 @@ class Tranche3mClassificationShard002AppendTest(unittest.TestCase):
         """Selection unit: one file's source-order contiguous run of UNCLASSIFIED
         classes, capped at 150, no split inside a class. Only two classes here
         are unclassified and they are not adjacent: 403 (over cap) and this 17."""
-        owned = set()
-        for name in EXPECTED_SHARD_ORDER:
-            for scope_entry in json.loads((ROOT / name).read_text(encoding="utf-8"))["scope"]:
-                for class_name in scope_entry["classes"]:
-                    if (scope_entry["file"] == TRANCHE_3M_SOURCE_FILE and name != SHARD_002_FILENAME
-                            and "method_range" not in scope_entry): owned.add(class_name)
+        # BL-038 tranche 3y-b round 1 (P-R6, correction 3y-12): this is a HISTORICAL
+        # selection question -- what was already wholly owned when tranche 3m chose its
+        # candidate -- and it was answered by walking a fixed tuple of physical shard files
+        # and excluding one by FILENAME (`name != SHARD_002_FILENAME`, i.e. the file 3m's own
+        # scope happened to land in). Reconstructed from the immutable accepted scope
+        # descriptors instead, excluding 3m by TRANCHE identity, which is what was meant.
+        # Measured equivalent to the physical form on this tree: the same 6 classes.
+        owned = {class_name
+                 for tranche in dth.ACCEPTED_SCOPES if tranche != "3m"
+                 for scope_entry in dth.ACCEPTED_SCOPES[tranche]
+                 if scope_entry["file"] == TRANCHE_3M_SOURCE_FILE and "method_range" not in scope_entry
+                 for class_name in scope_entry["classes"]}
         unclassified = [(i, c) for i, c in enumerate(self.source_classes) if c not in owned and c != TRANCHE_3M_CLASS]
         # Still true after tranche 3o: 3o took a source-order method RANGE of the
         # over-cap class, not the whole class, so the class is not wholly owned.
         self.assertEqual(unclassified, [(0, TRANCHE_3M_OVER_CAP_CLASS)])
-        self.assertTrue(any("method_range" in e for name in EXPECTED_SHARD_ORDER
-                            for e in json.loads((ROOT / name).read_text(encoding="utf-8"))["scope"]
-                            if e["file"] == TRANCHE_3M_SOURCE_FILE and TRANCHE_3M_OVER_CAP_CLASS in e["classes"]))
+        self.assertTrue(any("method_range" in scope_entry
+                            for tranche in dth.ACCEPTED_SCOPES
+                            for scope_entry in dth.ACCEPTED_SCOPES[tranche]
+                            if scope_entry["file"] == TRANCHE_3M_SOURCE_FILE
+                            and TRANCHE_3M_OVER_CAP_CLASS in scope_entry["classes"]))
         self.assertEqual(self.source_classes.index(TRANCHE_3M_CLASS), TRANCHE_3M_SOURCE_CLASS_INDEX)
         # The two candidates are separated by classes other shards already own,
         # so they cannot be joined into one contiguous run.
@@ -4173,11 +4187,17 @@ class Tranche3oShard003Test(unittest.TestCase):
         """The reason the scope names BOUNDARIES rather than 19 method names: a
         method added between them is inventoried, and with no manifest entry it
         fails `unclassified` instead of being silently skipped."""
+        # BL-038 tranche 3y-b round 1 (P-R8, correction 3y-12): the synthetic corpus was
+        # copied from a fixed tuple of physical shard filenames, so a legal re-shard made the
+        # fixture raise FileNotFoundError before it could measure anything. The corpus now
+        # follows whatever the CURRENT index declares. The behaviour under test -- a method
+        # inserted inside an accepted method_range becomes `unclassified` -- is unchanged.
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            for name in list(EXPECTED_SHARD_ORDER) + [dti.INDEX_FILENAME]:
+            indexed = json.loads(INDEX_PATH.read_text(encoding="utf-8"))["shards"]
+            for name in list(indexed) + [dti.INDEX_FILENAME]:
                 shutil.copy(ROOT / name, root / name)
-            for name in {f for _, m in dti.load_shard_manifests(list(EXPECTED_SHARD_ORDER), root=ROOT)[1]
+            for name in {f for _, m in dti.load_shard_manifests(list(indexed), root=ROOT)[1]
                          for f in {e["file"] for e in m["scope"]}}:
                 shutil.copy(ROOT / name, root / name)
             for name in ("BACKLOG.md", "SECURITY_REQUIREMENTS.md", "STATUS.md", "DECISIONS.md", "AGENTS.md"):

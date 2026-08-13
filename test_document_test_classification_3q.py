@@ -65,8 +65,12 @@ PRE_3Q_SHARDS = (
     "document_test_classification_003.json",
     "document_test_classification_004.json",
 )
-EXPECTED_INDEX = PRE_3Q_SHARDS + (SHARD_FILENAME,)
-CURRENT_INDEX = EXPECTED_INDEX + ("document_test_classification_006.json", "document_test_classification_007.json")
+# BL-038 tranche 3y-b (correction 3y-12): the physical pre-/current-index filename
+# tuples below lost their last use when this tranche's CURRENT lookups moved to the
+# logical population. Accepted physical locations are history and the ledger holds
+# what is actually load-bearing about them, so the dead tuples were removed.
+# BL-038 tranche 3y-b (P-R2, correction 3y-12): CURRENT_INDEX was removed. It was the
+# CURRENT physical shard list, and its only use pinned `summary["shard_files"]` to it.
 # BL-038 tranche 3y-b: the CURRENT_COMBINED_* constants were removed. They pinned the
 # live tree to the tally that happened to be current when tranche 3s landed, so a legal
 # Category C -> B conversion failed a test whose subject is tranche 3q.
@@ -128,8 +132,12 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
         # snapshot. The live repository has since legally appended tranches 3r and 3s.
         self.assertEqual((EXPECTED_COMBINED_ASSERTIONS, EXPECTED_COMBINED_CATEGORIES),
                          (1355, {"A": 30, "B": 536, "C": 581, "D": 208}))
-        self.assertEqual(summary["shard_count"], len(CURRENT_INDEX))
-        self.assertEqual(summary["shard_files"], list(CURRENT_INDEX))
+        # BL-038 tranche 3y-b round 1 (P-R2, correction 3y-12): the exact CURRENT shard
+        # count and file list were pinned through `CURRENT_INDEX`, forbidding a legal
+        # re-shard -- and contradicting this class's own
+        # `test_index_and_scope_are_exactly_the_new_disjoint_range`, which already records
+        # that the exact CURRENT index is not pinned. The constant had no other use and
+        # was removed with it.
         self.assertEqual(summary["manifest_assertions"], summary["inventoried_assertions"])
         self.assertEqual(sum(summary["category_counts"][c] for c in ("A", "B", "C", "D")),
                          summary["inventoried_assertions"])

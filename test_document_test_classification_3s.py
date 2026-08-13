@@ -14,16 +14,10 @@ ROOT = Path(__file__).resolve().parent
 SOURCE_FILE = "test_source_usage_policy.py"
 CLASS_NAME = "SourceUsagePolicyTest"
 SHARD_FILENAME = "document_test_classification_007.json"
-PRE_SHARDS = (
-    "document_test_classification.json",
-    "document_test_classification_001.json",
-    "document_test_classification_002.json",
-    "document_test_classification_003.json",
-    "document_test_classification_004.json",
-    "document_test_classification_005.json",
-    "document_test_classification_006.json",
-)
-EXPECTED_INDEX = PRE_SHARDS + (SHARD_FILENAME,)
+# BL-038 tranche 3y-b (correction 3y-12): the physical pre-/current-index filename
+# tuples below lost their last use when this tranche's CURRENT lookups moved to the
+# logical population. Accepted physical locations are history and the ledger holds
+# what is actually load-bearing about them, so the dead tuples were removed.
 RANGE_START = "test_mandiant_distinguishes_rss_evidence_from_terms_evidence"
 RANGE_END = "test_relationship_section_defers_enforcement_to_bl032"
 EXPECTED_METHOD_COUNTS = (
@@ -235,11 +229,17 @@ class Tranche3sClassificationTest(unittest.TestCase):
         cls.entries = dth.accepted_window(ROOT, "3s")[1]
 
     def test_latest_main_tail_selection_is_exactly_four_methods_37_assertions(self):
+        # BL-038 tranche 3y-b round 1 (P-R7, correction 3y-12): "which methods were already
+        # owned before tranche 3s selected its tail" is a question about accepted ownership,
+        # and it was answered by reading a fixed list of pre-3s physical shard FILES. Asked
+        # of the immutable accepted scope descriptors instead -- every accepted tranche other
+        # than 3s -- so a legal re-shard cannot change the answer. Measured equivalent to the
+        # physical form on this tree: the same 32 methods.
         owned = {
-            e["method"]
-            for name in PRE_SHARDS
-            for e in json.loads((ROOT / name).read_text(encoding="utf-8"))["assertions"]
-            if (e["file"], e["class"]) == (SOURCE_FILE, CLASS_NAME)
+            method
+            for method in self.order
+            if any(dth.owns(tranche, SOURCE_FILE, CLASS_NAME, method)
+                   for tranche in dth.ACCEPTED_SCOPES if tranche != "3s")
         }
         start = next(i for i, name in enumerate(self.order) if name not in owned)
         run = 0
@@ -383,10 +383,12 @@ class Tranche3sClassificationTest(unittest.TestCase):
         self.assertEqual(sum(summary["category_counts"][c] for c in ("A", "B", "C", "D")),
                          summary["inventoried_assertions"])
         self.assertEqual((summary["unclassified"], summary["stale"], summary["fingerprint_mismatch"]), (0, 0, 0))
+        # BL-038 tranche 3y-b round 1 (P-R4, correction 3y-12): same defect as P-R3 --
+        # CURRENT ownership read out of a fixed physical shard list. Accepted 3s's physical
+        # location is history; the current population is the complete indexed one.
         owned = {
             e["method"]
-            for name in EXPECTED_INDEX
-            for e in json.loads((ROOT / name).read_text(encoding="utf-8"))["assertions"]
+            for e in dth.live_entries(ROOT)
             if (e["file"], e["class"]) == (SOURCE_FILE, CLASS_NAME)
         }
         self.assertEqual(owned, set(self.order))
