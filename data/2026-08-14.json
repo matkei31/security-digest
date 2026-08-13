@@ -1,0 +1,258 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-08-14",
+  "generated_at": "2026-08-14T07:39:47.613533+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 4,
+    "ai_attempted_count": 2,
+    "ai_success_count": 2,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 2,
+    "ai_eligible_count": 2
+  },
+  "counts": {
+    "importance": {
+      "高": 1,
+      "中": 0,
+      "低": 1,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 1,
+      "今週確認": 0,
+      "参考": 1,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 1,
+      "攻撃・脅威動向": 0,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 0,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "掲載2件｜重要度「高」1件｜本日確認1件｜今週確認0件\n本日中に適用性または初動要否を確認する記事が1件あります。",
+    "important_highlights": [
+      "攻撃者が、公開された概念実証(PoC)コードを利用して、Microsoft SharePointの認証バイパス脆弱性(CVE-2026-55040、CVSSスコア9.1)を悪用し始めています。この脆弱性は、2026年7月の月例パッチで修正済みです。"
+    ],
+    "discussion_points": [
+      "攻撃者が、公開された概念実証(PoC)コードを利用して、Microsoft SharePointの認証バイパス脆弱性(CVE-2026-55040、CVSSスコア9.1)を悪用し始めています。この脆弱性は、2026年7月の月例パッチで修正済みです。\n金融機関でMicrosoft SharePointを利用している場合、本脆弱性の影響を受ける可能性があります。特に外部公開しているSharePoint環境は、認証バイパスによる不正アクセスリスクが高まります。"
+    ],
+    "check_items": [
+      "自社および委託先におけるMicrosoft SharePointの利用有無と、影響を受けるバージョン・外部露出状況を確認する",
+      "Microsoftが2026年7月の月例パッチで提供した修正プログラムの適用状況を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:3f3f42b0119b2bb409092910cae493264bdd9c9d01160f80fc288b63cdf1c330",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/curiouser-and-curiouser/",
+      "canonical_url": "https://blog.talosintelligence.com/curiouser-and-curiouser/",
+      "published_at": "2026-08-14T03:00:18+09:00",
+      "fetched_at": "2026-08-14T07:39:13.643375+09:00",
+      "title": "Curiouser and Curiouser",
+      "raw_title": "Curiouser and Curiouser",
+      "raw_excerpt": null,
+      "content_hash": "sha256:653da99fdebd96551ef987eed5385f7faf4a069603045a8cea565c06a1d66f7e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7e155a93bd41d6e2bf986de84fcac0ce953d463ec817f90ea478f0e1a4440699",
+      "source_id": "ncsc",
+      "source_name": "NCSC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.ncsc.gov.uk/blogs/how-bitlocker-pins-help-protect-your-data-and-devices",
+      "canonical_url": "https://www.ncsc.gov.uk/blogs/how-bitlocker-pins-help-protect-your-data-and-devices",
+      "published_at": "2026-08-13T21:00:00+09:00",
+      "fetched_at": "2026-08-14T07:39:13.643375+09:00",
+      "title": "BitLocker PINがデータとデバイスの保護にどのように役立つか",
+      "raw_title": "How BitLocker PINs help protect your data and devices",
+      "raw_excerpt": "Using a PIN mitigates many BitLocker vulnerabilities. Make sure you’re ready for the next one...",
+      "content_hash": "sha256:852ae50897797f9d960601918140da1cebca2dfc0dcabd91c01e61acf9bf5b08",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-14T07:39:15.317041+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "BitLockerのPIN利用に関する一般的なセキュリティ啓発が主題であり、特定の脆弱性やインシデント、規制に関するものではないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、BitLockerのPINを使用することで多くの脆弱性が軽減されること、そして将来の脅威に備えることの重要性について解説しています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。BitLockerの利用状況に応じて、一般的な情報セキュリティ対策の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、BitLockerのPIN利用に関する一般的な啓発情報であり、具体的な脅威や期限が示されていないため「低」です。確認目安は、短期的な対応を要する内容ではなく、中長期的なセキュリティ対策の参考情報であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:bf8ef362fde584a818c7268cec15d193599d71fafd19dfaf520814f359196c51",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/dissecting-the-jwr-phishing-framework/",
+      "canonical_url": "https://blog.talosintelligence.com/dissecting-the-jwr-phishing-framework/",
+      "published_at": "2026-08-13T19:00:35+09:00",
+      "fetched_at": "2026-08-14T07:39:13.643375+09:00",
+      "title": "Dissecting the JWR phishing framework",
+      "raw_title": "Dissecting the JWR phishing framework",
+      "raw_excerpt": null,
+      "content_hash": "sha256:232e90e50306021b45cca5c8796d0afee6b2ec7f2e4b77a276aa10aff2b239fc",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:3c5ef5fa5324c56d0088ebd0c255bc52445049f09368b126e7e180b72ff900db",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/attackers-exploit-sharepoint.html",
+      "canonical_url": "https://thehackernews.com/2026/08/attackers-exploit-sharepoint.html",
+      "published_at": "2026-08-13T15:09:48+09:00",
+      "fetched_at": "2026-08-14T07:39:13.643375+09:00",
+      "title": "Attackers Exploit SharePoint Authentication Bypass After Public PoC Release",
+      "raw_title": "Attackers Exploit SharePoint Authentication Bypass After Public PoC Release",
+      "raw_excerpt": null,
+      "content_hash": "sha256:853f92653d6053ba943d1c03180e015e3134835a5a63c998fd60ee56d88d2de7",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-14T07:39:32.613072+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Microsoft SharePointの認証バイパス脆弱性とその悪用が主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "攻撃者が、公開された概念実証(PoC)コードを利用して、Microsoft SharePointの認証バイパス脆弱性(CVE-2026-55040、CVSSスコア9.1)を悪用し始めています。この脆弱性は、2026年7月の月例パッチで修正済みです。",
+        "financial_impact": "金融機関でMicrosoft SharePointを利用している場合、本脆弱性の影響を受ける可能性があります。特に外部公開しているSharePoint環境は、認証バイパスによる不正アクセスリスクが高まります。",
+        "recommended_actions": [
+          "自社および委託先におけるMicrosoft SharePointの利用有無と、影響を受けるバージョン・外部露出状況を確認する",
+          "Microsoftが2026年7月の月例パッチで提供した修正プログラムの適用状況を確認する",
+          "SharePoint環境のログを監視し、不審な認証試行やアクセスがないか確認する"
+        ],
+        "reason": "重要度は、CVSSスコア9.1の認証バイパス脆弱性であり、PoC公開後に悪用が確認されているため「高」です。確認目安は、PoC公開後に攻撃が開始されており、即時対応の根拠があるため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
