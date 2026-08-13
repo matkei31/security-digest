@@ -8592,12 +8592,27 @@ class Bl038Tranche3yBLifecycleUnblockRecordSyncTest(unittest.TestCase):
             "**`ClassificationShardIndexTest`はindex artifactのlegitimate O2 ownerであり、remediation scope外**",
             "**同型のgenuine residualがexactly 2件**",
             "criteriaは**A〜L**へ拡張した",
+            # BL-038 tranche 3y-b round 2: 3y-13 and the re-layout sweep are load-bearing
+            # completion evidence for criteria H, K and L.
+            "tranche 3y-b round 2 fix(historical selection ownership、correction `3y-13`、2026-08-13)",
+            "**`3y-12`は変更していない**",
+            "**accepted tranche identities＋`dth.owns(...)`**",
+            "tranche 3y-b round 2 re-layout probe sweep(2026-08-13)",
+            "**001＋002はillegalであることを実測し、policyを発明せず対象外とした**",
+            "**4本すべてでgenuine coupling failures 0／unrelated failures 0／legitimate O2 failures 1**",
+            "**A〜L 12条件すべて充足**",
+            "**tranche 3y implementationはtechnical Category C unblock criteriaを満たす**",
+            # The closure statement, in the exact wording the review authorised.
+            "**under the defined historical/current coupling boundary plus the tranche 3y-b "
+            "focused physical-index ownership recheck and Proof 7, unresolved genuine "
+            "historical/current coupling detected = 0.**",
+            "**将来couplingが絶対発生しないという主張ではない**",
         ):
             with self.subTest(fact=fact):
                 self.assertIn(fact, self.bl038)
         for fact in ("BL-038 tranche 3y-b (lifecycle retarget＋conversion-path proofs, 2026-08-13 JST)",
                      "**genuine coupling 0／unrelated 0／legitimate O2 failure 1**",
-                     "**criterion Hは未充足**",
+                     "**criteria A〜L 12条件すべて充足**",
                      "**real Category C conversion 0件committed**"):
             with self.subTest(status_fact=fact):
                 self.assertIn(fact, self.status)
@@ -8608,15 +8623,12 @@ class Bl038Tranche3yBLifecycleUnblockRecordSyncTest(unittest.TestCase):
         is a separate approval either way."""
         for over_claim in ("Category C is technically unblocked",
                            "Category C technically unblocked",
-                           # BL-038 tranche 3y-b round 1: criterion H is not satisfied while
-                           # residuals R-A/R-B are open, so the satisfied-claim may not return
-                           # to the record until they are adjudicated and re-proved. Only the
-                           # AFFIRMATIVE forms are blacklisted: the bare phrases appear inside
-                           # this tranche's own DENIAL of them, so a plain substring test would
-                           # measure the wrong thing -- the same trap the tranche 3t record
-                           # guard documents for "BL-038完了".
-                           "**technical unblock criteria A〜J 10条件すべて充足**",
-                           "**tranche 3y implementationはtechnical Category C unblock criteriaを満たす**",
+                           # BL-038 tranche 3y-b round 2: criterion H is satisfied again --
+                           # R-A/R-B are closed by correction 3y-13 -- so the criteria claim is
+                           # legitimate and moved to the REQUIRED list below. What stays
+                           # forbidden is the stale A-J form (the criteria are A-L now) and any
+                           # claim that the unblock itself has happened.
+                           "criteria A〜J 10条件すべて充足",
                            "Category C conversion開始可",
                            "Category Cをunblock済み",
                            "bulk conversion開始",
@@ -8626,9 +8638,6 @@ class Bl038Tranche3yBLifecycleUnblockRecordSyncTest(unittest.TestCase):
                 self.assertNotIn(over_claim, self.bl038)
                 self.assertNotIn(over_claim, self.status)
         for stated in ("**Category Cはindependent acceptanceとmergeが完了するまで引き続きblocked**",
-                       "**H未充足のため、`technical unblock criteria all satisfied`および"
-                       "`tranche 3y implementationはtechnical Category C unblock criteriaを満たす`"
-                       "はcurrent truthとして主張しない。**",
                        "**real Category C conversionは0件committed**",
                        "bulk conversionは未着手",
                        "**BL-038全体は未完了**"):

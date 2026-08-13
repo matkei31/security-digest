@@ -17,7 +17,10 @@ SHARD_PATH = ROOT / SHARD_FILENAME
 RANGE_START = 'test_sd024_sd025_and_follow_up_tickets_are_recorded'
 RANGE_END = 'test_security_requirements_internal_markdown_links_resolve'
 METHOD_RANGE = {"start": RANGE_START, "end": RANGE_END}
-PRE_SHARDS = ('document_test_classification.json', 'document_test_classification_001.json', 'document_test_classification_002.json', 'document_test_classification_003.json', 'document_test_classification_004.json', 'document_test_classification_005.json')
+# BL-038 tranche 3y-b round 2 (R-A, correction 3y-13): PRE_SHARDS -- the physical
+# filenames that happened to hold the pre-3r work -- was replaced by the accepted TRANCHE
+# identities that did it. Physical shard location is not selection semantics.
+PRE_3R_TRANCHES = ('3f', '3h', '3i', '3j', '3k', '3l', '3m', '3o', '3p', '3q')
 # BL-038 tranche 3y-b (correction 3y-12): the physical pre-/current-index filename
 # tuples below lost their last use when this tranche's CURRENT lookups moved to the
 # logical population. Accepted physical locations are history and the ledger holds
@@ -74,8 +77,10 @@ class Tranche3rClassificationTest(unittest.TestCase):
         dth.assert_accepted_contracts_accounted_for(self, ROOT, "3r")
 
     def test_selection_is_latest_source_greedy_tail_and_wins_133_to_37(self):
-        owned = {e["method"] for name in PRE_SHARDS for e in json.loads((ROOT/name).read_text(encoding="utf-8"))["assertions"]
-                 if (e["file"], e["class"]) == (SOURCE_FILE, CLASS_NAME)}
+        # BL-038 tranche 3y-b round 2 (R-A, correction 3y-13): pre-3r ownership from the
+        # accepted tranches' scope descriptors. Measured equivalent on this tree: 30 methods.
+        owned = {m for m in self.order
+                 if any(dth.owns(t, SOURCE_FILE, CLASS_NAME, m) for t in PRE_3R_TRANCHES)}
         start = next(i for i,m in enumerate(self.order) if m not in owned)
         run=0; end=start
         while end < len(self.order) and run + self.per[self.order[end]] <= 150:
@@ -86,8 +91,9 @@ class Tranche3rClassificationTest(unittest.TestCase):
         rival_node=next(n for n in ast.parse(rival_text).body if isinstance(n,ast.ClassDef) and n.name==RIVAL_CLASS)
         rival_order=[m.name for m in dti._class_test_methods_in_source_order(rival_node)]
         rival_per=Counter(r.method for r in dti.enumerate_assertions(rival_text,RIVAL_FILE,[RIVAL_CLASS]))
-        rival_owned={e["method"] for name in PRE_SHARDS for e in json.loads((ROOT/name).read_text(encoding="utf-8"))["assertions"]
-                     if (e["file"],e["class"])==(RIVAL_FILE,RIVAL_CLASS)}
+        # Same reconstruction for the rival class. Measured equivalent: 32 methods.
+        rival_owned={m for m in rival_order
+                     if any(dth.owns(t, RIVAL_FILE, RIVAL_CLASS, m) for t in PRE_3R_TRANCHES)}
         rs=next(i for i,m in enumerate(rival_order) if m not in rival_owned); rr=0; re=rs
         while re<len(rival_order) and rr+rival_per[rival_order[re]]<=150:
             rr+=rival_per[rival_order[re]]; re+=1

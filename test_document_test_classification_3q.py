@@ -58,13 +58,11 @@ RIVAL_TAIL_METHODS = 4
 RIVAL_TAIL_ASSERTIONS = 37
 POST_3Q_SECURITY_TAIL_METHODS = 9
 POST_3Q_SECURITY_TAIL_ASSERTIONS = 133
-PRE_3Q_SHARDS = (
-    "document_test_classification.json",
-    "document_test_classification_001.json",
-    "document_test_classification_002.json",
-    "document_test_classification_003.json",
-    "document_test_classification_004.json",
-)
+# BL-038 tranche 3y-b round 2 (R-B, correction 3y-13): PRE_3Q_SHARDS -- the physical
+# filenames that happened to hold the pre-3q work -- was replaced by the accepted TRANCHE
+# identities that did it. Which shard file a tranche's entries live in is not selection
+# semantics, so a legal re-shard must not change what tranche 3q could have selected.
+PRE_3Q_TRANCHES = ("3f", "3h", "3i", "3j", "3k", "3l", "3m", "3o", "3p")
 # BL-038 tranche 3y-b (correction 3y-12): the physical pre-/current-index filename
 # tuples below lost their last use when this tranche's CURRENT lookups moved to the
 # logical population. Accepted physical locations are history and the ledger holds
@@ -167,11 +165,14 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
         self.assertEqual({r.method for r in self.window}, {m for m, _ in EXPECTED_METHOD_ORDER})
 
     def test_selection_is_rederived_from_the_pre_3q_index_and_wins_124_to_37(self):
+        # BL-038 tranche 3y-b round 2 (R-B, correction 3y-13): pre-3q ownership is an
+        # accepted-history question, reconstructed from the accepted tranches' own scope
+        # descriptors. Measured equivalent to the physical form on this tree: 19 methods.
         owned = {
-            e["method"]
-            for name in PRE_3Q_SHARDS
-            for e in json.loads((ROOT / name).read_text(encoding="utf-8"))["assertions"]
-            if (e["file"], e["class"]) == (SOURCE_FILE, CLASS_NAME)
+            method
+            for method in self.order
+            if any(dth.owns(tranche, SOURCE_FILE, CLASS_NAME, method)
+                   for tranche in PRE_3Q_TRANCHES)
         }
         start = next(i for i, m in enumerate(self.order) if m not in owned)
         self.assertEqual((start, self.order[start]), (19, RANGE_START))
@@ -190,11 +191,12 @@ class Tranche3qSecurityRequirementsRangeTest(unittest.TestCase):
                           if isinstance(n, ast.ClassDef) and n.name == RIVAL_CLASS)
         rival_order = [m.name for m in dti._class_test_methods_in_source_order(rival_node)]
         rival_per = Counter(r.method for r in dti.enumerate_assertions(rival_source, RIVAL_FILE, [RIVAL_CLASS]))
+        # Same reconstruction for the rival class. Measured equivalent: 32 methods.
         rival_owned = {
-            e["method"]
-            for name in PRE_3Q_SHARDS
-            for e in json.loads((ROOT / name).read_text(encoding="utf-8"))["assertions"]
-            if (e["file"], e["class"]) == (RIVAL_FILE, RIVAL_CLASS)
+            method
+            for method in rival_order
+            if any(dth.owns(tranche, RIVAL_FILE, RIVAL_CLASS, method)
+                   for tranche in PRE_3Q_TRANCHES)
         }
         rival_start = next(i for i, m in enumerate(rival_order) if m not in rival_owned)
         rival_run = 0
