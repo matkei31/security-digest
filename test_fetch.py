@@ -3650,6 +3650,22 @@ class Bl037FinalAcceptanceRecordTest(unittest.TestCase):
 
 
 
+
+def bl038_historical_residual(section):
+    """BL-038's PRE-CLOSURE residual paragraph, preserved verbatim.
+
+    This is the `- **残作業:**` field exactly as it stood on the accepted base
+    main a341816581b5cf7e23b586256cc3da6b66e2a283, kept under an explicitly
+    historical label by the 2026-08-14 closure. It is EVIDENCE OF THE PAST, not
+    a statement about the present: it still says BL-038 was open and still
+    describes the controlled Category C rollout as BL-038's own residual work,
+    both of which stopped being true at closure. Only historical witnesses may
+    read it; anything asserting a current fact must use bl038_current_record().
+    """
+    start = section.index("- **残作業(historical")
+    end = section.find("\n", start)
+    return section[start:] if end == -1 else section[start:end]
+
 def bl038_current_record(section):
     """BL-038's CURRENT-state record inside its BACKLOG section.
 
@@ -3725,6 +3741,12 @@ class Bl038Tranche1RecordSyncTest(unittest.TestCase):
                 self.assertIn(required, bl038)
 
     def test_backlog_bl038_state_not_complete_and_current_residual_names_tranche3(self):
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
         # This test predates tranche 2; the state field has since moved from
         # "tranche 2以降継続" to "tranche 2実装中" as tranche 2 itself began.
         # Bl038Tranche2RecordSyncTest below covers the current state string.
@@ -3743,9 +3765,7 @@ class Bl038Tranche1RecordSyncTest(unittest.TestCase):
         )
         # Anchor on the actual bullet (line-start "- **残作業:**"), not any
         # prose elsewhere in the section that merely quotes that label.
-        residual_match = re.search(r"^- \*\*残作業\(historical.*$", bl038, re.MULTILINE)
-        self.assertIsNotNone(residual_match, "BL-038 section must have a current 残作業 bullet")
-        residual = residual_match.group(0)
+        residual = bl038_historical_residual(bl038)
         self.assertIn("tranche 3", residual)
         self.assertIn("約1593件", residual)
         self.assertIn("BL-038全体の最終受入", residual)
@@ -4484,10 +4504,14 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
                 self.assertIn(required, bl038_line)
 
     def test_backlog_residual_work_names_category_c_conversion_still_pending(self):
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
         bl038 = self._bl038_section()
-        residual_match = re.search(r"^- \*\*残作業\(historical.*$", bl038, re.MULTILINE)
-        self.assertIsNotNone(residual_match)
-        residual = residual_match.group(0)
+        residual = bl038_historical_residual(bl038)
         for required in (
             "Category C conversion",
             "tranche 3bの41件",
@@ -4664,13 +4688,17 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
         self.assertNotIn("**A 10／B 61／C 80／D 34(total 185)**", bl038)
 
     def test_backlog_residual_work_no_longer_calls_tranche3c_in_progress(self):
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
         # tranche 3c has since been finally accepted and merged (PR #84);
         # the residual-work field must not still describe it as in-progress
         # now that tranche 3d owns that description.
         bl038 = self._bl038_section()
-        residual_match = re.search(r"^- \*\*残作業\(historical.*$", bl038, re.MULTILINE)
-        self.assertIsNotNone(residual_match)
-        residual = residual_match.group(0)
+        residual = bl038_historical_residual(bl038)
         self.assertNotIn("tranche 3cは実装中", residual)
         # round 1 review Blocker 3 (kept narrow, not a generic "未着手" ban):
         # the specific stale tranche 3c wording this test originally existed
@@ -4920,6 +4948,12 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
         self.assertNotIn("最終分類: **test_status.py: A 5／B 28／C 39／D 26", bl038)
 
     def test_backlog_residual_work_names_category_c_conversion_from_tranche3d(self):
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
         # The residual-work bullet is a single evolving field that later
         # tranches append to; the "tranche 3dは実装中" in-progress-state
         # substring this test used to check is now stale (3d has since been
@@ -4928,9 +4962,7 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
         # what later tranches append. See Bl038Tranche3eRecordSyncTest for
         # the current in-progress state.
         bl038 = self._bl038_section()
-        residual_match = re.search(r"^- \*\*残作業\(historical.*$", bl038, re.MULTILINE)
-        self.assertIsNotNone(residual_match)
-        residual = residual_match.group(0)
+        residual = bl038_historical_residual(bl038)
         for required in (
             "Category C conversion",
             "tranche 3bの41件",
@@ -5339,13 +5371,17 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         self.assertEqual(sr_a_entries, [])
 
     def test_backlog_residual_work_still_names_tranche3e_category_c_count(self):
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
         # tranche 3e's 71 Category C entries stay in the residual-work list
         # after acceptance -- deferred conversions, not work acceptance
         # closed. Anchored on 3e's own count and its place on the accepted side.
         bl038 = self._bl038_section()
-        residual_match = re.search(r"^- \*\*残作業\(historical.*$", bl038, re.MULTILINE)
-        self.assertIsNotNone(residual_match)
-        residual = residual_match.group(0)
+        residual = bl038_historical_residual(bl038)
         # BL-038 closure (2026-08-14): the ticket-level gate sentence was retired with
         # the closure boundary; 3e's own deferred-conversion count stays durable.
         for required in (
@@ -6657,6 +6693,12 @@ class Bl038Tranche3lRecordSyncTest(unittest.TestCase):
         """Tranche 3l is accepted as of PR #94's merge, 3m as of PR #95's and 3n
         as of PR #96's; tranche 3o is the one in progress. The 3l-specific
         residual items are gone, and this class keeps what stays true about 3l."""
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
         bl038 = self._bl038_section()
         own_state_line = next(l for l in bl038.splitlines() if l.startswith("- **状態:**"))
         self.assertNotIn("tranche 3l実装中", own_state_line)
@@ -6669,7 +6711,7 @@ class Bl038Tranche3lRecordSyncTest(unittest.TestCase):
                                     "3h", "3i", "3j", "3k", "3l", "3m", "3n", "3o", "3p", "3q", "3r", "3s", "3t"])
         self.assertIn("3l", accepted)
         self.assertIn("3q", accepted)
-        residual = re.search(r"^- \*\*残作業\(historical.*$", bl038, re.MULTILINE).group(0)
+        residual = bl038_historical_residual(bl038)
         # 3l's own Category C count survives in the conversion inventory, with
         # the round-1-corrected A 6 -- but its review/merge item is done.
         for required in ("tranche 3lの6件", "tranche 3l 6件",
@@ -7058,7 +7100,13 @@ class Bl038Tranche3mRecordSyncTest(unittest.TestCase):
         Tranche 3o now owns that bullet's current-state wording, so this class
         keeps only what stays true about 3m once 3m is accepted: its own C count
         and the fact that BL-038 is still open."""
-        residual = re.search(r"^- \*\*残作業\(historical.*$", self._bl038_section(), re.MULTILINE).group(0)
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
+        residual = bl038_historical_residual(self._bl038_section())
         for required in ("tranche 3mの7件",):
             with self.subTest(required=required): self.assertIn(required, residual)
         # 3l-, 3m- and 3n-era current-state wording is all stale in this bullet.
@@ -7293,7 +7341,13 @@ class Bl038Tranche3nRecordSyncTest(unittest.TestCase):
         3n is that it classified nothing and that the candidates it MEASURED are
         the ones the rule produced -- 3o classified the winner's prefix, so the
         bullet must still name both figures while no longer calling 3n current."""
-        residual = re.search(r"^- \*\*残作業\(historical.*$", self._bl038_section(), re.MULTILINE).group(0)
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
+        residual = bl038_historical_residual(self._bl038_section())
         for required in ("19 methods", "146", "32 methods",
                          "次trancheの候補再測定・着手"):
             with self.subTest(required=required): self.assertIn(required, residual)
@@ -7499,7 +7553,13 @@ class Bl038Tranche3oRecordSyncTest(unittest.TestCase):
             with self.subTest(stale=stale): self.assertNotIn(stale, status)
 
     def test_current_residual_work_line_keeps_the_durable_tranche3o_facts(self):
-        residual = re.search(r"^- \*\*残作業\(historical.*$", self._bl038_section(), re.MULTILINE).group(0)
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
+        residual = bl038_historical_residual(self._bl038_section())
         for required in ("tranche 3oの54件", "shard003 154/600行",
                 "**`test_security_requirements.py::SecurityRequirementsTest`のtail 9 methods・133 assertions**",
                 "tranche 3oが先頭19 methods・146件を分類済み",
@@ -7665,7 +7725,13 @@ class Bl038Tranche3pRecordSyncTest(unittest.TestCase):
             with self.subTest(stale=stale): self.assertNotIn(stale, status)
 
     def test_current_residual_work_line_reflects_tranche3p(self):
-        residual = re.search(r"^- \*\*残作業\(historical.*$", self._bl038_section(), re.MULTILINE).group(0)
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
+        residual = bl038_historical_residual(self._bl038_section())
         for required in ("tranche 3pの50件", "次trancheの候補再測定・着手", "**`test_source_usage_policy.py::SourceUsagePolicyTest`のtail 4 methods・37 assertions**",
                 "tranche 3pはprefix 32 methods・140件のみを分類し、tailには着手していない", "**`test_security_requirements.py::SecurityRequirementsTest`のtail 9 methods・133 assertions**",
                 "tranche 3qで11 methods・124 assertionsを分類済み。残り9 methods・133 assertions", "**次trancheのcandidateはtranche 3nのselection ruleでその時点のlatest source上から必ず再測定すること**",
@@ -8022,9 +8088,7 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         # BL-038 closure (2026-08-14): this always was a CURRENT-state guard, so it
         # reads the current record (状態 / 完了境界 / closure実装記録 / 残作業) rather
         # than the pre-closure snapshot now preserved under 残作業(historical...).
-        start = self.bl038.index("- **残作業(historical")
         marker = "**historical post-3r residual snapshot"
-        end = self.bl038.index(marker, start)
         current = bl038_current_record(self.bl038)
         for stale in ("PR #101のReady化・mergeはこれから",
                       "Ready化・mergeはこれから行う",
@@ -8052,7 +8116,6 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         # this guard deliberately asserts NOTHING about the wording or the values below
         # it. That snapshot is history and a later tranche may restate it.
         self.assertIn(marker + "（現在の未分類残件を意味しない）", self.bl038)
-        self.assertLess(start, end)
 
     def test_the_technical_acceptance_record_never_claims_a_github_approve(self):
         """The tranche 3t technical acceptance record states Accept/Blocker 0 AND that no
