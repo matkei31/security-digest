@@ -5039,6 +5039,57 @@ def render_site_intro_html(about_href=ABOUT_PAGE_HREF):
     </div>"""
 
 
+# BL-009 Phase A-2: 検索結果に出る<head> metadata。ページ種別ごとに一意な
+# document titleと、AI生成でないdeterministicなmeta descriptionを持たせる。
+# 可視のH1・本文・layoutは変更しない――document titleはbuild_html()の
+# document_title引数で与え、H1に使うpage_titleとは別物として扱う。
+TOP_PAGE_DOCUMENT_TITLE = "🔐 Monomi Digest | 金融機関に関連するサイバーセキュリティ情報"
+# Aboutの承認済み第1文をそのまま使う(言い換えない)。
+TOP_PAGE_META_DESCRIPTION = (
+    "Monomi Digestは、金融機関のサイバーセキュリティ実務担当者・管理職・担当役員が、"
+    "日々の情報収集と確認を効率化するための日次ダイジェストです。"
+)
+ARCHIVE_INDEX_META_DESCRIPTION = (
+    "Monomi Digestの過去の日次ダイジェスト一覧です。"
+    "金融機関に関連するサイバーセキュリティ情報を日付ごとに確認できます。"
+)
+ABOUT_PAGE_META_DESCRIPTION = (
+    "Monomi Digestの目的、情報の整理方法、AIの利用、原記事との関係について説明します。"
+)
+
+
+def format_digest_date_label_without_padding(digest_date):
+    """`2026-08-04` → `2026年8月4日`(月・日のleading zeroなし)。
+
+    可視表示に使うformat_digest_date_label()はzero-paddedのままで、こちらは
+    <title>・meta description専用である(BL-009 Phase A-2で可視copyは変更
+    しないため、両者を統合しない)。`%-m`はplatform依存なので使わない。
+    """
+    try:
+        dt = datetime.datetime.strptime(digest_date, "%Y-%m-%d")
+    except (TypeError, ValueError):
+        return clean_archive_text(digest_date)
+    return f"{dt.year}年{dt.month}月{dt.day}日"
+
+
+def daily_archive_document_title(digest_date):
+    """日別Archiveの<title>。可視H1(`🔐 Monomi Digest`)とは別物。"""
+    return f"🔐 {format_digest_date_label_without_padding(digest_date)}のサイバーセキュリティ情報 | Monomi Digest"
+
+
+def daily_archive_meta_description(digest_date):
+    """日別Archiveのmeta description。
+
+    deterministicなtemplateのみで、記事内容・AI出力からは生成しない
+    (日ごとに内容が変わっても文面は日付以外変化しない)。
+    """
+    return (
+        f"{format_digest_date_label_without_padding(digest_date)}に公開した、"
+        "金融機関に関連するサイバーセキュリティ情報の日次ダイジェストです。"
+        "重要度、確認目安、金融機関との関連、確認事項を整理しています。"
+    )
+
+
 def render_cloudflare_web_analytics_html():
     """BL-034: Cloudflare Web Analyticsのmanual JavaScript beacon。
 
@@ -5083,6 +5134,8 @@ def build_html(
     brief=None,
     *,
     page_title="🔐 Monomi Digest",
+    document_title=None,
+    meta_description=None,
     subtitle=None,
     generated_at=None,
     archive_nav_html=None,
@@ -5462,6 +5515,12 @@ def build_html(
         header_title_block = f"""    <h1>{esc(page_title)}</h1>{subtitle_html}
 """
     intro_css = SITE_INTRO_CSS if intro_html else ""
+    # BL-009 Phase A-2: descriptionを渡さないcall siteでは行そのものを出さない
+    # (attribute値が空のmetaを出さないため)。
+    meta_description_block = (
+        f'\n  <meta name="description" content="{esc(meta_description)}">'
+        if meta_description else ""
+    )
     # BL-009 Phase A-1: --anchor-offsetは「固定され続ける領域の実高さ」で決まる。
     # identityがheaderの外に出た分だけsticky領域は低くなるので、その差を引く。
     # introを表示しない日別Archive・Archive一覧は従来値のまま。
@@ -5473,7 +5532,7 @@ def build_html(
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{esc(page_title)}</title>
+  <title>{esc(document_title or page_title)}</title>{meta_description_block}
   <style>
     *{{margin:0;padding:0;box-sizing:border-box}}
     :root{{--anchor-offset:{anchor_offset_pc}px}}
@@ -5696,6 +5755,8 @@ def build_daily_archive_html(digest, previous_date=None, next_date=None):
         items,
         brief,
         page_title="🔐 Monomi Digest",
+        document_title=daily_archive_document_title(digest_date),
+        meta_description=daily_archive_meta_description(digest_date),
         subtitle=subtitle,
         generated_at=generated_at or digest.get("generated_at"),
         archive_nav_html=top_nav,
@@ -5745,6 +5806,7 @@ def build_archive_index_html(summaries, generated_at=None):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>過去のダイジェスト - Monomi Digest</title>
+  <meta name="description" content="{esc(ARCHIVE_INDEX_META_DESCRIPTION)}">
   <style>
     *{{margin:0;padding:0;box-sizing:border-box}}
     body{{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:40px}}
@@ -6032,6 +6094,8 @@ def main():
         brief_for_html,
         archive_nav_html=archive_nav_html,
         intro_html=render_site_intro_html(),
+        document_title=TOP_PAGE_DOCUMENT_TITLE,
+        meta_description=TOP_PAGE_META_DESCRIPTION,
     )
     atomic_write_text(out_path, html, validator=validate_html_document)
     print(f"  生成完了: {out_path}")

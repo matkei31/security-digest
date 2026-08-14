@@ -9457,5 +9457,240 @@ class Bl009SiteIntroAndAboutTest(unittest.TestCase):
                              "archive regeneration must not rewrite docs/about.html")
 
 
+class Bl009PhaseA2HeadMetadataTest(unittest.TestCase):
+    """BL-009 Phase A-2: unique document titles and meta descriptions.
+
+    The head is what search results are built from, so the four page types get
+    distinct titles and deterministic descriptions. The visible page is not
+    touched: H1 stays 🔐 Monomi Digest everywhere it already was, and the
+    descriptions are templates, never AI output and never derived from the day's
+    articles. Phase A-2 adds nothing else to the head -- canonical, robots, OG,
+    Twitter Card and JSON-LD are out of scope and simply absent for now, which is
+    a statement about this change, not a contract against ever adding them.
+    """
+
+    DOCS = Path(__file__).resolve().parent / "docs"
+    TITLE_RE = re.compile(r"<title>(.*?)</title>", re.S)
+    DESCRIPTION_RE = re.compile(r'<meta name="description" content="(.*?)">', re.S)
+
+    ITEM = {
+        "title": "サンプル記事",
+        "link": "https://example.com/a",
+        "summary": "概要",
+        "date": datetime.datetime(2026, 8, 4, 6, 0),
+        "source": "CISA",
+        "lang": "ja",
+    }
+
+    @classmethod
+    def _digest(cls, digest_date="2026-08-04"):
+        return {
+            "schema_version": 2,
+            "digest_date": digest_date,
+            "generated_at": f"{digest_date}T07:39:47.613533+09:00",
+            "items": [],
+            "counts": {},
+            "run": {},
+        }
+
+    def _title(self, html):
+        found = self.TITLE_RE.findall(html)
+        self.assertEqual(len(found), 1, "a page must carry exactly one <title>")
+        return found[0]
+
+    def _description(self, html):
+        found = self.DESCRIPTION_RE.findall(html)
+        self.assertEqual(len(found), 1, "a page must carry exactly one meta description")
+        return found[0]
+
+    def _top_html(self):
+        return fetch.build_html(
+            [dict(self.ITEM)], None,
+            intro_html=fetch.render_site_intro_html(),
+            document_title=fetch.TOP_PAGE_DOCUMENT_TITLE,
+            meta_description=fetch.TOP_PAGE_META_DESCRIPTION,
+        )
+
+    # ---- top page ----------------------------------------------------------
+    def test_top_page_title_is_the_approved_value(self):
+        self.assertEqual(
+            self._title(self._top_html()),
+            "🔐 Monomi Digest | 金融機関に関連するサイバーセキュリティ情報",
+        )
+
+    def test_top_page_description_is_the_approved_about_sentence(self):
+        """The copy is About's first sentence verbatim, not a marketing rewrite."""
+        description = self._description(self._top_html())
+        self.assertEqual(
+            description,
+            "Monomi Digestは、金融機関のサイバーセキュリティ実務担当者・管理職・担当役員が、"
+            "日々の情報収集と確認を効率化するための日次ダイジェストです。",
+        )
+        about = (self.DOCS / "about.html").read_text(encoding="utf-8")
+        self.assertIn(f"<p>{description}</p>", about)
+
+    def test_top_page_heading_still_reads_the_brand_alone(self):
+        """The longer title belongs to the document, not to the visible header."""
+        html = self._top_html()
+        self.assertIn("<h1>🔐 Monomi Digest</h1>", html)
+        self.assertNotIn("<h1>🔐 Monomi Digest | ", html)
+
+    # ---- daily archive -----------------------------------------------------
+    def test_daily_archive_dates_drop_the_leading_zero(self):
+        for digest_date, expected in (
+            ("2026-08-04", "2026年8月4日"),
+            ("2026-12-31", "2026年12月31日"),
+            ("2026-01-01", "2026年1月1日"),
+        ):
+            with self.subTest(digest_date=digest_date):
+                self.assertEqual(
+                    fetch.format_digest_date_label_without_padding(digest_date), expected
+                )
+        # the visible label keeps its zero padding -- Phase A-2 changes no body copy
+        self.assertEqual(fetch.format_digest_date_label("2026-08-04"), "2026年08月04日")
+
+    def test_daily_archive_title_follows_the_date_template(self):
+        html = fetch.build_daily_archive_html(self._digest())
+        self.assertEqual(
+            self._title(html),
+            "🔐 2026年8月4日のサイバーセキュリティ情報 | Monomi Digest",
+        )
+
+    def test_daily_archive_description_follows_the_date_template(self):
+        html = fetch.build_daily_archive_html(self._digest())
+        self.assertEqual(
+            self._description(html),
+            "2026年8月4日に公開した、金融機関に関連するサイバーセキュリティ情報の日次ダイジェストです。"
+            "重要度、確認目安、金融機関との関連、確認事項を整理しています。",
+        )
+
+    def test_two_different_days_get_different_titles_and_descriptions(self):
+        first = fetch.build_daily_archive_html(self._digest("2026-08-04"))
+        second = fetch.build_daily_archive_html(self._digest("2026-08-05"))
+        self.assertNotEqual(self._title(first), self._title(second))
+        self.assertNotEqual(self._description(first), self._description(second))
+
+    def test_daily_archive_keeps_its_visible_heading_and_date_line(self):
+        html = fetch.build_daily_archive_html(self._digest())
+        self.assertIn("<h1>🔐 Monomi Digest</h1>", html)
+        self.assertIn('<div class="sub">日次ダイジェスト：2026年08月04日</div>', html)
+
+    def test_the_description_is_a_template_not_derived_from_the_articles(self):
+        """Same date, wildly different content -> byte-identical description."""
+        empty = self._digest()
+        loaded = self._digest()
+        loaded["items"] = [{
+            "title": "極めて特徴的な見出し",
+            "link": "https://example.com/x",
+            "summary": "本文にしか出ない語",
+            "source": "CISA",
+            "published_at": "2026-08-04T06:00:00+09:00",
+        }]
+        self.assertEqual(
+            self._description(fetch.build_daily_archive_html(empty)),
+            self._description(fetch.build_daily_archive_html(loaded)),
+        )
+
+    # ---- archive index -----------------------------------------------------
+    def test_archive_index_title_is_unchanged(self):
+        self.assertEqual(
+            self._title(fetch.build_archive_index_html([])),
+            "過去のダイジェスト - Monomi Digest",
+        )
+
+    def test_archive_index_description_is_the_approved_value(self):
+        self.assertEqual(
+            self._description(fetch.build_archive_index_html([])),
+            "Monomi Digestの過去の日次ダイジェスト一覧です。"
+            "金融機関に関連するサイバーセキュリティ情報を日付ごとに確認できます。",
+        )
+
+    # ---- About -------------------------------------------------------------
+    def test_about_title_is_unchanged(self):
+        about = (self.DOCS / "about.html").read_text(encoding="utf-8")
+        self.assertEqual(self._title(about), "Monomi Digestについて - Monomi Digest")
+
+    def test_about_description_is_the_approved_value(self):
+        about = (self.DOCS / "about.html").read_text(encoding="utf-8")
+        self.assertEqual(
+            self._description(about),
+            "Monomi Digestの目的、情報の整理方法、AIの利用、原記事との関係について説明します。",
+        )
+
+    def test_about_is_still_neither_generated_nor_deleted(self):
+        """Phase A-2 edited the static file by hand; the generator still owns
+        docs/index.html and docs/archive/*.html only."""
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            (docs / "archive").mkdir(parents=True)
+            data = Path(tmp) / "data"
+            data.mkdir()
+            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
+            self.assertFalse((docs / "about.html").exists())
+
+    # ---- every checked-in page --------------------------------------------
+    def _published_pages(self):
+        """Enumerated, never counted: a new digest day must not fail this."""
+        pages = [self.DOCS / "index.html", self.DOCS / "about.html",
+                 self.DOCS / "archive" / "index.html"]
+        pages += sorted(p for p in (self.DOCS / "archive").glob("*.html")
+                        if p.name != "index.html")
+        return pages
+
+    def test_every_published_page_carries_exactly_one_title_and_description(self):
+        pages = self._published_pages()
+        self.assertGreater(len(pages), 3, "at least one daily archive must exist")
+        for path in pages:
+            with self.subTest(page=path.relative_to(self.DOCS)):
+                html = path.read_text(encoding="utf-8")
+                self.assertEqual(len(self.TITLE_RE.findall(html)), 1)
+                self.assertEqual(len(self.DESCRIPTION_RE.findall(html)), 1)
+                self.assertNotIn('content=""', html)
+
+    def test_every_checked_in_page_matches_its_page_type_contract(self):
+        for path in self._published_pages():
+            html = path.read_text(encoding="utf-8")
+            name = path.name
+            with self.subTest(page=path.relative_to(self.DOCS)):
+                if path.parent == self.DOCS and name == "index.html":
+                    self.assertEqual(self._title(html), fetch.TOP_PAGE_DOCUMENT_TITLE)
+                    self.assertEqual(self._description(html), fetch.TOP_PAGE_META_DESCRIPTION)
+                elif name == "about.html":
+                    self.assertEqual(self._title(html), "Monomi Digestについて - Monomi Digest")
+                    self.assertEqual(self._description(html), fetch.ABOUT_PAGE_META_DESCRIPTION)
+                elif name == "index.html":
+                    self.assertEqual(self._title(html), "過去のダイジェスト - Monomi Digest")
+                    self.assertEqual(self._description(html),
+                                     fetch.ARCHIVE_INDEX_META_DESCRIPTION)
+                else:
+                    digest_date = name[:-len(".html")]
+                    self.assertEqual(self._title(html),
+                                     fetch.daily_archive_document_title(digest_date))
+                    self.assertEqual(self._description(html),
+                                     fetch.daily_archive_meta_description(digest_date))
+
+    def test_checked_in_daily_archive_titles_are_all_distinct(self):
+        daily = [p for p in self._published_pages()
+                 if p.parent.name == "archive" and p.name != "index.html"]
+        titles = [self._title(p.read_text(encoding="utf-8")) for p in daily]
+        self.assertEqual(len(titles), len(set(titles)))
+
+    # ---- escaping ----------------------------------------------------------
+    def test_description_and_title_are_attribute_safe(self):
+        html = fetch.build_html(
+            [], None,
+            document_title='x " > <b>',
+            meta_description='say "hi" & <goodbye>',
+        )
+        self.assertIn('content="say &quot;hi&quot; &amp; &lt;goodbye&gt;">', html)
+        self.assertIn("<title>x &quot; &gt; &lt;b&gt;</title>", html)
+
+    def test_pages_without_a_description_emit_no_empty_meta(self):
+        html = fetch.build_html([], None)
+        self.assertNotIn('name="description"', html)
+        self.assertEqual(self._title(html), "🔐 Monomi Digest")
+
+
+
 if __name__ == "__main__":
     unittest.main()
