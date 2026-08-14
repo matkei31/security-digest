@@ -9319,6 +9319,27 @@ class Bl009SiteIntroAndAboutTest(unittest.TestCase):
     def test_about_page_links_back_to_the_top_page(self):
         self.assertIn('href="index.html"', self._about())
 
+    def test_about_page_carries_the_site_wide_analytics_contract(self):
+        """SD-032 adopted Cloudflare Web Analytics as SITE-WIDE page-view
+        measurement, and no decision exempts About. The static page reuses the
+        generator's own output verbatim, so the beacon and the disclosure cannot
+        drift from render_cloudflare_web_analytics_html() /
+        render_analytics_footer_html(); About defines no token, endpoint or
+        wording of its own."""
+        about = self._about()
+        self.assertIn(fetch.render_cloudflare_web_analytics_html().strip(), about)
+        self.assertIn(fetch.render_analytics_footer_html().strip(), about)
+
+    def test_about_page_defines_no_analytics_wording_of_its_own(self):
+        about = self._about()
+        beacon = fetch.render_cloudflare_web_analytics_html().strip()
+        footer = fetch.render_analytics_footer_html().strip()
+        # every analytics-related mention on the page comes from those two blocks
+        remainder = about.replace(beacon, "").replace(footer, "")
+        for token in ("cloudflareinsights", "data-cf-beacon", "Cloudflare Web Analytics"):
+            with self.subTest(token=token):
+                self.assertNotIn(token, remainder)
+
     def test_about_page_is_not_produced_or_deleted_by_the_generator(self):
         """It is a static file: the generator writes docs/index.html and
         docs/archive/*.html only, and its archive cleanup deletes strictly

@@ -439,6 +439,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 - **運営者情報は掲載しない。**
 - 重複・弁解的な説明（「処理の失敗ではない」等）、独立した「掲載について」節、同趣旨の言い換え反復、法的な断定は置かない。
 - 既存のdark UIへ揃える。新しいframework・JS・client-side routingは追加しない。About表示に必要な最小限のCSSだけを持ち、`build_html()`のstyle blockを丸ごと複製しない。
+- **既存のsite-wide analytics契約をそのまま適用する。** [SD-032](DECISIONS.md#sd-032--adopt-cloudflare-web-analytics-and-google-search-console-for-bl-034)のCloudflare Web Analytics beaconとanalytics disclosure footerを、generatorの`render_cloudflare_web_analytics_html()`／`render_analytics_footer_html()`の出力そのままで持つ。About専用のtoken・送信先・文言は定義しない。
 
 ### 19.5.4 AI-use note原則（3.1）との関係
 
@@ -474,5 +475,5 @@ PC 1280pxと390pxで、トップページとAboutページの計4画面を目視
 | 1.4 | 承認済み | BL-006でSecurity DigestからMonomi Digestへブランド名を変更し、`🔐`は維持したまま、トップページと日別Archiveのtitle／H1の絵文字表記を統一した |
 | 1.5 | 承認済み | BL-029で「本日の要点」子見出しと記事カード見出しを再設計し、「重要・優先事項」を同一記事のsummary／financial_impactペアから構成する契約へ更新した。2026-07-27、ユーザーがPC 1280px／390px計8画面を目視受入した |
 | 1.6 | 承認済み | BL-028でダイジェストナビゲーションをA案「左寄せ二段・ラベルなし」へ再設計し、日別Archiveの全体導線を`過去→最新`の順へ変更した。2026-07-27、ユーザーがPC 1280px／390px計10画面を目視受入した |
-| 1.8 | Draft | BL-009 Phase A-1でトップページにサイト説明（2文＋「このサイトについて →」1箇所）を追加し、`docs/about.html`を静的ページとして新設した。introはトップのみでsticky header外、「本日の要点」の前。日別Archive・Archive一覧には表示しない。AboutのAI説明はSD-034で承認し、3.1のgeneric AI badge/alert禁止・uniform per-article note禁止・反復label禁止は維持する（SD-033は変更なし）。ユーザー目視受入前のDraft |
 | 1.7 | 承認済み | BL-036(Fable 5レビューR-01)でBL-032実装済みの`.article-attribution`へ低強調CSSを追加(runtime変更はCSSのみ)。AI-use note原則(3.1)のうち一律generic note禁止は維持し、BL-032実装済みのsource-policy-required attributionをSD-016の一部への限定例外として正式に認めた(SD-033、SD-016のgeneric AI disclosure禁止と他の6項目は変更なし)。2026-08-04、ユーザーがPC 1280px／390px計6画面を目視受入した |
+| 1.8 | Draft | BL-009 Phase A-1でトップページにサイト説明（2文＋「このサイトについて →」1箇所）を追加し、`docs/about.html`を静的ページとして新設した。introはトップのみでsticky header外、「本日の要点」の前。日別Archive・Archive一覧には表示しない。AboutのAI説明はSD-034で承認し、3.1のgeneric AI badge/alert禁止・uniform per-article note禁止・反復label禁止は維持する（SD-033は変更なし）。ユーザー目視受入前のDraft |

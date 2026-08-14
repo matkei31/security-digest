@@ -5000,6 +5000,18 @@ SITE_INTRO_ABOUT_LABEL = "このサイトについて →"
 ABOUT_PAGE_HREF = "about.html"
 
 
+# BL-009 Phase A-1: introを表示するpageだけがこのCSSを持つ。intro_htmlを渡さない
+# 日別Archive・Archive一覧へ未使用ruleを配らないため、style blockへ条件付きで
+# 差し込む(この機能によるArchive再生成のbyte driftを0にする)。
+SITE_INTRO_CSS = (
+    "    .site-intro{max-width:680px;margin:16px auto 0;padding:0 12px;display:grid;gap:6px}\n"
+    "    .site-intro-text{font-size:13px;color:#c9d1d9;line-height:1.7}\n"
+    "    .site-intro-about{margin-top:2px}\n"
+    "    .site-intro-link{display:inline-flex;align-items:center;min-height:32px;"
+    "font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}\n"
+    "    .site-intro-link:hover{text-decoration:underline}\n"
+)
+
 def render_site_intro_html(about_href=ABOUT_PAGE_HREF):
     """トップページ用のサイト説明block。
 
@@ -5428,6 +5440,7 @@ def build_html(
     # intro_htmlを渡さないcall site(日別Archive等)では、空行すら出力しない――
     # 既存Archiveの再生成結果をこの変更でbyte単位でも動かさないため。
     intro_block = f"\n  {intro_html}" if intro_html else ""
+    intro_css = SITE_INTRO_CSS if intro_html else ""
 
     return f"""<!DOCTYPE html>
 <html lang="ja">
@@ -5449,12 +5462,7 @@ def build_html(
     .archive-bottom-nav{{max-width:680px;margin:20px auto 0;padding:0 12px}}
     .archive-link{{display:inline-flex;align-items:center;min-height:32px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
     .archive-link:hover{{text-decoration:underline}}
-    .site-intro{{max-width:680px;margin:16px auto 0;padding:0 12px;display:grid;gap:6px}}
-    .site-intro-text{{font-size:13px;color:#c9d1d9;line-height:1.7}}
-    .site-intro-about{{margin-top:2px}}
-    .site-intro-link{{display:inline-flex;align-items:center;min-height:32px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
-    .site-intro-link:hover{{text-decoration:underline}}
-    .article-list-header{{max-width:680px;margin:12px auto 0;padding:0 12px}}
+{intro_css}    .article-list-header{{max-width:680px;margin:12px auto 0;padding:0 12px}}
     .article-list-header h2{{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}}
     .article-list-note{{font-size:12px;color:#8b949e;line-height:1.5}}
     .cards{{padding:12px 12px 0;display:flex;flex-direction:column;gap:10px;max-width:680px;margin:0 auto}}
