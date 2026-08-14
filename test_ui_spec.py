@@ -28,14 +28,14 @@ class UiSpecDocumentTest(unittest.TestCase):
     def test_ui_spec_exists_with_version_metadata(self):
         self.assertTrue(self.spec_path.is_file())
         self.assertIn("# Monomi Digest UI Specification", self.spec)
-        # BL-009 Phase A-4: the header follows whichever version is current, and 1.10
-        # is a Draft, so 状態 reads Draft again as it did for 1.6/1.7/1.8/1.9. The
-        # acceptance date stays 2026-08-14 -- the last version actually accepted is
-        # still 1.9. Version 1.7's own acceptance date is asserted from the
-        # version-history table by test_version_is_17_approved_with_acceptance_date.
+        # BL-009 Phase A-4: 1.10's implementation was accepted on 2026-08-15, so 状態
+        # moved Draft -> 承認済み and 最終受入日 moved with it. The header always
+        # names whichever version is current; Version 1.7's own acceptance date is
+        # asserted from the version-history table by
+        # test_version_is_17_approved_with_acceptance_date.
         self.assertIn("- **バージョン:** 1.10", self.spec)
-        self.assertIn("- **状態:** Draft（Version 1.9までは承認済み）", self.spec)
-        self.assertIn("- **最終受入日:** 2026-08-14", self.spec)
+        self.assertIn("- **状態:** 承認済み", self.spec)
+        self.assertIn("- **最終受入日:** 2026-08-15", self.spec)
         self.assertIn(
             "2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、"
             "Version 1.4として承認済みである",
