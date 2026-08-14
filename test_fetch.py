@@ -3725,7 +3725,7 @@ class Bl038Tranche1RecordSyncTest(unittest.TestCase):
         )
         # Anchor on the actual bullet (line-start "- **残作業:**"), not any
         # prose elsewhere in the section that merely quotes that label.
-        residual_match = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE)
+        residual_match = re.search(r"^- \*\*残作業\(historical.*$", bl038, re.MULTILINE)
         self.assertIsNotNone(residual_match, "BL-038 section must have a current 残作業 bullet")
         residual = residual_match.group(0)
         self.assertIn("tranche 3", residual)
@@ -4467,7 +4467,7 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
 
     def test_backlog_residual_work_names_category_c_conversion_still_pending(self):
         bl038 = self._bl038_section()
-        residual_match = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE)
+        residual_match = re.search(r"^- \*\*残作業\(historical.*$", bl038, re.MULTILINE)
         self.assertIsNotNone(residual_match)
         residual = residual_match.group(0)
         for required in (
@@ -4650,7 +4650,7 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
         # the residual-work field must not still describe it as in-progress
         # now that tranche 3d owns that description.
         bl038 = self._bl038_section()
-        residual_match = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE)
+        residual_match = re.search(r"^- \*\*残作業\(historical.*$", bl038, re.MULTILINE)
         self.assertIsNotNone(residual_match)
         residual = residual_match.group(0)
         self.assertNotIn("tranche 3cは実装中", residual)
@@ -4910,7 +4910,7 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
         # what later tranches append. See Bl038Tranche3eRecordSyncTest for
         # the current in-progress state.
         bl038 = self._bl038_section()
-        residual_match = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE)
+        residual_match = re.search(r"^- \*\*残作業\(historical.*$", bl038, re.MULTILINE)
         self.assertIsNotNone(residual_match)
         residual = residual_match.group(0)
         for required in (
@@ -5325,7 +5325,7 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         # after acceptance -- deferred conversions, not work acceptance
         # closed. Anchored on 3e's own count and its place on the accepted side.
         bl038 = self._bl038_section()
-        residual_match = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE)
+        residual_match = re.search(r"^- \*\*残作業\(historical.*$", bl038, re.MULTILINE)
         self.assertIsNotNone(residual_match)
         residual = residual_match.group(0)
         # BL-038 closure (2026-08-14): the ticket-level gate sentence was retired with
@@ -6651,7 +6651,7 @@ class Bl038Tranche3lRecordSyncTest(unittest.TestCase):
                                     "3h", "3i", "3j", "3k", "3l", "3m", "3n", "3o", "3p", "3q", "3r", "3s", "3t"])
         self.assertIn("3l", accepted)
         self.assertIn("3q", accepted)
-        residual = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE).group(0)
+        residual = re.search(r"^- \*\*残作業\(historical.*$", bl038, re.MULTILINE).group(0)
         # 3l's own Category C count survives in the conversion inventory, with
         # the round-1-corrected A 6 -- but its review/merge item is done.
         for required in ("tranche 3lの6件", "tranche 3l 6件",
@@ -7040,7 +7040,7 @@ class Bl038Tranche3mRecordSyncTest(unittest.TestCase):
         Tranche 3o now owns that bullet's current-state wording, so this class
         keeps only what stays true about 3m once 3m is accepted: its own C count
         and the fact that BL-038 is still open."""
-        residual = re.search(r"^- \*\*残作業:\*\* .*$", self._bl038_section(), re.MULTILINE).group(0)
+        residual = re.search(r"^- \*\*残作業\(historical.*$", self._bl038_section(), re.MULTILINE).group(0)
         for required in ("tranche 3mの7件",):
             with self.subTest(required=required): self.assertIn(required, residual)
         # 3l-, 3m- and 3n-era current-state wording is all stale in this bullet.
@@ -7275,7 +7275,7 @@ class Bl038Tranche3nRecordSyncTest(unittest.TestCase):
         3n is that it classified nothing and that the candidates it MEASURED are
         the ones the rule produced -- 3o classified the winner's prefix, so the
         bullet must still name both figures while no longer calling 3n current."""
-        residual = re.search(r"^- \*\*残作業:\*\* .*$", self._bl038_section(), re.MULTILINE).group(0)
+        residual = re.search(r"^- \*\*残作業\(historical.*$", self._bl038_section(), re.MULTILINE).group(0)
         for required in ("19 methods", "146", "32 methods",
                          "次trancheの候補再測定・着手"):
             with self.subTest(required=required): self.assertIn(required, residual)
@@ -7481,7 +7481,7 @@ class Bl038Tranche3oRecordSyncTest(unittest.TestCase):
             with self.subTest(stale=stale): self.assertNotIn(stale, status)
 
     def test_current_residual_work_line_keeps_the_durable_tranche3o_facts(self):
-        residual = re.search(r"^- \*\*残作業:\*\* .*$", self._bl038_section(), re.MULTILINE).group(0)
+        residual = re.search(r"^- \*\*残作業\(historical.*$", self._bl038_section(), re.MULTILINE).group(0)
         for required in ("tranche 3oの54件", "shard003 154/600行",
                 "**`test_security_requirements.py::SecurityRequirementsTest`のtail 9 methods・133 assertions**",
                 "tranche 3oが先頭19 methods・146件を分類済み",
@@ -7647,7 +7647,7 @@ class Bl038Tranche3pRecordSyncTest(unittest.TestCase):
             with self.subTest(stale=stale): self.assertNotIn(stale, status)
 
     def test_current_residual_work_line_reflects_tranche3p(self):
-        residual = re.search(r"^- \*\*残作業:\*\* .*$", self._bl038_section(), re.MULTILINE).group(0)
+        residual = re.search(r"^- \*\*残作業\(historical.*$", self._bl038_section(), re.MULTILINE).group(0)
         for required in ("tranche 3pの50件", "次trancheの候補再測定・着手", "**`test_source_usage_policy.py::SourceUsagePolicyTest`のtail 4 methods・37 assertions**",
                 "tranche 3pはprefix 32 methods・140件のみを分類し、tailには着手していない", "**`test_security_requirements.py::SecurityRequirementsTest`のtail 9 methods・133 assertions**",
                 "tranche 3qで11 methods・124 assertionsを分類済み。残り9 methods・133 assertions", "**次trancheのcandidateはtranche 3nのselection ruleでその時点のlatest source上から必ず再測定すること**",
@@ -8001,7 +8001,7 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         technical unblock complete, conversion permitted only through separately approved
         controlled rollout work, Category A decided at 3t, and BL-038 incomplete. It
         asserts no Category C count, no zero-conversion state and no migration state."""
-        start = self.bl038.index("- **残作業:** assertion classification自体は完了している。")
+        start = self.bl038.index("- **残作業(historical")
         marker = "**historical post-3r residual snapshot"
         end = self.bl038.index(marker, start)
         current = self.bl038[start:end]
@@ -8345,7 +8345,7 @@ class Bl038Tranche3vCouplingRetargetRecordSyncTest(unittest.TestCase):
         # Round 2: the CURRENT 残作業 paragraph must not leave a bare residual figure
         # standing as the total. "frozen-inventory residual 83" is correct and stays
         # allowed; an unqualified "residual 83" as the whole story does not.
-        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        current = self.bl038[self.bl038.index("- **残作業(historical"):].split("\n- **残作業:**", 1)[0]
         self.assertNotIn("future residual 83", current)
         self.assertNotIn("実施済み、residual 83", current)
         for bare in ("residual 83)", "residual 83。", "residual 83、"):
@@ -8400,11 +8400,11 @@ class Bl038Tranche3vCouplingRetargetRecordSyncTest(unittest.TestCase):
         # satisfy it -- exactly the confusion this tranche is separating.
         own = self.bl038[self.bl038.index("- **tranche 3v(coupling retarget"):]
         self.assertIn("real Category C conversion 0件", own[:own.index("\n\n- **")])
-        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        current = self.bl038[self.bl038.index("- **残作業(historical"):].split("\n- **残作業:**", 1)[0]
         self.assertIn("technical Category C unblockは完了している", current)
         # The current-state text must not still promise an unblock at 3v.
         # The LAST 残作業 bullet is the current-state one; earlier ones are history.
-        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        current = self.bl038[self.bl038.index("- **残作業(historical"):].split("\n- **残作業:**", 1)[0]
         self.assertNotIn("tranche 3v acceptance後", current)
         self.assertNotIn("3v acceptanceまでunblocked扱いにしない", current)
 
@@ -8681,7 +8681,7 @@ class Bl038Tranche3xCouplingRetargetRecordSyncTest(unittest.TestCase):
                 self.assertIn(token, self.bl038)
 
     def test_the_current_residual_accounting_is_the_post_3x_state(self):
-        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        current = self.bl038[self.bl038.index("- **残作業(historical"):].split("\n- **残作業:**", 1)[0]
         # Tranche 3y-a: 3x's own accounting stays as history in its own paragraph; the
         # CURRENT paragraph records the post-3y-a state instead.
         self.assertIn("frozen handled (3v 23＋3w 38＋3x 27)＝**88**、**frozen residual 18**",
@@ -8817,7 +8817,7 @@ class Bl038Tranche3yBLifecycleUnblockRecordSyncTest(unittest.TestCase):
         cannot fail merely because they still say "blocked". Nothing here pins the Category C
         count, an empty migration ledger, or a physical shard layout, so a legal conversion or
         migration cannot break it."""
-        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        current = self.bl038[self.bl038.index("- **残作業(historical"):].split("\n- **残作業:**", 1)[0]
         # BL-038 closure (2026-08-14): "BL-038全体は未完了" was the ticket's own
         # lifecycle state, not tranche 3y-b's fact, and stating it is no longer true.
         # The unblock statements below are 3y-b's durable result and stay checked,
@@ -8856,61 +8856,183 @@ class Bl038Tranche3yBLifecycleUnblockRecordSyncTest(unittest.TestCase):
 
 
 
-class Bl038ClosureCurrentStateTest(unittest.TestCase):
-    """BL-038 closure (2026-08-14): the CURRENT state after closure.
+class Bl038ClosureLifecycleTest(unittest.TestCase):
+    """BL-038's closure lifecycle, keyed on REAL acceptance evidence.
 
-    The per-tranche classes were deliberately made state-agnostic -- accepting a
-    tranche never decided where the ticket sits -- so none of them can hold the
-    closed state down. Without this class, moving BL-038 back into Active work
-    and out of Recently completed would pass the whole suite. Everything here is
-    a claim about the current documents only; no historical evidence is touched.
+    Closure has two legitimate states and the repository must be in exactly one
+    of them. Which one applies is derived from whether BL-038 actually carries a
+    user final-acceptance record, so this contract does not have to be rewritten
+    when the user accepts: the same rules simply select the other branch.
+
+    Before acceptance the ticket is a candidate -- BACKLOG says 完了候補, STATUS
+    must not present BL-038 as completed work, and no acceptance original, date,
+    review or merge record may be invented. After acceptance BACKLOG says 完了 and
+    STATUS carries BL-038 as completed work. Either way BL-038 must appear in
+    exactly one STATUS section, must never claim to be 実装中/未完了 while
+    presented as completed, and must never re-claim Category C rollout as its own
+    residual work now that BL-039 owns it.
+
+    The checks are written as a pure function over a (BACKLOG, STATUS) pair so
+    the same rules can be applied to the real repository and to synthetic
+    fixtures for the state this repository is not currently in.
     """
+
+    # The real record that will be added only after the user accepts.
+    ACCEPTANCE = r"(?m)^- \*\*最終受入\("
+    # Claim forms that made Category C rollout BL-038's own residual work.
+    ROLLOUT_CLAIMS = (
+        "今後のBL-038残作業は",
+        "残るのはCategory C source conversionのcontrolled rollout",
+        "残るのはcontrolled Category C conversion rolloutの計画とその実施",
+    )
+
+    @staticmethod
+    def _section(backlog):
+        start = backlog.index("## BL-038 ")
+        end = backlog.find("\n## ", start + len("## BL-038 "))
+        return backlog[start:] if end == -1 else backlog[start:end]
+
+    @classmethod
+    def _current_residual(cls, section):
+        at = section.rindex("- **残作業:**")
+        rest = section[at:]
+        nxt = rest.find("\n- **", 1)
+        return rest if nxt == -1 else rest[:nxt]
+
+    @classmethod
+    def violations(cls, backlog, status):
+        """Every lifecycle inconsistency in this (BACKLOG, STATUS) pair."""
+        out = []
+        section = cls._section(backlog)
+        accepted = re.search(cls.ACCEPTANCE, section) is not None
+        state = next(l for l in section.splitlines() if l.startswith("- **状態:**"))
+        residual = cls._current_residual(section)
+        active = status.split("## Active work", 1)[1].split(
+            "\n## 5. Recently completed work", 1)[0]
+        completed = status.split("## 5. Recently completed work", 1)[1].split("\n## 6.", 1)[0]
+        in_active = any(l.startswith("- BL-038 ") for l in active.splitlines())
+        in_done = any(l.startswith("- BL-038 ") for l in completed.splitlines())
+
+        if in_active and in_done:
+            out.append("BL-038 is listed as both active and completed work")
+        if not in_active and not in_done:
+            out.append("STATUS records BL-038 as neither active nor completed work")
+        for claim in cls.ROLLOUT_CLAIMS:
+            if claim in residual:
+                out.append(f"current 残作業 re-claims Category C rollout as BL-038 work: {claim}")
+        if "BL-039" not in residual:
+            out.append("current 残作業 does not name BL-039 as the owner of residual Category C work")
+
+        if accepted:
+            if "完了候補" in state:
+                out.append("acceptance recorded but BACKLOG state is still 完了候補")
+            if "完了" not in state:
+                out.append("acceptance recorded but BACKLOG state does not say 完了")
+            if not in_done:
+                out.append("acceptance recorded but STATUS does not list BL-038 as completed work")
+            if in_done:
+                entry = next(l for l in completed.splitlines() if l.startswith("- BL-038 "))
+                for stale in ("実装中", "未完了"):
+                    if stale in entry:
+                        out.append(f"completed entry claims BL-038 is still {stale}")
+                if "BACKLOG.md#bl-038--" not in entry:
+                    out.append("completed entry does not point at the authoritative BACKLOG record")
+            if "なし" not in residual:
+                out.append("acceptance recorded but current 残作業 is not なし")
+        else:
+            if "完了候補" not in state:
+                out.append("no acceptance record, so BACKLOG state must be 完了候補")
+            if in_done:
+                out.append("no acceptance record, but STATUS presents BL-038 as completed work")
+            if "2026-08-14に完了。" in status:
+                out.append("no acceptance record, but STATUS claims BL-038 is complete")
+        return out
 
     @classmethod
     def setUpClass(cls):
         root = Path(__file__).resolve().parent
-        cls.status = (root / "STATUS.md").read_text(encoding="utf-8")
         cls.backlog = (root / "BACKLOG.md").read_text(encoding="utf-8")
-        cls.active = cls.status.split("## Active work", 1)[1].split(
-            "\n## 5. Recently completed work", 1)[0]
-        cls.completed = cls.status.split("## 5. Recently completed work", 1)[1].split(
-            "\n## 6.", 1)[0]
+        cls.status = (root / "STATUS.md").read_text(encoding="utf-8")
 
-    def _completed_entry(self):
-        return next(l for l in self.completed.splitlines() if l.startswith("- BL-038 "))
+    # ---- the real repository ------------------------------------------------
+    def test_current_repository_state_is_a_coherent_lifecycle_state(self):
+        self.assertEqual(self.violations(self.backlog, self.status), [])
 
-    def test_bl038_is_recorded_as_completed_work(self):
-        self.assertTrue(
-            any(l.startswith("- BL-038 ") for l in self.completed.splitlines()),
-            "BL-038 must be listed in STATUS `## 5. Recently completed work`")
-
-    def test_bl038_is_no_longer_active_work(self):
-        self.assertFalse(
-            any(l.startswith("- BL-038 ") for l in self.active.splitlines()),
-            "BL-038 must not be listed in STATUS `## Active work` after closure")
-
-    def test_completed_entry_makes_no_current_incompleteness_claim(self):
-        entry = self._completed_entry()
-        for stale in ("実装中", "未完了"):
-            with self.subTest(stale=stale):
-                self.assertNotIn(stale, entry,
-                                 "the completed entry must not claim BL-038 is still open")
-
-    def test_completed_entry_points_at_the_authoritative_backlog_record(self):
-        entry = self._completed_entry()
-        self.assertIn("BACKLOG.md#bl-038--", entry,
-                      "the concise entry must point at BL-038's detailed BACKLOG record")
-        self.assertIn("- **STATUS Active work在籍時の記録", self.backlog,
-                      "that detailed record must exist in BACKLOG")
-
-    def test_backlog_state_field_makes_no_current_incompleteness_claim(self):
-        start = self.backlog.index("## BL-038 ")
-        end = self.backlog.find("\n## ", start + len("## BL-038 "))
-        section = self.backlog[start:] if end == -1 else self.backlog[start:end]
+    def test_current_state_is_the_pre_acceptance_candidate_state(self):
+        """Q1. No acceptance has happened, so this must be the candidate side."""
+        section = self._section(self.backlog)
+        self.assertIsNone(re.search(self.ACCEPTANCE, section),
+                          "no user final-acceptance record may exist before the user accepts")
         state = next(l for l in section.splitlines() if l.startswith("- **状態:**"))
-        self.assertNotIn("実装中", state)
-        self.assertNotIn("未完了", state)
-        self.assertIn("完了", state)
+        self.assertIn("完了候補", state)
+        completed = self.status.split("## 5. Recently completed work", 1)[1].split("\n## 6.", 1)[0]
+        self.assertFalse(any(l.startswith("- BL-038 ") for l in completed.splitlines()),
+                         "STATUS must not present BL-038 as completed work before acceptance")
+
+    # ---- synthetic fixtures for the other side ------------------------------
+    def _accepted_fixture(self):
+        """Fixture-only post-acceptance pair. Nothing here is written to the repo."""
+        section = self._section(self.backlog)
+        state = next(l for l in section.splitlines() if l.startswith("- **状態:**"))
+        backlog = self.backlog.replace(state, state.replace("完了候補", "完了", 1), 1)
+        backlog = backlog.replace(
+            "- **closure実装記録(",
+            "- **最終受入(2026-08-99):** 合成fixture上の受入記録。\n\n- **closure実装記録(", 1)
+        residual = self._current_residual(self._section(backlog))
+        backlog = backlog.replace(residual, "- **残作業:** なし。残Category C remediationはBL-039が所有する。", 1)
+        entry = next(l for l in self.status.split("## Active work", 1)[1].split(
+            "\n## 5. Recently completed work", 1)[0].splitlines() if l.startswith("- BL-038 "))
+        done = ("- BL-038 文書testを構造・意味契約中心へ整理する — 完了。詳細は"
+                "[BACKLOG.md](BACKLOG.md#bl-038--文書testを構造意味契約中心へ整理する)。")
+        status = self.status.replace(entry + "\n", "", 1).replace(
+            "## 5. Recently completed work\n\n", "## 5. Recently completed work\n\n" + done + "\n", 1)
+        return backlog, status
+
+    def test_synthetic_post_acceptance_state_is_accepted(self):
+        """Q2."""
+        backlog, status = self._accepted_fixture()
+        self.assertEqual(self.violations(backlog, status), [])
+
+    # ---- negative controls --------------------------------------------------
+    def test_p1_no_acceptance_but_status_claims_complete_is_rejected(self):
+        status = self.status.replace("## 5. Recently completed work\n\n",
+                                     "## 5. Recently completed work\n\n"
+                                     "- BL-038 文書testを構造・意味契約中心へ整理する — 2026-08-14に完了。\n", 1)
+        self.assertNotEqual(self.violations(self.backlog, status), [])
+
+    def test_p2_no_acceptance_but_backlog_says_complete_is_rejected(self):
+        section = self._section(self.backlog)
+        state = next(l for l in section.splitlines() if l.startswith("- **状態:**"))
+        backlog = self.backlog.replace(state, state.replace("完了候補", "完了", 1), 1)
+        self.assertNotEqual(self.violations(backlog, self.status), [])
+
+    def test_p3_acceptance_recorded_but_state_still_candidate_is_rejected(self):
+        backlog, status = self._accepted_fixture()
+        section = self._section(backlog)
+        state = next(l for l in section.splitlines() if l.startswith("- **状態:**"))
+        backlog = backlog.replace(state, state.replace("完了", "完了候補", 1), 1)
+        self.assertNotEqual(self.violations(backlog, status), [])
+
+    def test_p4_acceptance_recorded_but_status_missing_completed_entry_is_rejected(self):
+        backlog, status = self._accepted_fixture()
+        entry = next(l for l in status.split("## 5. Recently completed work", 1)[1].splitlines()
+                     if l.startswith("- BL-038 "))
+        self.assertNotEqual(self.violations(backlog, status.replace(entry + "\n", "", 1)), [])
+
+    def test_p5_completed_state_reclaiming_category_c_rollout_is_rejected(self):
+        backlog, status = self._accepted_fixture()
+        residual = self._current_residual(self._section(backlog))
+        backlog = backlog.replace(
+            residual,
+            "- **残作業:** 今後のBL-038残作業は、controlled Category C conversion rolloutの計画と実施。BL-039。", 1)
+        self.assertNotEqual(self.violations(backlog, status), [])
+
+    def test_p6_candidate_state_reclaiming_category_c_rollout_is_rejected(self):
+        residual = self._current_residual(self._section(self.backlog))
+        backlog = self.backlog.replace(
+            residual,
+            "- **残作業:** 今後のBL-038残作業は、controlled Category C conversion rolloutの計画と実施。BL-039。", 1)
+        self.assertNotEqual(self.violations(backlog, self.status), [])
 
 
 if __name__ == "__main__":
