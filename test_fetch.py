@@ -3021,7 +3021,25 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         bl_headings = [h for h in self._headings(text) if re.match(r"^BL-\d{3}\b", h)]
         ids = [re.match(r"^(BL-\d{3})", h).group(1) for h in bl_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate BL section headings: {ids}")
-        self.assertEqual(set(ids), {f"BL-{n:03d}" for n in range(1, 39)})
+        # BL-038 closure (2026-08-14): the durable contract is the repository's
+        # allocation convention -- IDs are unique and contiguous from BL-001 up to
+        # whatever the highest allocated ID currently is -- not a population frozen
+        # at one maximum. Freezing the maximum turned every new backlog item into a
+        # test failure, which is a lifecycle pin rather than a documentation
+        # invariant. The floor records what has ALREADY been allocated: BL-001
+        # through BL-039 exist and must not disappear, while BL-040 and beyond may
+        # be added without touching this test. Combined with contiguity, a floor on
+        # the maximum is what keeps every allocated id present.
+        # Scope note: headings that are not of the form BL-NNN are filtered out
+        # above and are NOT checked here -- this test claims no malformed-id
+        # coverage, which is unchanged from before this closure.
+        numbers = sorted(int(i.split("-")[1]) for i in ids)
+        self.assertEqual(numbers[0], 1, "BL numbering starts at BL-001")
+        self.assertEqual(numbers, list(range(1, numbers[-1] + 1)),
+                         f"BL IDs must be contiguous with no gaps: {ids}")
+        self.assertGreaterEqual(
+            numbers[-1], 39,
+            "BL-001..BL-039 are already allocated and must not disappear")
 
     def test_sd_ids_are_unique_and_cover_sd001_to_sd033(self):
         text = self._read("DECISIONS.md")
@@ -3631,6 +3649,46 @@ class Bl037FinalAcceptanceRecordTest(unittest.TestCase):
         self.assertNotIn("final acceptance pending", bl037_line)
 
 
+
+
+def bl038_historical_residual(section):
+    """BL-038's PRE-CLOSURE residual paragraph, preserved verbatim.
+
+    This is the `- **残作業:**` field exactly as it stood on the accepted base
+    main a341816581b5cf7e23b586256cc3da6b66e2a283, kept under an explicitly
+    historical label by the 2026-08-14 closure. It is an immutable snapshot: it
+    records what the repository stated then, and it is never the source of truth
+    for the present.
+
+    "Historical" does not mean "false". Some of what it says may still happen to
+    be true in a given phase -- before user acceptance, for instance, BL-038 is
+    genuinely not complete -- while other parts, such as the controlled Category
+    C rollout being BL-038's own residual work, stopped being true at closure
+    when BL-039 took ownership. Either way the snapshot is evidence of the past
+    and coincidence with the present does not make it current evidence. Present
+    lifecycle state is determined only by bl038_current_record().
+    """
+    start = section.index("- **残作業(historical")
+    end = section.find("\n", start)
+    return section[start:] if end == -1 else section[start:end]
+
+def bl038_current_record(section):
+    """BL-038's CURRENT-state record inside its BACKLOG section.
+
+    After the 2026-08-14 closure the ticket's current state is carried by four
+    bullets -- 状態, 完了境界, closure実装記録 and the short 残作業 -- while the
+    pre-closure planning text survives verbatim under 残作業(historical...) as a
+    snapshot of base main. CURRENT guards must read this record, never the
+    historical snapshot, so a historical paragraph can never satisfy a
+    current-state contract.
+    """
+    parts = []
+    for marker in ("- **状態:**", "- **完了境界(", "- **closure実装記録(", "- **残作業:**"):
+        start = section.index(marker)
+        end = section.find("\n- **", start + len(marker))
+        parts.append(section[start:] if end == -1 else section[start:end])
+    return "\n".join(parts)
+
 class Bl038Tranche1RecordSyncTest(unittest.TestCase):
     """BL-038 (Fable 5 whole-repository review R-04, tranche 1) round 2
     independent review found round 1's confirmed head/CI/test-count
@@ -3654,6 +3712,28 @@ class Bl038Tranche1RecordSyncTest(unittest.TestCase):
         end = backlog.find("\n## ", start + len(marker))
         return backlog[start:] if end == -1 else backlog[start:end]
 
+    def _bl038_detail_record(self):
+        """BL-038's detailed per-tranche record.
+
+        While BL-038 was open this record was STATUS's Active-work line. On
+        2026-08-14 the same text was moved verbatim into BACKLOG's BL-038
+        section, which is where this repository keeps detailed historical
+        evidence -- STATUS keeps current, changeable state (BL-033/SD-031).
+        What every caller pins is the tranche evidence itself, not which
+        document hosts it, so the locator follows the record. The payload is
+        byte-identical to the line that used to live in Active work, so both
+        the positive evidence checks and the stale-wording negatives that
+        callers apply keep exactly the strength they had.
+        """
+        backlog = (Path(__file__).resolve().parent / "BACKLOG.md").read_text(encoding="utf-8")
+        start = backlog.index("## BL-038 ")
+        end = backlog.find("\n## ", start + len("## BL-038 "))
+        section = backlog[start:] if end == -1 else backlog[start:end]
+        marker = "- **STATUS Active work在籍時の記録"
+        first = section.index(marker)
+        nxt = section.find("\n- **", first + len(marker))
+        return section[first:] if nxt == -1 else section[first:nxt]
+
     def test_backlog_bl038_records_round1_confirmed_evidence(self):
         bl038 = self._bl038_section()
         for required in (
@@ -3667,28 +3747,30 @@ class Bl038Tranche1RecordSyncTest(unittest.TestCase):
                 self.assertIn(required, bl038)
 
     def test_backlog_bl038_state_not_complete_and_current_residual_names_tranche3(self):
-        # This test predates tranche 2; the state field has since moved from
-        # "tranche 2以降継続" to "tranche 2実装中" as tranche 2 itself began.
-        # Bl038Tranche2RecordSyncTest below covers the current state string.
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
+        # Historical context, kept as written: this test predates tranche 2, and
+        # the state field moved from "tranche 2以降継続" to "tranche 2実装中" when
+        # tranche 2 began. Bl038Tranche2RecordSyncTest covers the state string.
         #
-        # BL-038 tranche 2 round 1 review: the residual-work check below is
-        # scoped to the CURRENT "- **残作業:**" field, not the whole BL-038
-        # section -- a document-global "tranche 2以降" substring search would
-        # keep passing on historical prose mentions (e.g. tranche 1's own
-        # evidence record) even after the current residual work moved on to
-        # "tranche 3以降", producing a false positive that no longer detects
-        # a regression in what BL-038 actually still owes.
+        # BL-038 tranche 2 round 1 review scoped the residual check to the
+        # 残作業 field rather than the whole section, so a document-global
+        # substring search could not keep passing on unrelated prose. That
+        # scoping still holds; the field it reads is now the pre-closure
+        # snapshot, so what it detects is a regression in that historical
+        # record, not in what BL-038 currently owes.
         bl038 = self._bl038_section()
         self.assertIn("tranche 1・2・3a", bl038)
         own_state_line = next(
             line for line in bl038.splitlines() if line.startswith("- **状態:**")
         )
-        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
         # Anchor on the actual bullet (line-start "- **残作業:**"), not any
         # prose elsewhere in the section that merely quotes that label.
-        residual_match = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE)
-        self.assertIsNotNone(residual_match, "BL-038 section must have a current 残作業 bullet")
-        residual = residual_match.group(0)
+        residual = bl038_historical_residual(bl038)
         self.assertIn("tranche 3", residual)
         self.assertIn("約1593件", residual)
         self.assertIn("BL-038全体の最終受入", residual)
@@ -3709,13 +3791,7 @@ class Bl038Tranche1RecordSyncTest(unittest.TestCase):
         self.assertIn("fenced code block内のheading風の行を無視する対応", round1_fix_bullet)
 
     def test_status_active_work_lists_bl038_with_round1_confirmed_evidence(self):
-        status = self._read("STATUS.md")
-        active = status.split("## Active work", 1)[1].split(
-            "\n## 5. Recently completed work", 1
-        )[0]
-        bl038_line = next(
-            line for line in active.splitlines() if line.startswith("- BL-038 ")
-        )
+        bl038_line = self._bl038_detail_record()
         for required in (
             "87d9511ababcd200f5418b7421b40288301554e4",
             "30903691728",
@@ -3748,13 +3824,14 @@ class Bl038Tranche1RecordSyncTest(unittest.TestCase):
         # See Bl038Tranche2RecordSyncTest for the current tranche 1+2 state
         # string; this test only checks the state field was never re-marked
         # complete or reverted to the pre-tranche-1 phrasing.
+        # BL-038 closure (2026-08-14): "the ticket is not complete" was BL-038's own
+        # lifecycle, not tranche 1's fact. Tranche 1 staying on the accepted list and
+        # the pre-tranche-1 phrasing never returning are what remain durable.
         bl038 = self._bl038_section()
-        self.assertIn("実装中(", bl038)
         self.assertIn("tranche 1・2・3a", bl038)
         own_state_line = next(
             line for line in bl038.splitlines() if line.startswith("- **状態:**")
         )
-        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
         self.assertNotIn("- **状態:** 実装中／独立レビュー待ち", bl038)
 
     def test_backlog_bl038_records_tranche1_final_acceptance_quote_and_date(self):
@@ -3786,13 +3863,7 @@ class Bl038Tranche1RecordSyncTest(unittest.TestCase):
         self.assertNotIn("- **状態:** 実装中／独立レビュー待ち", bl038)
 
     def test_status_active_work_records_tranche1_final_acceptance(self):
-        status = self._read("STATUS.md")
-        active = status.split("## Active work", 1)[1].split(
-            "\n## 5. Recently completed work", 1
-        )[0]
-        bl038_line = next(
-            line for line in active.splitlines() if line.startswith("- BL-038 ")
-        )
+        bl038_line = self._bl038_detail_record()
         for required in (
             "「おk」",
             "f1b6121e54b7f92b1dac0796723af9da1a28931d",
@@ -3808,18 +3879,16 @@ class Bl038Tranche1RecordSyncTest(unittest.TestCase):
         active = status.split("## Active work", 1)[1].split(
             "\n## 5. Recently completed work", 1
         )[0]
-        self.assertNotIn("None.", active)
-        self.assertTrue(
-            any(line.startswith("- BL-038 ") for line in active.splitlines()),
-            "BL-038 must remain in Active work after tranche 1 final acceptance "
-            "(BL-038 overall is not complete)",
-        )
         recently_completed = status.split("## 5. Recently completed work", 1)[1]
-        self.assertFalse(
-            any(line.startswith("- BL-038 ") for line in recently_completed.splitlines()),
-            "BL-038 must not be listed in Recently completed work "
-            "(tranche 1 acceptance is not BL-038's overall completion)",
-        )
+        # BL-038 closure (2026-08-14): the gate "BL-038 must still sit in Active
+        # work" was the TICKET's lifecycle, never this tranche's fact -- accepting a
+        # tranche never completed BL-038. What stays durable is that STATUS records
+        # BL-038 in exactly one place, so a disappearance or a contradictory double
+        # listing still fails here.
+        in_active = any(line.startswith("- BL-038 ") for line in active.splitlines())
+        in_done = any(line.startswith("- BL-038 ") for line in recently_completed.splitlines())
+        self.assertTrue(in_active or in_done, "STATUS must record BL-038 as active or completed work")
+        self.assertFalse(in_active and in_done, "BL-038 must not be listed as both active and completed")
 
 
 class Bl038Tranche2RecordSyncTest(unittest.TestCase):
@@ -3847,14 +3916,27 @@ class Bl038Tranche2RecordSyncTest(unittest.TestCase):
         end = backlog.find("\n## ", start + len(marker))
         return backlog[start:] if end == -1 else backlog[start:end]
 
-    def _status_bl038_line(self):
-        status = self._read("STATUS.md")
-        active = status.split("## Active work", 1)[1].split(
-            "\n## 5. Recently completed work", 1
-        )[0]
-        return next(
-            line for line in active.splitlines() if line.startswith("- BL-038 ")
-        )
+    def _bl038_detail_record(self):
+        """BL-038's detailed per-tranche record.
+
+        While BL-038 was open this record was STATUS's Active-work line. On
+        2026-08-14 the same text was moved verbatim into BACKLOG's BL-038
+        section, which is where this repository keeps detailed historical
+        evidence -- STATUS keeps current, changeable state (BL-033/SD-031).
+        What every caller pins is the tranche evidence itself, not which
+        document hosts it, so the locator follows the record. The payload is
+        byte-identical to the line that used to live in Active work, so both
+        the positive evidence checks and the stale-wording negatives that
+        callers apply keep exactly the strength they had.
+        """
+        backlog = (Path(__file__).resolve().parent / "BACKLOG.md").read_text(encoding="utf-8")
+        start = backlog.index("## BL-038 ")
+        end = backlog.find("\n## ", start + len("## BL-038 "))
+        section = backlog[start:] if end == -1 else backlog[start:end]
+        marker = "- **STATUS Active work在籍時の記録"
+        first = section.index(marker)
+        nxt = section.find("\n- **", first + len(marker))
+        return section[first:] if nxt == -1 else section[first:nxt]
 
     def test_backlog_bl038_state_reflects_tranche1_and_tranche2_accepted(self):
         # See Bl038Tranche3aRecordSyncTest for the current tranche 3a state
@@ -3865,7 +3947,6 @@ class Bl038Tranche2RecordSyncTest(unittest.TestCase):
         own_state_line = next(
             line for line in bl038.splitlines() if line.startswith("- **状態:**")
         )
-        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
         # The pre-final-acceptance "tranche 2実装中" phrasing must not remain
         # as the current state field (it may still legitimately appear in
         # historical round 1/round 2 review-record prose elsewhere).
@@ -3985,10 +4066,9 @@ class Bl038Tranche2RecordSyncTest(unittest.TestCase):
         own_state_line = next(
             line for line in bl038.splitlines() if line.startswith("- **状態:**")
         )
-        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
 
     def test_status_active_work_records_tranche2_kickoff_and_progress(self):
-        bl038_line = self._status_bl038_line()
+        bl038_line = self._bl038_detail_record()
         for required in (
             "tranche 2着手",
             "test/bl038-tranche2-brittle-assertions",
@@ -4000,7 +4080,7 @@ class Bl038Tranche2RecordSyncTest(unittest.TestCase):
                 self.assertIn(required, bl038_line)
 
     def test_status_active_work_records_tranche2_final_acceptance(self):
-        bl038_line = self._status_bl038_line()
+        bl038_line = self._bl038_detail_record()
         for required in (
             "tranche 2最終受入(2026-08-04)",
             "e4a5da5c5edb4f45b3d031a6e60e5307cf3199a5",
@@ -4021,17 +4101,16 @@ class Bl038Tranche2RecordSyncTest(unittest.TestCase):
         active = status.split("## Active work", 1)[1].split(
             "\n## 5. Recently completed work", 1
         )[0]
-        self.assertNotIn("None.", active)
-        self.assertTrue(
-            any(line.startswith("- BL-038 ") for line in active.splitlines()),
-            "BL-038 must remain in Active work during tranche 2 "
-            "(BL-038 overall is not complete)",
-        )
         recently_completed = status.split("## 5. Recently completed work", 1)[1]
-        self.assertFalse(
-            any(line.startswith("- BL-038 ") for line in recently_completed.splitlines()),
-            "BL-038 must not be listed in Recently completed work during tranche 2",
-        )
+        # BL-038 closure (2026-08-14): the gate "BL-038 must still sit in Active
+        # work" was the TICKET's lifecycle, never this tranche's fact -- accepting a
+        # tranche never completed BL-038. What stays durable is that STATUS records
+        # BL-038 in exactly one place, so a disappearance or a contradictory double
+        # listing still fails here.
+        in_active = any(line.startswith("- BL-038 ") for line in active.splitlines())
+        in_done = any(line.startswith("- BL-038 ") for line in recently_completed.splitlines())
+        self.assertTrue(in_active or in_done, "STATUS must record BL-038 as active or completed work")
+        self.assertFalse(in_active and in_done, "BL-038 must not be listed as both active and completed")
 
     def test_status_recently_completed_bl037_record_still_unchanged(self):
         status = self._read("STATUS.md")
@@ -4067,26 +4146,40 @@ class Bl038Tranche3aRecordSyncTest(unittest.TestCase):
         end = backlog.find("\n## ", start + len(marker))
         return backlog[start:] if end == -1 else backlog[start:end]
 
-    def _status_bl038_line(self):
-        status = self._read("STATUS.md")
-        active = status.split("## Active work", 1)[1].split(
-            "\n## 5. Recently completed work", 1
-        )[0]
-        return next(
-            line for line in active.splitlines() if line.startswith("- BL-038 ")
-        )
+    def _bl038_detail_record(self):
+        """BL-038's detailed per-tranche record.
+
+        While BL-038 was open this record was STATUS's Active-work line. On
+        2026-08-14 the same text was moved verbatim into BACKLOG's BL-038
+        section, which is where this repository keeps detailed historical
+        evidence -- STATUS keeps current, changeable state (BL-033/SD-031).
+        What every caller pins is the tranche evidence itself, not which
+        document hosts it, so the locator follows the record. The payload is
+        byte-identical to the line that used to live in Active work, so both
+        the positive evidence checks and the stale-wording negatives that
+        callers apply keep exactly the strength they had.
+        """
+        backlog = (Path(__file__).resolve().parent / "BACKLOG.md").read_text(encoding="utf-8")
+        start = backlog.index("## BL-038 ")
+        end = backlog.find("\n## ", start + len("## BL-038 "))
+        section = backlog[start:] if end == -1 else backlog[start:end]
+        marker = "- **STATUS Active work在籍時の記録"
+        first = section.index(marker)
+        nxt = section.find("\n- **", first + len(marker))
+        return section[first:] if nxt == -1 else section[first:nxt]
 
     def test_backlog_bl038_state_reflects_tranche3a_implementing(self):
         # tranche 3a's own acceptance ("tranche 1・2・3a") remains a true
         # substring of the current 状態 field regardless of how later
         # tranches (3b, 3c, ...) are described alongside it.
+        # BL-038 closure (2026-08-14): "the ticket is not complete" was BL-038's own
+        # lifecycle, not tranche 1's fact. Tranche 1 staying on the accepted list and
+        # the pre-tranche-1 phrasing never returning are what remain durable.
         bl038 = self._bl038_section()
-        self.assertIn("実装中(", bl038)
         self.assertIn("tranche 1・2・3a", bl038)
         own_state_line = next(
             line for line in bl038.splitlines() if line.startswith("- **状態:**")
         )
-        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
 
     def test_backlog_bl038_records_six_user_statements_with_entry6_as_tranche3a_final(self):
         bl038 = self._bl038_section()
@@ -4158,8 +4251,7 @@ class Bl038Tranche3aRecordSyncTest(unittest.TestCase):
         active = status.split("## Active work", 1)[1].split(
             "\n## 5. Recently completed work", 1
         )[0]
-        self.assertNotIn("None.", active)
-        bl038_line = self._status_bl038_line()
+        bl038_line = self._bl038_detail_record()
         for required in (
             "tranche 3着手",
             "test/bl038-tranche3a-inventory-infrastructure",
@@ -4171,10 +4263,15 @@ class Bl038Tranche3aRecordSyncTest(unittest.TestCase):
             with self.subTest(required=required):
                 self.assertIn(required, bl038_line)
         recently_completed = status.split("## 5. Recently completed work", 1)[1]
-        self.assertFalse(
-            any(line.startswith("- BL-038 ") for line in recently_completed.splitlines()),
-            "BL-038 must not be listed in Recently completed work during tranche 3a",
-        )
+        # BL-038 closure (2026-08-14): the gate "BL-038 must still sit in Active
+        # work" was the TICKET's lifecycle, never this tranche's fact -- accepting a
+        # tranche never completed BL-038. What stays durable is that STATUS records
+        # BL-038 in exactly one place, so a disappearance or a contradictory double
+        # listing still fails here.
+        in_active = any(line.startswith("- BL-038 ") for line in active.splitlines())
+        in_done = any(line.startswith("- BL-038 ") for line in recently_completed.splitlines())
+        self.assertTrue(in_active or in_done, "STATUS must record BL-038 as active or completed work")
+        self.assertFalse(in_active and in_done, "BL-038 must not be listed as both active and completed")
 
     def test_backlog_bl038_records_round1_review_evidence_and_revised_cap(self):
         bl038 = self._bl038_section()
@@ -4201,7 +4298,7 @@ class Bl038Tranche3aRecordSyncTest(unittest.TestCase):
                 self.assertIn(required, bl038)
 
     def test_status_active_work_records_round1_review_note(self):
-        bl038_line = self._status_bl038_line()
+        bl038_line = self._bl038_detail_record()
         for required in (
             "独立レビューround 1(tranche 3a",
             "9e49be8642a2583809569dc64e612fc14257b5f4",
@@ -4232,14 +4329,27 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
         end = backlog.find("\n## ", start + len(marker))
         return backlog[start:] if end == -1 else backlog[start:end]
 
-    def _status_bl038_line(self):
-        status = self._read("STATUS.md")
-        active = status.split("## Active work", 1)[1].split(
-            "\n## 5. Recently completed work", 1
-        )[0]
-        return next(
-            line for line in active.splitlines() if line.startswith("- BL-038 ")
-        )
+    def _bl038_detail_record(self):
+        """BL-038's detailed per-tranche record.
+
+        While BL-038 was open this record was STATUS's Active-work line. On
+        2026-08-14 the same text was moved verbatim into BACKLOG's BL-038
+        section, which is where this repository keeps detailed historical
+        evidence -- STATUS keeps current, changeable state (BL-033/SD-031).
+        What every caller pins is the tranche evidence itself, not which
+        document hosts it, so the locator follows the record. The payload is
+        byte-identical to the line that used to live in Active work, so both
+        the positive evidence checks and the stale-wording negatives that
+        callers apply keep exactly the strength they had.
+        """
+        backlog = (Path(__file__).resolve().parent / "BACKLOG.md").read_text(encoding="utf-8")
+        start = backlog.index("## BL-038 ")
+        end = backlog.find("\n## ", start + len("## BL-038 "))
+        section = backlog[start:] if end == -1 else backlog[start:end]
+        marker = "- **STATUS Active work在籍時の記録"
+        first = section.index(marker)
+        nxt = section.find("\n- **", first + len(marker))
+        return section[first:] if nxt == -1 else section[first:nxt]
 
     def test_backlog_bl038_state_reflects_tranche3b_accepted(self):
         bl038 = self._bl038_section()
@@ -4247,12 +4357,11 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
         # after the state string's later-tranche suffix moves forward --
         # check the invariant prefix, not the exact full string, since
         # "3b受入済み" also legitimately appears inside "3a・3b・3c受入済み".
-        self.assertIn("- **状態:** 実装中(tranche 1・2・3a・3b", bl038)
+        self.assertIn("tranche 1・2・3a・3b", bl038)
         self.assertIn("受入済み", bl038)
         own_state_line = next(
             line for line in bl038.splitlines() if line.startswith("- **状態:**")
         )
-        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
 
     def test_backlog_bl038_records_nine_user_statements_with_entry8_as_tranche3b_final(self):
         bl038 = self._bl038_section()
@@ -4385,7 +4494,7 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
         self.assertNotIn("Category C該当が0件のため変換対象自体が無い", bl038)
 
     def test_status_records_round2_review_and_correct_classification_vs_conversion(self):
-        bl038_line = self._status_bl038_line()
+        bl038_line = self._bl038_detail_record()
         for required in (
             "独立レビューround 2(tranche 3b、2026-08-05)",
             "065f6892b3435070a53a81a95208c72ddcd53d27",
@@ -4400,10 +4509,14 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
                 self.assertIn(required, bl038_line)
 
     def test_backlog_residual_work_names_category_c_conversion_still_pending(self):
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
         bl038 = self._bl038_section()
-        residual_match = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE)
-        self.assertIsNotNone(residual_match)
-        residual = residual_match.group(0)
+        residual = bl038_historical_residual(bl038)
         for required in (
             "Category C conversion",
             "tranche 3bの41件",
@@ -4426,8 +4539,7 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
         active = status.split("## Active work", 1)[1].split(
             "\n## 5. Recently completed work", 1
         )[0]
-        self.assertNotIn("None.", active)
-        bl038_line = self._status_bl038_line()
+        bl038_line = self._bl038_detail_record()
         for required in (
             "tranche 3b着手",
             "test/bl038-tranche3b-custom-domain-classification",
@@ -4439,10 +4551,15 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
             with self.subTest(required=required):
                 self.assertIn(required, bl038_line)
         recently_completed = status.split("## 5. Recently completed work", 1)[1]
-        self.assertFalse(
-            any(line.startswith("- BL-038 ") for line in recently_completed.splitlines()),
-            "BL-038 must not be listed in Recently completed work during tranche 3c",
-        )
+        # BL-038 closure (2026-08-14): the gate "BL-038 must still sit in Active
+        # work" was the TICKET's lifecycle, never this tranche's fact -- accepting a
+        # tranche never completed BL-038. What stays durable is that STATUS records
+        # BL-038 in exactly one place, so a disappearance or a contradictory double
+        # listing still fails here.
+        in_active = any(line.startswith("- BL-038 ") for line in active.splitlines())
+        in_done = any(line.startswith("- BL-038 ") for line in recently_completed.splitlines())
+        self.assertTrue(in_active or in_done, "STATUS must record BL-038 as active or completed work")
+        self.assertFalse(in_active and in_done, "BL-038 must not be listed as both active and completed")
 
     def test_backlog_and_status_record_tranche3b_final_acceptance_evidence(self):
         bl038 = self._bl038_section()
@@ -4457,7 +4574,7 @@ class Bl038Tranche3bRecordSyncTest(unittest.TestCase):
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038)
-        bl038_line = self._status_bl038_line()
+        bl038_line = self._bl038_detail_record()
         for required in (
             "tranche 3b最終受入(2026-08-06)",
             "9bd592331e2d97bcfdda23cfa6578a0128d924bd",
@@ -4486,14 +4603,27 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
         end = backlog.find("\n## ", start + len(marker))
         return backlog[start:] if end == -1 else backlog[start:end]
 
-    def _status_bl038_line(self):
-        status = self._read("STATUS.md")
-        active = status.split("## Active work", 1)[1].split(
-            "\n## 5. Recently completed work", 1
-        )[0]
-        return next(
-            line for line in active.splitlines() if line.startswith("- BL-038 ")
-        )
+    def _bl038_detail_record(self):
+        """BL-038's detailed per-tranche record.
+
+        While BL-038 was open this record was STATUS's Active-work line. On
+        2026-08-14 the same text was moved verbatim into BACKLOG's BL-038
+        section, which is where this repository keeps detailed historical
+        evidence -- STATUS keeps current, changeable state (BL-033/SD-031).
+        What every caller pins is the tranche evidence itself, not which
+        document hosts it, so the locator follows the record. The payload is
+        byte-identical to the line that used to live in Active work, so both
+        the positive evidence checks and the stale-wording negatives that
+        callers apply keep exactly the strength they had.
+        """
+        backlog = (Path(__file__).resolve().parent / "BACKLOG.md").read_text(encoding="utf-8")
+        start = backlog.index("## BL-038 ")
+        end = backlog.find("\n## ", start + len("## BL-038 "))
+        section = backlog[start:] if end == -1 else backlog[start:end]
+        marker = "- **STATUS Active work在籍時の記録"
+        first = section.index(marker)
+        nxt = section.find("\n- **", first + len(marker))
+        return section[first:] if nxt == -1 else section[first:nxt]
 
     def test_backlog_bl038_state_reflects_tranche3c_accepted(self):
         # tranche 3c's own acceptance is a permanent historical fact even as
@@ -4505,10 +4635,16 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
         own_state_line = next(
             line for line in bl038.splitlines() if line.startswith("- **状態:**")
         )
-        accepted_part = own_state_line.split("(", 1)[1].split("受入済み", 1)[0]
+        # BL-038 closure (2026-08-14): locate the accepted-tranche list by the
+        # segment that ENDS in 受入済み instead of assuming it is the first thing
+        # after "(", so this class keeps testing its own acceptance fact whether
+        # the ticket is in progress or completed.
+        accepted_part = next(
+            seg for seg in own_state_line.split("(", 1)[1].split("／")
+            if seg.endswith("受入済み")
+        ).replace("historical tranche記録: ", "").split("受入済み")[0]
         accepted_tranches = accepted_part.split("・")
         self.assertIn("3c", accepted_tranches)
-        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
 
     def test_backlog_records_entry9_as_tranche3c_kickoff(self):
         bl038 = self._bl038_section()
@@ -4557,13 +4693,17 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
         self.assertNotIn("**A 10／B 61／C 80／D 34(total 185)**", bl038)
 
     def test_backlog_residual_work_no_longer_calls_tranche3c_in_progress(self):
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
         # tranche 3c has since been finally accepted and merged (PR #84);
         # the residual-work field must not still describe it as in-progress
         # now that tranche 3d owns that description.
         bl038 = self._bl038_section()
-        residual_match = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE)
-        self.assertIsNotNone(residual_match)
-        residual = residual_match.group(0)
+        residual = bl038_historical_residual(bl038)
         self.assertNotIn("tranche 3cは実装中", residual)
         # round 1 review Blocker 3 (kept narrow, not a generic "未着手" ban):
         # the specific stale tranche 3c wording this test originally existed
@@ -4574,7 +4714,7 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
         )
 
     def test_status_active_work_records_tranche3c_kickoff_evidence(self):
-        bl038_line = self._status_bl038_line()
+        bl038_line = self._bl038_detail_record()
         for required in (
             "tranche 3c着手(2026-08-06)",
             "test/bl038-tranche3c-ui-spec-classification",
@@ -4627,7 +4767,7 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
         ):
             with self.subTest(required=required):
                 self.assertIn(required, bl038)
-        bl038_line = self._status_bl038_line()
+        bl038_line = self._bl038_detail_record()
         for required in (
             "tranche 3c最終受入(2026-08-06)",
             "567449062c87f7eca8f16a02f6b30595df221370",
@@ -4653,7 +4793,7 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
         # the round 2 reviewed-head historical record must still read 868
         self.assertIn("reviewed diff 868 insertions／172 deletions", bl038)
 
-        bl038_line = self._status_bl038_line()
+        bl038_line = self._bl038_detail_record()
         self.assertIn(
             "changed files 5件、diff 880 insertions／172 deletions、unresolved",
             bl038_line,
@@ -4668,12 +4808,16 @@ class Bl038Tranche3cRecordSyncTest(unittest.TestCase):
         active = status.split("## Active work", 1)[1].split(
             "\n## 5. Recently completed work", 1
         )[0]
-        self.assertNotIn("None.", active)
         recently_completed = status.split("## 5. Recently completed work", 1)[1]
-        self.assertFalse(
-            any(line.startswith("- BL-038 ") for line in recently_completed.splitlines()),
-            "BL-038 must not be listed in Recently completed work while BL-038 overall is incomplete",
-        )
+        # BL-038 closure (2026-08-14): the gate "BL-038 must still sit in Active
+        # work" was the TICKET's lifecycle, never this tranche's fact -- accepting a
+        # tranche never completed BL-038. What stays durable is that STATUS records
+        # BL-038 in exactly one place, so a disappearance or a contradictory double
+        # listing still fails here.
+        in_active = any(line.startswith("- BL-038 ") for line in active.splitlines())
+        in_done = any(line.startswith("- BL-038 ") for line in recently_completed.splitlines())
+        self.assertTrue(in_active or in_done, "STATUS must record BL-038 as active or completed work")
+        self.assertFalse(in_active and in_done, "BL-038 must not be listed as both active and completed")
 
 
 class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
@@ -4695,14 +4839,27 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
         end = backlog.find("\n## ", start + len(marker))
         return backlog[start:] if end == -1 else backlog[start:end]
 
-    def _status_bl038_line(self):
-        status = self._read("STATUS.md")
-        active = status.split("## Active work", 1)[1].split(
-            "\n## 5. Recently completed work", 1
-        )[0]
-        return next(
-            line for line in active.splitlines() if line.startswith("- BL-038 ")
-        )
+    def _bl038_detail_record(self):
+        """BL-038's detailed per-tranche record.
+
+        While BL-038 was open this record was STATUS's Active-work line. On
+        2026-08-14 the same text was moved verbatim into BACKLOG's BL-038
+        section, which is where this repository keeps detailed historical
+        evidence -- STATUS keeps current, changeable state (BL-033/SD-031).
+        What every caller pins is the tranche evidence itself, not which
+        document hosts it, so the locator follows the record. The payload is
+        byte-identical to the line that used to live in Active work, so both
+        the positive evidence checks and the stale-wording negatives that
+        callers apply keep exactly the strength they had.
+        """
+        backlog = (Path(__file__).resolve().parent / "BACKLOG.md").read_text(encoding="utf-8")
+        start = backlog.index("## BL-038 ")
+        end = backlog.find("\n## ", start + len("## BL-038 "))
+        section = backlog[start:] if end == -1 else backlog[start:end]
+        marker = "- **STATUS Active work在籍時の記録"
+        first = section.index(marker)
+        nxt = section.find("\n- **", first + len(marker))
+        return section[first:] if nxt == -1 else section[first:nxt]
 
     def test_backlog_bl038_state_reflects_tranche3d_accepted(self):
         # tranche 3d itself is now accepted (tranche 3e is the in-progress
@@ -4714,7 +4871,14 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
         own_state_line = next(
             line for line in bl038.splitlines() if line.startswith("- **状態:**")
         )
-        accepted_part = own_state_line.split("(", 1)[1].split("受入済み", 1)[0]
+        # BL-038 closure (2026-08-14): locate the accepted-tranche list by the
+        # segment that ENDS in 受入済み instead of assuming it is the first thing
+        # after "(", so this class keeps testing its own acceptance fact whether
+        # the ticket is in progress or completed.
+        accepted_part = next(
+            seg for seg in own_state_line.split("(", 1)[1].split("／")
+            if seg.endswith("受入済み")
+        ).replace("historical tranche記録: ", "").split("受入済み")[0]
         accepted_tranches = accepted_part.split("・")
         self.assertIn("3d", accepted_tranches)
         # scope the negative check to BL-038's own state field line, not the
@@ -4722,7 +4886,6 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
         # mentions OTHER tickets' "- **状態:** 完了" field values (e.g.
         # BL-036's Category A rationale in the tranche 3d implementation
         # evidence paragraph).
-        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
 
     def test_backlog_records_entries_ten_and_eleven_as_tranche3c_closeout_and_tranche3d_kickoff(self):
         # The running total-entry-count/per-string-occurrence check this
@@ -4790,17 +4953,21 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
         self.assertNotIn("最終分類: **test_status.py: A 5／B 28／C 39／D 26", bl038)
 
     def test_backlog_residual_work_names_category_c_conversion_from_tranche3d(self):
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
         # The residual-work bullet is a single evolving field that later
         # tranches append to; the "tranche 3dは実装中" in-progress-state
         # substring this test used to check is now stale (3d has since been
         # accepted) -- narrowed to the permanent Category C candidate counts
         # tranche 3d itself contributed, which remain true regardless of
-        # what later tranches append. See Bl038Tranche3eRecordSyncTest for
-        # the current in-progress state.
+        # what later tranches append. (Bl038Tranche3eRecordSyncTest carried the
+        # then-current in-progress state; both are historical now.)
         bl038 = self._bl038_section()
-        residual_match = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE)
-        self.assertIsNotNone(residual_match)
-        residual = residual_match.group(0)
+        residual = bl038_historical_residual(bl038)
         for required in (
             "Category C conversion",
             "tranche 3bの41件",
@@ -4813,7 +4980,7 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
                 self.assertIn(required, residual)
 
     def test_status_active_work_records_tranche3d_kickoff_evidence(self):
-        bl038_line = self._status_bl038_line()
+        bl038_line = self._bl038_detail_record()
         for required in (
             "tranche 3d着手(2026-08-06)",
             "test/bl038-tranche3d-status-classification",
@@ -4923,21 +5090,26 @@ class Bl038Tranche3dRecordSyncTest(unittest.TestCase):
         bl038 = self._bl038_section()
         self.assertIn("tranche 3d最終受入日", bl038)
         self.assertIn("tranche 3d merge記録", bl038)
-        self.assertIn(
-            "BL-038全体の最終受入は上記残作業が完了するまで行わない", bl038
-        )
+        # BL-038 closure (2026-08-14): the gate sentence "final acceptance waits
+        # until the residual work is decided" was the TICKET's transition gate and
+        # was retired when the closure boundary was fixed. This tranche's own facts,
+        # asserted above/below, are what remain durable.
 
     def test_status_active_work_still_lists_bl038_not_recently_completed(self):
         status = self._read("STATUS.md")
         active = status.split("## Active work", 1)[1].split(
             "\n## 5. Recently completed work", 1
         )[0]
-        self.assertNotIn("None.", active)
         recently_completed = status.split("## 5. Recently completed work", 1)[1]
-        self.assertFalse(
-            any(line.startswith("- BL-038 ") for line in recently_completed.splitlines()),
-            "BL-038 must not be listed in Recently completed work during tranche 3d",
-        )
+        # BL-038 closure (2026-08-14): the gate "BL-038 must still sit in Active
+        # work" was the TICKET's lifecycle, never this tranche's fact -- accepting a
+        # tranche never completed BL-038. What stays durable is that STATUS records
+        # BL-038 in exactly one place, so a disappearance or a contradictory double
+        # listing still fails here.
+        in_active = any(line.startswith("- BL-038 ") for line in active.splitlines())
+        in_done = any(line.startswith("- BL-038 ") for line in recently_completed.splitlines())
+        self.assertTrue(in_active or in_done, "STATUS must record BL-038 as active or completed work")
+        self.assertFalse(in_active and in_done, "BL-038 must not be listed as both active and completed")
 
 
 class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
@@ -4959,14 +5131,27 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         end = backlog.find("\n## ", start + len(marker))
         return backlog[start:] if end == -1 else backlog[start:end]
 
-    def _status_bl038_line(self):
-        status = self._read("STATUS.md")
-        active = status.split("## Active work", 1)[1].split(
-            "\n## 5. Recently completed work", 1
-        )[0]
-        return next(
-            line for line in active.splitlines() if line.startswith("- BL-038 ")
-        )
+    def _bl038_detail_record(self):
+        """BL-038's detailed per-tranche record.
+
+        While BL-038 was open this record was STATUS's Active-work line. On
+        2026-08-14 the same text was moved verbatim into BACKLOG's BL-038
+        section, which is where this repository keeps detailed historical
+        evidence -- STATUS keeps current, changeable state (BL-033/SD-031).
+        What every caller pins is the tranche evidence itself, not which
+        document hosts it, so the locator follows the record. The payload is
+        byte-identical to the line that used to live in Active work, so both
+        the positive evidence checks and the stale-wording negatives that
+        callers apply keep exactly the strength they had.
+        """
+        backlog = (Path(__file__).resolve().parent / "BACKLOG.md").read_text(encoding="utf-8")
+        start = backlog.index("## BL-038 ")
+        end = backlog.find("\n## ", start + len("## BL-038 "))
+        section = backlog[start:] if end == -1 else backlog[start:end]
+        marker = "- **STATUS Active work在籍時の記録"
+        first = section.index(marker)
+        nxt = section.find("\n- **", first + len(marker))
+        return section[first:] if nxt == -1 else section[first:nxt]
 
     def test_backlog_bl038_state_reflects_tranche3e_accepted(self):
         # 3e's OWN durable fact: once accepted it stays in the ACCEPTED list.
@@ -4974,8 +5159,14 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         own_state_line = next(
             line for line in bl038.splitlines() if line.startswith("- **状態:**")
         )
-        self.assertIn("実装中(", own_state_line)
-        accepted_part = own_state_line.split("(", 1)[1].split("受入済み", 1)[0]
+        # BL-038 closure (2026-08-14): locate the accepted-tranche list by the
+        # segment that ENDS in 受入済み instead of assuming it is the first thing
+        # after "(", so this class keeps testing its own acceptance fact whether
+        # the ticket is in progress or completed.
+        accepted_part = next(
+            seg for seg in own_state_line.split("(", 1)[1].split("／")
+            if seg.endswith("受入済み")
+        ).replace("historical tranche記録: ", "").split("受入済み")[0]
         accepted_tranches = accepted_part.split("・")
         for tranche in ("tranche 1", "2", "3a", "3b", "3c", "3d", "3e"):
             with self.subTest(tranche=tranche):
@@ -4983,7 +5174,6 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         # Accepted and in-progress must stay disjoint.
         in_progress = own_state_line.split("／", 1)[1].split("実装中", 1)[0]
         self.assertNotIn(in_progress.replace("tranche ", ""), accepted_tranches)
-        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
 
     def test_backlog_records_entries_twelve_and_thirteen_with_updated_totals(self):
         bl038 = self._bl038_section()
@@ -5186,16 +5376,21 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         self.assertEqual(sr_a_entries, [])
 
     def test_backlog_residual_work_still_names_tranche3e_category_c_count(self):
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
         # tranche 3e's 71 Category C entries stay in the residual-work list
         # after acceptance -- deferred conversions, not work acceptance
         # closed. Anchored on 3e's own count and its place on the accepted side.
         bl038 = self._bl038_section()
-        residual_match = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE)
-        self.assertIsNotNone(residual_match)
-        residual = residual_match.group(0)
+        residual = bl038_historical_residual(bl038)
+        # BL-038 closure (2026-08-14): the ticket-level gate sentence was retired with
+        # the closure boundary; 3e's own deferred-conversion count stays durable.
         for required in (
             "tranche 3eの71件",
-            "BL-038全体の最終受入は上記残作業が完了するまで行わない",
         ):
             with self.subTest(required=required):
                 self.assertIn(required, residual)
@@ -5245,9 +5440,10 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         ):
             with self.subTest(required=required):
                 self.assertIn(required, entry14)
-        self.assertIn(
-            "BL-038全体の最終受入は上記残作業が完了するまで行わない", bl038
-        )
+        # BL-038 closure (2026-08-14): the gate sentence "final acceptance waits
+        # until the residual work is decided" was the TICKET's transition gate and
+        # was retired when the closure boundary was fixed. This tranche's own facts,
+        # asserted above/below, are what remain durable.
 
     def test_backlog_history_no_longer_claims_a_missing_tranche3e_original(self):
         # Scoped to the history header: the count must show seven 「おk」
@@ -5264,7 +5460,7 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
                 self.assertNotIn(banned, header)
 
     def test_status_active_work_records_tranche3e_kickoff_evidence(self):
-        bl038_line = self._status_bl038_line()
+        bl038_line = self._bl038_detail_record()
         for required in (
             "tranche 3d最終受入(2026-08-06)",
             "c53fa7b2c5a0602f98e7eaf6bda43f8b2ffb931f",
@@ -5284,12 +5480,16 @@ class Bl038Tranche3eRecordSyncTest(unittest.TestCase):
         active = status.split("## Active work", 1)[1].split(
             "\n## 5. Recently completed work", 1
         )[0]
-        self.assertNotIn("None.", active)
         recently_completed = status.split("## 5. Recently completed work", 1)[1]
-        self.assertFalse(
-            any(line.startswith("- BL-038 ") for line in recently_completed.splitlines()),
-            "BL-038 must not be listed in Recently completed work during tranche 3e",
-        )
+        # BL-038 closure (2026-08-14): the gate "BL-038 must still sit in Active
+        # work" was the TICKET's lifecycle, never this tranche's fact -- accepting a
+        # tranche never completed BL-038. What stays durable is that STATUS records
+        # BL-038 in exactly one place, so a disappearance or a contradictory double
+        # listing still fails here.
+        in_active = any(line.startswith("- BL-038 ") for line in active.splitlines())
+        in_done = any(line.startswith("- BL-038 ") for line in recently_completed.splitlines())
+        self.assertTrue(in_active or in_done, "STATUS must record BL-038 as active or completed work")
+        self.assertFalse(in_active and in_done, "BL-038 must not be listed as both active and completed")
 
 
 class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
@@ -5305,7 +5505,7 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
 
     _read = Bl038Tranche3eRecordSyncTest._read
     _bl038_section = Bl038Tranche3eRecordSyncTest._bl038_section
-    _status_bl038_line = Bl038Tranche3eRecordSyncTest._status_bl038_line
+    _bl038_detail_record = Bl038Tranche3eRecordSyncTest._bl038_detail_record
 
     def _manifest(self):
         return json.loads(self.MANIFEST_PATH.read_text(encoding="utf-8"))
@@ -5316,15 +5516,20 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
         own_state_line = next(
             line for line in bl038.splitlines() if line.startswith("- **状態:**")
         )
-        self.assertIn("実装中(", own_state_line)
-        accepted_part = own_state_line.split("(", 1)[1].split("受入済み", 1)[0]
+        # BL-038 closure (2026-08-14): locate the accepted-tranche list by the
+        # segment that ENDS in 受入済み instead of assuming it is the first thing
+        # after "(", so this class keeps testing its own acceptance fact whether
+        # the ticket is in progress or completed.
+        accepted_part = next(
+            seg for seg in own_state_line.split("(", 1)[1].split("／")
+            if seg.endswith("受入済み")
+        ).replace("historical tranche記録: ", "").split("受入済み")[0]
         accepted_tranches = accepted_part.split("・")
         self.assertIn("3e", accepted_tranches)
         self.assertIn("3f", accepted_tranches)
         self.assertLess(accepted_tranches.index("3e"), accepted_tranches.index("3f"))
         in_progress = own_state_line.split("／", 1)[1].split("実装中", 1)[0]
         self.assertNotIn(in_progress.replace("tranche ", ""), accepted_tranches)
-        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
 
     def test_backlog_records_entries_fifteen_and_sixteen_for_tranche3f(self):
         bl038 = self._bl038_section()
@@ -5400,7 +5605,7 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
             line for line in self._bl038_section().splitlines()
             if line.startswith("- **tranche 3f着手(2026-08-07):**")
         )
-        status_line = self._status_bl038_line()
+        status_line = self._bl038_detail_record()
         for text in (start_line, status_line):
             with self.subTest(scope=text[:40]):
                 self.assertIn("a00ef0ebaea37edb583c99acaaf475f13ff65f50", text)
@@ -5590,16 +5795,16 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
         # tranche that synced it -- the same hand-off 3e/3f used.)
         bl038 = self._bl038_section()
         self.assertIn("tranche 3fの33件", bl038)
-        self.assertIn(
-            "BL-038全体の最終受入は上記残作業が完了するまで行わない", bl038
-        )
+        # BL-038 closure (2026-08-14): the gate sentence "final acceptance waits
+        # until the residual work is decided" was the TICKET's transition gate and
+        # was retired when the closure boundary was fixed. This tranche's own facts,
+        # asserted above/below, are what remain durable.
         own_state_line = next(
             line for line in bl038.splitlines() if line.startswith("- **状態:**")
         )
-        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
 
     def test_status_active_work_records_tranche3f_evidence(self):
-        bl038_line = self._status_bl038_line()
+        bl038_line = self._bl038_detail_record()
         for required in (
             "tranche 3e最終受入・merge(2026-08-06)",
             "tranche 3e最終受入原文は「おk」",
@@ -5624,12 +5829,16 @@ class Bl038Tranche3fRecordSyncTest(unittest.TestCase):
         active = status.split("## Active work", 1)[1].split(
             "\n## 5. Recently completed work", 1
         )[0]
-        self.assertNotIn("None.", active)
         recently_completed = status.split("## 5. Recently completed work", 1)[1]
-        self.assertFalse(
-            any(line.startswith("- BL-038 ") for line in recently_completed.splitlines()),
-            "BL-038 must not be listed in Recently completed work while it is in progress",
-        )
+        # BL-038 closure (2026-08-14): the gate "BL-038 must still sit in Active
+        # work" was the TICKET's lifecycle, never this tranche's fact -- accepting a
+        # tranche never completed BL-038. What stays durable is that STATUS records
+        # BL-038 in exactly one place, so a disappearance or a contradictory double
+        # listing still fails here.
+        in_active = any(line.startswith("- BL-038 ") for line in active.splitlines())
+        in_done = any(line.startswith("- BL-038 ") for line in recently_completed.splitlines())
+        self.assertTrue(in_active or in_done, "STATUS must record BL-038 as active or completed work")
+        self.assertFalse(in_active and in_done, "BL-038 must not be listed as both active and completed")
 
 
 class Bl038Tranche3gRecordSyncTest(unittest.TestCase):
@@ -5644,7 +5853,7 @@ class Bl038Tranche3gRecordSyncTest(unittest.TestCase):
     ROOT = Bl038Tranche3eRecordSyncTest.ROOT
     _read = Bl038Tranche3eRecordSyncTest._read
     _bl038_section = Bl038Tranche3eRecordSyncTest._bl038_section
-    _status_bl038_line = Bl038Tranche3eRecordSyncTest._status_bl038_line
+    _bl038_detail_record = Bl038Tranche3eRecordSyncTest._bl038_detail_record
 
     def test_tranche3g_is_recorded_as_accepted_after_3f_and_before_3h(self):
         bl038 = self._bl038_section()
@@ -5718,7 +5927,7 @@ class Bl038Tranche3gRecordSyncTest(unittest.TestCase):
                 "937 insertions／49 deletions", "986 changed lines", "Accept／Blocker 0",
                 "66ef88e54ab6245f83af44c696834569af2b58f2", "3d813cc262822c0fdc2582ee5fcf78cf70fffacc",
                 "独立レビューround 3・round 3修正(tranche 3g", "shard-discovery-error", "iterdir")),
-            (self._status_bl038_line(), (
+            (self._bl038_detail_record(), (
                 "tranche 3f最終受入・merge(2026-08-07)", "Pull Request CI run 31139149826",
                 "tranche 3g着手(2026-08-07)", "test/bl038-tranche3g-manifest-sharding",
                 "容量問題(tranche 3g)", "実装証跡(tranche 3g、infrastructure only)", "invalid UTF-8",
@@ -5732,7 +5941,7 @@ class Bl038Tranche3gRecordSyncTest(unittest.TestCase):
                     self.assertIn(required, text)
 
     def test_status_no_longer_claims_tranche3g_is_the_current_shard_state(self):
-        status = self._status_bl038_line()
+        status = self._bl038_detail_record()
         # The one-shard state is history now, explicitly dated to tranche 3g.
         self.assertIn("tranche 3g時点のcurrent shard countは1で(tranche 3hで2へ増えた)", status)
         self.assertNotIn("current shard countは1で、combined summary", status)
@@ -5773,7 +5982,7 @@ class Bl038Tranche3hRecordSyncTest(unittest.TestCase):
     ROOT = Bl038Tranche3eRecordSyncTest.ROOT
     _read = Bl038Tranche3eRecordSyncTest._read
     _bl038_section = Bl038Tranche3eRecordSyncTest._bl038_section
-    _status_bl038_line = Bl038Tranche3eRecordSyncTest._status_bl038_line
+    _bl038_detail_record = Bl038Tranche3eRecordSyncTest._bl038_detail_record
 
     def test_backlog_records_tranche3h_final_acceptance_merge_and_pages(self):
         """PR #90's acceptance, head/CI/review, merge, and Pages run."""
@@ -5901,7 +6110,7 @@ class Bl038Tranche3hRecordSyncTest(unittest.TestCase):
         self.assertIn("spurious duplicate", evidence)
 
     def test_status_line_carries_the_tranche3g_closeout_and_tranche3h_scope(self):
-        status = self._status_bl038_line()
+        status = self._bl038_detail_record()
         for required in (
             "tranche 3g最終受入・merge(2026-08-07)",
             "c4d467f8e69f99e8a5f9bf5bf403980560b4e150",
@@ -5954,7 +6163,7 @@ class Bl038Tranche3iRecordSyncTest(unittest.TestCase):
     ROOT = Bl038Tranche3eRecordSyncTest.ROOT
     _read = Bl038Tranche3eRecordSyncTest._read
     _bl038_section = Bl038Tranche3eRecordSyncTest._bl038_section
-    _status_bl038_line = Bl038Tranche3eRecordSyncTest._status_bl038_line
+    _bl038_detail_record = Bl038Tranche3eRecordSyncTest._bl038_detail_record
 
     ACCEPTED_HEAD = "d463e293138f70fa7ab3963a52da0af006e32147"
     MERGE_COMMIT = "db694fae3b81d824c61efd7b213eb9f6fc935f8c"
@@ -6025,7 +6234,7 @@ class Bl038Tranche3iRecordSyncTest(unittest.TestCase):
         dth.assert_accepted_contracts_accounted_for(self, self.ROOT, "3i")
 
     def test_status_line_records_the_tranche3i_closeout(self):
-        status = self._status_bl038_line()
+        status = self._bl038_detail_record()
         for required in (
             "**tranche 3i最終受入・merge(2026-08-08):**",
             "tranche 3i最終受入原文「ok」(entry 23)",
@@ -6050,7 +6259,7 @@ class Bl038Tranche3jRecordSyncTest(unittest.TestCase):
     ROOT = Bl038Tranche3eRecordSyncTest.ROOT
     _read = Bl038Tranche3eRecordSyncTest._read
     _bl038_section = Bl038Tranche3eRecordSyncTest._bl038_section
-    _status_bl038_line = Bl038Tranche3eRecordSyncTest._status_bl038_line
+    _bl038_detail_record = Bl038Tranche3eRecordSyncTest._bl038_detail_record
 
     SHARD_002 = "document_test_classification_002.json"
     # 34 / 42 / this SHA describe shard 002 AS ACCEPTED at PR #92's merge.
@@ -6204,7 +6413,7 @@ class Bl038Tranche3jRecordSyncTest(unittest.TestCase):
                 self.assertIn(required, evidence)
 
     def test_status_line_carries_the_tranche3i_closeout_and_tranche3j_scope(self):
-        status = self._status_bl038_line()
+        status = self._bl038_detail_record()
         self.assertIn("**tranche 3j最終受入・merge・Pages(2026-08-08):**", status)
         for required in (
             "**tranche 3j着手(2026-08-08):**",
@@ -6258,7 +6467,7 @@ class Bl038Tranche3kRecordSyncTest(unittest.TestCase):
     ROOT = Bl038Tranche3eRecordSyncTest.ROOT
     _read = Bl038Tranche3eRecordSyncTest._read
     _bl038_section = Bl038Tranche3eRecordSyncTest._bl038_section
-    _status_bl038_line = Bl038Tranche3eRecordSyncTest._status_bl038_line
+    _bl038_detail_record = Bl038Tranche3eRecordSyncTest._bl038_detail_record
 
     SHARD_002 = "document_test_classification_002.json"
     # 61 / 70 / this SHA describe shard 002 AS ACCEPTED at PR #93's merge.
@@ -6406,7 +6615,7 @@ class Bl038Tranche3kRecordSyncTest(unittest.TestCase):
                     self.assertNotIn(stale, line)
 
     def test_status_line_carries_the_tranche3k_scope_and_its_closeout(self):
-        status = self._status_bl038_line()
+        status = self._bl038_detail_record()
         for required in (
             "**tranche 3k着手(2026-08-08):**", "f068270e5ed5c8a453371f0b6d63cde9f0f84d53",
             "test/bl038-tranche3k-pr-ci-workflow", "**候補実測・選択(tranche 3k):**",
@@ -6466,7 +6675,7 @@ class Bl038Tranche3lRecordSyncTest(unittest.TestCase):
     ROOT = Bl038Tranche3eRecordSyncTest.ROOT
     _read = Bl038Tranche3eRecordSyncTest._read
     _bl038_section = Bl038Tranche3eRecordSyncTest._bl038_section
-    _status_bl038_line = Bl038Tranche3eRecordSyncTest._status_bl038_line
+    _bl038_detail_record = Bl038Tranche3eRecordSyncTest._bl038_detail_record
 
     SOURCE_FILE = "test_workflow_action_pinning.py"
     CLASSES = ("WorkflowActionPinningTest", "DependabotConfigurationTest")
@@ -6486,24 +6695,35 @@ class Bl038Tranche3lRecordSyncTest(unittest.TestCase):
         "d86d521627dabfed4b4555b8759a50c9a3538a9d89d55c8f2e5d928845e39f46"
 
     def test_backlog_state_records_tranche3l_as_accepted_not_in_progress(self):
-        """Tranche 3l is accepted as of PR #94's merge, 3m as of PR #95's and 3n
-        as of PR #96's; tranche 3o is the one in progress. The 3l-specific
-        residual items are gone, and this class keeps what stays true about 3l."""
+        """Tranche 3l was accepted at PR #94's merge, 3m at PR #95's and 3n at
+        PR #96's, and tranche 3o was the one in progress when this was written.
+        The state-field half reads the live 状態 line for 3l's place on the
+        accepted list; the residual half is a historical witness over the
+        PRE-CLOSURE snapshot, where 3l's own items had already been superseded.
+        Neither half says anything about BL-038's present lifecycle state."""
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
         bl038 = self._bl038_section()
         own_state_line = next(l for l in bl038.splitlines() if l.startswith("- **状態:**"))
         self.assertNotIn("tranche 3l実装中", own_state_line)
-        self.assertIn("3q・3r・3s・3t受入済み／document・static-contract assertion classificationは全件分類済み", own_state_line)
-        accepted = own_state_line.split("(", 1)[1].split("受入済み", 1)[0].split("・")
+        self.assertIn("3q・3r・3s・3t受入済み", own_state_line)
+        accepted = next(
+            seg for seg in own_state_line.split("(", 1)[1].split("／")
+            if seg.endswith("受入済み")
+        ).replace("historical tranche記録: ", "").split("受入済み")[0].split("・")
         self.assertEqual(accepted, ["tranche 1", "2", "3a", "3b", "3c", "3d", "3e", "3f", "3g",
                                     "3h", "3i", "3j", "3k", "3l", "3m", "3n", "3o", "3p", "3q", "3r", "3s", "3t"])
         self.assertIn("3l", accepted)
         self.assertIn("3q", accepted)
-        self.assertNotEqual(own_state_line.strip(), "- **状態:** 完了")
-        residual = re.search(r"^- \*\*残作業:\*\* .*$", bl038, re.MULTILINE).group(0)
+        residual = bl038_historical_residual(bl038)
         # 3l's own Category C count survives in the conversion inventory, with
         # the round-1-corrected A 6 -- but its review/merge item is done.
         for required in ("tranche 3lの6件", "tranche 3l 6件",
-                         "BL-038全体の最終受入は上記残作業が完了するまで行わない", ):
+                         ):
             with self.subTest(required=required):
                 self.assertIn(required, residual)
         for gone in ("tranche 3lのDraft PR独立レビュー・最終受入・Ready化・merge",
@@ -6643,7 +6863,7 @@ class Bl038Tranche3lRecordSyncTest(unittest.TestCase):
                     self.assertIn(required, record)
 
     def test_status_line_carries_the_tranche3k_closeout_and_tranche3l_scope(self):
-        status = self._status_bl038_line()
+        status = self._bl038_detail_record()
         for required in (
             "**tranche 3k最終受入・merge・Pages(2026-08-08):**", "31238186048", "31238943401",
             "f2a22d21aff46dad7da514db6f29a61e34e173a4",
@@ -6711,7 +6931,7 @@ class Bl038Tranche3mRecordSyncTest(unittest.TestCase):
     ROOT = Bl038Tranche3eRecordSyncTest.ROOT
     _read = Bl038Tranche3eRecordSyncTest._read
     _bl038_section = Bl038Tranche3eRecordSyncTest._bl038_section
-    _status_bl038_line = Bl038Tranche3eRecordSyncTest._status_bl038_line
+    _bl038_detail_record = Bl038Tranche3eRecordSyncTest._bl038_detail_record
 
     SOURCE_FILE = "test_security_requirements.py"
     CLASS = "Bl034Round1ReviewCorrectionsTest"
@@ -6863,7 +7083,7 @@ class Bl038Tranche3mRecordSyncTest(unittest.TestCase):
                 with self.subTest(record=prefix[:32], required=required): self.assertIn(required, record)
 
     def test_status_line_carries_the_tranche3l_closeout_and_tranche3m_scope(self):
-        status = self._status_bl038_line()
+        status = self._bl038_detail_record()
         for required in ("**tranche 3l最終受入・merge・Pages(2026-08-08):**", "entry 29", "4888322422",
             "4888334067", "31243840890", self.ACCEPTED_HEAD_3L, self.ACCEPTED_MERGE, "31244383101", "1150はtranche 3l限定で明示承認された例外capであり",
             "tranche 3m以降へは持ち越さない", "これによりtranche 1〜3lはいずれも受入済みとなった", "**tranche 3m着手(2026-08-08):**",
@@ -6884,14 +7104,24 @@ class Bl038Tranche3mRecordSyncTest(unittest.TestCase):
             with self.subTest(stale=stale): self.assertNotIn(stale, status)
 
     def test_current_residual_work_line_keeps_the_durable_tranche3m_facts(self):
-        """PR #95 round 1 (Blocker 2) put the CURRENT residual bullet under test.
-        Tranche 3o now owns that bullet's current-state wording, so this class
-        keeps only what stays true about 3m once 3m is accepted: its own C count
-        and the fact that BL-038 is still open."""
-        residual = re.search(r"^- \*\*残作業:\*\* .*$", self._bl038_section(), re.MULTILINE).group(0)
-        for required in ("tranche 3mの7件", "BL-038全体の最終受入は上記残作業が完了するまで行わない"):
+        """PR #95 round 1 (Blocker 2) put the residual bullet under test while it
+        was still the current one. Since the 2026-08-14 closure that bullet is the
+        PRE-CLOSURE historical snapshot, so this method is a historical witness:
+        it checks what the pre-closure record said about 3m -- its own Category C
+        count -- and that 3l/3m/3n-era in-progress wording never came back into
+        that snapshot. It establishes nothing about BL-038's present lifecycle
+        state, which only bl038_current_record() determines."""
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
+        residual = bl038_historical_residual(self._bl038_section())
+        for required in ("tranche 3mの7件",):
             with self.subTest(required=required): self.assertIn(required, residual)
-        # 3l-, 3m- and 3n-era current-state wording is all stale in this bullet.
+        # The 3l/3m/3n-era in-progress phrasing was already superseded inside this
+        # snapshot before closure, and must not reappear in it.
         for stale in ("shard002は94/600行", "残420件", "tranche 3lは実装中", "tranche 3mは実装中",
                 "tranche 3lのDraft PR独立レビュー", "tranche 3mのDraft PR独立レビュー",
                 "tranche 3nのDraft PR独立レビュー", "現行ruleでのeligible candidateは0件"):
@@ -6969,7 +7199,7 @@ class Bl038Tranche3nRecordSyncTest(unittest.TestCase):
     ROOT = Bl038Tranche3eRecordSyncTest.ROOT
     _read = Bl038Tranche3eRecordSyncTest._read
     _bl038_section = Bl038Tranche3eRecordSyncTest._bl038_section
-    _status_bl038_line = Bl038Tranche3eRecordSyncTest._status_bl038_line
+    _bl038_detail_record = Bl038Tranche3eRecordSyncTest._bl038_detail_record
 
     BRANCH = "test/bl038-tranche3n-method-scope-infrastructure"
     ACCEPTED_HEAD_3M = "8eadabc9bff4cd81a5d7f31cd4e7dfc9bcab4017"
@@ -7088,13 +7318,13 @@ class Bl038Tranche3nRecordSyncTest(unittest.TestCase):
         current = next(l for l in lines if l.startswith("- **cross-shard ownership・contiguous-prefix invariant(tranche 3n):**"))
         history = next(l for l in lines if l.startswith("- **独立レビューround 1(tranche 3n"))
         for stale, text in (("従来の`(file,class)` exclusive ownershipを**test method単位**へ拡張した", current), ("whole-class scopeはそのclassの全test methodsをownershipするため", current),
-                            ("ownershipを`(file,class)`から**test method単位**へ拡張し", self._status_bl038_line())):
+                            ("ownershipを`(file,class)`から**test method単位**へ拡張し", self._bl038_detail_record())):
             with self.subTest(stale=stale): self.assertNotIn(stale, text)
         for kept in ("ownership unitに**class自身を表すunit**を追加", "zero-test-method classでのownership喪失"):
             with self.subTest(kept=kept): self.assertIn(kept, history)
 
     def test_status_line_carries_the_tranche3m_closeout_and_tranche3n_scope(self):
-        status = self._status_bl038_line()
+        status = self._bl038_detail_record()
         for required in ("**tranche 3m最終受入・merge・Pages(2026-08-08):**", "entry 32", "4888836090", "4888838598", "31257981308", self.ACCEPTED_HEAD_3M, self.ACCEPTED_MERGE, "31258331780",
             "**1200はtranche 3m限定で明示承認された例外capであり、tranche 3n以降へは持ち越さない。**", "**これによりtranche 1〜3mはいずれも受入済みとなり、general/default diff capは1000 changed linesへ戻った。**",
             "**tranche 3n着手(2026-08-08):**", self.BRANCH, "entry 33", "**tranche 3nはmethod-scope infrastructure専用であり、残る403件／177件のclassificationは行っていない。**",
@@ -7119,11 +7349,18 @@ class Bl038Tranche3nRecordSyncTest(unittest.TestCase):
             with self.subTest(stale=stale): self.assertNotIn(stale, status)
 
     def test_current_residual_work_line_keeps_the_durable_tranche3n_facts(self):
-        """Tranche 3o owns the CURRENT residual bullet now. What stays true about
-        3n is that it classified nothing and that the candidates it MEASURED are
-        the ones the rule produced -- 3o classified the winner's prefix, so the
-        bullet must still name both figures while no longer calling 3n current."""
-        residual = re.search(r"^- \*\*残作業:\*\* .*$", self._bl038_section(), re.MULTILINE).group(0)
+        """A historical witness over the PRE-CLOSURE residual snapshot. What that
+        record says about 3n is that it classified nothing and that the candidates
+        it MEASURED are the ones the rule produced -- 3o classified the winner's
+        prefix, so the snapshot names both figures and never calls 3n in progress.
+        Nothing here speaks to BL-038's present lifecycle state."""
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
+        residual = bl038_historical_residual(self._bl038_section())
         for required in ("19 methods", "146", "32 methods",
                          "次trancheの候補再測定・着手"):
             with self.subTest(required=required): self.assertIn(required, residual)
@@ -7191,7 +7428,7 @@ class Bl038Tranche3oRecordSyncTest(unittest.TestCase):
     ROOT = Bl038Tranche3eRecordSyncTest.ROOT
     _read = Bl038Tranche3eRecordSyncTest._read
     _bl038_section = Bl038Tranche3eRecordSyncTest._bl038_section
-    _status_bl038_line = Bl038Tranche3eRecordSyncTest._status_bl038_line
+    _bl038_detail_record = Bl038Tranche3eRecordSyncTest._bl038_detail_record
 
     BRANCH = "test/bl038-tranche3o-security-requirements-method-range"
     ACCEPTED_HEAD_3N = "8c7079a0d5f7db33505a9adddd27492b0a8ac3a6"
@@ -7303,7 +7540,7 @@ class Bl038Tranche3oRecordSyncTest(unittest.TestCase):
                 with self.subTest(record=prefix[:34], required=required): self.assertIn(required, record)
 
     def test_status_line_carries_the_tranche3n_closeout_and_tranche3o_scope(self):
-        status = self._status_bl038_line()
+        status = self._bl038_detail_record()
         for required in ("**tranche 3n最終受入・merge・Pages(2026-08-09 JST):**", "entry 34", "4889091113",
             "4889112666", "31264008272", self.ACCEPTED_HEAD_3N, self.ACCEPTED_MERGE, "31265472768",
             "**これによりtranche 1〜3nはいずれも受入済みとなった。**",
@@ -7329,12 +7566,18 @@ class Bl038Tranche3oRecordSyncTest(unittest.TestCase):
             with self.subTest(stale=stale): self.assertNotIn(stale, status)
 
     def test_current_residual_work_line_keeps_the_durable_tranche3o_facts(self):
-        residual = re.search(r"^- \*\*残作業:\*\* .*$", self._bl038_section(), re.MULTILINE).group(0)
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
+        residual = bl038_historical_residual(self._bl038_section())
         for required in ("tranche 3oの54件", "shard003 154/600行",
                 "**`test_security_requirements.py::SecurityRequirementsTest`のtail 9 methods・133 assertions**",
                 "tranche 3oが先頭19 methods・146件を分類済み",
                 "tranche 3d・3e・3h・3i・3j・3k・3m・3o・3qはCategory A該当なしと確定済み",
-                "BL-038全体の最終受入は上記残作業が完了するまで行わない"):
+                ):
             with self.subTest(required=required): self.assertIn(required, residual)
         for stale in ("tranche 3nのDraft PR独立レビュー", "tranche 3oのDraft PR独立レビュー",
                       "現行ruleでのeligible candidateは0件", "tranche 3oは実装中"):
@@ -7381,7 +7624,7 @@ class Bl038Tranche3pRecordSyncTest(unittest.TestCase):
     ROOT = Bl038Tranche3eRecordSyncTest.ROOT
     _read = Bl038Tranche3eRecordSyncTest._read
     _bl038_section = Bl038Tranche3eRecordSyncTest._bl038_section
-    _status_bl038_line = Bl038Tranche3eRecordSyncTest._status_bl038_line
+    _bl038_detail_record = Bl038Tranche3eRecordSyncTest._bl038_detail_record
 
     BRANCH = "test/bl038-tranche3p-source-usage-policy-method-range"
     ACCEPTED_HEAD_3O = "2785589388d698384907862bb8fbab7191dd2e48"
@@ -7477,7 +7720,7 @@ class Bl038Tranche3pRecordSyncTest(unittest.TestCase):
                 with self.subTest(record=prefix[:34], required=required): self.assertIn(required, record)
 
     def test_status_line_carries_the_tranche3o_closeout_and_tranche3p_scope(self):
-        status = self._status_bl038_line()
+        status = self._bl038_detail_record()
         for required in ("**tranche 3o最終受入・merge・Pages(2026-08-09 JST):**", "entry 36", "raw `ok`", "表示上の`「」`は原文の一部ではない", "**GitHub上の順序**",
             "**final acceptance reviewはReady化より後**", "4890126614", "4890302399", "31282229621", self.ACCEPTED_HEAD_3O, self.ACCEPTED_MERGE, "**signature verified／valid**", "31289348799",
             "**手動Pages・`workflow_dispatch`はいずれも未実施**", "**これによりtranche 1〜3oはいずれも受入済みとなった。**", "**tranche 3p着手(2026-08-09):**", self.BRANCH, "entry 37", "raw `はい`",
@@ -7495,7 +7738,13 @@ class Bl038Tranche3pRecordSyncTest(unittest.TestCase):
             with self.subTest(stale=stale): self.assertNotIn(stale, status)
 
     def test_current_residual_work_line_reflects_tranche3p(self):
-        residual = re.search(r"^- \*\*残作業:\*\* .*$", self._bl038_section(), re.MULTILINE).group(0)
+        # BL-038 closure (2026-08-14): this reads the PRE-CLOSURE residual
+        # snapshot -- base main a341816's `残作業` field, preserved verbatim under
+        # a historical label. The facts asserted here are historical evidence of
+        # what that field recorded at the time; they are NOT claims about BL-038's
+        # current state, which lives in bl038_current_record(). The method name is
+        # kept for identity continuity and its "current" wording is historical.
+        residual = bl038_historical_residual(self._bl038_section())
         for required in ("tranche 3pの50件", "次trancheの候補再測定・着手", "**`test_source_usage_policy.py::SourceUsagePolicyTest`のtail 4 methods・37 assertions**",
                 "tranche 3pはprefix 32 methods・140件のみを分類し、tailには着手していない", "**`test_security_requirements.py::SecurityRequirementsTest`のtail 9 methods・133 assertions**",
                 "tranche 3qで11 methods・124 assertionsを分類済み。残り9 methods・133 assertions", "**次trancheのcandidateはtranche 3nのselection ruleでその時点のlatest source上から必ず再測定すること**",
@@ -7533,6 +7782,13 @@ class Bl038Tranche3qRecordSyncTest(unittest.TestCase):
         start = cls.backlog.index("## BL-038")
         end = cls.backlog.find("\n## ", start + 8)
         cls.bl038 = cls.backlog[start:] if end < 0 else cls.backlog[start:end]
+        # BL-038 closure (2026-08-14): the detailed record this class pins used to
+        # be STATUS's Active-work line and is now kept verbatim in the BACKLOG
+        # section above. Read it from where the record lives.
+        _m = "- **STATUS Active work在籍時の記録"
+        _i = cls.bl038.index(_m)
+        _j = cls.bl038.find("\n- **", _i + len(_m))
+        cls.bl038_status_record = cls.bl038[_i:] if _j == -1 else cls.bl038[_i:_j]
 
     def test_current_state_and_user_history_are_synced(self):
         state = next(line for line in self.bl038.splitlines() if line.startswith("- **状態:**"))
@@ -7572,7 +7828,7 @@ class Bl038Tranche3qRecordSyncTest(unittest.TestCase):
                 self.assertIn(token, self.bl038)
         for token in ("entry 38 raw `ok`", "entry 39 raw `はい`", "**1355・A30/B536/C581/D208**", "full unittest **2163 OK**", "**独立レビューround 1(2026-08-10):**", "4893945240", "31359415777", "**独立レビューround 2(2026-08-10):**", "4893982010", "matching group **0件**", "**tranche 3q最終受入(2026-08-10):**", "4894940035", "**残り(post-3q):**", "**tranche 3qは最終受入・merge・自動Pagesまで完了**", "**tranche 3r着手(2026-08-10):**", "**tranche 3rは最終受入済み。PR #100のReady化・通常merge承認済み／受入記録CI後にmergeする。**"):
             with self.subTest(token=token):
-                self.assertIn(token, self.status)
+                self.assertIn(token, self.bl038_status_record)
 
     def test_repository_state_matches_current_record(self):
         """BL-038 tranche 3y (C105): the exact current index length and last entry, the
@@ -7594,6 +7850,13 @@ class Bl038Tranche3rRecordSyncTest(unittest.TestCase):
         start = cls.backlog.index("## BL-038")
         end = cls.backlog.find("\n## ", start + 8)
         cls.bl038 = cls.backlog[start:] if end < 0 else cls.backlog[start:end]
+        # BL-038 closure (2026-08-14): the detailed record this class pins used to
+        # be STATUS's Active-work line and is now kept verbatim in the BACKLOG
+        # section above. Read it from where the record lives.
+        _m = "- **STATUS Active work在籍時の記録"
+        _i = cls.bl038.index(_m)
+        _j = cls.bl038.find("\n- **", _i + len(_m))
+        cls.bl038_status_record = cls.bl038[_i:] if _j == -1 else cls.bl038[_i:_j]
         cls.root = root
 
     def test_3q_closeout_and_3r_kickoff_are_recorded_without_over_authorization(self):
@@ -7612,7 +7875,7 @@ class Bl038Tranche3rRecordSyncTest(unittest.TestCase):
         for token in ("独立レビューround 1(tranche 3r", "4895738881", "Blocker 2件", "matching group 0件", "alias-tolerant semantic section boundary guard", "full unittest 2175 OK"):
             with self.subTest(token=token): self.assertIn(token, self.bl038)
         for token in ("**tranche 3r着手(2026-08-10):**", "**1488・A30/B596/C618/D244**", "**独立レビューround 1(2026-08-10):**", "4895738881", "full unittest **2175 OK**", "**残り(post-3r):**", "**tranche 3rは最終受入済み。PR #100のReady化・通常merge承認済み／受入記録CI後にmergeする。**"):
-            with self.subTest(token=token): self.assertIn(token, self.status)
+            with self.subTest(token=token): self.assertIn(token, self.bl038_status_record)
 
     def test_live_index_matches_the_recorded_post_3r_totals(self):
         """BL-038 tranche 3y (C106): the accepted 3r state -- 141 lines, 133 entries,
@@ -7835,10 +8098,11 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         technical unblock complete, conversion permitted only through separately approved
         controlled rollout work, Category A decided at 3t, and BL-038 incomplete. It
         asserts no Category C count, no zero-conversion state and no migration state."""
-        start = self.bl038.index("- **残作業:** assertion classification自体は完了している。")
+        # BL-038 closure (2026-08-14): this always was a CURRENT-state guard, so it
+        # reads the current record (状態 / 完了境界 / closure実装記録 / 残作業) rather
+        # than the pre-closure snapshot now preserved under 残作業(historical...).
         marker = "**historical post-3r residual snapshot"
-        end = self.bl038.index(marker, start)
-        current = self.bl038[start:end]
+        current = bl038_current_record(self.bl038)
         for stale in ("PR #101のReady化・mergeはこれから",
                       "Ready化・mergeはこれから行う",
                       "PR #101のReady化・mergeは未了"):
@@ -7858,14 +8122,13 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
                      "current indexed inventoryを唯一のsource of truthとし",
                      "Category Cはcontrolled conversion workに対してtechnically unblockedである",
                      "Category A 30件はtranche 3tで判断完了",
-                     "BL-038全体は未完了"):
+                     ):
             with self.subTest(fact=fact):
                 self.assertIn(fact, current)
         # The marker itself must stay, since it is what bounds the current slice -- but
         # this guard deliberately asserts NOTHING about the wording or the values below
         # it. That snapshot is history and a later tranche may restate it.
         self.assertIn(marker + "（現在の未分類残件を意味しない）", self.bl038)
-        self.assertLess(start, end)
 
     def test_the_technical_acceptance_record_never_claims_a_github_approve(self):
         """The tranche 3t technical acceptance record states Accept/Blocker 0 AND that no
@@ -8007,8 +8270,11 @@ class Bl038Tranche3tHistoryFoundationRecordSyncTest(unittest.TestCase):
         for fact in ("3s・3t受入済み",
                      "document・static-contract assertion classificationは全件分類済み",
                      "**Category A helper consolidation要否判断はtranche 3tで完了し、"
-                     "追加helper consolidationは実施しない**",
-                     "Category C source conversionとBL-038全体最終受入は未完了"):
+                     "追加helper consolidationは実施しない**"):
+            # BL-038 closure (2026-08-14): the summary used to end by naming Category C
+            # conversion and BL-038's own final acceptance as outstanding. Category A's
+            # decision -- this method's actual subject -- is unchanged; the ticket's own
+            # completion state is not this class's fact and is no longer asserted here.
             with self.subTest(fact=fact):
                 self.assertIn(fact, line)
         # The old phrasing listed Category A as an incomplete task; it must not return.
@@ -8176,7 +8442,7 @@ class Bl038Tranche3vCouplingRetargetRecordSyncTest(unittest.TestCase):
         # Round 2: the CURRENT 残作業 paragraph must not leave a bare residual figure
         # standing as the total. "frozen-inventory residual 83" is correct and stays
         # allowed; an unqualified "residual 83" as the whole story does not.
-        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        current = bl038_current_record(self.bl038)
         self.assertNotIn("future residual 83", current)
         self.assertNotIn("実施済み、residual 83", current)
         for bare in ("residual 83)", "residual 83。", "residual 83、"):
@@ -8231,11 +8497,11 @@ class Bl038Tranche3vCouplingRetargetRecordSyncTest(unittest.TestCase):
         # satisfy it -- exactly the confusion this tranche is separating.
         own = self.bl038[self.bl038.index("- **tranche 3v(coupling retarget"):]
         self.assertIn("real Category C conversion 0件", own[:own.index("\n\n- **")])
-        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        current = bl038_current_record(self.bl038)
         self.assertIn("technical Category C unblockは完了している", current)
         # The current-state text must not still promise an unblock at 3v.
         # The LAST 残作業 bullet is the current-state one; earlier ones are history.
-        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        current = bl038_current_record(self.bl038)
         self.assertNotIn("tranche 3v acceptance後", current)
         self.assertNotIn("3v acceptanceまでunblocked扱いにしない", current)
 
@@ -8512,7 +8778,7 @@ class Bl038Tranche3xCouplingRetargetRecordSyncTest(unittest.TestCase):
                 self.assertIn(token, self.bl038)
 
     def test_the_current_residual_accounting_is_the_post_3x_state(self):
-        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        current = bl038_current_record(self.bl038)
         # Tranche 3y-a: 3x's own accounting stays as history in its own paragraph; the
         # CURRENT paragraph records the post-3y-a state instead.
         self.assertIn("frozen handled (3v 23＋3w 38＋3x 27)＝**88**、**frozen residual 18**",
@@ -8648,11 +8914,14 @@ class Bl038Tranche3yBLifecycleUnblockRecordSyncTest(unittest.TestCase):
         cannot fail merely because they still say "blocked". Nothing here pins the Category C
         count, an empty migration ledger, or a physical shard layout, so a legal conversion or
         migration cannot break it."""
-        current = self.bl038[self.bl038.rindex("- **残作業:**"):]
+        current = bl038_current_record(self.bl038)
+        # BL-038 closure (2026-08-14): "BL-038全体は未完了" was the ticket's own
+        # lifecycle state, not tranche 3y-b's fact, and stating it is no longer true.
+        # The unblock statements below are 3y-b's durable result and stay checked,
+        # as do the over-claim negatives that follow.
         for stated in ("Category Cはcontrolled conversion workに対してtechnically unblockedである",
                        "technical Category C unblockは完了している",
-                       "これはbulk conversionの承認ではなく",
-                       "BL-038全体は未完了"):
+                       "これはbulk conversionの承認ではなく"):
             with self.subTest(current_states=stated):
                 self.assertIn(stated, current)
         # Still not true after the merge, and checked only where a stale claim would matter.
@@ -8681,6 +8950,214 @@ class Bl038Tranche3yBLifecycleUnblockRecordSyncTest(unittest.TestCase):
                      "**BL-038全体は未完了**"):
             with self.subTest(historical_fact=fact):
                 self.assertIn(fact, bullet)
+
+
+
+class Bl038ClosureLifecycleTest(unittest.TestCase):
+    """BL-038's closure lifecycle, keyed on REAL acceptance evidence.
+
+    Closure has two legitimate states and the repository must be in exactly one
+    of them. Which one applies is derived from whether BL-038 actually carries a
+    user final-acceptance record, so this contract does not have to be rewritten
+    when the user accepts: the same rules simply select the other branch.
+
+    Before acceptance the ticket is a candidate -- BACKLOG says 完了候補, STATUS
+    must not present BL-038 as completed work, and no acceptance original, date,
+    review or merge record may be invented. After acceptance BACKLOG says 完了 and
+    STATUS carries BL-038 as completed work. Either way BL-038 must appear in
+    exactly one STATUS section, must never claim to be 実装中/未完了 while
+    presented as completed, and must never re-claim Category C rollout as its own
+    residual work now that BL-039 owns it.
+
+    The checks are written as a pure function over a (BACKLOG, STATUS) pair so
+    the same rules can be applied to the real repository and to synthetic
+    fixtures for the state this repository is not currently in.
+    """
+
+    # The real record that will be added only after the user accepts.
+    ACCEPTANCE = r"(?m)^- \*\*最終受入\("
+    # Claim forms that made Category C rollout BL-038's own residual work.
+    ROLLOUT_CLAIMS = (
+        "今後のBL-038残作業は",
+        "残るのはCategory C source conversionのcontrolled rollout",
+        "残るのはcontrolled Category C conversion rolloutの計画とその実施",
+    )
+
+    @staticmethod
+    def _section(backlog):
+        start = backlog.index("## BL-038 ")
+        end = backlog.find("\n## ", start + len("## BL-038 "))
+        return backlog[start:] if end == -1 else backlog[start:end]
+
+    @classmethod
+    def _current_residual(cls, section):
+        at = section.rindex("- **残作業:**")
+        rest = section[at:]
+        nxt = rest.find("\n- **", 1)
+        return rest if nxt == -1 else rest[:nxt]
+
+    @classmethod
+    def violations(cls, backlog, status):
+        """Every lifecycle inconsistency in this (BACKLOG, STATUS) pair."""
+        out = []
+        section = cls._section(backlog)
+        accepted = re.search(cls.ACCEPTANCE, section) is not None
+        state = next(l for l in section.splitlines() if l.startswith("- **状態:**"))
+        residual = cls._current_residual(section)
+        active = status.split("## Active work", 1)[1].split(
+            "\n## 5. Recently completed work", 1)[0]
+        completed = status.split("## 5. Recently completed work", 1)[1].split("\n## 6.", 1)[0]
+        in_active = any(l.startswith("- BL-038 ") for l in active.splitlines())
+        in_done = any(l.startswith("- BL-038 ") for l in completed.splitlines())
+
+        if in_active and in_done:
+            out.append("BL-038 is listed as both active and completed work")
+        if not in_active and not in_done:
+            out.append("STATUS records BL-038 as neither active nor completed work")
+        for claim in cls.ROLLOUT_CLAIMS:
+            if claim in residual:
+                out.append(f"current 残作業 re-claims Category C rollout as BL-038 work: {claim}")
+        if "BL-039" not in residual:
+            out.append("current 残作業 does not name BL-039 as the owner of residual Category C work")
+
+        if accepted:
+            if "完了候補" in state:
+                out.append("acceptance recorded but BACKLOG state is still 完了候補")
+            if "完了" not in state:
+                out.append("acceptance recorded but BACKLOG state does not say 完了")
+            if not in_done:
+                out.append("acceptance recorded but STATUS does not list BL-038 as completed work")
+            if in_done:
+                entry = next(l for l in completed.splitlines() if l.startswith("- BL-038 "))
+                for stale in ("実装中", "未完了"):
+                    if stale in entry:
+                        out.append(f"completed entry claims BL-038 is still {stale}")
+                if "BACKLOG.md#bl-038--" not in entry:
+                    out.append("completed entry does not point at the authoritative BACKLOG record")
+            if "なし" not in residual:
+                out.append("acceptance recorded but current 残作業 is not なし")
+        else:
+            if "完了候補" not in state:
+                out.append("no acceptance record, so BACKLOG state must be 完了候補")
+            if in_done:
+                out.append("no acceptance record, but STATUS presents BL-038 as completed work")
+            if "2026-08-14に完了。" in status:
+                out.append("no acceptance record, but STATUS claims BL-038 is complete")
+        return out
+
+    @classmethod
+    def setUpClass(cls):
+        root = Path(__file__).resolve().parent
+        cls.backlog = (root / "BACKLOG.md").read_text(encoding="utf-8")
+        cls.status = (root / "STATUS.md").read_text(encoding="utf-8")
+
+    # ---- the real repository ------------------------------------------------
+    def test_current_repository_state_is_a_coherent_lifecycle_state(self):
+        self.assertEqual(self.violations(self.backlog, self.status), [])
+
+    def test_the_state_field_matches_whichever_phase_the_evidence_selects(self):
+        """Q1 for the real repository, without pinning which phase that is.
+
+        Asserting "there is no acceptance record yet" would make adding the real
+        record a test failure, which is the phase pin this class exists to avoid.
+        So the expected state is derived from the evidence: candidate while no
+        acceptance record exists, completed once one does.
+        """
+        section = self._section(self.backlog)
+        state = next(l for l in section.splitlines() if l.startswith("- **状態:**"))
+        if re.search(self.ACCEPTANCE, section):
+            self.assertIn("完了", state)
+            self.assertNotIn("完了候補", state)
+        else:
+            self.assertIn("完了候補", state)
+
+    # ---- synthetic fixtures -------------------------------------------------
+    # Built from fixture text rather than from the live documents, so these
+    # controls behave identically whichever phase the repository is in. Nothing
+    # here is ever written to the repository.
+    _ACCEPTANCE_FIXTURE = ("- **最終受入(2099-01-01):** FIXTURE ONLY -- 合成テスト用の受入記録であり、"
+                           "実際のユーザー受入ではない。")
+
+    @classmethod
+    def _fixture(cls, accepted, residual=None, in_active=None, in_done=None, entry=None):
+        state = ("- **状態:** 完了(2099-01-01受入)" if accepted
+                 else "- **状態:** 完了候補(closure実装。ユーザー最終受入をもって「完了」となり、mergeはその状態をmainへ反映する)")
+        if residual is None:
+            residual = ("- **残作業:** なし。残Category C remediationは[BL-039](#bl-039)が所有する。"
+                        if accepted else
+                        "- **残作業:** BL-038側の技術的残作業はない。残Category C remediationは[BL-039](#bl-039)が所有する。")
+        if in_active is None:
+            in_active = not accepted
+        if in_done is None:
+            in_done = accepted
+        if entry is None:
+            entry = ("- BL-038 文書testを構造・意味契約中心へ整理する — 完了。詳細は"
+                     "[BACKLOG.md](BACKLOG.md#bl-038--fixture)。")
+        backlog = "\n\n".join([
+            "## BL-038 — fixture",
+            state,
+            cls._ACCEPTANCE_FIXTURE if accepted else "- **closure実装記録:** fixture。",
+            "- **残作業(historical: fixture上の旧記録):** 今後のBL-038残作業は、controlled "
+            "Category C conversion rolloutの計画と実施。BL-038全体は未完了。",
+            residual,
+            "## BL-039 — fixture",
+        ]) + "\n"
+        status = ("## Active work\n\n"
+                  + (("- BL-038 文書testを構造・意味契約中心へ整理する — 受入待ちの完了候補。\n\n") if in_active else "")
+                  + "\n## 5. Recently completed work\n\n"
+                  + ((entry + "\n\n") if in_done else "")
+                  + "\n## 6. Known issues\n")
+        return backlog, status
+
+    def test_synthetic_pre_acceptance_state_is_accepted(self):
+        """Q3: a valid candidate pair is accepted regardless of the repo's phase."""
+        self.assertEqual(self.violations(*self._fixture(accepted=False)), [])
+
+    def test_synthetic_post_acceptance_state_is_accepted(self):
+        """Q2: a valid accepted pair is accepted regardless of the repo's phase."""
+        self.assertEqual(self.violations(*self._fixture(accepted=True)), [])
+
+    # ---- negative controls (all fixture-based, phase-independent) -----------
+    def test_p1_no_acceptance_but_status_claims_complete_is_rejected(self):
+        b, s = self._fixture(accepted=False, in_active=False, in_done=True)
+        self.assertNotEqual(self.violations(b, s), [])
+
+    def test_p2_no_acceptance_but_backlog_says_complete_is_rejected(self):
+        b, s = self._fixture(accepted=False)
+        b = b.replace("- **状態:** 完了候補(closure実装。ユーザー最終受入をもって「完了」となり、mergeはその状態をmainへ反映する)",
+                      "- **状態:** 完了", 1)
+        self.assertNotEqual(self.violations(b, s), [])
+
+    def test_p3_acceptance_recorded_but_state_still_candidate_is_rejected(self):
+        b, s = self._fixture(accepted=True)
+        b = b.replace("- **状態:** 完了(2099-01-01受入)", "- **状態:** 完了候補", 1)
+        self.assertNotEqual(self.violations(b, s), [])
+
+    def test_p4_acceptance_recorded_but_status_missing_completed_entry_is_rejected(self):
+        b, s = self._fixture(accepted=True, in_done=False)
+        self.assertNotEqual(self.violations(b, s), [])
+
+    def test_p5_completed_state_reclaiming_category_c_rollout_is_rejected(self):
+        b, s = self._fixture(
+            accepted=True,
+            residual="- **残作業:** 今後のBL-038残作業は、controlled Category C conversion "
+                     "rolloutの計画と実施。[BL-039](#bl-039)。")
+        self.assertNotEqual(self.violations(b, s), [])
+
+    def test_p6_candidate_state_reclaiming_category_c_rollout_is_rejected(self):
+        b, s = self._fixture(
+            accepted=False,
+            residual="- **残作業:** 今後のBL-038残作業は、controlled Category C conversion "
+                     "rolloutの計画と実施。[BL-039](#bl-039)。")
+        self.assertNotEqual(self.violations(b, s), [])
+
+    def test_c3_a_historical_paragraph_cannot_satisfy_a_current_guard(self):
+        """The historical snapshot legitimately still says the rollout is BL-038's
+        residual work; that must never let a candidate/accepted pair pass while the
+        CURRENT residual omits BL-039 ownership."""
+        b, s = self._fixture(accepted=False, residual="- **残作業:** なし。")
+        self.assertIn("controlled Category C conversion rolloutの計画と実施", b)
+        self.assertNotEqual(self.violations(b, s), [])
 
 
 if __name__ == "__main__":
