@@ -9350,15 +9350,42 @@ class Bl009SiteIntroAndAboutTest(unittest.TestCase):
                 self.assertIn(f"<h2>{heading}</h2>", about)
         self.assertIn("Monomi Digestについて", about)
 
-    def test_about_page_states_the_approved_ai_and_original_article_points(self):
+    # The five About sentences the user settled on. The first three were reworded
+    # on 2026-08-14 before final acceptance; the last two were kept verbatim.
+    ABOUT_SENTENCES = (
+        "Monomi Digestは、金融機関のサイバーセキュリティ実務担当者・管理職・担当役員が、"
+        "日々の情報収集と確認を効率化するための日次ダイジェストです。",
+        "国内外のサイバーセキュリティに関する公開情報をもとに、重要度、確認目安、概要、"
+        "金融機関との関連、確認すべきことを整理しています。",
+        "記事の整理・分析にはAIを利用しています。公開されたRSSや構造化データなど、"
+        "取得元ごとに利用する情報の範囲を定め、その範囲内で分析しています。",
+        "取得元の利用条件や提供される情報の範囲により、AI分析を行わず、"
+        "記事タイトル・取得元・公開日時・原記事へのリンクのみを掲載する場合があります。",
+        "Monomi Digestの分析は、元記事の転載や代替を目的とするものではありません。"
+        "内容の詳細や正確性、最新情報については、各記事に掲載しているリンクから原記事・"
+        "一次情報を確認してください。",
+    )
+
+    def test_about_page_states_the_approved_copy_exactly(self):
         about = self._about()
-        for phrase in (
-            "記事の整理・分析にはAIを利用しています。",
-            "取得元の利用条件や提供される情報の範囲により、AI分析を行わず、",
-            "元記事の転載や代替を目的とするものではありません。",
+        for sentence in self.ABOUT_SENTENCES:
+            with self.subTest(sentence=sentence[:14]):
+                self.assertIn(f"<p>{sentence}</p>", about)
+
+    def test_the_superseded_about_copy_is_gone(self):
+        """The 2026-08-14 rewording dropped 初動判断／ニュースダイジェスト／
+        公開情報を収集し／利用可能な情報の範囲 from the About contract."""
+        about = self._about()
+        for old in (
+            "日々の情報収集と初動判断を効率化するためのニュースダイジェストです。",
+            "公開情報を収集し、各記事について「重要度」",
+            "取得元ごとに利用可能な情報の範囲を定め、",
         ):
-            with self.subTest(phrase=phrase[:14]):
-                self.assertIn(phrase, about)
+            with self.subTest(old=old[:14]):
+                self.assertNotIn(old, about)
+        for token in ("初動判断", "ニュースダイジェスト", "利用可能な情報の範囲", "公開情報を収集し"):
+            with self.subTest(token=token):
+                self.assertNotIn(token, about)
 
     def test_about_page_publishes_no_operator_information(self):
         about = self._about()
