@@ -28,9 +28,14 @@ class UiSpecDocumentTest(unittest.TestCase):
     def test_ui_spec_exists_with_version_metadata(self):
         self.assertTrue(self.spec_path.is_file())
         self.assertIn("# Monomi Digest UI Specification", self.spec)
-        self.assertIn("- **バージョン:** 1.7", self.spec)
+        # BL-009 Phase A-1: the header tracks whichever version is current. 1.8 was
+        # drafted on 2026-08-14 and the user's visual acceptance the same day flipped
+        # 状態 to 承認済み and moved 最終受入日 to 2026-08-14. Version 1.7's own
+        # acceptance date is asserted from the version-history table instead, by
+        # test_version_is_17_approved_with_acceptance_date, so it survives this move.
+        self.assertIn("- **バージョン:** 1.8", self.spec)
         self.assertIn("- **状態:** 承認済み", self.spec)
-        self.assertIn("- **最終受入日:** 2026-08-04", self.spec)
+        self.assertIn("- **最終受入日:** 2026-08-14", self.spec)
         self.assertIn(
             "2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、"
             "Version 1.4として承認済みである",
@@ -303,9 +308,20 @@ class Bl036ArticleAttributionUiSpecTest(unittest.TestCase):
         cls.sd016 = backlog_section(cls.decisions, "SD-016")
 
     def test_version_is_17_approved_with_acceptance_date(self):
-        self.assertIn("- **バージョン:** 1.7", self.spec)
-        self.assertIn("- **状態:** 承認済み", self.spec)
-        self.assertIn("- **最終受入日:** 2026-08-04", self.spec)
+        """BL-036's durable fact: Version 1.7 was approved, accepted 2026-08-04.
+
+        BL-009 Phase A-1 (2026-08-14): this used to read the document header, which
+        was 1.7/承認済み at the time. The header tracks whichever version is current
+        -- it is 1.8/Draft now and will move again -- so it was never the right home
+        for BL-036's own fact. The version-history table is: its 1.7 row records the
+        approval permanently and does not change when a later version is drafted.
+        """
+        self.assertIn("| 1.7 | 承認済み |", self.spec)
+        self.assertIn("2026-08-04", self.spec)
+        self.assertIn(
+            "Version 1.7は[BL-036](BACKLOG.md#bl-036--記事カードのsource-attribution注記を低強調表示へ整える)",
+            self.spec,
+        )
 
     def test_original_ai_note_ban_sentences_are_preserved_not_deleted(self):
         self.assertIn("現行UIへAI利用を明示する専用注記は追加しない", self.spec)

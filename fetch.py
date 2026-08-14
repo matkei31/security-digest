@@ -4989,6 +4989,56 @@ def render_source_attribution_html(item, generated_at_ymd=""):
     return f'\n      <p class="article-attribution">{esc(text)}</p>'
 
 
+# BL-009 Phase A-1: 公開トップにだけ置くサイト説明。SD-034で承認したscopeであり、
+# SD-016が禁止したgenericなsitewide AI badge/alertでも、全記事へのuniform AI note
+# でもない(このblockはAI利用に言及しない。AIの説明はAboutページ側だけが持つ)。
+SITE_INTRO_SENTENCE = "金融機関に関連するサイバーセキュリティ情報をまとめた日次ダイジェスト"
+SITE_INTRO_ABOUT_LABEL = "このサイトについて →"
+ABOUT_PAGE_HREF = "about.html"
+
+
+# BL-009 Phase A-1: introを表示するpageだけがこのCSSを持つ。intro_htmlを渡さない
+# 日別Archive・Archive一覧へ未使用ruleを配らないため、style blockへ条件付きで
+# 差し込む(この機能によるArchive再生成のbyte driftを0にする)。
+#
+# 2026-08-14のユーザー裁定: サイト名・説明・About導線は「サイトidentity」であり、
+# stickyにしない。stickyのままにするのは最終更新・件数・navigationという日次の
+# 操作領域だけなので、identity blockはheaderの外(直上)に出す。結果としてsticky
+# 領域はh1とその上padding分だけ従来より低くなるため、anchor offsetは下げる。
+# 値はCSS box modelからの見積り(h1 18px≒22px + header上paddingの20→12px)であり、
+# BL-028の218/226と同じくPC 1280px/390pxの目視で確定する。
+SITE_IDENTITY_ANCHOR_OFFSET_DELTA_PC = -30
+SITE_IDENTITY_ANCHOR_OFFSET_DELTA_SP = -30
+
+SITE_INTRO_CSS = (
+    "    .site-identity{background:#161b22;padding:20px 16px 14px}\n"
+    "    .site-identity h1{font-size:18px;font-weight:600;letter-spacing:.02em}\n"
+    "    .site-identity + header{padding-top:12px}\n"
+    "    .site-intro{margin-top:6px}\n"
+    "    .site-intro-text{font-size:13px;color:#c9d1d9;line-height:1.6}\n"
+    "    .site-intro-about{margin-top:4px}\n"
+    "    .site-intro-link{display:inline-flex;align-items:center;min-height:28px;"
+    "font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}\n"
+    "    .site-intro-link:hover{text-decoration:underline}\n"
+)
+
+def render_site_intro_html(about_href=ABOUT_PAGE_HREF):
+    """トップページ用のサイト説明block。
+
+    site title(<h1>)の直下、最終更新・件数・Archive navigationより上へ置く――
+    サイト名・説明・About導線をひとまとまりのサイトidentityとして見せるため
+    (2026-08-14のユーザー裁定)。ただしidentityはstickyにせず、build_html側で
+    sticky headerの外(直上)の.site-identity blockへ入れる。日別
+    Archiveは当時の記録の再現が目的なので、この関数の出力を渡さない(build_html
+    のintro_htmlは既定Noneで、明示的に渡したcall siteだけが表示する)。About導線は
+    サイト全体で1箇所だけ置き、archive navigationにもanalytics footerにも足さない。
+    """
+    return f"""<div class="site-intro">
+      <p class="site-intro-text">{esc(SITE_INTRO_SENTENCE)}</p>
+      <p class="site-intro-about"><a class="site-intro-link" href="{esc(about_href)}">{esc(SITE_INTRO_ABOUT_LABEL)}</a></p>
+    </div>"""
+
+
 def render_cloudflare_web_analytics_html():
     """BL-034: Cloudflare Web Analyticsのmanual JavaScript beacon。
 
@@ -5038,6 +5088,7 @@ def build_html(
     archive_nav_html=None,
     archive_footer_nav_html=None,
     legacy_status_line=None,
+    intro_html=None,
 ):
     now      = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     date_source = generated_at or now
@@ -5396,6 +5447,26 @@ def build_html(
     subtitle_html = (
         f'\n    <div class="sub">{esc(subtitle)}</div>' if subtitle else ""
     )
+    # introを持つpageだけ、サイト名・説明・About導線をsticky headerの外へ出す。
+    # 持たないcall site(日別Archive等)ではh1は従来どおりheader内に残り、空行すら
+    # 増えない――既存Archiveの再生成結果をこの変更でbyte単位でも動かさないため。
+    if intro_html:
+        identity_block = f"""  <div class="site-identity">
+    <h1>{esc(page_title)}</h1>{subtitle_html}
+    {intro_html}
+  </div>
+"""
+        header_title_block = ""
+    else:
+        identity_block = ""
+        header_title_block = f"""    <h1>{esc(page_title)}</h1>{subtitle_html}
+"""
+    intro_css = SITE_INTRO_CSS if intro_html else ""
+    # BL-009 Phase A-1: --anchor-offsetは「固定され続ける領域の実高さ」で決まる。
+    # identityがheaderの外に出た分だけsticky領域は低くなるので、その差を引く。
+    # introを表示しない日別Archive・Archive一覧は従来値のまま。
+    anchor_offset_pc = 218 + (SITE_IDENTITY_ANCHOR_OFFSET_DELTA_PC if intro_html else 0)
+    anchor_offset_sp = 226 + (SITE_IDENTITY_ANCHOR_OFFSET_DELTA_SP if intro_html else 0)
 
     return f"""<!DOCTYPE html>
 <html lang="ja">
@@ -5405,8 +5476,8 @@ def build_html(
   <title>{esc(page_title)}</title>
   <style>
     *{{margin:0;padding:0;box-sizing:border-box}}
-    :root{{--anchor-offset:218px}}
-    @media (max-width:600px){{:root{{--anchor-offset:226px}}}}
+    :root{{--anchor-offset:{anchor_offset_pc}px}}
+    @media (max-width:600px){{:root{{--anchor-offset:{anchor_offset_sp}px}}}}
     body{{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:40px}}
     header{{background:#161b22;border-bottom:1px solid #21262d;padding:20px 16px 16px;position:sticky;top:0;z-index:10}}
     header h1{{font-size:18px;font-weight:600;letter-spacing:.02em}}
@@ -5417,7 +5488,7 @@ def build_html(
     .archive-bottom-nav{{max-width:680px;margin:20px auto 0;padding:0 12px}}
     .archive-link{{display:inline-flex;align-items:center;min-height:32px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
     .archive-link:hover{{text-decoration:underline}}
-    .article-list-header{{max-width:680px;margin:12px auto 0;padding:0 12px}}
+{intro_css}    .article-list-header{{max-width:680px;margin:12px auto 0;padding:0 12px}}
     .article-list-header h2{{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}}
     .article-list-note{{font-size:12px;color:#8b949e;line-height:1.5}}
     .cards{{padding:12px 12px 0;display:flex;flex-direction:column;gap:10px;max-width:680px;margin:0 auto}}
@@ -5518,9 +5589,8 @@ def build_html(
   </style>
 </head>
 <body>
-  <header>
-    <h1>{esc(page_title)}</h1>{subtitle_html}
-    <div class="sub">最終更新: {esc(date_str)}</div>
+{identity_block}  <header>
+{header_title_block}    <div class="sub">最終更新: {esc(date_str)}</div>
     <div class="count">{esc(str(len(items)))} 件</div>
     {archive_nav_html}
   </header>
@@ -5961,6 +6031,7 @@ def main():
         items,
         brief_for_html,
         archive_nav_html=archive_nav_html,
+        intro_html=render_site_intro_html(),
     )
     atomic_write_text(out_path, html, validator=validate_html_document)
     print(f"  生成完了: {out_path}")

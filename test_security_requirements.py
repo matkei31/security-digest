@@ -2270,6 +2270,11 @@ class Bl034CloseoutTest(unittest.TestCase):
         self.assertIn("進行中（BL-034で閲覧計測基盤を先行）", bl009)
         self.assertNotIn("- **状態:** 完了", bl009)
         residual = self._section(bl009, "- **残作業:**", "\n- **注記:**")
+        # BL-009 Phase A-1 (2026-08-14): About left this list. The user accepted the
+        # About page, and no further About requirement has been defined, so keeping
+        # About全体 here would pin an open item against a requirement nobody stated.
+        # About's completion is evidenced by 実装証跡/ユーザー受入証跡 instead, which
+        # this class already reads elsewhere; no extra verbatim pin is added here.
         for item in (
             "対象読者と目標",
             "技術/コンテンツSEO",
@@ -2279,7 +2284,6 @@ class Bl034CloseoutTest(unittest.TestCase):
             "canonical",
             "OG／共有",
             "favicon",
-            "About全体",
             "施策の優先順位付け",
             "個別実装",
             "成果測定の継続",

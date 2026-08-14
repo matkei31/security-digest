@@ -3046,7 +3046,22 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         sd_headings = [h for h in self._headings(text) if re.match(r"^SD-\d{3}\b", h)]
         ids = [re.match(r"^(SD-\d{3})", h).group(1) for h in sd_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
-        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 34)})
+        # BL-009 Phase A-1 (2026-08-14): the durable contract is the repository's
+        # allocation convention -- IDs unique and contiguous from SD-001 up to the
+        # highest allocated ID -- not a population frozen at one maximum, which made
+        # every new decision a test failure. The floor records what has already been
+        # allocated: SD-001 through SD-034 exist and must not disappear, while SD-035
+        # and beyond may be added without touching this test. This mirrors the BL-id
+        # contract in test_bl_ids_are_unique_and_cover_bl001_to_bl038.
+        # Scope note: headings not of the form SD-NNN are filtered out above and are
+        # NOT checked here -- no malformed-id coverage is claimed, unchanged from before.
+        numbers = sorted(int(i.split("-")[1]) for i in ids)
+        self.assertEqual(numbers[0], 1, "SD numbering starts at SD-001")
+        self.assertEqual(numbers, list(range(1, numbers[-1] + 1)),
+                         f"SD IDs must be contiguous with no gaps: {ids}")
+        self.assertGreaterEqual(
+            numbers[-1], 34,
+            "SD-001..SD-034 are already allocated and must not disappear")
 
     def test_bl_001_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -9158,6 +9173,288 @@ class Bl038ClosureLifecycleTest(unittest.TestCase):
         b, s = self._fixture(accepted=False, residual="- **残作業:** なし。")
         self.assertIn("controlled Category C conversion rolloutの計画と実施", b)
         self.assertNotEqual(self.violations(b, s), [])
+
+
+
+class Bl009SiteIntroAndAboutTest(unittest.TestCase):
+    """BL-009 Phase A-1: the top-page site description and the About page.
+
+    The intro is opt-in: build_html() renders it only when a call site passes
+    intro_html, so the daily Archive keeps rendering without it. The two
+    sentence and the About link label are the copy the user approved on
+    2026-08-14, so they are pinned as content contracts; nothing else about the
+    surrounding page wording is. The same ruling keeps the identity out of the
+    sticky region, so the sticky/non-sticky split is pinned too.
+    """
+
+    DOCS = Path(__file__).resolve().parent / "docs"
+
+    ITEM = {
+        "title": "サンプル記事",
+        "link": "https://example.com/a",
+        "summary": "概要",
+        "date": datetime.datetime(2026, 8, 14, 6, 0),
+        "source": "CISA",
+        "lang": "ja",
+    }
+
+    def _top_html(self, items=(), brief=None):
+        return fetch.build_html(
+            list(items), brief, intro_html=fetch.render_site_intro_html(),
+        )
+
+    @staticmethod
+    def _digest():
+        return {
+            "schema_version": 2,
+            "digest_date": "2026-08-14",
+            "generated_at": "2026-08-14T07:39:47.613533+09:00",
+            "items": [],
+            "counts": {},
+            "run": {},
+        }
+
+    # ---- top page ----------------------------------------------------------
+    def test_top_page_renders_exactly_one_intro_block(self):
+        self.assertEqual(self._top_html().count('<div class="site-intro">'), 1)
+
+    def test_site_identity_reads_title_then_description_then_about(self):
+        """2026-08-14 ruling: title, description and About link are one site
+        identity, so they sit together above 最終更新/件数 and the archive nav."""
+        html = self._top_html()
+        identity = html[html.index('<div class="site-identity">'):html.index("<header>")]
+        self.assertIn('<div class="site-intro">', identity)
+        self.assertLess(identity.index("</h1>"), identity.index('<p class="site-intro-text">'))
+        self.assertLess(identity.index('<p class="site-intro-text">'), identity.index("about.html"))
+
+    def test_site_identity_is_not_part_of_the_sticky_region(self):
+        """Second 2026-08-14 ruling: the identity must NOT be pinned to the
+        viewport. Only the daily controls stay sticky, and they keep their
+        existing order and their existing navigation."""
+        html = self._top_html()
+        self.assertLess(html.index('<div class="site-identity">'), html.index("<header>"))
+        header = html[html.index("<header>"):html.index("</header>")]
+        # the sticky region carries the daily controls only
+        self.assertNotIn("<h1>", header)
+        self.assertNotIn('<div class="site-intro">', header)
+        self.assertNotIn("about.html", header)
+        self.assertLess(header.index("最終更新"), header.index(" 件</div>"))
+        self.assertLess(header.index(" 件</div>"), header.index('<nav class="archive-nav"'))
+        # `header` is the sticky element, and nothing makes the identity sticky
+        self.assertIn("header{background:#161b22;border-bottom:1px solid #21262d;"
+                      "padding:20px 16px 16px;position:sticky;top:0;z-index:10}", html)
+        identity_rules = [r for r in html.split("\n") if ".site-identity{" in r]
+        self.assertEqual(len(identity_rules), 1)
+        self.assertNotIn("sticky", identity_rules[0])
+        self.assertNotIn("position:fixed", identity_rules[0])
+
+    def test_about_link_precedes_the_update_line_and_archive_navigation(self):
+        html = self._top_html()
+        self.assertLess(html.index("about.html"), html.index("最終更新"))
+        self.assertLess(html.index("about.html"), html.index('<nav class="archive-nav"'))
+
+    def test_intro_comes_before_the_brief_slot(self):
+        html = self._top_html([dict(self.ITEM)], SAMPLE_BRIEF)
+        self.assertLess(html.index('<div class="site-intro">'), html.index("本日の要点"))
+
+    def test_intro_states_the_one_approved_sentence(self):
+        html = self._top_html()
+        self.assertEqual(
+            fetch.SITE_INTRO_SENTENCE,
+            "金融機関に関連するサイバーセキュリティ情報をまとめた日次ダイジェスト",
+        )
+        self.assertEqual(html.count('<p class="site-intro-text">'), 1)
+        self.assertIn(f'<p class="site-intro-text">{fetch.SITE_INTRO_SENTENCE}</p>', html)
+
+    def test_the_superseded_two_sentence_copy_is_gone(self):
+        html = self._top_html()
+        for old in (
+            "金融機関のサイバーセキュリティ担当者・管理職・担当役員向けの日次ニュースダイジェストです。",
+            "国内外の公開情報を収集し、重要度・確認目安・金融機関との関連・確認すべきことを整理しています。",
+        ):
+            with self.subTest(old=old[:16]):
+                self.assertNotIn(old, html)
+
+    def test_anchor_offset_follows_the_shrunken_sticky_region(self):
+        """--anchor-offset must track what actually stays pinned. Moving the
+        identity out of the header lowers it; pages that never had an intro keep
+        BL-028's measured 218/226."""
+        top = self._top_html()
+        self.assertLess(fetch.SITE_IDENTITY_ANCHOR_OFFSET_DELTA_PC, 0)
+        self.assertLess(fetch.SITE_IDENTITY_ANCHOR_OFFSET_DELTA_SP, 0)
+        self.assertIn(f"--anchor-offset:{218 + fetch.SITE_IDENTITY_ANCHOR_OFFSET_DELTA_PC}px", top)
+        self.assertIn(f"--anchor-offset:{226 + fetch.SITE_IDENTITY_ANCHOR_OFFSET_DELTA_SP}px", top)
+        plain = fetch.build_html([], None)
+        self.assertIn("--anchor-offset:218px", plain)
+        self.assertIn("--anchor-offset:226px", plain)
+
+    def test_intro_links_once_to_the_about_page(self):
+        html = self._top_html()
+        self.assertEqual(html.count('href="about.html"'), 1)
+        self.assertIn(f'>{fetch.SITE_INTRO_ABOUT_LABEL}</a>', html)
+        self.assertEqual(fetch.SITE_INTRO_ABOUT_LABEL, "このサイトについて →")
+
+    def test_top_page_intro_does_not_mention_ai(self):
+        """SD-034: the AI explanation lives on About, not on the top page."""
+        intro = fetch.render_site_intro_html()
+        self.assertNotIn("AI", intro)
+
+    # ---- the intro must stay opt-in ---------------------------------------
+    def test_build_html_renders_no_intro_by_default(self):
+        html = fetch.build_html([], None)
+        self.assertNotIn('<div class="site-intro">', html)
+        self.assertNotIn('<div class="site-identity">', html)
+        self.assertNotIn("about.html", html)
+        # the title stays inside the header on pages that carry no identity block
+        header = html[html.index("<header>"):html.index("</header>")]
+        self.assertIn("<h1>", header)
+
+    def test_daily_archive_renders_no_intro(self):
+        html = fetch.build_daily_archive_html(self._digest())
+        self.assertNotIn('<div class="site-intro">', html)
+        self.assertNotIn('<div class="site-identity">', html)
+        self.assertNotIn('href="about.html"', html)
+
+    def test_archive_index_renders_no_intro(self):
+        html = fetch.build_archive_index_html([])
+        self.assertNotIn('<div class="site-intro">', html)
+        self.assertNotIn('<div class="site-identity">', html)
+        self.assertNotIn('href="about.html"', html)
+
+    def test_archive_navigation_contract_is_unchanged(self):
+        """No About link is added to the direction/global navigation groups."""
+        html = fetch.build_daily_archive_html(self._digest(), previous_date="2026-07-10")
+        self.assertEqual(html.count('<div class="archive-nav-group archive-direction-nav">'), 2)
+        self.assertEqual(html.count('<div class="archive-nav-group archive-global-nav">'), 2)
+        self.assertEqual(html.count(">最新のダイジェスト</a>"), 2)
+        self.assertEqual(html.count(">過去のダイジェスト</a>"), 2)
+        nav = html[html.index('<nav class="archive-nav"'):html.index("</header>")]
+        self.assertNotIn("about.html", nav)
+
+    def test_analytics_footer_has_no_about_link(self):
+        self.assertNotIn("about.html", fetch.render_analytics_footer_html())
+
+    # ---- the About page ----------------------------------------------------
+    def _about(self):
+        return (self.DOCS / "about.html").read_text(encoding="utf-8")
+
+    def test_about_page_exists_and_is_a_valid_document(self):
+        self.assertTrue((self.DOCS / "about.html").is_file())
+        fetch.validate_html_document(self._about())
+
+    def test_about_page_has_the_three_approved_sections(self):
+        about = self._about()
+        self.assertEqual(about.count('<section class="about-section">'), 3)
+        for heading in ("情報の整理とAIの利用", "原記事との関係"):
+            with self.subTest(heading=heading):
+                self.assertIn(f"<h2>{heading}</h2>", about)
+        self.assertIn("Monomi Digestについて", about)
+
+    # The five About sentences the user settled on. The first three were reworded
+    # on 2026-08-14 before final acceptance; the last two were kept verbatim.
+    ABOUT_SENTENCES = (
+        "Monomi Digestは、金融機関のサイバーセキュリティ実務担当者・管理職・担当役員が、"
+        "日々の情報収集と確認を効率化するための日次ダイジェストです。",
+        "国内外のサイバーセキュリティに関する公開情報をもとに、重要度、確認目安、概要、"
+        "金融機関との関連、確認すべきことを整理しています。",
+        "記事の整理・分析にはAIを利用しています。公開されたRSSや構造化データなど、"
+        "取得元ごとに利用する情報の範囲を定め、その範囲内で分析しています。",
+        "取得元の利用条件や提供される情報の範囲により、AI分析を行わず、"
+        "記事タイトル・取得元・公開日時・原記事へのリンクのみを掲載する場合があります。",
+        "Monomi Digestの分析は、元記事の転載や代替を目的とするものではありません。"
+        "内容の詳細や正確性、最新情報については、各記事に掲載しているリンクから原記事・"
+        "一次情報を確認してください。",
+    )
+
+    def test_about_page_states_the_approved_copy_exactly(self):
+        about = self._about()
+        for sentence in self.ABOUT_SENTENCES:
+            with self.subTest(sentence=sentence[:14]):
+                self.assertIn(f"<p>{sentence}</p>", about)
+
+    def test_the_superseded_about_copy_is_gone(self):
+        """The 2026-08-14 rewording dropped 初動判断／ニュースダイジェスト／
+        公開情報を収集し／利用可能な情報の範囲 from the About contract."""
+        about = self._about()
+        for old in (
+            "日々の情報収集と初動判断を効率化するためのニュースダイジェストです。",
+            "公開情報を収集し、各記事について「重要度」",
+            "取得元ごとに利用可能な情報の範囲を定め、",
+        ):
+            with self.subTest(old=old[:14]):
+                self.assertNotIn(old, about)
+        for token in ("初動判断", "ニュースダイジェスト", "利用可能な情報の範囲", "公開情報を収集し"):
+            with self.subTest(token=token):
+                self.assertNotIn(token, about)
+
+    def test_about_page_publishes_no_operator_information(self):
+        about = self._about()
+        for banned in ("運営者", "運営会社", "お問い合わせ", "連絡先"):
+            with self.subTest(banned=banned):
+                self.assertNotIn(banned, about)
+
+    def test_about_page_omits_the_rejected_duplicate_explanations(self):
+        about = self._about()
+        for banned in ("掲載について", "処理の失敗", "情報量が異なります"):
+            with self.subTest(banned=banned):
+                self.assertNotIn(banned, about)
+
+    def test_about_page_links_back_to_the_top_page(self):
+        self.assertIn('href="index.html"', self._about())
+
+    def test_about_page_carries_the_site_wide_analytics_contract(self):
+        """SD-032 adopted Cloudflare Web Analytics as SITE-WIDE page-view
+        measurement, and no decision exempts About. The static page reuses the
+        generator's own output verbatim, so the beacon and the disclosure cannot
+        drift from render_cloudflare_web_analytics_html() /
+        render_analytics_footer_html(); About defines no token, endpoint or
+        wording of its own."""
+        about = self._about()
+        self.assertIn(fetch.render_cloudflare_web_analytics_html().strip(), about)
+        self.assertIn(fetch.render_analytics_footer_html().strip(), about)
+
+    def test_about_page_defines_no_analytics_wording_of_its_own(self):
+        about = self._about()
+        beacon = fetch.render_cloudflare_web_analytics_html().strip()
+        footer = fetch.render_analytics_footer_html().strip()
+        # every analytics-related mention on the page comes from those two blocks
+        remainder = about.replace(beacon, "").replace(footer, "")
+        for token in ("cloudflareinsights", "data-cf-beacon", "Cloudflare Web Analytics"):
+            with self.subTest(token=token):
+                self.assertNotIn(token, remainder)
+
+    def test_about_page_is_not_produced_or_deleted_by_the_generator(self):
+        """It is a static file: the generator writes docs/index.html and
+        docs/archive/*.html only, and its archive cleanup deletes strictly
+        `archive/<digest-date>.html`. docs/CNAME has survived on the same terms
+        since 2026-07-28."""
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            (docs / "archive").mkdir(parents=True)
+            data = Path(tmp) / "data"
+            data.mkdir()
+
+            # Nothing creates it: the generator writes docs/index.html and
+            # docs/archive/*.html only.
+            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
+            self.assertFalse((docs / "about.html").exists())
+
+            # Nothing deletes or rewrites it: archive cleanup targets strictly
+            # `archive/<digest-date>.html`. docs/CNAME has survived on the same
+            # terms since 2026-07-28.
+            about = docs / "about.html"
+            payload = "<!DOCTYPE html><html><head><title>x</title></head><body></body></html>"
+            about.write_text(payload, encoding="utf-8")
+            stale = docs / "archive" / "2026-07-10.html"
+            stale.write_text(payload, encoding="utf-8")
+            (data / "2026-07-10.json").write_text("{ not valid json", encoding="utf-8")
+
+            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
+
+            self.assertFalse(stale.is_file(), "control: a stale dated archive page IS removed")
+            self.assertTrue(about.is_file(), "archive regeneration must not delete docs/about.html")
+            self.assertEqual(about.read_text(encoding="utf-8"), payload,
+                             "archive regeneration must not rewrite docs/about.html")
 
 
 if __name__ == "__main__":
