@@ -9215,28 +9215,55 @@ class Bl009SiteIntroAndAboutTest(unittest.TestCase):
 
     # ---- top page ----------------------------------------------------------
     def test_top_page_renders_exactly_one_intro_block(self):
-        self.assertEqual(self._top_html().count('<section class="site-intro"'), 1)
+        self.assertEqual(self._top_html().count('<div class="site-intro">'), 1)
 
-    def test_intro_sits_outside_the_sticky_header(self):
+    def test_intro_sits_under_the_site_title_inside_the_header(self):
+        """2026-08-14 ruling: the description belongs to the site identity, so it
+        sits directly under the title, above 最終更新/件数 and the archive nav."""
         html = self._top_html()
-        self.assertLess(html.index("</header>"), html.index('<section class="site-intro"'))
         header = html[html.index("<header>"):html.index("</header>")]
-        self.assertNotIn("site-intro", header)
+        self.assertIn('<div class="site-intro">', header)
+        self.assertLess(header.index("</h1>"), header.index('<div class="site-intro">'))
+        self.assertLess(header.index('<div class="site-intro">'), header.index("最終更新"))
+        self.assertLess(header.index("最終更新"), header.index(" 件</div>"))
+
+    def test_about_link_precedes_the_update_line_and_archive_navigation(self):
+        html = self._top_html()
+        header = html[html.index("<header>"):html.index("</header>")]
+        self.assertLess(header.index("about.html"), header.index("最終更新"))
+        self.assertLess(header.index("about.html"), header.index('<nav class="archive-nav"'))
 
     def test_intro_comes_before_the_brief_slot(self):
         html = self._top_html([dict(self.ITEM)], SAMPLE_BRIEF)
-        self.assertLess(html.index('<section class="site-intro"'), html.index("本日の要点"))
+        self.assertLess(html.index('<div class="site-intro">'), html.index("本日の要点"))
 
-    def test_intro_states_the_two_approved_sentences(self):
+    def test_intro_states_the_one_approved_sentence(self):
         html = self._top_html()
-        self.assertEqual(len(fetch.SITE_INTRO_SENTENCES), 2)
-        for sentence in fetch.SITE_INTRO_SENTENCES:
-            with self.subTest(sentence=sentence[:16]):
-                self.assertIn(f'<p class="site-intro-text">{sentence}</p>', html)
-        self.assertIn("金融機関のサイバーセキュリティ担当者・管理職・担当役員向けの日次ニュースダイジェストです。",
-                      fetch.SITE_INTRO_SENTENCES)
-        self.assertIn("国内外の公開情報を収集し、重要度・確認目安・金融機関との関連・確認すべきことを整理しています。",
-                      fetch.SITE_INTRO_SENTENCES)
+        self.assertEqual(
+            fetch.SITE_INTRO_SENTENCE,
+            "金融機関に関連するサイバーセキュリティ情報をまとめた日次ダイジェスト",
+        )
+        self.assertEqual(html.count('<p class="site-intro-text">'), 1)
+        self.assertIn(f'<p class="site-intro-text">{fetch.SITE_INTRO_SENTENCE}</p>', html)
+
+    def test_the_superseded_two_sentence_copy_is_gone(self):
+        html = self._top_html()
+        for old in (
+            "金融機関のサイバーセキュリティ担当者・管理職・担当役員向けの日次ニュースダイジェストです。",
+            "国内外の公開情報を収集し、重要度・確認目安・金融機関との関連・確認すべきことを整理しています。",
+        ):
+            with self.subTest(old=old[:16]):
+                self.assertNotIn(old, html)
+
+    def test_anchor_offset_accounts_for_the_in_header_intro(self):
+        """The intro grows the sticky header, so card anchors must clear it. Pages
+        without the intro keep BL-028's measured 218/226."""
+        top = self._top_html()
+        self.assertIn(f"--anchor-offset:{218 + fetch.SITE_INTRO_ANCHOR_OFFSET_PC}px", top)
+        self.assertIn(f"--anchor-offset:{226 + fetch.SITE_INTRO_ANCHOR_OFFSET_SP}px", top)
+        plain = fetch.build_html([], None)
+        self.assertIn("--anchor-offset:218px", plain)
+        self.assertIn("--anchor-offset:226px", plain)
 
     def test_intro_links_once_to_the_about_page(self):
         html = self._top_html()
@@ -9252,17 +9279,17 @@ class Bl009SiteIntroAndAboutTest(unittest.TestCase):
     # ---- the intro must stay opt-in ---------------------------------------
     def test_build_html_renders_no_intro_by_default(self):
         html = fetch.build_html([], None)
-        self.assertNotIn("site-intro\"", html)
+        self.assertNotIn('<div class="site-intro">', html)
         self.assertNotIn("about.html", html)
 
     def test_daily_archive_renders_no_intro(self):
         html = fetch.build_daily_archive_html(self._digest())
-        self.assertNotIn('<section class="site-intro"', html)
+        self.assertNotIn('<div class="site-intro">', html)
         self.assertNotIn('href="about.html"', html)
 
     def test_archive_index_renders_no_intro(self):
         html = fetch.build_archive_index_html([])
-        self.assertNotIn('<section class="site-intro"', html)
+        self.assertNotIn('<div class="site-intro">', html)
         self.assertNotIn('href="about.html"', html)
 
     def test_archive_navigation_contract_is_unchanged(self):

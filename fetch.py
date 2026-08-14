@@ -4992,10 +4992,7 @@ def render_source_attribution_html(item, generated_at_ymd=""):
 # BL-009 Phase A-1: 公開トップにだけ置くサイト説明。SD-034で承認したscopeであり、
 # SD-016が禁止したgenericなsitewide AI badge/alertでも、全記事へのuniform AI note
 # でもない(このblockはAI利用に言及しない。AIの説明はAboutページ側だけが持つ)。
-SITE_INTRO_SENTENCES = (
-    "金融機関のサイバーセキュリティ担当者・管理職・担当役員向けの日次ニュースダイジェストです。",
-    "国内外の公開情報を収集し、重要度・確認目安・金融機関との関連・確認すべきことを整理しています。",
-)
+SITE_INTRO_SENTENCE = "金融機関に関連するサイバーセキュリティ情報をまとめた日次ダイジェスト"
 SITE_INTRO_ABOUT_LABEL = "このサイトについて →"
 ABOUT_PAGE_HREF = "about.html"
 
@@ -5003,11 +5000,14 @@ ABOUT_PAGE_HREF = "about.html"
 # BL-009 Phase A-1: introを表示するpageだけがこのCSSを持つ。intro_htmlを渡さない
 # 日別Archive・Archive一覧へ未使用ruleを配らないため、style blockへ条件付きで
 # 差し込む(この機能によるArchive再生成のbyte driftを0にする)。
+SITE_INTRO_ANCHOR_OFFSET_PC = 48
+SITE_INTRO_ANCHOR_OFFSET_SP = 66
+
 SITE_INTRO_CSS = (
-    "    .site-intro{max-width:680px;margin:16px auto 0;padding:0 12px;display:grid;gap:6px}\n"
-    "    .site-intro-text{font-size:13px;color:#c9d1d9;line-height:1.7}\n"
+    "    .site-intro{margin-top:4px}\n"
+    "    .site-intro-text{font-size:12px;color:#c9d1d9;line-height:1.5}\n"
     "    .site-intro-about{margin-top:2px}\n"
-    "    .site-intro-link{display:inline-flex;align-items:center;min-height:32px;"
+    "    .site-intro-link{display:inline-flex;align-items:center;min-height:24px;"
     "font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}\n"
     "    .site-intro-link:hover{text-decoration:underline}\n"
 )
@@ -5015,18 +5015,17 @@ SITE_INTRO_CSS = (
 def render_site_intro_html(about_href=ABOUT_PAGE_HREF):
     """トップページ用のサイト説明block。
 
-    build_html()のsticky header(<header>)の外・「本日の要点」の前へ置く。日別
+    site title(<h1>)の直下、最終更新・件数・Archive navigationより上へ置く――
+    サイト名・説明・About導線をひとまとまりのサイトidentityとして見せるため、
+    header内に入れる(2026-08-14のユーザー裁定)。日別
     Archiveは当時の記録の再現が目的なので、この関数の出力を渡さない(build_html
     のintro_htmlは既定Noneで、明示的に渡したcall siteだけが表示する)。About導線は
     サイト全体で1箇所だけ置き、archive navigationにもanalytics footerにも足さない。
     """
-    paragraphs = "".join(
-        f'\n    <p class="site-intro-text">{esc(sentence)}</p>'
-        for sentence in SITE_INTRO_SENTENCES
-    )
-    return f"""<section class="site-intro" aria-label="サイトの説明">{paragraphs}
-    <p class="site-intro-about"><a class="site-intro-link" href="{esc(about_href)}">{esc(SITE_INTRO_ABOUT_LABEL)}</a></p>
-  </section>"""
+    return f"""<div class="site-intro">
+      <p class="site-intro-text">{esc(SITE_INTRO_SENTENCE)}</p>
+      <p class="site-intro-about"><a class="site-intro-link" href="{esc(about_href)}">{esc(SITE_INTRO_ABOUT_LABEL)}</a></p>
+    </div>"""
 
 
 def render_cloudflare_web_analytics_html():
@@ -5439,8 +5438,15 @@ def build_html(
     )
     # intro_htmlを渡さないcall site(日別Archive等)では、空行すら出力しない――
     # 既存Archiveの再生成結果をこの変更でbyte単位でも動かさないため。
-    intro_block = f"\n  {intro_html}" if intro_html else ""
+    intro_block = f"\n    {intro_html}" if intro_html else ""
     intro_css = SITE_INTRO_CSS if intro_html else ""
+    # BL-009 Phase A-1: introはsticky header内(site titleの直下)に入るため、記事
+    # カードへのanchor遷移で見出しが隠れないよう--anchor-offsetをintro分だけ上げる。
+    # 加算値はCSS box modelからの見積り(PC: 説明1行、390px: 2行に折り返す前提)であり、
+    # BL-028の218/226と同じくPC 1280px/390pxの目視で確定する。introを表示しない
+    # 日別Archive・Archive一覧は従来値のまま。
+    anchor_offset_pc = 218 + (SITE_INTRO_ANCHOR_OFFSET_PC if intro_html else 0)
+    anchor_offset_sp = 226 + (SITE_INTRO_ANCHOR_OFFSET_SP if intro_html else 0)
 
     return f"""<!DOCTYPE html>
 <html lang="ja">
@@ -5450,8 +5456,8 @@ def build_html(
   <title>{esc(page_title)}</title>
   <style>
     *{{margin:0;padding:0;box-sizing:border-box}}
-    :root{{--anchor-offset:218px}}
-    @media (max-width:600px){{:root{{--anchor-offset:226px}}}}
+    :root{{--anchor-offset:{anchor_offset_pc}px}}
+    @media (max-width:600px){{:root{{--anchor-offset:{anchor_offset_sp}px}}}}
     body{{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:40px}}
     header{{background:#161b22;border-bottom:1px solid #21262d;padding:20px 16px 16px;position:sticky;top:0;z-index:10}}
     header h1{{font-size:18px;font-weight:600;letter-spacing:.02em}}
@@ -5564,11 +5570,11 @@ def build_html(
 </head>
 <body>
   <header>
-    <h1>{esc(page_title)}</h1>{subtitle_html}
+    <h1>{esc(page_title)}</h1>{subtitle_html}{intro_block}
     <div class="sub">最終更新: {esc(date_str)}</div>
     <div class="count">{esc(str(len(items)))} 件</div>
     {archive_nav_html}
-  </header>{intro_block}
+  </header>
   {brief_html}
   {important_items_html}
   {dashboard_html}

@@ -69,7 +69,7 @@ Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた
 現行の表示順は次のとおりである。DOM上もこの順を維持する。
 
 1. `header`: ページ名、日別Archiveの副題（該当時）、最終更新、記事件数、Archive導線
-1.5. `.site-intro`: サイト説明（**トップページのみ**。Version 1.8）。sticky headerの外側、`header`の直後、「本日の要点」の前に置く。日別Archiveには表示しない
+1. `header`内の`.site-intro`: サイト説明1文とAbout導線（**トップページのみ**。Version 1.8）。site title直下・最終更新／件数／Archive導線より上。日別Archiveには表示しない
 2. `.todays-brief`: 「本日の要点」。表示可能なBrief内容がある場合だけ表示
 3. `.important-items`: 「優先確認」。0件でもセクション自体は表示
 4. `.dashboard`: 「本日のダッシュボード」
@@ -419,13 +419,14 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 ### 19.5.2 トップページのサイト説明
 
 - **トップページにのみ表示する。** 日別Archive・Archive一覧には表示しない。日別Archiveは当時の記録の再現が目的であり、現在のサイト説明を持たない。
-- sticky header（`<header>`）の**外側**に置く。headerの直後、「本日の要点」の**前**。
-- 本文は次の2文とする（ユーザーが2026-08-14に承認した文言）。
+- **sticky header（`<header>`）の内側**、site title（`<h1>`）の**直下**に置く。最終更新・件数・Archive navigationより**上**。サイト名→説明→About導線をひとまとまりの**サイトidentity**として見せるため（2026-08-14のユーザー裁定。当初は「sticky headerの外・本日の要点の前」だったが、この裁定で置き換えた）。
+- 本文は次の**1文**とする（ユーザーが2026-08-14に確定した文言）。
 
-  1. 金融機関のサイバーセキュリティ担当者・管理職・担当役員向けの日次ニュースダイジェストです。
-  2. 国内外の公開情報を収集し、重要度・確認目安・金融機関との関連・確認すべきことを整理しています。
+  > 金融機関に関連するサイバーセキュリティ情報をまとめた日次ダイジェスト
 
-- その下にAboutページへの導線を**1箇所だけ**置く。文言は「このサイトについて →」。
+  当初案の2文（「…担当役員向けの日次ニュースダイジェストです。」「国内外の公開情報を収集し、…整理しています。」）は同日の裁定で置き換えた。
+
+- その下にAboutページへの導線を**1箇所だけ**置く。文言は「このサイトについて →」。表示順は**サイト名 → 説明1文 → このサイトについて → → 最終更新 → 件数 → ダイジェストナビゲーション → 本日の要点**とする。
 - **トップページの説明はAI利用に言及しない。** AIの説明はAboutページだけが持つ。
 - Aboutリンクをarchive navigation（方向移動／全体導線）へ追加しない。analytics footerへも追加しない。サイト全体で導線は1箇所である。
 
@@ -441,13 +442,17 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 - 既存のdark UIへ揃える。新しいframework・JS・client-side routingは追加しない。About表示に必要な最小限のCSSだけを持ち、`build_html()`のstyle blockを丸ごと複製しない。
 - **既存のsite-wide analytics契約をそのまま適用する。** [SD-032](DECISIONS.md#sd-032--adopt-cloudflare-web-analytics-and-google-search-console-for-bl-034)のCloudflare Web Analytics beaconとanalytics disclosure footerを、generatorの`render_cloudflare_web_analytics_html()`／`render_analytics_footer_html()`の出力そのままで持つ。About専用のtoken・送信先・文言は定義しない。
 
-### 19.5.4 AI-use note原則（3.1）との関係
+### 19.5.4 sticky headerとanchor offset
+
+introはsticky header内に入るためheader実高が増える。記事カードへのanchor遷移で見出しが隠れないよう、**introを表示するページだけ**`--anchor-offset`をintro分だけ引き上げる（PC +48px、390px +66px。390pxでは説明1文が2行へ折り返す前提）。introを表示しない日別Archive・Archive一覧はBL-028の実測値（PC 218px／390px 226px）のままである。**加算値はCSS box modelからの見積りであり、BL-028の218/226と同じくPC 1280px／390pxの目視で確定する。** 390pxのsticky占有高もこの目視の対象とする。
+
+### 19.5.5 AI-use note原則（3.1）との関係
 
 AboutページのAI説明は[SD-034](DECISIONS.md#sd-034--explain-the-sites-ai-use-on-a-dedicated-about-page-only)が承認したものである。3.1が禁止する**サイト全体へのgenericな「AIを利用しています」badge／alertではなく**、全記事へのuniform AI note・各分析sectionへの反復labelでもない。[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)が「将来Aboutや公開導線を別スコープで設計する場合に改めて裁定する」と留保した論点を、SD-034が決着させた。[SD-033](DECISIONS.md#sd-033--allow-source-policy-required-article-attribution-as-a-limited-exception-to-the-generic-ai-note-ban)のsource-policy-required attributionは変更せず、Aboutの説明とは目的・scopeが異なる。footerへの一般AI説明は本scopeでは追加しない。
 
-### 19.5.5 目視受入の対象
+### 19.5.6 目視受入の対象
 
-PC 1280pxと390pxで、トップページとAboutページの計4画面を目視受入の対象とする。Version 1.8は受入前はDraftであり、受入時にApprovedへ移す。
+PC 1280pxと390pxで、トップページとAboutページの計4画面を目視受入の対象とする。390pxでは特に**sticky headerの高さ**、サイト名→説明→About→更新情報の階層、説明文の折返し、「本日の要点」が不必要に下へ押し出されていないかを確認する。Version 1.8は受入前はDraftであり、受入時にApprovedへ移す。
 
 ## 20. 変更管理
 
@@ -476,4 +481,4 @@ PC 1280pxと390pxで、トップページとAboutページの計4画面を目視
 | 1.5 | 承認済み | BL-029で「本日の要点」子見出しと記事カード見出しを再設計し、「重要・優先事項」を同一記事のsummary／financial_impactペアから構成する契約へ更新した。2026-07-27、ユーザーがPC 1280px／390px計8画面を目視受入した |
 | 1.6 | 承認済み | BL-028でダイジェストナビゲーションをA案「左寄せ二段・ラベルなし」へ再設計し、日別Archiveの全体導線を`過去→最新`の順へ変更した。2026-07-27、ユーザーがPC 1280px／390px計10画面を目視受入した |
 | 1.7 | 承認済み | BL-036(Fable 5レビューR-01)でBL-032実装済みの`.article-attribution`へ低強調CSSを追加(runtime変更はCSSのみ)。AI-use note原則(3.1)のうち一律generic note禁止は維持し、BL-032実装済みのsource-policy-required attributionをSD-016の一部への限定例外として正式に認めた(SD-033、SD-016のgeneric AI disclosure禁止と他の6項目は変更なし)。2026-08-04、ユーザーがPC 1280px／390px計6画面を目視受入した |
-| 1.8 | Draft | BL-009 Phase A-1でトップページにサイト説明（2文＋「このサイトについて →」1箇所）を追加し、`docs/about.html`を静的ページとして新設した。introはトップのみでsticky header外、「本日の要点」の前。日別Archive・Archive一覧には表示しない。AboutのAI説明はSD-034で承認し、3.1のgeneric AI badge/alert禁止・uniform per-article note禁止・反復label禁止は維持する（SD-033は変更なし）。ユーザー目視受入前のDraft |
+| 1.8 | Draft | BL-009 Phase A-1でトップページにサイト説明（**1文**＋「このサイトについて →」1箇所）を追加し、`docs/about.html`を静的ページとして新設した。introはトップのみで、**sticky header内のsite title直下**（最終更新・件数・Archive導線より上）。introを表示するページのみ`--anchor-offset`をintro分引き上げる。日別Archive・Archive一覧には表示しない。AboutのAI説明はSD-034で承認し、3.1のgeneric AI badge/alert禁止・uniform per-article note禁止・反復label禁止は維持する（SD-033は変更なし）。ユーザー目視受入前のDraft |
