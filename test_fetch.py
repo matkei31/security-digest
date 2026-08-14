@@ -9702,6 +9702,10 @@ class Bl009PhaseA3SitemapAndRobotsTest(unittest.TestCase):
     lastmod/changefreq/priority, because none of those has an agreed contract
     yet. robots.txt allows everything and points at the sitemap; it is not used
     as an indexing control.
+
+    Phase A-3 added nothing to the pages themselves, but that is a fact about
+    this change, checked by the diff, not a contract: canonical and the rest are
+    BL-009 residual work and these tests must not stand in their way.
     """
 
     ROOT = Path(__file__).resolve().parent
@@ -9924,20 +9928,6 @@ class Bl009PhaseA3SitemapAndRobotsTest(unittest.TestCase):
             self._write(data, "2026-08-04")
             fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
             self.assertEqual((docs / "robots.txt").read_text(encoding="utf-8"), self.robots)
-
-    # ---- scope --------------------------------------------------------------
-    def test_phase_a3_adds_no_html_and_no_head_metadata(self):
-        """The pages themselves are untouched: no canonical, no OG, no favicon
-        link, and the title/description contract from Phase A-2 still holds."""
-        html = fetch.build_html([], None,
-                                document_title=fetch.TOP_PAGE_DOCUMENT_TITLE,
-                                meta_description=fetch.TOP_PAGE_META_DESCRIPTION)
-        for banned in ('rel="canonical"', 'property="og:', 'name="twitter:',
-                       'rel="icon"', 'application/ld+json', 'name="robots"'):
-            with self.subTest(banned=banned):
-                self.assertNotIn(banned, html)
-        self.assertIn(f"<title>{fetch.TOP_PAGE_DOCUMENT_TITLE}</title>", html)
-        self.assertNotIn("sitemap", html.lower())
 
 
 if __name__ == "__main__":
