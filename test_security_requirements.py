@@ -2277,13 +2277,13 @@ class Bl034CloseoutTest(unittest.TestCase):
         # this class already reads elsewhere; no extra verbatim pin is added here.
         # BL-009 Phase A-3 (2026-08-15): robots.txt and sitemap left it on the same
         # terms -- implemented, accepted, merged and confirmed on the live site, so
-        # 残作業 no longer enumerates them and this tuple must not either. 12 -> 11
-        # -> 9 items; the nine that remain are still open.
+        # 残作業 no longer enumerates them and this tuple must not either.
+        # BL-009 Phase A-4 (2026-08-15): canonical left it the same way. 12 -> 11 ->
+        # 9 -> 8 items; the eight that remain are still open.
         for item in (
             "対象読者と目標",
             "技術/コンテンツSEO",
             "metadata",
-            "canonical",
             "OG／共有",
             "favicon",
             "施策の優先順位付け",
