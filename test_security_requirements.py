@@ -2275,12 +2275,14 @@ class Bl034CloseoutTest(unittest.TestCase):
         # About全体 here would pin an open item against a requirement nobody stated.
         # About's completion is evidenced by 実装証跡/ユーザー受入証跡 instead, which
         # this class already reads elsewhere; no extra verbatim pin is added here.
+        # BL-009 Phase A-3 (2026-08-15): robots.txt and sitemap left it on the same
+        # terms -- implemented, accepted, merged and confirmed on the live site, so
+        # 残作業 no longer enumerates them and this tuple must not either. 12 -> 11
+        # -> 9 items; the nine that remain are still open.
         for item in (
             "対象読者と目標",
             "技術/コンテンツSEO",
             "metadata",
-            "robots.txt",
-            "sitemap",
             "canonical",
             "OG／共有",
             "favicon",
