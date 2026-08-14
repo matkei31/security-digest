@@ -9181,9 +9181,10 @@ class Bl009SiteIntroAndAboutTest(unittest.TestCase):
 
     The intro is opt-in: build_html() renders it only when a call site passes
     intro_html, so the daily Archive keeps rendering without it. The two
-    sentences and the About link label are the copy the user approved on
+    sentence and the About link label are the copy the user approved on
     2026-08-14, so they are pinned as content contracts; nothing else about the
-    surrounding page wording is.
+    surrounding page wording is. The same ruling keeps the identity out of the
+    sticky region, so the sticky/non-sticky split is pinned too.
     """
 
     DOCS = Path(__file__).resolve().parent / "docs"
@@ -9217,21 +9218,40 @@ class Bl009SiteIntroAndAboutTest(unittest.TestCase):
     def test_top_page_renders_exactly_one_intro_block(self):
         self.assertEqual(self._top_html().count('<div class="site-intro">'), 1)
 
-    def test_intro_sits_under_the_site_title_inside_the_header(self):
-        """2026-08-14 ruling: the description belongs to the site identity, so it
-        sits directly under the title, above 最終更新/件数 and the archive nav."""
+    def test_site_identity_reads_title_then_description_then_about(self):
+        """2026-08-14 ruling: title, description and About link are one site
+        identity, so they sit together above 最終更新/件数 and the archive nav."""
         html = self._top_html()
+        identity = html[html.index('<div class="site-identity">'):html.index("<header>")]
+        self.assertIn('<div class="site-intro">', identity)
+        self.assertLess(identity.index("</h1>"), identity.index('<p class="site-intro-text">'))
+        self.assertLess(identity.index('<p class="site-intro-text">'), identity.index("about.html"))
+
+    def test_site_identity_is_not_part_of_the_sticky_region(self):
+        """Second 2026-08-14 ruling: the identity must NOT be pinned to the
+        viewport. Only the daily controls stay sticky, and they keep their
+        existing order and their existing navigation."""
+        html = self._top_html()
+        self.assertLess(html.index('<div class="site-identity">'), html.index("<header>"))
         header = html[html.index("<header>"):html.index("</header>")]
-        self.assertIn('<div class="site-intro">', header)
-        self.assertLess(header.index("</h1>"), header.index('<div class="site-intro">'))
-        self.assertLess(header.index('<div class="site-intro">'), header.index("最終更新"))
+        # the sticky region carries the daily controls only
+        self.assertNotIn("<h1>", header)
+        self.assertNotIn('<div class="site-intro">', header)
+        self.assertNotIn("about.html", header)
         self.assertLess(header.index("最終更新"), header.index(" 件</div>"))
+        self.assertLess(header.index(" 件</div>"), header.index('<nav class="archive-nav"'))
+        # `header` is the sticky element, and nothing makes the identity sticky
+        self.assertIn("header{background:#161b22;border-bottom:1px solid #21262d;"
+                      "padding:20px 16px 16px;position:sticky;top:0;z-index:10}", html)
+        identity_rules = [r for r in html.split("\n") if ".site-identity{" in r]
+        self.assertEqual(len(identity_rules), 1)
+        self.assertNotIn("sticky", identity_rules[0])
+        self.assertNotIn("position:fixed", identity_rules[0])
 
     def test_about_link_precedes_the_update_line_and_archive_navigation(self):
         html = self._top_html()
-        header = html[html.index("<header>"):html.index("</header>")]
-        self.assertLess(header.index("about.html"), header.index("最終更新"))
-        self.assertLess(header.index("about.html"), header.index('<nav class="archive-nav"'))
+        self.assertLess(html.index("about.html"), html.index("最終更新"))
+        self.assertLess(html.index("about.html"), html.index('<nav class="archive-nav"'))
 
     def test_intro_comes_before_the_brief_slot(self):
         html = self._top_html([dict(self.ITEM)], SAMPLE_BRIEF)
@@ -9255,12 +9275,15 @@ class Bl009SiteIntroAndAboutTest(unittest.TestCase):
             with self.subTest(old=old[:16]):
                 self.assertNotIn(old, html)
 
-    def test_anchor_offset_accounts_for_the_in_header_intro(self):
-        """The intro grows the sticky header, so card anchors must clear it. Pages
-        without the intro keep BL-028's measured 218/226."""
+    def test_anchor_offset_follows_the_shrunken_sticky_region(self):
+        """--anchor-offset must track what actually stays pinned. Moving the
+        identity out of the header lowers it; pages that never had an intro keep
+        BL-028's measured 218/226."""
         top = self._top_html()
-        self.assertIn(f"--anchor-offset:{218 + fetch.SITE_INTRO_ANCHOR_OFFSET_PC}px", top)
-        self.assertIn(f"--anchor-offset:{226 + fetch.SITE_INTRO_ANCHOR_OFFSET_SP}px", top)
+        self.assertLess(fetch.SITE_IDENTITY_ANCHOR_OFFSET_DELTA_PC, 0)
+        self.assertLess(fetch.SITE_IDENTITY_ANCHOR_OFFSET_DELTA_SP, 0)
+        self.assertIn(f"--anchor-offset:{218 + fetch.SITE_IDENTITY_ANCHOR_OFFSET_DELTA_PC}px", top)
+        self.assertIn(f"--anchor-offset:{226 + fetch.SITE_IDENTITY_ANCHOR_OFFSET_DELTA_SP}px", top)
         plain = fetch.build_html([], None)
         self.assertIn("--anchor-offset:218px", plain)
         self.assertIn("--anchor-offset:226px", plain)
@@ -9280,16 +9303,22 @@ class Bl009SiteIntroAndAboutTest(unittest.TestCase):
     def test_build_html_renders_no_intro_by_default(self):
         html = fetch.build_html([], None)
         self.assertNotIn('<div class="site-intro">', html)
+        self.assertNotIn('<div class="site-identity">', html)
         self.assertNotIn("about.html", html)
+        # the title stays inside the header on pages that carry no identity block
+        header = html[html.index("<header>"):html.index("</header>")]
+        self.assertIn("<h1>", header)
 
     def test_daily_archive_renders_no_intro(self):
         html = fetch.build_daily_archive_html(self._digest())
         self.assertNotIn('<div class="site-intro">', html)
+        self.assertNotIn('<div class="site-identity">', html)
         self.assertNotIn('href="about.html"', html)
 
     def test_archive_index_renders_no_intro(self):
         html = fetch.build_archive_index_html([])
         self.assertNotIn('<div class="site-intro">', html)
+        self.assertNotIn('<div class="site-identity">', html)
         self.assertNotIn('href="about.html"', html)
 
     def test_archive_navigation_contract_is_unchanged(self):

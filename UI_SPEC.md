@@ -68,8 +68,8 @@ Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた
 
 現行の表示順は次のとおりである。DOM上もこの順を維持する。
 
-1. `header`: ページ名、日別Archiveの副題（該当時）、最終更新、記事件数、Archive導線
-1. `header`内の`.site-intro`: サイト説明1文とAbout導線（**トップページのみ**。Version 1.8）。site title直下・最終更新／件数／Archive導線より上。日別Archiveには表示しない
+0. `.site-identity`（**トップページのみ**。Version 1.8）: ページ名、サイト説明1文、About導線。`header`の**直上**に置き、**stickyにしない**。日別Archive・Archive一覧には出力しない
+1. `header`: ページ名（`.site-identity`がないページのみ）、日別Archiveの副題（該当時）、最終更新、記事件数、Archive導線。sticky
 2. `.todays-brief`: 「本日の要点」。表示可能なBrief内容がある場合だけ表示
 3. `.important-items`: 「優先確認」。0件でもセクション自体は表示
 4. `.dashboard`: 「本日のダッシュボード」
@@ -111,7 +111,7 @@ Brief、優先確認、dashboardはそれぞれ「概況」「短い索引」「
 
 ### 6.2 モバイルsticky header
 
-ヘッダーpaddingはPC／モバイルとも`20px 16px 16px`、見出しは`18px`である。600px以下でも現在のstickyとpaddingを維持し、圧縮案は採用しない。sticky headerとアンカー移動の関係は第15章のanchor offset契約に従う(BL-028のナビゲーション二段化に伴いanchor offset値は調整済み)。
+ヘッダーpaddingはPC／モバイルとも`20px 16px 16px`、見出しは`18px`である。サイトidentityを持つトップページでは`<h1>`が`header`の外へ出るぶんheader上paddingを`12px`とする(19.5.2、Version 1.8、Draft)。600px以下でも現在のstickyとpaddingを維持し、圧縮案は採用しない。sticky headerとアンカー移動の関係は第15章のanchor offset契約に従う(BL-028のナビゲーション二段化に伴いanchor offset値は調整済み)。
 
 ### 6.3 直前の公開ダイジェスト
 
@@ -290,7 +290,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 - 本文ブロックは最大`680px`で中央寄せし、左右paddingは主に`12px`、カード内部は`14px 16px`とする。
 - 記事カードはPC／390pxとも1列で、タイトルは折り返し、関連タグと脆弱性情報は`flex-wrap`する。
 - 600px以下ではdashboardの重要度／確認目安を2列から1列へ変更する。
-- アンカー移動時のsticky headerとの重なりを避けるため、`scroll-margin-top`は通常`218px`、600px以下`226px`である(BL-028のナビゲーション二段化によりsticky header実高が増えたため調整)。
+- アンカー移動時のsticky headerとの重なりを避けるため、`scroll-margin-top`は通常`218px`、600px以下`226px`である(BL-028のナビゲーション二段化によりsticky header実高が増えたため調整)。サイトidentityをsticky headerの外へ出したトップページだけは19.5.4のとおり`188px`／`196px`である(Version 1.8、Draft)。
 - 390pxは受入対象のviewport幅であり、CSS breakpointそのものは600pxである。
 - 現行ヘッダーは600px以下でもstickyで同じpaddingを使い、圧縮しない。
 - 現行の英語原題はモバイルでもclampせず自然に折り返し、原題の一部を省略しない。
@@ -419,7 +419,9 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 ### 19.5.2 トップページのサイト説明
 
 - **トップページにのみ表示する。** 日別Archive・Archive一覧には表示しない。日別Archiveは当時の記録の再現が目的であり、現在のサイト説明を持たない。
-- **sticky header（`<header>`）の内側**、site title（`<h1>`）の**直下**に置く。最終更新・件数・Archive navigationより**上**。サイト名→説明→About導線をひとまとまりの**サイトidentity**として見せるため（2026-08-14のユーザー裁定。当初は「sticky headerの外・本日の要点の前」だったが、この裁定で置き換えた）。
+- サイト名（`<h1>`）・説明・About導線をひとまとまりの**サイトidentity**として、site title直下・最終更新／件数／Archive navigationより**上**に置く（2026-08-14のユーザー裁定。当初は「sticky headerの外・本日の要点の前」だったが、この裁定で置き換えた）。
+- **サイトidentityはstickyにしない。** トップページでは`<h1>`ごとsticky header（`<header>`）の外へ出し、`header`の直上に`.site-identity`として置く。**固定され続けるのは最終更新・件数・ダイジェストナビゲーションという日次の操作領域だけ**である（同日の追加裁定。説明をsticky headerの一部として固定する設計、および説明を縮小してsticky headerへ収める方向は採用しない）。既存のsticky navigation機能は維持する。
+- introを渡さないページ（日別Archive・Archive一覧）では`.site-identity`を出力せず、`<h1>`は従来どおり`header`内に残る。
 - 本文は次の**1文**とする（ユーザーが2026-08-14に確定した文言）。
 
   > 金融機関に関連するサイバーセキュリティ情報をまとめた日次ダイジェスト
@@ -444,7 +446,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 
 ### 19.5.4 sticky headerとanchor offset
 
-introはsticky header内に入るためheader実高が増える。記事カードへのanchor遷移で見出しが隠れないよう、**introを表示するページだけ**`--anchor-offset`をintro分だけ引き上げる（PC +48px、390px +66px。390pxでは説明1文が2行へ折り返す前提）。introを表示しない日別Archive・Archive一覧はBL-028の実測値（PC 218px／390px 226px）のままである。**加算値はCSS box modelからの見積りであり、BL-028の218/226と同じくPC 1280px／390pxの目視で確定する。** 390pxのsticky占有高もこの目視の対象とする。
+`--anchor-offset`は**固定され続ける領域の実高さ**で決まる。サイトidentityが`header`の外へ出たぶんsticky領域は従来より低くなるため、**identityを持つページだけ**`--anchor-offset`を引き下げる（PC 218→**188px**、390px 226→**196px**。差分はいずれも`<h1>`約22pxと`header`上padding 20→12pxの合計約30px）。identityを持たない日別Archive・Archive一覧はBL-028の実測値（PC 218px／390px 226px）のままである。**この差分はCSS box modelからの見積りであり、BL-028の218/226と同じくPC 1280px／390pxの目視で確定する。** anchor遷移時に記事見出しがsticky領域へ隠れないことをその目視で確認する。
 
 ### 19.5.5 AI-use note原則（3.1）との関係
 
@@ -452,7 +454,7 @@ AboutページのAI説明は[SD-034](DECISIONS.md#sd-034--explain-the-sites-ai-u
 
 ### 19.5.6 目視受入の対象
 
-PC 1280pxと390pxで、トップページとAboutページの計4画面を目視受入の対象とする。390pxでは特に**sticky headerの高さ**、サイト名→説明→About→更新情報の階層、説明文の折返し、「本日の要点」が不必要に下へ押し出されていないかを確認する。Version 1.8は受入前はDraftであり、受入時にApprovedへ移す。
+PC 1280pxと390pxで、トップページとAboutページの計4画面を目視受入の対象とする。390pxでは特に、初期表示の階層（サイト名→説明→About→最終更新→件数→ナビゲーション→本日の要点）と説明文の折返し、**スクロール時に固定される領域の高さ**（固定されるのは最終更新・件数・ナビゲーションだけで、サイト名・説明・Aboutは流れて消えること）、**anchor遷移時に記事見出しが固定領域に隠れないこと**を確認する。Version 1.8は受入前はDraftであり、受入時にApprovedへ移す。
 
 ## 20. 変更管理
 
@@ -481,4 +483,4 @@ PC 1280pxと390pxで、トップページとAboutページの計4画面を目視
 | 1.5 | 承認済み | BL-029で「本日の要点」子見出しと記事カード見出しを再設計し、「重要・優先事項」を同一記事のsummary／financial_impactペアから構成する契約へ更新した。2026-07-27、ユーザーがPC 1280px／390px計8画面を目視受入した |
 | 1.6 | 承認済み | BL-028でダイジェストナビゲーションをA案「左寄せ二段・ラベルなし」へ再設計し、日別Archiveの全体導線を`過去→最新`の順へ変更した。2026-07-27、ユーザーがPC 1280px／390px計10画面を目視受入した |
 | 1.7 | 承認済み | BL-036(Fable 5レビューR-01)でBL-032実装済みの`.article-attribution`へ低強調CSSを追加(runtime変更はCSSのみ)。AI-use note原則(3.1)のうち一律generic note禁止は維持し、BL-032実装済みのsource-policy-required attributionをSD-016の一部への限定例外として正式に認めた(SD-033、SD-016のgeneric AI disclosure禁止と他の6項目は変更なし)。2026-08-04、ユーザーがPC 1280px／390px計6画面を目視受入した |
-| 1.8 | Draft | BL-009 Phase A-1でトップページにサイト説明（**1文**＋「このサイトについて →」1箇所）を追加し、`docs/about.html`を静的ページとして新設した。introはトップのみで、**sticky header内のsite title直下**（最終更新・件数・Archive導線より上）。introを表示するページのみ`--anchor-offset`をintro分引き上げる。日別Archive・Archive一覧には表示しない。AboutのAI説明はSD-034で承認し、3.1のgeneric AI badge/alert禁止・uniform per-article note禁止・反復label禁止は維持する（SD-033は変更なし）。ユーザー目視受入前のDraft |
+| 1.8 | Draft | BL-009 Phase A-1でトップページにサイト説明（**1文**＋「このサイトについて →」1箇所）を追加し、`docs/about.html`を静的ページとして新設した。introはトップのみで、サイト名・説明・About導線を**非stickyの`.site-identity`**としてsticky headerの直上に置く（sticky領域は最終更新・件数・Archive導線のみ）。identityを持つページのみ`--anchor-offset`をsticky実高の減少分だけ引き下げる。日別Archive・Archive一覧には表示しない。AboutのAI説明はSD-034で承認し、3.1のgeneric AI badge/alert禁止・uniform per-article note禁止・反復label禁止は維持する（SD-033は変更なし）。ユーザー目視受入前のDraft |
