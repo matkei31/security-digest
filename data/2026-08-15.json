@@ -1,0 +1,191 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-08-15",
+  "generated_at": "2026-08-15T07:20:49.349072+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 2,
+    "ai_attempted_count": 2,
+    "ai_success_count": 2,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 2
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 1,
+      "低": 1,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 1,
+      "参考": 1,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 1,
+      "攻撃・脅威動向": 0,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 0,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "掲載2件｜重要度「高」0件｜本日確認0件｜今週確認1件\n本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が1件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "JPCERT/CCは、オープンソースのBIツール「Metabase」に存在するSQLインジェクションの脆弱性（CVE-2026-72898）について注意喚起を行いました。この脆弱性は、認証されていない攻撃者によって悪用される可能性があります。\n金融機関でMetabaseをBIツールとして利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。"
+    ],
+    "check_items": [
+      "Metabaseの利用有無と影響を受けるバージョンを確認する",
+      "ベンダーの公開情報を確認し、修正パッチの適用または緩和策の実施を検討する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:669791ec854cd4e3dd13b7b31d0d826f00ad12d54f35fa291e3d067f5dadfbb0",
+      "source_id": "krebs_on_security",
+      "source_name": "Krebs on Security",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://krebsonsecurity.com/2026/08/whos-tracking-you-use-this-new-service-to-find-out/",
+      "canonical_url": "https://krebsonsecurity.com/2026/08/whos-tracking-you-use-this-new-service-to-find-out/",
+      "published_at": "2026-08-14T20:24:35+09:00",
+      "fetched_at": "2026-08-15T07:20:14.586723+09:00",
+      "title": "Who’s Tracking You? Use This New Service to Find Out",
+      "raw_title": "Who’s Tracking You? Use This New Service to Find Out",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7a227cb6fd0429594e07d54dab882282178abb45e2af6b69b2c160c2aa1df26d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-15T07:20:17.308400+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "広告技術による追跡に関する新しいサービス紹介が主題であり、他のカテゴリには明確に当てはまらないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "DecryptAdsという新しい無料サービスが、ウェブサイトやモバイルアプリでユーザーを追跡している広告技術関連のデータを収集・関連付けし、誰が追跡しているかを簡単に特定できるようにしました。これまでアクセスが困難だった情報が一般に公開されます。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。従業員や顧客のプライバシーに関する一般的な情報として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や規制変更ではなく、一般的なプライバシー保護ツールに関する情報であるため「低」です。確認目安は、短期的な対応を要する情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:245fc0139308553f86b090b0150e03b8af8d192d423519e9331038fcd6f02882",
+      "source_id": "jpcert_cc",
+      "source_name": "JPCERT/CC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.jpcert.or.jp/at/2026/at260023.html",
+      "canonical_url": "https://www.jpcert.or.jp/at/2026/at260023.html",
+      "published_at": "2026-08-14T13:30:00+09:00",
+      "fetched_at": "2026-08-15T07:20:14.586723+09:00",
+      "title": "注意喚起: MetabaseのSQLインジェクションの脆弱性（CVE-2026-72898）に関する注意喚起  (公開)",
+      "raw_title": "注意喚起: MetabaseのSQLインジェクションの脆弱性（CVE-2026-72898）に関する注意喚起  (公開)",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3a90e73059fb2990e4837b9602dabb50fc597ad72a6788d5b12f0280b18ad6b9",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "feed_summary",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-15T07:20:34.348741+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題が特定の製品の脆弱性に関する注意喚起であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "JPCERT/CCは、オープンソースのBIツール「Metabase」に存在するSQLインジェクションの脆弱性（CVE-2026-72898）について注意喚起を行いました。この脆弱性は、認証されていない攻撃者によって悪用される可能性があります。",
+        "financial_impact": "金融機関でMetabaseをBIツールとして利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Metabaseの利用有無と影響を受けるバージョンを確認する",
+          "ベンダーの公開情報を確認し、修正パッチの適用または緩和策の実施を検討する"
+        ],
+        "reason": "重要度は、Metabaseの利用状況が金融機関で限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、CISA KEVに掲載されているものの直近の新規追加ではなく、即時対応の明確な根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-72898",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-14T22:20:14Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-72898",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-08-10T18:18:53Z",
+              "last_modified_at": "2026-08-12T15:18:30Z",
+              "cvss": {
+                "version": "4.0",
+                "base_score": 10.0,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                "source": "9119a7d8-5eab-497f-8521-727c672e3725",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-14T22:20:14Z",
+              "date_added": "2026-08-11"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
