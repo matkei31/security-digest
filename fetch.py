@@ -5090,6 +5090,90 @@ def daily_archive_meta_description(digest_date):
     )
 
 
+# BL-009 Phase A-3: crawl / URL discoveryの基盤。公開originはここを唯一の正本
+# とし、sitemap・robots.txtの双方がこの1箇所から組み立てる(将来canonical・OG
+# 等が加わってもorigin文字列を各所へ散らさないため)。値は`docs/CNAME`のcustom
+# domainと一致していなければならず、その整合はtestが保証する
+# (このためのconfig基盤は新設しない)。
+PUBLIC_ORIGIN = "https://monomidigest.com"
+SITEMAP_FILENAME = "sitemap.xml"
+ROBOTS_FILENAME = "robots.txt"
+SITEMAP_URL = f"{PUBLIC_ORIGIN}/{SITEMAP_FILENAME}"
+
+# sitemapへ常に載せる固定URL。ディレクトリrootを1つのpreferred URLとして扱い、
+# 同じページの`/index.html`形式は載せない。
+SITEMAP_STATIC_PATHS = ("", "archive/", "about.html")
+
+SITEMAP_ARCHIVE_PATH_RE = re.compile(r"archive/\d{4}-\d{2}-\d{2}\.html")
+
+
+def public_url(relative_path=""):
+    """公開URLを組み立てる。`relative_path`は`docs/`からの相対パス。"""
+    return f"{PUBLIC_ORIGIN}/{relative_path}"
+
+
+def sitemap_urls_from_index(index):
+    """sitemapへ載せるpreferred URLを、index.jsonの記録から決定的に組み立てる。
+
+    日別Archiveは`archive_path`を持つentryだけを対象にする――
+    update_index_archive_paths()は、公開HTMLが存在しないentryの`archive_path`を
+    Noneへ落とすため、この条件が「実際に公開されているページ」と一致する
+    (indexに無い日付を作らず、公開済みの日付を落とさない)。
+    """
+    urls = [public_url(path) for path in SITEMAP_STATIC_PATHS]
+    archive_paths = []
+    for entry in (index or {}).get("digests") or []:
+        if not isinstance(entry, dict):
+            continue
+        archive_path = entry.get("archive_path")
+        if not archive_path:
+            continue
+        relative = str(archive_path).removeprefix("docs/")
+        if not SITEMAP_ARCHIVE_PATH_RE.fullmatch(relative):
+            continue
+        archive_paths.append(relative)
+    # 新しい日付から並べる(Archive一覧の並びと同じ)。dedupeは順序を保つ。
+    seen = set()
+    for relative in sorted(set(archive_paths), reverse=True):
+        if relative in seen:
+            continue
+        seen.add(relative)
+        urls.append(public_url(relative))
+    return urls
+
+
+def build_sitemap_xml(index):
+    """sitemaps.org 0.9のurlsetを組み立てる。
+
+    `lastmod`・`changefreq`・`priority`は載せない――ページ種別ごとの
+    「significant update」の契約を別途定義せずに推測で入れないため
+    (BL-009 Phase A-3のscope)。
+    """
+    entries = "\n".join(f"  <url>\n    <loc>{esc(url)}</loc>\n  </url>"
+                        for url in sitemap_urls_from_index(index))
+    return ('<?xml version="1.0" encoding="UTF-8"?>\n'
+            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+            f"{entries}\n"
+            "</urlset>\n")
+
+
+def validate_sitemap_document(xml):
+    """保存直前のsitemapがXMLとして解釈でき、URLが重複しないことを確認する。"""
+    root = ET.fromstring(xml)
+    namespace = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
+    if root.tag != f"{namespace}urlset":
+        raise ValueError("sitemap root element is not <urlset>")
+    locs = [element.text for element in root.iter(f"{namespace}loc")]
+    if not locs:
+        raise ValueError("sitemap contains no <loc>")
+    if len(locs) != len(set(locs)):
+        raise ValueError("sitemap contains duplicate URLs")
+    for loc in locs:
+        if not loc or not loc.startswith(f"{PUBLIC_ORIGIN}/"):
+            raise ValueError(f"sitemap URL is not on the public origin: {loc!r}")
+    return True
+
+
 def render_cloudflare_web_analytics_html():
     """BL-034: Cloudflare Web Analyticsのmanual JavaScript beacon。
 
@@ -5975,7 +6059,17 @@ def generate_archive_outputs(data_dir=None, docs_dir=None, generated_at=None):
 
     index_html = build_archive_index_html(summaries, generated_at=generated_at)
     atomic_write_text(archive_dir / "index.html", index_html, validator=validate_html_document)
-    update_index_archive_paths(data_dir, summaries, docs_dir=docs_dir, generated_at=generated_at)
+    index = update_index_archive_paths(
+        data_dir, summaries, docs_dir=docs_dir, generated_at=generated_at
+    )
+    # BL-009 Phase A-3: sitemapはindex.jsonを書いた直後に、同じ生成経路で更新
+    # する。新しい日次digestが増えればこの1箇所だけでURL集合が同期する
+    # (robots.txtは静的なので、ここでは書かない)。
+    atomic_write_text(
+        docs_dir / SITEMAP_FILENAME,
+        build_sitemap_xml(index),
+        validator=validate_sitemap_document,
+    )
     return summaries
 
 # ── メイン ───────────────────────────────────────────────────────────────────
