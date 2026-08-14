@@ -2278,15 +2278,17 @@ class Bl034CloseoutTest(unittest.TestCase):
         # BL-009 Phase A-3 (2026-08-15): robots.txt and sitemap left it on the same
         # terms -- implemented, accepted, merged and confirmed on the live site, so
         # 残作業 no longer enumerates them and this tuple must not either.
-        # BL-009 Phase A-4 (2026-08-15): canonical left it the same way. 12 -> 11 ->
-        # 9 -> 8 items; the eight that remain are still open.
+        # BL-009 Phase A-4 (2026-08-15): canonical left it the same way.
+        # BL-009 Phase A-5 (2026-08-15): three more left, for two different reasons.
+        # The SEO audit and the prioritisation were the audit phase's own work, so
+        # they are done rather than pending. metadata残余 left because meta robots
+        # was judged unnecessary -- Google's `all` is the default and "has no effect
+        # if explicitly listed" -- not because it was skipped. 12 -> 11 -> 9 -> 8 ->
+        # 5 items; the five that remain are still open.
         for item in (
             "対象読者と目標",
-            "技術/コンテンツSEO",
-            "metadata",
             "OG／共有",
             "favicon",
-            "施策の優先順位付け",
             "個別実装",
             "成果測定の継続",
         ):

@@ -10078,5 +10078,115 @@ class Bl009PhaseA4CanonicalTest(unittest.TestCase):
         self.assertIn("<h1>🔐 Monomi Digest</h1>", html)
 
 
+class Bl009PhaseA6FaviconTest(unittest.TestCase):
+    """BL-009 Phase A-6: the site identity icon.
+
+    Google does not crawl /favicon.ico on its own -- it wants a <link rel="icon">
+    -- and even then a favicon is a search-appearance feature, never a ranking
+    one. The reason it is site-wide rather than home-page-only is the browser
+    tab: every published page should look like the same site.
+
+    The href is root-relative on purpose. The file lives at the site root, the
+    path does not depend on how deep the page is, and it needs no origin -- so
+    this contract does not add a second place where the public origin is spelled
+    out.
+    """
+
+    ROOT = Path(__file__).resolve().parent
+    DOCS = ROOT / "docs"
+    ICON_RE = re.compile(r'<link rel="icon" href="([^"]*)">')
+
+    def _pages(self):
+        pages = [self.DOCS / "index.html", self.DOCS / "about.html",
+                 self.DOCS / "archive" / "index.html"]
+        pages += sorted(p for p in (self.DOCS / "archive").glob("*.html")
+                        if p.name != "index.html")
+        return pages
+
+    # ---- the asset ---------------------------------------------------------
+    def test_the_favicon_asset_exists_at_a_stable_path(self):
+        self.assertEqual(fetch.FAVICON_PATH, "/favicon.svg")
+        self.assertTrue((self.DOCS / "favicon.svg").is_file())
+
+    def test_the_asset_is_valid_square_svg(self):
+        svg = (self.DOCS / "favicon.svg").read_text(encoding="utf-8")
+        root = xml.etree.ElementTree.fromstring(svg)
+        self.assertEqual(root.tag, "{http://www.w3.org/2000/svg}svg")
+        width, height = (float(v) for v in root.get("viewBox").split()[2:])
+        self.assertEqual(width, height, "a favicon must be square")
+        self.assertGreaterEqual(width, 48, "must stay legible well above 48px")
+
+    def test_the_asset_carries_no_text_or_initials(self):
+        """The approved identity is the lock mark, not a wordmark."""
+        svg = (self.DOCS / "favicon.svg").read_text(encoding="utf-8")
+        self.assertNotIn("<text", svg)
+        self.assertNotIn("font", svg)
+
+    # ---- the head contract -------------------------------------------------
+    def test_every_published_page_links_the_favicon_exactly_once(self):
+        pages = self._pages()
+        self.assertGreater(len(pages), 3)
+        for path in pages:
+            with self.subTest(page=path.relative_to(self.DOCS)):
+                found = self.ICON_RE.findall(path.read_text(encoding="utf-8"))
+                self.assertEqual(len(found), 1)
+                self.assertEqual(found[0], "/favicon.svg")
+
+    def test_the_four_page_types_use_the_identical_link(self):
+        for name in ("index.html", "about.html", "archive/index.html",
+                     "archive/2026-08-14.html"):
+            with self.subTest(page=name):
+                html = (self.DOCS / name).read_text(encoding="utf-8")
+                self.assertIn('<link rel="icon" href="/favicon.svg">', html)
+
+    def test_generated_pages_carry_the_link_without_being_asked(self):
+        """Unlike canonical, the favicon is not opt-in: it is site identity, so
+        every page the generator produces has it."""
+        for html in (fetch.build_html([], None),
+                     fetch.build_archive_index_html([]),
+                     fetch.build_daily_archive_html({
+                         "schema_version": 2, "digest_date": "2026-08-04",
+                         "generated_at": "2026-08-04T07:39:47+09:00",
+                         "items": [], "counts": {}, "run": {}})):
+            with self.subTest(html=html[:60]):
+                self.assertEqual(len(self.ICON_RE.findall(html)), 1)
+
+    # ---- the asset survives generation -------------------------------------
+    def test_archive_regeneration_neither_creates_nor_touches_the_asset(self):
+        """Like docs/CNAME, docs/robots.txt and docs/about.html, it is static."""
+        payload = (self.DOCS / "favicon.svg").read_text(encoding="utf-8")
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            (docs / "archive").mkdir(parents=True)
+            data = Path(tmp) / "data"
+            data.mkdir()
+            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
+            self.assertFalse((docs / "favicon.svg").exists(),
+                             "nothing generates the favicon")
+            (docs / "favicon.svg").write_text(payload, encoding="utf-8")
+            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
+            self.assertEqual((docs / "favicon.svg").read_text(encoding="utf-8"), payload)
+
+    # ---- earlier phases are undisturbed ------------------------------------
+    def test_the_head_contracts_from_a2_to_a4_still_hold(self):
+        for path in self._pages():
+            html = path.read_text(encoding="utf-8")
+            with self.subTest(page=path.relative_to(self.DOCS)):
+                self.assertEqual(len(re.findall(r"<title>.*?</title>", html, re.S)), 1)
+                self.assertEqual(len(re.findall(r'<meta name="description"', html)), 1)
+                self.assertEqual(len(re.findall(r'<link rel="canonical"', html)), 1)
+
+    def test_the_crawl_files_are_untouched_by_this_phase(self):
+        robots = (self.DOCS / "robots.txt").read_text(encoding="utf-8")
+        self.assertEqual(robots,
+                         "User-agent: *\n"
+                         "Allow: /\n"
+                         "\n"
+                         "Sitemap: https://monomidigest.com/sitemap.xml\n")
+        sitemap = (self.DOCS / "sitemap.xml").read_text(encoding="utf-8")
+        index = json.loads((self.ROOT / "data" / "index.json").read_text(encoding="utf-8"))
+        self.assertEqual(sitemap, fetch.build_sitemap_xml(index))
+
+
 if __name__ == "__main__":
     unittest.main()

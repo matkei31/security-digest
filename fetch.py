@@ -5118,6 +5118,21 @@ def public_url(relative_path=""):
     return f"{PUBLIC_ORIGIN}/{relative_path}"
 
 
+# BL-009 Phase A-6: site identity asset。Google Searchは`/favicon.ico`を自動では
+# クロールせず、`<link rel="icon">`の明示を要求する。Search結果への表示は保証
+# されず、ranking要因でもない――browser tab等も含めたsite identityの統一が目的。
+# 公開originに依存しないroot-relative pathを正本とし、favicon専用のorigin定数は
+# 作らない。asset URLは安定させる(頻繁に変えない)。
+FAVICON_PATH = "/favicon.svg"
+
+FAVICON_LINK_HTML = f'  <link rel="icon" href="{FAVICON_PATH}">'
+
+
+def render_favicon_link_html():
+    """全公開HTMLが共通で持つrel="icon"の1行。"""
+    return f"\n{FAVICON_LINK_HTML}"
+
+
 def daily_archive_relative_path(digest_date):
     """日別Archiveのpreferred path(`docs/`からの相対)。"""
     return f"archive/{digest_date}.html"
@@ -5648,6 +5663,7 @@ def build_html(
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{esc(document_title or page_title)}</title>{meta_description_block}{canonical_block}
+{FAVICON_LINK_HTML}
   <style>
     *{{margin:0;padding:0;box-sizing:border-box}}
     :root{{--anchor-offset:{anchor_offset_pc}px}}
@@ -5924,6 +5940,7 @@ def build_archive_index_html(summaries, generated_at=None):
   <title>過去のダイジェスト - Monomi Digest</title>
   <meta name="description" content="{esc(ARCHIVE_INDEX_META_DESCRIPTION)}">
   <link rel="canonical" href="{esc(public_url(ARCHIVE_INDEX_PATH))}">
+{FAVICON_LINK_HTML}
   <style>
     *{{margin:0;padding:0;box-sizing:border-box}}
     body{{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:40px}}

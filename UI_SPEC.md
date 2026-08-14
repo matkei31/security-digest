@@ -1,9 +1,9 @@
 # Monomi Digest UI Specification
 
 - **文書名:** Monomi Digest UI Specification
-- **バージョン:** 1.10
-- **状態:** 承認済み
-- **最終受入日:** 2026-08-15（Version 1.10）。Version 1.9・1.8は2026-08-14、Version 1.7は2026-08-04である
+- **バージョン:** 1.11（Draft）
+- **状態:** Draft（Version 1.10までは承認済み）
+- **最終受入日:** 2026-08-15（Version 1.10）。Version 1.11はユーザー受入前のDraftである（Version 1.9・1.8は2026-08-14、Version 1.7は2026-08-04）
 - **適用対象:** 現行Monomi Digest。BL-006のブランド名変更（Security Digest→Monomi Digest、`🔐`維持、title／H1絵文字統一）は、2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、Version 1.4として承認済みである。[PR #57](https://github.com/matkei31/security-digest/pull/57)はmainへmergeされ、GitHub Pagesでの公開反映を確認済みである。Version 1.5はBL-029の「本日の要点」子見出し・記事カード見出しの再設計を反映する。ユーザーは`top-page-2026-07-27-1280px.png`、`top-page-2026-07-27-390px.png`、`daily-archive-2026-07-27-1280px.png`、`daily-archive-2026-07-27-390px.png`、`daily-archive-2026-07-26-1280px.png`、`daily-archive-2026-07-26-390px.png`、`daily-archive-2026-07-25-1280px.png`、`daily-archive-2026-07-25-390px.png`の計8画面を目視確認し、「8枚とも確認した。BL-029の見出し、重要・優先事項の2段落表示、過去Archiveへの適用、0記事日の表示に問題なし。BL-029として受入。」と受入した（accepted head `c4ca053b176c93fba3588c1f0aaf4116ab3fbc33`、[PR #60](https://github.com/matkei31/security-digest/pull/60)）。Version 1.6はBL-028のダイジェストナビゲーション配置再設計（A案「左寄せ二段・ラベルなし」）を反映する。ユーザーは`top-page-nav-1280px.png`、`top-page-nav-390px.png`、`daily-archive-top-nav-1280px.png`、`daily-archive-top-nav-390px.png`、`daily-archive-bottom-nav-1280px.png`、`daily-archive-bottom-nav-390px.png`、`archive-index-nav-1280px.png`、`archive-index-nav-390px.png`、`daily-archive-oldest-single-direction-1280px.png`、`daily-archive-oldest-single-direction-390px.png`の計10画面を目視確認し、「10枚とも確認した。BL-028の左寄せ二段配置、前→次／過去→最新の順序、上部・下部ナビゲーション、単一方向ケース、PC 1280px／390pxの表示に問題なし。BL-028として受入。」と受入した（accepted head `77b4106618c29b9220012fd10e9ff616d773fa56`、[PR #62](https://github.com/matkei31/security-digest/pull/62)）。Version 1.7は[BL-036](BACKLOG.md#bl-036--記事カードのsource-attribution注記を低強調表示へ整える)(Fable 5レビューR-01)の`.article-attribution`低強調CSSを記録し、BL-032で既に実装・merge済みのsource-policy-required attributionを[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)のAI-use note方針に対する限定例外として正式に認める。[SD-033](DECISIONS.md#sd-033--allow-source-policy-required-article-attribution-as-a-limited-exception-to-the-generic-ai-note-ban)が、SD-016のうち記事カード単位のAI-use note条項だけを限定的にsupersedeし、SD-016のgeneric AI disclosure禁止と他の6項目は維持する。2026-08-03のDraft作成後、ユーザーは`bl036-attribution-page-1280px.png`、`bl036-attribution-page-390px.png`、`bl036-attribution-card-1280px.png`、`bl036-attribution-card-390px.png`、`bl036-attribution-card2-link-1280px.png`、`bl036-attribution-card2-link-390px.png`の計6画面(実`fetch.py`の`build_html()`が生成したHTML、10px CSS)を目視確認し、「おk」と受入した（原文の解釈: 直前に提示した6画面の目視受入結果と、[PR #76](https://github.com/matkei31/security-digest/pull/76)内での最終受入記録・UI_SPEC Approved化・SD-033追加・mergeへ進むことへの同意。ユーザーが「10px」等の具体的CSS値を明示発言したものとしては扱わない。accepted implementation head `12a6f502973c78e21dbe0b209073f824731a3e5d`、2026-08-04）。Version 1.8は[BL-009](BACKLOG.md#bl-009--seoと閲覧者増加策) Phase A-1のトップページのサイト説明とAboutページを反映する。2026-08-14、ユーザーがPC 1280px／390pxでトップページとAboutページを目視受入した（トップ: サイトidentityの階層、identityが非stickyであること、固定されるのが最終更新・件数・ナビゲーションだけであること、anchor遷移時に記事見出しが隠れないこと、exact copy「金融機関に関連するサイバーセキュリティ情報をまとめた日次ダイジェスト」と「このサイトについて →」導線。About: final copy 5文、「最新のダイジェスト」導線、analytics footer／beacon。Blocker 0）（accepted head `07ac2acb926f034461e2a56b689ddf9a5c2dad2f`、[PR #121](https://github.com/matkei31/security-digest/pull/121)）。受入対象は[BL-009](BACKLOG.md#bl-009--seoと閲覧者増加策)のPhase A-1のみであり、BL-009 umbrella自体は進行中である。Version 1.9は[BL-009](BACKLOG.md#bl-009--seoと閲覧者増加策) Phase A-2のdocument titleとmeta descriptionを反映する。**仕様は実装着手前にユーザーが承認済み**であり、実装完了後の独立実装レビューが**ACCEPT／Blocker 0**、これを受けて**2026-08-14にユーザーが実装受入を完了した**（accepted implementation head `a8670d3f303c893f0346e54cda9ac3e699aceb0a`、[PR #123](https://github.com/matkei31/security-digest/pull/123)、exact-head [Pull Request CI run 31811322302](https://github.com/matkei31/security-digest/actions/runs/31811322302) success）。可視layoutを変更しないため、この受入はscreenshotによる目視受入ではなく、19.6.5の証跡による実装受入である。受入対象はPhase A-2のみで、BL-009 umbrella自体は引き続き進行中である。
 
 ## 1. 文書の目的と対象読者
@@ -531,6 +531,44 @@ Open Graph、Twitter Card、favicon／`rel=icon`、structured data（JSON-LD）�
 
 可視表示を変更しないため、Version 1.10は**目視受入（screenshot）を必要としない**。受入証跡は、生成物から取り出した各ページ種別の実canonical値、全公開HTMLがcanonicalを1件ずつ持つこと、canonical URL集合が`docs/sitemap.xml`のURL集合と一致すること、および「canonicalの行を除去すると各HTMLがbaselineと同一」というnormalized comparisonとする。**2026-08-15 JST、この証跡に基づき独立実装レビューがACCEPT（Blocker 0）となり、ユーザーが実装受入を完了したため、Version 1.10を承認済みとした**（accepted implementation head `0d91e7c883cbfef065d3ecc3290d79c75dd3d4fb`、[PR #127](https://github.com/matkei31/security-digest/pull/127)、exact-head [Pull Request CI run 31820428901](https://github.com/matkei31/security-digest/actions/runs/31820428901) success）。受入対象は[BL-009](BACKLOG.md#bl-009--seoと閲覧者増加策) Phase A-4のみであり、BL-009 umbrella自体は進行中である。
 
+## 19.8 site identity asset: favicon（Version 1.11、Draft）
+
+### 19.8.1 なぜ本書の対象なのか
+
+faviconは公開HTMLの`<head>`に置くsite identity metadataであり、19.6のdocument title・meta description、19.7のcanonicalと同じsurfaceに属する。加えて**検索結果とブラウザtabで視覚的に表示され得る**ため、19.7のcanonical（表示されないcrawl signal）よりもさらに本書寄りである。[BL-009](BACKLOG.md#bl-009--seoと閲覧者増加策) Phase A-3の`robots.txt`／`sitemap.xml`が独立した公開ファイルとして本書の対象外であるのと同じ基準で、faviconは`<head>`側に属するため本書へ記録する。
+
+### 19.8.2 asset（exact）
+
+- path: **`docs/favicon.svg`**（公開URLは`https://monomidigest.com/favicon.svg`）。**asset URLは安定させ、頻繁に変更しない。**
+- 形式: SVG（scalable）、`viewBox="0 0 64 64"`の**square 1:1**。48×48px相当以上でも明瞭で、16px相当でも潰れない形状とする。
+- 図案: 現行site identityの`🔐`（施錠された南京錠）のコンセプトを維持する。角丸square背景を現行dark UIのheader色`#161b22`、錠前のshackleとbodyをリンク色`#79c0ff`とし、鍵穴を背景色で抜く。**文字・頭文字（wordmark／initials）は置かない。**装飾要素を増やさず、新しいlogo systemも作らない。
+- **既存のbrand assetは存在しなかった**（repository内に画像assetは1件もなかった）ため新規作成した。
+
+### 19.8.3 site-wide `rel="icon"` contract
+
+全公開HTMLは次の1行を**ちょうど1件**持つ。
+
+```html
+<link rel="icon" href="/favicon.svg">
+```
+
+- トップ・Archive一覧・About・日別Archiveで**完全に同一**。
+- **root-relative pathを正本とする。** faviconはsite rootに固定でありページの階層に依存しないため、絶対URLにせず、favicon専用のorigin定数も作らない（公開originを書く場所を増やさない）。
+- Google Searchの要件だけならホームページの`<link>`で足りるが、**ブラウザtab等を含めたsite identityを全ページで統一する**ため、site-wide contractとする。
+- canonicalと異なりcall siteのopt-inではなく、generatorが出力する全ページが常に持つ。
+
+### 19.8.4 効果の限定
+
+faviconは**検索結果の表示（search appearance）に関わるものであり、ranking要因ではない**。またGoogle公式は「すべてのガイドラインを満たしても検索結果への表示は保証されない」と明記しており、本書もそれ以上を主張しない。
+
+### 19.8.5 Phase A-6のscope外
+
+`WebSite`をはじめとするstructured data（JSON-LD）、Open Graph、Twitter Card、`manifest.json`、`apple-touch-icon`、PWA、`theme-color`、`meta robots`は**Phase A-6では追加しない**。これは「今回追加していない」という事実であり、将来追加してはならないという契約ではない（testでもこれらのabsenceを固定しない）。可視body copy・layout・navigation・`<h1>`・Archive一覧の表示内容・article単位URL・`robots.txt`／`sitemap.xml`／canonicalのcontractも変更しない。
+
+### 19.8.6 受入方法
+
+可視body・layoutを変更しないため、Version 1.11は**ページのscreenshotによる目視受入を必要としない**。favicon自体は視覚要素であるため、受入証跡は**asset（`docs/favicon.svg`）そのものの確認**と、全公開HTMLが同一の`rel="icon"`を1件ずつ持つこと、favicon行を除去すると各HTMLがbaselineと同一であるというnormalized comparisonとする。Version 1.11は受入前はDraftであり、受入時にApprovedへ移す。
+
 ## 20. 変更管理
 
 1. UI変更を行うチケットは、着手時に本書の確定仕様、現行値、決定履歴を確認する。
@@ -561,3 +599,4 @@ Open Graph、Twitter Card、favicon／`rel=icon`、structured data（JSON-LD）�
 | 1.8 | 承認済み | BL-009 Phase A-1でトップページにサイト説明（**1文**＋「このサイトについて →」1箇所）を追加し、`docs/about.html`を静的ページとして新設した。introはトップのみで、サイト名・説明・About導線を**非stickyの`.site-identity`**としてsticky headerの直上に置く（sticky領域は最終更新・件数・Archive導線のみ）。identityを持つページのみ`--anchor-offset`をsticky実高の減少分だけ引き下げる。日別Archive・Archive一覧には表示しない。AboutのAI説明はSD-034で承認し、3.1のgeneric AI badge/alert禁止・uniform per-article note禁止・反復label禁止は維持する（SD-033は変更なし）。2026-08-14、ユーザーがPC 1280px／390pxのトップページ・Aboutページ計4画面をBlocker 0で目視受入した（accepted head `07ac2acb926f034461e2a56b689ddf9a5c2dad2f`、[PR #121](https://github.com/matkei31/security-digest/pull/121)）。受入対象はBL-009 Phase A-1のみで、BL-009 umbrellaは進行中のままである |
 | 1.9 | 承認済み | BL-009 Phase A-2で公開4ページ種別へ一意なdocument titleとdeterministicなmeta descriptionを与えた（19.6）。トップと日別Archive 35件が同一の`<title>`を共有し、descriptionがどのページにも無かった状態を解消する。可視H1・body copy・layoutは変更せず、`build_html()`は`page_title`（H1）と`document_title`（`<title>`）を別引数として扱う。日別Archiveの日付はleading zeroなし、descriptionはAI生成でないdeterministic template。canonical・robots.txt・sitemap・favicon・OG・Twitter Card・JSON-LDはscope外。可視変更がないため目視受入（screenshot）は行わず、生成物のtitle／description実値とnormalized comparisonを証跡とした。2026-08-14、独立実装レビューACCEPT（Blocker 0）を経てユーザーが実装受入を完了した（accepted implementation head `a8670d3f303c893f0346e54cda9ac3e699aceb0a`、[PR #123](https://github.com/matkei31/security-digest/pull/123)）。受入対象はBL-009 Phase A-2のみで、BL-009 umbrellaは進行中のままである |
 | 1.10 | 承認済み | BL-009 Phase A-4で全公開HTMLへ`rel="canonical"`を1件ずつ追加した（19.7）。preferred URLはPhase A-3のsitemapと同一集合で、ディレクトリrootを採り`/index.html`形式は使わない。トップと最新日の日別Archiveは内容が似ても別ページとして扱い、互いをcanonicalにしない。originは`PUBLIC_ORIGIN`を再利用し専用定数を新設しない。可視表示・title・meta description・`robots.txt`／`sitemap.xml`のcontractは変更なし。OG・Twitter Card・favicon・structured data・`meta robots`はscope外（absenceをtestで固定しない）。可視変更がないため目視受入（screenshot）は行わず、各ページ種別の実canonical値・全公開HTMLでの1件ずつ・sitemapとの集合一致・normalized comparisonを証跡とした。2026-08-15 JST、独立実装レビューACCEPT（Blocker 0）を経てユーザーが実装受入を完了した（accepted implementation head `0d91e7c883cbfef065d3ecc3290d79c75dd3d4fb`、[PR #127](https://github.com/matkei31/security-digest/pull/127)）。受入対象はBL-009 Phase A-4のみで、BL-009 umbrellaは進行中のままである |
+| 1.11 | Draft | BL-009 Phase A-6で全公開HTMLへ`<link rel="icon" href="/favicon.svg">`を1件ずつ追加し、`docs/favicon.svg`を新設した（19.8）。既存brand assetが無いため、現行site identityの`🔐`（施錠された南京錠）のコンセプトを維持したsquare SVGを新規作成（文字・頭文字なし、dark UIの`#161b22`／`#79c0ff`）。root-relative pathを正本とし専用origin定数は作らない。検索表示に関わる要素でranking要因ではなく、表示も保証されない。可視body copy・layout・`<h1>`・title・meta description・canonical・`robots.txt`／`sitemap.xml`のcontractは変更なし。structured data・OG・Twitter Card・manifest・apple-touch-icon・`meta robots`はscope外（absenceをtestで固定しない）。ページの目視受入は行わず、ユーザー受入前のDraft |
