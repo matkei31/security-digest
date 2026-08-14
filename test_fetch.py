@@ -14,6 +14,7 @@ from html.parser import HTMLParser
 from pathlib import Path
 from unittest.mock import patch
 import unittest
+import xml.etree.ElementTree
 
 import document_test_history as dth
 import document_test_inventory as dti
@@ -9690,6 +9691,253 @@ class Bl009PhaseA2HeadMetadataTest(unittest.TestCase):
         self.assertNotIn('name="description"', html)
         self.assertEqual(self._title(html), "🔐 Monomi Digest")
 
+
+
+class Bl009PhaseA3SitemapAndRobotsTest(unittest.TestCase):
+    """BL-009 Phase A-3: sitemap.xml and robots.txt.
+
+    Both exist so a crawler can find every published page from one place. The
+    sitemap lists preferred URLs only -- one per page, always the apex origin
+    over HTTPS, directory roots rather than their index.html -- and carries no
+    lastmod/changefreq/priority, because none of those has an agreed contract
+    yet. robots.txt allows everything and points at the sitemap; it is not used
+    as an indexing control.
+    """
+
+    ROOT = Path(__file__).resolve().parent
+    DOCS = ROOT / "docs"
+    LOC_RE = re.compile(r"<loc>(.*?)</loc>", re.S)
+    NAMESPACE = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
+
+    @classmethod
+    def setUpClass(cls):
+        cls.sitemap = (cls.DOCS / "sitemap.xml").read_text(encoding="utf-8")
+        cls.robots = (cls.DOCS / "robots.txt").read_text(encoding="utf-8")
+        cls.index = json.loads((cls.ROOT / "data" / "index.json").read_text(encoding="utf-8"))
+
+    def _locs(self, xml=None):
+        return self.LOC_RE.findall(xml if xml is not None else self.sitemap)
+
+    # ---- the sitemap document ---------------------------------------------
+    def test_sitemap_is_valid_xml_in_the_sitemap_namespace(self):
+        root = xml.etree.ElementTree.fromstring(self.sitemap)
+        self.assertEqual(root.tag, f"{self.NAMESPACE}urlset")
+        self.assertTrue(self.sitemap.startswith('<?xml version="1.0" encoding="UTF-8"?>'))
+        # every <loc> hangs off its own <url>
+        urls = root.findall(f"{self.NAMESPACE}url")
+        self.assertEqual(len(urls), len(self._locs()))
+        for url in urls:
+            self.assertEqual(len(url.findall(f"{self.NAMESPACE}loc")), 1)
+
+    def test_sitemap_has_no_duplicate_urls(self):
+        locs = self._locs()
+        self.assertEqual(len(locs), len(set(locs)))
+
+    def test_sitemap_carries_no_lastmod_changefreq_or_priority(self):
+        """Phase A-3 does not guess at what a significant update means."""
+        for tag in ("lastmod", "changefreq", "priority"):
+            with self.subTest(tag=tag):
+                self.assertNotIn(f"<{tag}>", self.sitemap)
+
+    # ---- which URLs ---------------------------------------------------------
+    def test_the_three_fixed_urls_are_present_exactly(self):
+        locs = self._locs()
+        for url in ("https://monomidigest.com/",
+                    "https://monomidigest.com/archive/",
+                    "https://monomidigest.com/about.html"):
+            with self.subTest(url=url):
+                self.assertEqual(locs.count(url), 1)
+
+    def test_every_indexed_digest_appears_exactly_once(self):
+        locs = self._locs()
+        expected = [f"https://monomidigest.com/archive/{e['digest_date']}.html"
+                    for e in self.index["digests"] if e.get("archive_path")]
+        self.assertGreater(len(expected), 0)
+        for url in expected:
+            with self.subTest(url=url):
+                self.assertEqual(locs.count(url), 1)
+
+    def test_no_daily_url_exists_outside_the_index(self):
+        indexed = {f"https://monomidigest.com/archive/{e['digest_date']}.html"
+                   for e in self.index["digests"] if e.get("archive_path")}
+        daily = [u for u in self._locs() if re.fullmatch(
+            r"https://monomidigest\.com/archive/\d{4}-\d{2}-\d{2}\.html", u)]
+        self.assertEqual(set(daily) - indexed, set())
+        self.assertEqual(len(daily), len(indexed))
+
+    def test_the_sitemap_lists_nothing_but_those_urls(self):
+        expected = {"https://monomidigest.com/",
+                    "https://monomidigest.com/archive/",
+                    "https://monomidigest.com/about.html"}
+        expected |= {f"https://monomidigest.com/archive/{e['digest_date']}.html"
+                     for e in self.index["digests"] if e.get("archive_path")}
+        self.assertEqual(set(self._locs()), expected)
+
+    # ---- URL shape ----------------------------------------------------------
+    def test_every_url_is_https_on_the_apex_origin(self):
+        for url in self._locs():
+            with self.subTest(url=url):
+                self.assertTrue(url.startswith("https://monomidigest.com/"), url)
+
+    def test_no_www_and_no_github_pages_url(self):
+        # scoped to the URLs: the urlset's own xmlns is an http:// www. address
+        for url in self._locs():
+            for banned in ("www.", "github.io", "http://"):
+                with self.subTest(url=url, banned=banned):
+                    self.assertNotIn(banned, url)
+        self.assertNotIn("github.io", "".join(self._locs()))
+
+    def test_directory_roots_are_preferred_over_their_index_html(self):
+        """`/` and `/archive/` are the preferred URLs; their index.html twins are
+        the same pages and must not be listed as well."""
+        for banned in ("https://monomidigest.com/index.html",
+                       "https://monomidigest.com/archive/index.html"):
+            with self.subTest(banned=banned):
+                self.assertNotIn(banned, self._locs())
+
+    def test_no_non_html_published_data_is_listed(self):
+        for url in self._locs():
+            with self.subTest(url=url):
+                self.assertFalse(url.endswith(".json"))
+                self.assertNotIn("/data/", url)
+                self.assertFalse(url.endswith(".xml"))
+                self.assertFalse(url.endswith(".txt"))
+
+    # ---- the public origin has one source of truth --------------------------
+    def test_the_public_origin_agrees_with_the_custom_domain(self):
+        """PUBLIC_ORIGIN is the only place the origin is written; docs/CNAME is
+        what GitHub Pages actually serves. They must not drift apart."""
+        cname = (self.DOCS / "CNAME").read_text(encoding="utf-8").strip()
+        self.assertEqual(fetch.PUBLIC_ORIGIN, f"https://{cname}")
+        self.assertEqual(fetch.SITEMAP_URL, f"https://{cname}/sitemap.xml")
+        self.assertEqual(fetch.public_url("about.html"),
+                         f"https://{cname}/about.html")
+        for url in self._locs():
+            with self.subTest(url=url):
+                self.assertTrue(url.startswith(f"https://{cname}/"))
+
+    # ---- robots.txt ---------------------------------------------------------
+    def test_robots_txt_is_the_approved_contract(self):
+        self.assertEqual(
+            self.robots,
+            "User-agent: *\n"
+            "Allow: /\n"
+            "\n"
+            "Sitemap: https://monomidigest.com/sitemap.xml\n",
+        )
+
+    def test_robots_sitemap_line_matches_the_real_sitemap_url(self):
+        self.assertIn(f"Sitemap: {fetch.SITEMAP_URL}", self.robots)
+        self.assertEqual(self.robots.count("Sitemap:"), 1)
+        self.assertTrue((self.DOCS / fetch.SITEMAP_FILENAME).is_file())
+
+    def test_robots_blocks_nothing(self):
+        """robots.txt is discovery, not an indexing control."""
+        self.assertNotIn("Disallow", self.robots)
+        self.assertNotIn("noindex", self.robots)
+        for line in self.robots.splitlines():
+            if line.startswith("Allow:"):
+                self.assertEqual(line, "Allow: /")
+
+    # ---- generation lifecycle ----------------------------------------------
+    @staticmethod
+    def _valid_digest(digest_date):
+        from test_archive import make_digest
+        return make_digest(digest_date)
+
+    def _write(self, data_dir, digest_date):
+        (data_dir / f"{digest_date}.json").write_text(
+            json.dumps(self._valid_digest(digest_date)), encoding="utf-8")
+
+    def test_archive_generation_keeps_the_sitemap_in_sync(self):
+        """One generation path owns the URL set: a new digest day appears, and a
+        digest that stops validating loses both its page and its URL."""
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            (docs / "archive").mkdir(parents=True)
+            data = Path(tmp) / "data"
+            data.mkdir()
+            for digest_date in ("2026-08-04", "2026-08-05"):
+                self._write(data, digest_date)
+
+            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
+            first = (docs / "sitemap.xml").read_text(encoding="utf-8")
+            fetch.validate_sitemap_document(first)
+            self.assertIn("https://monomidigest.com/archive/2026-08-04.html", self._locs(first))
+            self.assertIn("https://monomidigest.com/archive/2026-08-05.html", self._locs(first))
+
+            # idempotent: unchanged inputs reproduce the file byte-for-byte
+            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
+            self.assertEqual((docs / "sitemap.xml").read_text(encoding="utf-8"), first)
+
+            # a new digest day flows in without touching this code path
+            self._write(data, "2026-08-06")
+            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
+            second = self._locs((docs / "sitemap.xml").read_text(encoding="utf-8"))
+            self.assertIn("https://monomidigest.com/archive/2026-08-06.html", second)
+
+            # a digest that no longer validates drops its page and its URL
+            (data / "2026-08-04.json").write_text("{ not valid json", encoding="utf-8")
+            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
+            third = self._locs((docs / "sitemap.xml").read_text(encoding="utf-8"))
+            self.assertFalse((docs / "archive" / "2026-08-04.html").exists())
+            self.assertNotIn("https://monomidigest.com/archive/2026-08-04.html", third)
+
+    def test_sitemap_generation_is_deterministic_for_the_same_index(self):
+        self.assertEqual(fetch.build_sitemap_xml(self.index),
+                         fetch.build_sitemap_xml(self.index))
+        shuffled = dict(self.index)
+        shuffled["digests"] = list(reversed(self.index["digests"]))
+        self.assertEqual(fetch.build_sitemap_xml(shuffled),
+                         fetch.build_sitemap_xml(self.index),
+                         "URL order must not depend on the order entries happen to sit in")
+
+    def test_committed_sitemap_matches_what_the_generator_produces(self):
+        self.assertEqual(self.sitemap, fetch.build_sitemap_xml(self.index))
+
+    def test_validator_rejects_a_duplicate_or_off_origin_url(self):
+        good = fetch.build_sitemap_xml(self.index)
+        fetch.validate_sitemap_document(good)
+        duplicated = good.replace(
+            "</urlset>",
+            "  <url>\n    <loc>https://monomidigest.com/</loc>\n  </url>\n</urlset>")
+        with self.assertRaises(ValueError):
+            fetch.validate_sitemap_document(duplicated)
+        off_origin = good.replace("https://monomidigest.com/about.html",
+                                  "https://www.monomidigest.com/about.html")
+        with self.assertRaises(ValueError):
+            fetch.validate_sitemap_document(off_origin)
+
+    def test_robots_txt_is_static_and_survives_archive_regeneration(self):
+        """Like docs/CNAME and docs/about.html, the generator neither creates nor
+        removes it."""
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            (docs / "archive").mkdir(parents=True)
+            data = Path(tmp) / "data"
+            data.mkdir()
+
+            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
+            self.assertFalse((docs / "robots.txt").exists(), "nothing generates robots.txt")
+
+            (docs / "robots.txt").write_text(self.robots, encoding="utf-8")
+            self._write(data, "2026-08-04")
+            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
+            self.assertEqual((docs / "robots.txt").read_text(encoding="utf-8"), self.robots)
+
+    # ---- scope --------------------------------------------------------------
+    def test_phase_a3_adds_no_html_and_no_head_metadata(self):
+        """The pages themselves are untouched: no canonical, no OG, no favicon
+        link, and the title/description contract from Phase A-2 still holds."""
+        html = fetch.build_html([], None,
+                                document_title=fetch.TOP_PAGE_DOCUMENT_TITLE,
+                                meta_description=fetch.TOP_PAGE_META_DESCRIPTION)
+        for banned in ('rel="canonical"', 'property="og:', 'name="twitter:',
+                       'rel="icon"', 'application/ld+json', 'name="robots"'):
+            with self.subTest(banned=banned):
+                self.assertNotIn(banned, html)
+        self.assertIn(f"<title>{fetch.TOP_PAGE_DOCUMENT_TITLE}</title>", html)
+        self.assertNotIn("sitemap", html.lower())
 
 
 if __name__ == "__main__":
