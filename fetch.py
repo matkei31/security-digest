@@ -4989,6 +4989,34 @@ def render_source_attribution_html(item, generated_at_ymd=""):
     return f'\n      <p class="article-attribution">{esc(text)}</p>'
 
 
+# BL-009 Phase A-1: 公開トップにだけ置くサイト説明。SD-034で承認したscopeであり、
+# SD-016が禁止したgenericなsitewide AI badge/alertでも、全記事へのuniform AI note
+# でもない(このblockはAI利用に言及しない。AIの説明はAboutページ側だけが持つ)。
+SITE_INTRO_SENTENCES = (
+    "金融機関のサイバーセキュリティ担当者・管理職・担当役員向けの日次ニュースダイジェストです。",
+    "国内外の公開情報を収集し、重要度・確認目安・金融機関との関連・確認すべきことを整理しています。",
+)
+SITE_INTRO_ABOUT_LABEL = "このサイトについて →"
+ABOUT_PAGE_HREF = "about.html"
+
+
+def render_site_intro_html(about_href=ABOUT_PAGE_HREF):
+    """トップページ用のサイト説明block。
+
+    build_html()のsticky header(<header>)の外・「本日の要点」の前へ置く。日別
+    Archiveは当時の記録の再現が目的なので、この関数の出力を渡さない(build_html
+    のintro_htmlは既定Noneで、明示的に渡したcall siteだけが表示する)。About導線は
+    サイト全体で1箇所だけ置き、archive navigationにもanalytics footerにも足さない。
+    """
+    paragraphs = "".join(
+        f'\n    <p class="site-intro-text">{esc(sentence)}</p>'
+        for sentence in SITE_INTRO_SENTENCES
+    )
+    return f"""<section class="site-intro" aria-label="サイトの説明">{paragraphs}
+    <p class="site-intro-about"><a class="site-intro-link" href="{esc(about_href)}">{esc(SITE_INTRO_ABOUT_LABEL)}</a></p>
+  </section>"""
+
+
 def render_cloudflare_web_analytics_html():
     """BL-034: Cloudflare Web Analyticsのmanual JavaScript beacon。
 
@@ -5038,6 +5066,7 @@ def build_html(
     archive_nav_html=None,
     archive_footer_nav_html=None,
     legacy_status_line=None,
+    intro_html=None,
 ):
     now      = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     date_source = generated_at or now
@@ -5396,6 +5425,9 @@ def build_html(
     subtitle_html = (
         f'\n    <div class="sub">{esc(subtitle)}</div>' if subtitle else ""
     )
+    # intro_htmlを渡さないcall site(日別Archive等)では、空行すら出力しない――
+    # 既存Archiveの再生成結果をこの変更でbyte単位でも動かさないため。
+    intro_block = f"\n  {intro_html}" if intro_html else ""
 
     return f"""<!DOCTYPE html>
 <html lang="ja">
@@ -5417,6 +5449,11 @@ def build_html(
     .archive-bottom-nav{{max-width:680px;margin:20px auto 0;padding:0 12px}}
     .archive-link{{display:inline-flex;align-items:center;min-height:32px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
     .archive-link:hover{{text-decoration:underline}}
+    .site-intro{{max-width:680px;margin:16px auto 0;padding:0 12px;display:grid;gap:6px}}
+    .site-intro-text{{font-size:13px;color:#c9d1d9;line-height:1.7}}
+    .site-intro-about{{margin-top:2px}}
+    .site-intro-link{{display:inline-flex;align-items:center;min-height:32px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}}
+    .site-intro-link:hover{{text-decoration:underline}}
     .article-list-header{{max-width:680px;margin:12px auto 0;padding:0 12px}}
     .article-list-header h2{{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}}
     .article-list-note{{font-size:12px;color:#8b949e;line-height:1.5}}
@@ -5523,7 +5560,7 @@ def build_html(
     <div class="sub">最終更新: {esc(date_str)}</div>
     <div class="count">{esc(str(len(items)))} 件</div>
     {archive_nav_html}
-  </header>
+  </header>{intro_block}
   {brief_html}
   {important_items_html}
   {dashboard_html}
@@ -5961,6 +5998,7 @@ def main():
         items,
         brief_for_html,
         archive_nav_html=archive_nav_html,
+        intro_html=render_site_intro_html(),
     )
     atomic_write_text(out_path, html, validator=validate_html_document)
     print(f"  生成完了: {out_path}")

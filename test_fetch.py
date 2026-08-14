@@ -3046,7 +3046,22 @@ class Batch2DocumentationConsistencyTest(unittest.TestCase):
         sd_headings = [h for h in self._headings(text) if re.match(r"^SD-\d{3}\b", h)]
         ids = [re.match(r"^(SD-\d{3})", h).group(1) for h in sd_headings]
         self.assertEqual(len(ids), len(set(ids)), f"Duplicate SD section headings: {ids}")
-        self.assertEqual(set(ids), {f"SD-{n:03d}" for n in range(1, 34)})
+        # BL-009 Phase A-1 (2026-08-14): the durable contract is the repository's
+        # allocation convention -- IDs unique and contiguous from SD-001 up to the
+        # highest allocated ID -- not a population frozen at one maximum, which made
+        # every new decision a test failure. The floor records what has already been
+        # allocated: SD-001 through SD-034 exist and must not disappear, while SD-035
+        # and beyond may be added without touching this test. This mirrors the BL-id
+        # contract in test_bl_ids_are_unique_and_cover_bl001_to_bl038.
+        # Scope note: headings not of the form SD-NNN are filtered out above and are
+        # NOT checked here -- no malformed-id coverage is claimed, unchanged from before.
+        numbers = sorted(int(i.split("-")[1]) for i in ids)
+        self.assertEqual(numbers[0], 1, "SD numbering starts at SD-001")
+        self.assertEqual(numbers, list(range(1, numbers[-1] + 1)),
+                         f"SD IDs must be contiguous with no gaps: {ids}")
+        self.assertGreaterEqual(
+            numbers[-1], 34,
+            "SD-001..SD-034 are already allocated and must not disappear")
 
     def test_bl_001_completion_status_and_evidence(self):
         text = self._read("BACKLOG.md")
@@ -9158,6 +9173,184 @@ class Bl038ClosureLifecycleTest(unittest.TestCase):
         b, s = self._fixture(accepted=False, residual="- **残作業:** なし。")
         self.assertIn("controlled Category C conversion rolloutの計画と実施", b)
         self.assertNotEqual(self.violations(b, s), [])
+
+
+
+class Bl009SiteIntroAndAboutTest(unittest.TestCase):
+    """BL-009 Phase A-1: the top-page site description and the About page.
+
+    The intro is opt-in: build_html() renders it only when a call site passes
+    intro_html, so the daily Archive keeps rendering without it. The two
+    sentences and the About link label are the copy the user approved on
+    2026-08-14, so they are pinned as content contracts; nothing else about the
+    surrounding page wording is.
+    """
+
+    DOCS = Path(__file__).resolve().parent / "docs"
+
+    ITEM = {
+        "title": "サンプル記事",
+        "link": "https://example.com/a",
+        "summary": "概要",
+        "date": datetime.datetime(2026, 8, 14, 6, 0),
+        "source": "CISA",
+        "lang": "ja",
+    }
+
+    def _top_html(self, items=(), brief=None):
+        return fetch.build_html(
+            list(items), brief, intro_html=fetch.render_site_intro_html(),
+        )
+
+    @staticmethod
+    def _digest():
+        return {
+            "schema_version": 2,
+            "digest_date": "2026-08-14",
+            "generated_at": "2026-08-14T07:39:47.613533+09:00",
+            "items": [],
+            "counts": {},
+            "run": {},
+        }
+
+    # ---- top page ----------------------------------------------------------
+    def test_top_page_renders_exactly_one_intro_block(self):
+        self.assertEqual(self._top_html().count('<section class="site-intro"'), 1)
+
+    def test_intro_sits_outside_the_sticky_header(self):
+        html = self._top_html()
+        self.assertLess(html.index("</header>"), html.index('<section class="site-intro"'))
+        header = html[html.index("<header>"):html.index("</header>")]
+        self.assertNotIn("site-intro", header)
+
+    def test_intro_comes_before_the_brief_slot(self):
+        html = self._top_html([dict(self.ITEM)], SAMPLE_BRIEF)
+        self.assertLess(html.index('<section class="site-intro"'), html.index("本日の要点"))
+
+    def test_intro_states_the_two_approved_sentences(self):
+        html = self._top_html()
+        self.assertEqual(len(fetch.SITE_INTRO_SENTENCES), 2)
+        for sentence in fetch.SITE_INTRO_SENTENCES:
+            with self.subTest(sentence=sentence[:16]):
+                self.assertIn(f'<p class="site-intro-text">{sentence}</p>', html)
+        self.assertIn("金融機関のサイバーセキュリティ担当者・管理職・担当役員向けの日次ニュースダイジェストです。",
+                      fetch.SITE_INTRO_SENTENCES)
+        self.assertIn("国内外の公開情報を収集し、重要度・確認目安・金融機関との関連・確認すべきことを整理しています。",
+                      fetch.SITE_INTRO_SENTENCES)
+
+    def test_intro_links_once_to_the_about_page(self):
+        html = self._top_html()
+        self.assertEqual(html.count('href="about.html"'), 1)
+        self.assertIn(f'>{fetch.SITE_INTRO_ABOUT_LABEL}</a>', html)
+        self.assertEqual(fetch.SITE_INTRO_ABOUT_LABEL, "このサイトについて →")
+
+    def test_top_page_intro_does_not_mention_ai(self):
+        """SD-034: the AI explanation lives on About, not on the top page."""
+        intro = fetch.render_site_intro_html()
+        self.assertNotIn("AI", intro)
+
+    # ---- the intro must stay opt-in ---------------------------------------
+    def test_build_html_renders_no_intro_by_default(self):
+        html = fetch.build_html([], None)
+        self.assertNotIn("site-intro\"", html)
+        self.assertNotIn("about.html", html)
+
+    def test_daily_archive_renders_no_intro(self):
+        html = fetch.build_daily_archive_html(self._digest())
+        self.assertNotIn('<section class="site-intro"', html)
+        self.assertNotIn('href="about.html"', html)
+
+    def test_archive_index_renders_no_intro(self):
+        html = fetch.build_archive_index_html([])
+        self.assertNotIn('<section class="site-intro"', html)
+        self.assertNotIn('href="about.html"', html)
+
+    def test_archive_navigation_contract_is_unchanged(self):
+        """No About link is added to the direction/global navigation groups."""
+        html = fetch.build_daily_archive_html(self._digest(), previous_date="2026-07-10")
+        self.assertEqual(html.count('<div class="archive-nav-group archive-direction-nav">'), 2)
+        self.assertEqual(html.count('<div class="archive-nav-group archive-global-nav">'), 2)
+        self.assertEqual(html.count(">最新のダイジェスト</a>"), 2)
+        self.assertEqual(html.count(">過去のダイジェスト</a>"), 2)
+        nav = html[html.index('<nav class="archive-nav"'):html.index("</header>")]
+        self.assertNotIn("about.html", nav)
+
+    def test_analytics_footer_has_no_about_link(self):
+        self.assertNotIn("about.html", fetch.render_analytics_footer_html())
+
+    # ---- the About page ----------------------------------------------------
+    def _about(self):
+        return (self.DOCS / "about.html").read_text(encoding="utf-8")
+
+    def test_about_page_exists_and_is_a_valid_document(self):
+        self.assertTrue((self.DOCS / "about.html").is_file())
+        fetch.validate_html_document(self._about())
+
+    def test_about_page_has_the_three_approved_sections(self):
+        about = self._about()
+        self.assertEqual(about.count('<section class="about-section">'), 3)
+        for heading in ("情報の整理とAIの利用", "原記事との関係"):
+            with self.subTest(heading=heading):
+                self.assertIn(f"<h2>{heading}</h2>", about)
+        self.assertIn("Monomi Digestについて", about)
+
+    def test_about_page_states_the_approved_ai_and_original_article_points(self):
+        about = self._about()
+        for phrase in (
+            "記事の整理・分析にはAIを利用しています。",
+            "取得元の利用条件や提供される情報の範囲により、AI分析を行わず、",
+            "元記事の転載や代替を目的とするものではありません。",
+        ):
+            with self.subTest(phrase=phrase[:14]):
+                self.assertIn(phrase, about)
+
+    def test_about_page_publishes_no_operator_information(self):
+        about = self._about()
+        for banned in ("運営者", "運営会社", "お問い合わせ", "連絡先"):
+            with self.subTest(banned=banned):
+                self.assertNotIn(banned, about)
+
+    def test_about_page_omits_the_rejected_duplicate_explanations(self):
+        about = self._about()
+        for banned in ("掲載について", "処理の失敗", "情報量が異なります"):
+            with self.subTest(banned=banned):
+                self.assertNotIn(banned, about)
+
+    def test_about_page_links_back_to_the_top_page(self):
+        self.assertIn('href="index.html"', self._about())
+
+    def test_about_page_is_not_produced_or_deleted_by_the_generator(self):
+        """It is a static file: the generator writes docs/index.html and
+        docs/archive/*.html only, and its archive cleanup deletes strictly
+        `archive/<digest-date>.html`. docs/CNAME has survived on the same terms
+        since 2026-07-28."""
+        with tempfile.TemporaryDirectory() as tmp:
+            docs = Path(tmp) / "docs"
+            (docs / "archive").mkdir(parents=True)
+            data = Path(tmp) / "data"
+            data.mkdir()
+
+            # Nothing creates it: the generator writes docs/index.html and
+            # docs/archive/*.html only.
+            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
+            self.assertFalse((docs / "about.html").exists())
+
+            # Nothing deletes or rewrites it: archive cleanup targets strictly
+            # `archive/<digest-date>.html`. docs/CNAME has survived on the same
+            # terms since 2026-07-28.
+            about = docs / "about.html"
+            payload = "<!DOCTYPE html><html><head><title>x</title></head><body></body></html>"
+            about.write_text(payload, encoding="utf-8")
+            stale = docs / "archive" / "2026-07-10.html"
+            stale.write_text(payload, encoding="utf-8")
+            (data / "2026-07-10.json").write_text("{ not valid json", encoding="utf-8")
+
+            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
+
+            self.assertFalse(stale.is_file(), "control: a stale dated archive page IS removed")
+            self.assertTrue(about.is_file(), "archive regeneration must not delete docs/about.html")
+            self.assertEqual(about.read_text(encoding="utf-8"), payload,
+                             "archive regeneration must not rewrite docs/about.html")
 
 
 if __name__ == "__main__":

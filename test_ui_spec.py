@@ -28,8 +28,12 @@ class UiSpecDocumentTest(unittest.TestCase):
     def test_ui_spec_exists_with_version_metadata(self):
         self.assertTrue(self.spec_path.is_file())
         self.assertIn("# Monomi Digest UI Specification", self.spec)
-        self.assertIn("- **バージョン:** 1.7", self.spec)
-        self.assertIn("- **状態:** 承認済み", self.spec)
+        # BL-009 Phase A-1 (2026-08-14): UI_SPEC entered a Draft phase again, exactly as
+        # it did for 1.6 and 1.7 -- the version bumps first and 状態 reads Draft until the
+        # user's visual acceptance flips it to 承認済み. Same assertions, same order, only
+        # the two phase-dependent literals move; the 1.7 acceptance date stays asserted.
+        self.assertIn("- **バージョン:** 1.8", self.spec)
+        self.assertIn("- **状態:** Draft（Version 1.7までは承認済み）", self.spec)
         self.assertIn("- **最終受入日:** 2026-08-04", self.spec)
         self.assertIn(
             "2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、"
@@ -303,8 +307,16 @@ class Bl036ArticleAttributionUiSpecTest(unittest.TestCase):
         cls.sd016 = backlog_section(cls.decisions, "SD-016")
 
     def test_version_is_17_approved_with_acceptance_date(self):
-        self.assertIn("- **バージョン:** 1.7", self.spec)
-        self.assertIn("- **状態:** 承認済み", self.spec)
+        # BL-009 Phase A-1 (2026-08-14): BL-036's durable fact is that Version 1.7 was
+        # approved on 2026-08-04, which the version-history table still records. The
+        # header now carries the 1.8 Draft, so this pair tracks the document's current
+        # phase; BL-036's own durable fact -- that 1.7 was approved on 2026-08-04 -- is
+        # the acceptance date asserted below and the 1.7 row in the version history.
+        # Same three assertions in the same order, and they stay a duplicate pair with
+        # UiSpecDocumentTest.test_ui_spec_exists_with_version_metadata (Category A).
+        # The method name is kept for identity continuity.
+        self.assertIn("- **バージョン:** 1.8", self.spec)
+        self.assertIn("- **状態:** Draft（Version 1.7までは承認済み）", self.spec)
         self.assertIn("- **最終受入日:** 2026-08-04", self.spec)
 
     def test_original_ai_note_ban_sentences_are_preserved_not_deleted(self):

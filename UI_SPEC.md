@@ -1,9 +1,9 @@
 # Monomi Digest UI Specification
 
 - **文書名:** Monomi Digest UI Specification
-- **バージョン:** 1.7
-- **状態:** 承認済み
-- **最終受入日:** 2026-08-04
+- **バージョン:** 1.8（Draft）
+- **状態:** Draft（Version 1.7までは承認済み）
+- **最終受入日:** 2026-08-04（Version 1.7）。Version 1.8はユーザー目視受入前のDraftである
 - **適用対象:** 現行Monomi Digest。BL-006のブランド名変更（Security Digest→Monomi Digest、`🔐`維持、title／H1絵文字統一）は、2026-07-26にユーザーがPC 1280px／390pxのトップページ・Archive一覧・日別Archive計6画面を目視受入し、Version 1.4として承認済みである。[PR #57](https://github.com/matkei31/security-digest/pull/57)はmainへmergeされ、GitHub Pagesでの公開反映を確認済みである。Version 1.5はBL-029の「本日の要点」子見出し・記事カード見出しの再設計を反映する。ユーザーは`top-page-2026-07-27-1280px.png`、`top-page-2026-07-27-390px.png`、`daily-archive-2026-07-27-1280px.png`、`daily-archive-2026-07-27-390px.png`、`daily-archive-2026-07-26-1280px.png`、`daily-archive-2026-07-26-390px.png`、`daily-archive-2026-07-25-1280px.png`、`daily-archive-2026-07-25-390px.png`の計8画面を目視確認し、「8枚とも確認した。BL-029の見出し、重要・優先事項の2段落表示、過去Archiveへの適用、0記事日の表示に問題なし。BL-029として受入。」と受入した（accepted head `c4ca053b176c93fba3588c1f0aaf4116ab3fbc33`、[PR #60](https://github.com/matkei31/security-digest/pull/60)）。Version 1.6はBL-028のダイジェストナビゲーション配置再設計（A案「左寄せ二段・ラベルなし」）を反映する。ユーザーは`top-page-nav-1280px.png`、`top-page-nav-390px.png`、`daily-archive-top-nav-1280px.png`、`daily-archive-top-nav-390px.png`、`daily-archive-bottom-nav-1280px.png`、`daily-archive-bottom-nav-390px.png`、`archive-index-nav-1280px.png`、`archive-index-nav-390px.png`、`daily-archive-oldest-single-direction-1280px.png`、`daily-archive-oldest-single-direction-390px.png`の計10画面を目視確認し、「10枚とも確認した。BL-028の左寄せ二段配置、前→次／過去→最新の順序、上部・下部ナビゲーション、単一方向ケース、PC 1280px／390pxの表示に問題なし。BL-028として受入。」と受入した（accepted head `77b4106618c29b9220012fd10e9ff616d773fa56`、[PR #62](https://github.com/matkei31/security-digest/pull/62)）。Version 1.7は[BL-036](BACKLOG.md#bl-036--記事カードのsource-attribution注記を低強調表示へ整える)(Fable 5レビューR-01)の`.article-attribution`低強調CSSを記録し、BL-032で既に実装・merge済みのsource-policy-required attributionを[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)のAI-use note方針に対する限定例外として正式に認める。[SD-033](DECISIONS.md#sd-033--allow-source-policy-required-article-attribution-as-a-limited-exception-to-the-generic-ai-note-ban)が、SD-016のうち記事カード単位のAI-use note条項だけを限定的にsupersedeし、SD-016のgeneric AI disclosure禁止と他の6項目は維持する。2026-08-03のDraft作成後、ユーザーは`bl036-attribution-page-1280px.png`、`bl036-attribution-page-390px.png`、`bl036-attribution-card-1280px.png`、`bl036-attribution-card-390px.png`、`bl036-attribution-card2-link-1280px.png`、`bl036-attribution-card2-link-390px.png`の計6画面(実`fetch.py`の`build_html()`が生成したHTML、10px CSS)を目視確認し、「おk」と受入した（原文の解釈: 直前に提示した6画面の目視受入結果と、[PR #76](https://github.com/matkei31/security-digest/pull/76)内での最終受入記録・UI_SPEC Approved化・SD-033追加・mergeへ進むことへの同意。ユーザーが「10px」等の具体的CSS値を明示発言したものとしては扱わない。accepted implementation head `12a6f502973c78e21dbe0b209073f824731a3e5d`、2026-08-04）。
 
 ## 1. 文書の目的と対象読者
@@ -69,6 +69,7 @@ Version 1.0は、Draft 0.1で整理した確定仕様に加え、残っていた
 現行の表示順は次のとおりである。DOM上もこの順を維持する。
 
 1. `header`: ページ名、日別Archiveの副題（該当時）、最終更新、記事件数、Archive導線
+1.5. `.site-intro`: サイト説明（**トップページのみ**。Version 1.8）。sticky headerの外側、`header`の直後、「本日の要点」の前に置く。日別Archiveには表示しない
 2. `.todays-brief`: 「本日の要点」。表示可能なBrief内容がある場合だけ表示
 3. `.important-items`: 「優先確認」。0件でもセクション自体は表示
 4. `.dashboard`: 「本日のダッシュボード」
@@ -409,6 +410,44 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 
 これらを推測で補わず、Version 1.0ではユーザーが承認した現行UI維持の方針を確定仕様とした。この履歴上の証跡欠落は、現在の未決事項を意味しない。
 
+## 19.5 サイト説明とAboutページ（Version 1.8、Draft）
+
+### 19.5.1 目的
+
+公開トップページは、サイト名の直後に日次コンテンツが始まり、「誰向けの何のサイトか」が読み取れなかった。[BL-009](BACKLOG.md#bl-009--seoと閲覧者増加策) Phase A-1で、トップに短いサイト説明を置き、詳細はAboutページへ分離する。
+
+### 19.5.2 トップページのサイト説明
+
+- **トップページにのみ表示する。** 日別Archive・Archive一覧には表示しない。日別Archiveは当時の記録の再現が目的であり、現在のサイト説明を持たない。
+- sticky header（`<header>`）の**外側**に置く。headerの直後、「本日の要点」の**前**。
+- 本文は次の2文とする（ユーザーが2026-08-14に承認した文言）。
+
+  1. 金融機関のサイバーセキュリティ担当者・管理職・担当役員向けの日次ニュースダイジェストです。
+  2. 国内外の公開情報を収集し、重要度・確認目安・金融機関との関連・確認すべきことを整理しています。
+
+- その下にAboutページへの導線を**1箇所だけ**置く。文言は「このサイトについて →」。
+- **トップページの説明はAI利用に言及しない。** AIの説明はAboutページだけが持つ。
+- Aboutリンクをarchive navigation（方向移動／全体導線）へ追加しない。analytics footerへも追加しない。サイト全体で導線は1箇所である。
+
+実装は`fetch.py`の`render_site_intro_html()`が生成し、`build_html(intro_html=...)`へ明示的に渡したcall siteだけが表示する。既定は非表示であり、日別Archiveの既存呼び出しは変更していない。
+
+### 19.5.3 Aboutページ
+
+- `docs/about.html`を**静的ファイル**として置く。日次generatorは生成せず、Archive再生成の削除対象にもならない。
+- 情報構造は3節とする。導入（対象読者と目的、整理する5項目）／「情報の整理とAIの利用」／「原記事との関係」。
+- Aboutからトップへ戻る簡潔な導線を持つ。
+- **運営者情報は掲載しない。**
+- 重複・弁解的な説明（「処理の失敗ではない」等）、独立した「掲載について」節、同趣旨の言い換え反復、法的な断定は置かない。
+- 既存のdark UIへ揃える。新しいframework・JS・client-side routingは追加しない。About表示に必要な最小限のCSSだけを持ち、`build_html()`のstyle blockを丸ごと複製しない。
+
+### 19.5.4 AI-use note原則（3.1）との関係
+
+AboutページのAI説明は[SD-034](DECISIONS.md#sd-034--explain-the-sites-ai-use-on-a-dedicated-about-page-only)が承認したものである。3.1が禁止する**サイト全体へのgenericな「AIを利用しています」badge／alertではなく**、全記事へのuniform AI note・各分析sectionへの反復labelでもない。[SD-016](DECISIONS.md#sd-016--resolve-the-remaining-bl-004-ui-choices-without-changing-the-accepted-layout)が「将来Aboutや公開導線を別スコープで設計する場合に改めて裁定する」と留保した論点を、SD-034が決着させた。[SD-033](DECISIONS.md#sd-033--allow-source-policy-required-article-attribution-as-a-limited-exception-to-the-generic-ai-note-ban)のsource-policy-required attributionは変更せず、Aboutの説明とは目的・scopeが異なる。footerへの一般AI説明は本scopeでは追加しない。
+
+### 19.5.5 目視受入の対象
+
+PC 1280pxと390pxで、トップページとAboutページの計4画面を目視受入の対象とする。Version 1.8は受入前はDraftであり、受入時にApprovedへ移す。
+
 ## 20. 変更管理
 
 1. UI変更を行うチケットは、着手時に本書の確定仕様、現行値、決定履歴を確認する。
@@ -435,4 +474,5 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 | 1.4 | 承認済み | BL-006でSecurity DigestからMonomi Digestへブランド名を変更し、`🔐`は維持したまま、トップページと日別Archiveのtitle／H1の絵文字表記を統一した |
 | 1.5 | 承認済み | BL-029で「本日の要点」子見出しと記事カード見出しを再設計し、「重要・優先事項」を同一記事のsummary／financial_impactペアから構成する契約へ更新した。2026-07-27、ユーザーがPC 1280px／390px計8画面を目視受入した |
 | 1.6 | 承認済み | BL-028でダイジェストナビゲーションをA案「左寄せ二段・ラベルなし」へ再設計し、日別Archiveの全体導線を`過去→最新`の順へ変更した。2026-07-27、ユーザーがPC 1280px／390px計10画面を目視受入した |
+| 1.8 | Draft | BL-009 Phase A-1でトップページにサイト説明（2文＋「このサイトについて →」1箇所）を追加し、`docs/about.html`を静的ページとして新設した。introはトップのみでsticky header外、「本日の要点」の前。日別Archive・Archive一覧には表示しない。AboutのAI説明はSD-034で承認し、3.1のgeneric AI badge/alert禁止・uniform per-article note禁止・反復label禁止は維持する（SD-033は変更なし）。ユーザー目視受入前のDraft |
 | 1.7 | 承認済み | BL-036(Fable 5レビューR-01)でBL-032実装済みの`.article-attribution`へ低強調CSSを追加(runtime変更はCSSのみ)。AI-use note原則(3.1)のうち一律generic note禁止は維持し、BL-032実装済みのsource-policy-required attributionをSD-016の一部への限定例外として正式に認めた(SD-033、SD-016のgeneric AI disclosure禁止と他の6項目は変更なし)。2026-08-04、ユーザーがPC 1280px／390px計6画面を目視受入した |
