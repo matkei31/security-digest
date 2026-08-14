@@ -9930,5 +9930,153 @@ class Bl009PhaseA3SitemapAndRobotsTest(unittest.TestCase):
             self.assertEqual((docs / "robots.txt").read_text(encoding="utf-8"), self.robots)
 
 
+class Bl009PhaseA4CanonicalTest(unittest.TestCase):
+    """BL-009 Phase A-4: rel="canonical" on every published page.
+
+    The live site serves `/` and `/index.html` byte-identically, and the same for
+    `/archive/` and `/archive/index.html`, so each page needs to name which of its
+    URLs is the real one. The preferred URL is the same one Phase A-3 put in the
+    sitemap, built from the same PUBLIC_ORIGIN, so the two can never disagree.
+
+    The top page and the newest daily archive look alike on the day they share,
+    but they are different pages with different lifetimes: the top page points at
+    `/`, each archive day points at its own dated URL, and neither points at the
+    other.
+    """
+
+    ROOT = Path(__file__).resolve().parent
+    DOCS = ROOT / "docs"
+    CANONICAL_RE = re.compile(r'<link rel="canonical" href="(.*?)">')
+    LOC_RE = re.compile(r"<loc>(.*?)</loc>")
+
+    @classmethod
+    def setUpClass(cls):
+        cls.index = json.loads((cls.ROOT / "data" / "index.json").read_text(encoding="utf-8"))
+
+    def _pages(self):
+        pages = [self.DOCS / "index.html", self.DOCS / "about.html",
+                 self.DOCS / "archive" / "index.html"]
+        pages += sorted(p for p in (self.DOCS / "archive").glob("*.html")
+                        if p.name != "index.html")
+        return pages
+
+    def _canonical(self, html):
+        found = self.CANONICAL_RE.findall(html)
+        self.assertEqual(len(found), 1, "a page must carry exactly one canonical link")
+        return found[0]
+
+    def _canonical_of(self, path):
+        return self._canonical(path.read_text(encoding="utf-8"))
+
+    # ---- one per page -------------------------------------------------------
+    def test_every_published_page_has_exactly_one_canonical(self):
+        pages = self._pages()
+        self.assertGreater(len(pages), 3)
+        for path in pages:
+            with self.subTest(page=path.relative_to(self.DOCS)):
+                html = path.read_text(encoding="utf-8")
+                self.assertEqual(len(self.CANONICAL_RE.findall(html)), 1)
+                self.assertNotIn('href=""', html)
+
+    # ---- the exact URL per page type ---------------------------------------
+    def test_top_page_canonical_is_the_site_root(self):
+        self.assertEqual(self._canonical_of(self.DOCS / "index.html"),
+                         "https://monomidigest.com/")
+
+    def test_archive_index_canonical_is_the_archive_root(self):
+        self.assertEqual(self._canonical_of(self.DOCS / "archive" / "index.html"),
+                         "https://monomidigest.com/archive/")
+
+    def test_about_canonical_is_the_about_page(self):
+        self.assertEqual(self._canonical_of(self.DOCS / "about.html"),
+                         "https://monomidigest.com/about.html")
+
+    def test_every_daily_archive_points_at_its_own_date(self):
+        daily = [p for p in self._pages()
+                 if p.parent.name == "archive" and p.name != "index.html"]
+        self.assertGreater(len(daily), 0)
+        for path in daily:
+            digest_date = path.stem
+            with self.subTest(page=path.name):
+                self.assertEqual(
+                    self._canonical_of(path),
+                    f"https://monomidigest.com/archive/{digest_date}.html")
+
+    def test_the_top_page_and_the_newest_archive_do_not_point_at_each_other(self):
+        """Same content today, different pages: neither canonicalises to the other."""
+        latest = max(e["digest_date"] for e in self.index["digests"])
+        top = self._canonical_of(self.DOCS / "index.html")
+        newest = self._canonical_of(self.DOCS / "archive" / f"{latest}.html")
+        self.assertNotEqual(top, newest)
+        self.assertEqual(top, "https://monomidigest.com/")
+        self.assertEqual(newest, f"https://monomidigest.com/archive/{latest}.html")
+
+    # ---- URL shape ----------------------------------------------------------
+    def test_every_canonical_is_an_absolute_https_apex_url(self):
+        for path in self._pages():
+            url = self._canonical_of(path)
+            with self.subTest(page=path.name, url=url):
+                self.assertTrue(url.startswith("https://monomidigest.com/"), url)
+                self.assertNotIn("www.", url)
+                self.assertNotIn("github.io", url)
+                self.assertFalse(url.endswith("/index.html"),
+                                 "the directory root is the preferred URL")
+
+    # ---- agreement with the sitemap ----------------------------------------
+    def test_the_canonical_urls_are_exactly_the_sitemap_urls(self):
+        canonicals = {self._canonical_of(p) for p in self._pages()}
+        sitemap = set(self.LOC_RE.findall(
+            (self.DOCS / "sitemap.xml").read_text(encoding="utf-8")))
+        self.assertEqual(canonicals, sitemap)
+
+    def test_canonical_and_sitemap_share_the_same_origin_source(self):
+        """Both are built from PUBLIC_ORIGIN, which must match docs/CNAME."""
+        cname = (self.DOCS / "CNAME").read_text(encoding="utf-8").strip()
+        self.assertEqual(fetch.PUBLIC_ORIGIN, f"https://{cname}")
+        self.assertEqual(fetch.public_url(fetch.TOP_PAGE_PATH), f"https://{cname}/")
+        self.assertEqual(fetch.public_url(fetch.ARCHIVE_INDEX_PATH), f"https://{cname}/archive/")
+        self.assertEqual(fetch.public_url(fetch.ABOUT_PAGE_PATH), f"https://{cname}/about.html")
+        self.assertEqual(fetch.daily_archive_canonical_url("2026-08-04"),
+                         f"https://{cname}/archive/2026-08-04.html")
+        # the sitemap's fixed URLs come from the same three paths
+        self.assertEqual(fetch.SITEMAP_STATIC_PATHS,
+                         (fetch.TOP_PAGE_PATH, fetch.ARCHIVE_INDEX_PATH, fetch.ABOUT_PAGE_PATH))
+
+    # ---- generation ---------------------------------------------------------
+    def test_canonical_generation_is_deterministic(self):
+        for digest_date in ("2026-08-04", "2026-01-01"):
+            with self.subTest(digest_date=digest_date):
+                self.assertEqual(fetch.daily_archive_canonical_url(digest_date),
+                                 fetch.daily_archive_canonical_url(digest_date))
+        digest = {
+            "schema_version": 2, "digest_date": "2026-08-04",
+            "generated_at": "2026-08-04T07:39:47+09:00",
+            "items": [], "counts": {}, "run": {},
+        }
+        self.assertEqual(self._canonical(fetch.build_daily_archive_html(digest)),
+                         "https://monomidigest.com/archive/2026-08-04.html")
+
+    def test_a_page_without_a_canonical_url_emits_no_link(self):
+        html = fetch.build_html([], None)
+        self.assertNotIn('rel="canonical"', html)
+
+    def test_the_canonical_href_is_attribute_escaped(self):
+        html = fetch.build_html([], None, canonical_url='https://example.com/?a=1&b="x"')
+        self.assertIn('<link rel="canonical" href="https://example.com/?a=1&amp;b=&quot;x&quot;">',
+                      html)
+
+    def test_phase_a2_head_metadata_still_renders_alongside_canonical(self):
+        """Adding canonical did not disturb the title/description contract."""
+        html = fetch.build_html([], None,
+                                document_title=fetch.TOP_PAGE_DOCUMENT_TITLE,
+                                meta_description=fetch.TOP_PAGE_META_DESCRIPTION,
+                                canonical_url=fetch.public_url(fetch.TOP_PAGE_PATH))
+        self.assertIn(f"<title>{fetch.TOP_PAGE_DOCUMENT_TITLE}</title>", html)
+        self.assertIn(f'<meta name="description" content="{fetch.TOP_PAGE_META_DESCRIPTION}">',
+                      html)
+        self.assertEqual(self._canonical(html), "https://monomidigest.com/")
+        self.assertIn("<h1>🔐 Monomi Digest</h1>", html)
+
+
 if __name__ == "__main__":
     unittest.main()

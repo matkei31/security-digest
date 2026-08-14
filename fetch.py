@@ -5100,9 +5100,15 @@ SITEMAP_FILENAME = "sitemap.xml"
 ROBOTS_FILENAME = "robots.txt"
 SITEMAP_URL = f"{PUBLIC_ORIGIN}/{SITEMAP_FILENAME}"
 
-# sitemapへ常に載せる固定URL。ディレクトリrootを1つのpreferred URLとして扱い、
-# 同じページの`/index.html`形式は載せない。
-SITEMAP_STATIC_PATHS = ("", "archive/", "about.html")
+# 各ページ種別のpreferred path(`docs/`からの相対)。sitemapのURLも
+# rel="canonical"も、ここと`PUBLIC_ORIGIN`だけから組み立てる――両者が別々の
+# 文字列を持たないようにするため(BL-009 Phase A-4)。ディレクトリrootを1つの
+# preferred URLとして扱い、同じページの`/index.html`形式は使わない。
+TOP_PAGE_PATH = ""
+ARCHIVE_INDEX_PATH = "archive/"
+ABOUT_PAGE_PATH = ABOUT_PAGE_HREF
+
+SITEMAP_STATIC_PATHS = (TOP_PAGE_PATH, ARCHIVE_INDEX_PATH, ABOUT_PAGE_PATH)
 
 SITEMAP_ARCHIVE_PATH_RE = re.compile(r"archive/\d{4}-\d{2}-\d{2}\.html")
 
@@ -5110,6 +5116,28 @@ SITEMAP_ARCHIVE_PATH_RE = re.compile(r"archive/\d{4}-\d{2}-\d{2}\.html")
 def public_url(relative_path=""):
     """公開URLを組み立てる。`relative_path`は`docs/`からの相対パス。"""
     return f"{PUBLIC_ORIGIN}/{relative_path}"
+
+
+def daily_archive_relative_path(digest_date):
+    """日別Archiveのpreferred path(`docs/`からの相対)。"""
+    return f"archive/{digest_date}.html"
+
+
+def daily_archive_canonical_url(digest_date):
+    """日別Archiveのcanonical URL。
+
+    トップページと最新日のArchiveは内容が一時的に似ることがあるが、別ページと
+    して扱う――トップは`/`を、日別Archiveは自分自身の日付URLをcanonicalとし、
+    互いを指さない(BL-009 Phase A-4)。
+    """
+    return public_url(daily_archive_relative_path(digest_date))
+
+
+def render_canonical_link_html(canonical_url):
+    """rel="canonical"の1行。URLを持たないcall siteでは何も出力しない。"""
+    if not canonical_url:
+        return ""
+    return f'\n  <link rel="canonical" href="{esc(canonical_url)}">'
 
 
 def sitemap_urls_from_index(index):
@@ -5220,6 +5248,7 @@ def build_html(
     page_title="🔐 Monomi Digest",
     document_title=None,
     meta_description=None,
+    canonical_url=None,
     subtitle=None,
     generated_at=None,
     archive_nav_html=None,
@@ -5605,6 +5634,8 @@ def build_html(
         f'\n  <meta name="description" content="{esc(meta_description)}">'
         if meta_description else ""
     )
+    # BL-009 Phase A-4: canonicalもcall siteが明示したページだけが持つ。
+    canonical_block = render_canonical_link_html(canonical_url)
     # BL-009 Phase A-1: --anchor-offsetは「固定され続ける領域の実高さ」で決まる。
     # identityがheaderの外に出た分だけsticky領域は低くなるので、その差を引く。
     # introを表示しない日別Archive・Archive一覧は従来値のまま。
@@ -5616,7 +5647,7 @@ def build_html(
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{esc(document_title or page_title)}</title>{meta_description_block}
+  <title>{esc(document_title or page_title)}</title>{meta_description_block}{canonical_block}
   <style>
     *{{margin:0;padding:0;box-sizing:border-box}}
     :root{{--anchor-offset:{anchor_offset_pc}px}}
@@ -5841,6 +5872,7 @@ def build_daily_archive_html(digest, previous_date=None, next_date=None):
         page_title="🔐 Monomi Digest",
         document_title=daily_archive_document_title(digest_date),
         meta_description=daily_archive_meta_description(digest_date),
+        canonical_url=daily_archive_canonical_url(digest_date),
         subtitle=subtitle,
         generated_at=generated_at or digest.get("generated_at"),
         archive_nav_html=top_nav,
@@ -5891,6 +5923,7 @@ def build_archive_index_html(summaries, generated_at=None):
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>過去のダイジェスト - Monomi Digest</title>
   <meta name="description" content="{esc(ARCHIVE_INDEX_META_DESCRIPTION)}">
+  <link rel="canonical" href="{esc(public_url(ARCHIVE_INDEX_PATH))}">
   <style>
     *{{margin:0;padding:0;box-sizing:border-box}}
     body{{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:40px}}
@@ -6190,6 +6223,7 @@ def main():
         intro_html=render_site_intro_html(),
         document_title=TOP_PAGE_DOCUMENT_TITLE,
         meta_description=TOP_PAGE_META_DESCRIPTION,
+        canonical_url=public_url(TOP_PAGE_PATH),
     )
     atomic_write_text(out_path, html, validator=validate_html_document)
     print(f"  生成完了: {out_path}")
