@@ -17,7 +17,12 @@ import vulnerability_facts
 
 # ── 設定 ────────────────────────────────────────────────────────────────────
 
-MAX_PER_FEED = 3
+# BL-044: 1 sourceあたりの最大digest candidate数。recency(DAYS_BACK)・
+# trusted/is_cyber_relevant・BL-042 promotion gateをすべて通過した「候補」に
+# 対する上限であり、feed XMLをparseする件数の上限ではない(旧MAX_PER_FEEDは
+# parse段階のsliceだったため、4件目以降のrecent/relevant記事をdateすら
+# 見ずに捨てていた)。Gemini分析対象数・最終掲載候補数もこの1つの上限で表す。
+MAX_CANDIDATES_PER_SOURCE = 8
 DAYS_BACK    = 1
 
 # RSS取得の最小retry (Ticket 13c): 一時的なサーバ側エラーに限り最大1回だけ再試行する。
@@ -935,13 +940,22 @@ def _select_atom_article_url(entry):
 
 def _parse_feed_items(root, name, lang):
     """XMLルート要素から記事itemのlistを組み立てる(取得・retryロジックとは分離)。
-    parseロジック自体は従来のfetch_feed()から変更していない
-    (Atomの記事URL選択のみTicket 14aで修正)。"""
+
+    - feed format(RSS/RDF/Atom)ごとのfield extraction semanticsは従来どおり維持する。
+    - Atomの記事URL選択(Ticket 14a: rel未指定/alternateのHTTP(S)記事URLのみ採用し、
+      コメントフィード等をskipする)も維持する。
+    - BL-044: parser-levelの件数cap(旧MAX_PER_FEED)は撤去した。ここではvalid entryを
+      全件返し、件数の絞り込みは行わない。source別のcandidate capは、recency・
+      trusted/is_cyber_relevant・BL-042 promotion gateを通過した後段
+      (collect_recent())でMAX_CANDIDATES_PER_SOURCEとして適用する。
+    """
     items = []
     tag = root.tag.lower()
 
     if "rss" in tag or root.find("channel") is not None:
-        for item in root.findall(".//item")[:MAX_PER_FEED]:
+        # BL-044: parse段階では件数を切らない(旧[:MAX_PER_FEED])。上限は
+        # recency/relevance/promotion gate通過後にsource単位で適用する。
+        for item in root.findall(".//item"):
             pub_date_raw = (item.findtext("pubDate") or
                             item.findtext("dc:date", namespaces=NAMESPACES))
             items.append({
@@ -957,13 +971,12 @@ def _parse_feed_items(root, name, lang):
                 "lang":   lang,
             })
     elif "feed" in tag:
-        # 有効な記事URLを持つentryを最大MAX_PER_FEED件収集する。スキップ対象(コメント
-        # フィード等)が先頭に来ても、後続の正常entryを確認して上限まで集める(Ticket 14a)。
-        # このブランチはif/elif/elifで相互排他のため、items は Atom分岐専用であり、
-        # len(items) を有効件数カウンタとして安全に使える。
+        # 有効な記事URLを持つentryを収集する。スキップ対象(コメントフィード等)が
+        # 先頭に来ても、後続の正常entryを確認する(Ticket 14a)。
+        # BL-044: parse段階では件数を切らない(旧 len(items) >= MAX_PER_FEED の
+        # break)。上限はrecency/relevance/promotion gate通過後にsource単位で
+        # 適用する。無効entryのskip semanticsは従来どおり維持する。
         for entry in root.findall("atom:entry", NAMESPACES):
-            if len(items) >= MAX_PER_FEED:
-                break
             article_url = _select_atom_article_url(entry)
             if not article_url:
                 # 記事本文URLを安全に特定できないentryは収集対象外にする。
@@ -994,7 +1007,8 @@ def _parse_feed_items(root, name, lang):
             })
     elif "rdf" in tag:
         # RSS 1.0 (RDF) 形式: 要素がデフォルト名前空間 (rss1) に属する
-        for item in root.findall("rss1:item", NAMESPACES)[:MAX_PER_FEED]:
+        # BL-044: parse段階では件数を切らない(旧[:MAX_PER_FEED])。
+        for item in root.findall("rss1:item", NAMESPACES):
             pub_date_raw = item.findtext("dc:date", namespaces=NAMESPACES)
             items.append({
                 "title":   (item.findtext("rss1:title",       namespaces=NAMESPACES) or "").strip(),
@@ -1152,8 +1166,9 @@ def fetch_cisa_kev(cutoff, url, display_url, source_name, kev_catalog_memo=None,
             "source":  source_name,
             "lang":    "en",
         })
-        if len(items) >= MAX_PER_FEED:
-            break
+        # BL-044: 収集段階での件数打ち切り(旧 len(items) >= MAX_PER_FEED)は行わない。
+        # 上限はcollect_recent()側でsource単位のcandidate capとして一元適用する
+        # (KEVの実効上限は3→MAX_CANDIDATES_PER_SOURCEへ変わる。意図的な変更)。
     return items
 
 # ── NIST NVD (JSON API) ───────────────────────────────────────────────────────
@@ -1167,10 +1182,17 @@ def fetch_nist_nvd(cutoff, base_url, source_name):
     now   = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
     start = cutoff.strftime("%Y-%m-%dT00:00:00.000")
     end   = now.strftime("%Y-%m-%dT23:59:59.000")
+    # BL-044: これはNVD API取得時のtransport/page-size limitであり、
+    # MAX_CANDIDATES_PER_SOURCE(recency・relevance/trusted・BL-042 gateを
+    # すべて通過した後に適用するsource別digest candidate cap)とは意味が異なる。
+    # 両者を結合しないよう、従来値3をfunction-localの明示値として維持する。
+    # 当該sourceはenabled:falseで、paginationの再設計はBL-011のNVD再開時に
+    # 別途扱う(本Ticketではpagination semanticsを変更しない)。
+    nvd_results_per_page = 3
     url   = (
         f"{base_url}"
         f"?pubStartDate={start}&pubEndDate={end}"
-        f"&resultsPerPage={MAX_PER_FEED}&cvssV3Severity=CRITICAL"
+        f"&resultsPerPage={nvd_results_per_page}&cvssV3Severity=CRITICAL"
     )
     req = urllib.request.Request(url, headers={"User-Agent": "SecurityDigest/1.0"})
     try:
@@ -1443,6 +1465,33 @@ def collect_recent(kev_catalog_memo=None, gemini_data_use_status=GEMINI_DATA_USE
         detail = " ".join(f"{k}={v}" for k, v in sorted(exclusion_counts.items()))
         print(f"  digest除外(promotion gate): {excluded_count} 件 ({detail})")
     print(f"  digest掲載対象: {len(all_items)} 件")
+
+    # BL-044: source単位のcandidate cap。recency・trusted/is_cyber_relevant・
+    # BL-042 promotion gateをすべて通過したitemだけを対象にするため、promotion/
+    # noise itemがcap枠を消費しない。groupingは出現順(feed order)を保ち、
+    # published datetime降順のstable sortで並べ替えるので、同一datetimeでは
+    # 元のfeed orderが維持され結果は決定論的になる。global capは設けない
+    # (source間の選抜ruleという別問題を持ち込まないため)。
+    by_source = {}
+    for item in all_items:
+        by_source.setdefault(item["source"], []).append(item)
+    selected_items = []
+    cap_dropped = {}
+    for source_name, group in by_source.items():
+        group.sort(key=lambda x: x["date"] or datetime.datetime.min, reverse=True)
+        dropped = len(group) - MAX_CANDIDATES_PER_SOURCE
+        if dropped > 0:
+            cap_dropped[source_name] = dropped
+        selected_items.extend(group[:MAX_CANDIDATES_PER_SOURCE])
+        print(f"  source別candidate: {source_name} eligible={len(group)} "
+              f"selected={min(len(group), MAX_CANDIDATES_PER_SOURCE)} "
+              f"cap_drop={max(0, dropped)}")
+    all_items = selected_items
+    if cap_dropped:
+        detail = " ".join(f"{k}={v}" for k, v in sorted(cap_dropped.items()))
+        print(f"  source cap超過で除外: {sum(cap_dropped.values())} 件 ({detail})")
+    print(f"  digest candidate確定: {len(all_items)} 件 "
+          f"(source上限 {MAX_CANDIDATES_PER_SOURCE} 件/source)")
 
     all_items.sort(key=lambda x: x["date"] or datetime.datetime.min, reverse=True)
     return all_items
