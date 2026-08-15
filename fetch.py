@@ -203,12 +203,12 @@ VALID_POLICY_EVIDENCE_TYPES = {
 _POLICY_CHECKED_AT_RE = re.compile(r"\d{4}-\d{2}-\d{2}")
 
 # SOURCE_USAGE_POLICY.md Version 0.1 (Approved) 4章の件数集計と一致させる
-# (structured_open 5, feed_summary 4, limited_feed_analysis 2, metadata_only 2,
-# disabled_legal_review 4, 計17)。
+# (structured_open 5, feed_summary 4, limited_feed_analysis 3, metadata_only 2,
+# disabled_legal_review 4, 計18)。
 EXPECTED_CONTENT_USAGE_MODE_COUNTS = {
     "structured_open": 5,
     "feed_summary": 4,
-    "limited_feed_analysis": 2,
+    "limited_feed_analysis": 3,
     "metadata_only": 2,
     "disabled_legal_review": 4,
 }
@@ -239,7 +239,7 @@ def _validate_source_policy(entry, where, sid):
                 f"(実際: {policy[field]!r})"
             )
 
-    # 全17 sourceでrich contentを使用しない(SOURCE_USAGE_POLICY.md 4章)。
+    # 全18 sourceでrich contentを使用しない(SOURCE_USAGE_POLICY.md 4章)。
     if policy["allow_rich_content"] is not False:
         raise SourceDefinitionError(
             f"{where} (id={sid!r}): policy.allow_rich_content は全source falseである必要があります"
@@ -330,8 +330,8 @@ def _validate_source_policy(entry, where, sid):
 
 def validate_content_usage_mode_distribution(sources):
     """SOURCE_USAGE_POLICY.md Version 0.1 (Approved) 4章の件数集計
-    (structured_open 5 / feed_summary 4 / limited_feed_analysis 2 /
-    metadata_only 2 / disabled_legal_review 4、計17)と一致することを検証する。
+    (structured_open 5 / feed_summary 4 / limited_feed_analysis 3 /
+    metadata_only 2 / disabled_legal_review 4、計18)と一致することを検証する。
 
     load_source_definitions()自体には含めない(既存testの多くが単一・少数の
     合成source定義で個別のvalidationルールだけを検証する呼び出し方をしており、
@@ -3785,7 +3785,7 @@ def enrich_with_ai(items, analysis_date=None):
         raw_title = item.get("title", "")
 
         # BL-032: configured mode別のGemini入力制御。
-        # - allow_rich_contentはApproved policy上、全17 sourceでfalseであり、
+        # - allow_rich_contentはApproved policy上、全18 sourceでfalseであり、
         #   feed-native rich contentはこのGemini入力(および他のいかなる用途)
         #   へも使用しない(SD-002の共通rich-content利用を本Ticketで変更する)。
         #   将来policyがsource別にallow_rich_content=trueを許すことがあっても、

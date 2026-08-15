@@ -67,7 +67,7 @@ class SourceUsagePolicyTest(unittest.TestCase):
 
     def test_attribution_references_point_to_chapter_6(self):
         self.assertIn("source固有のattribution(下記6章)", self.policy)
-        self.assertEqual(self.policy.count("6章参照"), 13)
+        self.assertEqual(self.policy.count("6章参照"), 14)
         self.assertNotIn("下記7章", self.policy)
 
     def test_no_stale_chapter_7_attribution_references_remain(self):
@@ -107,10 +107,13 @@ class SourceUsagePolicyTest(unittest.TestCase):
                 self.assertIn(heading, self.policy)
 
     def test_17_source_ids_match_source_definitions_exactly(self):
+        # NOTE: method名はBL-038 classification manifestのassertion IDを構成する。
+        # BL-047でinventoryは17→18になったが、frozen shardへのadd/remove churnを
+        # 避けるため名称は据え置き、検証値のみ18へ更新している。
         ids_in_doc = [row["source_id"] for row in self.rows]
         self.assertEqual(len(ids_in_doc), len(set(ids_in_doc)), f"duplicate source_id: {ids_in_doc}")
         self.assertEqual(set(ids_in_doc), self.source_ids)
-        self.assertEqual(len(ids_in_doc), 17)
+        self.assertEqual(len(ids_in_doc), 18)
 
     def test_every_table_has_proposed_mode_and_checked_at_columns(self):
         for row in self.rows:
@@ -127,10 +130,18 @@ class SourceUsagePolicyTest(unittest.TestCase):
         updated = {"google_tag", "mandiant"}
         for row in self.rows:
             with self.subTest(source_id=row["source_id"]):
-                expected = "2026-07-30" if row["source_id"] in updated else "2026-07-29"
+                # BL-047: securityweekは追加時(2026-08-15)に確認したため別日付。
+                # 既存の2026-07-30/2026-07-29の判定式はそのまま維持する。
+                if row["source_id"] == "securityweek":
+                    expected = "2026-08-15"
+                else:
+                    expected = "2026-07-30" if row["source_id"] in updated else "2026-07-29"
                 self.assertEqual(row["checked_at"], expected)
 
     def test_mode_counts_are_5_4_2_2_4_by_proposed_mode_column(self):
+        # NOTE: 名称はmanifest ID安定のため据え置き。BL-047後の実際の分布は
+        # structured_open 5 / feed_summary 4 / limited_feed_analysis 3 /
+        # metadata_only 2 / disabled_legal_review 4。
         # Group by the proposed_mode column itself, not by which physical
         # table the row appears in, so the test does not silently pass if a
         # row is ever moved into the wrong table without updating its value.
@@ -148,7 +159,7 @@ class SourceUsagePolicyTest(unittest.TestCase):
         )
         self.assertEqual(
             set(by_mode.get("limited_feed_analysis", [])),
-            {"the_hacker_news", "krebs_on_security"},
+            {"the_hacker_news", "krebs_on_security", "securityweek"},
         )
         self.assertEqual(
             set(by_mode.get("metadata_only", [])),
@@ -159,15 +170,15 @@ class SourceUsagePolicyTest(unittest.TestCase):
             {"cisa", "crowdstrike", "cloudflare", "dark_reading"},
         )
         self.assertEqual(len(by_mode), 5)
-        self.assertIn("合計17", self.matrix)
+        self.assertIn("合計18", self.matrix)
 
     def test_proposed_mode_matches_the_table_the_row_appears_in(self):
         # Cross-check: every row's own proposed_mode value must equal the
         # physical table section it was parsed from.
         section_markers = [
             ("structured_open", "### structured_open (5件)", "### feed_summary (4件)"),
-            ("feed_summary", "### feed_summary (4件)", "### limited_feed_analysis (2件)"),
-            ("limited_feed_analysis", "### limited_feed_analysis (2件)", "### metadata_only (2件)"),
+            ("feed_summary", "### feed_summary (4件)", "### limited_feed_analysis (3件)"),
+            ("limited_feed_analysis", "### limited_feed_analysis (3件)", "### metadata_only (2件)"),
             ("metadata_only", "### metadata_only (2件)", "### disabled_legal_review (4件)"),
         ]
         for mode, start, end in section_markers:
@@ -181,7 +192,8 @@ class SourceUsagePolicyTest(unittest.TestCase):
                 self.assertEqual(row["proposed_mode"], "disabled_legal_review")
 
     def test_all_17_sources_disallow_rich_content(self):
-        self.assertEqual(len(self.rows), 17)
+        # NOTE: 名称はmanifest ID安定のため据え置き(BL-047でinventoryは18)。
+        self.assertEqual(len(self.rows), 18)
         for row in self.rows:
             with self.subTest(source_id=row["source_id"]):
                 self.assertEqual(row["allow_rich_content"], "false")
@@ -203,7 +215,7 @@ class SourceUsagePolicyTest(unittest.TestCase):
     def test_feed_summary_is_gated_by_gemini_paid_service_confirmation(self):
         feed_summary_section = self.matrix.split(
             "### feed_summary (4件)", 1
-        )[1].split("### limited_feed_analysis (2件)", 1)[0]
+        )[1].split("### limited_feed_analysis (3件)", 1)[0]
         self.assertIn("Gemini Paid Service", feed_summary_section)
         gate = self.policy.split("## 5. Gemini data-use gate", 1)[1].split(
             "## 6. Attribution requirements", 1
@@ -364,7 +376,7 @@ class SourceUsagePolicyTest(unittest.TestCase):
         self.assertIn("利用条件を確認し許諾を得た", modes)
         self.assertIn("運用上のリスク受容", modes)
         self.assertIn(
-            "この2 sourceについて規約上問題がないと断定するものではない", modes
+            "この3 sourceについて規約上問題がないと断定するものではない", modes
         )
         self.assertNotIn("利用が許可されていることを確認した", modes)
 

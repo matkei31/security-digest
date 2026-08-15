@@ -115,19 +115,19 @@ Monomi Digestの取得元は、次の5つのcontent usage modeのいずれかへ
 
 ### `limited_feed_analysis`採用理由(リスク受容の明示)
 
-`the_hacker_news`・`krebs_on_security`の2 sourceは、次の理由により、元仕様(RSS description+AI分析)を無修正で継続するのではなく、`metadata_only`へ一律に格下げするのでもなく、`limited_feed_analysis`という第3の運用形態を採用する。
+`the_hacker_news`・`krebs_on_security`・`securityweek`の3 sourceは、次の理由により、元仕様(RSS description+AI分析)を無修正で継続するのではなく、`metadata_only`へ一律に格下げするのでもなく、`limited_feed_analysis`という第3の運用形態を採用する。
 
-- 両sourceとも公式RSSの提供自体は確認できるが、包括的なAI要約・公開再利用の許諾までは確認できていない(The Hacker Newsは"All Rights Reserved"表示、Krebs on Securityは包括的な公式再利用条件が未発見)。
-- 一方、`microsoft_security`・`cisco_talos`も含めた4 source全てを`metadata_only`へ一律に格下げすると、記事本文相当の情報を一切AI処理できなくなり、実用性が大きく損なわれる。
-- そこで、Microsoft SecurityとCisco Talosは`metadata_only`のまま維持し、The Hacker NewsとKrebs on Securityは、公式RSS descriptionへの限定・rich content/記事ページ取得の禁止・原文保存の禁止・近接翻訳や長い引用の禁止等、高リスクな処理を除去したうえで、`limited_feed_analysis`として限定的に運用を継続する。
-- これは「利用条件を確認し許諾を得た」という判断ではなく、明示的な**運用上のリスク受容**である。本文書のいずれの記述も、この2 sourceについて規約上問題がないと断定するものではない。
+- 3 sourceとも公式RSSの提供自体は確認できるが、RSS descriptionのAI処理・AI分析の公開について包括的な明示の許諾までは確認できていない。ただし確認できた事実の内訳は同一ではない: The Hacker Newsは"All Rights Reserved"表示、Krebs on Securityは包括的な公式再利用条件が未発見、SecurityWeekはTerms of Use自体が未発見かつ"All Rights Reserved"表示で、repository ownerが2026-08-15にoperational riskを受容したがrights permissionは未確認のままである(4章の各行を正本とする)。
+- 一方、`microsoft_security`・`cisco_talos`も含めた5 source(limited_feed_analysis候補3件＋metadata_only 2件)をすべて`metadata_only`へ一律に格下げすると、記事本文相当の情報を一切AI処理できなくなり、実用性が大きく損なわれる。
+- そこで、Microsoft SecurityとCisco Talosは`metadata_only`のまま維持し、The Hacker News・Krebs on Security・SecurityWeekは、公式RSS descriptionへの限定・rich content/記事ページ取得の禁止・原文保存の禁止・近接翻訳や長い引用の禁止等、高リスクな処理を除去したうえで、`limited_feed_analysis`として限定的に運用する。
+- これは「利用条件を確認し許諾を得た」という判断ではなく、明示的な**運用上のリスク受容**である。本文書のいずれの記述も、この3 sourceについて規約上問題がないと断定するものではない。
 - 将来、利用規約の変更、machine-readable instructionの変更、Feed経路の変更、権利者からの訂正・削除・停止の申出、output policy違反、attribution欠落、または当該source固有の利用条件の発見があった場合は、`metadata_only`または`disabled_legal_review`へ即時に降格できるようにする(`SECURITY_OPERATIONS.md`のsource suspension手順を参照)。
 
 ---
 
 ## 4. Source-by-source audit matrix
 
-`checked_at`は各source行に個別列として記録する(ChatGPTまたはrepository ownerによる公式情報確認日。`google_tag`・`mandiant`は2026-07-30発効のGoogle Terms確認を反映して2026-07-30、他15 sourceは2026-07-29)。今後sourceごとに再確認日が異なり得るため、全件同じ日という表外の一括記述だけを正本とせず、行単位の`checked_at`列を正本とする。以下の全17件で`allow_rich_content`は`false`とする(BL-032の実装〔[PR #69](https://github.com/matkei31/security-digest/pull/69) merge済み〕により、この監査表の値が`fetch.py`のpolicy gateへ実際に読み込まれ、全17 sourceで`content:encoded`／Atom content共通処理〔従来のSD-002共通経路〕を経由しないことが強制されている。詳細は[BACKLOG.md](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)・[`test_content_usage_policy.py`](test_content_usage_policy.py)を参照)。
+`checked_at`は各source行に個別列として記録する(ChatGPTまたはrepository ownerによる公式情報確認日。`google_tag`・`mandiant`は2026-07-30発効のGoogle Terms確認を反映して2026-07-30、`securityweek`はBL-047の追加時確認を反映して2026-08-15、他15 sourceは2026-07-29)。今後sourceごとに再確認日が異なり得るため、全件同じ日という表外の一括記述だけを正本とせず、行単位の`checked_at`列を正本とする。以下の全18件で`allow_rich_content`は`false`とする(BL-032の実装〔[PR #69](https://github.com/matkei31/security-digest/pull/69) merge済み〕により、この監査表の値が`fetch.py`のpolicy gateへ実際に読み込まれ、全18 sourceで`content:encoded`／Atom content共通処理〔従来のSD-002共通経路〕を経由しないことが強制されている。詳細は[BACKLOG.md](BACKLOG.md#bl-032--取得元別content-usage-policy-enforcement)・[`test_content_usage_policy.py`](test_content_usage_policy.py)を参照)。
 
 `official_evidence_url`にはURLそのもの、または証跡が存在しないことを示す単純な`—`だけを記載する。括弧書きの説明文・証跡の性質・未特定理由等、URLではない文言は`official_evidence_url`欄に入れず、`unresolved_issue`または`evidence_type`側に記載する。`evidence_type`はその性質を次のいずれかで明示する: `terms`(利用規約)、`license`(ライセンス)、`copyright_policy`(著作権ポリシー)、`faq`(公式FAQ)、`rss_usage_guidance`(RSS利用案内)、`source_page`(規約文書ではない参考ページ)、`terms_not_found`(包括的な公式terms文書が見つからなかった)、`terms_not_identified`(terms文書自体が特定できていない)、`terms_update_notice`(既存termsの改定・発効案内)。複数の証跡がある場合は、`official_evidence_url`・`evidence_type`の両方のセルで同じ個数のURL／typeを`；`区切りで同じ順序に並べ(1対1で対応させ)、主たる証跡でないものには`(supporting)`を付す。同一typeの証跡が複数URLにまたがる場合(例: 同種のRSS利用案内が複数ページに分かれている場合)は、`evidence_type`側を1つだけ記載し、対応するURLを`official_evidence_url`側に`；`区切りで複数列挙してよい(この場合のみ個数は一致しなくてよい)。
 
@@ -154,14 +154,15 @@ Monomi Digestの取得元は、次の5つのcontent usage modeのいずれかへ
 
 **注記(feed_summary共通):** `allow_ai_processing`／`allow_public_summary`はいずれも5章のGemini data-use gateに従属する。`gemini_data_use_status`は2026-07-29にowner verificationにより`paid_verified`となったため、このGemini側の条件自体は満たされた。ただし`gemini_data_use_status`が`unpaid`または`unknown`へ戻った場合は、実運用上`metadata_only`と同じ挙動として扱う(3章B参照)。取得元自身の規約条件(各sourceの`unresolved_issue`、`google_tag`／`mandiant`の2026-07-30発効Google Termsの内容等)はこの確認と無関係に別途維持される。この挙動はBL-032の実装([PR #69](https://github.com/matkei31/security-digest/pull/69) merge済み)により`fetch.py`の実行時gateとして反映されている(10章参照)。
 
-### limited_feed_analysis (2件)
+### limited_feed_analysis (3件)
 
 | source_id | source_name | proposed_mode | current_enabled | allow_network_fetch | allow_description | allow_rich_content | allow_ai_processing | allow_excerpt_storage | allow_public_summary | attribution_requirement | official_evidence_url | evidence_type | checked_at | confidence | unresolved_issue | recheck_trigger |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | the_hacker_news | The Hacker News | limited_feed_analysis | true | true | true | false | conditional(5章Gemini Paid Service gate) | false | conditional(gate) | 6章参照 | https://thehackernews.com/p/copyright-policy.html | copyright_policy | 2026-07-29 | medium | 公式RSSは存在するが、All Rights Reserved明記のため、RSS提供のみを根拠に本文再利用・AI要約の包括的許諾があるとは解釈しない。`metadata_only`ではなく限定的な運用上のリスク受容(`limited_feed_analysis`、3章C参照)として扱い、許諾を確認したとは断定しない | copyright policyの変更、権利者からの訂正・削除・停止申出 |
 | krebs_on_security | Krebs on Security | limited_feed_analysis | true | true | true | false | conditional(gate) | false | conditional(gate) | 6章参照 | — ； https://krebsonsecurity.com/about-this-blog/ | terms_not_found ； source_page(supporting) | 2026-07-29 | low | 公式の包括的な再利用条件を確認できなかった(terms_not_found)。2番目のURL(Aboutページ)はterms文書ではなくsource page。「禁止」と断定せず、限定的な運用上のリスク受容(`limited_feed_analysis`、3章C参照)として扱う | 公式terms発見時、権利者からの訂正・削除・停止申出 |
+| securityweek | SecurityWeek | limited_feed_analysis | true | true | true | false | conditional(gate) | false | conditional(gate) | 6章参照 | — ； https://www.securityweek.com/ | terms_not_found ； source_page(supporting) | 2026-08-15 | low | 公式RSS(https://www.securityweek.com/feed/)の提供はhomepage footerのRSS Feedリンクとfeed自身のatom:link rel=selfで確認したが、Terms of Useを発見できず(terms_not_found)、RSS descriptionの再利用・Geminiへのtransient処理・AI分析の公開について明示的な許諾は確認できていない。copyright表示はAll Rights Reservedである。2番目のURL(homepage)はterms文書ではなく、公式RSSリンクとcopyright表示を確認できるsource page。robots.txtは`/feed/`取得を禁じていないが、robots.txtをcopyright permissionとは扱わない。**repository ownerは2026-08-15に、limited_feed_analysisの限定条件下でのoperational riskを明示的に受容した。これは運用上のリスク受容であって、rights permission自体は未確認のままである** | SecurityWeekのTerms of Use新設、copyright・再利用条件の変更、RSS提供条件の変更・終了、machine-readable instructionの明示的変更、権利者からの訂正・削除・停止申出 |
 
-**注記(limited_feed_analysis共通):** `feed_summary`と同様、`allow_ai_processing`／`allow_public_summary`は5章のGemini data-use gateに従属する。この2 sourceは「利用が明示的に許諾された」という分類ではなく、`metadata_only`への一律格下げによる実用性低下を避けるための、限定された運用上のリスク受容である(3章C、4章のリスク受容根拠を参照)。利用規約変更・machine-readable instruction変更・Feed経路変更・権利者からの訂正/削除/停止の申出・output policy違反・attribution欠落・source固有termsの発見のいずれかを契機に、`metadata_only`または`disabled_legal_review`へ即時降格する(`SECURITY_OPERATIONS.md`参照)。
+**注記(limited_feed_analysis共通):** `feed_summary`と同様、`allow_ai_processing`／`allow_public_summary`は5章のGemini data-use gateに従属する。この3 sourceは「利用が明示的に許諾された」という分類ではなく、`metadata_only`への一律格下げによる実用性低下を避けるための、限定された運用上のリスク受容である(3章C、4章のリスク受容根拠を参照)。利用規約変更・machine-readable instruction変更・Feed経路変更・権利者からの訂正/削除/停止の申出・output policy違反・attribution欠落・source固有termsの発見のいずれかを契機に、`metadata_only`または`disabled_legal_review`へ即時降格する(`SECURITY_OPERATIONS.md`参照)。
 
 ### metadata_only (2件)
 
@@ -179,7 +180,7 @@ Monomi Digestの取得元は、次の5つのcontent usage modeのいずれかへ
 | cloudflare | Cloudflare | disabled_legal_review | false | false | false | false | false | false | false | n/a(非公開) | https://www.cloudflare.com/policies/terms/ | terms | 2026-07-29 | high | なし(該当条件はTerms Section 8。AI用途botはrobots.txtで明示的allowed、かつAI用途bot専用User-Agentの両方が必要だが未充足) | `source_definitions.json`の`cloudflare.activation_condition`(BL-030で記録済み) |
 | dark_reading | Dark Reading | disabled_legal_review | **false(本PRで変更)** | false | false | false | false | false | false | n/a(非公開) | https://www.informatechtarget.com/terms-of-use/ ； https://www.darkreading.com/ | terms ； source_page(supporting) | 2026-07-29 | high | なし(Informa TechTarget Termsがdata mining／robots等の抽出方法、derivative works、無断copy／distributionを明確に禁止。2番目のURLはsource pageであり、terms文書ではない) | `source_definitions.json`の`dark_reading.activation_condition`(本PRで新設) |
 
-**件数集計:** structured_open 5、feed_summary 4、limited_feed_analysis 2、metadata_only 2、disabled_legal_review 4、**合計17**(`source_definitions.json`の定義総数と一致)。
+**件数集計:** structured_open 5、feed_summary 4、limited_feed_analysis 3、metadata_only 2、disabled_legal_review 4、**合計18**(`source_definitions.json`の定義総数と一致)。BL-031のVersion 0.1監査時点では合計17だったが、[BL-047](BACKLOG.md#bl-047--securityweek-source-addition)でSecurityWeekを1件追加したため現在は18である(1章・11章の「17」はBL-031/Version 0.1当時のscopeを表すhistoricalな記述であり、現在のinventory総数ではない)。
 
 ---
 
@@ -223,7 +224,7 @@ Gemini APIの公式Terms(https://ai.google.dev/gemini-api/terms)より:
 | `ncsc` | source acknowledgement + OGL v3 link。 |
 | `cisa_kev` | "CISA KEV" + CC0の旨。 |
 | `jpcert_cc` / `ipa` / `mandiant` / `google_tag`(`feed_summary`) | source name、original URL、「Monomi DigestによるAI要約・分析」の表示、要約・分析に正確性の限界がある旨。 |
-| `the_hacker_news` / `krebs_on_security`(`limited_feed_analysis`) | source name、original title、original URL、「Monomi Digestが公式RSSの概要をもとに生成したAI分析」の表示、「詳細と正確性は元記事で確認」の旨、AI分析であって原文の転載・代替を目的としない旨。 |
+| `the_hacker_news` / `krebs_on_security` / `securityweek`(`limited_feed_analysis`) | source name、original title、original URL、「Monomi Digestが公式RSSの概要をもとに生成したAI分析」の表示、「詳細と正確性は元記事で確認」の旨、AI分析であって原文の転載・代替を目的としない旨。 |
 | `metadata_only`分類の2source | source name、original title、original URLのみ。AIによる要約・評価を行っていない旨を明示する。 |
 | `disabled_legal_review`分類の4source | 非公開のため表示なし。 |
 
@@ -287,7 +288,7 @@ Gemini APIの公式Terms(https://ai.google.dev/gemini-api/terms)より:
 |---|---|
 | Google Terms(2026-07-30発効版)のさらなる改定 | `google_tag`、間接的に`mandiant`(Google Cloud blog) |
 | 書面確認またはTalos固有termsの発見 | `cisco_talos` |
-| 公式terms発見、利用規約変更、machine-readable instruction変更、Feed経路変更、権利者からの訂正・削除・停止申出、output policy違反、attribution欠落 | `the_hacker_news`、`krebs_on_security`(`limited_feed_analysis`、metadata_only／disabledへの降格契機。3章C・4章参照) |
+| 公式terms発見、利用規約変更、machine-readable instruction変更、Feed経路変更、権利者からの訂正・削除・停止申出、output policy違反、attribution欠落 | `the_hacker_news`、`krebs_on_security`、`securityweek`(`limited_feed_analysis`、metadata_only／disabledへの降格契機。3章C・4章参照) |
 | CrowdStrike/Cloudflare/Dark Readingの`activation_condition`充足確認 | `crowdstrike`、`cloudflare`、`dark_reading` |
 | CISAの4条件充足確認 | `cisa` |
 | NVD API Termsの変更 | `nist_nvd`、`nist` |

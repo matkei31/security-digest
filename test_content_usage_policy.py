@@ -159,7 +159,7 @@ class SourcePolicyDistributionTest(unittest.TestCase):
         fetch.validate_content_usage_mode_distribution(fetch.SOURCE_DEFINITIONS)  # 例外なければOK
         self.assertEqual(
             fetch.EXPECTED_CONTENT_USAGE_MODE_COUNTS,
-            {"structured_open": 5, "feed_summary": 4, "limited_feed_analysis": 2,
+            {"structured_open": 5, "feed_summary": 4, "limited_feed_analysis": 3,
              "metadata_only": 2, "disabled_legal_review": 4},
         )
 

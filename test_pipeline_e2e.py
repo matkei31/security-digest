@@ -108,6 +108,9 @@ KEV_DATE_ADDED = "2020-01-01"
 ENABLED_RSS_SOURCE_IDS = (
     "fsa", "jpcert_cc", "ipa", "nist", "microsoft_security", "mandiant",
     "google_tag", "ncsc", "krebs_on_security", "the_hacker_news", "cisco_talos",
+    # BL-047: SecurityWeekを1 source追加した。fake routerはfail-closed
+    # (未登録URLはAssertionError)なので、enabled RSS sourceはここへ列挙する。
+    "securityweek",
 )
 
 GEMINI_URL = (
