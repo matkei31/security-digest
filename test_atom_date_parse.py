@@ -401,12 +401,17 @@ class RegressionTest(unittest.TestCase):
         # KEV dateAdded(YYYY-MM-DD)は parse_date で従来どおり値を返す(naive)。
         self.assertIsNotNone(fetch.parse_date("2026-07-10"))
 
-    def test_max_per_feed_maintained_for_atom(self):
+    def test_atom_parser_does_not_truncate_at_three(self):
+        # BL-044: 旧実装はAtom分岐で len(items) >= MAX_PER_FEED(=3) によりparse段階で
+        # 打ち切っていた。現在はparse段階に上限が無く、有効entryは全件返る
+        # (件数上限はrecency/relevance/promotion gate通過後にsource単位で適用)。
         entries = "".join(
             _entry(ALT, published="2031-01-0%dT00:00:00Z" % i, title=f"a{i}")
             for i in range(1, 6))
         items = fetch._parse_feed_items(ET.fromstring(_atom(entries)), "Google TAG", "en")
-        self.assertEqual(len(items), fetch.MAX_PER_FEED)
+        self.assertEqual(len(items), 5)
+        self.assertEqual([it["title"] for it in items],
+                         ["a1", "a2", "a3", "a4", "a5"])
 
 
 if __name__ == "__main__":

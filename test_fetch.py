@@ -10405,5 +10405,224 @@ class Bl042CollectRecentDigestGateTest(unittest.TestCase):
         self.assertEqual(len(result), 2)
 
 
+class Bl044ParserNoTruncationTest(unittest.TestCase):
+    """BL-044: parse段階(_parse_feed_items)は件数を打ち切らない。
+    RSS/RDF/Atomの3分岐すべてで、4件目以降のentryも返ることを固定する
+    (旧MAX_PER_FEED=3によるslice/breakの回帰guard)。"""
+
+    def test_rss_returns_all_items_beyond_three(self):
+        items_xml = "".join(
+            f"<item><title>r{i}</title><link>https://x/r{i}</link>"
+            f"<description>d</description>"
+            f"<pubDate>Fri, 10 Jul 2026 1{i}:00:00 +0000</pubDate></item>"
+            for i in range(6)
+        )
+        rss = f'<rss version="2.0"><channel><title>C</title>{items_xml}</channel></rss>'
+        items = fetch._parse_feed_items(
+            xml.etree.ElementTree.fromstring(rss), "Some RSS", "en")
+        self.assertEqual(len(items), 6)
+        self.assertEqual([it["title"] for it in items],
+                         ["r0", "r1", "r2", "r3", "r4", "r5"])
+
+    def test_rdf_returns_all_items_beyond_three(self):
+        ns = ('xmlns="http://purl.org/rss/1.0/" '
+              'xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" '
+              'xmlns:dc="http://purl.org/dc/elements/1.1/"')
+        items_xml = "".join(
+            f"<item><title>d{i}</title><link>https://x/d{i}</link>"
+            f"<description>s</description>"
+            f"<dc:date>2026-07-10T1{i}:00:00+00:00</dc:date></item>"
+            for i in range(6)
+        )
+        rdf = f"<rdf:RDF {ns}>{items_xml}</rdf:RDF>"
+        items = fetch._parse_feed_items(
+            xml.etree.ElementTree.fromstring(rdf), "Some RDF", "ja")
+        self.assertEqual(len(items), 6)
+        self.assertEqual([it["title"] for it in items],
+                         ["d0", "d1", "d2", "d3", "d4", "d5"])
+
+    def test_atom_returns_all_entries_beyond_three(self):
+        atom_ns = "http://www.w3.org/2005/Atom"
+        entries = "".join(
+            f"<entry><title>a{i}</title>"
+            f"<published>2026-07-10T1{i}:00:00Z</published>"
+            f'<link rel="alternate" type="text/html" href="https://x/a{i}.html"/>'
+            f"</entry>"
+            for i in range(6)
+        )
+        feed = (f'<feed xmlns="{atom_ns}"><title>T</title>'
+                f"<updated>2026-07-01T00:00:00Z</updated>{entries}</feed>")
+        items = fetch._parse_feed_items(
+            xml.etree.ElementTree.fromstring(feed), "Some Atom", "en")
+        self.assertEqual(len(items), 6)
+        self.assertEqual([it["title"] for it in items],
+                         ["a0", "a1", "a2", "a3", "a4", "a5"])
+
+
+class Bl044PerSourceCandidateCapTest(unittest.TestCase):
+    """BL-044: source単位のcandidate cap(MAX_CANDIDATES_PER_SOURCE)が
+    recency・trusted/is_cyber_relevant・BL-042 promotion gateの「後」に、
+    published datetime降順のstable orderで適用されることを検証する。
+    外部通信・Geminiは行わない(collect_non_rss_itemsをmockする)。"""
+
+    NOW = datetime.datetime(2026, 7, 13, 7, 0, 0)
+
+    def _run(self, non_rss_items):
+        with patch("fetch.RSS_FEEDS", []), \
+                patch("fetch.collect_non_rss_items", return_value=non_rss_items), \
+                patch("fetch.time.sleep"):
+            return fetch.collect_recent()
+
+    def _item(self, title, source="Microsoft Security", minutes_ago=0, summary=""):
+        return {
+            "title": title,
+            "summary": summary,
+            "source": source,
+            "date": datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
+                    - datetime.timedelta(minutes=minutes_ago),
+            "lang": "en",
+        }
+
+    def test_case2_only_newest_cap_items_are_selected(self):
+        cap = fetch.MAX_CANDIDATES_PER_SOURCE
+        items = [self._item(f"t{i}", minutes_ago=i) for i in range(cap + 2)]
+        result = self._run(items)
+        self.assertEqual(len(result), cap)
+        # newest(minutes_ago小)からcap件。最古2件はdropされる。
+        self.assertEqual([it["title"] for it in result],
+                         [f"t{i}" for i in range(cap)])
+        self.assertNotIn(f"t{cap}", [it["title"] for it in result])
+        self.assertNotIn(f"t{cap + 1}", [it["title"] for it in result])
+
+    def test_case3_document_order_differing_from_date_order_uses_date(self):
+        # feed順は t_old, t_new だが、選抜はpublished datetime降順で決まる。
+        cap = fetch.MAX_CANDIDATES_PER_SOURCE
+        items = [self._item(f"old{i}", minutes_ago=1000 + i) for i in range(cap)]
+        items.append(self._item("newest", minutes_ago=0))
+        result = self._run(items)
+        self.assertEqual(len(result), cap)
+        self.assertEqual(result[0]["title"], "newest")
+        # 最も古いold entryがcapで落ちる。
+        self.assertNotIn(f"old{cap - 1}", [it["title"] for it in result])
+
+    def test_case4_same_datetime_keeps_feed_order_stably(self):
+        cap = fetch.MAX_CANDIDATES_PER_SOURCE
+        same = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
+        items = []
+        for i in range(cap + 1):
+            it = self._item(f"s{i}")
+            it["date"] = same
+            items.append(it)
+        first = self._run(items)
+        second = self._run([dict(x) for x in items])
+        # 同一datetimeではfeed order(s0..s7)が維持され、s8だけがdropされる。
+        self.assertEqual([it["title"] for it in first],
+                         [f"s{i}" for i in range(cap)])
+        # 決定論的: 同じ入力なら同じ結果。
+        self.assertEqual([it["title"] for it in first],
+                         [it["title"] for it in second])
+
+    def test_case5_promotion_gate_items_do_not_consume_cap_slots(self):
+        cap = fetch.MAX_CANDIDATES_PER_SOURCE
+        # BL-042で除外されるpromotion itemを「より新しい側」に3件置く。
+        promos = [
+            self._item("[Webinar] Frontline briefing", minutes_ago=0),
+            self._item("Microsoft named a Leader in the KuppingerCole Leadership Compass",
+                       minutes_ago=1),
+            self._item("Preview: Cisco Talos at Black Hat USA 2026", minutes_ago=2),
+        ]
+        real = [self._item(f"real{i}", minutes_ago=10 + i) for i in range(cap)]
+        result = self._run(promos + real)
+        titles = [it["title"] for it in result]
+        # promotion itemは1件も残らず、かつcap枠を消費しないので実記事がcap件残る。
+        self.assertEqual(len(result), cap)
+        self.assertEqual(titles, [f"real{i}" for i in range(cap)])
+
+    def test_case6_trusted_source_bypasses_relevance_then_cap_applies(self):
+        cap = fetch.MAX_CANDIDATES_PER_SOURCE
+        # trusted sourceはcyber keywordが無くてもeligible(既存semantics)。
+        self.assertIn("Microsoft Security", fetch.TRUSTED_CYBER_SOURCES)
+        items = [self._item(f"plain topic {i}", minutes_ago=i) for i in range(cap + 1)]
+        for it in items:
+            self.assertFalse(fetch.is_cyber_relevant(it))
+        result = self._run(items)
+        self.assertEqual(len(result), cap)
+
+    def test_case7_non_trusted_irrelevant_items_removed_before_cap(self):
+        cap = fetch.MAX_CANDIDATES_PER_SOURCE
+        src = "Some Untrusted Source"
+        self.assertNotIn(src, fetch.TRUSTED_CYBER_SOURCES)
+        # 非trusted sourceでrelevanceを通らないitemを新しい側に大量に置いても、
+        # cap前に除外されるため、後ろのrelevant itemが押し出されない。
+        noise = [self._item(f"gardening tips {i}", source=src, minutes_ago=i)
+                 for i in range(cap + 5)]
+        relevant = [self._item(f"ransomware incident {i}", source=src,
+                               minutes_ago=100 + i) for i in range(2)]
+        result = self._run(noise + relevant)
+        titles = [it["title"] for it in result]
+        self.assertEqual(len(result), 2)
+        self.assertEqual(titles, ["ransomware incident 0", "ransomware incident 1"])
+
+    def test_per_source_cap_is_not_a_global_cap(self):
+        cap = fetch.MAX_CANDIDATES_PER_SOURCE
+        a = [self._item(f"A{i}", source="Microsoft Security", minutes_ago=i)
+             for i in range(cap + 2)]
+        b = [self._item(f"B{i}", source="Cisco Talos", minutes_ago=i)
+             for i in range(4)]
+        self.assertIn("Cisco Talos", fetch.TRUSTED_CYBER_SOURCES)
+        result = self._run(a + b)
+        from collections import Counter
+        per = Counter(it["source"] for it in result)
+        # Aはcapで8件、Bは4件そのまま。global first-N にならない。
+        self.assertEqual(per["Microsoft Security"], cap)
+        self.assertEqual(per["Cisco Talos"], 4)
+        self.assertEqual(len(result), cap + 4)
+
+
+class Bl044Case1EndToEndTest(unittest.TestCase):
+    """BL-044 Case 1: 先頭3件がold/irrelevantでも、4件目のrecent+relevant記事が
+    実際のRSS取得経路(_parse_feed_items -> collect_recent)を通って候補に残る。
+    これが旧MAX_PER_FEED=3で失われていた本体のdefectである。"""
+
+    def test_fourth_entry_recent_and_relevant_survives(self):
+        recent = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(hours=2)
+        old = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=40)
+
+        def rfc(dt):
+            return dt.strftime("%a, %d %b %Y %H:%M:%S +0000")
+
+        items_xml = "".join(
+            f"<item><title>old filler {i}</title><link>https://x/o{i}</link>"
+            f"<description>gardening</description><pubDate>{rfc(old)}</pubDate></item>"
+            for i in range(3)
+        )
+        items_xml += (
+            "<item><title>Ransomware incident at a regional bank</title>"
+            "<link>https://x/target</link>"
+            "<description>A ransomware attack disrupted operations.</description>"
+            f"<pubDate>{rfc(recent)}</pubDate></item>"
+        )
+        rss = (f'<rss version="2.0"><channel><title>C</title>{items_xml}'
+               f"</channel></rss>").encode("utf-8")
+
+        class Resp:
+            status = 200
+            def read(s): return rss
+            def geturl(s): return "https://x/feed"
+            def getcode(s): return 200
+            def __enter__(s): return s
+            def __exit__(s, *a): return False
+
+        with patch("fetch.RSS_FEEDS", [("Some Untrusted Source", "https://x/feed", "en")]), \
+                patch("fetch.collect_non_rss_items", return_value=[]), \
+                patch("fetch.urllib.request.urlopen", return_value=Resp()), \
+                patch("fetch.time.sleep"):
+            result = fetch.collect_recent()
+
+        titles = [it["title"] for it in result]
+        self.assertIn("Ransomware incident at a regional bank", titles)
+        self.assertEqual(len(result), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

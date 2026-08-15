@@ -117,9 +117,10 @@ class SelectAtomArticleUrlTest(unittest.TestCase):
         self.assertIn("https://security.googleblog.com/2026/07/rust-pixel-baseband.html", selected)
 
 
-class MaxPerFeedFilteringTest(unittest.TestCase):
-    """MAX_PER_FEEDは「有効な記事URLを持つentry」に対して適用され、先頭に
-    スキップ対象があっても後続の正常entryを確認して上限まで集める(Ticket 14a)。"""
+class InvalidEntrySkipTest(unittest.TestCase):
+    """先頭にスキップ対象(コメントフィード等)があっても、後続の正常entryを
+    確認して収集する(Ticket 14a)。BL-044でparse段階の件数上限(旧MAX_PER_FEED)は
+    撤廃されたため、有効entryは打ち切られずすべて返る。"""
 
     def _feed(self):
         def art(slug):
@@ -131,17 +132,22 @@ class MaxPerFeedFilteringTest(unittest.TestCase):
                         'href="https://x/feeds/1/comments/default"/></entry>')
         return (f'<feed xmlns="{ATOM}">{comment_only}{art("A")}{art("B")}{art("C")}</feed>')
 
-    def test_max_per_feed_applies_to_valid_entries(self):
-        original = fetch.MAX_PER_FEED
-        with patch.object(fetch, "MAX_PER_FEED", 2):
-            items = fetch._parse_feed_items(ET.fromstring(self._feed()), "Google TAG", "en")
-        # MAX_PER_FEEDはテスト終了時に元へ戻る(patch.objectのcontext managerが復元)。
-        self.assertEqual(fetch.MAX_PER_FEED, original)
+    def test_invalid_entries_are_skipped_without_truncating_valid_ones(self):
+        # Ticket 14aの本来の意図(先頭の無効entryが後続の正常entryを潰さない)を
+        # 維持しつつ、BL-044で parse段階の件数打ち切りが撤廃されたことを固定する。
+        # 旧実装はMAX_PER_FEEDでparse段階を切っていたため、この検証は「上限まで
+        # 集める」形だった。現在はparse段階に上限が無く、有効entryは全件返る。
+        items = fetch._parse_feed_items(ET.fromstring(self._feed()), "Google TAG", "en")
         links = [it["link"] for it in items]
-        # 先頭のコメントentryをスキップし、A・Bの2件を集める(旧実装ではAの1件で終了)。
-        self.assertEqual(len(items), 2)
-        self.assertEqual(links, ["https://x/A.html", "https://x/B.html"])
-        self.assertNotIn("https://x/C.html", links)
+        # 先頭のコメントentryはスキップし、A・B・Cの3件すべてを集める。
+        self.assertEqual(len(items), 3)
+        self.assertEqual(
+            links, ["https://x/A.html", "https://x/B.html", "https://x/C.html"]
+        )
+        self.assertFalse(
+            any("comments" in link for link in links),
+            "コメントフィードURLを記事URLとして採用してはいけない",
+        )
 
 
 class CommentFeedUrlHelperTest(unittest.TestCase):
