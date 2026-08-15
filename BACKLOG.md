@@ -216,17 +216,24 @@
 - **ID:** BL-008
 - **タイトル:** Fable 5による全体コードレビュー
 - **優先度:** P2
-- **状態:** 記録済み
+- **状態:** 完了(2026-08-15、レビュー実施済み)
 - **出所種別:** 復元要約
 - **ユーザー原文:** 原文未回収。
 - **ユーザー確認済み要約:** 回収できていない。
 - **解釈:** 適切な安定した時点で、構造・重複・責務・過剰実装・保守性についての批判的な全体コードレビューを行う。
-- **完了条件:** 未定義。
+- **完了条件:** **全体レビューを実施し、baseline・scope・findings・dispositionを記録すること。** 個別findingの全解消は完了条件ではない(下記注記を参照)。
 - **依存関係:** 十分に安定した実装baseline、および合意されたレビューパッケージ。
-- **実装証跡:** 未実装。
-- **ユーザー受入証跡:** 記録なし。
-- **残作業:** timing、レビューの観点、証跡パッケージ、評価者の役割、および発見事項をどのようにスコープ付きチケットへ落とし込むかを定義する。
-- **注記:** 本項目により、Fable 5を通常の実装エージェントとして指定するものではない。
+- **実装証跡:** **2026-08-15、baseline `7cdcd3ff0d0028ace2c0f20f89bb6c858678faea`に対しFable 5によるread-only全体コードレビューを実施した。**
+  reviewed scope: `fetch.py`・`daily_json.py`・`vulnerability_facts.py`・`source_definitions.json`・GitHub Actions workflows(`fetch.yml`／`pr-ci.yml`)・全test群とdocument-test infrastructure・[SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md)・[SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md)・[UI_SPEC.md](UI_SPEC.md)・[DECISIONS.md](DECISIONS.md)・[BACKLOG.md](BACKLOG.md)・[STATUS.md](STATUS.md)・[AGENTS.md](AGENTS.md)・`data/index.json`と代表daily JSON・docs生成architecture・直近production run log。
+  観点: architecture／responsibility、duplication／complexity／maintainability、reliability／failure handling、data integrity、AI／prompt architecture、security、tests、operations、cost。
+  **独立レビュー結果は P0 0件／P1 0件**であり、overall architectureを大規模に作り直す根拠は見つからなかった。
+  採用したfindingは2件で、いずれも独立レビューでP2へ格上げ・確定した: (1)scheduled production失敗時の同日回復手順の不在→[BL-040](#bl-040--scheduled-production失敗時の同日回復手順)、(2)`datetime.utcnow()`のdeprecation除去→[BL-041](#bl-041--datetimeutcnow-deprecation-cleanup)。
+  既存項目のdisposition: [BL-011](#bl-011--standalone-nist-nvd記事取得の保留理由再開条件)はkeep／defer(gapは現存)、[BL-012](#bl-012--gemini応答エラー分類の細分化)はdefer(revisit trigger追加のみ)、[BL-013](#bl-013--github-actions-nodejs警告)はcloseする(実ログでNode警告の消滅を確認)、Gemini汎用例外logのsanitizer不使用は既存GAP-009としてknown(新規ticketなし)、Category C document assertionは[BL-039](#bl-039--文書test-category-c-remediation-backlog)のdemand-driven方針を維持。
+  head metadata三重管理(`build_html`／`build_archive_index_html`／静的About)は認識したがticket化しない――現行testがdriftを防いでおり、[BL-009](#bl-009--seoと閲覧者増加策)のOG/Twitter Cardを実際に再開する場合にのみ、そのphase内でhead renderer共通化がdiff/riskを本当に下げるか再評価する(conditional／no action)。
+  本レビューはread-onlyで実施し、コード・文書・data・docs・workflowを変更していない。
+- **ユーザー受入証跡:** 記録なし(レビュー実施の記録同期は本ticketの完了条件であり、findings個別の受入とは別である)。
+- **残作業:** **なし。**
+- **注記:** 本項目により、Fable 5を通常の実装エージェントとして指定するものではない。**BL-008の完了は、follow-up findingsの全解消を意味しない。** 全体レビューを実施したことと、個別findingへの対応([BL-040](#bl-040--scheduled-production失敗時の同日回復手順)・[BL-041](#bl-041--datetimeutcnow-deprecation-cleanup)等)は分離して扱う。
 
 ## BL-009 — SEOと閲覧者増加策
 
@@ -273,7 +280,7 @@
 - **ID:** BL-011
 - **タイトル:** standalone NIST NVD記事取得の保留理由・再開条件
 - **優先度:** P2
-- **状態:** 記録済み
+- **状態:** 記録済み／保留(2026-08-15 [BL-008](#bl-008--fable-5による全体コードレビュー) disposition: keep／defer)
 - **出所種別:** 技術上の発見事項
 - **ユーザー原文:** 該当なし — 技術上の発見事項。
 - **ユーザー確認済み要約:** 未定義。
@@ -284,13 +291,14 @@
 - **ユーザー受入証跡:** 現時点では該当なし。
 - **残作業:** 元の運用上の理由の回収、再開条件の仕様化、該当するsource/status記録の更新。
 - **注記:** 本項目は、直ちにsourceを再有効化することを求めるものではない。
+- **[BL-008](#bl-008--fable-5による全体コードレビュー)全体コードレビュー(2026-08-15、read-only)の技術上の発見事項(disposition: keep／defer):** ticketは有効なまま維持する。`source_definitions.json`の実測で`nist_nvd`は`enabled: false`、standalone article pathは停止、`activation_condition`は空であり、元の無効化理由・再開条件が未回収というgapは現存する。一方`vulnerability_facts.py`のNVD facts経路は別系統で稼働しており(fresh／stale／expiredのTTL契約付き)、現在のproduction機能を阻害していない。したがって緊急性はなく、今回その調査・再有効化には着手していない。**新しい保留理由を推測で追記していない。**
 
 ## BL-012 — Gemini応答エラー分類の細分化
 
 - **ID:** BL-012
 - **タイトル:** Gemini応答エラー分類の細分化
 - **優先度:** P2
-- **状態:** 記録済み
+- **状態:** 保留(2026-08-15 [BL-008](#bl-008--fable-5による全体コードレビュー) disposition: defer。revisit trigger記録済み)
 - **出所種別:** 技術上の発見事項
 - **ユーザー原文:** 該当なし — 技術上の発見事項。
 - **ユーザー確認済み要約:** 未定義。
@@ -301,13 +309,14 @@
 - **ユーザー受入証跡:** 現時点では該当なし。
 - **残作業:** 失敗経路の棚卸し、安定した分類の提案、schema/logging影響の評価、テストの定義、承認の取得。
 - **注記:** 本項目のもとでTicket 17aを再オープン・再実装しない。
+- **[BL-008](#bl-008--fable-5による全体コードレビュー)全体コードレビュー(2026-08-15、read-only)の技術上の発見事項(disposition: defer):** 今回は実装しない。`schema_parse_error`がJSON decode・schema mismatch・strict validation・semantic/action lintを細分化していないことは事実として現存する。一方、429／403を細分化しない判断は`daily_json.classify_gemini_error()`のdocstringに**意図的設計として既に文書化済み**であり、残るのは`schema_parse_error`の内訳のみである。現在の記事volumeとfallback契約のもとでは、細分化のobservability上の便益が実装・移行コストを上回らない。**revisit triggerだけを追加する**: (a)`schema_parse_error`がfallbackなしのuser-visibleなfailed itemを繰り返し発生させる、(b)fallback率／failed率の異常について原因を特定できず、現行classificationがproduction diagnosisを実際に妨げる、(c)response schema／validation architectureを大きく変更する、のいずれか。**根拠のない固定回数threshold(「2回連続」等)は設けない。** ARTICLE prompt・schema・`error_type`は今回変更していない。
 
 ## BL-013 — GitHub Actions Node.js警告
 
 - **ID:** BL-013
 - **タイトル:** GitHub Actions Node.js警告
 - **優先度:** P3
-- **状態:** 保留
+- **状態:** 完了(2026-08-15、obsoleteとしてclose)
 - **出所種別:** 技術上の発見事項
 - **ユーザー原文:** 該当なし — 技術上の発見事項。
 - **ユーザー確認済み要約:** 未定義。
@@ -316,8 +325,9 @@
 - **依存関係:** GitHub Actions/Pagesの公式ガイダンスと承認されたworkflow保守スコープ。
 - **実装証跡:** 是正は実施していない。直近のPages build/deploymentは、警告が出ているにもかかわらず成功している。
 - **ユーザー受入証跡:** 現時点では該当なし。
-- **残作業:** 緊急度の検証、必要な場合のサポート対象action versionの選定、build/deploy挙動のテスト、workflow変更の承認取得。
+- **残作業:** **なし。**
 - **注記:** 保留の理由は、現行のbuildが成功しており、ここに検証済みの期限が記録されていないためである。
+- **[BL-008](#bl-008--fable-5による全体コードレビュー)全体コードレビュー(2026-08-15、read-only)の技術上の発見事項(disposition: close):** **推測ではなく実ログで確認した。** 現行workflowのactionは[BL-027](#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする)で`actions/checkout` SHA `3d3c42e5aac5ba805825da76410c181273ba90b1`(v7.0.1)・`actions/setup-python` SHA `5fda3b95a4ea91299a34e894583c3862153e4b97`(v7.0.0)へupgrade・pin済みであり、直近のproduction run [31846198971](https://github.com/matkei31/security-digest/actions/runs/31846198971)および直近PR CIのlogに、本ticketが追跡していたNode runtime非推奨警告は確認されなかった。元の警告は旧action世代のものでobsoleteと判断し、closeする。**workflowの追加変更は行っていない。** **注意: 現在production logに出ている`datetime.utcnow()`のDeprecationWarningはPython側の別件であり、本ticketのNode警告ではない。** そちらは[BL-041](#bl-041--datetimeutcnow-deprecation-cleanup)として扱い、**本ticketをPython warningを理由にopenのままにしない。**
 
 ## BL-014 — 過去ユーザーコメントの体系的棚卸し
 
@@ -1576,3 +1586,35 @@
 - **Dependabot:** 3行はCategory Cのまま保持。[PR #118](https://github.com/matkei31/security-digest/pull/118)はunmergedでclose(mainへのdelta 0)。architecture決定なしに再試行しない。
 - **external-binding finding:** BL-038に記録した**2026-08-14 architecture audit時点のobserved evidence**であり、**classification defectではなく、本backlogの件数目標でもない**。
 - **残作業:** **なし。** BL-038側の技術的・実装上の残作業はなく、2026-08-14のユーザー最終受入をもって本ticketは完了である。残Category C remediationは[BL-039](#bl-039--文書test-category-c-remediation-backlog)が所有し、demand/priority-drivenで実施する(**BL-038はCategory Cが0であるとは主張せず**、残数の正本はcurrent indexed inventoryである)。mergeは完了の条件ではなく、**受入済みの状態をmainへ反映する公開手続き**である。controlled Category C conversion rolloutの計画と実施は、**もはやBL-038の残作業ではない**。
+
+## BL-040 — scheduled production失敗時の同日回復手順
+
+- **ID:** BL-040
+- **タイトル:** scheduled production失敗時の同日回復手順
+- **優先度:** P2／Operations
+- **状態:** 実装中(ユーザー受入前)
+- **出所種別:** [BL-008](#bl-008--fable-5による全体コードレビュー)全体コードレビュー(2026-08-15、read-only)の技術上の発見事項
+- **ユーザー原文:** 該当なし — 技術上の発見事項。
+- **解釈:** production scheduleは1日1回であり、`fetch.py`の`DAYS_BACK = 1`に加えて、日次JSONと日別Archiveのdigest dateが**実行時のJST日付**に基づく。そのためscheduled runが失敗し同じJST日付のうちに回復しなかった場合、**通常のproduction経路では欠けた日付のdaily digestを後から自然には生成できない**。低頻度でも公開履歴の恒久的な欠損につながり得る。この発見はFable 5レビューではP3だったが、独立レビューで**P2 / Operations**へ格上げした。
+- **完了条件:** [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md)に、失敗検知→同日回復の原則→既存approval boundaryの維持→承認を得たうえでの`workflow_dispatch` 1回rerun→rerun後の検証→same-day回復できなかった場合のgap記録、という最小手順が記載されていること。
+- **依存関係:** [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md)の既存approval boundary(section 2)と、`fetch.py`の`DAYS_BACK`／digest date契約。
+- **実装証跡:** [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) **Version 1.3(Draft)** のsection 7へ`### Scheduled production failure recovery`を追加し、section 3のcovered eventsへ「回復されていないscheduled production失敗」を追加した。**比例原則により自動backfill／自動retry／push retry・rebase／追加scheduleは実装しない。workflow fileは変更していない。** [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md)は新しいsecurity control requirementではなく既存production operationsのrecovery手順追加であるため**0 diff**、[DECISIONS.md](DECISIONS.md)も**0 diff**である。
+- **ユーザー受入証跡:** 現時点では該当なし。
+- **残作業:** ユーザーによる受入と、SECURITY_OPERATIONS Version 1.3のApproved化。
+- **注記:** 本手順の承認は、`workflow_dispatch`やproduction executionの事前無条件承認ではない。SECURITY_OPERATIONS section 2のapproval boundaryは変更していない。GitHubのfailure notificationが必ず届くとは記載していない(notification behaviorはrepository contractではない)。
+
+## BL-041 — datetime.utcnow deprecation cleanup
+
+- **ID:** BL-041
+- **タイトル:** datetime.utcnow deprecation cleanup
+- **優先度:** P2／Maintenance
+- **状態:** 実装中(ユーザー受入前)
+- **出所種別:** [BL-008](#bl-008--fable-5による全体コードレビュー)全体コードレビュー(2026-08-15、read-only)の技術上の発見事項
+- **ユーザー原文:** 該当なし — 技術上の発見事項。
+- **解釈:** `datetime.datetime.utcnow()`はPython公式で**Python 3.12からdeprecated**である。直近のproduction run [31846198971](https://github.com/matkei31/security-digest/actions/runs/31846198971)のlogで実際にDeprecationWarningが確認されているのは`collect_recent()`側の呼び出しである。`fetch_nist_nvd()`にも同じAPIの呼び出しが存在するが、**standalone NVD article collectionは現在disabled**であり([BL-011](#bl-011--standalone-nist-nvd記事取得の保留理由再開条件))、毎日のproductionで実行されているわけではない。目的は**deprecated APIの除去・warning noiseの除去・将来互換性**であり、削除versionが確定しているとは記載しない。
+- **完了条件:** project-owned Python source/testから`utcnow()`の呼び出しが無くなり、既存のnaive UTC契約(`DAYS_BACK` filter semantics、published date境界、daily JSON date、JST表示、NVD query date range)が変わらないこと。
+- **依存関係:** `fetch.parse_date()`が記録するnaive UTC比較契約と、時刻を固定するtest stub。
+- **実装証跡:** `rg`相当の全文検索で棚卸ししたうえで、**呼び出し12箇所**(production 2: `fetch.py`の`collect_recent()`・`fetch_nist_nvd()`／test 10: `test_feed_fetch_status.py` 4・`test_source_definitions.py` 6)を`datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)`という明示形へ置換した。いずれの呼び出し元もnaive UTCのcutoffを組み立てており、**timezone-awareへの全面migrationは行っていない**。あわせて時刻固定用のtest stub 2件(`test_pipeline_e2e._FrozenDateTime`・`test_atom_date_parse._FixedDateTime`)を、`utcnow()`ではなく`now(tz)`経由で同一の瞬間を返す形へ同期した(返す瞬間は従来と同一であることを検証済み)。`DAYS_BACK`のfilter semantics、published date境界、daily JSON date、JST表示、NVD query date rangeは変更していない。
+- **ユーザー受入証跡:** 現時点では該当なし。
+- **残作業:** ユーザーによる受入。
+- **注記:** 本ticketは[BL-013](#bl-013--github-actions-nodejs警告)のNode runtime警告とは**別件**である。BL-013が追跡していたNode警告は現行のpinned actionでは確認されず、BL-013はobsoleteとしてcloseした。

@@ -1399,15 +1399,15 @@ class Bl031SecurityRequirementsReconciliationTest(unittest.TestCase):
         # near-miss value like "2026-08-04-old" still fails.
         as_of_section = dtu.extract_markdown_section(self.status, "## 1. As of")
         as_of_value = next(line.strip() for line in as_of_section.splitlines() if line.strip())
-        # BL-038 closure (2026-08-14): this PR materially updates STATUS.md, and
-        # "As of" is defined by STATUS itself as the document's own last-update
-        # date, so the asserted value moves with it. The 2026-08-04 mentions above
-        # are historical context (BL-036's post-merge fix) and stay as written; the
-        # method name keeps its original date for identity continuity.
+        # BL-038 closure (2026-08-14), BL-040/BL-041 (2026-08-15): each PR that
+        # materially updates STATUS.md moves this value, because "As of" is defined
+        # by STATUS itself as the document's own last-update date. The 2026-08-04
+        # mentions above are historical context (BL-036's post-merge fix) and stay
+        # as written; the method name keeps its original date for identity continuity.
         self.assertEqual(
             as_of_value,
-            "2026-08-14",
-            f"STATUS.md's As of section's value must be exactly 2026-08-14: {as_of_value!r}",
+            "2026-08-15",
+            f"STATUS.md's As of section's value must be exactly 2026-08-15: {as_of_value!r}",
         )
         recently_completed = self.status.split(
             "## 5. Recently completed work", 1

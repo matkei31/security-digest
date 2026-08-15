@@ -38,7 +38,7 @@ import vulnerability_facts
 
 JST = fetch.JST
 
-# main()内のdatetime.datetime.now()/.utcnow()呼び出しをすべて固定値へ差し替える
+# main()内のdatetime.datetime.now()呼び出しをすべて固定値へ差し替える
 # (timezone/実行日に依存しないため)。fetch.datetime.datetimeとは別module
 # namespaceのvulnerability_facts.datetime.datetimeも、facts解決内部の
 # fetched_at(datetime.datetime.now(datetime.timezone.utc))が参照するため
@@ -194,20 +194,17 @@ def _nvd_response_json():
 
 
 class _FrozenDateTime(datetime.datetime):
-    """fetch.py・vulnerability_facts.py双方のdatetime.datetime.now()/
-    .utcnow()呼び出しをすべて固定値へ差し替える。now(tz)は常に
-    FROZEN_JST_NOWをtzへ変換した値、utcnow()は常にFROZEN_UTC_NOW(naive)を
-    返す(呼び出し回数・順序に依存しない)。"""
+    """fetch.py・vulnerability_facts.py双方のdatetime.datetime.now()呼び出しを
+    すべて固定値へ差し替える。now(tz)は常にFROZEN_JST_NOWをtzへ変換した値、
+    tz省略時はFROZEN_UTC_NOW(naive)を返す(呼び出し回数・順序に依存しない)。
+    BL-041でnaive UTCの取得がnow(timezone.utc)経由になったため、
+    now(timezone.utc).replace(tzinfo=None)もFROZEN_UTC_NOWと一致する。"""
 
     @classmethod
     def now(cls, tz=None):
         if tz is None:
             return FROZEN_UTC_NOW
         return FROZEN_JST_NOW.astimezone(tz)
-
-    @classmethod
-    def utcnow(cls):
-        return FROZEN_UTC_NOW
 
 
 class _FakeHTTPResponse:

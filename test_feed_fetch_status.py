@@ -349,7 +349,7 @@ class CisaKevZeroVsFailureTest(unittest.TestCase):
                 "dateAdded": date_added}
 
     def test_10_catalog_success_with_recent_items_ok(self):
-        cutoff = fetch.datetime.datetime.utcnow()
+        cutoff = fetch.datetime.datetime.now(fetch.datetime.timezone.utc).replace(tzinfo=None)
         recent = (cutoff + fetch.datetime.timedelta(days=1)).strftime("%Y-%m-%d")
         vulns = [self._kev_entry("CVE-2026-0001", recent)]
         out = io.StringIO()
@@ -361,7 +361,7 @@ class CisaKevZeroVsFailureTest(unittest.TestCase):
         self.assertEqual(len(result), 1)
 
     def test_11_catalog_success_zero_recent_is_ok(self):
-        cutoff = fetch.datetime.datetime.utcnow()
+        cutoff = fetch.datetime.datetime.now(fetch.datetime.timezone.utc).replace(tzinfo=None)
         old = "2015-01-01"
         vulns = [self._kev_entry("CVE-2015-0001", old)]  # cutoffより古い=新着0件
         out = io.StringIO()
@@ -373,7 +373,7 @@ class CisaKevZeroVsFailureTest(unittest.TestCase):
         self.assertEqual(result, [])
 
     def test_12_catalog_failure_is_ng_distinct_from_zero(self):
-        cutoff = fetch.datetime.datetime.utcnow()
+        cutoff = fetch.datetime.datetime.now(fetch.datetime.timezone.utc).replace(tzinfo=None)
         out = io.StringIO()
         with patch("fetch.vulnerability_facts.load_kev_catalog", return_value=(None, False)), \
                 redirect_stderr(io.StringIO()), redirect_stdout(out):
@@ -385,7 +385,7 @@ class CisaKevZeroVsFailureTest(unittest.TestCase):
 
     def test_12b_fetch_cisa_kev_status_out_reports_ok_and_failure(self):
         # status_outでカタログ成功/失敗を呼び出し側が区別できる。
-        cutoff = fetch.datetime.datetime.utcnow()
+        cutoff = fetch.datetime.datetime.now(fetch.datetime.timezone.utc).replace(tzinfo=None)
         vulns = [self._kev_entry("CVE-2015-0001", "2015-01-01")]
         for load_ret, expect_ok in (((vulns, True), True), ((None, False), False)):
             with self.subTest(ok=expect_ok):

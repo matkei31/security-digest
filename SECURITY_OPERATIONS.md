@@ -1,8 +1,8 @@
 # Monomi Digest Security Operations
 
-- **Version:** 1.2
-- **Status:** Approved
-- **As of:** 2026-08-03
+- **Version:** 1.3
+- **Status:** Draft (Version 1.2 remains the last Approved version)
+- **As of:** 2026-08-15
 
 ## Scope
 
@@ -70,6 +70,7 @@ Use this runbook for:
 - prompt-injection-derived public output;
 - a published material claim about facts, actor, scope, or impact that the source does not
   support;
+- a failed scheduled production run whose missed date has not been recovered;
 - damaged or inconsistent published daily JSON or HTML; and
 - repository-external artifacts that were shared incorrectly or retained beyond policy.
 
@@ -284,6 +285,32 @@ schema or UI contract if withdrawals recur.
 4. Rebuild the Archive index and confirm previous/next navigation did not regress.
 5. Do not run the production workflow.
 6. Do not call Gemini, RSS, NVD, or other external HTTP.
+
+### Scheduled production failure recovery (added in Version 1.3, from BL-040)
+
+The Daily Security Digest workflow runs once per scheduled day. `fetch.py` collects with a
+cutoff of `DAYS_BACK` days before the run, and the daily JSON and its Archive page are keyed to
+the JST calendar date of the run itself. A later ordinary run therefore produces its own date,
+not the date that was missed. **A failed run is not repaired by waiting.**
+
+1. Confirm the failure before acting: identify the failed run ID and which step failed. Do not
+   assume a notification arrived — notification delivery is platform behavior, not a contract of
+   this repository.
+2. Treat recovery within the same JST calendar date as the objective. Once the JST date has
+   changed, an ordinary rerun no longer backfills the missed date.
+3. Obtain the explicit approval that production execution already requires (section 2).
+   Approving this runbook does not pre-approve `workflow_dispatch`, and this procedure does not
+   change that approval boundary.
+4. With that approval, rerun the workflow once via `workflow_dispatch`.
+5. Verify after the rerun: run success; the expected `data/YYYY-MM-DD.json`; the matching
+   `docs/archive/YYYY-MM-DD.html`; `data/index.json` and the Archive index; and the automatic
+   Pages deployment.
+6. If same-day recovery did not happen, record the missing date and the resulting content gap.
+   **Do not treat the next ordinary run as recovering it.** Any backfill is a separate action
+   with its own procedure and approval.
+
+This procedure adds no automatic retry, automatic backfill, push retry or rebase, and no
+additional schedule. It changes no workflow file.
 
 ### Source suspension (added in Version 1.1, from BL-030/BL-031)
 
@@ -628,7 +655,7 @@ validation, generated-output, or production change beyond what BL-030/BL-031 alr
 is not a pre-approval of BL-032's runtime enforcement implementation, of production execution,
 of `workflow_dispatch`, or of any GitHub-side setting change.**
 
-**Version 1.2 is an Approved maintenance update.** It synchronizes this runbook's
+**Version 1.2 is an Approved maintenance update, approved as of 2026-08-03.** It synchronizes this runbook's
 content-usage-mode downgrade procedure (section 7) with BL-032's runtime enforcement, which was
 registered as future work when Version 1.1 was approved and has since been implemented and
 merged ([PR #69](https://github.com/matkei31/security-digest/pull/69)). It replaces the
@@ -671,6 +698,22 @@ schema, prompt, model, validation, generated-output, source-definition, policy-v
 production change beyond BL-035's documentation/governance-only scope described above; it is
 not a pre-approval of an actual content-usage-mode change, of production execution, of
 `workflow_dispatch`, or of any GitHub-side setting change.**
+
+**Version 1.3 is a Draft maintenance update.** It adds one procedure to section 7 —
+scheduled production failure recovery — and the matching event to section 3, from
+[BL-040](BACKLOG.md#bl-040--scheduled-production失敗時の同日回復手順), which was raised by the
+[BL-008](BACKLOG.md#bl-008--fable-5による全体コードレビュー) whole-repository review on
+2026-08-15. The procedure records something the pipeline already implied but no document stated:
+because the daily JSON and Archive page are keyed to the run's own JST date, a run that fails is
+not recovered by the next ordinary run. It therefore requires same-JST-day recovery, explicit
+approval for the `workflow_dispatch` rerun, post-rerun verification, and an explicit record of
+the gap when same-day recovery does not happen. It also records Version 1.2's approval date
+(2026-08-03) inside this section, so that fact no longer depends on the document header, which
+now names the current Version. Version 1.3 makes **no runtime, workflow, schema, prompt, model,
+validation, generated-output, source-definition, or production change**, adds no automatic
+retry/backfill mechanism, and **does not pre-approve production execution or
+`workflow_dispatch`** — section 2's approval boundary is unchanged. Version 1.3 is Draft until
+user acceptance; Version 1.2 remains the last Approved version until then.
 
 Review this runbook when an incident or architecture change exposes a missing boundary. A
 mechanical annual update is not required.

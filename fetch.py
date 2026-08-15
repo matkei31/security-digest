@@ -1164,7 +1164,7 @@ def fetch_nist_nvd(cutoff, base_url, source_name):
     変更していない。記事ごとのリンクはCVE IDからNVD詳細ページを組み立てる仕様であり
     (単一の固定リンクではないため)、従来通り関数内でテンプレート生成する。
     """
-    now   = datetime.datetime.utcnow()
+    now   = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
     start = cutoff.strftime("%Y-%m-%dT00:00:00.000")
     end   = now.strftime("%Y-%m-%dT23:59:59.000")
     url   = (
@@ -1313,7 +1313,7 @@ def collect_recent(kev_catalog_memo=None, gemini_data_use_status=GEMINI_DATA_USE
     行い、以降の処理(Gemini入力・daily JSON構築・HTML表示)はitemへ保持された
     source_id/content_policyのみを参照する(後段での曖昧な逆引きには依存しない)。
     """
-    cutoff = datetime.datetime.utcnow() - datetime.timedelta(days=DAYS_BACK)
+    cutoff = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None) - datetime.timedelta(days=DAYS_BACK)
     all_items = []
 
     print("フィード別の取得状況:")

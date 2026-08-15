@@ -330,11 +330,15 @@ class StatusSecurityOperationsSourceOfTruthTest(unittest.TestCase):
         self.assertIn("特定のVersion番号を複製しない", row)
 
     def test_security_operations_itself_reflects_bl035_final_acceptance(self):
-        # This documentation-only fix must not touch SECURITY_OPERATIONS.md's own
-        # substantive content beyond what BL-035 already changed -- it now stands
-        # at Version 1.2, Approved (final user acceptance via PR #75).
-        self.assertIn("**Version:** 1.2", self.operations)
-        self.assertIn("**Status:** Approved", self.operations)
+        # BL-040 (2026-08-15): this read the document header, which said 1.2/Approved
+        # at the time. The header names whichever version is current -- 1.3/Draft now
+        # -- so BL-035's own fact moved to where it is permanent: section 12's
+        # Version 1.2 record. The sibling test above forbids STATUS from copying a
+        # version number for exactly this reason; the same logic applies here.
+        record = self.operations.split("## 12. Approval and maintenance", 1)[1].split(
+            "**Version 1.3 is a Draft maintenance update", 1)[0]
+        self.assertIn("**Version 1.2 is an Approved maintenance update", record)
+        self.assertIn("[PR #75](https://github.com/matkei31/security-digest/pull/75)", record)
 
 
 class Bl036PostMergeRecordFixTest(unittest.TestCase):
@@ -371,15 +375,15 @@ class Bl036PostMergeRecordFixTest(unittest.TestCase):
         # "2026-08-04-old" or "2026-08-04 (stale)" still fails.
         as_of_section = dtu.extract_markdown_section(self.status, "## 1. As of")
         as_of_value = next(line.strip() for line in as_of_section.splitlines() if line.strip())
-        # BL-038 closure (2026-08-14): this PR materially updates STATUS.md, and
-        # "As of" is defined by STATUS itself as the document's own last-update
-        # date, so the asserted value moves with it. The 2026-08-04 mentions above
-        # are historical context (BL-036's post-merge fix) and stay as written; the
-        # method name keeps its original date for identity continuity.
+        # BL-038 closure (2026-08-14), BL-040/BL-041 (2026-08-15): each PR that
+        # materially updates STATUS.md moves this value, because "As of" is defined
+        # by STATUS itself as the document's own last-update date. The 2026-08-04
+        # mentions above are historical context (BL-036's post-merge fix) and stay
+        # as written; the method name keeps its original date for identity continuity.
         self.assertEqual(
             as_of_value,
-            "2026-08-14",
-            f"STATUS.md's As of section's value must be exactly 2026-08-14: {as_of_value!r}",
+            "2026-08-15",
+            f"STATUS.md's As of section's value must be exactly 2026-08-15: {as_of_value!r}",
         )
 
     def test_status_bl036_entry_distinguishes_implementation_and_final_evidence(self):
