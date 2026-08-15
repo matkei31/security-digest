@@ -1,0 +1,145 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-08-16",
+  "generated_at": "2026-08-16T07:18:58.026931+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 1,
+    "ai_attempted_count": 1,
+    "ai_success_count": 1,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 1
+  },
+  "counts": {
+    "importance": {
+      "高": 1,
+      "中": 0,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 1,
+      "参考": 0,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 1,
+      "攻撃・脅威動向": 0,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 0,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "掲載1件｜重要度「高」1件｜本日確認0件｜今週確認1件\n本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が1件あり、計画的な確認が必要です。一方、重要度の高い情報が1件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "JPCERT/CCは、Citrix NetScaler ADCおよびNetScaler Gatewayにリモートコード実行につながる脆弱性（CVE-2026-8452）が存在することについて注意喚起を行いました。この脆弱性はCVSSv3.1で9.8のCriticalと評価されています。"
+    ],
+    "discussion_points": [
+      "JPCERT/CCは、Citrix NetScaler ADCおよびNetScaler Gatewayにリモートコード実行につながる脆弱性（CVE-2026-8452）が存在することについて注意喚起を行いました。この脆弱性はCVSSv3.1で9.8のCriticalと評価されています。\n金融機関でNetScaler ADCまたはNetScaler Gatewayを利用している場合、本脆弱性の影響を受ける可能性があります。これらの製品はネットワークインフラストラクチャにおいて重要な役割を果たすため、悪用された場合の影響は大きいと考えられます。"
+    ],
+    "check_items": [
+      "自社および委託先におけるNetScaler ADCおよびNetScaler Gatewayの利用有無、影響を受けるバージョン、および外部公開状況を確認する",
+      "Citrixからの一次情報を確認し、パッチ適用や緩和策の実施について検討する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:9eb2e036a07c53b885378ee486e352d663b3397a03b5fe267829dbb0f73bc632",
+      "source_id": "jpcert_cc",
+      "source_name": "JPCERT/CC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.jpcert.or.jp/at/2026/at260024.html",
+      "canonical_url": "https://www.jpcert.or.jp/at/2026/at260024.html",
+      "published_at": "2026-08-15T14:31:00+09:00",
+      "fetched_at": "2026-08-16T07:18:40.743272+09:00",
+      "title": "注意喚起: NetScaler ADCおよびNetScaler Gatewayにおけるリモートコード実行につながる脆弱性（CVE-2026-8452）に関する注意喚起  (公開)",
+      "raw_title": "注意喚起: NetScaler ADCおよびNetScaler Gatewayにおけるリモートコード実行につながる脆弱性（CVE-2026-8452）に関する注意喚起  (公開)",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e9ccf196005b36772e0e0e5c88dc9c834a597ac5ffc3646b82d2532a53af37c8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "feed_summary",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-16T07:18:43.026567+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題が特定の製品の脆弱性に関する注意喚起であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "JPCERT/CCは、Citrix NetScaler ADCおよびNetScaler Gatewayにリモートコード実行につながる脆弱性（CVE-2026-8452）が存在することについて注意喚起を行いました。この脆弱性はCVSSv3.1で9.8のCriticalと評価されています。",
+        "financial_impact": "金融機関でNetScaler ADCまたはNetScaler Gatewayを利用している場合、本脆弱性の影響を受ける可能性があります。これらの製品はネットワークインフラストラクチャにおいて重要な役割を果たすため、悪用された場合の影響は大きいと考えられます。",
+        "recommended_actions": [
+          "自社および委託先におけるNetScaler ADCおよびNetScaler Gatewayの利用有無、影響を受けるバージョン、および外部公開状況を確認する",
+          "Citrixからの一次情報を確認し、パッチ適用や緩和策の実施について検討する"
+        ],
+        "reason": "重要度は、CVSS9.8のCriticalなリモートコード実行脆弱性であり、ネットワークインフラ製品に影響するため「高」です。確認目安は、悪用確認やKEV新規追加の記述がなく、即時対応の明確な時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-8452",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-15T22:18:40Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-8452",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-06-30T13:19:33Z",
+              "last_modified_at": "2026-07-01T15:52:28Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 9.8,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                "source": "nvd@nist.gov",
+                "type": "Primary"
+              }
+            },
+            "kev": {
+              "status": "not_listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-15T22:18:40Z",
+              "date_added": null
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
