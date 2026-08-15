@@ -1231,17 +1231,55 @@ def fetch_nist_nvd(cutoff, base_url, source_name):
 # (ファイル冒頭の「ソース定義」セクション参照)。ここでの再定義はしない。
 
 
+# BL-045: 収集eligibility判定のkeyword集合。FSA relevance design audit
+# (金融庁公式新着情報 2026-06-15〜08-14の201件、うちlabeled evaluation set
+# KEEP_CORE 10 / KEEP_REFERENCE 3 / BORDERLINE 3 / EXCLUDE 46)で、現行listが
+# KEEP_CORE 5/10・KEEP_REFERENCE 1/3しか拾えず、同時にEXCLUDE 46件中11件を
+# 誤通過させていたことが実測された(この数値は当該labeled set上のものであり、
+# 一般的なaccuracyではない)。原因は(1)金融庁が実際に使うcyber語彙の不足と、
+# (2)"ガイドライン"/"規制"/"制度"/"policy"/"regulation"/"compliance"/
+# "governance"/"リスク"というbroad governance語がnon-cyber記事を通すこと。
+#
+# 単独では広すぎるbroad語は除去し、代わりに具体的なcompound term
+# ("サイバーリスク"・"セキュリティリスク"等)を持つ。"監督指針"のような
+# bare administrative termは追加しない――auditで、cyber改正とnon-cyber改正の
+# titleが1文字("等")しか違わず、しかもその"等"がnon-cyber側にも現れるため
+# title-onlyでは分離不能であり、bare "監督指針"はnon-cyber 5件を誤通過させる
+# ことが確認されている(Event A型のknown residual FN。BACKLOG.mdのBL-045参照)。
+#
+# 判定はNFKC正規化後のlowercase text上で行う。全角ASCII(ＳＮＳ・ＩＴ・ＣＶＥ等)を
+# 個別置換せず正規化するためで、新規dependencyは追加していない(標準library)。
+CYBER_RELEVANCE_KEYWORDS = (
+    # 汎用cyber語(従来から維持)
+    "cyber", "セキュリティ", "脆弱性", "malware", "ransomware",
+    "phishing", "incident", "breach", "attack", "cve", "ゼロデイ",
+    "不正アクセス", "サイバー", "情報漏洩", "標的型", "ddos", "apt",
+    "threat", "exploit", "マルウェア", "フィッシング", "インシデント",
+    "情報セキュリティ",
+    # BL-045 Tier-1: 金融庁が実際にpublication titleで使うcyber/IT risk語
+    "itレジリエンス", "システム障害", "システムリスク", "サイバーレジリエンス",
+    "耐量子計算機暗号", "delta wall", "オペレーショナル・レジリエンス",
+    "サードパーティ", "不正利用", "不正取引", "不正送金", "なりすまし",
+    "多要素認証", "fisc", "金融isac", "セルフアセスメント", "窃取",
+    # BL-045: bare "リスク"を除去した代わりのspecific compound
+    # ("システムリスク"はTier-1と重複するためここへは再掲しない)
+    "サイバーリスク", "itリスク", "セキュリティリスク", "流出リスク",
+    "個人情報保護",
+)
+
+
+def normalize_relevance_text(text):
+    """relevance判定用のテキスト正規化(BL-045)。NFKCで全角ASCII等を統一し、
+    lowercaseへ揃える。ＳＮＳ・ＩＴ・ＣＶＥのような全角表記を個別のkeywordとして
+    列挙しなくて済むようにするための最小の正規化であり、標準libraryのみを使う。"""
+    return unicodedata.normalize("NFKC", text).lower()
+
+
 def is_cyber_relevant(item):
-    text = (item.get("title", "") + " " + item.get("summary", "")).lower()
-    keywords = [
-        "cyber", "セキュリティ", "脆弱性", "malware", "ransomware",
-        "phishing", "incident", "breach", "attack", "cve", "ゼロデイ",
-        "不正アクセス", "サイバー", "情報漏洩", "標的型", "ddos", "apt",
-        "threat", "exploit", "マルウェア", "フィッシング", "インシデント",
-        "情報セキュリティ", "ガイドライン", "規制", "制度", "policy",
-        "regulation", "compliance", "governance", "リスク"
-    ]
-    return any(k in text for k in keywords)
+    text = normalize_relevance_text(
+        (item.get("title", "") or "") + " " + (item.get("summary", "") or "")
+    )
+    return any(k in text for k in CYBER_RELEVANCE_KEYWORDS)
 
 
 # BL-042: Coverage Audit 2(30日・171件の全量監査)で、公開recordの8.2%が
