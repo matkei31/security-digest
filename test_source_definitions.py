@@ -56,10 +56,20 @@ BASELINE_RSS_FEEDS = [
 # として意図的に無効化(enabled=false)され、active RSS一覧から除外されている
 # (Bl031SourceTermsAuditTest参照)。source自体の定義はsource_definitions.json
 # 上に削除されず残り、trusted_cyber_source・色等の履歴的メタデータも維持される。
+#
+# BL-047(SecurityWeek source addition)により、SecurityWeek(id="securityweek")を
+# Tier-2 coverage sourceとして意図的に「追加」した。これはTicket 2当時の
+# BASELINE_RSS_FEEDSには存在しなかったsourceであり、historical baseline自体は
+# 改変せず、下記のとおり意図的な差分としてのみ表現する
+# (Bl047SecurityWeekSourceTest参照)。
+BL047_ADDED_RSS_FEEDS = [
+    ("SecurityWeek", "https://www.securityweek.com/feed/", "en"),
+]
+
 EXPECTED_ACTIVE_RSS_FEEDS = [
     entry for entry in BASELINE_RSS_FEEDS
     if entry[0] not in ("CISA", "CrowdStrike", "Cloudflare", "Dark Reading")
-]
+] + BL047_ADDED_RSS_FEEDS
 
 BASELINE_SOURCE_COLORS = {
     "金融庁":             "#c0392b",
@@ -81,6 +91,10 @@ BASELINE_TRUSTED_CYBER_SOURCES = {
     "CrowdStrike", "Google TAG", "NCSC", "Cisco Talos",
     "The Hacker News", "Krebs on Security", "Dark Reading",
 }
+
+# BL-047: SecurityWeekをtrusted_cyber_source=trueで追加した意図的な差分。
+# historical baseline(上記)は改変せず、期待値のみここで合成する。
+EXPECTED_TRUSTED_CYBER_SOURCES = BASELINE_TRUSTED_CYBER_SOURCES | {"SecurityWeek"}
 
 
 # BL-032: バリデーションを通る最小構成のpolicyオブジェクト(structured_open相当)。
@@ -139,7 +153,7 @@ class LoadSourceDefinitionsTest(unittest.TestCase):
     def test_real_file_loads_successfully(self):
         sources = fetch.load_source_definitions()
         self.assertIsInstance(sources, list)
-        self.assertEqual(len(sources), 17)
+        self.assertEqual(len(sources), 18)
         self.assertEqual(sources[0]["id"], "fsa")
 
     def test_missing_file_raises_clear_error(self):
@@ -446,7 +460,7 @@ class CompatLayerTest(unittest.TestCase):
         self.assertEqual(fetch.RSS_FEEDS, EXPECTED_ACTIVE_RSS_FEEDS)
 
     def test_trusted_cyber_sources_match_baseline(self):
-        self.assertEqual(fetch.TRUSTED_CYBER_SOURCES, BASELINE_TRUSTED_CYBER_SOURCES)
+        self.assertEqual(fetch.TRUSTED_CYBER_SOURCES, EXPECTED_TRUSTED_CYBER_SOURCES)
 
     def test_source_definition_colors_match_baseline(self):
         current_colors = {
@@ -507,20 +521,21 @@ class CisaDeliberatelyExcludedFromActiveRssTest(unittest.TestCase):
     def test_diff_between_ticket2_baseline_and_current_active_rss_is_cisa_and_bl030_and_bl031_only(self):
         # Ticket 2当時の履歴的baseline(BASELINE_RSS_FEEDS)と、現在のfetch.RSS_FEEDS
         # との差分が、CISAの除外(「CISA取得経路の整理」チケット)、BL-030による
-        # CrowdStrike・Cloudflareの暫定停止、BL-031によるDark Readingの暫定停止
-        # だけであることを明示的に検証する(他ソースが意図せず増減・変更されて
-        # いないことの保証)。
+        # CrowdStrike・Cloudflareの暫定停止、BL-031によるDark Readingの暫定停止、
+        # およびBL-047によるSecurityWeekの追加だけであることを明示的に検証する
+        # (他ソースが意図せず増減・変更されていないことの保証)。
         baseline_names = [name for name, _, _ in BASELINE_RSS_FEEDS]
         current_names = [name for name, _, _ in fetch.RSS_FEEDS]
         removed = set(baseline_names) - set(current_names)
         added = set(current_names) - set(baseline_names)
         self.assertEqual(removed, {"CISA", "CrowdStrike", "Cloudflare", "Dark Reading"})
-        self.assertEqual(added, set())
-        # CISA・CrowdStrike・Cloudflare・Dark Readingを除けば、残りのソースの
-        # 順序・内容も完全一致する。
+        self.assertEqual(added, {"SecurityWeek"})
+        # CISA・CrowdStrike・Cloudflare・Dark Readingを除いたbaselineの後ろへ
+        # BL-047の追加分が続く形で、順序・内容も完全一致する。
         self.assertEqual(
             [name for name in baseline_names
-             if name not in ("CISA", "CrowdStrike", "Cloudflare", "Dark Reading")],
+             if name not in ("CISA", "CrowdStrike", "Cloudflare", "Dark Reading")]
+            + [name for name, _, _ in BL047_ADDED_RSS_FEEDS],
             current_names,
         )
 
@@ -742,7 +757,7 @@ class SourceDefinitionsPathTest(unittest.TestCase):
         try:
             os.chdir(tempfile.gettempdir())
             sources = fetch.load_source_definitions()
-            self.assertEqual(len(sources), 17)
+            self.assertEqual(len(sources), 18)
         finally:
             os.chdir(original_cwd)
 
@@ -846,17 +861,18 @@ class Bl030SourceRiskContainmentTest(unittest.TestCase):
     def _def(self, source_id):
         return fetch.get_source_definition(fetch.SOURCE_DEFINITIONS, source_id)
 
-    def test_source_total_count_is_17(self):
-        self.assertEqual(len(fetch.SOURCE_DEFINITIONS), 17)
+    def test_source_total_count_is_18(self):
+        self.assertEqual(len(fetch.SOURCE_DEFINITIONS), 18)
 
-    def test_enabled_12_disabled_5(self):
+    def test_enabled_13_disabled_5(self):
         # BL-031がDark Readingを追加で暫定停止したため、BL-030完了直後の
-        # 13 enabled/4 disabledから12 enabled/5 disabledに変わっている。
+        # 13 enabled/4 disabledから12 enabled/5 disabledへ変わり、その後
+        # BL-047がSecurityWeekを1件追加したため13 enabled/5 disabledとなっている。
         # このクラスはBL-030固有の契約(CrowdStrike・Cloudflareの暫定停止)を
         # 検証するものだが、総数はfetch.SOURCE_DEFINITIONSの現在値に追従する。
         enabled = [s for s in fetch.SOURCE_DEFINITIONS if s["enabled"]]
         disabled = [s for s in fetch.SOURCE_DEFINITIONS if not s["enabled"]]
-        self.assertEqual(len(enabled), 12)
+        self.assertEqual(len(enabled), 13)
         self.assertEqual(len(disabled), 5)
         self.assertEqual(
             {s["id"] for s in disabled},
@@ -955,13 +971,14 @@ class Bl031SourceTermsAuditTest(unittest.TestCase):
     def _def(self, source_id):
         return fetch.get_source_definition(fetch.SOURCE_DEFINITIONS, source_id)
 
-    def test_source_total_count_is_17(self):
-        self.assertEqual(len(fetch.SOURCE_DEFINITIONS), 17)
+    def test_source_total_count_is_18(self):
+        self.assertEqual(len(fetch.SOURCE_DEFINITIONS), 18)
 
-    def test_enabled_12_disabled_5(self):
+    def test_enabled_13_disabled_5(self):
+        # BL-047のSecurityWeek追加でenabledは12→13。disabledは5のまま。
         enabled = [s for s in fetch.SOURCE_DEFINITIONS if s["enabled"]]
         disabled = [s for s in fetch.SOURCE_DEFINITIONS if not s["enabled"]]
-        self.assertEqual(len(enabled), 12)
+        self.assertEqual(len(enabled), 13)
         self.assertEqual(len(disabled), 5)
         self.assertEqual(
             {s["id"] for s in disabled},
@@ -1272,6 +1289,119 @@ class Bl030AcceptanceRecordTest(unittest.TestCase):
         self.assertIn("SECURITY_REQUIREMENTS.md", bl030)
         self.assertIn("SECURITY_OPERATIONS.md", bl030)
         self.assertIn("BL-031", bl030)
+
+
+class Bl047SecurityWeekSourceTest(unittest.TestCase):
+    """BL-047: SecurityWeekをTier-2 coverage sourceとして1件追加した契約を固定する。
+
+    rights permissionは確認できていない(Terms of Use不在・All Rights Reserved)。
+    repository ownerは2026-08-15にlimited_feed_analysisの限定条件下でのoperational
+    riskを明示的に受容したが、これは許諾の確認ではない。testでも「許諾済み」とは
+    扱わず、evidence_typeがterms_not_foundのままであることを固定する。
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        cls.source = next(
+            s for s in fetch.SOURCE_DEFINITIONS if s["id"] == "securityweek"
+        )
+
+    def test_identity_and_collection_contract(self):
+        s = self.source
+        self.assertEqual(s["name"], "SecurityWeek")
+        self.assertEqual(s["url"], "https://www.securityweek.com/feed/")
+        self.assertEqual(s["collection_method"], "rss")
+        self.assertEqual(s["language"], "en")
+        self.assertEqual(s["source_type"], "報道・メディア")
+        self.assertEqual(s["source_tier"], "Tier 2")
+        self.assertEqual(s["collection_frequency"], "daily")
+        self.assertTrue(s["enabled"])
+
+    def test_id_and_name_are_unique(self):
+        ids = [s["id"] for s in fetch.SOURCE_DEFINITIONS]
+        names = [s["name"] for s in fetch.SOURCE_DEFINITIONS]
+        self.assertEqual(ids.count("securityweek"), 1)
+        self.assertEqual(names.count("SecurityWeek"), 1)
+
+    def test_trusted_cyber_source_is_true(self):
+        # BL-047: trusted=falseだとKEEP_CORE(supply-chain compromise記事)が
+        # description込みでもis_cyber_relevant()を通らず落ちる一方、
+        # "Cybersecurity M&A Roundup"は"cyber"を含むため通ってしまう。
+        # recallを落としてnoiseは落とせない非対称な結果になるためtrueを採用した。
+        self.assertTrue(self.source["trusted_cyber_source"])
+        self.assertIn("SecurityWeek", fetch.TRUSTED_CYBER_SOURCES)
+
+    def test_policy_is_limited_feed_analysis_with_expected_flags(self):
+        p = self.source["policy"]
+        self.assertEqual(p["content_usage_mode"], "limited_feed_analysis")
+        self.assertTrue(p["allow_network_fetch"])
+        self.assertTrue(p["allow_description"])
+        self.assertFalse(p["allow_rich_content"])
+        self.assertTrue(p["allow_ai_processing"])
+        self.assertFalse(p["allow_excerpt_storage"])
+        self.assertTrue(p["allow_public_summary"])
+        self.assertIsNone(p["attribution_url"])
+        self.assertEqual(p["checked_at"], "2026-08-15")
+
+    def test_rights_evidence_follows_terms_not_found_precedent(self):
+        # Krebs(limited_feed_analysis かつ Terms不在)と同じ記録方式へ揃える。
+        # Privacy Policyは「Termsが存在しないこと」の証拠にならないため使わない。
+        p = self.source["policy"]
+        self.assertEqual(p["evidence_type"], "terms_not_found；source_page")
+        self.assertEqual(p["official_evidence_url"], "—；https://www.securityweek.com/")
+        self.assertNotIn("privacy", p["official_evidence_url"].lower())
+
+    def test_rights_permission_is_not_recorded_as_confirmed(self):
+        # owner risk acceptanceとrights permissionを混同しない。
+        p = self.source["policy"]
+        self.assertIn("terms_not_found", p["evidence_type"])
+        self.assertIn("明示的な許諾は確認できていない", p["unresolved_issue"])
+        self.assertIn("rights permission自体は未確認", p["unresolved_issue"])
+        self.assertIn("operational risk", p["unresolved_issue"])
+        self.assertEqual(p["confidence"], "low")
+
+    def test_recheck_trigger_records_rights_change_conditions(self):
+        trigger = self.source["policy"]["recheck_trigger"]
+        for fragment in ("Terms of Use", "copyright", "RSS", "申出"):
+            with self.subTest(fragment=fragment):
+                self.assertIn(fragment, trigger)
+
+    def test_enters_rss_feeds_via_generic_builder_without_special_case(self):
+        self.assertIn(
+            ("SecurityWeek", "https://www.securityweek.com/feed/", "en"),
+            fetch.RSS_FEEDS,
+        )
+        # source-specific production branchを作らないこと(fetch.py側にsource名の
+        # ハードコード分岐が無いこと)を、genericな構築経路の一致で担保する。
+        rebuilt = fetch.build_rss_feeds(fetch.SOURCE_DEFINITIONS)
+        self.assertEqual(rebuilt, fetch.RSS_FEEDS)
+
+    def test_inventory_distribution_after_addition(self):
+        from collections import Counter
+        counts = Counter(
+            s["policy"]["content_usage_mode"] for s in fetch.SOURCE_DEFINITIONS
+        )
+        self.assertEqual(dict(counts), {
+            "structured_open": 5, "feed_summary": 4, "limited_feed_analysis": 3,
+            "metadata_only": 2, "disabled_legal_review": 4,
+        })
+        self.assertEqual(len(fetch.SOURCE_DEFINITIONS), 18)
+        # fail-closed guardは弱めず、期待値だけを同期している。
+        self.assertEqual(
+            fetch.EXPECTED_CONTENT_USAGE_MODE_COUNTS["limited_feed_analysis"], 3
+        )
+        fetch.validate_content_usage_mode_distribution(fetch.SOURCE_DEFINITIONS)
+
+    def test_distribution_guard_still_fails_closed_on_mismatch(self):
+        # guard自体の強度が落ちていないことを確認する(1件足せば必ず落ちる)。
+        import copy
+        extra = copy.deepcopy(self.source)
+        extra["id"] = "securityweek_duplicate_for_guard_test"
+        extra["name"] = "SecurityWeek Guard Fixture"
+        with self.assertRaises(fetch.SourceDefinitionError):
+            fetch.validate_content_usage_mode_distribution(
+                list(fetch.SOURCE_DEFINITIONS) + [extra]
+            )
 
 
 if __name__ == "__main__":

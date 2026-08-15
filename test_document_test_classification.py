@@ -4555,14 +4555,19 @@ TRANCHE_3P_USED_OUTER_LITERALS = {
          '## 4. Source-by-source audit matrix', '## 5. Gemini data-use gate', '## 6. Attribution requirements',
          '## 7. Output-similarity and quotation controls', '## 8. Recheck triggers', '## 9. Unknowns and owner verification',
          '## 10. Relationship to BL-032 and BL-009'), "test_17_source_ids_match_source_definitions_exactly": ( 'source_id',),
-    "test_checked_at_is_2026_07_29_except_google_terms_sources": ( 'google_tag', 'mandiant', '2026-07-30', '2026-07-29', 'source_id'),
+    "test_checked_at_is_2026_07_29_except_google_terms_sources": (
+        'google_tag', 'mandiant', '2026-07-30', '2026-07-29', 'source_id',
+        # BL-047: SecurityWeek追加でchecked_atが1件だけ2026-08-15になる。既存の
+        # 2026-07-30/2026-07-29の三項式は維持し、securityweek分岐を1つ足しただけ
+        # なのでrow['source_id']の参照が1つ増える。
+        'securityweek', '2026-08-15', 'source_id'),
     "test_mode_counts_are_5_4_2_2_4_by_proposed_mode_column": ( 'source_id', 'proposed_mode'),
     "test_proposed_mode_matches_the_table_the_row_appears_in": ( 'structured_open', '### structured_open (5件)', '### feed_summary (4件)',
-         'feed_summary', '### feed_summary (4件)', '### limited_feed_analysis (2件)', 'limited_feed_analysis', '### limited_feed_analysis (2件)',
+         'feed_summary', '### feed_summary (4件)', '### limited_feed_analysis (3件)', 'limited_feed_analysis', '### limited_feed_analysis (3件)',
          '### metadata_only (2件)', 'metadata_only', '### metadata_only (2件)', '### disabled_legal_review (4件)', '### disabled_legal_review (4件)'),
     "test_metadata_only_disallows_ai_processing": ( 'metadata_only', 'proposed_mode'),
     "test_disabled_legal_review_disallows_network_fetch": ( 'disabled_legal_review', 'proposed_mode'),
-    "test_feed_summary_is_gated_by_gemini_paid_service_confirmation": ( '### limited_feed_analysis (2件)', '## 6. Attribution requirements',
+    "test_feed_summary_is_gated_by_gemini_paid_service_confirmation": ( '### limited_feed_analysis (3件)', '## 6. Attribution requirements',
          '### feed_summary (4件)', '## 5. Gemini data-use gate'),
     "test_gemini_data_use_status_is_paid_verified": ( '## 6. Attribution requirements', '## 5. Gemini data-use gate'),
     "test_gemini_owner_verification_is_recorded_without_secrets": ( '## 6. Attribution requirements', '## 5. Gemini data-use gate'),
@@ -4588,7 +4593,7 @@ TRANCHE_3P_USED_OUTER_LITERALS = {
     "test_multi_url_rows_have_matching_evidence_type_count_when_types_differ": ( 'official_evidence_url', 'evidence_type'),
     "test_krebs_about_page_is_recorded_as_supporting_source_page_not_a_terms_url": ( 'krebs_on_security', 'official_evidence_url'),
     "test_cisa_has_no_url_in_official_evidence_url_and_is_terms_not_identified": ( 'cisa',), }
-TRANCHE_3P_USED_OUTER_LITERAL_COUNT = 90
+TRANCHE_3P_USED_OUTER_LITERAL_COUNT = 93
 TRANCHE_3P_HELPER_OUTER_LITERALS = { "parse_rows": ( '|---', 'source_id', '| ', '|', '|'), "_split_cell": ( '；',), }
 # Which source_id row each source-specific assertion ultimately reads. The outer
 # literal multiset cannot see the RHS of two row bindings swapped -- the literals
@@ -4809,7 +4814,7 @@ class Tranche3pUsedBindingGuardTest(unittest.TestCase):
             "recheck": "self.policy.split('## 8. Recheck triggers', 1)[1]" ".split('## 9. Unknowns and owner verification', 1)[0]",
             "attribution": "self.policy.split('## 6. Attribution requirements', 1)[1]"
                            ".split('## 7. Output-similarity and quotation controls', 1)[0]",
-            "feed_summary_section": "self.matrix.split('### feed_summary (4件)', 1)[1]" ".split('### limited_feed_analysis (2件)', 1)[0]", }
+            "feed_summary_section": "self.matrix.split('### feed_summary (4件)', 1)[1]" ".split('### limited_feed_analysis (3件)', 1)[0]", }
         seen = {}
         # Correction `3y-3` (finding 9): topology guard unchanged; only the target selection
         # moves from the accepted-count slice to logical accepted method ownership.

@@ -574,6 +574,39 @@
         "official_evidence_url": "https://nvd.nist.gov/developers/terms-of-use",
         "evidence_type": "terms"
       }
+    },
+    {
+      "id": "securityweek",
+      "name": "SecurityWeek",
+      "url": "https://www.securityweek.com/feed/",
+      "collection_method": "rss",
+      "language": "en",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "enabled": true,
+      "planned_phase": "Phase 1",
+      "activation_condition": "",
+      "collection_frequency": "daily",
+      "color": "#555",
+      "trusted_cyber_source": true,
+      "notes": "",
+      "policy": {
+        "content_usage_mode": "limited_feed_analysis",
+        "allow_network_fetch": true,
+        "allow_description": true,
+        "allow_rich_content": false,
+        "allow_ai_processing": true,
+        "allow_excerpt_storage": false,
+        "allow_public_summary": true,
+        "attribution_requirement": "source name、original title、original URL、「Monomi Digestが公式RSSの概要をもとに生成したAI分析」の表示、「詳細と正確性は元記事で確認」の旨、AI分析であって原文の転載・代替を目的としない旨。",
+        "attribution_url": null,
+        "checked_at": "2026-08-15",
+        "confidence": "low",
+        "unresolved_issue": "公式RSS(https://www.securityweek.com/feed/)の提供はhomepage footerのRSS Feedリンクとfeed自身のatom:link rel=selfで確認できたが、Terms of Useは発見できず(terms_not_found)、RSS descriptionの再利用・Geminiへのtransient処理・AI分析の公開について明示的な許諾は確認できていない。copyright表示はAll Rights Reservedである。repository ownerは2026-08-15に、limited_feed_analysisの限定条件下でのoperational riskを明示的に受容した。これは運用上のリスク受容であって、rights permission自体は未確認のままである。",
+        "recheck_trigger": "SecurityWeekのTerms of Use新設、copyright表示・再利用条件の変更、RSS提供条件の変更・終了、machine-readable instructionの明示的変更、権利者からの訂正・削除・停止申出",
+        "official_evidence_url": "—；https://www.securityweek.com/",
+        "evidence_type": "terms_not_found；source_page"
+      }
     }
   ]
 }
