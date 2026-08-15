@@ -142,8 +142,9 @@ def parse_datetime(date_string):
       解釈不能としてNone(recent判定・UTC比較の根拠がないため採用対象へ広げない)
     - その他の解釈不能値: None
     例外は送出しない(呼び出し元へ漏らさない)。対応: ISO 8601(小数秒あり/なし・数値
-    オフセット・Z表記)、RFC822/2822(数値オフセット・GMT/UTC)、日付のみYYYY-MM-DD。
-    日付文字列以外(レスポンス本文等)はここへ渡らない前提で、ログ出力も行わない。
+    オフセット・Z表記)、RFC822/2822(数値オフセット・GMT/UTC・named timezone JST)、
+    日付のみYYYY-MM-DD。日付文字列以外(レスポンス本文等)はここへ渡らない前提で、
+    ログ出力も行わない。
     """
     if not isinstance(date_string, str):
         return None
@@ -156,6 +157,12 @@ def parse_datetime(date_string):
     normalized = s
     if normalized[-1] in ("Z", "z"):
         normalized = normalized[:-1] + "+00:00"
+    elif normalized.endswith(" JST"):
+        # RFC822風のnamed timezone "JST"(UTC+09:00)のみ明示対応する(BL-043)。
+        # 金融庁RSS(fsaNewsListAll_rss2.xml)のpubDateがこの形式であることを
+        # forensic auditで確認した。他のnamed timezone(EST等)は対応しない――
+        # locale依存の%Zへは丸投げせず、この1形式だけをdeterministicに正規化する。
+        normalized = normalized[: -len(" JST")] + " +0900"
 
     # (1) タイムゾーン付き(aware)。小数秒あり→なしの順に試す。
     for fmt in (
