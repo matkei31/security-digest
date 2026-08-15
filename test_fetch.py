@@ -10925,11 +10925,24 @@ class Bl045CrossSourceRegressionTest(unittest.TestCase):
                 self.assertTrue(self._rel(t))
 
     def test_ipa_advisory_titles_still_pass(self):
+        # 公式IPA security RSS(alert.rdf)の実titleのうち、BL-045前後の双方で
+        # PASSすることをread-only preflightで確認したもの。is_cyber_relevant()の
+        # 結果を直接assertする(fallback条件でmaskしない)。
         for t in ("Microsoft 製品の脆弱性対策について(2026年8月)",
+                  "Oracle Java の脆弱性対策について(2026年7月)",
                   "WordPressの脆弱性対策について(CVE-2026-60137、CVE-2026-63030：wp2shell)",
-                  "更新：Windows 10のサポート終了に伴う注意喚起"):
+                  "Check Point Software Technologies製品の脆弱性対策について(CVE-2026-50751)"):
             with self.subTest(title=t[:30]):
-                self.assertTrue(self._rel(t) or "注意喚起" in t)
+                self.assertTrue(self._rel(t))
+
+    def test_ipa_support_end_notice_is_unchanged_by_bl045(self):
+        # 「更新：Windows 10のサポート終了に伴う注意喚起」はBL-045の前後どちらでも
+        # FAILする(旧listにも新listにも一致するkeywordが無い)。したがってこれは
+        # BL-045によるregressionではなく、既存の別relevance gapである。
+        # BL-045ではこれをfixしない――「注意喚起」のような一般語をkeywordへ
+        # 追加すると非cyberな行政通知まで通してしまうため。
+        self.assertFalse(self._rel("更新：Windows 10のサポート終了に伴う注意喚起"))
+        self.assertNotIn("注意喚起", fetch.CYBER_RELEVANCE_KEYWORDS)
 
 
 if __name__ == "__main__":
