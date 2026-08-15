@@ -320,14 +320,14 @@
 - **出所種別:** 技術上の発見事項
 - **ユーザー原文:** 該当なし — 技術上の発見事項。
 - **ユーザー確認済み要約:** 未定義。
-- **解釈:** GitHub Pagesのbuild/deployは現在成功しているが、actionsからNode.js runtimeの非推奨警告が出力されている。警告内容、サポート対象version、期限が検証されるまで、投機的なアップグレードを開始しない。
-- **完了条件:** workflowを変更する前に、影響を受けるaction version、GitHubの期限、サポートされる置換経路、回帰計画を確認する。
+- **解釈:** **以下は登録当時のtechnical findingであり、現在の状態ではない。** 当時、GitHub Pagesのbuild/deploy自体は成功していたが、当時使用していたAction世代からNode.js runtimeの非推奨警告が出力されていた。警告内容・サポート対象version・期限が検証されるまで、投機的なworkflow upgradeは開始しない、という方針を採った。
+- **完了条件:** **登録時に定義したもの。** workflowを変更する前に、影響を受けるaction version、GitHubの期限、サポートされる置換経路、回帰計画を確認する。**本ticket自身はworkflowを変更しないまま解消したため、この条件は「変更前確認」としては発動しなかった**——実際のaction upgradeは[BL-027](#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする)が自身のscopeとして検証・実施し、その結果を2026-08-15の実ログで確認してcloseした(下記実装証跡を参照)。
 - **依存関係:** GitHub Actions/Pagesの公式ガイダンスと承認されたworkflow保守スコープ。
-- **実装証跡:** 是正は実施していない。直近のPages build/deploymentは、警告が出ているにもかかわらず成功している。
+- **実装証跡:** **時系列で記録する。** (1) 登録当時は当該警告が出力されており、Pages build/deployは警告が出ているにもかかわらず成功していた。**BL-013自体では是正を実施せず保留していた。** (2) その後、別ticketである[BL-027](#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする)が`actions/checkout`をv7.0.1(SHA `3d3c42e5aac5ba805825da76410c181273ba90b1`)へ、`actions/setup-python`をv7.0.0(SHA `5fda3b95a4ea91299a34e894583c3862153e4b97`)へupgradeし、full SHAでpinした(**BL-013がBL-027を実装したのではなく、別ticketによる後続のworkflow変更である**)。 (3) 2026-08-15、[BL-008](#bl-008--fable-5による全体コードレビュー)の全体コードレビューにおいて、production run [31846198971](https://github.com/matkei31/security-digest/actions/runs/31846198971)および直近PR CIの**実ログ**を検査し、本ticketが対象としていたNode runtime非推奨警告が**0件**であることを確認した(推測ではない)。 (4) 元のfindingは後続変更によって結果的に解消されており、**obsolete／resolvedとしてcloseする**。**本ticketとしてworkflowの追加変更は行っていない。**
 - **ユーザー受入証跡:** 現時点では該当なし。
 - **残作業:** **なし。**
-- **注記:** 保留の理由は、現行のbuildが成功しており、ここに検証済みの期限が記録されていないためである。
-- **[BL-008](#bl-008--fable-5による全体コードレビュー)全体コードレビュー(2026-08-15、read-only)の技術上の発見事項(disposition: close):** **推測ではなく実ログで確認した。** 現行workflowのactionは[BL-027](#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする)で`actions/checkout` SHA `3d3c42e5aac5ba805825da76410c181273ba90b1`(v7.0.1)・`actions/setup-python` SHA `5fda3b95a4ea91299a34e894583c3862153e4b97`(v7.0.0)へupgrade・pin済みであり、直近のproduction run [31846198971](https://github.com/matkei31/security-digest/actions/runs/31846198971)および直近PR CIのlogに、本ticketが追跡していたNode runtime非推奨警告は確認されなかった。元の警告は旧action世代のものでobsoleteと判断し、closeする。**workflowの追加変更は行っていない。** **注意: 現在production logに出ている`datetime.utcnow()`のDeprecationWarningはPython側の別件であり、本ticketのNode警告ではない。** そちらは[BL-041](#bl-041--datetimeutcnow-deprecation-cleanup)として扱い、**本ticketをPython warningを理由にopenのままにしない。**
+- **注記:** **旧保留理由:** 当時はbuildが成功しており、検証済みの期限・サポートされる置換経路がここに記録されていなかったため、投機的なupgradeを避けて保留していた。2026-08-15の再監査で上記(2)(3)の証跡が得られたため、**この保留理由は解消した**。なお現在のproduction logに出ている`datetime.utcnow()`のDeprecationWarningは**Python側の別件**であり、本ticketのNode runtime警告ではない。そちらは[BL-041](#bl-041--datetimeutcnow-deprecation-cleanup)として扱い、**本ticketをPython warningを理由にopenのままにしない。**
+- **[BL-008](#bl-008--fable-5による全体コードレビュー)全体コードレビュー(2026-08-15、read-only)のdisposition:** **close。** 根拠は上記の実装証跡(時系列)のとおりで、元のfindingは[BL-027](#bl-027--github-actions-checkoutsetup-pythonをv7系へmajor-upgradeする)による後続のaction upgrade／SHA pinによって解消済みであり、2026-08-15の実ログ確認でNode runtime警告0件を検証した。
 
 ## BL-014 — 過去ユーザーコメントの体系的棚卸し
 
@@ -1592,15 +1592,15 @@
 - **ID:** BL-040
 - **タイトル:** scheduled production失敗時の同日回復手順
 - **優先度:** P2／Operations
-- **状態:** 実装中(ユーザー受入前)
+- **状態:** 完了(2026-08-15、ユーザー最終受入)
 - **出所種別:** [BL-008](#bl-008--fable-5による全体コードレビュー)全体コードレビュー(2026-08-15、read-only)の技術上の発見事項
 - **ユーザー原文:** 該当なし — 技術上の発見事項。
 - **解釈:** production scheduleは1日1回であり、`fetch.py`の`DAYS_BACK = 1`に加えて、日次JSONと日別Archiveのdigest dateが**実行時のJST日付**に基づく。そのためscheduled runが失敗し同じJST日付のうちに回復しなかった場合、**通常のproduction経路では欠けた日付のdaily digestを後から自然には生成できない**。低頻度でも公開履歴の恒久的な欠損につながり得る。この発見はFable 5レビューではP3だったが、独立レビューで**P2 / Operations**へ格上げした。
 - **完了条件:** [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md)に、失敗検知→同日回復の原則→既存approval boundaryの維持→承認を得たうえでの`workflow_dispatch` 1回rerun→rerun後の検証→same-day回復できなかった場合のgap記録、という最小手順が記載されていること。
 - **依存関係:** [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md)の既存approval boundary(section 2)と、`fetch.py`の`DAYS_BACK`／digest date契約。
 - **実装証跡:** [SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) **Version 1.3(Draft)** のsection 7へ`### Scheduled production failure recovery`を追加し、section 3のcovered eventsへ「回復されていないscheduled production失敗」を追加した。**比例原則により自動backfill／自動retry／push retry・rebase／追加scheduleは実装しない。workflow fileは変更していない。** [SECURITY_REQUIREMENTS.md](SECURITY_REQUIREMENTS.md)は新しいsecurity control requirementではなく既存production operationsのrecovery手順追加であるため**0 diff**、[DECISIONS.md](DECISIONS.md)も**0 diff**である。
-- **ユーザー受入証跡:** 現時点では該当なし。
-- **残作業:** ユーザーによる受入と、SECURITY_OPERATIONS Version 1.3のApproved化。
+- **ユーザー受入証跡:** 2026-08-15、独立実装レビューが**ACCEPT・Blocker 0**を返し、BL-013のdocs Minor修正を条件としてユーザーが**BL-040・BL-041の実装と[SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.3を最終受入**した([PR #131](https://github.com/matkei31/security-digest/pull/131))。acceptance evidence: reviewed head `42d1dbb0f34fcad29f011d5adc155907d24bd0ea`、exact-head [Pull Request CI run 31865317942](https://github.com/matkei31/security-digest/actions/runs/31865317942) success(**Python 3.12.13**、full unittest **2356 OK**)、repositoryのproject-owned Python source/testにおける`utcnow()`呼び出し**0件**、**CI logで旧`datetime.utcnow()`由来のDeprecationWarningが出ていないこと**を独立レビューが確認済み。 これを受け[SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) **Version 1.3は承認済み**(最終受入日2026-08-15)である。
+- **残作業:** **なし。**
 - **注記:** 本手順の承認は、`workflow_dispatch`やproduction executionの事前無条件承認ではない。SECURITY_OPERATIONS section 2のapproval boundaryは変更していない。GitHubのfailure notificationが必ず届くとは記載していない(notification behaviorはrepository contractではない)。
 
 ## BL-041 — datetime.utcnow deprecation cleanup
@@ -1608,13 +1608,13 @@
 - **ID:** BL-041
 - **タイトル:** datetime.utcnow deprecation cleanup
 - **優先度:** P2／Maintenance
-- **状態:** 実装中(ユーザー受入前)
+- **状態:** 完了(2026-08-15、ユーザー最終受入)
 - **出所種別:** [BL-008](#bl-008--fable-5による全体コードレビュー)全体コードレビュー(2026-08-15、read-only)の技術上の発見事項
 - **ユーザー原文:** 該当なし — 技術上の発見事項。
 - **解釈:** `datetime.datetime.utcnow()`はPython公式で**Python 3.12からdeprecated**である。直近のproduction run [31846198971](https://github.com/matkei31/security-digest/actions/runs/31846198971)のlogで実際にDeprecationWarningが確認されているのは`collect_recent()`側の呼び出しである。`fetch_nist_nvd()`にも同じAPIの呼び出しが存在するが、**standalone NVD article collectionは現在disabled**であり([BL-011](#bl-011--standalone-nist-nvd記事取得の保留理由再開条件))、毎日のproductionで実行されているわけではない。目的は**deprecated APIの除去・warning noiseの除去・将来互換性**であり、削除versionが確定しているとは記載しない。
 - **完了条件:** project-owned Python source/testから`utcnow()`の呼び出しが無くなり、既存のnaive UTC契約(`DAYS_BACK` filter semantics、published date境界、daily JSON date、JST表示、NVD query date range)が変わらないこと。
 - **依存関係:** `fetch.parse_date()`が記録するnaive UTC比較契約と、時刻を固定するtest stub。
 - **実装証跡:** `rg`相当の全文検索で棚卸ししたうえで、**呼び出し12箇所**(production 2: `fetch.py`の`collect_recent()`・`fetch_nist_nvd()`／test 10: `test_feed_fetch_status.py` 4・`test_source_definitions.py` 6)を`datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)`という明示形へ置換した。いずれの呼び出し元もnaive UTCのcutoffを組み立てており、**timezone-awareへの全面migrationは行っていない**。あわせて時刻固定用のtest stub 2件(`test_pipeline_e2e._FrozenDateTime`・`test_atom_date_parse._FixedDateTime`)を、`utcnow()`ではなく`now(tz)`経由で同一の瞬間を返す形へ同期した(返す瞬間は従来と同一であることを検証済み)。`DAYS_BACK`のfilter semantics、published date境界、daily JSON date、JST表示、NVD query date rangeは変更していない。
-- **ユーザー受入証跡:** 現時点では該当なし。
-- **残作業:** ユーザーによる受入。
+- **ユーザー受入証跡:** 2026-08-15、独立実装レビューが**ACCEPT・Blocker 0**を返し、BL-013のdocs Minor修正を条件としてユーザーが**BL-040・BL-041の実装と[SECURITY_OPERATIONS.md](SECURITY_OPERATIONS.md) Version 1.3を最終受入**した([PR #131](https://github.com/matkei31/security-digest/pull/131))。acceptance evidence: reviewed head `42d1dbb0f34fcad29f011d5adc155907d24bd0ea`、exact-head [Pull Request CI run 31865317942](https://github.com/matkei31/security-digest/actions/runs/31865317942) success(**Python 3.12.13**、full unittest **2356 OK**)、repositoryのproject-owned Python source/testにおける`utcnow()`呼び出し**0件**、**CI logで旧`datetime.utcnow()`由来のDeprecationWarningが出ていないこと**を独立レビューが確認済み。 **「次回production runの成功」は本ticketの完了条件に含めない**——runtime変更はPython 3.12のexact-head CIと既存testsで受入可能であり、受入をscheduled runの発生に依存させない。
+- **残作業:** **なし。**
 - **注記:** 本ticketは[BL-013](#bl-013--github-actions-nodejs警告)のNode runtime警告とは**別件**である。BL-013が追跡していたNode警告は現行のpinned actionでは確認されず、BL-013はobsoleteとしてcloseした。

@@ -1,7 +1,7 @@
 # Monomi Digest Security Operations
 
 - **Version:** 1.3
-- **Status:** Draft (Version 1.2 remains the last Approved version)
+- **Status:** Approved
 - **As of:** 2026-08-15
 
 ## Scope
@@ -699,7 +699,7 @@ production change beyond BL-035's documentation/governance-only scope described 
 not a pre-approval of an actual content-usage-mode change, of production execution, of
 `workflow_dispatch`, or of any GitHub-side setting change.**
 
-**Version 1.3 is a Draft maintenance update.** It adds one procedure to section 7 —
+**Version 1.3 is an Approved maintenance update.** It adds one procedure to section 7 —
 scheduled production failure recovery — and the matching event to section 3, from
 [BL-040](BACKLOG.md#bl-040--scheduled-production失敗時の同日回復手順), which was raised by the
 [BL-008](BACKLOG.md#bl-008--fable-5による全体コードレビュー) whole-repository review on
@@ -712,8 +712,7 @@ the gap when same-day recovery does not happen. It also records Version 1.2's ap
 now names the current Version. Version 1.3 makes **no runtime, workflow, schema, prompt, model,
 validation, generated-output, source-definition, or production change**, adds no automatic
 retry/backfill mechanism, and **does not pre-approve production execution or
-`workflow_dispatch`** — section 2's approval boundary is unchanged. Version 1.3 is Draft until
-user acceptance; Version 1.2 remains the last Approved version until then.
+`workflow_dispatch`** — section 2's approval boundary is unchanged. **Version 1.3 was accepted by the user on 2026-08-15 (最終受入日 2026-08-15)** as part of [PR #131](https://github.com/matkei31/security-digest/pull/131), together with BL-040's and BL-041's implementations, after an independent review returned ACCEPT with Blocker 0 at reviewed head `42d1dbb0f34fcad29f011d5adc155907d24bd0ea` (exact-head [Pull Request CI run 31865317942](https://github.com/matkei31/security-digest/actions/runs/31865317942) success on Python 3.12.13, full unittest 2356 OK). **This approval is not unconditional advance approval of `workflow_dispatch`, not blanket approval of production execution, does not introduce automatic backfill, and changes no workflow file — section 2's approval boundaries stand unchanged.** Versions 1.2 and earlier keep their own records above unchanged.
 
 Review this runbook when an incident or architecture change exposes a missing boundary. A
 mechanical annual update is not required.

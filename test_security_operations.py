@@ -33,14 +33,15 @@ class SecurityOperationsContractTest(unittest.TestCase):
         return self.operations.split(start, 1)[1].split(end, 1)[0]
 
     def test_version_10_identity_review_record_and_user_approval(self):
-        # The header names whichever version is current -- 1.3 (Draft, BL-040) as of
+        # The header names whichever version is current -- 1.3 (BL-040), accepted
         # 2026-08-15 -- while the frozen Version 1.0 approval record (section 12)
         # must remain byte-identical below it. Only the two header literals move
-        # with a version bump; everything this test really protects is in section 12.
+        # with a version bump or a Draft->Approved transition; everything this test
+        # really protects is in section 12.
         self.assertTrue(OPERATIONS_PATH.exists())
         self.assertIn("# Monomi Digest Security Operations", self.operations)
         self.assertIn("**Version:** 1.3", self.operations)
-        self.assertIn("**Status:** Draft", self.operations)
+        self.assertIn("**Status:** Approved", self.operations)
         approval = self.section("## 12. Approval and maintenance", "\nReview this runbook")
         for contract in (
             "Critical 0",
