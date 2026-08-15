@@ -10624,5 +10624,119 @@ class Bl044Case1EndToEndTest(unittest.TestCase):
         self.assertEqual(len(result), 1)
 
 
+class Bl044CisaKevCandidateCapTest(unittest.TestCase):
+    """BL-044 Minor 4: production-enabledなCISA KEVについて、収集段階の早期break
+    (旧 fetch_cisa_kev() 内 len(items) >= MAX_PER_FEED)が撤去され、件数の絞り込みが
+    collect_recent()後段のsource別candidate cap(MAX_CANDIDATES_PER_SOURCE)へ
+    一元化されたことを固定する。
+
+    外部通信は行わない(vulnerability_facts.load_kev_catalog をmemo fixtureで代替し、
+    live CISA endpointへは接続しない)。KEVのdateAddedはYYYY-MM-DD粒度のため、
+    同一dateにおけるstable orderの検証も兼ねる。
+    """
+
+    KEV_URL = "https://x/kev.json"
+    DISPLAY_URL = "https://display/kev"
+    SOURCE = "CISA KEV"
+    RECENT_COUNT = 12
+
+    def _today(self):
+        return datetime.datetime.now(datetime.timezone.utc).date()
+
+    def _catalog(self):
+        today = self._today().isoformat()
+        vulns = [
+            {"cveID": f"CVE-2026-1{i:03d}",
+             "vulnerabilityName": f"KEV vuln {i}",
+             "shortDescription": f"desc {i}",
+             "dateAdded": today}
+            for i in range(self.RECENT_COUNT)
+        ]
+        # cutoffより古いentry(除外されることの確認用)。
+        vulns += [
+            {"cveID": "CVE-2020-0001", "vulnerabilityName": "Old vuln",
+             "shortDescription": "old", "dateAdded": "2020-01-01"},
+        ]
+        return {self.KEV_URL: (vulns, True)}
+
+    def test_fetch_cisa_kev_no_longer_truncates_at_three(self):
+        cutoff = datetime.datetime.combine(
+            self._today(), datetime.time.min) - datetime.timedelta(hours=1)
+        items = fetch.fetch_cisa_kev(
+            cutoff, self.KEV_URL, self.DISPLAY_URL, self.SOURCE,
+            kev_catalog_memo=self._catalog(),
+        )
+        # 旧実装は3件でbreakしていた。現在はrecent分をすべて返す。
+        self.assertEqual(len(items), self.RECENT_COUNT)
+        self.assertTrue(all(it["link"] == self.DISPLAY_URL for it in items))
+        # cutoffより古いentryは含まれない。
+        self.assertFalse(any("CVE-2020-0001" in it["title"] for it in items))
+        # 同一dateAdded内では元のcatalog順が維持される(stable sort)。
+        self.assertEqual(
+            [it["title"].split(" ")[0] for it in items],
+            [f"CVE-2026-1{i:03d}" for i in range(self.RECENT_COUNT)],
+        )
+
+    def _run_pipeline(self):
+        with patch("fetch.vulnerability_facts.load_kev_catalog",
+                   side_effect=lambda url, memo=None: self._catalog()[self.KEV_URL]), \
+                patch("fetch.RSS_FEEDS", []), \
+                patch("fetch.time.sleep"):
+            return fetch.collect_recent()
+
+    def test_collect_recent_caps_kev_at_max_candidates_per_source(self):
+        result = self._run_pipeline()
+        kev = [it for it in result if it["source"] == self.SOURCE]
+        # 実pipelineを通すとsource別capが効き、8件だけ残る(旧実装は3件)。
+        self.assertEqual(len(kev), fetch.MAX_CANDIDATES_PER_SOURCE)
+        self.assertLess(fetch.MAX_CANDIDATES_PER_SOURCE, self.RECENT_COUNT)
+
+    def test_collect_recent_kev_selection_is_newest_and_stable(self):
+        first = self._run_pipeline()
+        second = self._run_pipeline()
+        ids = [it["title"].split(" ")[0]
+               for it in first if it["source"] == self.SOURCE]
+        # 全件同一dateAddedのため、stable orderでcatalog先頭からcap件が選ばれる。
+        self.assertEqual(
+            ids, [f"CVE-2026-1{i:03d}" for i in range(fetch.MAX_CANDIDATES_PER_SOURCE)])
+        # 決定論的: 同じ入力なら同じ選抜結果。
+        self.assertEqual(
+            ids,
+            [it["title"].split(" ")[0]
+             for it in second if it["source"] == self.SOURCE],
+        )
+
+
+class Bl044NvdTransportLimitSeparationTest(unittest.TestCase):
+    """BL-044 Minor 1: NVDのresultsPerPageはAPI取得時のtransport/page-size limitであり、
+    recency・relevance/trusted・BL-042 gate通過後に適用するcandidate cap
+    (MAX_CANDIDATES_PER_SOURCE)とは意味が異なる。両者が結合していないことを固定する。
+    当該sourceはenabled:falseで、pagination再設計はBL-011のNVD再開時に扱う。"""
+
+    def test_resultsperpage_is_not_bound_to_candidate_cap(self):
+        captured = {}
+
+        class FakeResponse:
+            def read(self):
+                return b'{"vulnerabilities": []}'
+            def __enter__(self):
+                return self
+            def __exit__(self, *a):
+                return False
+
+        def fake_urlopen(req, timeout=None):
+            captured["url"] = req.full_url
+            return FakeResponse()
+
+        with patch("fetch.urllib.request.urlopen", side_effect=fake_urlopen):
+            fetch.fetch_nist_nvd(
+                datetime.datetime(2026, 7, 1), "https://nvd.example/api", "NIST NVD")
+
+        self.assertIn("resultsPerPage=3", captured["url"])
+        # candidate capを引き上げてもtransport page sizeは連動しない。
+        self.assertNotIn(
+            f"resultsPerPage={fetch.MAX_CANDIDATES_PER_SOURCE}", captured["url"])
+
+
 if __name__ == "__main__":
     unittest.main()

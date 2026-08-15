@@ -940,8 +940,15 @@ def _select_atom_article_url(entry):
 
 def _parse_feed_items(root, name, lang):
     """XMLルート要素から記事itemのlistを組み立てる(取得・retryロジックとは分離)。
-    parseロジック自体は従来のfetch_feed()から変更していない
-    (Atomの記事URL選択のみTicket 14aで修正)。"""
+
+    - feed format(RSS/RDF/Atom)ごとのfield extraction semanticsは従来どおり維持する。
+    - Atomの記事URL選択(Ticket 14a: rel未指定/alternateのHTTP(S)記事URLのみ採用し、
+      コメントフィード等をskipする)も維持する。
+    - BL-044: parser-levelの件数cap(旧MAX_PER_FEED)は撤去した。ここではvalid entryを
+      全件返し、件数の絞り込みは行わない。source別のcandidate capは、recency・
+      trusted/is_cyber_relevant・BL-042 promotion gateを通過した後段
+      (collect_recent())でMAX_CANDIDATES_PER_SOURCEとして適用する。
+    """
     items = []
     tag = root.tag.lower()
 
@@ -1175,10 +1182,17 @@ def fetch_nist_nvd(cutoff, base_url, source_name):
     now   = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
     start = cutoff.strftime("%Y-%m-%dT00:00:00.000")
     end   = now.strftime("%Y-%m-%dT23:59:59.000")
+    # BL-044: これはNVD API取得時のtransport/page-size limitであり、
+    # MAX_CANDIDATES_PER_SOURCE(recency・relevance/trusted・BL-042 gateを
+    # すべて通過した後に適用するsource別digest candidate cap)とは意味が異なる。
+    # 両者を結合しないよう、従来値3をfunction-localの明示値として維持する。
+    # 当該sourceはenabled:falseで、paginationの再設計はBL-011のNVD再開時に
+    # 別途扱う(本Ticketではpagination semanticsを変更しない)。
+    nvd_results_per_page = 3
     url   = (
         f"{base_url}"
         f"?pubStartDate={start}&pubEndDate={end}"
-        f"&resultsPerPage={MAX_CANDIDATES_PER_SOURCE}&cvssV3Severity=CRITICAL"
+        f"&resultsPerPage={nvd_results_per_page}&cvssV3Severity=CRITICAL"
     )
     req = urllib.request.Request(url, headers={"User-Agent": "SecurityDigest/1.0"})
     try:
