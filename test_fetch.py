@@ -10081,10 +10081,13 @@ class Bl009PhaseA4CanonicalTest(unittest.TestCase):
 class Bl009PhaseA6FaviconTest(unittest.TestCase):
     """BL-009 Phase A-6: the site identity icon.
 
-    Google does not crawl /favicon.ico on its own -- it wants a <link rel="icon">
-    -- and even then a favicon is a search-appearance feature, never a ranking
-    one. The reason it is site-wide rather than home-page-only is the browser
-    tab: every published page should look like the same site.
+    To be eligible for a favicon in Google Search a site puts a link to it in
+    the home page's head, and both the file (Googlebot-Image) and the home page
+    (Googlebot) have to be crawlable. It is a search-appearance / site-attribution
+    feature, and appearing is not guaranteed even when the guidelines are met;
+    this phase claims no ranking benefit and does not aim for one. It is
+    site-wide rather than home-page-only because of the browser tab: every
+    published page should look like the same site.
 
     The href is root-relative on purpose. The file lives at the site root, the
     path does not depend on how deep the page is, and it needs no origin -- so
@@ -10109,12 +10112,21 @@ class Bl009PhaseA6FaviconTest(unittest.TestCase):
         self.assertTrue((self.DOCS / "favicon.svg").is_file())
 
     def test_the_asset_is_valid_square_svg(self):
+        """Pixel dimensions and viewBox units are different things: the size
+        requirement is about the former, the shape about the latter."""
         svg = (self.DOCS / "favicon.svg").read_text(encoding="utf-8")
         root = xml.etree.ElementTree.fromstring(svg)
         self.assertEqual(root.tag, "{http://www.w3.org/2000/svg}svg")
-        width, height = (float(v) for v in root.get("viewBox").split()[2:])
+        width = float(root.get("width"))
+        height = float(root.get("height"))
+        self.assertEqual(width, 64)
+        self.assertEqual(height, 64)
         self.assertEqual(width, height, "a favicon must be square")
         self.assertGreaterEqual(width, 48, "must stay legible well above 48px")
+        # ...and it stays scalable: the viewBox keeps the same 1:1 aspect ratio
+        box_width, box_height = (float(v) for v in root.get("viewBox").split()[2:])
+        self.assertEqual(box_width, box_height)
+        self.assertEqual(width / height, box_width / box_height)
 
     def test_the_asset_carries_no_text_or_initials(self):
         """The approved identity is the lock mark, not a wordmark."""
