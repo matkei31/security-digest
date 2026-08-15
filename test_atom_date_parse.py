@@ -64,6 +64,32 @@ class CommonParserTest(unittest.TestCase):
         dt = daily_json.parse_datetime("Fri, 10 Jul 2026 12:00:00 GMT")
         self.assertEqual(dt.utcoffset(), datetime.timedelta(0))
 
+    def test_rfc822_jst(self):
+        # BL-043: 金融庁RSS(fsaNewsListAll_rss2.xml)のpubDateが実際に使う
+        # named timezone "JST"(UTC+09:00)をforensic auditで確認したため対応した。
+        dt = daily_json.parse_datetime("Fri, 14 Aug 2026 18:45:00 JST")
+        self.assertIsNotNone(dt)
+        self.assertEqual(dt.utcoffset(), datetime.timedelta(hours=9))
+        self.assertEqual(dt.replace(tzinfo=None), datetime.datetime(2026, 8, 14, 18, 45, 0))
+
+    def test_rfc822_jst_lowercase_not_supported(self):
+        # 実測形式(大文字"JST")のみをsupported contractとし、
+        # 不要にcase-insensitiveへ広げない。
+        self.assertIsNone(daily_json.parse_datetime("Fri, 14 Aug 2026 18:45:00 jst"))
+
+    def test_rfc822_jst_malformed_suffix_is_none(self):
+        self.assertIsNone(daily_json.parse_datetime("Fri, 14 Aug 2026 18:45:00 JST+09:00"))
+        self.assertIsNone(daily_json.parse_datetime("Fri, 14 Aug 2026 18:45:00 XJST"))
+
+    def test_rfc822_other_named_timezones_still_unsupported(self):
+        # JSTだけを明示対応し、他のnamed timezone(米国等)まで広げない
+        # (locale依存の%Zへ丸投げしない、というBL-043の実装方針)。
+        for tz in ("EST", "EDT", "CST", "CDT", "MST", "PST"):
+            with self.subTest(tz=tz):
+                self.assertIsNone(
+                    daily_json.parse_datetime(f"Fri, 14 Aug 2026 18:45:00 {tz}")
+                )
+
     def test_invalid_is_none(self):
         self.assertIsNone(daily_json.parse_datetime("not a date"))
 
@@ -108,6 +134,12 @@ class JstConversionTest(unittest.TestCase):
             self.assertIsNotNone(fetch.parse_date(s))
             self.assertIsNotNone(daily_json.parse_date_to_jst(s))
 
+    def test_jst_named_timezone_to_jst_is_identity(self):
+        # BL-043: 入力が既にJST("Fri, 14 Aug 2026 18:45:00 JST")なので、
+        # parse_date_to_jst()の出力も同じ壁時計時刻+09:00になる。
+        dt = daily_json.parse_date_to_jst("Fri, 14 Aug 2026 18:45:00 JST")
+        self.assertEqual(dt, datetime.datetime(2026, 8, 14, 18, 45, 0, tzinfo=JST))
+
 
 class ParseDateUtcNormalizationTest(unittest.TestCase):
     """parse_dateはtimezone-aware入力をUTCへ正規化したnaive datetimeを返す。"""
@@ -130,6 +162,13 @@ class ParseDateUtcNormalizationTest(unittest.TestCase):
     def test_timezoneless_time_returns_none(self):
         # タイムゾーンなしの時刻付き日時は parse_date でも None(recentへ広げない)。
         self.assertIsNone(fetch.parse_date("2026-07-13T09:00:00"))
+
+    def test_jst_named_timezone_normalized_to_utc(self):
+        # BL-043: 金融庁RSSのJST named timezoneも、他のtimezone表記と同じく
+        # UTC正規化されたnaive datetimeになる(18:45 JST = 09:45 UTC)。
+        r = fetch.parse_date("Fri, 14 Aug 2026 18:45:00 JST")
+        self.assertEqual(r, datetime.datetime(2026, 8, 14, 9, 45, 0))
+        self.assertIsNone(r.tzinfo)
 
 
 class AtomDateSelectionTest(unittest.TestCase):
@@ -272,6 +311,74 @@ class DaysBackFilterTest(unittest.TestCase):
         self.assertEqual(items, [])
         self.assertIn("undated_skipped=1", out)
         self.assertIn("older_skipped=0", out)
+
+
+class FsaLikeJstCollectionRegressionTest(unittest.TestCase):
+    """BL-043: 金融庁RSS(fsaNewsListAll_rss2.xml)のforensic auditで確認した
+    実際のpubDate形式("Fri, 14 Aug 2026 18:45:00 JST"相当のnamed timezone JST)を
+    synthetic fixtureで再現し、JST parsing修正によって
+    date=None -> undated_skipped という failure chainが解消され、
+    recent itemとしてcollect_recent()に残ることを確認する回帰テスト。
+    外部HTTP通信・Gemini・実際のFSA feed取得は一切行わない。
+    MAX_PER_FEEDのselection order(BL-044として記録・今回は未実装)には触れない。"""
+
+    def _run(self, rss_items_xml, source_name="金融庁"):
+        rss = (
+            '<rss version="2.0"><channel><title>金融庁</title>'
+            f"{rss_items_xml}</channel></rss>"
+        ).encode("utf-8")
+
+        class Resp:
+            status = 200
+            def read(s): return rss
+            def geturl(s): return "https://www.fsa.go.jp/fsaNewsListAll_rss2.xml"
+            def getcode(s): return 200
+            def __enter__(s): return s
+            def __exit__(s, *a): return False
+
+        with patch("fetch.datetime.datetime", _FixedDateTime), \
+                patch("fetch.RSS_FEEDS", [(source_name,
+                      "https://www.fsa.go.jp/fsaNewsListAll_rss2.xml", "ja")]), \
+                patch("fetch.collect_non_rss_items", return_value=[]), \
+                patch("fetch.urllib.request.urlopen", return_value=Resp()), \
+                patch("fetch.time.sleep"), \
+                redirect_stderr(io.StringIO()), redirect_stdout(io.StringIO()) as out:
+            items = fetch.collect_recent()
+        return items, out.getvalue()
+
+    def test_jst_dated_fsa_item_survives_as_recent(self):
+        # now=2026-07-13 07:00:00 UTC(_FixedDateTime)、cutoff=07-12 07:00 UTC。
+        # "Mon, 13 Jul 2026 12:00:00 JST" = 2026-07-13 03:00:00 UTC -> recent。
+        # title自体に "サイバーセキュリティ" を含むためis_cyber_relevant()も通過する
+        # (金融庁はtrusted_cyber_source=falseの実設定のため、is_cyber_relevant()の
+        # keyword一致が必須。BL-042 promotion gateにも該当しない)。titleのみでdescription
+        # を持たせない(FSA RSSの実際のitemがdescriptionを持たないことに合わせる)。
+        rss_items = (
+            "<item><title>暗号資産関連業者におけるサイバーセキュリティの課題と対策"
+            "に関する研究調査報告書を金融庁が公表しました。</title>"
+            "<link>https://www.fsa.go.jp/news/r8/sonota/example.html</link>"
+            "<pubDate>Mon, 13 Jul 2026 12:00:00 JST</pubDate></item>"
+        )
+        items, out = self._run(rss_items)
+        self.assertEqual(len(items), 1)
+        self.assertIn("サイバーセキュリティ", items[0]["title"])
+        self.assertIsNotNone(items[0]["date"])
+        self.assertIn("undated_skipped=0", out)
+        self.assertIn("older_skipped=0", out)
+
+    def test_jst_dated_fsa_item_older_than_cutoff_is_older_skipped_not_undated(self):
+        # 日付そのものはparseできる(date=Noneではない)が、DAYS_BACK cutoffより
+        # 古いので通常どおりolder_skippedとして除外される
+        # (JST対応がrecency判定自体を無効化していないことの回帰guard)。
+        rss_items = (
+            "<item><title>サイバーセキュリティ関連の過去の公表資料</title>"
+            "<link>https://www.fsa.go.jp/news/r8/sonota/old.html</link>"
+            "<pubDate>Thu, 09 Jul 2026 12:00:00 JST</pubDate></item>"
+        )
+        items, out = self._run(rss_items)
+        self.assertEqual(items, [])
+        self.assertIn("undated_skipped=0", out)
+        self.assertIn("older_skipped=1", out)
 
 
 class RegressionTest(unittest.TestCase):
