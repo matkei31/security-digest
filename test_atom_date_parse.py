@@ -180,11 +180,16 @@ class AtomDateSelectionTest(unittest.TestCase):
 
 
 class _FixedDateTime(datetime.datetime):
-    """utcnow()を固定するテスト用datetime。now=2026-07-13 07:00:00 UTC、
-    DAYS_BACK=1のcutoff=2026-07-12 07:00:00 UTC。"""
+    """現在時刻を固定するテスト用datetime。now=2026-07-13 07:00:00 UTC、
+    DAYS_BACK=1のcutoff=2026-07-12 07:00:00 UTC。
+
+    collect_recent()はnaive UTCのcutoffを組み立てるため、tz省略時はnaive UTCを、
+    tz指定時はそのtimezoneへ変換したaware値を返す(BL-041でutcnow()を
+    now(timezone.utc)へ置換したのに合わせた。返す瞬間は従来と同一)。"""
     @classmethod
-    def utcnow(cls):
-        return cls(2026, 7, 13, 7, 0, 0)
+    def now(cls, tz=None):
+        fixed = cls(2026, 7, 13, 7, 0, 0, tzinfo=datetime.timezone.utc)
+        return fixed.replace(tzinfo=None) if tz is None else fixed.astimezone(tz)
 
 
 class DaysBackFilterTest(unittest.TestCase):
@@ -202,7 +207,7 @@ class DaysBackFilterTest(unittest.TestCase):
             def __enter__(s): return s
             def __exit__(s, *a): return False
 
-        # fetch.datetime.datetime を固定utcnowクラスへ差し替え、終了後に必ず戻す。
+        # fetch.datetime.datetime を固定時刻クラスへ差し替え、終了後に必ず戻す。
         with patch("fetch.datetime.datetime", _FixedDateTime), \
                 patch("fetch.RSS_FEEDS", [("Google TAG", "https://x/feed", "en")]), \
                 patch("fetch.collect_non_rss_items", return_value=[]), \

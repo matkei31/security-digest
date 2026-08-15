@@ -617,7 +617,7 @@ class NonRssSourceDispatchTest(unittest.TestCase):
         mock_kev.return_value = [{"source": "CISA KEV"}]
         sources = self._sources(cisa_kev_enabled=True, nist_nvd_enabled=False)
 
-        result = fetch.collect_non_rss_items(fetch.datetime.datetime.utcnow(), sources)
+        result = fetch.collect_non_rss_items(fetch.datetime.datetime.now(fetch.datetime.timezone.utc).replace(tzinfo=None), sources)
 
         mock_kev.assert_called_once()
         self.assertEqual(mock_kev.call_args.kwargs["url"], "https://example.com/kev.json")
@@ -634,7 +634,7 @@ class NonRssSourceDispatchTest(unittest.TestCase):
     def test_cisa_kev_disabled_is_not_fetched(self, mock_kev, mock_nvd):
         sources = self._sources(cisa_kev_enabled=False, nist_nvd_enabled=False)
 
-        result = fetch.collect_non_rss_items(fetch.datetime.datetime.utcnow(), sources)
+        result = fetch.collect_non_rss_items(fetch.datetime.datetime.now(fetch.datetime.timezone.utc).replace(tzinfo=None), sources)
 
         mock_kev.assert_not_called()
         self.assertEqual(result, [])
@@ -644,7 +644,7 @@ class NonRssSourceDispatchTest(unittest.TestCase):
     def test_nist_nvd_disabled_is_not_fetched(self, mock_kev, mock_nvd):
         sources = self._sources(cisa_kev_enabled=False, nist_nvd_enabled=False)
 
-        fetch.collect_non_rss_items(fetch.datetime.datetime.utcnow(), sources)
+        fetch.collect_non_rss_items(fetch.datetime.datetime.now(fetch.datetime.timezone.utc).replace(tzinfo=None), sources)
 
         mock_nvd.assert_not_called()
 
@@ -654,7 +654,7 @@ class NonRssSourceDispatchTest(unittest.TestCase):
         mock_nvd.return_value = [{"source": "NIST NVD"}]
         sources = self._sources(cisa_kev_enabled=False, nist_nvd_enabled=True)
 
-        result = fetch.collect_non_rss_items(fetch.datetime.datetime.utcnow(), sources)
+        result = fetch.collect_non_rss_items(fetch.datetime.datetime.now(fetch.datetime.timezone.utc).replace(tzinfo=None), sources)
 
         mock_nvd.assert_called_once()
         self.assertEqual(mock_nvd.call_args.kwargs["base_url"], "https://example.com/nvd-base")
@@ -820,7 +820,7 @@ class NonRssSourceSpecificValidationTest(unittest.TestCase):
             },
         ]
         with self.assertRaises(fetch.SourceDefinitionError) as ctx:
-            fetch.collect_non_rss_items(fetch.datetime.datetime.utcnow(), sources)
+            fetch.collect_non_rss_items(fetch.datetime.datetime.now(fetch.datetime.timezone.utc).replace(tzinfo=None), sources)
         self.assertIn("cisa_kev", str(ctx.exception))
 
     def test_missing_nist_nvd_id_raises_clear_error(self):
@@ -833,7 +833,7 @@ class NonRssSourceSpecificValidationTest(unittest.TestCase):
             },
         ]
         with self.assertRaises(fetch.SourceDefinitionError) as ctx:
-            fetch.collect_non_rss_items(fetch.datetime.datetime.utcnow(), sources)
+            fetch.collect_non_rss_items(fetch.datetime.datetime.now(fetch.datetime.timezone.utc).replace(tzinfo=None), sources)
         self.assertIn("nist_nvd", str(ctx.exception))
 
 

@@ -33,11 +33,14 @@ class SecurityOperationsContractTest(unittest.TestCase):
         return self.operations.split(start, 1)[1].split(end, 1)[0]
 
     def test_version_10_identity_review_record_and_user_approval(self):
-        # Version 1.2 (Approved, BL-035) is the current header, but the frozen
-        # Version 1.0 approval record (section 12) must remain byte-identical below it.
+        # The header names whichever version is current -- 1.3 (BL-040), accepted
+        # 2026-08-15 -- while the frozen Version 1.0 approval record (section 12)
+        # must remain byte-identical below it. Only the two header literals move
+        # with a version bump or a Draft->Approved transition; everything this test
+        # really protects is in section 12.
         self.assertTrue(OPERATIONS_PATH.exists())
         self.assertIn("# Monomi Digest Security Operations", self.operations)
-        self.assertIn("**Version:** 1.2", self.operations)
+        self.assertIn("**Version:** 1.3", self.operations)
         self.assertIn("**Status:** Approved", self.operations)
         approval = self.section("## 12. Approval and maintenance", "\nReview this runbook")
         for contract in (
@@ -627,9 +630,22 @@ class Bl035DraftSyncTest(unittest.TestCase):
         )[0]
 
     def test_version_is_12_approved_as_of_20260803(self):
-        self.assertIn("**Version:** 1.2", self.operations)
-        self.assertIn("**Status:** Approved", self.operations)
-        self.assertIn("**As of:** 2026-08-03", self.operations)
+        """BL-035's durable fact: Version 1.2 was approved as of 2026-08-03.
+
+        BL-040 (2026-08-15): this used to read the document header, which happened
+        to say 1.2/Approved/2026-08-03 at the time. The header tracks whichever
+        version is current -- it is 1.3/Draft now and will move again -- so it was
+        never the right home for BL-035's own fact. Section 12 is: its Version 1.2
+        paragraph records the approval permanently and does not change when a later
+        version is drafted.
+        """
+        record = self.section(
+            "## 12. Approval and maintenance",
+            "**Version 1.3 is a Draft maintenance update",
+        )
+        self.assertIn("**Version 1.2 is an Approved maintenance update", record)
+        self.assertIn("approved as of 2026-08-03", record)
+        self.assertIn("BL-035", record)
 
     def test_downgrade_procedure_names_its_source_of_truth_and_sync_targets(self):
         # Structural check: the procedure must name every file/field/constant an
