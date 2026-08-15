@@ -2284,11 +2284,13 @@ class Bl034CloseoutTest(unittest.TestCase):
         # they are done rather than pending. metadata残余 left because meta robots
         # was judged unnecessary -- Google's `all` is the default and "has no effect
         # if explicitly listed" -- not because it was skipped. 12 -> 11 -> 9 -> 8 ->
-        # 5 items; the five that remain are still open.
+        # 5 items.
+        # BL-009 Phase A-6 (2026-08-15): favicon left it too -- implemented,
+        # accepted, merged and confirmed on the live site. 12 -> 11 -> 9 -> 8 -> 5
+        # -> 4 items; the four that remain are still open.
         for item in (
             "対象読者と目標",
             "OG／共有",
-            "favicon",
             "個別実装",
             "成果測定の継続",
         ):
