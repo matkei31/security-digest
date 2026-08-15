@@ -376,7 +376,7 @@ class SourceUsagePolicyTest(unittest.TestCase):
         self.assertIn("利用条件を確認し許諾を得た", modes)
         self.assertIn("運用上のリスク受容", modes)
         self.assertIn(
-            "この2 sourceについて規約上問題がないと断定するものではない", modes
+            "この3 sourceについて規約上問題がないと断定するものではない", modes
         )
         self.assertNotIn("利用が許可されていることを確認した", modes)
 

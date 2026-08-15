@@ -117,10 +117,10 @@ Monomi Digestの取得元は、次の5つのcontent usage modeのいずれかへ
 
 `the_hacker_news`・`krebs_on_security`・`securityweek`の3 sourceは、次の理由により、元仕様(RSS description+AI分析)を無修正で継続するのではなく、`metadata_only`へ一律に格下げするのでもなく、`limited_feed_analysis`という第3の運用形態を採用する。
 
-- 両sourceとも公式RSSの提供自体は確認できるが、包括的なAI要約・公開再利用の許諾までは確認できていない(The Hacker Newsは"All Rights Reserved"表示、Krebs on Securityは包括的な公式再利用条件が未発見)。
-- 一方、`microsoft_security`・`cisco_talos`も含めた4 source全てを`metadata_only`へ一律に格下げすると、記事本文相当の情報を一切AI処理できなくなり、実用性が大きく損なわれる。
-- そこで、Microsoft SecurityとCisco Talosは`metadata_only`のまま維持し、The Hacker NewsとKrebs on Securityは、公式RSS descriptionへの限定・rich content/記事ページ取得の禁止・原文保存の禁止・近接翻訳や長い引用の禁止等、高リスクな処理を除去したうえで、`limited_feed_analysis`として限定的に運用を継続する。
-- これは「利用条件を確認し許諾を得た」という判断ではなく、明示的な**運用上のリスク受容**である。本文書のいずれの記述も、この2 sourceについて規約上問題がないと断定するものではない。
+- 3 sourceとも公式RSSの提供自体は確認できるが、RSS descriptionのAI処理・AI分析の公開について包括的な明示の許諾までは確認できていない。ただし確認できた事実の内訳は同一ではない: The Hacker Newsは"All Rights Reserved"表示、Krebs on Securityは包括的な公式再利用条件が未発見、SecurityWeekはTerms of Use自体が未発見かつ"All Rights Reserved"表示で、repository ownerが2026-08-15にoperational riskを受容したがrights permissionは未確認のままである(4章の各行を正本とする)。
+- 一方、`microsoft_security`・`cisco_talos`も含めた5 source(limited_feed_analysis候補3件＋metadata_only 2件)をすべて`metadata_only`へ一律に格下げすると、記事本文相当の情報を一切AI処理できなくなり、実用性が大きく損なわれる。
+- そこで、Microsoft SecurityとCisco Talosは`metadata_only`のまま維持し、The Hacker News・Krebs on Security・SecurityWeekは、公式RSS descriptionへの限定・rich content/記事ページ取得の禁止・原文保存の禁止・近接翻訳や長い引用の禁止等、高リスクな処理を除去したうえで、`limited_feed_analysis`として限定的に運用する。
+- これは「利用条件を確認し許諾を得た」という判断ではなく、明示的な**運用上のリスク受容**である。本文書のいずれの記述も、この3 sourceについて規約上問題がないと断定するものではない。
 - 将来、利用規約の変更、machine-readable instructionの変更、Feed経路の変更、権利者からの訂正・削除・停止の申出、output policy違反、attribution欠落、または当該source固有の利用条件の発見があった場合は、`metadata_only`または`disabled_legal_review`へ即時に降格できるようにする(`SECURITY_OPERATIONS.md`のsource suspension手順を参照)。
 
 ---
