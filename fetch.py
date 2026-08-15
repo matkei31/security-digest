@@ -1222,6 +1222,65 @@ def is_cyber_relevant(item):
     return any(k in text for k in keywords)
 
 
+# BL-042: Coverage Audit 2(30日・171件の全量監査)で、公開recordの8.2%が
+# 金融機関向けdigestとして明白に価値の低いpromotion/non-newsだったことが
+# 判明した。noiseの大半はtrusted_cyber_sourceの記事で、is_cyber_relevant()の
+# keyword filterを無条件に通過する(trusted sourceかどうかと、日次digestへの
+# 掲載価値があるかどうかは別概念として扱う――trusted_cyber_source・
+# is_cyber_relevant()・source_definitions.jsonはこのTicketでは変更しない)。
+#
+# 監査では単純な"webinar"/"leader"/"black hat"等の単語1つのdenylistが
+# KEEP_CORE/KEEP_REFERENCEを誤って除外することが実測で確認されたため、
+# ここではfalse negativeが実測0件と確認された、high-precisionな3 rule
+# familyだけを実装する。noise全件の除去は目的にしない――false negative
+# riskを取ってまで除去率を上げず、安全に判定できない残りのnoiseは
+# 意図的に許容する。
+#
+# 対象はitem["title"](収集直後の原題。resolve_display_title()による表示用
+# 上書きより前)のみ。publisher summary/rich contentには依存しない――
+# metadata_onlyのitem(publisher textがpurge対象)でも同じ判定になる。
+DIGEST_EXCLUSION_ANALYST_REPORT_MARKERS = (
+    "leadership compass", "marketscape", "magic quadrant", "forrester wave",
+)
+DIGEST_EXCLUSION_CONFERENCE_MARKERS = (
+    "black hat", "rsa conference", "def con",
+)
+
+
+def get_digest_exclusion_reason(item):
+    """titleが明白なpromotion/non-newsだとhigh-precisionに判定できる場合、
+    理由keyを返す。該当しなければNone(=日次digestへ含める)。
+
+    3つのrule familyはCoverage Audit 2の30日corpus(171件)で個別に検証済み:
+    KEEP_CORE(A)・KEEP_REFERENCE(B)・BORDERLINE(G)のfalse negativeは0件。
+    """
+    title = (item.get("title") or "").strip()
+    lowered = title.lower()
+
+    # Family A: 明示的なwebinar視聴/登録promotion。"webinar"という語だけでは
+    # 判定しない(過去記事でのwebinar言及等でKEEPを誤除去しうるため)。
+    if lowered.startswith("[webinar]") or "watch this webinar" in lowered:
+        return "webinar_promotion"
+
+    # Family B: アナリスト評価/ランキングでの受賞・順位付けそのものが主題の
+    # 記事。"leader"単体では判定しない(脅威アクターの記述等で頻出するため)、
+    # 具体的なanalyst reportの種類を伴う場合だけ除外する。
+    if "named a leader" in lowered and any(
+        marker in lowered for marker in DIGEST_EXCLUSION_ANALYST_REPORT_MARKERS
+    ):
+        return "analyst_ranking"
+
+    # Family C: カンファレンスへの登壇内容preview。カンファレンス名単独では
+    # 判定しない("Critical vulnerability disclosed at Black Hat"等の実質的な
+    # セキュリティニュースを誤除去しうるため)。
+    if lowered.startswith("preview:") and any(
+        marker in lowered for marker in DIGEST_EXCLUSION_CONFERENCE_MARKERS
+    ):
+        return "conference_preview"
+
+    return None
+
+
 def annotate_item_content_policy(item, source_def, gemini_data_use_status):
     """収集直後のitemへ、BL-032のruntime enforcementが参照するsource_id・
     content_policy(configured_mode/effective_mode/ai_eligible/downgrade_reason)を
@@ -1363,6 +1422,27 @@ def collect_recent(kev_catalog_memo=None, gemini_data_use_status=GEMINI_DATA_USE
         item for item in all_items
         if item["source"] in TRUSTED_CYBER_SOURCES or is_cyber_relevant(item)
     ]
+
+    # BL-042: is_cyber_relevant()等の収集eligibility判定とは別の、日次digest
+    # 掲載eligibilityの判定。ここで除外したitemはdata/にも保存しない――
+    # 「収集はしたが日次digestへの掲載対象から外れた」というaccepted contract
+    # であり、除外item専用のJSON/schema/DBは追加しない。
+    candidate_count = len(all_items)
+    exclusion_counts = {}
+    included_items = []
+    for item in all_items:
+        reason = get_digest_exclusion_reason(item)
+        if reason is None:
+            included_items.append(item)
+        else:
+            exclusion_counts[reason] = exclusion_counts.get(reason, 0) + 1
+    all_items = included_items
+    excluded_count = candidate_count - len(all_items)
+    print(f"  digest候補: {candidate_count} 件")
+    if exclusion_counts:
+        detail = " ".join(f"{k}={v}" for k, v in sorted(exclusion_counts.items()))
+        print(f"  digest除外(promotion gate): {excluded_count} 件 ({detail})")
+    print(f"  digest掲載対象: {len(all_items)} 件")
 
     all_items.sort(key=lambda x: x["date"] or datetime.datetime.min, reverse=True)
     return all_items

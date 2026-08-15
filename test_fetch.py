@@ -10200,5 +10200,210 @@ class Bl009PhaseA6FaviconTest(unittest.TestCase):
         self.assertEqual(sitemap, fetch.build_sitemap_xml(index))
 
 
+class Bl042DigestExclusionReasonTest(unittest.TestCase):
+    """BL-042: Coverage Audit 2(30日・171件の全量監査)で確認された、明白な
+    promotion/non-newsだけをhigh precisionで除外する3 rule family。
+
+    trusted_cyber_source・is_cyber_relevant()・source_definitions.jsonは
+    このTicketで変更しない――source trustと日次digestへのeligibilityは別概念。
+    単語1つのdenylist("webinar"・"leader"・"black hat"単独)はKEEPを誤除去する
+    ことが監査で実測されたため採用しておらず、各ruleは意図的に2条件のAND、
+    または特定のprefix/phrase一致とした。
+    """
+
+    def _reason(self, title):
+        return fetch.get_digest_exclusion_reason({"title": title})
+
+    # ---- Family A: explicit webinar promotion ------------------------------
+    def test_bracketed_webinar_prefix_is_excluded(self):
+        self.assertEqual(
+            self._reason("[Webinar] Tales from the Frontlines: An exclusive briefing on Q2 incidents"),
+            "webinar_promotion",
+        )
+
+    def test_watch_this_webinar_phrase_is_excluded(self):
+        self.assertEqual(
+            self._reason("Shipping 10–50× More Code? Watch This Webinar on Securing AI-Speed Development"),
+            "webinar_promotion",
+        )
+
+    def test_webinar_family_is_case_insensitive(self):
+        self.assertEqual(self._reason("[webinar] lowercase bracket form"), "webinar_promotion")
+        self.assertEqual(self._reason("please WATCH THIS WEBINAR today"), "webinar_promotion")
+
+    def test_bare_webinar_word_is_not_excluded(self):
+        # Coverage Audit 2: a single keyword must not deny by itself.
+        self.assertIsNone(
+            self._reason("Attackers exploit vulnerability discussed in past webinar recordings")
+        )
+
+    # ---- Family B: analyst recognition / ranking promotion -----------------
+    def test_named_a_leader_with_leadership_compass_is_excluded(self):
+        self.assertEqual(
+            self._reason(
+                "​​Microsoft named a Leader in the KuppingerCole Leadership Compass "
+                "for Cloud Native Application Protection Platforms (CNAPP)"
+            ),
+            "analyst_ranking",
+        )
+
+    def test_named_a_leader_with_marketscape_is_excluded(self):
+        self.assertEqual(
+            self._reason("Microsoft named a Leader in the 2026 IDC MarketScape for MDR/MXDR for the Enterprise"),
+            "analyst_ranking",
+        )
+
+    def test_analyst_ranking_family_is_case_insensitive(self):
+        self.assertEqual(
+            self._reason("MICROSOFT NAMED A LEADER IN THE FORRESTER WAVE"), "analyst_ranking"
+        )
+
+    def test_bare_leader_word_is_not_excluded(self):
+        # "leader" alone is common in threat-actor prose and must not deny.
+        self.assertIsNone(
+            self._reason("Leader of ransomware gang arrested in international law enforcement sting")
+        )
+
+    def test_named_a_leader_without_report_marker_is_not_excluded(self):
+        # The AND condition: "named a leader" alone, with no analyst-report
+        # marker, is not enough (no example of this shape was observed, but
+        # the rule must not fire on the phrase in isolation).
+        self.assertIsNone(self._reason("Vendor named a Leader by its own marketing team"))
+
+    # ---- Family C: explicit conference preview ------------------------------
+    def test_preview_prefix_with_black_hat_is_excluded(self):
+        self.assertEqual(
+            self._reason("Preview: Cisco Talos at Black Hat USA 2026"), "conference_preview"
+        )
+
+    def test_conference_preview_family_is_case_insensitive(self):
+        self.assertEqual(self._reason("preview: black hat lowercase test"), "conference_preview")
+
+    def test_conference_name_alone_is_not_excluded(self):
+        # Coverage Audit 2: a conference name alone must not deny -- genuine
+        # security news datelined at a conference must survive.
+        self.assertIsNone(self._reason("Critical vulnerability disclosed at Black Hat"))
+        self.assertIsNone(
+            self._reason("Researchers present authentication bypass at DEF CON")
+        )
+        self.assertIsNone(
+            self._reason("New authentication bypass research presented at RSA Conference")
+        )
+
+    def test_preview_prefix_without_conference_marker_is_not_excluded(self):
+        self.assertIsNone(self._reason("Preview: what to expect from next month's patch cycle"))
+
+    # ---- recall guards: other title shapes that must survive ---------------
+    def test_event_keyword_in_an_unrelated_title_is_not_excluded(self):
+        self.assertIsNone(
+            self._reason(
+                "HollowGraph Malware Hides C2 and Stolen Files in Microsoft 365 Events Dated 2050"
+            )
+        )
+
+    def test_research_and_researcher_titles_are_not_excluded(self):
+        self.assertIsNone(
+            self._reason("Researcher Publishes GitLab RCE PoC Letting Authenticated Users Run Commands")
+        )
+
+    def test_guidance_titles_are_not_excluded(self):
+        self.assertIsNone(self._reason("Mitigation Guidance for Supply Chain Compromise"))
+
+    def test_partnership_announcement_titles_are_not_excluded(self):
+        self.assertIsNone(
+            self._reason("UK and partners expose Russian state-supported actors for zero-click phishing")
+        )
+
+    def test_threatsday_and_weekly_recap_titles_are_not_excluded(self):
+        # BL-042 intentionally does not touch these families: recap dedup is
+        # out of scope, and a recap can hold information not published elsewhere.
+        self.assertIsNone(
+            self._reason("ThreatsDay: Android spyware, PLC attacks, and AI image prompt injection")
+        )
+        self.assertIsNone(
+            self._reason("Weekly Recap: AI Goes Rogue, Metabase 0-Day, MCP Supply-Chain Attacks")
+        )
+
+    # ---- title-only property -------------------------------------------------
+    def test_the_decision_depends_only_on_title_not_summary(self):
+        excluded_title = "[Webinar] Tales from the Frontlines: An exclusive briefing on Q2 incidents"
+        kept_title = "Critical vulnerability disclosed at Black Hat"
+        for summary in ("", "some publisher summary text mentioning webinar and Black Hat"):
+            with self.subTest(summary=summary):
+                self.assertEqual(
+                    fetch.get_digest_exclusion_reason({"title": excluded_title, "summary": summary}),
+                    "webinar_promotion",
+                )
+                self.assertIsNone(
+                    fetch.get_digest_exclusion_reason({"title": kept_title, "summary": summary})
+                )
+
+    def test_a_metadata_only_shaped_item_is_judged_from_title_alone(self):
+        # metadata_only items have no publisher summary at collection time
+        # (BL-032 purges it); the gate must still work on title alone.
+        item = {
+            "title": "Microsoft named a Leader in the 2026 IDC MarketScape for MDR/MXDR for the Enterprise",
+            "summary": "",
+        }
+        self.assertEqual(fetch.get_digest_exclusion_reason(item), "analyst_ranking")
+
+    def test_missing_title_is_not_excluded(self):
+        self.assertIsNone(fetch.get_digest_exclusion_reason({}))
+        self.assertIsNone(fetch.get_digest_exclusion_reason({"title": None}))
+
+
+class Bl042CollectRecentDigestGateTest(unittest.TestCase):
+    """BL-042: collect_recent()がis_cyber_relevant()の後段でdigest exclusion
+    gateを適用し、除外したitemを最終的な返り値に含めないことを検証する。
+
+    trusted sourceが対象になることを確認する(noiseの大半がtrusted_cyber_source
+    経由だったため、"Microsoft Security"というtrusted source名を使う)。
+    """
+
+    def _run(self, non_rss_items):
+        with patch("fetch.RSS_FEEDS", []),                 patch("fetch.collect_non_rss_items", return_value=non_rss_items),                 patch("fetch.time.sleep"):
+            return fetch.collect_recent()
+
+    def _item(self, title, source="Microsoft Security"):
+        return {
+            "title": title,
+            "summary": "",
+            "source": source,
+            "date": datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None),
+            "lang": "en",
+        }
+
+    def test_excluded_item_does_not_reach_the_returned_list(self):
+        items = [
+            self._item("[Webinar] Tales from the Frontlines: An exclusive briefing on Q2 incidents"),
+            self._item("Critical vulnerability disclosed at Black Hat"),
+        ]
+        result = self._run(items)
+        titles = [it["title"] for it in result]
+        self.assertNotIn(
+            "[Webinar] Tales from the Frontlines: An exclusive briefing on Q2 incidents", titles
+        )
+        self.assertIn("Critical vulnerability disclosed at Black Hat", titles)
+
+    def test_all_three_families_are_applied_together(self):
+        items = [
+            self._item("[Webinar] watch now"),
+            self._item("Microsoft named a Leader in the Forrester Wave"),
+            self._item("Preview: Cisco Talos at Black Hat USA 2026"),
+            self._item("Genuine ransomware attack disclosed"),
+        ]
+        result = self._run(items)
+        titles = {it["title"] for it in result}
+        self.assertEqual(titles, {"Genuine ransomware attack disclosed"})
+
+    def test_no_exclusion_when_nothing_matches(self):
+        items = [
+            self._item("Critical vulnerability disclosed at Black Hat"),
+            self._item("Researcher Publishes GitLab RCE PoC"),
+        ]
+        result = self._run(items)
+        self.assertEqual(len(result), 2)
+
+
 if __name__ == "__main__":
     unittest.main()
