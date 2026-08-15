@@ -10738,5 +10738,212 @@ class Bl044NvdTransportLimitSeparationTest(unittest.TestCase):
             f"resultsPerPage={fetch.MAX_CANDIDATES_PER_SOURCE}", captured["url"])
 
 
+class Bl045CyberRelevanceKeywordSetTest(unittest.TestCase):
+    """BL-045: keyword集合そのものの契約。broad governance語を単独keywordとして
+    保持しないこと、bare administrative termを追加しないこと、重複が無く
+    normalize済みであることを固定する。"""
+
+    REMOVED_BROAD = ("ガイドライン", "規制", "制度", "policy",
+                     "regulation", "compliance", "governance", "リスク")
+    FORBIDDEN_BARE = ("監督指針", "監督指針等", "一部改正", "パブリックコメント", "金融行政")
+
+    def test_broad_governance_terms_are_not_standalone_keywords(self):
+        for term in self.REMOVED_BROAD:
+            with self.subTest(term=term):
+                self.assertNotIn(term, fetch.CYBER_RELEVANCE_KEYWORDS)
+
+    def test_bare_administrative_terms_are_not_keywords(self):
+        # auditで、cyber改正とnon-cyber改正のtitleがtitle-onlyでは分離不能であり、
+        # bare "監督指針" はnon-cyberな監督指針改正を誤通過させることを確認済み。
+        for term in self.FORBIDDEN_BARE:
+            with self.subTest(term=term):
+                self.assertNotIn(term, fetch.CYBER_RELEVANCE_KEYWORDS)
+
+    def test_specific_compounds_replacing_bare_risk_are_present(self):
+        for term in ("サイバーリスク", "システムリスク", "itリスク",
+                     "セキュリティリスク", "流出リスク", "個人情報保護"):
+            with self.subTest(term=term):
+                self.assertIn(term, fetch.CYBER_RELEVANCE_KEYWORDS)
+
+    def test_keyword_set_has_no_duplicates_and_is_normalized(self):
+        kws = fetch.CYBER_RELEVANCE_KEYWORDS
+        self.assertEqual(len(kws), len(set(kws)))
+        for k in kws:
+            with self.subTest(k=k):
+                self.assertEqual(k, fetch.normalize_relevance_text(k))
+
+
+class Bl045FsaRelevanceTest(unittest.TestCase):
+    """BL-045: 金融庁relevance recall/precisionのsynthetic回帰。
+    実際の金融庁公式titleの語彙に基づく(FSA relevance design audit)。
+    外部通信は行わない。"""
+
+    def _rel(self, title, summary=""):
+        return fetch.is_cyber_relevant({"title": title, "summary": summary})
+
+    def test_audited_tier1_terms_pass(self):
+        cases = [
+            "「暗号資産関連業者におけるサイバーセキュリティの課題と対策に関する研究調査」報告書について公表しました。",
+            "「金融分野におけるITレジリエンスに関する分析レポート」について公表しました。",
+            "「金融機関のシステム障害に関する分析レポート」の公表について",
+            "システムリスク管理態勢に関する考え方について公表しました。",
+            "「預金取扱金融機関の耐量子計算機暗号への対応に関する検討会」報告書",
+            "「金融機関のサードパーティ・サイバーセキュリティリスク管理強化に関する調査」報告書",
+            "預金口座の不正利用に係る情報提供件数等について公表しました。",
+            "預貯金の不正送金被害等の発生状況について公表しました。",
+            "ＳＮＳ等におけるなりすまし詐欺広告に関する対策の強化について公表しました。",
+            "フィッシング耐性のある多要素認証等に係る官民一体・業界横断的な広報について",
+            "金融庁・金融情報システムセンター(FISC)の意見交換会について",
+            "金融ISACとの連携について公表しました。",
+            "サイバーセキュリティセルフアセスメントの集計結果について",
+            "北朝鮮による暗号資産窃取及び官民連携に関する共同声明",
+            "近年増加しているサイバーリスクへの対応について公表しました。",
+            "セキュリティリスク評価の高度化について公表しました。",
+            "「金融分野における個人情報保護に関するガイドライン」の一部改正について",
+        ]
+        for t in cases:
+            with self.subTest(title=t[:28]):
+                self.assertTrue(self._rel(t), f"should be cyber-relevant: {t}")
+
+    def test_broad_governance_terms_alone_do_not_pass(self):
+        # auditでEXCLUDEと判定した実在の金融庁title。broad語だけを理由に
+        # 通してはいけない(旧listではこれらが誤通過していた)。
+        cases = [
+            "「風水害リスクに関する金融機関の取組の動向や課題」について公表しました。",
+            "リスク性金融商品の販売・組成会社による顧客本位の業務運営に関するモニタリング結果について公表しました。",
+            "「気候関連リスクに関する金融機関の取組の動向や課題」の公表",
+            "「経済価値ベースのソルベンシー規制」の概要資料を更新しました。",
+            "「決済に関する規制の見直し」に係る規制の政策評価（RIA）について公表しました。",
+            "「中小企業の事業再生等に関するガイドライン」の活用実績について公表しました。",
+            "「経営者保証に関するガイドライン」の活用実績等について更新しました。",
+            "金融審議会 市場制度ワーキング・グループ報告について公表しました。",
+            "This document describes our compliance policy and regulation governance.",
+        ]
+        for t in cases:
+            with self.subTest(title=t[:28]):
+                self.assertFalse(self._rel(t), f"should NOT be cyber-relevant: {t}")
+
+    def test_full_width_ascii_is_normalized(self):
+        # 全角ASCIIを個別keywordとして列挙せず、NFKCで吸収する。
+        self.assertTrue(self._rel("ＳＮＳ等におけるなりすまし詐欺広告に関する対策の強化について"))
+        self.assertTrue(self._rel("ＩＴレジリエンスに関する分析レポートについて"))
+        self.assertTrue(self._rel("ＣＶＥ-2026-12569 に関する注意喚起"))
+        self.assertEqual(fetch.normalize_relevance_text("ＩＴレジリエンス"), "itレジリエンス")
+
+    def test_normalization_does_not_break_existing_matching(self):
+        # 既存の日本語/英語keyword matchingがNFKCで壊れないこと。
+        for t in ("Critical vulnerability exploited in the wild",
+                  "ランサムウェアによるインシデント対応について",
+                  "CVE-2026-0001 — Some Product RCE Vulnerability",
+                  "不正アクセスによる情報漏洩の可能性について"):
+            with self.subTest(title=t[:28]):
+                self.assertTrue(self._rel(t))
+
+    def test_summary_is_still_used_when_present(self):
+        # title-onlyではなく、descriptionがあれば従来どおり併用する。
+        self.assertFalse(self._rel("ある報告書の公表について"))
+        self.assertTrue(self._rel("ある報告書の公表について",
+                                  summary="本報告書はサイバー攻撃の分析結果をまとめたものです。"))
+
+    def test_missing_or_none_fields_do_not_raise(self):
+        self.assertFalse(fetch.is_cyber_relevant({}))
+        self.assertFalse(fetch.is_cyber_relevant({"title": None, "summary": None}))
+
+
+class Bl045FsaBenchmarkEventTest(unittest.TestCase):
+    """BL-045: FSA relevance design auditのbenchmark 3件を契約として固定する。"""
+
+    def _rel(self, title, summary=""):
+        return fetch.is_cyber_relevant({"title": title, "summary": summary})
+
+    EVENT_A = ("「保険会社向けの総合的な監督指針」等の一部改正（案）に対する"
+               "パブリックコメントの結果等について公表しました。")
+    EVENT_B = ("「暗号資産関連業者におけるサイバーセキュリティの課題と対策に関する"
+               "研究調査」報告書について公表しました。")
+    EVENT_C = "「金融分野におけるITレジリエンスに関する分析レポート」について公表しました。"
+
+    def test_event_b_passes(self):
+        # titleに「サイバーセキュリティ」を含むtrue positive。現行・新logic双方でPASS。
+        self.assertTrue(self._rel(self.EVENT_B))
+
+    def test_event_c_is_recovered_by_new_keyword(self):
+        # 旧listでは落ちていた。ITレジリエンスの追加で回復する。
+        self.assertTrue(self._rel(self.EVENT_C))
+
+    def test_event_a_is_an_accepted_residual_false_negative(self):
+        # ACCEPTED RESIDUAL (BL-045): これはbugの固定ではなく、
+        # 「title/summary metadataだけではcyber改正とnon-cyber改正の監督指針を
+        # high precisionに分離できない」というaccepted limitationの明示である。
+        # auditで、cyber版とnon-cyber版のtitleが1文字("等")しか違わず、
+        # しかもその"等"がnon-cyber版にも現れることを確認した。bare "監督指針"を
+        # 追加するとnon-cyberな監督指針改正を複数誤通過させる。
+        # 将来architectureがarticle-page inspection等へ変わればrevisit可能
+        # (現行はSD-002が追加のarticle-page HTTP取得を禁止している)。
+        self.assertFalse(self._rel(self.EVENT_A, summary=""))
+
+    def test_non_cyber_supervisory_guideline_items_stay_excluded(self):
+        # Event Aを拾うためにbare "監督指針"を入れると、これらが誤通過する。
+        for t in ("「主要行等向けの総合的な監督指針」等の一部改正（案）（仕組預金関係）について公表しました。",
+                  "「主要行等向けの総合的な監督指針」等の一部改正（案）（銀行代理業関係等）について公表しました。",
+                  "「金融商品取引業者等向けの総合的な監督指針」の一部改正（案）に対するパブリックコメントの結果等について"):
+            with self.subTest(title=t[:30]):
+                self.assertFalse(self._rel(t))
+
+
+class Bl045CrossSourceRegressionTest(unittest.TestCase):
+    """BL-045: is_cyber_relevant()はgeneric functionなので、金融庁以外の
+    gated source(NIST・CISA KEV・IPA)へのregressionが無いことを固定する。
+    非gated source(trusted_cyber_source=true)はそもそもこの関数を通らない。"""
+
+    def _rel(self, title, summary=""):
+        return fetch.is_cyber_relevant({"title": title, "summary": summary})
+
+    def test_nist_cyber_items_still_pass(self):
+        # NIST feedは<description>を持つため、実際のfeed同様 title+description で判定する
+        # (この3件はいずれも旧listでも新listでもPASSする＝regressionなし)。
+        cases = [
+            ("Draft NIST Guidelines Rethink Cybersecurity for the AI Era", ""),
+            ("Securing Smart Speakers for Home Health Care: NIST Offers New Guidelines",
+             "Cybersecurity and privacy risks can threaten patient confidentiality."),
+            ("NIST Awards More Than $3 Million to Support Cybersecurity Workforce", ""),
+        ]
+        for t, d in cases:
+            with self.subTest(title=t[:30]):
+                self.assertTrue(self._rel(t, d))
+
+    def test_nist_non_cyber_items_still_excluded(self):
+        for t in ("NIST Researchers Correct Common Error Confounding Nanotech Measurements",
+                  "NIST Receives New Patent for Microbe-Killing Water Heater",
+                  "NIST Joins National Genesis Mission to Accelerate AI Innovation"):
+            with self.subTest(title=t[:30]):
+                self.assertFalse(self._rel(t))
+
+    def test_cisa_kev_titles_still_pass_via_cve(self):
+        for t in ("CVE-2026-60137 — WordPress Core SQL Injection Vulnerability",
+                  "CVE-2026-16812 — Arista VeloCloud Orchestrator OS Command Injection Vulnerability"):
+            with self.subTest(title=t[:30]):
+                self.assertTrue(self._rel(t))
+
+    def test_ipa_advisory_titles_still_pass(self):
+        # 公式IPA security RSS(alert.rdf)の実titleのうち、BL-045前後の双方で
+        # PASSすることをread-only preflightで確認したもの。is_cyber_relevant()の
+        # 結果を直接assertする(fallback条件でmaskしない)。
+        for t in ("Microsoft 製品の脆弱性対策について(2026年8月)",
+                  "Oracle Java の脆弱性対策について(2026年7月)",
+                  "WordPressの脆弱性対策について(CVE-2026-60137、CVE-2026-63030：wp2shell)",
+                  "Check Point Software Technologies製品の脆弱性対策について(CVE-2026-50751)"):
+            with self.subTest(title=t[:30]):
+                self.assertTrue(self._rel(t))
+
+    def test_ipa_support_end_notice_is_unchanged_by_bl045(self):
+        # 「更新：Windows 10のサポート終了に伴う注意喚起」はBL-045の前後どちらでも
+        # FAILする(旧listにも新listにも一致するkeywordが無い)。したがってこれは
+        # BL-045によるregressionではなく、既存の別relevance gapである。
+        # BL-045ではこれをfixしない――「注意喚起」のような一般語をkeywordへ
+        # 追加すると非cyberな行政通知まで通してしまうため。
+        self.assertFalse(self._rel("更新：Windows 10のサポート終了に伴う注意喚起"))
+        self.assertNotIn("注意喚起", fetch.CYBER_RELEVANCE_KEYWORDS)
+
+
 if __name__ == "__main__":
     unittest.main()
