@@ -9463,7 +9463,7 @@ class Bl009PhaseA2HeadMetadataTest(unittest.TestCase):
 
     The head is what search results are built from, so the four page types get
     distinct titles and deterministic descriptions. The visible page is not
-    touched: H1 stays 🔐 Monomi Digest everywhere it already was, and the
+    touched: H1 stays the brand alone everywhere it already was, and the
     descriptions are templates, never AI output and never derived from the day's
     articles. Phase A-2 adds nothing else to the head -- canonical, robots, OG,
     Twitter Card and JSON-LD are out of scope and simply absent for now, which is
@@ -9516,7 +9516,7 @@ class Bl009PhaseA2HeadMetadataTest(unittest.TestCase):
     def test_top_page_title_is_the_approved_value(self):
         self.assertEqual(
             self._title(self._top_html()),
-            "🔐 Monomi Digest | 金融機関に関連するサイバーセキュリティ情報",
+            "Monomi Digest | 金融機関に関連するサイバーセキュリティ情報",
         )
 
     def test_top_page_description_is_the_approved_about_sentence(self):
@@ -9533,8 +9533,8 @@ class Bl009PhaseA2HeadMetadataTest(unittest.TestCase):
     def test_top_page_heading_still_reads_the_brand_alone(self):
         """The longer title belongs to the document, not to the visible header."""
         html = self._top_html()
-        self.assertIn("<h1>🔐 Monomi Digest</h1>", html)
-        self.assertNotIn("<h1>🔐 Monomi Digest | ", html)
+        self.assertIn("<h1>Monomi Digest</h1>", html)
+        self.assertNotIn("<h1>Monomi Digest | ", html)
 
     # ---- daily archive -----------------------------------------------------
     def test_daily_archive_dates_drop_the_leading_zero(self):
@@ -9554,7 +9554,7 @@ class Bl009PhaseA2HeadMetadataTest(unittest.TestCase):
         html = fetch.build_daily_archive_html(self._digest())
         self.assertEqual(
             self._title(html),
-            "🔐 2026年8月4日のサイバーセキュリティ情報 | Monomi Digest",
+            "2026年8月4日のサイバーセキュリティ情報 | Monomi Digest",
         )
 
     def test_daily_archive_description_follows_the_date_template(self):
@@ -9573,7 +9573,7 @@ class Bl009PhaseA2HeadMetadataTest(unittest.TestCase):
 
     def test_daily_archive_keeps_its_visible_heading_and_date_line(self):
         html = fetch.build_daily_archive_html(self._digest())
-        self.assertIn("<h1>🔐 Monomi Digest</h1>", html)
+        self.assertIn("<h1>Monomi Digest</h1>", html)
         self.assertIn('<div class="sub">日次ダイジェスト：2026年08月04日</div>', html)
 
     def test_the_description_is_a_template_not_derived_from_the_articles(self):
@@ -9689,7 +9689,7 @@ class Bl009PhaseA2HeadMetadataTest(unittest.TestCase):
     def test_pages_without_a_description_emit_no_empty_meta(self):
         html = fetch.build_html([], None)
         self.assertNotIn('name="description"', html)
-        self.assertEqual(self._title(html), "🔐 Monomi Digest")
+        self.assertEqual(self._title(html), "Monomi Digest")
 
 
 
@@ -10075,29 +10075,57 @@ class Bl009PhaseA4CanonicalTest(unittest.TestCase):
         self.assertIn(f'<meta name="description" content="{fetch.TOP_PAGE_META_DESCRIPTION}">',
                       html)
         self.assertEqual(self._canonical(html), "https://monomidigest.com/")
-        self.assertIn("<h1>🔐 Monomi Digest</h1>", html)
+        self.assertIn("<h1>Monomi Digest</h1>", html)
 
 
-class Bl009PhaseA6FaviconTest(unittest.TestCase):
-    """BL-009 Phase A-6: the site identity icon.
+class Bl049LockBrandingRemovalTest(unittest.TestCase):
+    """BL-049: the lock mark is gone from reader-facing branding.
 
-    To be eligible for a favicon in Google Search a site puts a link to it in
-    the home page's head, and both the file (Googlebot-Image) and the home page
-    (Googlebot) have to be crawlable. It is a search-appearance / site-attribution
-    feature, and appearing is not guaranteed even when the guidelines are met;
-    this phase claims no ranking benefit and does not aim for one. It is
-    site-wide rather than home-page-only because of the browser tab: every
-    published page should look like the same site.
+    The padlock read as a functional UI symbol -- private, locked, sign-in
+    required, restricted area -- and Monomi Digest means none of that. So the
+    emoji is dropped from the document title and the visible heading, and the
+    BL-009 Phase A-6 favicon (`docs/favicon.svg`, the same padlock drawing) is
+    withdrawn together with its `<link rel="icon">`.
 
-    The href is root-relative on purpose. The file lives at the site root, the
-    path does not depend on how deep the page is, and it needs no origin -- so
-    this contract does not add a second place where the public origin is spelled
-    out.
+    Deliberately no replacement: no favicon, logo, monogram, emoji icon or any
+    other brand asset is introduced. The brand is the text `Monomi Digest`, and
+    letting the browser fall back to its generic page icon is the accepted
+    outcome. These tests therefore pin *absence*, not a substitute mark.
     """
 
     ROOT = Path(__file__).resolve().parent
     DOCS = ROOT / "docs"
-    ICON_RE = re.compile(r'<link rel="icon" href="([^"]*)">')
+    BRAND = "Monomi Digest"
+    LOCK = "\U0001f510"
+
+    HEAD_RE = re.compile(r"<head>(.*?)</head>", re.S)
+    LINK_RE = re.compile(r"<link\b[^>]*>")
+    REL_RE = re.compile(r'\brel="([^"]*)"')
+    TITLE_RE = re.compile(r"<title>(.*?)</title>", re.S)
+    H1_RE = re.compile(r"<h1[^>]*>(.*?)</h1>", re.S)
+
+    # BL-049 scopes to brand-owned markup and to site-icon <link> elements only.
+    # It must not become a content filter: an article may legitimately be titled
+    # "🔐 Package manifest security update", and words like "favicon", "icon" or
+    # "manifest" are ordinary security vocabulary in a headline, summary or tag.
+    # So the negative assertions below look at <title>/<h1> and at <link rel=...>
+    # inside <head>, never at the whole document.
+    ICON_RELS = ("icon", "shortcut icon", "apple-touch-icon",
+                 "apple-touch-icon-precomposed", "mask-icon", "fluid-icon", "manifest")
+
+    def _head(self, html):
+        found = self.HEAD_RE.search(html)
+        self.assertIsNotNone(found, "every page must have a <head>")
+        return found.group(1)
+
+    def _head_link_rels(self, html):
+        return [(self.REL_RE.search(tag).group(1).strip().lower()
+                 if self.REL_RE.search(tag) else "")
+                for tag in self.LINK_RE.findall(self._head(html))]
+
+    def _brand_markup(self, html):
+        """The brand-owned deterministic strings only: <title> and <h1>."""
+        return self.TITLE_RE.findall(html) + self.H1_RE.findall(html)
 
     def _pages(self):
         pages = [self.DOCS / "index.html", self.DOCS / "about.html",
@@ -10106,54 +10134,47 @@ class Bl009PhaseA6FaviconTest(unittest.TestCase):
                         if p.name != "index.html")
         return pages
 
-    # ---- the asset ---------------------------------------------------------
-    def test_the_favicon_asset_exists_at_a_stable_path(self):
-        self.assertEqual(fetch.FAVICON_PATH, "/favicon.svg")
-        self.assertTrue((self.DOCS / "favicon.svg").is_file())
+    # ---- the asset is gone and nothing replaced it -------------------------
+    def test_the_favicon_asset_is_deleted(self):
+        self.assertFalse((self.DOCS / "favicon.svg").exists())
 
-    def test_the_asset_is_valid_square_svg(self):
-        """Pixel dimensions and viewBox units are different things: the size
-        requirement is about the former, the shape about the latter."""
-        svg = (self.DOCS / "favicon.svg").read_text(encoding="utf-8")
-        root = xml.etree.ElementTree.fromstring(svg)
-        self.assertEqual(root.tag, "{http://www.w3.org/2000/svg}svg")
-        width = float(root.get("width"))
-        height = float(root.get("height"))
-        self.assertEqual(width, 64)
-        self.assertEqual(height, 64)
-        self.assertEqual(width, height, "a favicon must be square")
-        self.assertGreaterEqual(width, 48, "must stay legible well above 48px")
-        # ...and it stays scalable: the viewBox keeps the same 1:1 aspect ratio
-        box_width, box_height = (float(v) for v in root.get("viewBox").split()[2:])
-        self.assertEqual(box_width, box_height)
-        self.assertEqual(width / height, box_width / box_height)
+    def test_no_replacement_icon_or_logo_asset_was_added(self):
+        """The point is removing the mark, not swapping it for another one."""
+        for name in ("favicon.ico", "favicon.png", "favicon.svg", "icon.svg",
+                     "icon.png", "logo.svg", "logo.png", "apple-touch-icon.png",
+                     "site.webmanifest", "manifest.json"):
+            with self.subTest(asset=name):
+                self.assertFalse((self.DOCS / name).exists())
 
-    def test_the_asset_carries_no_text_or_initials(self):
-        """The approved identity is the lock mark, not a wordmark."""
-        svg = (self.DOCS / "favicon.svg").read_text(encoding="utf-8")
-        self.assertNotIn("<text", svg)
-        self.assertNotIn("font", svg)
+    def test_the_generator_keeps_no_favicon_constant(self):
+        self.assertFalse(hasattr(fetch, "FAVICON_PATH"))
+        self.assertFalse(hasattr(fetch, "FAVICON_LINK_HTML"))
 
-    # ---- the head contract -------------------------------------------------
-    def test_every_published_page_links_the_favicon_exactly_once(self):
+    # ---- no page references an icon ----------------------------------------
+    def test_no_published_page_declares_a_site_icon_link(self):
+        """Structural: no <link> in <head> declares an icon or a manifest.
+
+        Scoped to link relations on purpose -- the words "favicon", "icon" and
+        "manifest" are ordinary article vocabulary and must stay publishable.
+        """
         pages = self._pages()
         self.assertGreater(len(pages), 3)
         for path in pages:
             with self.subTest(page=path.relative_to(self.DOCS)):
-                found = self.ICON_RE.findall(path.read_text(encoding="utf-8"))
-                self.assertEqual(len(found), 1)
-                self.assertEqual(found[0], "/favicon.svg")
+                rels = self._head_link_rels(path.read_text(encoding="utf-8"))
+                self.assertNotEqual(rels, [], "canonical should still be there")
+                for rel in rels:
+                    self.assertNotIn(rel, self.ICON_RELS)
 
-    def test_the_four_page_types_use_the_identical_link(self):
-        for name in ("index.html", "about.html", "archive/index.html",
-                     "archive/2026-08-14.html"):
-            with self.subTest(page=name):
-                html = (self.DOCS / name).read_text(encoding="utf-8")
-                self.assertIn('<link rel="icon" href="/favicon.svg">', html)
+    def test_no_published_page_head_points_at_an_icon_asset(self):
+        """The href side of the same contract, still scoped to <head>."""
+        for path in self._pages():
+            with self.subTest(page=path.relative_to(self.DOCS)):
+                head = self._head(path.read_text(encoding="utf-8"))
+                for needle in ("favicon", "apple-touch-icon", "webmanifest"):
+                    self.assertNotIn(needle, head)
 
-    def test_generated_pages_carry_the_link_without_being_asked(self):
-        """Unlike canonical, the favicon is not opt-in: it is site identity, so
-        every page the generator produces has it."""
+    def test_generated_pages_emit_no_icon_link(self):
         for html in (fetch.build_html([], None),
                      fetch.build_archive_index_html([]),
                      fetch.build_daily_archive_html({
@@ -10161,25 +10182,63 @@ class Bl009PhaseA6FaviconTest(unittest.TestCase):
                          "generated_at": "2026-08-04T07:39:47+09:00",
                          "items": [], "counts": {}, "run": {}})):
             with self.subTest(html=html[:60]):
-                self.assertEqual(len(self.ICON_RE.findall(html)), 1)
+                for rel in self._head_link_rels(html):
+                    self.assertNotIn(rel, self.ICON_RELS)
+                self.assertNotIn("favicon", self._head(html))
 
-    # ---- the asset survives generation -------------------------------------
-    def test_archive_regeneration_neither_creates_nor_touches_the_asset(self):
-        """Like docs/CNAME, docs/robots.txt and docs/about.html, it is static."""
-        payload = (self.DOCS / "favicon.svg").read_text(encoding="utf-8")
-        with tempfile.TemporaryDirectory() as tmp:
-            docs = Path(tmp) / "docs"
-            (docs / "archive").mkdir(parents=True)
-            data = Path(tmp) / "data"
-            data.mkdir()
-            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
-            self.assertFalse((docs / "favicon.svg").exists(),
-                             "nothing generates the favicon")
-            (docs / "favicon.svg").write_text(payload, encoding="utf-8")
-            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
-            self.assertEqual((docs / "favicon.svg").read_text(encoding="utf-8"), payload)
+    # ---- the lock is gone from title and heading ---------------------------
+    def test_no_published_page_carries_the_lock_in_brand_markup(self):
+        """Scoped to <title> and <h1>. An article headline is free to contain
+        the character; only the brand-owned markup must be clean."""
+        for path in self._pages():
+            html = path.read_text(encoding="utf-8")
+            with self.subTest(page=path.relative_to(self.DOCS)):
+                brand = self._brand_markup(html)
+                self.assertGreaterEqual(len(brand), 1)
+                for fragment in brand:
+                    self.assertNotIn(self.LOCK, fragment)
+                self.assertNotIn(f"<h1>{self.LOCK} {self.BRAND}</h1>", html)
+                self.assertNotIn(f"<title>{self.LOCK} ", html)
 
-    # ---- earlier phases are undisturbed ------------------------------------
+    def test_brand_owned_titles_and_heading_are_text_only(self):
+        self.assertEqual(
+            fetch.TOP_PAGE_DOCUMENT_TITLE,
+            "Monomi Digest | 金融機関に関連するサイバーセキュリティ情報",
+        )
+        self.assertEqual(
+            fetch.daily_archive_document_title("2026-08-04"),
+            "2026年8月4日のサイバーセキュリティ情報 | Monomi Digest",
+        )
+        for html in (fetch.build_html([], None),
+                     fetch.build_daily_archive_html({
+                         "schema_version": 2, "digest_date": "2026-08-04",
+                         "generated_at": "2026-08-04T07:39:47+09:00",
+                         "items": [], "counts": {}, "run": {}})):
+            with self.subTest(html=html[:60]):
+                self.assertIn(f"<h1>{self.BRAND}</h1>", html)
+                for fragment in self._brand_markup(html):
+                    self.assertNotIn(self.LOCK, fragment)
+
+    def test_no_other_emoji_was_substituted_for_the_lock(self):
+        """Removing the mark must not become 'replace it with a different one'."""
+        for substitute in ("\U0001f512", "\U0001f511", "\U0001f6e1", "\U0001f512\ufe0f",
+                           "\U0001f4f0", "\U0001f4a1", "\u2705", "\u26a0", "\U0001f575"):
+            with self.subTest(substitute=substitute):
+                self.assertNotIn(substitute, fetch.TOP_PAGE_DOCUMENT_TITLE)
+                for fragment in self._brand_markup(fetch.build_html([], None)):
+                    self.assertNotIn(substitute, fragment)
+
+    # ---- the brand itself, and neighbouring contracts, are unchanged -------
+    def test_the_brand_name_and_subtitle_are_unchanged(self):
+        html = fetch.build_html([], None, document_title=fetch.TOP_PAGE_DOCUMENT_TITLE,
+                                meta_description=fetch.TOP_PAGE_META_DESCRIPTION,
+                                canonical_url=fetch.public_url(fetch.TOP_PAGE_PATH))
+        self.assertIn(f"<h1>{self.BRAND}</h1>", html)
+        self.assertIn(self.BRAND, fetch.TOP_PAGE_DOCUMENT_TITLE)
+        self.assertIn(self.BRAND, fetch.TOP_PAGE_META_DESCRIPTION)
+        self.assertIn(f'<meta name="description" content="{fetch.TOP_PAGE_META_DESCRIPTION}">', html)
+        self.assertIn('<link rel="canonical" href="https://monomidigest.com/">', html)
+
     def test_the_head_contracts_from_a2_to_a4_still_hold(self):
         for path in self._pages():
             html = path.read_text(encoding="utf-8")
@@ -10188,7 +10247,90 @@ class Bl009PhaseA6FaviconTest(unittest.TestCase):
                 self.assertEqual(len(re.findall(r'<meta name="description"', html)), 1)
                 self.assertEqual(len(re.findall(r'<link rel="canonical"', html)), 1)
 
-    def test_the_crawl_files_are_untouched_by_this_phase(self):
+    # ---- BL-049 must not become a content filter ---------------------------
+    def _article(self, title, summary, tags):
+        return {
+            "title": title, "raw_title": title, "source": "Test Source",
+            "link": "https://example.com/manifest-update", "lang": "en", "date": None,
+            "summary": summary,
+            "ai_analysis": {
+                "category": "脆弱性・パッチ", "importance": "高", "urgency": "本日確認",
+                "summary": summary, "financial_impact": "影響",
+                "recommended_actions": ["利用有無を確認する"], "reason": "理由", "tags": tags,
+            },
+            "ai_analysis_meta": {
+                "status": "success", "error_type": None, "http_status": None,
+                "generated_at": "2026-08-16T07:00:00+09:00",
+            },
+        }
+
+    def test_article_content_may_contain_the_lock_and_the_word_manifest(self):
+        """BL-049 removes lock *branding*; it does not filter article text.
+
+        A headline like "🔐 Package manifest security update" is legitimate
+        reader-facing content. It must render, while the brand markup stays
+        clean and no site-icon link appears. This is the regression that keeps
+        "remove the branding" from silently becoming "ban the character".
+        """
+        title = f"{self.LOCK} Package manifest security update"
+        summary = "The package manifest and its favicon assets were updated."
+        html = fetch.build_html(
+            [self._article(title, summary, ["manifest", "supply chain"])], None,
+            document_title=fetch.TOP_PAGE_DOCUMENT_TITLE,
+            meta_description=fetch.TOP_PAGE_META_DESCRIPTION,
+            canonical_url=fetch.public_url(fetch.TOP_PAGE_PATH),
+        )
+        # the article survives untouched
+        self.assertIn("Package manifest security update", html)
+        self.assertIn(self.LOCK, html, "the character is content, not branding")
+        self.assertIn("manifest", html)
+        # ...while the brand-owned markup is clean
+        self.assertIn(f"<h1>{self.BRAND}</h1>", html)
+        self.assertIn(f"<title>{fetch.TOP_PAGE_DOCUMENT_TITLE}</title>", html)
+        self.assertNotIn(self.LOCK, self.TITLE_RE.findall(html)[0])
+        self.assertNotIn(self.LOCK, self.H1_RE.findall(html)[0])
+        # ...and no site icon / manifest link is emitted despite those words
+        for rel in self._head_link_rels(html):
+            self.assertNotIn(rel, self.ICON_RELS)
+        self.assertNotIn("favicon", self._head(html))
+
+    def test_the_same_holds_for_a_daily_archive_page(self):
+        title = f"{self.LOCK} Package manifest security update"
+        digest = {
+            "schema_version": 2, "digest_date": "2026-08-04",
+            "generated_at": "2026-08-04T07:39:47+09:00", "counts": {}, "run": {},
+            "items": [{
+                "id": "id-0", "source_id": "test_source", "source_name": "Test Source",
+                "source_type": "報道・メディア", "source_tier": "Tier 2",
+                "collection_method": "rss", "language": "en",
+                "url": "https://example.com/manifest-update",
+                "canonical_url": "https://example.com/manifest-update",
+                "published_at": "2026-08-04T07:00:00+09:00",
+                "fetched_at": "2026-08-04T07:10:00+09:00",
+                "title": title, "raw_title": title, "raw_excerpt": None,
+                "content_hash": "hash-0", "rule_flags": [],
+                "analysis": {
+                    "status": "success", "model": "gemini-2.5-flash",
+                    "prompt_version": "article-analysis-v8",
+                    "generated_at": "2026-08-04T07:20:00+09:00",
+                    "category": "脆弱性・パッチ", "category_reason": "理由",
+                    "importance": "高", "urgency": "本日確認",
+                    "summary": "パッケージのmanifestに関する更新です。",
+                    "financial_impact": "影響", "recommended_actions": ["確認する"],
+                    "tags": ["manifest"],
+                },
+            }],
+        }
+        html = fetch.build_daily_archive_html(digest)
+        self.assertIn("Package manifest security update", html)
+        self.assertIn(self.LOCK, html)
+        self.assertIn(f"<h1>{self.BRAND}</h1>", html)
+        self.assertNotIn(self.LOCK, self.TITLE_RE.findall(html)[0])
+        self.assertNotIn(self.LOCK, self.H1_RE.findall(html)[0])
+        for rel in self._head_link_rels(html):
+            self.assertNotIn(rel, self.ICON_RELS)
+
+    def test_the_crawl_files_are_untouched_by_this_ticket(self):
         robots = (self.DOCS / "robots.txt").read_text(encoding="utf-8")
         self.assertEqual(robots,
                          "User-agent: *\n"

@@ -104,7 +104,7 @@ Brief、優先確認、dashboardはそれぞれ「概況」「短い索引」「
 
 ### 6.1 確定仕様
 
-- トップページの可視見出しは`🔐 Monomi Digest`、日別Archiveも`🔐 Monomi Digest`、Archive一覧は`過去のダイジェスト`である。`🔐`はBL-004・SD-016の決定どおりBL-006のブランド移行後も維持し、BL-006で従来title/H1間にあった絵文字表記の不整合（日別Archiveのtitleには`🔐`があるがH1になかった）も解消した。この契約は**`🔐`をtitleとH1の双方で維持する**という意味であり、documentのtitleとH1が全文一致しなければならないという意味ではない。Version 1.9のPhase A-2では、可視H1を変更しないままdocument titleにだけページ種別ごとの文脈を加える（19.6参照）。
+- トップページの可視見出しは`Monomi Digest`、日別Archiveも`Monomi Digest`、Archive一覧は`過去のダイジェスト`である。**可視brand headingはテキストのみの`Monomi Digest`をcanonicalとする**（Version 1.12／BL-049）。BL-004・SD-016・BL-006で維持していたheader絵文字（南京錠）は、「非公開・ロック済み・要認証・制限領域」というUI上の機能的意味に読めるため廃止した。Monomi Digestはその意味を意図していない。**別の絵文字・logo・monogramへの置換は行わない。** document titleとH1が全文一致しなければならないという意味ではなく、Version 1.9のPhase A-2どおり、可視H1を変更しないままdocument titleにだけページ種別ごとの文脈を加える（19.6参照）。
 - トップページは「最終更新」「記事件数」「過去のダイジェスト」を表示し、直前の公開日がある場合だけ「← 前のダイジェスト」も表示する。
 - 日別Archiveは`日次ダイジェスト：YYYY年MM月DD日`、最終更新、記事件数、戻り導線と前後導線を表示する。
 - ヘッダーは`position: sticky; top: 0; z-index: 10`である。
@@ -382,7 +382,7 @@ BL-017で確定したとおり、各一覧カードは次の3要素だけを表�
 |---|---|---|
 | AI利用注記 | 現行UIには追加せず、記事カード単位・分析区分単位の注記も採用しない。将来Aboutや公開導線を別スコープで設計する場合に改めて裁定する | 3.1 |
 | モバイルsticky header | 600px以下も現在のstickyとpaddingを維持し、圧縮しない。anchor offsetはBL-028のナビゲーション二段化に伴い調整済み | 6.2、15 |
-| ヘッダー絵文字 | `🔐`を維持する。BL-006のMonomi Digestへのブランド移行後も置換していない | 6.1 |
+| ヘッダー絵文字 | 廃止する。BL-049で、機能的なUI記号（非公開・ロック済み・要認証・制限領域）に読めることを理由にreader-facing brandingから除去した。代替の絵文字・iconへ置換しない | 6.1 |
 | モバイル英語原題clamp | 採用せず、行数制限なしの自然折返しを維持し、原題を省略しない | 11、15 |
 | KEV表示形状 | 現行のアンバー系pillを、客観的かつ重要なKEV掲載状態の例外的強調として維持する | 13 |
 | 掲載0件日の全体表示 | 現在の各セクション別の空状態を維持し、専用の一括空状態へ置き換えない | 16 |
@@ -477,13 +477,13 @@ PC 1280pxと390pxで、トップページとAboutページの計4画面を目視
 
 | ページ種別 | `<title>` |
 |---|---|
-| トップ | `🔐 Monomi Digest \| 金融機関に関連するサイバーセキュリティ情報` |
-| 日別Archive | `🔐 {YYYY}年{M}月{D}日のサイバーセキュリティ情報 \| Monomi Digest`（例: `2026-08-04` → `🔐 2026年8月4日のサイバーセキュリティ情報 \| Monomi Digest`） |
+| トップ | `Monomi Digest \| 金融機関に関連するサイバーセキュリティ情報` |
+| 日別Archive | `{YYYY}年{M}月{D}日のサイバーセキュリティ情報 \| Monomi Digest`（例: `2026-08-04` → `2026年8月4日のサイバーセキュリティ情報 \| Monomi Digest`） |
 | Archive一覧 | `過去のダイジェスト - Monomi Digest`（**現行を変更しない**） |
 | About | `Monomi Digestについて - Monomi Digest`（**現行を変更しない**） |
 
 - 日別Archiveの月・日は**leading zeroを付けない**。可視表示（`日次ダイジェスト：2026年08月04日`）はzero-paddedのまま**変更しない**ため、両者はrepository上も別のhelperである（`format_digest_date_label_without_padding()`と`format_digest_date_label()`）。
-- **可視H1は変更しない。** トップ・日別ArchiveのH1は引き続き`🔐 Monomi Digest`である。`build_html()`はH1に使う`page_title`と、`<title>`に使う`document_title`を別引数として扱う。
+- **可視H1はPhase A-2では変更しなかった。** トップ・日別ArchiveのH1は現在`Monomi Digest`である（Version 1.12／BL-049で先頭の絵文字を除去した。Phase A-2時点では`🔐 Monomi Digest`だった）。`build_html()`はH1に使う`page_title`と、`<title>`に使う`document_title`を別引数として扱う。
 - 日別Archiveのbodyにある日付表示・その他の可視copyも変更しない。
 
 ### 19.6.3 meta description（exact）
@@ -542,7 +542,9 @@ Open Graph、Twitter Card、favicon／`rel=icon`、structured data（JSON-LD）�
 
 可視表示を変更しないため、Version 1.10は**目視受入（screenshot）を必要としない**。受入証跡は、生成物から取り出した各ページ種別の実canonical値、全公開HTMLがcanonicalを1件ずつ持つこと、canonical URL集合が`docs/sitemap.xml`のURL集合と一致すること、および「canonicalの行を除去すると各HTMLがbaselineと同一」というnormalized comparisonとする。**2026-08-15 JST、この証跡に基づき独立実装レビューがACCEPT（Blocker 0）となり、ユーザーが実装受入を完了したため、Version 1.10を承認済みとした**（accepted implementation head `0d91e7c883cbfef065d3ecc3290d79c75dd3d4fb`、[PR #127](https://github.com/matkei31/security-digest/pull/127)、exact-head [Pull Request CI run 31820428901](https://github.com/matkei31/security-digest/actions/runs/31820428901) success）。受入対象は[BL-009](BACKLOG.md#bl-009--seoと閲覧者増加策) Phase A-4のみであり、BL-009 umbrella自体は進行中である。
 
-## 19.8 site identity asset: favicon（Version 1.11、承認済み）
+## 19.8 site identity asset: favicon（Version 1.11、承認済み → Version 1.12／BL-049で廃止）
+
+> **本節の契約はVersion 1.12（BL-049）で廃止された。** `docs/favicon.svg`は削除し、全公開HTMLの`<link rel="icon" href="/favicon.svg">`も除去した。当該assetは廃止したheader絵文字と同じ施錠された南京錠の意匠であり、「非公開・ロック済み・要認証・制限領域」というUI上の機能的意味に読めるためである。**代替のfavicon・logo・monogram・icon assetは新設しない**（brand nameのテキストだけで足りる）。browserがdefaultのgeneric page iconを表示することは許容する。以下19.8.1〜19.8.6は**Version 1.11当時の承認記録**として保持するものであり、現行契約ではない。
 
 ### 19.8.1 なぜ本書の対象なのか
 
@@ -611,3 +613,4 @@ Google公式によれば、Google Searchでfaviconの表示対象になるには
 | 1.9 | 承認済み | BL-009 Phase A-2で公開4ページ種別へ一意なdocument titleとdeterministicなmeta descriptionを与えた（19.6）。トップと日別Archive 35件が同一の`<title>`を共有し、descriptionがどのページにも無かった状態を解消する。可視H1・body copy・layoutは変更せず、`build_html()`は`page_title`（H1）と`document_title`（`<title>`）を別引数として扱う。日別Archiveの日付はleading zeroなし、descriptionはAI生成でないdeterministic template。canonical・robots.txt・sitemap・favicon・OG・Twitter Card・JSON-LDはscope外。可視変更がないため目視受入（screenshot）は行わず、生成物のtitle／description実値とnormalized comparisonを証跡とした。2026-08-14、独立実装レビューACCEPT（Blocker 0）を経てユーザーが実装受入を完了した（accepted implementation head `a8670d3f303c893f0346e54cda9ac3e699aceb0a`、[PR #123](https://github.com/matkei31/security-digest/pull/123)）。受入対象はBL-009 Phase A-2のみで、BL-009 umbrellaは進行中のままである |
 | 1.10 | 承認済み | BL-009 Phase A-4で全公開HTMLへ`rel="canonical"`を1件ずつ追加した（19.7）。preferred URLはPhase A-3のsitemapと同一集合で、ディレクトリrootを採り`/index.html`形式は使わない。トップと最新日の日別Archiveは内容が似ても別ページとして扱い、互いをcanonicalにしない。originは`PUBLIC_ORIGIN`を再利用し専用定数を新設しない。可視表示・title・meta description・`robots.txt`／`sitemap.xml`のcontractは変更なし。OG・Twitter Card・favicon・structured data・`meta robots`はscope外（absenceをtestで固定しない）。可視変更がないため目視受入（screenshot）は行わず、各ページ種別の実canonical値・全公開HTMLでの1件ずつ・sitemapとの集合一致・normalized comparisonを証跡とした。2026-08-15 JST、独立実装レビューACCEPT（Blocker 0）を経てユーザーが実装受入を完了した（accepted implementation head `0d91e7c883cbfef065d3ecc3290d79c75dd3d4fb`、[PR #127](https://github.com/matkei31/security-digest/pull/127)）。受入対象はBL-009 Phase A-4のみで、BL-009 umbrellaは進行中のままである |
 | 1.11 | 承認済み | BL-009 Phase A-6で全公開HTMLへ`<link rel="icon" href="/favicon.svg">`を1件ずつ追加し、`docs/favicon.svg`を新設した（19.8）。既存brand assetが無いため、現行site identityの`🔐`（施錠された南京錠）のコンセプトを維持したsquare SVGを新規作成（文字・頭文字なし、dark UIの`#161b22`／`#79c0ff`）。root-relative pathを正本とし専用origin定数は作らない。検索表示に関わる要素でranking要因ではなく、表示も保証されない。可視body copy・layout・`<h1>`・title・meta description・canonical・`robots.txt`／`sitemap.xml`のcontractは変更なし。structured data・OG・Twitter Card・manifest・apple-touch-icon・`meta robots`はscope外（absenceをtestで固定しない）。ページの目視受入は行わず、asset自体の確認・全公開HTMLでの`rel="icon"` 1件ずつ・normalized comparisonを証跡とした。2026-08-15、独立実装レビューACCEPT（Blocker 0）を経てユーザーが実装受入を完了した（[PR #129](https://github.com/matkei31/security-digest/pull/129)）。受入対象はBL-009 Phase A-6のみで、BL-009 umbrellaは進行中のままである |
+| 1.12 | 承認済み | BL-049でreader-facing brandingから南京錠マークを廃止した。document title先頭の`🔐 `と可視H1の`🔐 `を除去し（6.1、19.6.2）、19.8のfavicon契約を廃止して`docs/favicon.svg`と全公開HTMLの`<link rel="icon">`を削除した。理由は、当該マークが単なる装飾ではなく「非公開・ロック済み・要認証・制限領域」という機能的なUI記号に読め、Monomi Digestがその意味を意図していないため。**代替のfavicon・logo・monogram・emoji icon・brand assetは新設しない**（canonical brandはテキストの`Monomi Digest`）。brand名・subtitle・meta description・canonical・`robots.txt`／`sitemap.xml`・可視layout・記事内容・daily JSONは変更なし |

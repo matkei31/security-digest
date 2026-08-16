@@ -145,7 +145,7 @@ class UiSpecDocumentTest(unittest.TestCase):
         self.assertIn("現行UIへAI利用を明示する専用注記は追加しない", self.spec)
         self.assertIn("記事カード単位・分析区分単位の注記も採用しない", self.spec)
         self.assertIn("600px以下でも現在のstickyとpaddingを維持し、圧縮案は採用しない", self.spec)
-        self.assertIn("`🔐`を維持する。BL-006のMonomi Digestへのブランド移行後も置換していない", self.spec)
+        self.assertIn("廃止する。BL-049で、機能的なUI記号（非公開・ロック済み・要認証・制限領域）に読めることを理由にreader-facing brandingから除去した", self.spec)
         self.assertIn("英語原題に行数制限やclampを設けず、原題の一部を省略しない", self.spec)
         self.assertIn("現行の`.kev-badge`はアンバー系の小さいpillとして維持", self.spec)
         self.assertIn("各セクション別の空状態を確定仕様として維持", self.spec)
