@@ -629,7 +629,7 @@ class TodaysBriefEligibilityExclusionTest(unittest.TestCase):
     def test_published_total_excludes_metadata_only_and_has_no_unclassified(self):
         result = fetch.build_todays_brief([self._evaluated_item(), self._metadata_only_item()])
         self.assertEqual(result["status"], "success")
-        self.assertIn("掲載1件", result["overview"])
+        self.assertIn("Brief対象1件", result["overview"])
         self.assertNotIn("未判定", result["overview"])
 
     def test_metadata_only_fields_do_not_appear_in_brief_or_provenance(self):
@@ -645,7 +645,7 @@ class TodaysBriefEligibilityExclusionTest(unittest.TestCase):
         result = fetch.build_todays_brief(
             [self._evaluated_item(), self._failed_item(), self._metadata_only_item()]
         )
-        self.assertIn("掲載2件", result["overview"])
+        self.assertIn("Brief対象2件", result["overview"])
         self.assertIn("未判定1件", result["overview"])
 
     def test_metadata_only_only_items_result_in_not_attempted_brief(self):
@@ -662,7 +662,7 @@ class TodaysBriefEligibilityExclusionTest(unittest.TestCase):
         }
         result = fetch.build_todays_brief([legacy_item])
         self.assertEqual(result["status"], "success")
-        self.assertIn("掲載1件", result["overview"])
+        self.assertIn("Brief対象1件", result["overview"])
 
 
 class VulnerabilityFactsScopingTest(unittest.TestCase):

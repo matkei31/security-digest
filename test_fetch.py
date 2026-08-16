@@ -1042,7 +1042,7 @@ class BriefStatusLineHtmlTest(unittest.TestCase):
         segment = brief_segment(html)
         self.assertNotIn("本日の状態", segment)
         self.assertIn(
-            '<p class="brief-status-line">掲載3件｜重要度「高」1件｜本日確認1件｜今週確認1件</p>',
+            '<p class="brief-status-line">Brief対象3件｜重要度「高」1件｜本日確認1件｜今週確認1件</p>',
             segment,
         )
         self.assertIn('<p class="brief-overview">続く説明文です。</p>', segment)
@@ -1140,7 +1140,7 @@ class SplitBriefOverviewStatusLineTest(unittest.TestCase):
         split = fetch.split_brief_overview_status_line(legacy)
         self.assertEqual(
             split,
-            ("掲載12件｜重要度「高」3件｜本日確認2件｜今週確認4件", "続く説明文。"),
+            ("Brief対象12件｜重要度「高」3件｜本日確認2件｜今週確認4件", "続く説明文。"),
         )
 
     def test_matches_legacy_format_with_unclassified_segment(self):
@@ -1151,7 +1151,7 @@ class SplitBriefOverviewStatusLineTest(unittest.TestCase):
         split = fetch.split_brief_overview_status_line(legacy)
         self.assertEqual(
             split,
-            ("掲載12件｜重要度「高」3件｜本日確認2件｜今週確認4件｜未判定5件", "続く説明文。"),
+            ("Brief対象12件｜重要度「高」3件｜本日確認2件｜今週確認4件｜未判定5件", "続く説明文。"),
         )
 
     def test_legacy_format_only_with_no_trailing_text_splits_to_empty_rest(self):
@@ -1160,7 +1160,7 @@ class SplitBriefOverviewStatusLineTest(unittest.TestCase):
             "確認目安「今週確認」0件。"
         )
         split = fetch.split_brief_overview_status_line(legacy)
-        self.assertEqual(split, ("掲載1件｜重要度「高」0件｜本日確認0件｜今週確認0件", ""))
+        self.assertEqual(split, ("Brief対象1件｜重要度「高」0件｜本日確認0件｜今週確認0件", ""))
 
     def test_legacy_format_fullwidth_digits_are_not_converted(self):
         # 旧形式であっても全角数字を含む酷似文字列は誤って変換・分離しない
@@ -1181,7 +1181,7 @@ class SplitBriefOverviewStatusLineTest(unittest.TestCase):
         self.assertFalse(status_line.endswith("。"))
         self.assertEqual(
             status_line,
-            "掲載12件｜重要度「高」3件｜本日確認2件｜今週確認4件｜未判定5件",
+            "Brief対象12件｜重要度「高」3件｜本日確認2件｜今週確認4件｜未判定5件",
         )
 
 
