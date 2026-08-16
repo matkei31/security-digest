@@ -601,7 +601,7 @@ class StatusLineTest(unittest.TestCase):
         ctx = fetch.compute_brief_trusted_context(items)
         line = fetch.format_brief_status_line(ctx)
         self.assertNotIn("未判定", line)
-        self.assertIn("掲載11件", line)
+        self.assertIn("Brief対象11件", line)
         self.assertIn("重要度「高」0件", line)
         self.assertIn("本日確認0件", line)
         self.assertIn("今週確認7件", line)
@@ -649,7 +649,7 @@ class StateExplanationTest(unittest.TestCase):
         ctx = fetch.compute_brief_trusted_context(items)
         text = fetch.format_brief_state_explanation(ctx)
         self.assertNotIn("緊急の確認対象はありません", text)
-        self.assertIn("未判定の記事2件", text)
+        self.assertIn("Brief対象の未判定記事2件", text)
         self.assertIn("1件", text)
 
     def test_c_complete_allows_no_urgent_target_phrase(self):
@@ -1400,6 +1400,186 @@ class DiscussionPointsMaxUnchangedTest(unittest.TestCase):
             datetime.datetime(2026, 7, 11, 7, 0, tzinfo=dj.JST),
         )
         dj.validate_daily_digest(digest)  # 例外が出なければOK
+
+
+def make_metadata_only_item(title="metadata-only記事"):
+    """policy.ai_eligible=False(metadata_only相当)の掲載記事を作る。
+    Brief対象からは除外されるが、ページの掲載総数には含まれる(BL-032)。
+    """
+    return {
+        "title": title, "raw_title": title, "source": "Microsoft Security",
+        "link": "https://example.com/metadata-only",
+        "content_policy": {
+            "source_id": "microsoft_security", "configured_mode": "metadata_only",
+            "effective_mode": "metadata_only", "ai_eligible": False,
+            "downgrade_reason": None,
+        },
+    }
+
+
+class BriefTargetScopeWordingTest(unittest.TestCase):
+    """BL-048: Today's Brief側の状態行・説明文が、ページ全体の掲載総数ではなく
+    select_brief_eligible_items()適用後のBrief対象母集団の話であると読める語彙に
+    なっていることの回帰テスト。
+
+    件数・selection・policy挙動はBL-048で変更していない――変わるのは表示語のみ
+    であるため、各testは「語」と「数」を別々に固定する。
+    """
+
+    def test_status_line_uses_brief_target_label_not_bare_published_label(self):
+        ctx = fetch.compute_brief_trusted_context(build_items_from_spec([("高", "本日確認")] * 3))
+        line = fetch.format_brief_status_line(ctx)
+        self.assertTrue(line.startswith("Brief対象3件｜"), line)
+        # ページheader/dashboardと同じ無限定の「掲載N件」をBrief側へ出さない。
+        self.assertNotIn("掲載", line)
+
+    def test_status_line_does_not_claim_ai_analysed_or_evaluated(self):
+        """「Brief対象」はeligibility母集団であり、AI成功件数ではない
+        (fallback・未判定を含みうる)。AI成功を主張する語を使わない。
+        """
+        ctx = fetch.compute_brief_trusted_context(
+            build_items_from_spec([("中", "今週確認")] * 2, unclassified_count=1)
+        )
+        line = fetch.format_brief_status_line(ctx)
+        self.assertIn("Brief対象3件", line)
+        self.assertIn("未判定1件", line)
+        for banned in ("AI分析済み", "AI評価済み", "分析済みN件"):
+            self.assertNotIn(banned, line)
+
+    def test_state_explanation_never_calls_the_subset_all_published_articles(self):
+        """全state branch(A / B complete / B incomplete / C complete / C incomplete)で、
+        filtered subsetを「本日の掲載記事」と表現しない。
+        """
+        specs = [
+            ([("高", "本日確認")], 0),          # A complete
+            ([("高", "本日確認")], 2),          # A incomplete
+            ([("中", "今週確認")], 0),          # B complete
+            ([("中", "今週確認")], 2),          # B incomplete
+            ([("中", "参考")], 0),              # C complete
+            ([("中", "参考")], 2),              # C incomplete
+        ]
+        for evaluated, unclassified in specs:
+            with self.subTest(evaluated=evaluated, unclassified=unclassified):
+                ctx = fetch.compute_brief_trusted_context(
+                    build_items_from_spec(evaluated, unclassified_count=unclassified)
+                )
+                text = fetch.format_brief_state_explanation(ctx)
+                self.assertNotIn("本日の掲載記事", text)
+                self.assertIn("Brief対象", text)
+
+    def test_state_explanation_keeps_temporal_state_meaning_unchanged(self):
+        """語彙変更で文意・temporal_state判定を変えていないこと。"""
+        a = fetch.compute_brief_trusted_context(build_items_from_spec([("高", "本日確認")] * 2))
+        self.assertEqual(a["temporal_state"], "A")
+        self.assertIn("本日中に適用性または初動要否を確認する記事が2件あります。",
+                      fetch.format_brief_state_explanation(a))
+        c = fetch.compute_brief_trusted_context(build_items_from_spec([("中", "参考")] * 2))
+        self.assertEqual(c["temporal_state"], "C")
+        self.assertIn("緊急の確認対象はありません", fetch.format_brief_state_explanation(c))
+
+    # --- BL-048 §9 UI acceptance examples -------------------------------------
+
+    def test_mixed_metadata_only_page_total_and_brief_target_use_distinct_labels(self):
+        """page cards 9 / metadata_only 2 / Brief対象 7。
+        同一screen上に無限定の「掲載7件」を出さない。
+        """
+        items = build_items_from_spec([("高", "本日確認")] * 3 + [("中", "今週確認")] * 4)
+        items += [make_metadata_only_item(f"mo-{i}") for i in range(2)]
+        self.assertEqual(fetch.compute_dashboard_counts(items)["total"], 9)
+
+        result = fetch.build_todays_brief(items)
+        self.assertEqual(result["status"], "success")
+        self.assertIn("Brief対象7件", result["overview"])
+        self.assertNotIn("掲載7件", result["overview"])
+        self.assertNotIn("未判定", result["overview"])
+
+    def test_all_eligible_day_still_distinguishes_the_two_populations(self):
+        """数が一致する日(page 4 / Brief対象 4)でも母集団ラベルは区別する。"""
+        items = build_items_from_spec([("高", "本日確認")] * 4)
+        self.assertEqual(fetch.compute_dashboard_counts(items)["total"], 4)
+        result = fetch.build_todays_brief(items)
+        self.assertIn("Brief対象4件", result["overview"])
+        self.assertNotIn("掲載4件", result["overview"])
+
+    def test_unclassified_case_does_not_absorb_metadata_only(self):
+        """Brief対象4 / 判定済み3 / 未判定1。metadata_onlyを未判定へ足さない。"""
+        items = build_items_from_spec([("中", "今週確認")] * 3, unclassified_count=1)
+        items += [make_metadata_only_item()]
+        self.assertEqual(fetch.compute_dashboard_counts(items)["total"], 5)
+        result = fetch.build_todays_brief(items)
+        self.assertIn("Brief対象4件", result["overview"])
+        self.assertIn("未判定1件", result["overview"])
+
+    def test_metadata_only_stays_out_of_every_brief_context_axis(self):
+        """BL-032の除外契約はBL-048後も不変であることの回帰。"""
+        evaluated = build_items_from_spec([("高", "本日確認")] * 2)
+        mixed = evaluated + [make_metadata_only_item(f"mo-{i}") for i in range(3)]
+        self.assertEqual(
+            fetch.compute_brief_trusted_context(fetch.select_brief_eligible_items(mixed)),
+            fetch.compute_brief_trusted_context(evaluated),
+        )
+
+
+class BriefStatusLineStoredFormatCompatibilityTest(unittest.TestCase):
+    """BL-048: 保存済みdaily JSONに併存する3形式を表示時に読めること。
+    data/配下のJSONは書き換えず、表示時に先頭の決定論的prefixだけを正規化する。
+    """
+
+    NEW = "Brief対象12件｜重要度「高」3件｜本日確認2件｜今週確認4件"
+    PRE = "掲載12件｜重要度「高」3件｜本日確認2件｜今週確認4件"
+    OLD = ("本日の状態（掲載12件）：重要度「高」3件、確認目安「本日確認」2件、"
+           "確認目安「今週確認」4件。")
+
+    def test_new_format_is_returned_verbatim(self):
+        self.assertEqual(
+            fetch.split_brief_overview_status_line(self.NEW + "\n続く説明文。"),
+            (self.NEW, "続く説明文。"),
+        )
+
+    def test_pre_bl048_format_is_normalized_to_brief_target(self):
+        self.assertEqual(
+            fetch.split_brief_overview_status_line(self.PRE + "\n続く説明文。"),
+            (self.NEW, "続く説明文。"),
+        )
+
+    def test_older_legacy_format_is_normalized_to_brief_target(self):
+        self.assertEqual(
+            fetch.split_brief_overview_status_line(self.OLD + "続く説明文。"),
+            (self.NEW, "続く説明文。"),
+        )
+
+    def test_pre_bl048_format_with_unclassified_segment_is_normalized(self):
+        self.assertEqual(
+            fetch.split_brief_overview_status_line(
+                "掲載4件｜重要度「高」1件｜本日確認0件｜今週確認2件｜未判定1件\n本文。"
+            ),
+            ("Brief対象4件｜重要度「高」1件｜本日確認0件｜今週確認2件｜未判定1件", "本文。"),
+        )
+
+    def test_pre_bl048_normalization_preserves_stored_numbers(self):
+        """正規化は語だけを変える。件数は再計算せずmatch groupの値をそのまま使う。"""
+        status_line, _ = fetch.split_brief_overview_status_line(self.PRE)
+        self.assertIn("12件", status_line)
+        self.assertIn("重要度「高」3件", status_line)
+        self.assertIn("本日確認2件", status_line)
+        self.assertIn("今週確認4件", status_line)
+
+    def test_pre_bl048_prefix_must_terminate_at_newline_or_end(self):
+        """件数の桁が後続自由文と地続きの場合はprefix matchさせない(fail-open)。"""
+        self.assertIsNone(
+            fetch.split_brief_overview_status_line(self.PRE + "5件と続く自由文。")
+        )
+
+    def test_free_text_overview_keeps_existing_fail_open_behaviour(self):
+        """古いBriefをfail-closedで落とさない。"""
+        for overview in (
+            "本日は、広く利用されているSaaS製品の重大な脆弱性に関する注意喚起が報告されています。",
+            "",
+            "Brief対象12件",
+        ):
+            with self.subTest(overview=overview):
+                self.assertIsNone(fetch.split_brief_overview_status_line(overview))
+
 
 
 if __name__ == "__main__":

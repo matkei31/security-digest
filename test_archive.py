@@ -529,7 +529,7 @@ class ArchiveGenerationTest(unittest.TestCase):
 
         self.assertIn('<p class="brief-overview">2026-07-05の概況</p>', html)
         self.assertIn(
-            '<p class="brief-status-line">掲載1件｜重要度「高」1件｜本日確認1件｜今週確認0件</p>',
+            '<p class="brief-status-line">Brief対象1件｜重要度「高」1件｜本日確認1件｜今週確認0件</p>',
             html,
         )
         # digest自体(overview文字列)は補完前後で変更されない
@@ -565,7 +565,7 @@ class ArchiveGenerationTest(unittest.TestCase):
             fetch.digest_items_for_html(digest), fetch.brief_for_html_from_digest(digest)
         )
 
-        expected_status_line = "掲載5件｜重要度「高」2件｜本日確認1件｜今週確認1件"
+        expected_status_line = "Brief対象5件｜重要度「高」2件｜本日確認1件｜今週確認1件"
         for html in (archive_html, top_html):
             self.assertNotIn("本日の状態", html)
             self.assertIn(f'<p class="brief-status-line">{expected_status_line}</p>', html)
@@ -616,7 +616,7 @@ class LegacyStatusLineSynthesisTest(unittest.TestCase):
         digest["items"][2]["analysis"]["status"] = "success"
         digest["items"][2]["analysis"]["importance"] = "不正な値"  # 無効 → 未判定
         status_line = fetch.synthesize_legacy_brief_status_line_from_digest(digest)
-        self.assertIn("掲載3件", status_line)
+        self.assertIn("Brief対象3件", status_line)
         self.assertIn("未判定1件", status_line)
 
     def test_failed_and_not_attempted_status_are_unclassified(self):
@@ -631,9 +631,9 @@ class LegacyStatusLineSynthesisTest(unittest.TestCase):
         # 記事単位判定への変更後も、実データ(2026-07-11/07-12/07-14)の
         # 合成結果が変わらないことを固定値で回帰確認する。
         for digest_date, expected in (
-            ("2026-07-11", "掲載6件｜重要度「高」1件｜本日確認1件｜今週確認2件"),
-            ("2026-07-12", "掲載3件｜重要度「高」1件｜本日確認1件｜今週確認1件"),
-            ("2026-07-14", "掲載11件｜重要度「高」0件｜本日確認0件｜今週確認7件"),
+            ("2026-07-11", "Brief対象6件｜重要度「高」1件｜本日確認1件｜今週確認2件"),
+            ("2026-07-12", "Brief対象3件｜重要度「高」1件｜本日確認1件｜今週確認1件"),
+            ("2026-07-14", "Brief対象11件｜重要度「高」0件｜本日確認0件｜今週確認7件"),
         ):
             with self.subTest(digest_date=digest_date):
                 digest = fetch.load_daily_digest(
@@ -793,7 +793,7 @@ class ArchiveIndexAndPathTest(unittest.TestCase):
             archive_html = (docs_dir / "archive" / "2026-07-14.html").read_text(encoding="utf-8")
             self.assertNotIn("本日の状態", archive_html)
             self.assertIn(
-                '<p class="brief-status-line">掲載9件｜重要度「高」1件｜本日確認1件｜今週確認2件</p>',
+                '<p class="brief-status-line">Brief対象9件｜重要度「高」1件｜本日確認1件｜今週確認2件</p>',
                 archive_html,
             )
 
@@ -2336,6 +2336,61 @@ class Bl036ArchiveAttributionConsistencyTest(unittest.TestCase):
         self.assertIn(
             fetch._LIMITED_FEED_ANALYSIS_ATTRIBUTION_TEXT.split("。")[0], html
         )
+
+
+class BriefTargetScopeWordingHtmlTest(unittest.TestCase):
+    """BL-048: metadata_only cardを含む日に、1枚のページ上で
+    dashboardの「掲載N件」とBriefの「Brief対象N件」が別母集団として
+    読み分けられることのHTML回帰テスト。
+
+    30-day editorial auditで観測された defect の直接再現:
+    修正前は同一screenに「掲載9件」(全card)と「掲載7件」(Brief対象)が
+    並び、同じ語が異なる母集団を指していた。
+    """
+
+    def _mixed_digest(self):
+        digest = make_digest(digest_date="2026-08-12", total_items=9, high_count=2)
+        # 末尾2件をmetadata_only相当へ変える(Brief対象からは外れるが掲載総数には残る)。
+        for item in digest["items"][-2:]:
+            item["analysis"] = {
+                "status": "not_attempted", "model": "gemini-2.5-flash",
+                "prompt_version": "article-analysis-v8", "generated_at": None,
+                "category": None, "category_reason": None, "importance": None,
+                "urgency": None, "summary": None, "financial_impact": None,
+                "recommended_actions": [], "tags": [],
+            }
+            item["policy"] = {
+                "configured_mode": "metadata_only", "effective_mode": "metadata_only",
+                "ai_eligible": False, "downgrade_reason": None, "attribution_url": None,
+            }
+        return digest
+
+    def test_page_total_and_brief_target_are_distinguishable_on_one_page(self):
+        digest = self._mixed_digest()
+        items = fetch.digest_items_for_html(digest)
+        self.assertEqual(fetch.compute_dashboard_counts(items)["total"], 9)
+
+        brief = fetch.build_todays_brief(items)
+        digest["brief"] = dict(digest["brief"], **brief)
+        html = fetch.build_daily_archive_html(digest)
+
+        # ページ全体の掲載総数はBL-048後も「掲載」のまま(既存契約不変)。
+        self.assertIn("<strong>9</strong>", html)
+        # Brief側はBrief対象母集団であることを明示する。
+        self.assertIn('<p class="brief-status-line">Brief対象7件', html)
+        # 修正前に同一screenへ出ていた無限定の「掲載7件」を出さない。
+        self.assertNotIn("掲載7件", html)
+        # metadata_onlyを未判定へ足さない(BL-032契約不変)。
+        self.assertNotIn("未判定", html)
+
+    def test_brief_state_explanation_on_mixed_page_does_not_claim_all_cards(self):
+        digest = self._mixed_digest()
+        items = fetch.digest_items_for_html(digest)
+        digest["brief"] = dict(digest["brief"], **fetch.build_todays_brief(items))
+        html = fetch.build_daily_archive_html(digest)
+        self.assertNotIn("本日の掲載記事では", html)
+        self.assertIn("Brief対象", html)
+
 
 
 if __name__ == "__main__":
