@@ -10095,9 +10095,37 @@ class Bl049LockBrandingRemovalTest(unittest.TestCase):
 
     ROOT = Path(__file__).resolve().parent
     DOCS = ROOT / "docs"
-    ICON_RE = re.compile(r'<link rel="icon"[^>]*>')
     BRAND = "Monomi Digest"
     LOCK = "\U0001f510"
+
+    HEAD_RE = re.compile(r"<head>(.*?)</head>", re.S)
+    LINK_RE = re.compile(r"<link\b[^>]*>")
+    REL_RE = re.compile(r'\brel="([^"]*)"')
+    TITLE_RE = re.compile(r"<title>(.*?)</title>", re.S)
+    H1_RE = re.compile(r"<h1[^>]*>(.*?)</h1>", re.S)
+
+    # BL-049 scopes to brand-owned markup and to site-icon <link> elements only.
+    # It must not become a content filter: an article may legitimately be titled
+    # "🔐 Package manifest security update", and words like "favicon", "icon" or
+    # "manifest" are ordinary security vocabulary in a headline, summary or tag.
+    # So the negative assertions below look at <title>/<h1> and at <link rel=...>
+    # inside <head>, never at the whole document.
+    ICON_RELS = ("icon", "shortcut icon", "apple-touch-icon",
+                 "apple-touch-icon-precomposed", "mask-icon", "fluid-icon", "manifest")
+
+    def _head(self, html):
+        found = self.HEAD_RE.search(html)
+        self.assertIsNotNone(found, "every page must have a <head>")
+        return found.group(1)
+
+    def _head_link_rels(self, html):
+        return [(self.REL_RE.search(tag).group(1).strip().lower()
+                 if self.REL_RE.search(tag) else "")
+                for tag in self.LINK_RE.findall(self._head(html))]
+
+    def _brand_markup(self, html):
+        """The brand-owned deterministic strings only: <title> and <h1>."""
+        return self.TITLE_RE.findall(html) + self.H1_RE.findall(html)
 
     def _pages(self):
         pages = [self.DOCS / "index.html", self.DOCS / "about.html",
@@ -10123,16 +10151,28 @@ class Bl049LockBrandingRemovalTest(unittest.TestCase):
         self.assertFalse(hasattr(fetch, "FAVICON_LINK_HTML"))
 
     # ---- no page references an icon ----------------------------------------
-    def test_no_published_page_references_an_icon(self):
+    def test_no_published_page_declares_a_site_icon_link(self):
+        """Structural: no <link> in <head> declares an icon or a manifest.
+
+        Scoped to link relations on purpose -- the words "favicon", "icon" and
+        "manifest" are ordinary article vocabulary and must stay publishable.
+        """
         pages = self._pages()
         self.assertGreater(len(pages), 3)
         for path in pages:
             with self.subTest(page=path.relative_to(self.DOCS)):
-                html = path.read_text(encoding="utf-8")
-                self.assertEqual(self.ICON_RE.findall(html), [])
-                self.assertNotIn("favicon", html)
-                self.assertNotIn("apple-touch-icon", html)
-                self.assertNotIn("manifest", html)
+                rels = self._head_link_rels(path.read_text(encoding="utf-8"))
+                self.assertNotEqual(rels, [], "canonical should still be there")
+                for rel in rels:
+                    self.assertNotIn(rel, self.ICON_RELS)
+
+    def test_no_published_page_head_points_at_an_icon_asset(self):
+        """The href side of the same contract, still scoped to <head>."""
+        for path in self._pages():
+            with self.subTest(page=path.relative_to(self.DOCS)):
+                head = self._head(path.read_text(encoding="utf-8"))
+                for needle in ("favicon", "apple-touch-icon", "webmanifest"):
+                    self.assertNotIn(needle, head)
 
     def test_generated_pages_emit_no_icon_link(self):
         for html in (fetch.build_html([], None),
@@ -10142,15 +10182,23 @@ class Bl049LockBrandingRemovalTest(unittest.TestCase):
                          "generated_at": "2026-08-04T07:39:47+09:00",
                          "items": [], "counts": {}, "run": {}})):
             with self.subTest(html=html[:60]):
-                self.assertEqual(self.ICON_RE.findall(html), [])
-                self.assertNotIn("favicon", html)
+                for rel in self._head_link_rels(html):
+                    self.assertNotIn(rel, self.ICON_RELS)
+                self.assertNotIn("favicon", self._head(html))
 
     # ---- the lock is gone from title and heading ---------------------------
     def test_no_published_page_carries_the_lock_in_brand_markup(self):
+        """Scoped to <title> and <h1>. An article headline is free to contain
+        the character; only the brand-owned markup must be clean."""
         for path in self._pages():
             html = path.read_text(encoding="utf-8")
             with self.subTest(page=path.relative_to(self.DOCS)):
-                self.assertNotIn(self.LOCK, html)
+                brand = self._brand_markup(html)
+                self.assertGreaterEqual(len(brand), 1)
+                for fragment in brand:
+                    self.assertNotIn(self.LOCK, fragment)
+                self.assertNotIn(f"<h1>{self.LOCK} {self.BRAND}</h1>", html)
+                self.assertNotIn(f"<title>{self.LOCK} ", html)
 
     def test_brand_owned_titles_and_heading_are_text_only(self):
         self.assertEqual(
@@ -10168,7 +10216,8 @@ class Bl049LockBrandingRemovalTest(unittest.TestCase):
                          "items": [], "counts": {}, "run": {}})):
             with self.subTest(html=html[:60]):
                 self.assertIn(f"<h1>{self.BRAND}</h1>", html)
-                self.assertNotIn(self.LOCK, html)
+                for fragment in self._brand_markup(html):
+                    self.assertNotIn(self.LOCK, fragment)
 
     def test_no_other_emoji_was_substituted_for_the_lock(self):
         """Removing the mark must not become 'replace it with a different one'."""
@@ -10176,7 +10225,8 @@ class Bl049LockBrandingRemovalTest(unittest.TestCase):
                            "\U0001f4f0", "\U0001f4a1", "\u2705", "\u26a0", "\U0001f575"):
             with self.subTest(substitute=substitute):
                 self.assertNotIn(substitute, fetch.TOP_PAGE_DOCUMENT_TITLE)
-                self.assertNotIn(substitute, fetch.build_html([], None))
+                for fragment in self._brand_markup(fetch.build_html([], None)):
+                    self.assertNotIn(substitute, fragment)
 
     # ---- the brand itself, and neighbouring contracts, are unchanged -------
     def test_the_brand_name_and_subtitle_are_unchanged(self):
@@ -10196,6 +10246,89 @@ class Bl049LockBrandingRemovalTest(unittest.TestCase):
                 self.assertEqual(len(re.findall(r"<title>.*?</title>", html, re.S)), 1)
                 self.assertEqual(len(re.findall(r'<meta name="description"', html)), 1)
                 self.assertEqual(len(re.findall(r'<link rel="canonical"', html)), 1)
+
+    # ---- BL-049 must not become a content filter ---------------------------
+    def _article(self, title, summary, tags):
+        return {
+            "title": title, "raw_title": title, "source": "Test Source",
+            "link": "https://example.com/manifest-update", "lang": "en", "date": None,
+            "summary": summary,
+            "ai_analysis": {
+                "category": "脆弱性・パッチ", "importance": "高", "urgency": "本日確認",
+                "summary": summary, "financial_impact": "影響",
+                "recommended_actions": ["利用有無を確認する"], "reason": "理由", "tags": tags,
+            },
+            "ai_analysis_meta": {
+                "status": "success", "error_type": None, "http_status": None,
+                "generated_at": "2026-08-16T07:00:00+09:00",
+            },
+        }
+
+    def test_article_content_may_contain_the_lock_and_the_word_manifest(self):
+        """BL-049 removes lock *branding*; it does not filter article text.
+
+        A headline like "🔐 Package manifest security update" is legitimate
+        reader-facing content. It must render, while the brand markup stays
+        clean and no site-icon link appears. This is the regression that keeps
+        "remove the branding" from silently becoming "ban the character".
+        """
+        title = f"{self.LOCK} Package manifest security update"
+        summary = "The package manifest and its favicon assets were updated."
+        html = fetch.build_html(
+            [self._article(title, summary, ["manifest", "supply chain"])], None,
+            document_title=fetch.TOP_PAGE_DOCUMENT_TITLE,
+            meta_description=fetch.TOP_PAGE_META_DESCRIPTION,
+            canonical_url=fetch.public_url(fetch.TOP_PAGE_PATH),
+        )
+        # the article survives untouched
+        self.assertIn("Package manifest security update", html)
+        self.assertIn(self.LOCK, html, "the character is content, not branding")
+        self.assertIn("manifest", html)
+        # ...while the brand-owned markup is clean
+        self.assertIn(f"<h1>{self.BRAND}</h1>", html)
+        self.assertIn(f"<title>{fetch.TOP_PAGE_DOCUMENT_TITLE}</title>", html)
+        self.assertNotIn(self.LOCK, self.TITLE_RE.findall(html)[0])
+        self.assertNotIn(self.LOCK, self.H1_RE.findall(html)[0])
+        # ...and no site icon / manifest link is emitted despite those words
+        for rel in self._head_link_rels(html):
+            self.assertNotIn(rel, self.ICON_RELS)
+        self.assertNotIn("favicon", self._head(html))
+
+    def test_the_same_holds_for_a_daily_archive_page(self):
+        title = f"{self.LOCK} Package manifest security update"
+        digest = {
+            "schema_version": 2, "digest_date": "2026-08-04",
+            "generated_at": "2026-08-04T07:39:47+09:00", "counts": {}, "run": {},
+            "items": [{
+                "id": "id-0", "source_id": "test_source", "source_name": "Test Source",
+                "source_type": "報道・メディア", "source_tier": "Tier 2",
+                "collection_method": "rss", "language": "en",
+                "url": "https://example.com/manifest-update",
+                "canonical_url": "https://example.com/manifest-update",
+                "published_at": "2026-08-04T07:00:00+09:00",
+                "fetched_at": "2026-08-04T07:10:00+09:00",
+                "title": title, "raw_title": title, "raw_excerpt": None,
+                "content_hash": "hash-0", "rule_flags": [],
+                "analysis": {
+                    "status": "success", "model": "gemini-2.5-flash",
+                    "prompt_version": "article-analysis-v8",
+                    "generated_at": "2026-08-04T07:20:00+09:00",
+                    "category": "脆弱性・パッチ", "category_reason": "理由",
+                    "importance": "高", "urgency": "本日確認",
+                    "summary": "パッケージのmanifestに関する更新です。",
+                    "financial_impact": "影響", "recommended_actions": ["確認する"],
+                    "tags": ["manifest"],
+                },
+            }],
+        }
+        html = fetch.build_daily_archive_html(digest)
+        self.assertIn("Package manifest security update", html)
+        self.assertIn(self.LOCK, html)
+        self.assertIn(f"<h1>{self.BRAND}</h1>", html)
+        self.assertNotIn(self.LOCK, self.TITLE_RE.findall(html)[0])
+        self.assertNotIn(self.LOCK, self.H1_RE.findall(html)[0])
+        for rel in self._head_link_rels(html):
+            self.assertNotIn(rel, self.ICON_RELS)
 
     def test_the_crawl_files_are_untouched_by_this_ticket(self):
         robots = (self.DOCS / "robots.txt").read_text(encoding="utf-8")
