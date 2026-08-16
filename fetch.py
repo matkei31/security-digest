@@ -5388,7 +5388,7 @@ def render_site_intro_html(about_href=ABOUT_PAGE_HREF):
 # document titleと、AI生成でないdeterministicなmeta descriptionを持たせる。
 # 可視のH1・本文・layoutは変更しない――document titleはbuild_html()の
 # document_title引数で与え、H1に使うpage_titleとは別物として扱う。
-TOP_PAGE_DOCUMENT_TITLE = "🔐 Monomi Digest | 金融機関に関連するサイバーセキュリティ情報"
+TOP_PAGE_DOCUMENT_TITLE = "Monomi Digest | 金融機関に関連するサイバーセキュリティ情報"
 # Aboutの承認済み第1文をそのまま使う(言い換えない)。
 TOP_PAGE_META_DESCRIPTION = (
     "Monomi Digestは、金融機関のサイバーセキュリティ実務担当者・管理職・担当役員が、"
@@ -5418,8 +5418,8 @@ def format_digest_date_label_without_padding(digest_date):
 
 
 def daily_archive_document_title(digest_date):
-    """日別Archiveの<title>。可視H1(`🔐 Monomi Digest`)とは別物。"""
-    return f"🔐 {format_digest_date_label_without_padding(digest_date)}のサイバーセキュリティ情報 | Monomi Digest"
+    """日別Archiveの<title>。可視H1(`Monomi Digest`)とは別物。"""
+    return f"{format_digest_date_label_without_padding(digest_date)}のサイバーセキュリティ情報 | Monomi Digest"
 
 
 def daily_archive_meta_description(digest_date):
@@ -5463,17 +5463,12 @@ def public_url(relative_path=""):
     return f"{PUBLIC_ORIGIN}/{relative_path}"
 
 
-# BL-009 Phase A-6: site identity asset。Google Searchでfaviconの表示対象にする
-# には、homepageのhead内にfaviconを示すlinkを置き、Googlebot-Imageがfavicon
-# fileを、Googlebotがhomepageをcrawlできる必要がある。faviconはsearch appearance
-# / site attributionに関わる要素として扱い、ガイドラインを満たしても表示は保証
-# されない。本Phaseではrankingへのbenefitをbenefitとしてもgoalとしても置かない。
-# site-wideに置く理由は、browser tab等も含めたsite identityを統一するため。
-# 公開originに依存しないroot-relative pathを正本とし、favicon専用のorigin定数は
-# 作らない。asset URLは安定させる(頻繁に変えない)。
-FAVICON_PATH = "/favicon.svg"
-
-FAVICON_LINK_HTML = f'  <link rel="icon" href="{FAVICON_PATH}">'
+# BL-049: BL-009 Phase A-6で追加したfavicon(`docs/favicon.svg`・施錠された南京錠の
+# 意匠)とその`<link rel="icon">`は廃止した。廃止したheader絵文字(南京錠)と同じく
+# 「非公開・ロック済み・要認証・制限領域」というUI上の機能的意味に読めるためで、
+# Monomi Digestはその意味を意図して
+# いない。代替のfavicon・logo・monogram・icon assetは新設しない(brand nameのテキスト
+# だけで足りる)。browserがdefaultのgeneric page iconを表示することは許容する。
 
 
 def daily_archive_relative_path(digest_date):
@@ -5603,7 +5598,7 @@ def build_html(
     items,
     brief=None,
     *,
-    page_title="🔐 Monomi Digest",
+    page_title="Monomi Digest",
     document_title=None,
     meta_description=None,
     canonical_url=None,
@@ -6006,7 +6001,6 @@ def build_html(
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{esc(document_title or page_title)}</title>{meta_description_block}{canonical_block}
-{FAVICON_LINK_HTML}
   <style>
     *{{margin:0;padding:0;box-sizing:border-box}}
     :root{{--anchor-offset:{anchor_offset_pc}px}}
@@ -6228,7 +6222,7 @@ def build_daily_archive_html(digest, previous_date=None, next_date=None):
     return build_html(
         items,
         brief,
-        page_title="🔐 Monomi Digest",
+        page_title="Monomi Digest",
         document_title=daily_archive_document_title(digest_date),
         meta_description=daily_archive_meta_description(digest_date),
         canonical_url=daily_archive_canonical_url(digest_date),
@@ -6283,7 +6277,6 @@ def build_archive_index_html(summaries, generated_at=None):
   <title>過去のダイジェスト - Monomi Digest</title>
   <meta name="description" content="{esc(ARCHIVE_INDEX_META_DESCRIPTION)}">
   <link rel="canonical" href="{esc(public_url(ARCHIVE_INDEX_PATH))}">
-{FAVICON_LINK_HTML}
   <style>
     *{{margin:0;padding:0;box-sizing:border-box}}
     body{{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:40px}}

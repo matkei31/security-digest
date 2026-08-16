@@ -9463,7 +9463,7 @@ class Bl009PhaseA2HeadMetadataTest(unittest.TestCase):
 
     The head is what search results are built from, so the four page types get
     distinct titles and deterministic descriptions. The visible page is not
-    touched: H1 stays 🔐 Monomi Digest everywhere it already was, and the
+    touched: H1 stays the brand alone everywhere it already was, and the
     descriptions are templates, never AI output and never derived from the day's
     articles. Phase A-2 adds nothing else to the head -- canonical, robots, OG,
     Twitter Card and JSON-LD are out of scope and simply absent for now, which is
@@ -9516,7 +9516,7 @@ class Bl009PhaseA2HeadMetadataTest(unittest.TestCase):
     def test_top_page_title_is_the_approved_value(self):
         self.assertEqual(
             self._title(self._top_html()),
-            "🔐 Monomi Digest | 金融機関に関連するサイバーセキュリティ情報",
+            "Monomi Digest | 金融機関に関連するサイバーセキュリティ情報",
         )
 
     def test_top_page_description_is_the_approved_about_sentence(self):
@@ -9533,8 +9533,8 @@ class Bl009PhaseA2HeadMetadataTest(unittest.TestCase):
     def test_top_page_heading_still_reads_the_brand_alone(self):
         """The longer title belongs to the document, not to the visible header."""
         html = self._top_html()
-        self.assertIn("<h1>🔐 Monomi Digest</h1>", html)
-        self.assertNotIn("<h1>🔐 Monomi Digest | ", html)
+        self.assertIn("<h1>Monomi Digest</h1>", html)
+        self.assertNotIn("<h1>Monomi Digest | ", html)
 
     # ---- daily archive -----------------------------------------------------
     def test_daily_archive_dates_drop_the_leading_zero(self):
@@ -9554,7 +9554,7 @@ class Bl009PhaseA2HeadMetadataTest(unittest.TestCase):
         html = fetch.build_daily_archive_html(self._digest())
         self.assertEqual(
             self._title(html),
-            "🔐 2026年8月4日のサイバーセキュリティ情報 | Monomi Digest",
+            "2026年8月4日のサイバーセキュリティ情報 | Monomi Digest",
         )
 
     def test_daily_archive_description_follows_the_date_template(self):
@@ -9573,7 +9573,7 @@ class Bl009PhaseA2HeadMetadataTest(unittest.TestCase):
 
     def test_daily_archive_keeps_its_visible_heading_and_date_line(self):
         html = fetch.build_daily_archive_html(self._digest())
-        self.assertIn("<h1>🔐 Monomi Digest</h1>", html)
+        self.assertIn("<h1>Monomi Digest</h1>", html)
         self.assertIn('<div class="sub">日次ダイジェスト：2026年08月04日</div>', html)
 
     def test_the_description_is_a_template_not_derived_from_the_articles(self):
@@ -9689,7 +9689,7 @@ class Bl009PhaseA2HeadMetadataTest(unittest.TestCase):
     def test_pages_without_a_description_emit_no_empty_meta(self):
         html = fetch.build_html([], None)
         self.assertNotIn('name="description"', html)
-        self.assertEqual(self._title(html), "🔐 Monomi Digest")
+        self.assertEqual(self._title(html), "Monomi Digest")
 
 
 
@@ -10075,29 +10075,29 @@ class Bl009PhaseA4CanonicalTest(unittest.TestCase):
         self.assertIn(f'<meta name="description" content="{fetch.TOP_PAGE_META_DESCRIPTION}">',
                       html)
         self.assertEqual(self._canonical(html), "https://monomidigest.com/")
-        self.assertIn("<h1>🔐 Monomi Digest</h1>", html)
+        self.assertIn("<h1>Monomi Digest</h1>", html)
 
 
-class Bl009PhaseA6FaviconTest(unittest.TestCase):
-    """BL-009 Phase A-6: the site identity icon.
+class Bl049LockBrandingRemovalTest(unittest.TestCase):
+    """BL-049: the lock mark is gone from reader-facing branding.
 
-    To be eligible for a favicon in Google Search a site puts a link to it in
-    the home page's head, and both the file (Googlebot-Image) and the home page
-    (Googlebot) have to be crawlable. It is a search-appearance / site-attribution
-    feature, and appearing is not guaranteed even when the guidelines are met;
-    this phase claims no ranking benefit and does not aim for one. It is
-    site-wide rather than home-page-only because of the browser tab: every
-    published page should look like the same site.
+    The padlock read as a functional UI symbol -- private, locked, sign-in
+    required, restricted area -- and Monomi Digest means none of that. So the
+    emoji is dropped from the document title and the visible heading, and the
+    BL-009 Phase A-6 favicon (`docs/favicon.svg`, the same padlock drawing) is
+    withdrawn together with its `<link rel="icon">`.
 
-    The href is root-relative on purpose. The file lives at the site root, the
-    path does not depend on how deep the page is, and it needs no origin -- so
-    this contract does not add a second place where the public origin is spelled
-    out.
+    Deliberately no replacement: no favicon, logo, monogram, emoji icon or any
+    other brand asset is introduced. The brand is the text `Monomi Digest`, and
+    letting the browser fall back to its generic page icon is the accepted
+    outcome. These tests therefore pin *absence*, not a substitute mark.
     """
 
     ROOT = Path(__file__).resolve().parent
     DOCS = ROOT / "docs"
-    ICON_RE = re.compile(r'<link rel="icon" href="([^"]*)">')
+    ICON_RE = re.compile(r'<link rel="icon"[^>]*>')
+    BRAND = "Monomi Digest"
+    LOCK = "\U0001f510"
 
     def _pages(self):
         pages = [self.DOCS / "index.html", self.DOCS / "about.html",
@@ -10106,54 +10106,35 @@ class Bl009PhaseA6FaviconTest(unittest.TestCase):
                         if p.name != "index.html")
         return pages
 
-    # ---- the asset ---------------------------------------------------------
-    def test_the_favicon_asset_exists_at_a_stable_path(self):
-        self.assertEqual(fetch.FAVICON_PATH, "/favicon.svg")
-        self.assertTrue((self.DOCS / "favicon.svg").is_file())
+    # ---- the asset is gone and nothing replaced it -------------------------
+    def test_the_favicon_asset_is_deleted(self):
+        self.assertFalse((self.DOCS / "favicon.svg").exists())
 
-    def test_the_asset_is_valid_square_svg(self):
-        """Pixel dimensions and viewBox units are different things: the size
-        requirement is about the former, the shape about the latter."""
-        svg = (self.DOCS / "favicon.svg").read_text(encoding="utf-8")
-        root = xml.etree.ElementTree.fromstring(svg)
-        self.assertEqual(root.tag, "{http://www.w3.org/2000/svg}svg")
-        width = float(root.get("width"))
-        height = float(root.get("height"))
-        self.assertEqual(width, 64)
-        self.assertEqual(height, 64)
-        self.assertEqual(width, height, "a favicon must be square")
-        self.assertGreaterEqual(width, 48, "must stay legible well above 48px")
-        # ...and it stays scalable: the viewBox keeps the same 1:1 aspect ratio
-        box_width, box_height = (float(v) for v in root.get("viewBox").split()[2:])
-        self.assertEqual(box_width, box_height)
-        self.assertEqual(width / height, box_width / box_height)
+    def test_no_replacement_icon_or_logo_asset_was_added(self):
+        """The point is removing the mark, not swapping it for another one."""
+        for name in ("favicon.ico", "favicon.png", "favicon.svg", "icon.svg",
+                     "icon.png", "logo.svg", "logo.png", "apple-touch-icon.png",
+                     "site.webmanifest", "manifest.json"):
+            with self.subTest(asset=name):
+                self.assertFalse((self.DOCS / name).exists())
 
-    def test_the_asset_carries_no_text_or_initials(self):
-        """The approved identity is the lock mark, not a wordmark."""
-        svg = (self.DOCS / "favicon.svg").read_text(encoding="utf-8")
-        self.assertNotIn("<text", svg)
-        self.assertNotIn("font", svg)
+    def test_the_generator_keeps_no_favicon_constant(self):
+        self.assertFalse(hasattr(fetch, "FAVICON_PATH"))
+        self.assertFalse(hasattr(fetch, "FAVICON_LINK_HTML"))
 
-    # ---- the head contract -------------------------------------------------
-    def test_every_published_page_links_the_favicon_exactly_once(self):
+    # ---- no page references an icon ----------------------------------------
+    def test_no_published_page_references_an_icon(self):
         pages = self._pages()
         self.assertGreater(len(pages), 3)
         for path in pages:
             with self.subTest(page=path.relative_to(self.DOCS)):
-                found = self.ICON_RE.findall(path.read_text(encoding="utf-8"))
-                self.assertEqual(len(found), 1)
-                self.assertEqual(found[0], "/favicon.svg")
+                html = path.read_text(encoding="utf-8")
+                self.assertEqual(self.ICON_RE.findall(html), [])
+                self.assertNotIn("favicon", html)
+                self.assertNotIn("apple-touch-icon", html)
+                self.assertNotIn("manifest", html)
 
-    def test_the_four_page_types_use_the_identical_link(self):
-        for name in ("index.html", "about.html", "archive/index.html",
-                     "archive/2026-08-14.html"):
-            with self.subTest(page=name):
-                html = (self.DOCS / name).read_text(encoding="utf-8")
-                self.assertIn('<link rel="icon" href="/favicon.svg">', html)
-
-    def test_generated_pages_carry_the_link_without_being_asked(self):
-        """Unlike canonical, the favicon is not opt-in: it is site identity, so
-        every page the generator produces has it."""
+    def test_generated_pages_emit_no_icon_link(self):
         for html in (fetch.build_html([], None),
                      fetch.build_archive_index_html([]),
                      fetch.build_daily_archive_html({
@@ -10161,25 +10142,53 @@ class Bl009PhaseA6FaviconTest(unittest.TestCase):
                          "generated_at": "2026-08-04T07:39:47+09:00",
                          "items": [], "counts": {}, "run": {}})):
             with self.subTest(html=html[:60]):
-                self.assertEqual(len(self.ICON_RE.findall(html)), 1)
+                self.assertEqual(self.ICON_RE.findall(html), [])
+                self.assertNotIn("favicon", html)
 
-    # ---- the asset survives generation -------------------------------------
-    def test_archive_regeneration_neither_creates_nor_touches_the_asset(self):
-        """Like docs/CNAME, docs/robots.txt and docs/about.html, it is static."""
-        payload = (self.DOCS / "favicon.svg").read_text(encoding="utf-8")
-        with tempfile.TemporaryDirectory() as tmp:
-            docs = Path(tmp) / "docs"
-            (docs / "archive").mkdir(parents=True)
-            data = Path(tmp) / "data"
-            data.mkdir()
-            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
-            self.assertFalse((docs / "favicon.svg").exists(),
-                             "nothing generates the favicon")
-            (docs / "favicon.svg").write_text(payload, encoding="utf-8")
-            fetch.generate_archive_outputs(data_dir=data, docs_dir=docs)
-            self.assertEqual((docs / "favicon.svg").read_text(encoding="utf-8"), payload)
+    # ---- the lock is gone from title and heading ---------------------------
+    def test_no_published_page_carries_the_lock_in_brand_markup(self):
+        for path in self._pages():
+            html = path.read_text(encoding="utf-8")
+            with self.subTest(page=path.relative_to(self.DOCS)):
+                self.assertNotIn(self.LOCK, html)
 
-    # ---- earlier phases are undisturbed ------------------------------------
+    def test_brand_owned_titles_and_heading_are_text_only(self):
+        self.assertEqual(
+            fetch.TOP_PAGE_DOCUMENT_TITLE,
+            "Monomi Digest | 金融機関に関連するサイバーセキュリティ情報",
+        )
+        self.assertEqual(
+            fetch.daily_archive_document_title("2026-08-04"),
+            "2026年8月4日のサイバーセキュリティ情報 | Monomi Digest",
+        )
+        for html in (fetch.build_html([], None),
+                     fetch.build_daily_archive_html({
+                         "schema_version": 2, "digest_date": "2026-08-04",
+                         "generated_at": "2026-08-04T07:39:47+09:00",
+                         "items": [], "counts": {}, "run": {}})):
+            with self.subTest(html=html[:60]):
+                self.assertIn(f"<h1>{self.BRAND}</h1>", html)
+                self.assertNotIn(self.LOCK, html)
+
+    def test_no_other_emoji_was_substituted_for_the_lock(self):
+        """Removing the mark must not become 'replace it with a different one'."""
+        for substitute in ("\U0001f512", "\U0001f511", "\U0001f6e1", "\U0001f512\ufe0f",
+                           "\U0001f4f0", "\U0001f4a1", "\u2705", "\u26a0", "\U0001f575"):
+            with self.subTest(substitute=substitute):
+                self.assertNotIn(substitute, fetch.TOP_PAGE_DOCUMENT_TITLE)
+                self.assertNotIn(substitute, fetch.build_html([], None))
+
+    # ---- the brand itself, and neighbouring contracts, are unchanged -------
+    def test_the_brand_name_and_subtitle_are_unchanged(self):
+        html = fetch.build_html([], None, document_title=fetch.TOP_PAGE_DOCUMENT_TITLE,
+                                meta_description=fetch.TOP_PAGE_META_DESCRIPTION,
+                                canonical_url=fetch.public_url(fetch.TOP_PAGE_PATH))
+        self.assertIn(f"<h1>{self.BRAND}</h1>", html)
+        self.assertIn(self.BRAND, fetch.TOP_PAGE_DOCUMENT_TITLE)
+        self.assertIn(self.BRAND, fetch.TOP_PAGE_META_DESCRIPTION)
+        self.assertIn(f'<meta name="description" content="{fetch.TOP_PAGE_META_DESCRIPTION}">', html)
+        self.assertIn('<link rel="canonical" href="https://monomidigest.com/">', html)
+
     def test_the_head_contracts_from_a2_to_a4_still_hold(self):
         for path in self._pages():
             html = path.read_text(encoding="utf-8")
@@ -10188,7 +10197,7 @@ class Bl009PhaseA6FaviconTest(unittest.TestCase):
                 self.assertEqual(len(re.findall(r'<meta name="description"', html)), 1)
                 self.assertEqual(len(re.findall(r'<link rel="canonical"', html)), 1)
 
-    def test_the_crawl_files_are_untouched_by_this_phase(self):
+    def test_the_crawl_files_are_untouched_by_this_ticket(self):
         robots = (self.DOCS / "robots.txt").read_text(encoding="utf-8")
         self.assertEqual(robots,
                          "User-agent: *\n"
