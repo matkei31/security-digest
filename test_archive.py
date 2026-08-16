@@ -2453,6 +2453,22 @@ class LegacyBriefStateExplanationArchiveRenderTest(unittest.TestCase):
         fetch.build_daily_archive_html(digest)
         self.assertEqual(digest["brief"]["overview"], self.STORED_OVERVIEW)
 
+    def test_state_a_trailing_body_survives_into_rendered_html(self):
+        """round 2 blocker: state Aの後続に重要度文めいたGemini本文がある場合、
+        旧generatorはstate Aへ重要度文を付けられないため、その文は本文であり
+        HTMLから消えても書き換えられてもいけない。
+        """
+        body = "一方、重要度の高い情報が3件あるため、内容は優先的に把握する必要があります。"
+        digest = self._digest_2026_08_11_shape()
+        digest["brief"]["overview"] = (
+            "掲載3件｜重要度「高」3件｜本日確認2件｜今週確認0件\n"
+            "本日中に適用性または初動要否を確認する記事が2件あります。" + body
+        )
+        html = fetch.build_daily_archive_html(digest)
+        self.assertIn("Brief対象の記事のうち、本日中に適用性または初動要否を確認する記事が2件あります。", html)
+        self.assertIn(body, html)
+        self.assertNotIn("一方、Brief対象には", html)
+
     def test_top_page_and_archive_render_the_same_normalized_brief(self):
         digest = self._digest_2026_08_11_shape()
         archive_html = fetch.build_daily_archive_html(digest)

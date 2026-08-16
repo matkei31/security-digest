@@ -4134,14 +4134,17 @@ def split_brief_overview_status_line(overview):
       3. older legacy「本日の状態（掲載N件）：重要度「高」N件、...。」→ 現行形式へ正規化
     2・3は数値を保ったまま先頭segmentの語だけを現行形式へ変換して返す。
 
-    さらにrest側についても、BL-048以前のformat_brief_state_explanation()が
-    生成した決定論的説明文がrestの厳密なprefixである場合に限り、
-    normalize_legacy_brief_state_explanation()が現行wordingへ変換する
-    (件数はstored textから取り、item dataから再計算しない)。状態行だけを
-    正規化して説明文を放置すると、metadata_only cardがある日のarchiveで
-    「本日の掲載記事では…」が全掲載記事を評価したように読めたままになるため。
-    変換対象はsystem生成の決定論的prefixに厳密に限定し、それ以外の自由文・
-    Gemini本文はbyte-for-byteのまま返す(unrestricted str.replaceは使わない)。
+    2・3ではさらにrest側についても、認識した状態行が持つ件数
+    (importance_high／urgency_today／urgency_week／unclassified)だけを根拠に、
+    旧generatorが生成し得た決定論的説明文を厳密に1つ再構成し、restがそれで
+    始まる場合に限り現行wordingへ変換する。状態行だけを正規化して説明文を
+    放置すると、metadata_only cardがある日のarchiveで「本日の掲載記事では…」が
+    全掲載記事を評価したように読めたままになるため。
+    照合はexact prefix一致のみで、その状態行の件数から旧generatorが出力し
+    得ない説明文(件数不一致・state不一致・rule違反のimportance suffix等)は
+    構造的に一致せず、restはbyte-for-byteのまま返る。一致した場合も後続の
+    Gemini本文・自由文はそのまま連結する(unrestricted str.replaceは使わない)。
+    件数はstored status line由来であり、item dataから再計算しない。
     data/配下の過去JSONも書き換えない(表示時変換のみ)。
     いずれにも一致しない場合・overviewが空の場合はNoneを返し、呼び出し側は
     overview全体を従来通り1つの要素として表示する(fail-open。欠落・例外を
@@ -4152,67 +4155,45 @@ def split_brief_overview_status_line(overview):
         return None
     match = _BRIEF_STATUS_LINE_RE.match(overview)
     if match:
-        status_line = match.group(1)
-    else:
-        match = _BRIEF_STATUS_LINE_PRE_BL048_RE.match(overview)
-        if match is None:
-            match = _BRIEF_STATUS_LINE_LEGACY_RE.match(overview)
-        if match is None:
-            return None
-        status_line = _format_brief_status_line_from_legacy_match(match)
-    return status_line, normalize_legacy_brief_state_explanation(overview[match.end():])
+        # 現行形式。restも現行formatterの出力なので正規化の対象にしない。
+        return match.group(1), overview[match.end():]
+    match = _BRIEF_STATUS_LINE_PRE_BL048_RE.match(overview)
+    if match is None:
+        match = _BRIEF_STATUS_LINE_LEGACY_RE.match(overview)
+    if match is None:
+        return None
+    status_line = _format_brief_status_line_from_legacy_match(match)
+    rest = normalize_legacy_brief_state_explanation(
+        overview[match.end():], _brief_ctx_from_legacy_status_match(match)
+    )
+    return status_line, rest
 
 
-# BL-048 blocker fix: BL-048以前にformat_brief_state_explanation()が生成し、
-# 既存のdaily JSON(brief.overview)へ状態行の直後に保存されている決定論的な説明文。
-# 状態行だけを正規化して説明文を放置すると、metadata_only cardがある日の
-# archiveで「本日の掲載記事では…」が全掲載記事を評価したように読めたままになる
+# BL-048 historical render compatibility: BL-048以前の
+# format_brief_state_explanation()が生成し、既存のdaily JSON(brief.overview)へ
+# 状態行の直後に保存されている決定論的な説明文を、表示時に現行wordingへ揃える。
+# 状態行だけを正規化して説明文を放置すると、metadata_only cardがある日のarchiveで
+# 「本日の掲載記事では…」が全掲載記事を評価したように読めたままになる
 # (例: data/2026-08-11.json は掲載card 5・metadata_only 2・Brief対象3)。
 #
+# 設計(round 2 blocker fix): 説明文をゆるいregex文法で照合しない。
 # apply_deterministic_brief_context()は overview = 状態行 + "\n" + 説明文 +
-# Gemini本文 という順で連結する(説明文とGemini本文の間に区切りは無い)。
-# したがって説明文はrestの「厳密なprefix」としてのみ照合し、後続は一切触らない。
-# 各patternは旧6形式(A complete/A incomplete/B complete/B incomplete/
-# C complete/C incomplete)と、任意付加される重要度文に1:1対応する。
-_BRIEF_STATE_EXPLANATION_IMPORTANCE_SUFFIX = (
-    "(?:" + re.escape("一方、重要度の高い情報が") + r"(?P<high>[0-9]+)"
-    + re.escape("件あるため、内容は優先的に把握する必要があります。") + ")?"
-)
-
-_BRIEF_STATE_EXPLANATION_LEGACY_PATTERNS = (
-    # (state, kind, compiled) — kindはmatch groupからctxを組み立てる際の分岐に使う。
-    ("A", "a", re.compile(
-        re.escape("本日中に適用性または初動要否を確認する記事が") + r"(?P<today>[0-9]+)"
-        + re.escape("件あります。")
-        + "(?:" + re.escape("未判定の記事が") + r"(?P<unclassified>[0-9]+)"
-        + re.escape("件あります。") + ")?"
-        + _BRIEF_STATE_EXPLANATION_IMPORTANCE_SUFFIX
-    )),
-    ("B", "complete", re.compile(
-        re.escape("本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が")
-        + r"(?P<week>[0-9]+)" + re.escape("件あり、計画的な確認が必要です。")
-        + _BRIEF_STATE_EXPLANATION_IMPORTANCE_SUFFIX
-    )),
-    ("B", "incomplete", re.compile(
-        re.escape("未判定の記事") + r"(?P<unclassified>[0-9]+)"
-        + re.escape("件を除き、本日確認に分類された記事はありません。判定済み記事のうち、今週確認の対象が")
-        + r"(?P<week>[0-9]+)" + re.escape("件あります。")
-        + _BRIEF_STATE_EXPLANATION_IMPORTANCE_SUFFIX
-    )),
-    ("C", "complete", re.compile(
-        re.escape("本日の掲載記事では、緊急の確認対象はありません。短期的な確認対象はなく、参考・状況把握が中心です。")
-        + _BRIEF_STATE_EXPLANATION_IMPORTANCE_SUFFIX
-    )),
-    ("C", "incomplete", re.compile(
-        re.escape("未判定の記事") + r"(?P<unclassified>[0-9]+)"
-        + re.escape("件を除き、本日・今週確認に分類された記事はありません。")
-        + _BRIEF_STATE_EXPLANATION_IMPORTANCE_SUFFIX
-    )),
-)
+# Gemini本文 を区切りなしで連結するため、説明文を独立に文法照合すると、
+# 旧generatorが決して出力し得ない組み合わせまで受理して後続の自由文を
+# 食い潰す危険がある(例: state Aでは urgency_today > 0 なので、旧generatorの
+# `t == 0 and importance_high > 0` gateにより重要度文は決して付かない。
+# それでも重要度文を任意suffixとして受理すると、Gemini本文の先頭文を
+# 決定論的textと誤認して削除してしまう)。
+#
+# したがって、既に認識済みの保存状態行が持つ件数だけを唯一の真実として、
+# その値で旧generatorが生成し得た説明文を厳密に1つ再構成し、restがそれで
+# 始まる場合に限って置換する。文法ではなくexact stringで照合するため、
+# 件数不一致・state不一致・importance suffixのrule違反はすべて構造的に
+# 弾かれる(照合が一致しない=書き換えない)。
 
 
 def _int_or_zero(match, group):
-    """named groupが存在しない/未参加の場合は0を返す。数値はstored textからのみ取る。"""
+    """named groupが存在しない/未参加の場合は0を返す。値はstored textからのみ取る。"""
     try:
         value = match.group(group)
     except IndexError:
@@ -4220,40 +4201,87 @@ def _int_or_zero(match, group):
     return int(value) if value is not None else 0
 
 
-def normalize_legacy_brief_state_explanation(rest):
-    """BL-048: 保存済みの決定論的説明文(BL-048以前の6形式＋任意の重要度文)が
-    restの厳密なprefixである場合に限り、現行のBL-048 wordingへ変換した文字列を返す。
+def _brief_ctx_from_legacy_status_match(match):
+    """認識済みの保存状態行(pre-BL-048 / BL-016以前)のmatchから、説明文の
+    再構成に必要なctxを組み立てる。件数はstatus lineからのみ取り、現在の
+    item dataからは一切再計算しない。temporal_state / coverage_completeは
+    production と同じ決定論的ruleで導出する。
+    """
+    today = _int_or_zero(match, "today")
+    week = _int_or_zero(match, "week")
+    unclassified = _int_or_zero(match, "unclassified")
+    return {
+        "temporal_state": compute_brief_temporal_state(today, week),
+        "coverage_complete": compute_brief_coverage_complete(unclassified),
+        "urgency_today": today,
+        "urgency_week": week,
+        "unclassified": unclassified,
+        "importance_high": _int_or_zero(match, "high"),
+    }
 
-    - 件数はstored textのmatch groupからのみ取り、現在のitem dataから再計算しない。
-    - 変換文はformat_brief_state_explanation()自身に生成させる(新wordingの正本を
-      二重管理しない)。復元したctxは説明文の生成に必要な6 keyだけを持つ。
-    - prefixが一致しない場合はrestをそのまま(byte-for-byte)返す。Gemini本文・
-      任意の自由文は決して書き換えない。unrestricted str.replaceは使わない。
-    - prefix一致時も、一致部分より後ろ(Gemini本文等)はそのまま連結して返す。
+
+def _format_legacy_brief_state_explanation(ctx):
+    """BL-048以前のformat_brief_state_explanation()の出力を、当時の文言のまま
+    再現するhistorical render compatibility専用のprivate helper。
+
+    現行のformat_brief_state_explanation()と分岐構造・件数の使い方・重要度文の
+    付加条件(t == 0 かつ importance_high > 0)は完全に同一で、異なるのは文言だけ。
+    production出力には使わない(表示時に保存済みtextと突き合わせるためだけに使う)。
+    testで、実際の歴史的formatterの文法と一致することを網羅的に固定する。
+    """
+    state = ctx["temporal_state"]
+    complete = ctx["coverage_complete"]
+    t = ctx["urgency_today"]
+    w = ctx["urgency_week"]
+    u = ctx["unclassified"]
+
+    if state == "A":
+        text = f"本日中に適用性または初動要否を確認する記事が{t}件あります。"
+        if not complete:
+            text += f"未判定の記事が{u}件あります。"
+    elif state == "B":
+        if complete:
+            text = (
+                "本日の掲載記事では、緊急の確認対象はありません。"
+                f"今週確認の対象が{w}件あり、計画的な確認が必要です。"
+            )
+        else:
+            text = (
+                f"未判定の記事{u}件を除き、本日確認に分類された記事はありません。"
+                f"判定済み記事のうち、今週確認の対象が{w}件あります。"
+            )
+    else:  # C
+        if complete:
+            text = (
+                "本日の掲載記事では、緊急の確認対象はありません。"
+                "短期的な確認対象はなく、参考・状況把握が中心です。"
+            )
+        else:
+            text = f"未判定の記事{u}件を除き、本日・今週確認に分類された記事はありません。"
+
+    if t == 0 and ctx["importance_high"] > 0:
+        text += f"一方、重要度の高い情報が{ctx['importance_high']}件あるため、内容は優先的に把握する必要があります。"
+
+    return text
+
+
+def normalize_legacy_brief_state_explanation(rest, ctx):
+    """認識済み保存状態行のctxに対して旧generatorが生成し得た説明文を厳密に
+    1つ再構成し、restがそれで始まる場合に限り現行wordingへ置換して返す。
+
+    - 照合はexact prefix一致のみ。文法的にありえても、その状態行の件数から
+      旧generatorが出力し得ない説明文は構造的に一致しない。
+    - 一致しない場合はrestをbyte-for-byteのまま返す(部分的な正規化はしない)。
+    - 一致した場合も、一致部分より後ろ(Gemini本文・任意の自由文)はそのまま
+      連結して返す。unrestricted str.replaceは使わない。
+    - 件数はctx(=stored status line)由来であり、item dataから再計算しない。
     """
     if not rest:
         return rest
-    for state, kind, pattern in _BRIEF_STATE_EXPLANATION_LEGACY_PATTERNS:
-        match = pattern.match(rest)
-        if not match:
-            continue
-        unclassified = _int_or_zero(match, "unclassified")
-        if kind == "a":
-            today, week = _int_or_zero(match, "today"), 0
-            complete = match.group("unclassified") is None
-        else:
-            today, week = 0, _int_or_zero(match, "week")
-            complete = kind == "complete"
-        ctx = {
-            "temporal_state": state,
-            "coverage_complete": complete,
-            "urgency_today": today,
-            "urgency_week": week,
-            "unclassified": unclassified,
-            "importance_high": _int_or_zero(match, "high"),
-        }
-        return format_brief_state_explanation(ctx) + rest[match.end():]
-    return rest
+    expected = _format_legacy_brief_state_explanation(ctx)
+    if not rest.startswith(expected):
+        return rest
+    return format_brief_state_explanation(ctx) + rest[len(expected):]
 
 
 def format_brief_state_explanation(ctx):

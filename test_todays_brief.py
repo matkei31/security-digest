@@ -1583,14 +1583,17 @@ class BriefStatusLineStoredFormatCompatibilityTest(unittest.TestCase):
 
 
 class BriefStateExplanationLegacyNormalizationTest(unittest.TestCase):
-    """BL-048 blocker fix: 保存済みの決定論的state explanationも表示時に
-    現行wordingへ正規化する。状態行だけを正規化して説明文を放置すると、
-    metadata_only cardがある日のarchiveで「本日の掲載記事では…」が
-    全掲載記事を評価したように読めたままになる。
+    """BL-048 historical render compatibility: 保存済みの決定論的state explanationも
+    表示時に現行wordingへ正規化する。ただし正規化は、認識済み保存状態行が持つ件数から
+    旧generatorが生成し得た説明文とexact prefix一致する場合に限る。
 
-    data/*.jsonは書き換えず、restの厳密なprefixが旧決定論的形式に一致する
-    場合に限って変換する。件数はstored textから取り、item dataから再計算しない。
+    round 2 blocker: 説明文をゆるいregex文法で照合すると、旧generatorが決して
+    出力し得ない組み合わせ(state A + 重要度文など)まで受理し、後続のGemini本文を
+    削除してしまう。round 3 では状態行の件数を唯一の真実として説明文を厳密に
+    1つ再構成し、exact prefix照合するため、その種の誤受理は構造的に起こらない。
     """
+
+    IMPORTANCE_SENTENCE = "一方、重要度の高い情報が3件あるため、内容は優先的に把握する必要があります。"
 
     # data/2026-08-11.json の実値(掲載card 5 / metadata_only 2 / Brief対象 3)
     STORED_2026_08_11 = (
@@ -1598,8 +1601,13 @@ class BriefStateExplanationLegacyNormalizationTest(unittest.TestCase):
         "本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が1件あり、計画的な確認が必要です。"
     )
 
+    def split(self, overview):
+        return fetch.split_brief_overview_status_line(overview)
+
+    # --- 正常系 -------------------------------------------------------------
+
     def test_historical_b_complete_with_metadata_only_is_fully_normalized(self):
-        status_line, rest = fetch.split_brief_overview_status_line(self.STORED_2026_08_11)
+        status_line, rest = self.split(self.STORED_2026_08_11)
         self.assertEqual(status_line, "Brief対象3件｜重要度「高」0件｜本日確認0件｜今週確認1件")
         self.assertEqual(
             rest,
@@ -1608,98 +1616,229 @@ class BriefStateExplanationLegacyNormalizationTest(unittest.TestCase):
         self.assertNotIn("本日の掲載記事では", rest)
 
     def test_historical_a_form_is_normalized(self):
+        _, rest = self.split(
+            "掲載5件｜重要度「高」0件｜本日確認3件｜今週確認0件\n"
+            "本日中に適用性または初動要否を確認する記事が3件あります。"
+        )
         self.assertEqual(
-            fetch.normalize_legacy_brief_state_explanation(
-                "本日中に適用性または初動要否を確認する記事が3件あります。"
-            ),
-            "Brief対象の記事のうち、本日中に適用性または初動要否を確認する記事が3件あります。",
+            rest, "Brief対象の記事のうち、本日中に適用性または初動要否を確認する記事が3件あります。"
         )
 
     def test_historical_incomplete_forms_use_brief_target_unclassified_wording(self):
-        cases = {
-            # A incomplete
-            "本日中に適用性または初動要否を確認する記事が2件あります。未判定の記事が4件あります。":
+        cases = (
+            (  # A incomplete
+                "掲載6件｜重要度「高」0件｜本日確認2件｜今週確認0件｜未判定4件\n"
+                "本日中に適用性または初動要否を確認する記事が2件あります。未判定の記事が4件あります。",
                 "Brief対象の記事のうち、本日中に適用性または初動要否を確認する記事が2件あります。"
                 "Brief対象の未判定記事が4件あります。",
-            # B incomplete
-            "未判定の記事5件を除き、本日確認に分類された記事はありません。判定済み記事のうち、今週確認の対象が2件あります。":
+            ),
+            (  # B incomplete
+                "掲載7件｜重要度「高」0件｜本日確認0件｜今週確認2件｜未判定5件\n"
+                "未判定の記事5件を除き、本日確認に分類された記事はありません。判定済み記事のうち、今週確認の対象が2件あります。",
                 "Brief対象の未判定記事5件を除き、本日確認に分類された記事はありません。"
                 "判定済み記事のうち、今週確認の対象が2件あります。",
-            # C incomplete
-            "未判定の記事3件を除き、本日・今週確認に分類された記事はありません。":
+            ),
+            (  # C incomplete
+                "掲載3件｜重要度「高」0件｜本日確認0件｜今週確認0件｜未判定3件\n"
+                "未判定の記事3件を除き、本日・今週確認に分類された記事はありません。",
                 "Brief対象の未判定記事3件を除き、本日・今週確認に分類された記事はありません。",
-        }
-        for stored, expected in cases.items():
-            with self.subTest(stored=stored[:24]):
-                self.assertEqual(fetch.normalize_legacy_brief_state_explanation(stored), expected)
+            ),
+        )
+        for stored, expected in cases:
+            with self.subTest(stored=stored[:26]):
+                self.assertEqual(self.split(stored)[1], expected)
 
     def test_historical_c_complete_is_normalized(self):
+        _, rest = self.split(
+            "掲載2件｜重要度「高」0件｜本日確認0件｜今週確認0件\n"
+            "本日の掲載記事では、緊急の確認対象はありません。短期的な確認対象はなく、参考・状況把握が中心です。"
+        )
         self.assertEqual(
-            fetch.normalize_legacy_brief_state_explanation(
-                "本日の掲載記事では、緊急の確認対象はありません。短期的な確認対象はなく、参考・状況把握が中心です。"
-            ),
+            rest,
             "Brief対象の記事では、緊急の確認対象はありません。短期的な確認対象はなく、参考・状況把握が中心です。",
         )
 
-    def test_historical_importance_append_is_normalized(self):
-        stored = (
-            "本日の掲載記事では、緊急の確認対象はありません。短期的な確認対象はなく、参考・状況把握が中心です。"
-            "一方、重要度の高い情報が2件あるため、内容は優先的に把握する必要があります。"
-        )
-        got = fetch.normalize_legacy_brief_state_explanation(stored)
-        self.assertIn("一方、Brief対象には重要度の高い情報が2件あるため、内容は優先的に把握する必要があります。", got)
-        self.assertNotIn("一方、重要度の高い情報が", got)
+    def test_valid_importance_suffix_is_normalized_for_b_and_c(self):
+        """today == 0 かつ importance_high > 0 のときだけ、旧generatorは重要度文を
+        付加できる。その場合は現行wordingへ正規化する。
+        """
+        b = self.split(
+            "掲載4件｜重要度「高」3件｜本日確認0件｜今週確認2件\n"
+            "本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が2件あり、計画的な確認が必要です。"
+            + self.IMPORTANCE_SENTENCE
+        )[1]
+        self.assertIn("一方、Brief対象には重要度の高い情報が3件あるため、内容は優先的に把握する必要があります。", b)
+        self.assertNotIn("一方、重要度の高い情報が", b)
 
-    def test_numbers_come_from_stored_text_only(self):
-        """現在のitem dataからの再計算をしない。stored textの数値がそのまま出る。"""
-        got = fetch.normalize_legacy_brief_state_explanation(
+        c = self.split(
+            "掲載2件｜重要度「高」1件｜本日確認0件｜今週確認0件\n"
+            "本日の掲載記事では、緊急の確認対象はありません。短期的な確認対象はなく、参考・状況把握が中心です。"
+            "一方、重要度の高い情報が1件あるため、内容は優先的に把握する必要があります。"
+        )[1]
+        self.assertIn("一方、Brief対象には重要度の高い情報が1件あるため", c)
+
+    def test_numbers_come_from_stored_status_line_only(self):
+        _, rest = self.split(
+            "掲載140件｜重要度「高」0件｜本日確認97件｜今週確認0件｜未判定43件\n"
             "本日中に適用性または初動要否を確認する記事が97件あります。未判定の記事が43件あります。"
         )
-        self.assertIn("97件", got)
-        self.assertIn("43件", got)
+        self.assertIn("97件", rest)
+        self.assertIn("43件", rest)
 
     def test_trailing_gemini_body_is_preserved_byte_for_byte(self):
         body = "本日は、Microsoft製品の脆弱性に関する情報が多数報告されています。"
-        got = fetch.normalize_legacy_brief_state_explanation(
+        _, rest = self.split(
+            "掲載5件｜重要度「高」0件｜本日確認2件｜今週確認0件\n"
             "本日中に適用性または初動要否を確認する記事が2件あります。" + body
         )
-        self.assertTrue(got.endswith(body), got)
         self.assertEqual(
-            got,
+            rest,
             "Brief対象の記事のうち、本日中に適用性または初動要否を確認する記事が2件あります。" + body,
         )
 
-    def test_free_text_is_returned_unchanged(self):
-        """決定論的grammarへ厳密一致しない自由文はbyte-for-byteのまま。
+    # --- round 2 blocker: 旧generatorが出力し得ない組み合わせを受理しない -------
+
+    def test_state_a_never_consumes_importance_sentence_as_deterministic_text(self):
+        """state A は urgency_today > 0 を意味し、旧generatorの
+        `t == 0 and importance_high > 0` gateにより重要度文は決して付かない。
+        したがって後続の重要度文めいた文はGemini本文であり、削除も書き換えも
+        してはならない(reviewed head 6bf9006 ではこれが消えていた)。
+        """
+        _, rest = self.split(
+            "掲載3件｜重要度「高」3件｜本日確認2件｜今週確認0件\n"
+            "本日中に適用性または初動要否を確認する記事が2件あります。" + self.IMPORTANCE_SENTENCE
+        )
+        self.assertTrue(rest.startswith("Brief対象の記事のうち、本日中に適用性または初動要否を確認する記事が2件あります。"))
+        self.assertTrue(rest.endswith(self.IMPORTANCE_SENTENCE), rest)
+        self.assertNotIn("一方、Brief対象には", rest)
+
+    def test_importance_high_zero_never_consumes_importance_like_body(self):
+        _, rest = self.split(
+            "掲載4件｜重要度「高」0件｜本日確認0件｜今週確認2件\n"
+            "本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が2件あり、計画的な確認が必要です。"
+            + self.IMPORTANCE_SENTENCE
+        )
+        self.assertTrue(rest.endswith(self.IMPORTANCE_SENTENCE), rest)
+        self.assertNotIn("一方、Brief対象には", rest)
+
+    def test_counts_inconsistent_with_status_line_are_not_normalized(self):
+        """件数・state・未判定の有無が状態行と食い違う説明文は一切書き換えない。"""
+        cases = (
+            (  # week mismatch: status 1件 / explanation 2件
+                "掲載4件｜重要度「高」0件｜本日確認0件｜今週確認1件\n"
+                "本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が2件あり、計画的な確認が必要です。",
+                "本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が2件あり、計画的な確認が必要です。",
+            ),
+            (  # unclassified present in explanation but absent from status line
+                "掲載4件｜重要度「高」0件｜本日確認0件｜今週確認2件\n"
+                "未判定の記事1件を除き、本日確認に分類された記事はありません。判定済み記事のうち、今週確認の対象が2件あります。",
+                "未判定の記事1件を除き、本日確認に分類された記事はありません。判定済み記事のうち、今週確認の対象が2件あります。",
+            ),
+            (  # today mismatch
+                "掲載3件｜重要度「高」0件｜本日確認2件｜今週確認0件\n"
+                "本日中に適用性または初動要否を確認する記事が5件あります。",
+                "本日中に適用性または初動要否を確認する記事が5件あります。",
+            ),
+            (  # state mismatch: status says A, explanation is a B form
+                "掲載3件｜重要度「高」0件｜本日確認2件｜今週確認0件\n"
+                "本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が0件あり、計画的な確認が必要です。",
+                "本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が0件あり、計画的な確認が必要です。",
+            ),
+        )
+        for stored, expected_rest in cases:
+            with self.subTest(stored=stored[:34]):
+                self.assertEqual(self.split(stored)[1], expected_rest)
+
+    def test_free_text_rest_is_returned_unchanged(self):
+        """決定論的形式へexact一致しない自由文はbyte-for-byteのまま。
         「本日の掲載記事では」「未判定の記事」を含むだけでは変換しない。
         """
+        status = "掲載4件｜重要度「高」0件｜本日確認0件｜今週確認2件\n"
         cases = (
             "本日の掲載記事では、いくつか注意すべき点があります。",
-            "本日の掲載記事では、緊急の確認対象はありません。",          # 第2文が無く不完全
+            "本日の掲載記事では、緊急の確認対象はありません。",
             "未判定の記事について、運用上の扱いを検討しています。",
-            "未判定の記事が複数あります。",                              # 件数が数値でない
-            "本日中に適用性または初動要否を確認する記事があります。",    # N件が無い
-            "一方、重要度の高い情報が3件あるため、内容は優先的に把握する必要があります。",  # base無し
+            "未判定の記事が複数あります。",
+            "本日中に適用性または初動要否を確認する記事があります。",
+            self.IMPORTANCE_SENTENCE,
             "本日は、広く利用されているSaaS製品の重大な脆弱性に関する注意喚起が報告されています。",
-            "",
         )
-        for text in cases:
-            with self.subTest(text=text[:26]):
-                self.assertEqual(fetch.normalize_legacy_brief_state_explanation(text), text)
+        for body in cases:
+            with self.subTest(body=body[:26]):
+                self.assertEqual(self.split(status + body)[1], body)
 
-    def test_normalization_is_idempotent_on_current_output(self):
-        """現行format_brief_state_explanation()の出力は再変換しても不変。"""
-        for evaluated, unclassified in (
-            ([("高", "本日確認")], 0), ([("高", "本日確認")], 2),
-            ([("中", "今週確認")], 0), ([("中", "今週確認")], 2),
-            ([("中", "参考")], 0), ([("中", "参考")], 2),
-        ):
-            with self.subTest(evaluated=evaluated, unclassified=unclassified):
-                ctx = fetch.compute_brief_trusted_context(
-                    build_items_from_spec(evaluated, unclassified_count=unclassified)
-                )
-                current = fetch.format_brief_state_explanation(ctx)
-                self.assertEqual(fetch.normalize_legacy_brief_state_explanation(current), current)
+    def test_empty_rest_is_handled(self):
+        _, rest = self.split("掲載0件｜重要度「高」0件｜本日確認0件｜今週確認0件")
+        self.assertEqual(rest, "")
+
+    def test_current_format_overview_is_not_touched(self):
+        """既に新形式で保存されたoverviewは正規化対象にしない(冪等)。"""
+        current = (
+            "Brief対象3件｜重要度「高」0件｜本日確認0件｜今週確認1件\n"
+            "Brief対象の記事では、緊急の確認対象はありません。今週確認の対象が1件あり、計画的な確認が必要です。"
+        )
+        status_line, rest = self.split(current)
+        self.assertEqual(status_line, "Brief対象3件｜重要度「高」0件｜本日確認0件｜今週確認1件")
+        self.assertEqual(
+            rest,
+            "Brief対象の記事では、緊急の確認対象はありません。今週確認の対象が1件あり、計画的な確認が必要です。",
+        )
+
+
+class LegacyBriefStateExplanationFormatterTest(unittest.TestCase):
+    """BL-048: historical render compatibility専用の
+    _format_legacy_brief_state_explanation() が、BL-048以前の実際の
+    format_brief_state_explanation() の文法と一致することを固定する。
+
+    現行formatterとは分岐構造・件数の使い方・重要度文の付加条件が同一で、
+    文言だけが異なる。ここが崩れるとexact prefix照合が黙って効かなくなる。
+    """
+
+    def ctx(self, today, week, unclassified, high):
+        return {
+            "temporal_state": fetch.compute_brief_temporal_state(today, week),
+            "coverage_complete": fetch.compute_brief_coverage_complete(unclassified),
+            "urgency_today": today, "urgency_week": week,
+            "unclassified": unclassified, "importance_high": high,
+        }
+
+    def test_legacy_forms_are_reproduced_exactly(self):
+        cases = {
+            (3, 0, 0, 0): "本日中に適用性または初動要否を確認する記事が3件あります。",
+            (2, 0, 4, 0): "本日中に適用性または初動要否を確認する記事が2件あります。未判定の記事が4件あります。",
+            (0, 2, 0, 0): "本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が2件あり、計画的な確認が必要です。",
+            (0, 2, 5, 0): "未判定の記事5件を除き、本日確認に分類された記事はありません。判定済み記事のうち、今週確認の対象が2件あります。",
+            (0, 0, 0, 0): "本日の掲載記事では、緊急の確認対象はありません。短期的な確認対象はなく、参考・状況把握が中心です。",
+            (0, 0, 3, 0): "未判定の記事3件を除き、本日・今週確認に分類された記事はありません。",
+        }
+        for args, expected in cases.items():
+            with self.subTest(args=args):
+                self.assertEqual(fetch._format_legacy_brief_state_explanation(self.ctx(*args)), expected)
+
+    def test_importance_sentence_only_when_today_zero_and_high_positive(self):
+        suffix = "一方、重要度の高い情報が"
+        # today > 0 => 旧generatorは決して付けない
+        self.assertNotIn(suffix, fetch._format_legacy_brief_state_explanation(self.ctx(2, 0, 0, 3)))
+        # high == 0 => 付かない
+        self.assertNotIn(suffix, fetch._format_legacy_brief_state_explanation(self.ctx(0, 2, 0, 0)))
+        # today == 0 かつ high > 0 => 付く
+        self.assertIn(
+            "一方、重要度の高い情報が3件あるため、内容は優先的に把握する必要があります。",
+            fetch._format_legacy_brief_state_explanation(self.ctx(0, 2, 0, 3)),
+        )
+
+    def test_legacy_and_current_formatters_differ_only_in_wording(self):
+        """両formatterは同じctxで同じ分岐・同じ件数を使う。件数の出現は一致する。"""
+        import re as _re
+        for args in ((3, 0, 0, 0), (2, 0, 4, 0), (0, 2, 0, 3), (0, 2, 5, 0), (0, 0, 0, 1), (0, 0, 3, 0)):
+            with self.subTest(args=args):
+                c = self.ctx(*args)
+                legacy = fetch._format_legacy_brief_state_explanation(c)
+                current = fetch.format_brief_state_explanation(c)
+                self.assertEqual(_re.findall(r"[0-9]+", legacy), _re.findall(r"[0-9]+", current))
+                self.assertNotEqual(legacy, current)
+                self.assertNotIn("Brief対象", legacy)
+                self.assertIn("Brief対象", current)
 
 
 
