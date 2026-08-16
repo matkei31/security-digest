@@ -2393,5 +2393,78 @@ class BriefTargetScopeWordingHtmlTest(unittest.TestCase):
 
 
 
+class LegacyBriefStateExplanationArchiveRenderTest(unittest.TestCase):
+    """BL-048 blocker fix: 保存済みdaily JSONを書き換えずに、archive表示時へ
+    状態行と決定論的説明文の両方の正規化が届くことのHTML回帰テスト。
+
+    再現対象は data/2026-08-11.json の形(掲載card 5 / metadata_only 2 /
+    Brief対象 3)。status lineだけを正規化すると
+    「Brief対象3件…」+「本日の掲載記事では…」となり、説明文が5件すべてを
+    評価したように読めるambiguityが残っていた。
+    """
+
+    STORED_OVERVIEW = (
+        "掲載3件｜重要度「高」0件｜本日確認0件｜今週確認1件\n"
+        "本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が1件あり、計画的な確認が必要です。"
+    )
+
+    def _digest_2026_08_11_shape(self):
+        digest = make_digest(digest_date="2026-08-11", total_items=5, high_count=0)
+        for index, item in enumerate(digest["items"]):
+            item["analysis"]["urgency"] = "今週確認" if index == 0 else "参考"
+        for item in digest["items"][-2:]:
+            item["analysis"] = {
+                "status": "not_attempted", "model": "gemini-2.5-flash",
+                "prompt_version": "article-analysis-v8", "generated_at": None,
+                "category": None, "category_reason": None, "importance": None,
+                "urgency": None, "summary": None, "financial_impact": None,
+                "recommended_actions": [], "tags": [],
+            }
+            item["policy"] = {
+                "configured_mode": "metadata_only", "effective_mode": "metadata_only",
+                "ai_eligible": False, "downgrade_reason": None, "attribution_url": None,
+            }
+        digest["brief"]["overview"] = self.STORED_OVERVIEW
+        return digest
+
+    def test_stored_status_line_and_state_explanation_both_normalized_in_archive(self):
+        digest = self._digest_2026_08_11_shape()
+        items = fetch.digest_items_for_html(digest)
+        self.assertEqual(fetch.compute_dashboard_counts(items)["total"], 5)
+        self.assertEqual(len(fetch.select_brief_eligible_items(items)), 3)
+
+        html = fetch.build_daily_archive_html(digest)
+
+        self.assertIn(
+            '<p class="brief-status-line">Brief対象3件｜重要度「高」0件｜本日確認0件｜今週確認1件</p>',
+            html,
+        )
+        self.assertIn(
+            '<p class="brief-overview">Brief対象の記事では、緊急の確認対象はありません。'
+            '今週確認の対象が1件あり、計画的な確認が必要です。</p>',
+            html,
+        )
+        # blockerで指摘された残存ambiguityが消えていること。
+        self.assertNotIn("本日の掲載記事では", html)
+        self.assertNotIn("掲載3件", html)
+
+    def test_stored_json_is_not_rewritten_by_rendering(self):
+        digest = self._digest_2026_08_11_shape()
+        fetch.build_daily_archive_html(digest)
+        self.assertEqual(digest["brief"]["overview"], self.STORED_OVERVIEW)
+
+    def test_top_page_and_archive_render_the_same_normalized_brief(self):
+        digest = self._digest_2026_08_11_shape()
+        archive_html = fetch.build_daily_archive_html(digest)
+        top_html = fetch.build_html(
+            fetch.digest_items_for_html(digest), fetch.brief_for_html_from_digest(digest)
+        )
+        for html in (archive_html, top_html):
+            self.assertIn('<p class="brief-status-line">Brief対象3件', html)
+            self.assertIn('<p class="brief-overview">Brief対象の記事では、', html)
+            self.assertNotIn("本日の掲載記事では", html)
+
+
+
 if __name__ == "__main__":
     unittest.main()

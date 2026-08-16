@@ -4132,10 +4132,17 @@ def split_brief_overview_status_line(overview):
       1. 現行形式    「Brief対象N件｜重要度「高」N件｜...」        → そのまま返す
       2. pre-BL-048  「掲載N件｜重要度「高」N件｜...」            → 現行形式へ正規化
       3. older legacy「本日の状態（掲載N件）：重要度「高」N件、...。」→ 現行形式へ正規化
-    2・3は数値を保ったまま先頭segmentの語だけを現行形式へ変換して
-    (status_line, rest) を返す。変換対象はsystem生成の決定論的prefixに厳密に
-    限定し、後続の自由文(rest)は一切書き換えない。data/配下の過去JSONも
-    書き換えない(表示時変換のみ)。
+    2・3は数値を保ったまま先頭segmentの語だけを現行形式へ変換して返す。
+
+    さらにrest側についても、BL-048以前のformat_brief_state_explanation()が
+    生成した決定論的説明文がrestの厳密なprefixである場合に限り、
+    normalize_legacy_brief_state_explanation()が現行wordingへ変換する
+    (件数はstored textから取り、item dataから再計算しない)。状態行だけを
+    正規化して説明文を放置すると、metadata_only cardがある日のarchiveで
+    「本日の掲載記事では…」が全掲載記事を評価したように読めたままになるため。
+    変換対象はsystem生成の決定論的prefixに厳密に限定し、それ以外の自由文・
+    Gemini本文はbyte-for-byteのまま返す(unrestricted str.replaceは使わない)。
+    data/配下の過去JSONも書き換えない(表示時変換のみ)。
     いずれにも一致しない場合・overviewが空の場合はNoneを返し、呼び出し側は
     overview全体を従来通り1つの要素として表示する(fail-open。欠落・例外を
     発生させない)。BL-048でもこのfail-open挙動は維持し、古いBriefを
@@ -4145,16 +4152,108 @@ def split_brief_overview_status_line(overview):
         return None
     match = _BRIEF_STATUS_LINE_RE.match(overview)
     if match:
-        return match.group(1), overview[match.end():]
-    pre_bl048_match = _BRIEF_STATUS_LINE_PRE_BL048_RE.match(overview)
-    if pre_bl048_match:
-        status_line = _format_brief_status_line_from_legacy_match(pre_bl048_match)
-        return status_line, overview[pre_bl048_match.end():]
-    legacy_match = _BRIEF_STATUS_LINE_LEGACY_RE.match(overview)
-    if legacy_match:
-        status_line = _format_brief_status_line_from_legacy_match(legacy_match)
-        return status_line, overview[legacy_match.end():]
-    return None
+        status_line = match.group(1)
+    else:
+        match = _BRIEF_STATUS_LINE_PRE_BL048_RE.match(overview)
+        if match is None:
+            match = _BRIEF_STATUS_LINE_LEGACY_RE.match(overview)
+        if match is None:
+            return None
+        status_line = _format_brief_status_line_from_legacy_match(match)
+    return status_line, normalize_legacy_brief_state_explanation(overview[match.end():])
+
+
+# BL-048 blocker fix: BL-048以前にformat_brief_state_explanation()が生成し、
+# 既存のdaily JSON(brief.overview)へ状態行の直後に保存されている決定論的な説明文。
+# 状態行だけを正規化して説明文を放置すると、metadata_only cardがある日の
+# archiveで「本日の掲載記事では…」が全掲載記事を評価したように読めたままになる
+# (例: data/2026-08-11.json は掲載card 5・metadata_only 2・Brief対象3)。
+#
+# apply_deterministic_brief_context()は overview = 状態行 + "\n" + 説明文 +
+# Gemini本文 という順で連結する(説明文とGemini本文の間に区切りは無い)。
+# したがって説明文はrestの「厳密なprefix」としてのみ照合し、後続は一切触らない。
+# 各patternは旧6形式(A complete/A incomplete/B complete/B incomplete/
+# C complete/C incomplete)と、任意付加される重要度文に1:1対応する。
+_BRIEF_STATE_EXPLANATION_IMPORTANCE_SUFFIX = (
+    "(?:" + re.escape("一方、重要度の高い情報が") + r"(?P<high>[0-9]+)"
+    + re.escape("件あるため、内容は優先的に把握する必要があります。") + ")?"
+)
+
+_BRIEF_STATE_EXPLANATION_LEGACY_PATTERNS = (
+    # (state, kind, compiled) — kindはmatch groupからctxを組み立てる際の分岐に使う。
+    ("A", "a", re.compile(
+        re.escape("本日中に適用性または初動要否を確認する記事が") + r"(?P<today>[0-9]+)"
+        + re.escape("件あります。")
+        + "(?:" + re.escape("未判定の記事が") + r"(?P<unclassified>[0-9]+)"
+        + re.escape("件あります。") + ")?"
+        + _BRIEF_STATE_EXPLANATION_IMPORTANCE_SUFFIX
+    )),
+    ("B", "complete", re.compile(
+        re.escape("本日の掲載記事では、緊急の確認対象はありません。今週確認の対象が")
+        + r"(?P<week>[0-9]+)" + re.escape("件あり、計画的な確認が必要です。")
+        + _BRIEF_STATE_EXPLANATION_IMPORTANCE_SUFFIX
+    )),
+    ("B", "incomplete", re.compile(
+        re.escape("未判定の記事") + r"(?P<unclassified>[0-9]+)"
+        + re.escape("件を除き、本日確認に分類された記事はありません。判定済み記事のうち、今週確認の対象が")
+        + r"(?P<week>[0-9]+)" + re.escape("件あります。")
+        + _BRIEF_STATE_EXPLANATION_IMPORTANCE_SUFFIX
+    )),
+    ("C", "complete", re.compile(
+        re.escape("本日の掲載記事では、緊急の確認対象はありません。短期的な確認対象はなく、参考・状況把握が中心です。")
+        + _BRIEF_STATE_EXPLANATION_IMPORTANCE_SUFFIX
+    )),
+    ("C", "incomplete", re.compile(
+        re.escape("未判定の記事") + r"(?P<unclassified>[0-9]+)"
+        + re.escape("件を除き、本日・今週確認に分類された記事はありません。")
+        + _BRIEF_STATE_EXPLANATION_IMPORTANCE_SUFFIX
+    )),
+)
+
+
+def _int_or_zero(match, group):
+    """named groupが存在しない/未参加の場合は0を返す。数値はstored textからのみ取る。"""
+    try:
+        value = match.group(group)
+    except IndexError:
+        return 0
+    return int(value) if value is not None else 0
+
+
+def normalize_legacy_brief_state_explanation(rest):
+    """BL-048: 保存済みの決定論的説明文(BL-048以前の6形式＋任意の重要度文)が
+    restの厳密なprefixである場合に限り、現行のBL-048 wordingへ変換した文字列を返す。
+
+    - 件数はstored textのmatch groupからのみ取り、現在のitem dataから再計算しない。
+    - 変換文はformat_brief_state_explanation()自身に生成させる(新wordingの正本を
+      二重管理しない)。復元したctxは説明文の生成に必要な6 keyだけを持つ。
+    - prefixが一致しない場合はrestをそのまま(byte-for-byte)返す。Gemini本文・
+      任意の自由文は決して書き換えない。unrestricted str.replaceは使わない。
+    - prefix一致時も、一致部分より後ろ(Gemini本文等)はそのまま連結して返す。
+    """
+    if not rest:
+        return rest
+    for state, kind, pattern in _BRIEF_STATE_EXPLANATION_LEGACY_PATTERNS:
+        match = pattern.match(rest)
+        if not match:
+            continue
+        unclassified = _int_or_zero(match, "unclassified")
+        if kind == "a":
+            today, week = _int_or_zero(match, "today"), 0
+            complete = match.group("unclassified") is None
+        else:
+            today, week = 0, _int_or_zero(match, "week")
+            complete = kind == "complete"
+        ctx = {
+            "temporal_state": state,
+            "coverage_complete": complete,
+            "urgency_today": today,
+            "urgency_week": week,
+            "unclassified": unclassified,
+            "importance_high": _int_or_zero(match, "high"),
+        }
+        return format_brief_state_explanation(ctx) + rest[match.end():]
+    return rest
 
 
 def format_brief_state_explanation(ctx):
