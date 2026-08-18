@@ -1,0 +1,1301 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-08-19",
+  "generated_at": "2026-08-19T07:26:39.776559+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 22,
+    "ai_attempted_count": 19,
+    "ai_success_count": 19,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 3,
+    "ai_eligible_count": 19
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 13,
+      "低": 4,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 3,
+      "今週確認": 11,
+      "参考": 5,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 5,
+      "攻撃・脅威動向": 5,
+      "インシデント": 2,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 6,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象19件｜重要度「高」2件｜本日確認3件｜今週確認11件\nBrief対象の記事のうち、本日中に適用性または初動要否を確認する記事が3件あります。",
+    "important_highlights": [
+      "CISAは2026年8月18日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Broadcom VMware vCenterにパス・トラバーサル脆弱性(CVE-2026-59310)があり、ネットワークアクセスを持つ攻撃者によって任意のコード実行が可能になる可能性があります。",
+      "CISAは2026年8月18日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Microsoft SharePointの認証不備の脆弱性(CVE-2026-55040)により、認証されていない攻撃者がネットワーク経由でセキュリティ機能をバイパスする可能性があります。",
+      "CISAは2026年8月18日、実悪用が確認されたとしてApple macOSの認証不備の脆弱性「CVE-2026-65400」をKEVカタログへ追加しました。この脆弱性は、ネットワーク上の攻撃者が有効な認証情報なしに画面共有へ認証できる可能性があります。"
+    ],
+    "discussion_points": [
+      "CISAは2026年8月18日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Broadcom VMware vCenterにパス・トラバーサル脆弱性(CVE-2026-59310)があり、ネットワークアクセスを持つ攻撃者によって任意のコード実行が可能になる可能性があります。\n多くの金融機関で利用されている可能性のあるVMware vCenterの脆弱性であり、システム停止や情報漏えいにつながる可能性があるため、適用性確認の対象になります。",
+      "CISAは2026年8月18日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Microsoft SharePointの認証不備の脆弱性(CVE-2026-55040)により、認証されていない攻撃者がネットワーク経由でセキュリティ機能をバイパスする可能性があります。\n金融機関でMicrosoft SharePointを利用している場合に関係します。特に外部公開されているSharePoint環境は、認証なしで悪用される可能性があるため、早急な確認が必要です。"
+    ],
+    "check_items": [
+      "自社および委託先におけるBroadcom VMware vCenterの利用有無と影響バージョンを確認する",
+      "自社および委託先におけるMicrosoft SharePointの利用有無、影響バージョン、外部露出状況を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:3db875d507ead183425238592e7e7e9e06c36d98664004f5c126076d236cff56",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/microsoft-copilot-personal-flaws-could.html",
+      "canonical_url": "https://thehackernews.com/2026/08/microsoft-copilot-personal-flaws-could.html",
+      "published_at": "2026-08-19T02:47:22+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "Microsoft Copilot Personal Flaws Could Let One Click Exfiltrate Data From Connected Apps",
+      "raw_title": "Microsoft Copilot Personal Flaws Could Let One Click Exfiltrate Data From Connected Apps",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8510f636c270326c9eff7d3d82a0aabe38ff24765345eb0c0e2d2234d1e64fcf",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:20:41.524044+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "Microsoft Copilot Personalの脆弱性が主題であり、AI関連技術のリスクに該当するため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Varonis Threat Labsは、Microsoft Copilot Personalに3つの脆弱性(CoSnitchと総称)を発見しました。これらの脆弱性を悪用されると、細工されたリンクをワンクリックするだけで、接続されているアプリやCopilotセッションで利用可能な情報からデータが密かに流出する可能性があります。",
+        "financial_impact": "金融機関でMicrosoft Copilot Personalを業務利用している場合に限り、適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Microsoft Copilot Personalの利用状況と影響を受ける可能性のあるバージョンを確認する",
+          "Microsoftからの公式な情報公開やパッチ、緩和策の有無を確認する"
+        ],
+        "reason": "重要度は、Microsoft Copilot Personalの利用状況が金融機関で限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c960f83a4e1fa057ee9ce7782752c922481784f6c227255a8f2d2890244ae96a",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/attackers-exploit-mlflow-ssrf-flaw-to.html",
+      "canonical_url": "https://thehackernews.com/2026/08/attackers-exploit-mlflow-ssrf-flaw-to.html",
+      "published_at": "2026-08-19T02:44:05+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "Attackers Exploit MLflow SSRF Flaw to Steal Cloud Credentials and Secrets",
+      "raw_title": "Attackers Exploit MLflow SSRF Flaw to Steal Cloud Credentials and Secrets",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5915913552f4d4e54536acba6fee9ed4feb4eba0a64256a148961fa5f9069854",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:20:58.881602+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "MLflowとFUXAの脆弱性が悪用され、クラウド認証情報や機密情報が窃取される攻撃が確認されているため。",
+        "tags": [
+          "AI",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "オープンソースのAIプラットフォームMLflowと、OT/産業オートメーション向けSCADA/HMIソフトウェアFUXAに存在する2つの重大な脆弱性が、悪意のあるスキャンや悪用を受けていることが報告されました。これにより、クラウド認証情報や機密情報が窃取される可能性があります。",
+        "financial_impact": "金融機関でMLflowまたはFUXAを利用している場合、これらの脆弱性の影響を受ける可能性があります。特にMLflowはAI関連技術として、FUXAはOT/産業オートメーション関連として、利用状況の確認が必要です。",
+        "recommended_actions": [
+          "MLflowおよびFUXAの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報やセキュリティアドバイザリを確認し、パッチ適用や緩和策の実施を検討する"
+        ],
+        "reason": "重要度は、AIプラットフォームやOT/産業オートメーション向けソフトウェアの脆弱性であり、利用状況によっては影響が大きくなる可能性があるため「中」です。確認目安は、悪用が確認されているものの、CISA KEVへの新規追加や緊急の対応期限が示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:cd63a91fd292f4874e6dcea9df3c438a572ab61694782035ec3af3f1fbf6f1ab",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/08/18/hunting-macsync-stealer-infrastructure-through-behavioral-pivots/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/08/18/hunting-macsync-stealer-infrastructure-through-behavioral-pivots/",
+      "published_at": "2026-08-19T02:08:28+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "Hunting MacSync Stealer infrastructure through behavioral pivots",
+      "raw_title": "Hunting MacSync Stealer infrastructure through behavioral pivots",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ed4e4c47400a58dac1546e8080ade9d9c8cb6b1ceb5c75527ddfb119a4a95877",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ee1a3760dd26f889c52b6bf09c00c2a9b227829126d92799560a9da282e772dd",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/ransom-busters-claims-it-hacked.html",
+      "canonical_url": "https://thehackernews.com/2026/08/ransom-busters-claims-it-hacked.html",
+      "published_at": "2026-08-19T01:58:16+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "Ransom Busters Claims It Hacked Ransomware Servers, Asks Victims for Up to $60,000",
+      "raw_title": "Ransom Busters Claims It Hacked Ransomware Servers, Asks Victims for Up to $60,000",
+      "raw_excerpt": null,
+      "content_hash": "sha256:490dae4a1104382e7d87658b7f17b64f2f7f71b96748b59c00b60a18c4cda2dc",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:21:15.948024+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ランサムウェア攻撃者とその手口に関する情報が主題であるため。",
+        "tags": [
+          "ランサムウェア"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "「Ransom Busters」と名乗るランサムウェアのアフィリエイトが、被害組織に積極的にメールを送り、ランサムウェアグループのサーバーから盗んだデータを削除する代わりに2万ドルから6万ドルの料金を要求していることが確認されました。",
+        "financial_impact": "金融機関がランサムウェア攻撃の被害に遭った場合、このような第三者からの接触がある可能性があり、対応方針を検討する上で参考となる情報です。",
+        "recommended_actions": [],
+        "reason": "重要度は、新たなランサムウェア関連の脅威動向であり、金融機関のインシデント対応計画に影響し得るため「中」です。確認目安は、具体的な期限や即時対応を要する情報ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7ac5e5cf0cbb4c56ccd862e2caf425ace9cf2e7775c76c3a1631e4df7c104b49",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/webinar-today-rethinking-cyber-defense-for-ai-speed-attacks/",
+      "canonical_url": "https://www.securityweek.com/webinar-today-rethinking-cyber-defense-for-ai-speed-attacks/",
+      "published_at": "2026-08-19T00:03:30+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "Webinar Today: Rethinking Cyber Defense for AI-Speed Attacks",
+      "raw_title": "Webinar Today: Rethinking Cyber Defense for AI-Speed Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1da890100b4af96ed57fa5a4e1f32367fe188fccbcf44b7be261bc5988202056",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:21:32.621272+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIを活用した攻撃とそれに対する防御戦略の再考であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本日のライブウェビナーでは、AIの速度に対応できる検出優先のセキュリティ運用が可能か、あるいは予防を最も強力なデフォルトとして再考すべきかを探求します。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AIを活用した攻撃と防御に関する一般的な情報提供であり、具体的な脅威や脆弱性に関するものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、一般的な啓発・意見であり、具体的な脅威やアクションを伴わないため「低」です。確認目安は、短期的な対応を要する情報ではなく、中長期的な知識更新が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0314939e025a62341724b1543c974a72992ca1f193985f813410ee27ab34ad64",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ciso-conversations-nico-waisman-from-self-taught-hacker-to-ai-driven-offensive-security-at-xbow/",
+      "canonical_url": "https://www.securityweek.com/ciso-conversations-nico-waisman-from-self-taught-hacker-to-ai-driven-offensive-security-at-xbow/",
+      "published_at": "2026-08-18T23:30:00+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "CISO Conversations: Nico Waisman – From Self-Taught Hacker to AI-Driven Offensive Security at XBOW",
+      "raw_title": "CISO Conversations: Nico Waisman – From Self-Taught Hacker to AI-Driven Offensive Security at XBOW",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e73f05dd35da6a27da2087891a46d1285268114dff83f770855574558db96c37",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:21:49.355302+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "記事は特定の脆弱性、インシデント、攻撃動向、規制、クラウド、AIリスクのいずれにも直接関連せず、人物のキャリアパスと企業紹介が主題のため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Nico Waisman氏が、正規の訓練なしにアルゼンチンの初期ハッキングシーンから、AIを活用した攻撃的セキュリティ企業XBOWのセキュリティリーダーになるまでのキャリアパスについて語っています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AI駆動型セキュリティに関する一般的な情報として参考になりますが、具体的な脅威や対応を求めるものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や金融機関への直接的な影響が記事から確認できないため「低」です。確認目安は、具体的なアクションや期限を伴う情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4a5b883aab25195772b9a1f76a95bd6e70b42bb669aced2c81b337ba909fa265",
+      "source_id": "mandiant",
+      "source_name": "Mandiant",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://cloud.google.com/blog/topics/threat-intelligence/staying-ahead-of-adversarial-ai-through-agentic-source-code-review/",
+      "canonical_url": "https://cloud.google.com/blog/topics/threat-intelligence/staying-ahead-of-adversarial-ai-through-agentic-source-code-review/",
+      "published_at": "2026-08-18T23:00:00+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "Staying Ahead of Adversarial AI Through Agentic Source Code Review",
+      "raw_title": "Staying Ahead of Adversarial AI Through Agentic Source Code Review",
+      "raw_excerpt": null,
+      "content_hash": "sha256:96237b5444fac4140dc3ca985abfb87607f607b4aa4e467dbd2d2e88951564a9",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "verbatim_long_match",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:497468b5d0250e3557d97755b28fd7d0165aa3aebd1289c2dbf7fc67b6e007d0",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ai-driven-vulnerability-surge-breaks-the-traditional-patching-model/",
+      "canonical_url": "https://www.securityweek.com/ai-driven-vulnerability-surge-breaks-the-traditional-patching-model/",
+      "published_at": "2026-08-18T22:00:00+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "AI-Driven Vulnerability Surge Breaks the Traditional Patching Model",
+      "raw_title": "AI-Driven Vulnerability Surge Breaks the Traditional Patching Model",
+      "raw_excerpt": null,
+      "content_hash": "sha256:080ff6015a9f048c2ab8c6e37ef9f1f47a7e7c5100712ee115b46acca4f28ef5",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:22:23.524055+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIの進化が脆弱性管理に与える影響を主題としているため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Rapid7は、AIの進化により脆弱性の開示と悪用が加速しており、従来のパッチ適用サイクルでは対応しきれないと警告しています。防御側は深刻度スコアよりも露出度を優先して対応する必要があるとしています。",
+        "financial_impact": "金融機関は、AI技術の進展がサイバーセキュリティ戦略に与える影響を中長期的に検討する必要があります。直接的なインシデントや脆弱性情報ではないため、短期的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIの進展が脆弱性管理に与える中長期的な影響を考察するもので、短期的な適用性評価の優先度は高くないため「中」です。確認目安は、具体的な脆弱性や緊急対応を求める内容ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:31ec7c38c09a8dd93063b424446bfe24842527051b7eba06d1d8d240ad179333",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/ai-mind-viruses-can-spread-between.html",
+      "canonical_url": "https://thehackernews.com/2026/08/ai-mind-viruses-can-spread-between.html",
+      "published_at": "2026-08-18T21:38:36+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "AI \"Mind Viruses\" Can Spread Between Agents Through Persistent Prompt Files",
+      "raw_title": "AI \"Mind Viruses\" Can Spread Between Agents Through Persistent Prompt Files",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c54c36269d643b1bd393cd5ef7d12dfb9afa650e0a4f656470580fa05577ea8d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:22:40.898562+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェント間で自己増殖するペイロードが拡散する可能性について報告されており、AI技術固有のリスクが主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "AnthropicとスイスのEPFLの研究者が、AIエージェントがセッション間で状態を保持するために使用する編集可能なシステムプロンプトファイルを介して、自己増殖するペイロードがAIエージェント間で拡散する可能性を実証しました。",
+        "financial_impact": "金融機関がAIエージェントを業務に利用している場合、そのセキュリティリスク評価に関係します。現時点では概念実証段階であり、直接的な影響は確認できません。",
+        "recommended_actions": [
+          "AIエージェントを業務に利用している場合、本研究で示されたようなプロンプトを介した自己増殖型攻撃のリスクについて評価する",
+          "AIエージェントの導入・利用を検討する際、プロンプトの永続性やエージェント間の情報共有メカニズムにおけるセキュリティ対策を評価項目に含める"
+        ],
+        "reason": "重要度は、AIエージェントの利用が金融機関で拡大する可能性があり、その潜在的なリスク評価が必要となるため「中」です。確認目安は、概念実証段階であり直ちに影響が及ぶ時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:77045d80f7ad69e1de8a596e9c7a7edd18b7d94e5bad1a22b5dfa375268485a9",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/twinloot-abuses-sharepoint-and-teams-to.html",
+      "canonical_url": "https://thehackernews.com/2026/08/twinloot-abuses-sharepoint-and-teams-to.html",
+      "published_at": "2026-08-18T21:38:20+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "TWINLOOT Abuses SharePoint and Teams to Steal Credentials and Move Across Networks",
+      "raw_title": "TWINLOOT Abuses SharePoint and Teams to Steal Credentials and Move Across Networks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0b0fe9d64457b57504e855e451d8dcc6b8cb76936bb8d86a8fc966206c03d40b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:22:58.374477+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "未確認のPythonインプラントフレームワーク「TWINLOOT」が、Microsoftサービスを悪用して認証情報を窃取し、ネットワークを横断する攻撃手法が主題であるため。",
+        "tags": [
+          "APT",
+          "クラウド",
+          "認証",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、これまで文書化されていなかったPythonインプラントフレームワーク「TWINLOOT」の詳細を公開しました。TWINLOOTは、Microsoftの信頼されたサービス内でC2インフラ全体を運用するよう設計されており、SharePoint Onlineファイルを介してタスクを実行します。",
+        "financial_impact": "金融機関がMicrosoft SharePointやTeamsを利用している場合、本攻撃手法の対象となる可能性があります。認証情報の窃取やネットワーク横断は、情報漏えいや業務停止に繋がるリスクがあります。",
+        "recommended_actions": [
+          "自社および委託先におけるMicrosoft SharePoint OnlineおよびTeamsの利用状況を確認する",
+          "Microsoft 365環境における認証・アクセス管理設定およびログ監視状況を評価する"
+        ],
+        "reason": "重要度は、広く利用されるMicrosoftサービスを悪用する攻撃手法であり、金融機関にとって適用性評価の価値があるため「中」です。確認目安は、新たな攻撃手法の開示であり、即時対応を要する進行中の攻撃や緊急パッチの公開が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:af7ee94b6b76bbe3142b7afd8128f005b6c7c5fd742b8de2a0846ade6c2f1646",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/xpander-raises-7-5-million-for-ai-management-and-governance/",
+      "canonical_url": "https://www.securityweek.com/xpander-raises-7-5-million-for-ai-management-and-governance/",
+      "published_at": "2026-08-18T21:29:08+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "Xpander Raises $7.5 Million for AI Management and Governance",
+      "raw_title": "Xpander Raises $7.5 Million for AI Management and Governance",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0fb7651b1dd97b43936c964b63c7694ddbcdf402df298c6c893e678e0b6c903a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:23:15.335432+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントの管理とガバナンスに関する新しい技術と資金調達が主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Xpander社がAI管理とガバナンスのプラットフォーム開発のために750万ドルの資金調達を実施しました。同社のプラットフォームは、AIエージェントをポータブルなワークロードとして実行し、オンデマンドでインターフェースを安全にレンダリングするユニバーサルエージェントハーネスを使用しています。",
+        "financial_impact": "本記事は特定の製品や脆弱性に関するものではなく、金融機関への直接的な影響は限定的です。AI技術の動向に関する参考情報として位置づけられます。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI管理・ガバナンスに関する資金調達のニュースであり、金融機関への直接的な影響や適用性が現時点では低いため「低」です。確認目安は、具体的な脅威や対応期限がなく、中長期的な技術動向の把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:86705db7749ce00aad68d377df75a74bf39a45f91076b1737e9d962cc6b1212d",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/fortinet-acquires-ai-security-company-virtue-ai/",
+      "canonical_url": "https://www.securityweek.com/fortinet-acquires-ai-security-company-virtue-ai/",
+      "published_at": "2026-08-18T21:06:21+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "Fortinet Acquires AI Security Company Virtue AI",
+      "raw_title": "Fortinet Acquires AI Security Company Virtue AI",
+      "raw_excerpt": null,
+      "content_hash": "sha256:af044215f83a7ae56d214f52dc2dfe9bd1391d5cbd7e5b05d46fec880340933c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:23:32.256919+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "FortinetによるAIセキュリティ企業の買収が主題であり、AI関連技術のリスクと機会に関する情報であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "FortinetがAIセキュリティ企業Virtue AIを買収しました。FortinetはVirtue AIの技術を活用し、AIモデル、アプリケーション、エージェントシステムを含むAIセキュリティポートフォリオを強化する予定です。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。Fortinet製品を利用している場合でも、AIセキュリティ機能の将来的な強化に関する情報であり、現時点での具体的な対応は不要です。",
+        "recommended_actions": [],
+        "reason": "重要度は、FortinetによるAIセキュリティ企業の買収という一般的な業界動向であり、金融機関への直接的な影響や具体的な対応要否が不明確なため「低」です。確認目安は、現時点での具体的なアクションを求める情報ではなく、中長期的な動向把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6f9e97f4de864e46a839df51c7d1eb1ccc67e418670a2433297a79ff77f1bc67",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/one-attacker-has-scraped-both.html",
+      "canonical_url": "https://thehackernews.com/2026/08/one-attacker-has-scraped-both.html",
+      "published_at": "2026-08-18T20:30:00+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "One Attacker Has Scraped Both Salesforce and ServiceNow Portals Since 2025",
+      "raw_title": "One Attacker Has Scraped Both Salesforce and ServiceNow Portals Since 2025",
+      "raw_excerpt": null,
+      "content_hash": "sha256:cac4de8b74365483e15401ff35e6baa3fb90aef810767139863ca7d13e33ce7b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:23:49.888497+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "単一の攻撃者が複数のSaaSプラットフォームから情報をスクレイピングしている攻撃キャンペーンが主題のため。",
+        "tags": [
+          "SaaS",
+          "サプライチェーン",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セキュリティ企業Recoの調査によると、2025年以降、単一の攻撃インフラがSalesforceおよびServiceNowの顧客ポータルから複数の業界にわたる記録を1年以上にわたりスクレイピングしています。この「City Forum」キャンペーンは、特定のIPアドレスに紐づくサーバーから行われています。",
+        "financial_impact": "SalesforceやServiceNowを顧客ポータルとして利用している金融機関は、顧客情報がスクレイピングされた可能性がないか確認する必要があります。",
+        "recommended_actions": [
+          "自社および委託先でSalesforceまたはServiceNowの顧客ポータルを利用しているか確認する",
+          "SalesforceおよびServiceNowのアクセスログを確認し、不審なアクセスや大量のデータ取得がないか調査する"
+        ],
+        "reason": "重要度は、広く利用されるSaaSプラットフォームが標的となっているものの、自社への直接的な影響は利用状況に依存するため「中」です。確認目安は、長期にわたる攻撃動向であり、即時対応を要する新たな脆弱性や緊急の期限が示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:baa27ed0fe16d8c95c168dbfe401ccf268f16299d06a971fea7b2437e819c80e",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/16-typosquatted-rubygems-packages-steal.html",
+      "canonical_url": "https://thehackernews.com/2026/08/16-typosquatted-rubygems-packages-steal.html",
+      "published_at": "2026-08-18T20:20:00+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "16 Typosquatted RubyGems Packages Steal Browser Credentials and Crypto Wallets",
+      "raw_title": "16 Typosquatted RubyGems Packages Steal Browser Credentials and Crypto Wallets",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7f9bd4d51bf4f2baf6581b0076d15e9ce3ad7d7dc42806d811ab9aa0b2879153",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:24:07.427063+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "RubyGemsユーザーを標的としたタイポスクワッティングキャンペーンと情報窃取の手法が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、RubyGemsユーザーを標的とした新たなタイポスクワッティングキャンペーンを発見しました。このキャンペーンでは、Windowsベースの情報窃取マルウェアが使用され、ブラウザの認証情報や仮想通貨ウォレットが狙われています。",
+        "financial_impact": "金融機関がRubyGemsを利用してアプリケーション開発を行っている場合、開発環境やCI/CDパイプラインが影響を受ける可能性があります。直接的な顧客資産への影響は限定的ですが、開発資産の侵害は間接的なリスクとなり得ます。",
+        "recommended_actions": [
+          "RubyGemsを利用している場合、記事に記載された不正パッケージ名（ubnuler, ubnlder, ri18nr, reaker, rakier, orakw, joxnなど）と自社環境での利用状況を照合する",
+          "開発環境やCI/CDパイプラインにおけるRubyGemsパッケージのサプライチェーンセキュリティ対策を見直す",
+          "開発者に対し、RubyGemsパッケージのダウンロード元や名称の確認を徹底するよう注意喚起を行う"
+        ],
+        "reason": "重要度は、RubyGemsの利用状況によって影響が異なるため「中」です。確認目安は、新たな攻撃キャンペーンの報告であり、即時対応を要する具体的な期限やKEV新規追加の根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ee6b674b7cac5aa5e5e57399f8975bd5a6725f071dadb9fec732a0901ca6cb05",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/300000-wordpress-sites-potentially-exposed-to-hacking-due-to-form-plugin-flaw/",
+      "canonical_url": "https://www.securityweek.com/300000-wordpress-sites-potentially-exposed-to-hacking-due-to-form-plugin-flaw/",
+      "published_at": "2026-08-18T19:48:23+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "300,000 WordPress Sites Potentially Exposed to Hacking Due to Form Plugin Flaw",
+      "raw_title": "300,000 WordPress Sites Potentially Exposed to Hacking Due to Form Plugin Flaw",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4f57d643bf7c1a8db76346a4b2e25a2cb8b85b47f74c10bfe2197a978cd7670c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:24:24.838226+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "WordPressプラグインの脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "WordPressのフォームプラグインに、認証されていない攻撃者が実行可能ファイルをアップロードできる任意ファイルアップロードの脆弱性(CVE-2026-15748)が発見されました。これにより、約30万のWordPressサイトがハッキングされる可能性があります。",
+        "financial_impact": "金融機関がWordPressをウェブサイトや特定の業務システムで利用し、かつ当該フォームプラグインを使用している場合に影響する可能性があります。利用有無は記事から確認できません。",
+        "recommended_actions": [
+          "WordPressおよび当該フォームプラグインの利用有無と影響バージョンを確認する",
+          "プラグインベンダーの一次情報を確認し、修正パッチや緩和策の有無を評価する"
+        ],
+        "reason": "重要度は、WordPressのプラグインに関する脆弱性であり、金融機関での利用状況が限定的である可能性があるため「中」です。確認目安は、実悪用や緊急の対応期限に関する情報が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b5c9f79aeb109fff6227fe8d73b86052e5f93fdd3fee7902afce2f4591225411",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/heights-finance-data-breach-impacts-at-least-1-2-million-individuals/",
+      "canonical_url": "https://www.securityweek.com/heights-finance-data-breach-impacts-at-least-1-2-million-individuals/",
+      "published_at": "2026-08-18T18:18:34+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "Heights Finance Data Breach Impacts at Least 1.2 Million Individuals",
+      "raw_title": "Heights Finance Data Breach Impacts at Least 1.2 Million Individuals",
+      "raw_excerpt": null,
+      "content_hash": "sha256:275f83deb6af8efd86481f9f74ac06bf8838cd49848fe9e55e986813a2729590",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:24:41.962594+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "Heights Financeに対する実際のデータ侵害と個人情報流出が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Heights Financeが利用するサードパーティプラットフォームから、ハッカーが氏名、住所、電話番号、社会保障番号、金融情報を含む個人情報を窃取しました。この侵害により、少なくとも120万人の個人が影響を受けました。",
+        "financial_impact": "金融機関への直接的な影響は限定的ですが、金融サービスを提供する企業におけるサードパーティ経由のデータ侵害事例として、委託先管理や情報セキュリティ対策の参考になります。",
+        "recommended_actions": [
+          "自社および委託先における個人情報を含むデータの管理状況と、サードパーティプラットフォーム利用時のセキュリティ対策について再確認する",
+          "委託先との契約におけるセキュリティ要件や監査体制について見直し、必要に応じて強化を検討する"
+        ],
+        "reason": "重要度は、金融サービス企業における大規模なデータ侵害事例であり、委託先管理の重要性を示すため「中」です。確認目安は、具体的な期限や緊急対応の指示が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5e10185b7da23e8ffcc9e9dc66386ac3a87f187a12bf65ea7dc5b29d5982be4b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/safepal-hardware-wallet-maker-says-flaw.html",
+      "canonical_url": "https://thehackernews.com/2026/08/safepal-hardware-wallet-maker-says-flaw.html",
+      "published_at": "2026-08-18T18:10:45+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "SafePal Hardware Wallet Maker Says Flaw Exposed Data of Nearly 40,000 Customers",
+      "raw_title": "SafePal Hardware Wallet Maker Says Flaw Exposed Data of Nearly 40,000 Customers",
+      "raw_excerpt": null,
+      "content_hash": "sha256:13fac98dc6d49f43be25384e6a96600a79102d6d5229b598e1e94ad838122d84",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:24:59.103575+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "SafePalの顧客データ流出は、実際の侵害と情報漏えいに関する事例であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "SafePalは、注文追跡プラグインの認証不備により、約39,798人の顧客の氏名、メールアドレス、配送先住所、電話番号、購入詳細が流出したことを公表しました。同社は影響を受けた全顧客に8月16日に個別にメールで通知しています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。ただし、顧客が当該ハードウェアウォレットを利用している場合、個人情報流出によるフィッシング詐欺やなりすましのリスクが高まる可能性があります。",
+        "recommended_actions": [
+          "SafePal製品の利用有無を棚卸しし、影響を受ける可能性のある顧客層を特定する",
+          "SafePalからの公式通知の真偽を確認し、顧客への注意喚起の要否を検討する"
+        ],
+        "reason": "重要度は、金融機関への直接的な影響は限定的であるものの、顧客の個人情報流出に関わるため「中」です。確認目安は、既に通知済みのインシデントであり、即時対応を要する新たな時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:54b8d561cfdadd9c0d560c0c7521f13d611fa313128ce0292ad09ce27fb78bbf",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/gitlab-patches-critical-code-injection-vulnerability/",
+      "canonical_url": "https://www.securityweek.com/gitlab-patches-critical-code-injection-vulnerability/",
+      "published_at": "2026-08-18T17:51:07+09:00",
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "GitLab Patches Critical Code Injection Vulnerability",
+      "raw_title": "GitLab Patches Critical Code Injection Vulnerability",
+      "raw_excerpt": null,
+      "content_hash": "sha256:86334845c73bad11876db5aa88b9633f0b44de8f2d0e13d8e73ac1b1e4614dd4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:25:15.986989+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がGitLab製品の脆弱性修正に関するものであるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "GitLabは、認証されていない攻撃者がユーザーデータや公開プロジェクトを変更・削除できる重大なコードインジェクションの脆弱性を修正しました。",
+        "financial_impact": "金融機関でGitLab製品を利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "GitLab製品の利用有無と影響バージョンを確認する",
+          "GitLabの提供するパッチや緩和策の適用状況を確認する"
+        ],
+        "reason": "重要度は、GitLab製品の利用有無により影響が変わり、適用範囲が限定的であるため「中」です。確認目安は、脆弱性修正に関する情報であり、即時対応を要する進行中の攻撃やKEV新規追加の根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b2dfadd44d91eaf2c98cf5c6da4d0234fe0be9d6bbab7cc38e5b5b404bf72079",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "CVE-2026-33824 — Microsoft Internet Key Exchange (IKE) Service Extensions Double Free Vulnerability",
+      "raw_title": "CVE-2026-33824 — Microsoft Internet Key Exchange (IKE) Service Extensions Double Free Vulnerability",
+      "raw_excerpt": null,
+      "content_hash": "sha256:46ea214afafa60d3e596a71811e84d76b82403ba2bfc89ec5ac22dd313b9875e",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "output_length_violation",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-33824",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-18T22:20:39Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-33824",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-04-14T18:17:34Z",
+              "last_modified_at": "2026-08-18T19:35:52Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 9.8,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                "source": "secure@microsoft.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-18T22:20:39Z",
+              "date_added": "2026-08-18"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:f2066018467578240108732d0208d75a4b98be49222ffe3c618a4f600a29b1a9",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "Broadcom VMware vCenterのパス・トラバーサル脆弱性「CVE-2026-59310」",
+      "raw_title": "CVE-2026-59310 — Broadcom VMware vCenter Path Traversal Vulnerability",
+      "raw_excerpt": "Broadcom VMware vCenter contains a path traversal vulnerability which could allow a threat actor with network access to vCenter to execute arbitrary code.",
+      "content_hash": "sha256:e2e8c9992546e6330325a958835121a12a0c2afc6c3658d93ef0c279846ea73b",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:25:50.257539+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CISA KEVに掲載されたVMware vCenterの脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "CISAは2026年8月18日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Broadcom VMware vCenterにパス・トラバーサル脆弱性(CVE-2026-59310)があり、ネットワークアクセスを持つ攻撃者によって任意のコード実行が可能になる可能性があります。",
+        "financial_impact": "多くの金融機関で利用されている可能性のあるVMware vCenterの脆弱性であり、システム停止や情報漏えいにつながる可能性があるため、適用性確認の対象になります。",
+        "recommended_actions": [
+          "自社および委託先におけるBroadcom VMware vCenterの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報を確認し、パッチ適用や緩和策の実施を検討する",
+          "侵害の兆候がないかログなどを確認する"
+        ],
+        "reason": "重要度は、CVSS9.8のVMware vCenterの脆弱性で、多くの金融機関で利用されている可能性があり適用性評価の優先度が高いため「高」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-59310",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-18T22:20:39Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-59310",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-07-30T13:16:53Z",
+              "last_modified_at": "2026-08-18T19:35:44Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 9.8,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                "source": "security@vmware.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-18T22:20:39Z",
+              "date_added": "2026-08-18"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:1fda0000a9c44cf65959a2d8492f501eb230ecbd2f156654c45c12c628875d06",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "CISA、Microsoft SharePointの認証不備の脆弱性をKEVへ追加",
+      "raw_title": "CVE-2026-55040 — Microsoft SharePoint Weak Authentication Vulnerability",
+      "raw_excerpt": "Microsoft SharePoint contains a weak authentication vulnerability which allows an unauthorized attacker to bypass a security feature over a network.",
+      "content_hash": "sha256:ba27057cfcbc5b34013118d6318ecee832481c23bc0575aebde56bd25d2c7e62",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:26:07.384192+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CISA KEVへの脆弱性追加が主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "CISAは2026年8月18日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Microsoft SharePointの認証不備の脆弱性(CVE-2026-55040)により、認証されていない攻撃者がネットワーク経由でセキュリティ機能をバイパスする可能性があります。",
+        "financial_impact": "金融機関でMicrosoft SharePointを利用している場合に関係します。特に外部公開されているSharePoint環境は、認証なしで悪用される可能性があるため、早急な確認が必要です。",
+        "recommended_actions": [
+          "自社および委託先におけるMicrosoft SharePointの利用有無、影響バージョン、外部露出状況を確認する",
+          "Microsoftからの一次情報やパッチ、緩和策を確認し、対応要否を評価する",
+          "侵害の兆候がないか、ログ等の確認を実施する"
+        ],
+        "reason": "重要度は、広く利用されるMicrosoft SharePointの認証不備の脆弱性であり、外部からの悪用リスクが高いため「高」です。確認目安は、CISA KEVへ直近3日以内に新規追加され、実悪用が確認されているため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-55040",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-18T22:20:39Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-55040",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-07-14T18:18:15Z",
+              "last_modified_at": "2026-08-18T19:35:49Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 9.1,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N",
+                "source": "secure@microsoft.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-18T22:20:39Z",
+              "date_added": "2026-08-18"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:fabc7d67af2043f19da65a5e49c806ba22cf4a6dca208d6c276cb976657c5336",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-08-19T07:20:39.023505+09:00",
+      "title": "Apple macOSの認証不備の脆弱性「CVE-2026-65400」がCISA KEVに追加",
+      "raw_title": "CVE-2026-65400 — Apple macOS Improper Authentication Vulnerability",
+      "raw_excerpt": "Apple macOS contains an improper authentication vulnerability that could allow an attacker on the network to authenticate to Screen Sharing without valid credentials.",
+      "content_hash": "sha256:1d9de551fb76113904a1353e2543ed9498183aff0170ce98efa18a4e07cd009b",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-19T07:26:24.775607+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Apple macOSの認証不備の脆弱性が主題であり、CVEとKEVが関連するため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "本日確認",
+        "summary": "CISAは2026年8月18日、実悪用が確認されたとしてApple macOSの認証不備の脆弱性「CVE-2026-65400」をKEVカタログへ追加しました。この脆弱性は、ネットワーク上の攻撃者が有効な認証情報なしに画面共有へ認証できる可能性があります。",
+        "financial_impact": "金融機関でApple macOSを業務端末やサーバーとして利用し、特に画面共有機能を使用している場合に影響する可能性があります。利用状況によっては、不正アクセスや情報漏えいのリスクが生じます。",
+        "recommended_actions": [
+          "自社および委託先におけるApple macOSの利用有無、影響バージョン、画面共有機能の利用状況を確認する",
+          "Appleからの公式パッチや緩和策の情報を確認し、対応要否を評価する",
+          "不審な画面共有アクセスや認証ログがないか監視・確認する"
+        ],
+        "reason": "重要度は、Apple macOSの脆弱性であり、金融機関での利用状況によっては影響が限定的であるため「中」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-65400",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-18T22:20:39Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-65400",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-08-06T22:18:14Z",
+              "last_modified_at": "2026-08-18T19:35:47Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 9.8,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                "source": "134c704f-9b21-4f2e-91b3-4a467353bcc0",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-18T22:20:39Z",
+              "date_added": "2026-08-18"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
