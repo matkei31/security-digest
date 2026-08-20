@@ -1,0 +1,1284 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-08-21",
+  "generated_at": "2026-08-21T07:30:27.533539+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 23,
+    "ai_attempted_count": 19,
+    "ai_success_count": 19,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 4,
+    "ai_eligible_count": 19
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 15,
+      "低": 2,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 2,
+      "今週確認": 12,
+      "参考": 5,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 8,
+      "攻撃・脅威動向": 4,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 1,
+      "AI・新技術リスク": 4,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象19件｜重要度「高」2件｜本日確認2件｜今週確認12件\nBrief対象の記事のうち、本日中に適用性または初動要否を確認する記事が2件あります。",
+    "important_highlights": [
+      "CISAは2026年8月20日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。TrueConf Serverにはコードインジェクションの脆弱性があり、ポート4307/TCP経由でネットワークアクセスを持つ認証されていないリモート攻撃者が、細工されたスクリプトを使用して隔離された環境から脱出し、ホストシステム上で任意のコードを実行する可能性があります。",
+      "CISAは2026年8月20日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。TrueConf Serverに認証不備の脆弱性があり、ポート4307/TCP経由でネットワークアクセスを持つリモートの認証されていない攻撃者が任意のスクリプトを実行する可能性があります。",
+      "Rustプロジェクトは、侵害されたメンテナアカウントが公開したリリースにより、crates.ioから広く利用されている3つのRustクレートの悪意のあるバージョンを削除しました。これらのリリースは、ビルドスクリプトがコンパイル中にリモートペイロードをダウンロード・実行するタイポスクワットされた依存関係を追加していました。"
+    ],
+    "discussion_points": [
+      "CISAは2026年8月20日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。TrueConf Serverにはコードインジェクションの脆弱性があり、ポート4307/TCP経由でネットワークアクセスを持つ認証されていないリモート攻撃者が、細工されたスクリプトを使用して隔離された環境から脱出し、ホストシステム上で任意のコードを実行する可能性があります。\n金融機関でTrueConf Serverを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+      "CISAは2026年8月20日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。TrueConf Serverに認証不備の脆弱性があり、ポート4307/TCP経由でネットワークアクセスを持つリモートの認証されていない攻撃者が任意のスクリプトを実行する可能性があります。\n金融機関でTrueConf Serverを利用している場合に限り関係します。利用有無は記事から確認できないため、適用性確認の対象になります。"
+    ],
+    "check_items": [
+      "TrueConf Serverの利用有無と影響バージョン・外部露出を確認する",
+      "ベンダー一次情報と修正版・緩和策を確認し対応要否を評価する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:41850b0deaa2721c28cf98877ea6a8396886477f723b14ee0e1afdadcb0ebc52",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/rust-supply-chain-attack-puts-build.html",
+      "canonical_url": "https://thehackernews.com/2026/08/rust-supply-chain-attack-puts-build.html",
+      "published_at": "2026-08-21T05:22:35+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "Rust Supply Chain Attack Puts Build-Time Malware in Crates with 245 Million Downloads",
+      "raw_title": "Rust Supply Chain Attack Puts Build-Time Malware in Crates with 245 Million Downloads",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3378e5f0d039e57589da71770797175769263a5094b269af8b2029dfe50dad24",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:24:48.864246+09:00",
+        "category": "クラウド・サプライチェーン",
+        "category_version": "v1",
+        "category_reason": "Rustクレートのサプライチェーン攻撃に関する記事であり、サプライチェーンリスクが主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "委託先管理",
+          "インシデント"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Rustプロジェクトは、侵害されたメンテナアカウントが公開したリリースにより、crates.ioから広く利用されている3つのRustクレートの悪意のあるバージョンを削除しました。これらのリリースは、ビルドスクリプトがコンパイル中にリモートペイロードをダウンロード・実行するタイポスクワットされた依存関係を追加していました。",
+        "financial_impact": "金融機関でRust言語を用いたシステム開発を行っている場合、またはRust製のオープンソースソフトウェアをサプライチェーンとして利用している場合に関係します。開発環境やCI/CDパイプラインへの影響が懸念されます。",
+        "recommended_actions": [
+          "自社および委託先でRust言語を用いた開発を行っているか、また影響を受けるクレート（arrayref、internment、append-only-vec）を利用しているかを確認する",
+          "影響を受けるクレートのバージョンを確認し、悪意のあるバージョン（arrayref 0.3.10、internment 0.8.7、append-only-vec 0.1.9）が使用されていないことを確認する",
+          "開発環境やCI/CDパイプラインにおいて、サプライチェーン攻撃に対するセキュリティ対策が適切に講じられているか評価する"
+        ],
+        "reason": "重要度は、広く利用される開発言語のサプライチェーン攻撃であり、開発環境への影響が懸念されるため「高」です。確認目安は、悪用が確認されているものの、具体的な期限や進行中の攻撃に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:42c3afc04079c9f579ba9befa22640bb84de8c15215e93bbb80aef950e7247c0",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/suspected-russian-hackers-abuse-google.html",
+      "canonical_url": "https://thehackernews.com/2026/08/suspected-russian-hackers-abuse-google.html",
+      "published_at": "2026-08-21T04:59:19+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "Suspected Russian Hackers Abuse Google OAuth and WhatsApp Linking to Hijack Accounts",
+      "raw_title": "Suspected Russian Hackers Abuse Google OAuth and WhatsApp Linking to Hijack Accounts",
+      "raw_excerpt": null,
+      "content_hash": "sha256:703d61ce02f55ddb720936fe7be26e36f50f6e6887f7c1afdc9a634065956795",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:25:05.947235+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ロシア系ハッカー集団による攻撃手法と脅威動向が主題であるため。",
+        "tags": [
+          "APT",
+          "認証",
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ロシア系とみられる3つのサイバースパイ集団が、Google OAuthとWhatsApp連携の正規認証フローを悪用し、欧州の学術機関、航空宇宙・防衛、政府機関、シンクタンク、および米国の学術機関・シンクタンクの個人アカウントを乗っ取っていることが確認されました。",
+        "financial_impact": "金融機関への直接的な攻撃事例は記事から確認できません。ただし、Google OAuthやWhatsApp連携を利用している場合、同様の手法によるアカウント乗っ取りのリスクが存在する可能性があります。",
+        "recommended_actions": [
+          "Google OAuthおよびWhatsApp連携の利用状況と、それらに関連する認証・アクセス管理設定を確認する",
+          "関連するログを監視し、不審な認証試行やアカウント活動がないか確認する"
+        ],
+        "reason": "重要度は、金融機関への直接的な攻撃事例は確認できないものの、広く利用される認証基盤の悪用事例であるため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、状況把握と自社への適用性確認が必要なため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7ade312d5ceec5e36d02af654aaced926c36005a5a372c673639aaa2bce849ee",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/is-cyber-missing-the-marque/",
+      "canonical_url": "https://blog.talosintelligence.com/is-cyber-missing-the-marque/",
+      "published_at": "2026-08-21T03:00:18+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "Is Cyber missing the Marque?",
+      "raw_title": "Is Cyber missing the Marque?",
+      "raw_excerpt": null,
+      "content_hash": "sha256:edf0c915267af47c86b6adcb0db370855090c1d91e82f3d08dbaf31404766192",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:50bcfcb6813f9394c79e5c5e77c8a7c9c5cb6949d7123e7f3d8e3f1318f4afbc",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/threatsday-gogs-100-rce-n8n-workflow-to.html",
+      "canonical_url": "https://thehackernews.com/2026/08/threatsday-gogs-100-rce-n8n-workflow-to.html",
+      "published_at": "2026-08-21T02:23:48+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "ThreatsDay: Gogs 10.0 RCE, n8n Workflow-to-RCE, $10M Reward, GLM-5.3 AI Exploit and More",
+      "raw_title": "ThreatsDay: Gogs 10.0 RCE, n8n Workflow-to-RCE, $10M Reward, GLM-5.3 AI Exploit and More",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6db4954843e7a5bb71fababa58c59a9d6b9b82dc0b7bfda37789542cb4c40236",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:25:22.882018+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の脆弱性や脅威動向をまとめた週次記事であり、特定の主題に絞れないため「その他」に分類します。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "今週の脅威は、信頼されたものが許可された動作を悪用されることから始まるケースが多いと報じられています。署名付きドライバーの悪用、正規アプリによるマルウェアの隠蔽、弱いヘッダーチェックによるコード実行などが挙げられています。",
+        "financial_impact": "記事は複数の一般的な脅威動向をまとめたものであり、金融機関への直接的な影響は限定的です。個別の脆弱性や脅威については、別途詳細な情報収集と評価が必要です。",
+        "recommended_actions": [],
+        "reason": "重要度は、複数の脅威をまとめた週次記事であり、個別の脅威に対する具体的な適用性や影響が不明確なため「低」です。確認目安は、新しい事実や緊急対応を要する情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:827ef3b45efd4e47181c51e48a7f400d24b257aef6542015deb2ce6aab9c8f24",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/ai-generated-exploit-scripts-target.html",
+      "canonical_url": "https://thehackernews.com/2026/08/ai-generated-exploit-scripts-target.html",
+      "published_at": "2026-08-21T01:59:44+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "AI-Generated Exploit Scripts Target Siemens S7 PLCs in U.S. Critical Infrastructure",
+      "raw_title": "AI-Generated Exploit Scripts Target Siemens S7 PLCs in U.S. Critical Infrastructure",
+      "raw_excerpt": null,
+      "content_hash": "sha256:36811d8d8ff7cb2589ff93749f09c4f16829206921ed6f81f7fe79b461e560ab",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:25:40.456407+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "AI生成スクリプトを用いた攻撃手法と脅威の動向が主題であるため。",
+        "tags": [
+          "AI",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "米国政府は、AI生成エクスプロイトスクリプトを用いて米国の重要インフラ組織を標的とする「活発な脅威」について警告しました。この活動は、シーメンスS7シリーズPLCを標的に、正規の監視ツールを装ったAI生成スクリプトを使用して偵察と機能開発を行っています。",
+        "financial_impact": "金融機関への直接的な影響は限定的ですが、重要インフラを標的とした攻撃はサプライチェーンを通じて間接的に影響を及ぼす可能性があります。シーメンスS7 PLCを直接利用している金融機関は稀であると考えられます。",
+        "recommended_actions": [
+          "自社および委託先においてシーメンスS7シリーズPLCの利用有無を確認する",
+          "重要インフラを標的とした攻撃動向について情報収集を継続し、自社のセキュリティ対策への示唆を評価する"
+        ],
+        "reason": "重要度は、金融機関への直接的な影響が限定的であり、対象製品も特定の産業用制御システムであるため「中」です。確認目安は、AI生成スクリプトによる新たな攻撃手法の動向であり、即時対応の根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6ccb28bfaeedcd7377e07bc8ba460551ef3d5a4407a46f1ea6abb86424883639",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/hackers-target-zimbra-servers-in-active-exploitation-campaign/",
+      "canonical_url": "https://www.securityweek.com/hackers-target-zimbra-servers-in-active-exploitation-campaign/",
+      "published_at": "2026-08-20T23:50:49+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "Hackers Target Zimbra Servers in Active Exploitation Campaign",
+      "raw_title": "Hackers Target Zimbra Servers in Active Exploitation Campaign",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ecf512bfe5364fd118836e61537e6c8c0e24fbf77c40ebce143c7cedcb0f8b65",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:25:57.298621+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Zimbra Collaborationの脆弱性を悪用した攻撃キャンペーンが主題であるため。",
+        "tags": [
+          "悪用確認済み",
+          "CVE"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ポーランドのCERT Polskaが、Zimbra Collaborationの脆弱性CVE-2026-73570を悪用する攻撃キャンペーンを確認しました。この脆弱性は現在活発に悪用されています。",
+        "financial_impact": "金融機関でZimbra Collaboration製品を利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Zimbra Collaboration製品の利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報やCERT Polskaの勧告を確認し、パッチや緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、特定の製品の脆弱性悪用であり、金融機関での利用状況が不明なため「中」です。確認目安は、悪用が確認されているものの、KEV新規追加ではなく即時対応の明確な期限が示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:eaaed4290b794f92c4770f754cec460c76e8ee21923860403b17ba7c5fa59a76",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/new-cryptographic-context-injection.html",
+      "canonical_url": "https://thehackernews.com/2026/08/new-cryptographic-context-injection.html",
+      "published_at": "2026-08-20T23:36:27+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "New Cryptographic Context Injection Attack Could Let Web Pages Steal Grok Chat Data",
+      "raw_title": "New Cryptographic Context Injection Attack Could Let Web Pages Steal Grok Chat Data",
+      "raw_excerpt": null,
+      "content_hash": "sha256:be697bd89dcccaaa0f31218d127c462f393e9ac8d4f6d4a76ec1b0b0ff4b38cf",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:26:14.279071+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIチャットボットの脆弱性と攻撃手法が主題であるため。",
+        "tags": [
+          "AI",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Adversa AIが、xAIのGrokチャットボットがユーザーの個人情報や会話プロンプトを攻撃者制御サーバーに送信する可能性のある「暗号コンテキストインジェクション」と呼ばれる攻撃手法を公開しました。",
+        "financial_impact": "金融機関がGrokチャットボットを業務で利用している場合、情報漏えいのリスクに関係します。現時点では金融機関での利用状況は不明です。",
+        "recommended_actions": [
+          "Grokチャットボットの業務での利用有無を確認する",
+          "Grokチャットボットを利用している場合、ベンダーからの公式な情報提供や緩和策の有無を確認する"
+        ],
+        "reason": "重要度は、特定のAIチャットボットに対する攻撃手法であり、金融機関での利用状況が不明なため「中」です。確認目安は、新たな攻撃手法の開示であり、即時対応を要する進行中の攻撃や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:af1a1a123ac4ef13a83e74cea28c0e017f3d5bc89f686f7a50637cac44de08c3",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/surveillance-everything-you-wanted-to-know-but-were-afraid-to-ask/",
+      "canonical_url": "https://www.securityweek.com/surveillance-everything-you-wanted-to-know-but-were-afraid-to-ask/",
+      "published_at": "2026-08-20T23:30:00+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "Surveillance – Everything You Wanted to Know, But Were Afraid to Ask",
+      "raw_title": "Surveillance – Everything You Wanted to Know, But Were Afraid to Ask",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5c7a2310c1eeff98cc9674e2e48ee2a77accef9cc08fde16c9de8b83b9587e74",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:26:30.960748+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも直接該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、監視活動が私たちの身近で行われていることについて、誰が、なぜ、どのように行っているのかという疑問を提起する内容です。",
+        "financial_impact": "金融機関への直接的な影響は限定的であり、一般的な情報提供として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、一般的な監視活動に関する啓発記事であり、金融機関固有の具体的な対応を求めるものではないため「低」です。確認目安は、具体的な脅威や期限、アクションが示されていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e466cd90008a4db1482e5e0982af005d4cd4360723ce003f8eeadecdcd8ebdc0",
+      "source_id": "mandiant",
+      "source_name": "Mandiant",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://cloud.google.com/blog/topics/threat-intelligence/distinct-clusters-target-individuals-of-interest-to-russia/",
+      "canonical_url": "https://cloud.google.com/blog/topics/threat-intelligence/distinct-clusters-target-individuals-of-interest-to-russia/",
+      "published_at": "2026-08-20T23:00:00+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "Going with the Flow(s): Distinct Clusters Target Individuals of Interest to Russia",
+      "raw_title": "Going with the Flow(s): Distinct Clusters Target Individuals of Interest to Russia",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d08e8ef143b545bb4c83430ec294efd025e1f4a03365360740878f7c9b632693",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "verbatim_long_match",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:01bed0d17131f818eb2f25b2bca6186b09b7788b997fc56bbb9f48f193c7e592",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/isolated-vm-flaw-lets-sandboxed.html",
+      "canonical_url": "https://thehackernews.com/2026/08/isolated-vm-flaw-lets-sandboxed.html",
+      "published_at": "2026-08-20T22:48:24+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "Isolated-vm Flaw Lets Sandboxed JavaScript Escape to Host for Potential RCE",
+      "raw_title": "Isolated-vm Flaw Lets Sandboxed JavaScript Escape to Host for Potential RCE",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d6747e8b78f9cc702e3a7e414586d358677ecb2859ef063c2351cbc494e1008f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:27:05.244584+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "オープンソースのサンドボックスライブラリにおける脆弱性が主題であるため。",
+        "tags": [
+          "パッチ",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、オープンソースのサンドボックスライブラリ「isolated-vm」に重大なセキュリティ脆弱性を開示しました。この脆弱性(GHSA-864f-rcv7-6rh4)は、サンドボックス環境からの脱出を許し、ホスト上でのリモートコード実行(RCE)につながる可能性があります。",
+        "financial_impact": "金融機関で「isolated-vm」ライブラリを利用している場合に限り、適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "「isolated-vm」ライブラリの利用有無と影響バージョン(7.0.0以前)を確認する",
+          "ベンダーの一次情報や修正版、緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、特定のライブラリに限定され、金融機関での利用状況が記事から不明なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:88c8957eed48de4f3b652ae6c89b2b9f0244d92991738c8192d8c97d709d92b0",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/critical-netscaler-flaw-can-bypass.html",
+      "canonical_url": "https://thehackernews.com/2026/08/critical-netscaler-flaw-can-bypass.html",
+      "published_at": "2026-08-20T22:35:13+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "Critical NetScaler Flaw Can Bypass Authentication on Certain Gateway and AAA Servers",
+      "raw_title": "Critical NetScaler Flaw Can Bypass Authentication on Certain Gateway and AAA Servers",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0aa2d51d7bcbd1a6cb1b3110fca135a456259ac43bd15a7cf4926ac333f242ad",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:27:22.842795+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Citrix NetScaler製品の認証バイパス脆弱性に関する情報が主題であるため。",
+        "tags": [
+          "パッチ",
+          "認証"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Citrixは、NetScaler ADCおよびNetScaler Gatewayの展開に影響を与える2つのセキュリティ脆弱性に対処するためのアップデートをリリースしました。これには、重大度「Critical」の認証バイパス脆弱性が含まれます。",
+        "financial_impact": "金融機関でCitrix NetScaler ADCまたはNetScaler Gatewayを利用している場合、本脆弱性の影響を受ける可能性があります。特に外部公開されている環境では、認証バイパスのリスクが高まります。",
+        "recommended_actions": [
+          "自社および委託先におけるCitrix NetScaler ADCおよびNetScaler Gatewayの利用有無、影響バージョン、外部露出状況を確認する",
+          "Citrixが公開している一次情報を参照し、パッチ適用や緩和策の適用要否を評価する"
+        ],
+        "reason": "重要度は、広く利用される可能性のあるCitrix製品の認証バイパス脆弱性であり、外部公開されている場合に重大な影響を及ぼすため「高」です。確認目安は、パッチがリリースされているものの、KEV新規追加や進行中の攻撃に関する情報が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:572e047ecd00903a139a62ccc4f1794e3feb92c9dd1236ba422517807e4e9617",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/attackers-exploit-zimbra-snmp-flaw-for.html",
+      "canonical_url": "https://thehackernews.com/2026/08/attackers-exploit-zimbra-snmp-flaw-for.html",
+      "published_at": "2026-08-20T22:24:28+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "Attackers Exploit Zimbra SNMP Flaw for Unauthenticated Remote Code Execution",
+      "raw_title": "Attackers Exploit Zimbra SNMP Flaw for Unauthenticated Remote Code Execution",
+      "raw_excerpt": null,
+      "content_hash": "sha256:69d398ce4da7e760dba8646b598c1515163f3a2be78151db54d578a5ba83dc36",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:27:40.278664+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Zimbra Collaboration (ZCS)の脆弱性CVE-2026-73570が悪用されていることが主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Zimbra Collaboration (ZCS)に存在する、認証なしでリモートコード実行につながるコマンドインジェクションの脆弱性CVE-2026-73570 (CVSS: 8.9)が、現在活発に悪用されているとポーランドのCERT Polskaが報告しました。",
+        "financial_impact": "金融機関でZimbra Collaboration (ZCS)を利用している場合に限り、適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Zimbra Collaboration (ZCS)の利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報とパッチ、緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、Zimbra Collaboration (ZCS)の利用状況が記事から不明で、金融機関への適用範囲が不確実なため「中」です。確認目安は、悪用が確認されているものの、CISA KEVへの新規追加はなく、即時対応の明確な時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7c35278befa7606bc728dc838f179d654801eefeddcb876799735942e806eb5c",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/threat-actor-hacks-14000-ip-cameras-in-ukraine-and-russia/",
+      "canonical_url": "https://www.securityweek.com/threat-actor-hacks-14000-ip-cameras-in-ukraine-and-russia/",
+      "published_at": "2026-08-20T22:16:35+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "Threat Actor Hacks 14,000 IP Cameras in Ukraine and Russia",
+      "raw_title": "Threat Actor Hacks 14,000 IP Cameras in Ukraine and Russia",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9014d06694c50299f5cadf364706767f4262d2d5432745e8106a37e3e594214f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:27:57.471228+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "脅威アクターによる特定の攻撃キャンペーンと手法が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "「Operation CameraSwarm」と名付けられた攻撃キャンペーンにより、ウクライナとロシアを中心に複数の国のDahua製IPカメラ14,000台がハッキングされました。主にロシアおよびCIS諸国の通信ネットワークが標的とされました。",
+        "financial_impact": "金融機関がDahua製IPカメラを監視目的などで利用している場合、同様の攻撃を受ける可能性があり、適用性確認の対象となります。記事からは金融機関への直接的な影響は確認できません。",
+        "recommended_actions": [
+          "自社および委託先でDahua製IPカメラの利用有無と設置状況を確認する",
+          "Dahua製IPカメラを利用している場合、ベンダーのセキュリティ情報を確認し、必要な対策を検討する"
+        ],
+        "reason": "重要度は、特定のIPカメラ製品が標的であり、金融機関での利用が限定的である可能性があるため「中」です。確認目安は、広範な攻撃ではあるものの、金融機関への直接的な緊急性を示す情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2e61538784a463f038887f0e5113bc672bccd0255738ae45e54f9415c17f0e1a",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/atlassian-splunk-patch-dozens-of-critical-high-severity-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/atlassian-splunk-patch-dozens-of-critical-high-severity-vulnerabilities/",
+      "published_at": "2026-08-20T21:24:53+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "Atlassian, Splunk Patch Dozens of Critical, High-Severity Vulnerabilities",
+      "raw_title": "Atlassian, Splunk Patch Dozens of Critical, High-Severity Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0766ee23dae3e141995c81382a58448fa4f5a370322f3e1b3b9e7598bb4bcb54",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:28:14.675553+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "AtlassianとSplunk製品の多数の脆弱性修正が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "AtlassianとSplunkが、任意コード実行、機密情報アクセス、権限昇格につながる可能性のある多数の重大および高深刻度の脆弱性に対するパッチを公開しました。",
+        "financial_impact": "金融機関でAtlassianまたはSplunk製品を利用している場合に限り、適用性確認の対象になります。記事からは具体的な製品名や利用状況は確認できません。",
+        "recommended_actions": [
+          "自社および委託先でAtlassianまたはSplunk製品の利用有無を棚卸しする",
+          "利用している場合は、ベンダーの公開情報を参照し、影響を受けるバージョンと修正パッチの適用状況を確認する"
+        ],
+        "reason": "重要度は、AtlassianとSplunk製品の利用有無により適用範囲が限定されるため「中」です。確認目安は、悪用確認や緊急の対応期限が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b437cbcc9c57d0b4c9069437d1f444a8bce6d515659724e6a8d69b1024d2e479",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/mlflow-vulnerability-exploited-for-cloud-credential-theft/",
+      "canonical_url": "https://www.securityweek.com/mlflow-vulnerability-exploited-for-cloud-credential-theft/",
+      "published_at": "2026-08-20T21:05:55+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "MLflow Vulnerability Exploited for Cloud Credential Theft",
+      "raw_title": "MLflow Vulnerability Exploited for Cloud Credential Theft",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f01671160a8fcce6b048ee598e074baaa2efad387a78038e9bb7647bd2e29400",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:28:31.603468+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "MLflowの脆弱性が悪用され、クラウド認証情報が窃取された事案が主題であるため。",
+        "tags": [
+          "悪用確認済み",
+          "クラウド"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "MLflowの重大な脆弱性が悪用され、攻撃者が内部エンドポイントにHTTPリクエストを送信し、機密情報を抽出できることが判明しました。これによりクラウド認証情報が窃取される可能性があります。",
+        "financial_impact": "金融機関でMLflowを利用している場合に限り、適用性確認の対象になります。記事からは利用有無が確認できないため、直接的な関係は不明です。",
+        "recommended_actions": [
+          "MLflowの利用有無と影響バージョンを確認する",
+          "ベンダーからの一次情報や修正パッチ、緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、MLflowの利用状況が記事から不明であり、適用範囲が限定的である可能性があるため「中」です。確認目安は、実悪用が確認されているものの、CISA KEVへの新規追加がなく、即時対応の明確な期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a5fe1c1863fc89a88e5d28492681485eb637dd6441c9bb58eb6f061cb06a9087",
+      "source_id": "ncsc",
+      "source_name": "NCSC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.ncsc.gov.uk/blogs/managing-the-cyber-risk-of-agentic-ai",
+      "canonical_url": "https://www.ncsc.gov.uk/blogs/managing-the-cyber-risk-of-agentic-ai",
+      "published_at": "2026-08-20T21:00:00+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "エージェントAIのサイバーリスク管理",
+      "raw_title": "Managing the cyber risk of agentic AI",
+      "raw_excerpt": "Use safeguards, sandboxing and active oversight to realise the benefits of autonomous systems while limiting the unintended activity.",
+      "content_hash": "sha256:42cdb18490a7b135d00992da0bad988bcbea13832ddc9f254391201008fadb8b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:28:48.321312+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がエージェントAIのサイバーリスク管理であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント",
+          "ガイドライン"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "NCSCは、自律型システム（エージェントAI）のメリットを享受しつつ、意図しない活動によるリスクを制限するために、セーフガード、サンドボックス、および積極的な監視の利用を推奨しています。",
+        "financial_impact": "金融機関がエージェントAIを導入・利用する際に、セキュリティ上のリスクを管理するための参考情報となります。現時点での直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、エージェントAIの導入を検討する際の一般的なリスク管理に関する情報であり、具体的な製品や脅威に関するものではないため「中」です。確認目安は、短期的な対応を求めるものではなく、中長期的な検討のための情報であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d693b23125095cb1c9a12b46b6584fe42a3951367801056dc03042507018c9c4",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/cisco-patches-critical-crosswork-secure-workload-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/cisco-patches-critical-crosswork-secure-workload-vulnerabilities/",
+      "published_at": "2026-08-20T20:46:04+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "Cisco Patches Critical Crosswork, Secure Workload Vulnerabilities",
+      "raw_title": "Cisco Patches Critical Crosswork, Secure Workload Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0aab191582c9cc4a0d084f16ab73039d7b98dccd1fa28bb42e24095145af057f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:29:05.209880+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Cisco製品の脆弱性修正が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Ciscoは、CrossworkおよびSecure Workload製品における複数の重大な脆弱性に対処するパッチを公開しました。これらの脆弱性は、リモートコード実行、認証バイパス、およびパス・トラバーサル攻撃につながる可能性があります。",
+        "financial_impact": "金融機関でCisco CrossworkまたはSecure Workload製品を利用している場合に限り、適用性確認の対象になります。記事からは利用状況が不明なため、直接的な影響は限定的です。",
+        "recommended_actions": [
+          "Cisco CrossworkおよびSecure Workload製品の利用有無と影響バージョンを確認する",
+          "Ciscoのセキュリティアドバイザリを参照し、パッチ適用または緩和策の実施を検討する"
+        ],
+        "reason": "重要度は、対象製品の利用可能性が記事から確認できず、適用範囲が不確実なため「中」です。確認目安は、パッチが公開されており即時対応の緊急根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:3ff4a07f9778caddeba0644b57cab6f73cbc91545153a11326da839b512ba48b",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ai-assisted-tool-helped-secure-satellite-communication-system-after-2022-russian-hacking/",
+      "canonical_url": "https://www.securityweek.com/ai-assisted-tool-helped-secure-satellite-communication-system-after-2022-russian-hacking/",
+      "published_at": "2026-08-20T20:08:00+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "AI-Assisted Tool Helped Secure Satellite Communication System After 2022 Russian Hacking",
+      "raw_title": "AI-Assisted Tool Helped Secure Satellite Communication System After 2022 Russian Hacking",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2902b99956eabc44afad3502e9b0b6488e1ba7a94b30604ae21627632b25fefc",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:29:21.903504+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAI支援ツールによるセキュリティ強化であり、AIと新技術のリスク・活用に関する情報であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "2022年のロシアによるハッキング後、Atalanta社のArgoというAI支援ツールがViasat社の衛星通信ネットワークの回復力を証明するために使用されています。",
+        "financial_impact": "金融機関が衛星通信システムやAI支援セキュリティツールを導入・検討している場合に、その有効性や導入事例として参考になる可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI支援ツールの導入事例に関する情報であり、金融機関への直接的な影響が限定的であるため「中」です。確認目安は、具体的な脅威や短期的な対応を求める情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9749d87e607ac40f89b86f1768370e250fa734451d365170469b7b29c8c9e883",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/openai-overhauls-model-security-with-sandboxing-30-minute-alerts-and-training-pauses/",
+      "canonical_url": "https://www.securityweek.com/openai-overhauls-model-security-with-sandboxing-30-minute-alerts-and-training-pauses/",
+      "published_at": "2026-08-20T19:36:14+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "OpenAI Overhauls Model Security With Sandboxing, 30-Minute Alerts, and Training Pauses",
+      "raw_title": "OpenAI Overhauls Model Security With Sandboxing, 30-Minute Alerts, and Training Pauses",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2d610d0df830354b1c6d8388616d3368813d7ecb5c8a5eb62105c0dcdf09bf60",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:29:38.677437+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIモデルのセキュリティ強化に関するものであるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "OpenAIは、Hugging FaceのインシデントとAstraモデルの高度な機能の発見を受け、モデルセキュリティを刷新しました。サンドボックス化、30分アラート、トレーニングの一時停止などの対策を導入しています。",
+        "financial_impact": "金融機関がOpenAIのAIモデルや関連サービスを利用している場合、そのセキュリティ対策の強化は間接的に関係します。直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIモデルのセキュリティ強化は中長期的なリスク管理に関わるが、直接的なインシデントや脆弱性情報ではないため「中」です。確認目安は、具体的な対応期限や緊急性が示されておらず、情報収集が主となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ec53dedce37ecff64e2a1e0f53b0bd08f6615b4d5b3b8995109dfe045a791b02",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/uat-10147-deploys-spectre-a-cross-platform-implant-with-linux-rootkit-and-byovd-capabilities/",
+      "canonical_url": "https://blog.talosintelligence.com/uat-10147-deploys-spectre-a-cross-platform-implant-with-linux-rootkit-and-byovd-capabilities/",
+      "published_at": "2026-08-20T19:00:50+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "UAT-10147 deploys SPECTRE: A cross-platform implant with Linux rootkit and BYOVD capabilities",
+      "raw_title": "UAT-10147 deploys SPECTRE: A cross-platform implant with Linux rootkit and BYOVD capabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a9c5f23b7b60241cd0968f17ed88caa3950d24e953d25e26f48b6b03229cedc9",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e09feb72add972e5d46ac54ba501c455d34b0e07e7da88efb98a07e98b6f9052",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/uat-10147-chinese-speaking-adversary-integrates-agentic-ai-into-post-compromise-operations/",
+      "canonical_url": "https://blog.talosintelligence.com/uat-10147-chinese-speaking-adversary-integrates-agentic-ai-into-post-compromise-operations/",
+      "published_at": "2026-08-20T19:00:32+09:00",
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "UAT-10147: Chinese-speaking adversary integrates agentic AI into post-compromise operations",
+      "raw_title": "UAT-10147: Chinese-speaking adversary integrates agentic AI into post-compromise operations",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5737b13b4e222b3e591ce950fa1d18aa3e6021bf373908da0db9bf2f9e974e69",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6443137c5d9bbbe1a0f0d8a13dd111c506833d088ee60074ed52ba529695e724",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "TrueConf Serverのコードインジェクション脆弱性(CVE-2026-72530)",
+      "raw_title": "CVE-2026-72530 — TrueConf Server Code Injection Vulnerability",
+      "raw_excerpt": "TrueConf Server contains a code injection vulnerability that could allow an unauthorized remote attacker with network access via port 4307/TCP to use a specially crafted script to break out of the iso",
+      "content_hash": "sha256:6fd381cb5d2d88428d1bacf9181fcc3658d9727bab2d666a3c4a5c5f8dfd5449",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:29:55.625961+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CVEと脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "本日確認",
+        "summary": "CISAは2026年8月20日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。TrueConf Serverにはコードインジェクションの脆弱性があり、ポート4307/TCP経由でネットワークアクセスを持つ認証されていないリモート攻撃者が、細工されたスクリプトを使用して隔離された環境から脱出し、ホストシステム上で任意のコードを実行する可能性があります。",
+        "financial_impact": "金融機関でTrueConf Serverを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "TrueConf Serverの利用有無と影響バージョン・外部露出を確認する",
+          "ベンダー一次情報と修正版・緩和策を確認し対応要否を評価する",
+          "侵害兆候が確認された場合は提供者の指針に基づき対応を検討する"
+        ],
+        "reason": "重要度は、対象製品の金融機関での利用状況が記事から不明であり、適用範囲が不確実なため「中」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-72530",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-20T22:24:45Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-72530",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-08-19T17:21:01Z",
+              "last_modified_at": "2026-08-20T19:07:45Z",
+              "cvss": {
+                "version": "4.0",
+                "base_score": 9.5,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:H/SI:H/SA:H/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                "source": "vulnerability@kaspersky.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-20T22:24:45Z",
+              "date_added": "2026-08-20"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:7278bb7b2b1dc5d8107a7dbb0bde25fbe98586986439de0a005316689b77696d",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-08-21T07:24:45.706148+09:00",
+      "title": "TrueConf Serverの認証不備の脆弱性CVE-2026-72529",
+      "raw_title": "CVE-2026-72529 — TrueConf Server Missing Authentication for Critical Function Vulnerability",
+      "raw_excerpt": "TrueConf Server contains a missing authentication for critical function vulnerability which could allow a remote unauthorized attacker with network access via port 4307/TCP to execute an arbitrary scr",
+      "content_hash": "sha256:729c9f741148b2070fd49a2e67be1f6bc281a2fdafd276f7726d330d99508987",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-21T07:30:12.532719+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CISA KEVに新規追加された認証不備の脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "本日確認",
+        "summary": "CISAは2026年8月20日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。TrueConf Serverに認証不備の脆弱性があり、ポート4307/TCP経由でネットワークアクセスを持つリモートの認証されていない攻撃者が任意のスクリプトを実行する可能性があります。",
+        "financial_impact": "金融機関でTrueConf Serverを利用している場合に限り関係します。利用有無は記事から確認できないため、適用性確認の対象になります。",
+        "recommended_actions": [
+          "TrueConf Serverの利用有無と影響バージョン・外部露出を確認する",
+          "ベンダー一次情報と修正版・緩和策を確認し対応要否を評価する"
+        ],
+        "reason": "重要度は、対象製品の利用可能性が記事から確認できず、適用範囲が不確実なため「中」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-72529",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-20T22:24:45Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-72529",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-08-19T17:21:00Z",
+              "last_modified_at": "2026-08-20T19:07:48Z",
+              "cvss": {
+                "version": "4.0",
+                "base_score": 9.3,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                "source": "vulnerability@kaspersky.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-20T22:24:45Z",
+              "date_added": "2026-08-20"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
