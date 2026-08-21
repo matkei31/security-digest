@@ -1,0 +1,944 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-08-22",
+  "generated_at": "2026-08-22T07:26:20.594884+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 16,
+    "ai_attempted_count": 16,
+    "ai_success_count": 16,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 16
+  },
+  "counts": {
+    "importance": {
+      "高": 4,
+      "中": 9,
+      "低": 3,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 3,
+      "今週確認": 9,
+      "参考": 4,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 6,
+      "攻撃・脅威動向": 5,
+      "インシデント": 0,
+      "規制・ガバナンス": 1,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 2,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象16件｜重要度「高」4件｜本日確認3件｜今週確認9件\nBrief対象の記事のうち、本日中に適用性または初動要否を確認する記事が3件あります。",
+    "important_highlights": [
+      "Microsoftは、Entra IDの悪用が確認された脆弱性を含む22件のセキュリティパッチを公開しました。これらのパッチは、主にコード実行、権限昇格、情報漏えいの脆弱性に対応しています。",
+      "GitLabで新たに開示されたコードインジェクションの脆弱性「CVE-2026-19478」(CVSSスコア: 9.4)が、公開後数日で積極的に悪用されていることが確認されました。認証されていない攻撃者が特定の条件下で公開されているGitLabプロジェクトを改変または削除し、データを書き換えることが可能です。",
+      "CISAは2026年8月21日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Zimbra Collaboration Suite (ZCS) にOSコマンドインジェクションの脆弱性があり、認証されていない攻撃者が特別に細工されたSMTPリクエストを送信することで、Zimbraユーザーとして任意のOSコマンドを実行する可能性があります。"
+    ],
+    "discussion_points": [
+      "Microsoftは、Entra IDの悪用が確認された脆弱性を含む22件のセキュリティパッチを公開しました。これらのパッチは、主にコード実行、権限昇格、情報漏えいの脆弱性に対応しています。\n金融機関でMicrosoft Entra IDを利用している場合、悪用が確認された脆弱性への対応が必要となる可能性があります。認証・アクセス管理基盤の脆弱性は、広範なシステムへの影響に繋がり得ます。",
+      "GitLabで新たに開示されたコードインジェクションの脆弱性「CVE-2026-19478」(CVSSスコア: 9.4)が、公開後数日で積極的に悪用されていることが確認されました。認証されていない攻撃者が特定の条件下で公開されているGitLabプロジェクトを改変または削除し、データを書き換えることが可能です。\n金融機関でGitLabを開発環境やコード管理に利用している場合、本脆弱性の影響を受ける可能性があります。悪用されると、重要なコードやプロジェクトデータが改ざん・削除されるリスクがあります。"
+    ],
+    "check_items": [
+      "自社および委託先におけるMicrosoft Entra IDの利用有無と影響バージョンを確認する",
+      "自社および委託先におけるGitLabの利用有無、および影響を受けるバージョン（CVE-2026-19478）の適用状況を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:4b6135796923fbeac4f2ecc881b0befe61290f08758cd5ec9aec9135755a1a7e",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/14-trojanized-npm-packages-drop-redc2.html",
+      "canonical_url": "https://thehackernews.com/2026/08/14-trojanized-npm-packages-drop-redc2.html",
+      "published_at": "2026-08-22T03:53:00+09:00",
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "14 Trojanized npm Packages Drop RedC2 4.0 Linux Backdoor With AI-Assisted C2",
+      "raw_title": "14 Trojanized npm Packages Drop RedC2 4.0 Linux Backdoor With AI-Assisted C2",
+      "raw_excerpt": null,
+      "content_hash": "sha256:dfb8526753da4d9d8403e1089c209078af1b8d4d4131fa8eff800b795e918c47",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:21:49.329169+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "トロイの木馬化されたパッケージによるバックドアの配布と攻撃手法が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、カレンダーやストリークユーティリティを装い、AI支援型Linuxインプラント「RedC2 4.0」を密かに配布するトロイの木馬化されたnpmパッケージを発見しました。",
+        "financial_impact": "金融機関がnpmパッケージを利用してLinux環境で開発を行っている場合、サプライチェーンリスクとして関係します。記事からは具体的な金融機関への影響は確認できません。",
+        "recommended_actions": [
+          "自社および委託先でnpmパッケージを利用した開発を行っているか確認する",
+          "利用しているnpmパッケージに不審な挙動がないか、または既知の悪性パッケージが含まれていないか確認する"
+        ],
+        "reason": "重要度は、npmパッケージの利用状況により適用範囲が限定されるため「中」です。確認目安は、具体的な攻撃の進行状況や緊急の対応期限が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:29fad3c22f6fe097368825c3228c8aef22a2fdc3e4287a0b4616e84b0d06ca75",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/former-nsa-director-paul-nakasone-launches-national-security-advisory-firm/",
+      "canonical_url": "https://www.securityweek.com/former-nsa-director-paul-nakasone-launches-national-security-advisory-firm/",
+      "published_at": "2026-08-22T01:27:52+09:00",
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "Former NSA Director Paul Nakasone Launches National Security Advisory Firm",
+      "raw_title": "Former NSA Director Paul Nakasone Launches National Security Advisory Firm",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8873cda03a6e657e64f3f268f519796b085c4160ba7e4ee5b697e4b928e06af5",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:22:06.209435+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "元NSA長官が設立したアドバイザリー企業のニュースであり、特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも直接該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "元NSA長官のポール・ナカソネ氏が「ナカソネ・グループ」を設立しました。同社は政府、企業、著名な家族、その他の個人顧客に対し、サイバーセキュリティ、地政学、個人のセキュリティリスクに関する助言を提供します。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。元NSA長官による新たなアドバイザリー企業の設立という一般的な業界動向に関する情報として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関の業務に直接的な影響を与える情報ではなく、一般的な業界動向に関する情報であるため「低」です。確認目安は、具体的な対応を要する情報や期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:befbe5399e8065d82429be59466d2c9cce901cdaa12deeaa611adecc73452fb1",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/microsoft-defenders-own-driver-can-be.html",
+      "canonical_url": "https://thehackernews.com/2026/08/microsoft-defenders-own-driver-can-be.html",
+      "published_at": "2026-08-22T00:52:10+09:00",
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "Microsoft Defender's Own Driver Can Be Weaponized to Delete Security Software at Boot",
+      "raw_title": "Microsoft Defender's Own Driver Can Be Weaponized to Delete Security Software at Boot",
+      "raw_excerpt": null,
+      "content_hash": "sha256:dc7bec0781899315a4c5b4cb38fc81b5acb8da8dcbf9cc13bb16d8eeeb080ccf",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:22:23.302038+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Microsoft Defenderの正規ドライバーを悪用した攻撃手法が主題であるため。",
+        "tags": [
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Check Point Researchは、Microsoft Defenderの正規に署名されたブート時修復ドライバー「BTR.sys」が悪用され、Windows 7からWindows 11 25H2までのシステムで任意のカーネルレベルのファイルおよびレジストリ操作が実行される可能性があると発表しました。",
+        "financial_impact": "金融機関でWindowsシステムを利用し、Microsoft Defenderを導入している場合に影響する可能性があります。セキュリティソフトウェアの無効化は、他の攻撃の足がかりとなるリスクを高めます。",
+        "recommended_actions": [
+          "Microsoft DefenderのBTR.sysドライバーの悪用に関するベンダーからの追加情報や緩和策を確認する",
+          "自社環境におけるセキュリティソフトウェアの整合性監視や改ざん検知の仕組みを確認する"
+        ],
+        "reason": "重要度は、Microsoft Defenderの正規ドライバーが悪用される可能性があり、セキュリティソフトウェアの無効化につながるため「中」です。確認目安は、具体的な悪用事例や緊急の対応期限が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a068075960f8a725980b4ad48eae7b67b326da5a54e389ed82f053d69f2e60d3",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/android-car-malware-spreads-through.html",
+      "canonical_url": "https://thehackernews.com/2026/08/android-car-malware-spreads-through.html",
+      "published_at": "2026-08-22T00:41:44+09:00",
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "Android Car Malware Spreads Through Built-In Updaters for Ad Fraud, Proxy Botnet",
+      "raw_title": "Android Car Malware Spreads Through Built-In Updaters for Ad Fraud, Proxy Botnet",
+      "raw_excerpt": null,
+      "content_hash": "sha256:19092d5fcdfb32decb083ddb5978f6217e49e54efc5cc3a938a681558efd36f3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:22:40.263568+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Android車載システムを標的とした新しいマルウェアの拡散と攻撃手法が主題であるため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、DoFun社製のAndroidベース車載ヘッドユニットファームウェアを標的とする新しいマルウェアファミリーを発見しました。このマルウェアは組み込みアップデーターを介して拡散し、広告詐欺やプロキシボットネットの構築を目的としています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。Androidベースの車載システムを業務で利用している場合に限り、関連するリスク評価の対象となり得ます。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関が直接的に影響を受ける可能性が低い、特定の車載システムを標的としたマルウェアであるため「中」です。確認目安は、新たな攻撃手法の報告であり、即時対応を要する具体的な期限や進行中の大規模な脅威が確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a4a8e831095dac58df3ae1d1794a541d814919ca34364ad78015d9ba5fa35c21",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/in-other-news-zombie-card-attack-t-mobile-cut-cable-to-stop-hackers-github-denies-ai-caused-bug/",
+      "canonical_url": "https://www.securityweek.com/in-other-news-zombie-card-attack-t-mobile-cut-cable-to-stop-hackers-github-denies-ai-caused-bug/",
+      "published_at": "2026-08-22T00:11:16+09:00",
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "In Other News: Zombie Card Attack, T-Mobile Cut Cable to Stop Hackers, GitHub Denies AI Caused Bug",
+      "raw_title": "In Other News: Zombie Card Attack, T-Mobile Cut Cable to Stop Hackers, GitHub Denies AI Caused Bug",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3aa60e36562936ff3ee348b5c0b6d437add79120f8072a5d4516668a3dae5b02",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:22:57.051672+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の異なるセキュリティ関連ニュースをまとめた記事であり、特定の主題に分類できないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、ゾンビカード攻撃、T-Mobileがハッカー阻止のためにケーブルを切断した事例、GitHubがAIが原因のバグを否定した件など、見過ごされがちなその他の注目すべきセキュリティ関連ニュースをまとめたものです。",
+        "financial_impact": "金融機関への直接的な影響は限定的であり、一般的なセキュリティ動向の参考情報として位置づけられます。",
+        "recommended_actions": [],
+        "reason": "重要度は、複数の異なるセキュリティ関連ニュースをまとめた記事であり、個別の具体的な脅威や金融機関への直接的な関連性が低いため「低」です。確認目安は、新しい事実や緊急対応を要する情報が含まれておらず、状況把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:832066484cccaf7a0decb682a5dbf5226563a0d8c7f005b6670df50ac6a81566",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/encrypted-prompts-bypass-ai-safety-guardrails-in-grok-and-gemini/",
+      "canonical_url": "https://www.securityweek.com/encrypted-prompts-bypass-ai-safety-guardrails-in-grok-and-gemini/",
+      "published_at": "2026-08-21T23:34:05+09:00",
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "Encrypted Prompts Bypass AI Safety Guardrails in Grok and Gemini",
+      "raw_title": "Encrypted Prompts Bypass AI Safety Guardrails in Grok and Gemini",
+      "raw_excerpt": null,
+      "content_hash": "sha256:cac20378f6c562b4d9a5a9d70c1f172103d67fbec9cd5d0aaa3945ec93852990",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:23:14.224104+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIモデルの安全ガードレールを回避する新しい攻撃手法が主題であるため。",
+        "tags": [
+          "AI",
+          "LLM",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "研究者によると、「暗号コンテキストインジェクション」という新しい技術により、悪意のある指示が信頼された実行環境内で復号されるまで隠蔽され、GrokとGeminiのAI安全ガードレールを回避できることが判明しました。",
+        "financial_impact": "金融機関がGrokやGeminiなどのAIモデルを業務で利用している場合、この技術が悪用されると、意図しない情報漏えいや不適切なコンテンツ生成などのリスクが生じる可能性があります。",
+        "recommended_actions": [
+          "AIモデルの利用状況と、GrokやGeminiなどの影響を受ける可能性のあるモデルの有無を確認する",
+          "AIモデルの安全ガードレール回避に関する最新の研究動向を継続的に監視し、ベンダーからの情報提供に注意する"
+        ],
+        "reason": "重要度は、AIモデルの安全ガードレール回避に関する新しい攻撃手法であり、金融機関でのAI利用状況によっては影響が懸念されるため「中」です。確認目安は、具体的な攻撃事例や緊急の対応期限が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a94f1181e1e0bbf85d67d2194f5fd7f4c38faf23235723bf05fac6f03eb63496",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/new-phishing-toolkit-uses-passkeys-to-maintain-access-after-password-resets/",
+      "canonical_url": "https://www.securityweek.com/new-phishing-toolkit-uses-passkeys-to-maintain-access-after-password-resets/",
+      "published_at": "2026-08-21T23:22:06+09:00",
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "New Phishing Toolkit Uses Passkeys to Maintain Access After Password Resets",
+      "raw_title": "New Phishing Toolkit Uses Passkeys to Maintain Access After Password Resets",
+      "raw_excerpt": null,
+      "content_hash": "sha256:94eeffc5d8b16bbee882aaeae277ed9b5bcf98812e9066bc22664716ee94e47e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:23:31.336108+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "新しいフィッシングツールキットとその攻撃手法が主題であるため。",
+        "tags": [
+          "フィッシング",
+          "認証"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "研究者によると、新しいフィッシングツールキット「iAuthFlow V2」は、攻撃者が制御するパスキーを登録することで、パスワードが変更されアクティブなセッションが取り消された後でも、永続的なアクセスを可能にします。",
+        "financial_impact": "金融機関の顧客や従業員がフィッシング攻撃の標的となり、パスキーを悪用されることでアカウントへの不正アクセスが継続するリスクがあります。",
+        "recommended_actions": [
+          "フィッシング攻撃の手口としてパスキーの悪用が確認されたことを社内へ周知し、注意喚起を行う",
+          "パスキーを含む認証情報の管理ポリシーと、不正アクセス発生時の対応手順を見直す",
+          "従業員に対し、不審なサイトでのパスキー登録を避けるよう教育を強化する"
+        ],
+        "reason": "重要度は、新しいフィッシング手法が金融機関の認証システムや顧客・従業員に影響を与える可能性があるため「中」です。確認目安は、具体的な侵害事例や緊急の対応期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ba35d7fbce4df70982b5e74827c5abdea4615cedd533348acf82a06c021351e9",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/critical-isolated-vm-vulnerability-leads-to-rce-on-host/",
+      "canonical_url": "https://www.securityweek.com/critical-isolated-vm-vulnerability-leads-to-rce-on-host/",
+      "published_at": "2026-08-21T21:26:07+09:00",
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "Critical Isolated-vm Vulnerability Leads to RCE on Host",
+      "raw_title": "Critical Isolated-vm Vulnerability Leads to RCE on Host",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1feca54a11ebe591488bbe96c6d0fab1b6d44df2e1674f25344763b0bb487da1",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:23:48.353044+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がIsolated-vmの脆弱性に関するものであるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "JavaScriptのサンドボックスライブラリ「isolated-vm」に型混乱の脆弱性が発見されました。この脆弱性はV8サンドボックスからの脱出を可能にし、ホストプロセスの制御フローを乗っ取ってリモートコード実行（RCE）につながる可能性があります。",
+        "financial_impact": "金融機関で「isolated-vm」ライブラリを直接的または間接的に利用している場合に限り、適用性確認の対象になります。記事からは利用状況が不明なため、関係性は限定的または不確実です。",
+        "recommended_actions": [
+          "「isolated-vm」ライブラリの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報を確認し、修正パッチや緩和策の有無を評価する"
+        ],
+        "reason": "重要度は、特定のライブラリの脆弱性であり、金融機関での利用状況が記事から不明で適用範囲が不確実なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:315a7872c69345e6b19d79630077b4cabb91b4d24ff644ef9870230dc1fbc66f",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/wazuh-and-ai-for-enhanced-soc-workflows.html",
+      "canonical_url": "https://thehackernews.com/2026/08/wazuh-and-ai-for-enhanced-soc-workflows.html",
+      "published_at": "2026-08-21T20:21:39+09:00",
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "Wazuh and AI For Enhanced SOC Workflows",
+      "raw_title": "Wazuh and AI For Enhanced SOC Workflows",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f1ba6419c21921aada157f8f53a4bc4aa748c941556685f82980cf3f126ccfb9",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:24:05.260145+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIを活用したセキュリティ運用、特にSOCワークフローの強化であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "AIが様々な分野で活用される中、サイバーセキュリティ分野でもAIの導入が進んでいます。本記事では、セキュリティ情報イベント管理(SIEM)ソリューションであるWazuhとAIを組み合わせることで、SOCのワークフローを強化し、反復作業の自動化やデータ分析の効率化を図る方法について解説しています。",
+        "financial_impact": "金融機関のSOC運用においてAI導入を検討する際の参考情報となりますが、具体的な脅威や緊急対応を求める内容ではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIとセキュリティ運用の一般的な動向に関する情報であり、具体的な脅威や緊急対応を求める内容ではないため「低」です。確認目安は、短期的なアクションを促す情報ではなく、中長期的な技術動向の把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:51c8d451f6eb936f08ac5896a1750c12da7e141e9f9725afb92cfa08808f1ad2",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/cisco-patches-nine-crosswork-and-secure.html",
+      "canonical_url": "https://thehackernews.com/2026/08/cisco-patches-nine-crosswork-and-secure.html",
+      "published_at": "2026-08-21T19:03:11+09:00",
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "Cisco Patches Nine Crosswork and Secure Workload Flaws, Five Scoring CVSS 10.0",
+      "raw_title": "Cisco Patches Nine Crosswork and Secure Workload Flaws, Five Scoring CVSS 10.0",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c977f169ab970be2f5b113fbaabe38697d2131238cffe889f0b7a52cbb4eb820",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:24:22.435292+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Cisco製品の複数の脆弱性に関する修正が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Ciscoは、CrossworkプラットフォームおよびSecure Workloadソフトウェアにおける9つのセキュリティ脆弱性に対するアップデートを公開しました。これらの脆弱性のうち5件はCVSSスコア10.0であり、4件はCrosswork Data Gateway、Crosswork Network Controller、Crosswork Planningに影響します。",
+        "financial_impact": "金融機関でCisco CrossworkプラットフォームまたはSecure Workloadソフトウェアを利用している場合に限り、適用性確認の対象になります。記事からは利用状況が確認できないため、直接的な影響は不明です。",
+        "recommended_actions": [
+          "Cisco CrossworkプラットフォームまたはSecure Workloadソフトウェアの利用有無と影響バージョンを確認する",
+          "Ciscoが公開したセキュリティアップデートおよびベンダーの一次情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、Cisco製品の脆弱性だが、金融機関での当該製品の利用状況が記事から不明で適用範囲が不確実なため「中」です。確認目安は、パッチが公開されており、直ちに悪用が進行中であるとの記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5c4e2cd6076c559a19425695285cd5b81b9fa76b37028ee8d625d05c70917e20",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/rust-supply-chain-attack-linked-to-north-korean-hackers/",
+      "canonical_url": "https://www.securityweek.com/rust-supply-chain-attack-linked-to-north-korean-hackers/",
+      "published_at": "2026-08-21T18:23:18+09:00",
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "Rust Supply Chain Attack Linked to North Korean Hackers",
+      "raw_title": "Rust Supply Chain Attack Linked to North Korean Hackers",
+      "raw_excerpt": null,
+      "content_hash": "sha256:321ed308dbec59bb33d8fddfca08f585faf31c16238289ec77cb4170f27a3c05",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:24:39.632664+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "北朝鮮のハッカー集団によるサプライチェーン攻撃の手法と関連が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ハッカー集団が、Rustのライブラリ「arrayref」の改ざん版を公開し、悪意のあるペイロードをリモートサーバーから取得する依存関係を追加しました。この攻撃は北朝鮮のハッカー集団に関連しているとされています。",
+        "financial_impact": "金融機関がRust言語を使用しており、特にサプライチェーンを通じて影響を受ける可能性のある開発環境やシステムを保有している場合に、適用性確認の対象となります。記事からは具体的な影響範囲は確認できません。",
+        "recommended_actions": [
+          "Rust言語を使用しているシステムや開発環境におけるサプライチェーンリスクを評価する",
+          "利用しているRustライブラリの整合性を確認し、不正な改ざんがないか検証する"
+        ],
+        "reason": "重要度は、特定の開発言語とライブラリに限定されたサプライチェーン攻撃であり、金融機関への直接的な影響が不確実なため「中」です。確認目安は、攻撃手法の把握は重要ですが、具体的な緊急対応の期限や進行中の広範な脅威が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:abb668445ad6749a3dd83a5815297905fb2708378e0a5eb0c0041508df985e74",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/contractors-cmmc-confidence-rises-as-ability-to-prove-it-falls-behind/",
+      "canonical_url": "https://www.securityweek.com/contractors-cmmc-confidence-rises-as-ability-to-prove-it-falls-behind/",
+      "published_at": "2026-08-21T17:41:06+09:00",
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "Contractors’ CMMC Confidence Rises as Ability to Prove It Falls Behind",
+      "raw_title": "Contractors’ CMMC Confidence Rises as Ability to Prove It Falls Behind",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f8f772a70d16a4f366ac451edf8a0d0f78ed5567d0abe5f1ea1e9aa40e5ed75c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:24:56.321611+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "米国防総省のサイバーセキュリティ認証制度CMMCに関する調査結果が主題であるため。",
+        "tags": [
+          "規制",
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "2つの業界調査によると、米国防総省の請負業者はCMMC（サイバーセキュリティ成熟度モデル認証）への自信を高めているものの、その遵守を証明する能力が追いついていない現状が明らかになりました。",
+        "financial_impact": "金融機関が米国防総省の請負業者と直接的な取引がある場合、その委託先のCMMC遵守状況が間接的に関係する可能性があります。直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、米国防総省の請負業者に関する規制遵守状況であり、金融機関への直接的な影響が限定的であるため「中」です。確認目安は、具体的な対応期限や緊急性を示す情報がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:881dd1c96ee4dfa238c2859264ad24645d1991eb1d6d6a4bad42844b3c11d792",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/microsoft-rolls-out-22-fresh-security-patches/",
+      "canonical_url": "https://www.securityweek.com/microsoft-rolls-out-22-fresh-security-patches/",
+      "published_at": "2026-08-21T17:12:19+09:00",
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "Microsoft Patches Exploited Entra ID Vulnerability",
+      "raw_title": "Microsoft Patches Exploited Entra ID Vulnerability",
+      "raw_excerpt": null,
+      "content_hash": "sha256:cb3ffbfa35b89339a8a25807cd39a720e45555874125177fdae49a5076b780f5",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:25:13.257151+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Microsoft製品の脆弱性に対するパッチ公開が主題であるため。",
+        "tags": [
+          "悪用確認済み",
+          "パッチ",
+          "IAM",
+          "クラウド"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "Microsoftは、Entra IDの悪用が確認された脆弱性を含む22件のセキュリティパッチを公開しました。これらのパッチは、主にコード実行、権限昇格、情報漏えいの脆弱性に対応しています。",
+        "financial_impact": "金融機関でMicrosoft Entra IDを利用している場合、悪用が確認された脆弱性への対応が必要となる可能性があります。認証・アクセス管理基盤の脆弱性は、広範なシステムへの影響に繋がり得ます。",
+        "recommended_actions": [
+          "自社および委託先におけるMicrosoft Entra IDの利用有無と影響バージョンを確認する",
+          "Microsoftが公開したパッチ情報を確認し、速やかに適用を検討する",
+          "Entra IDのログを監視し、不審な認証やアクセスがないか確認する"
+        ],
+        "reason": "重要度は、悪用が確認されたMicrosoft Entra IDの脆弱性であり、認証基盤への影響が大きいため「高」です。確認目安は、悪用が確認されており、速やかなパッチ適用が求められるため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7850fb529146db3c12d4cf5a98b147555d2f1ab06cd7f89f81b1ea355605c5ff",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/gitlab-cve-2026-19478-comes-under.html",
+      "canonical_url": "https://thehackernews.com/2026/08/gitlab-cve-2026-19478-comes-under.html",
+      "published_at": "2026-08-21T16:04:25+09:00",
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "GitLab CVE-2026-19478 Comes Under Active Exploitation Within Days of Disclosure",
+      "raw_title": "GitLab CVE-2026-19478 Comes Under Active Exploitation Within Days of Disclosure",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7fe4639a9758077bc1e65383ce6cbbdeed2c47ff29f8991262a6be8be8d34313",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:25:30.707422+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がGitLabの脆弱性とそれに対する悪用であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "GitLabで新たに開示されたコードインジェクションの脆弱性「CVE-2026-19478」(CVSSスコア: 9.4)が、公開後数日で積極的に悪用されていることが確認されました。認証されていない攻撃者が特定の条件下で公開されているGitLabプロジェクトを改変または削除し、データを書き換えることが可能です。",
+        "financial_impact": "金融機関でGitLabを開発環境やコード管理に利用している場合、本脆弱性の影響を受ける可能性があります。悪用されると、重要なコードやプロジェクトデータが改ざん・削除されるリスクがあります。",
+        "recommended_actions": [
+          "自社および委託先におけるGitLabの利用有無、および影響を受けるバージョン（CVE-2026-19478）の適用状況を確認する",
+          "GitLabベンダーからの公式パッチや緩和策に関する情報を確認し、対応計画を策定する",
+          "GitLab環境における不審な活動やプロジェクトの改変・削除の兆候がないかログを監視する"
+        ],
+        "reason": "重要度は、CVSSスコア9.4の重大な脆弱性であり、公開後数日で実悪用が確認されているため「高」です。確認目安は、実悪用が進行中であり、早急な適用性確認と対応が求められるため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-19478",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-21T22:21:46Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-19478",
+              "vuln_status": "Undergoing Analysis",
+              "published_at": "2026-08-17T20:16:41Z",
+              "last_modified_at": "2026-08-18T14:57:10Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 9.4,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:H/A:H",
+                "source": "cve@gitlab.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "not_listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-21T22:21:46Z",
+              "date_added": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:630ad3fed036364e1f3f4869ee229c078b17675341b1ad1e5ddbfa86c8dff0e9",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/microsoft-entra-id-flaw-cvss-100.html",
+      "canonical_url": "https://thehackernews.com/2026/08/microsoft-entra-id-flaw-cvss-100.html",
+      "published_at": "2026-08-21T15:06:11+09:00",
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "Microsoft Patches Severe Entra ID Flaw (CVSS 10.0) Allowing Remote Code Execution",
+      "raw_title": "Microsoft Patches Severe Entra ID Flaw (CVSS 10.0) Allowing Remote Code Execution",
+      "raw_excerpt": null,
+      "content_hash": "sha256:00ed9239723f8eeb9e77cd69e2ebb34b646f86cee11a740777687c838a3b68c0",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:25:48.354350+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Microsoft Entra IDの脆弱性とパッチ適用が主題であるため。",
+        "tags": [
+          "パッチ",
+          "認証",
+          "IAM",
+          "クラウド"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Microsoft Entra IDにCVSS 10.0のリモートコード実行の脆弱性が発見され、パッチが適用されました。当初は悪用済みとされていましたが、後にMicrosoftがその状態を「悪用なし」に訂正しました。",
+        "financial_impact": "Microsoft Entra IDを認証基盤として利用している金融機関は、本脆弱性の影響を受ける可能性があります。利用状況を確認し、適切な対応を検討する必要があります。",
+        "recommended_actions": [
+          "Microsoft Entra IDの利用有無と影響を受ける可能性のあるバージョンを確認する",
+          "Microsoftからのパッチ適用状況および緩和策に関する情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、CVSS 10.0のMicrosoft Entra IDの脆弱性であり、認証基盤として広く利用される可能性があるため「高」です。確認目安は、悪用は確認されておらず、直ちに緊急対応を要する時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7ac97cf35f122fc49acc503dd2f895a0ccae2f7711f2c01f8b68033414520c08",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-08-22T07:21:46.803606+09:00",
+      "title": "CISA、Zimbra Collaboration SuiteのOSコマンドインジェクション脆弱性をKEVへ追加",
+      "raw_title": "CVE-2026-73570 — Zimbra Collaboration Suite (ZCS) OS Command Injection Vulnerability",
+      "raw_excerpt": "Zimbra Collaboration Suite (ZCS) contains an OS command injection vulnerability which could allow an unauthenticated attacker to send specially crafted SMTP requests that may result in execution of ar",
+      "content_hash": "sha256:e5247d3267a32965362cd6e16e09b9ac69ec0de0b5e94f6abd37f4cb3c475b63",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-22T07:26:05.594042+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CISA KEVへの脆弱性追加が主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "CISAは2026年8月21日、実悪用が確認されたとして本脆弱性をKEVカタログへ追加しました。Zimbra Collaboration Suite (ZCS) にOSコマンドインジェクションの脆弱性があり、認証されていない攻撃者が特別に細工されたSMTPリクエストを送信することで、Zimbraユーザーとして任意のOSコマンドを実行する可能性があります。",
+        "financial_impact": "金融機関でZimbra Collaboration Suite (ZCS) を利用している場合に、本脆弱性の影響を受ける可能性があります。特に外部に公開している環境では、認証なしで悪用されるリスクがあるため、早急な確認が必要です。",
+        "recommended_actions": [
+          "Zimbra Collaboration Suite (ZCS) の利用有無、影響バージョン、および外部公開状況を確認する",
+          "ベンダーの一次情報を確認し、パッチ適用や緩和策の適用を検討する",
+          "システムログやネットワークトラフィックを監視し、不審な活動や侵害の兆候がないか確認する"
+        ],
+        "reason": "重要度は、認証なしで悪用可能であり、CISA KEVに掲載された広く利用される可能性のある製品の脆弱性であるため「高」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-73570",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-21T22:21:46Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-73570",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-08-13T16:19:06Z",
+              "last_modified_at": "2026-08-21T19:21:23Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 8.9,
+                "base_severity": "HIGH",
+                "vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:L",
+                "source": "cve@mitre.org",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-21T22:21:46Z",
+              "date_added": "2026-08-21"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
