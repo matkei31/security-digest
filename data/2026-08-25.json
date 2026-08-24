@@ -1,0 +1,884 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-08-25",
+  "generated_at": "2026-08-25T07:27:50.925031+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 16,
+    "ai_attempted_count": 15,
+    "ai_success_count": 15,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 1,
+    "ai_eligible_count": 15
+  },
+  "counts": {
+    "importance": {
+      "高": 1,
+      "中": 11,
+      "低": 3,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 9,
+      "参考": 6,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 2,
+      "攻撃・脅威動向": 3,
+      "インシデント": 4,
+      "規制・ガバナンス": 1,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 3,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象15件｜重要度「高」1件｜本日確認0件｜今週確認9件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が9件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が1件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "オープンソースのIDおよびアクセス管理サーバー「Keycloak」に重大なセキュリティ欠陥(CVE-2026-18963)が発見され、Red HatとKeycloakプロジェクトがパッチをリリースしました。この脆弱性を悪用すると、認証されていないリモート攻撃者がパスワードリセットを強制することで、任意のユーザーアカウントを乗っ取ることが可能になります。"
+    ],
+    "discussion_points": [
+      "オープンソースのIDおよびアクセス管理サーバー「Keycloak」に重大なセキュリティ欠陥(CVE-2026-18963)が発見され、Red HatとKeycloakプロジェクトがパッチをリリースしました。この脆弱性を悪用すると、認証されていないリモート攻撃者がパスワードリセットを強制することで、任意のユーザーアカウントを乗っ取ることが可能になります。\nKeycloakはIDおよびアクセス管理サーバーとして金融機関でも利用される可能性があるため、利用している場合は適用性確認の対象となります。",
+      "セキュリティ企業ReliaQuestの従業員がフィッシング攻撃の被害に遭い、ハッカー集団ShinyHuntersがダッシュボードへのアクセス権を獲得したことが確認されました。ReliaQuestは影響は限定的であると発表しています。\nReliaQuestを委託先として利用している金融機関は、本件が自社の情報セキュリティに与える影響について確認する必要があります。記事からは具体的な影響範囲や情報漏えいの有無は不明です。"
+    ],
+    "check_items": [
+      "Keycloakの利用有無と影響を受けるバージョンを確認する",
+      "ReliaQuestを委託先として利用している場合、本件に関するReliaQuestからの公式発表や追加情報を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:b44c6582de663ad1451f0cce3db968b9bf083893c5567f91b8333928ea2011ee",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/reliaquest-confirms-shinyhunters-hack-but-says-impact-was-limited/",
+      "canonical_url": "https://www.securityweek.com/reliaquest-confirms-shinyhunters-hack-but-says-impact-was-limited/",
+      "published_at": "2026-08-25T02:38:21+09:00",
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "ReliaQuest Confirms ShinyHunters Hack, but Says Impact Was Limited",
+      "raw_title": "ReliaQuest Confirms ShinyHunters Hack, but Says Impact Was Limited",
+      "raw_excerpt": null,
+      "content_hash": "sha256:52569107cdc2a7b8b6cb4b748df4bc4233086332628537b79120762745ca6ed9",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-25T07:23:22.630309+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "ReliaQuestの従業員がフィッシング攻撃の被害に遭い、ハッカーがダッシュボードにアクセスしたという実際の侵害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "フィッシング",
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セキュリティ企業ReliaQuestの従業員がフィッシング攻撃の被害に遭い、ハッカー集団ShinyHuntersがダッシュボードへのアクセス権を獲得したことが確認されました。ReliaQuestは影響は限定的であると発表しています。",
+        "financial_impact": "ReliaQuestを委託先として利用している金融機関は、本件が自社の情報セキュリティに与える影響について確認する必要があります。記事からは具体的な影響範囲や情報漏えいの有無は不明です。",
+        "recommended_actions": [
+          "ReliaQuestを委託先として利用している場合、本件に関するReliaQuestからの公式発表や追加情報を確認する",
+          "ReliaQuestとの契約内容に基づき、本件が自社の情報セキュリティに与える影響について評価する"
+        ],
+        "reason": "重要度は、セキュリティ企業のインシデントであり、委託先として利用している場合に影響が懸念されるため「中」です。確認目安は、具体的な情報漏えいや緊急対応の指示が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ec147778d981cc6ac194cd76128aba4ae96b8cccb68a18b94f4e9490595ff7cd",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/weekly-recap-ai-powered-plc-attacks.html",
+      "canonical_url": "https://thehackernews.com/2026/08/weekly-recap-ai-powered-plc-attacks.html",
+      "published_at": "2026-08-24T23:32:10+09:00",
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "⚡ Weekly Recap: AI-Powered PLC Attacks, GitLab Attacks, Stripe Key Leaks and More",
+      "raw_title": "⚡ Weekly Recap: AI-Powered PLC Attacks, GitLab Attacks, Stripe Key Leaks and More",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4ec2ab648a08fec760ef2720f2f309b929632d6c8c1d1d34b81f72f048207146",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-25T07:23:39.351264+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の異なる脅威動向やインシデントをまとめた週次記事であり、特定の主題に絞られないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、AIを活用したPLC攻撃、GitLabへの攻撃、StripeのAPIキー漏洩など、様々なサイバーセキュリティの脅威動向やインシデントをまとめた週次リキャップです。",
+        "financial_impact": "個々の脅威やインシデントの詳細は記事に記載されておらず、金融機関への直接的な影響は不明です。一般的な脅威動向の参考情報として活用できます。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や詳細な分析を伴わない週次まとめ記事であり、個別のトリアージ根拠に乏しいため「低」です。確認目安は、具体的な短期アクションや期限が示されていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b29872c7975cc08c6a9d32da6a0ce8b188fb9ba2bb1d15ecacde9a4df4b01400",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/hired-for-one-job-judged-on-another-the-cisos-real-problem/",
+      "canonical_url": "https://www.securityweek.com/hired-for-one-job-judged-on-another-the-cisos-real-problem/",
+      "published_at": "2026-08-24T23:00:00+09:00",
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "Hired for One Job, Judged on Another: The CISO’s Real Problem",
+      "raw_title": "Hired for One Job, Judged on Another: The CISO’s Real Problem",
+      "raw_excerpt": null,
+      "content_hash": "sha256:fcd1fdd778e2bd8d2f34ca75898827811d157c8c8d4f942d4991101524253702",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-25T07:23:56.004571+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "CISOの役割と評価に関する考察が主題であり、特定の脆弱性や攻撃、規制には該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "CISOが採用時に求められるスキルと、その後の評価基準となるスキルにはギャップがあり、多くのセキュリティリーダーがこの問題に直面していると指摘しています。このギャップを埋めることがCISOの真の仕事であると論じています。",
+        "financial_impact": "金融機関のCISOの役割や評価に関する一般的な考察であり、直接的な財務影響は確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、CISOの役割に関する一般的な論説であり、具体的な脅威や対応を要する情報ではないため「低」です。確認目安は、短期的な対応を促す情報ではなく、中長期的な視点での参考情報であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:fae87706755cf6165d3717de10c94a2717a1d36ace40f4236534d00aa94fa0df",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/uber-fined-nearly-1-billion-by-dutch-regulators-over-automated-suspensions-of-driver-accounts/",
+      "canonical_url": "https://www.securityweek.com/uber-fined-nearly-1-billion-by-dutch-regulators-over-automated-suspensions-of-driver-accounts/",
+      "published_at": "2026-08-24T21:42:09+09:00",
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "Uber Fined Nearly $1 Billion by Dutch Regulators Over Automated Suspensions of Driver Accounts",
+      "raw_title": "Uber Fined Nearly $1 Billion by Dutch Regulators Over Automated Suspensions of Driver Accounts",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2f97bbfb5e89224acefd1b9854c3cb82b0e00c4fcb76e40106d17eb2d555fc5b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-25T07:24:13.078049+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "UberがEU一般データ保護規則(GDPR)に違反したとして、オランダのデータ保護当局から罰金を科された事案が主題であるため。",
+        "tags": [
+          "規制",
+          "ガイドライン"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "オランダのデータ保護当局は、UberがEUの一般データ保護規則(GDPR)に違反したとして、8億2500万ユーロ(約10億ドル)の罰金を科したと発表しました。これはドライバーアカウントの自動停止に関するものです。",
+        "financial_impact": "金融機関への直接的な影響は限定的ですが、GDPR違反による高額な罰金事例として、データプライバシー規制遵守の重要性を示す参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響は限定的であるものの、GDPR違反による高額罰金事例として規制遵守の参考となるため「中」です。確認目安は、金融機関に直接的な対応を求めるものではなく、短期的なアクションの根拠がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:eef5e5ff1cf8c96d1aed845c4f0497f494e23941431796e9cd441176c2c71a85",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/wordlistloader-delivers-amatera-via.html",
+      "canonical_url": "https://thehackernews.com/2026/08/wordlistloader-delivers-amatera-via.html",
+      "published_at": "2026-08-24T21:35:36+09:00",
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "WordlistLoader Delivers Amatera via ClickFix, SynkLoader Phishes Windows Passwords",
+      "raw_title": "WordlistLoader Delivers Amatera via ClickFix, SynkLoader Phishes Windows Passwords",
+      "raw_excerpt": null,
+      "content_hash": "sha256:eb6ce9aee721c831947eddb63f4cb4e406ed21c1c004070bccfecf80711f678d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-25T07:24:30.001525+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "WordlistLoaderとSynkLoaderという新しいマルウェアファミリーの活動と攻撃手法が主題であるため。",
+        "tags": [
+          "ランサムウェア",
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、WordlistLoaderとSynkLoaderという2つの新しいマルウェアファミリーを特定しました。これらは次の段階のペイロードを配布し、ランサムウェアグループへのアクセスを販売している可能性があります。WordlistLoaderはClearFakeキャンペーンを通じてAmatera Stealerを配布するために使用されています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できませんが、これらのマルウェアが窃取する情報や提供するアクセスが、金融機関を標的としたランサムウェア攻撃や情報窃取に悪用される可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しいマルウェアファミリーの動向であり、金融機関への直接的な影響は不明確なため「中」です。確認目安は、具体的な緊急対応を要する情報や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6dfa7133a9d95ee8fb11253fa587c065a868d6ffbf6e524ab9e8c04257ab52ba",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/91-vulnerabilities-patched-in-spring-application-framework/",
+      "canonical_url": "https://www.securityweek.com/91-vulnerabilities-patched-in-spring-application-framework/",
+      "published_at": "2026-08-24T20:58:28+09:00",
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "91 Vulnerabilities Patched in Spring Application Framework",
+      "raw_title": "91 Vulnerabilities Patched in Spring Application Framework",
+      "raw_excerpt": null,
+      "content_hash": "sha256:000b54819eed37a27cc2091f758ea7052959eba82d50ba26579286959ad0c3db",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-25T07:24:46.698716+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がSpring Frameworkの脆弱性修正に関するものであるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Spring Application Frameworkにおいて、91件の脆弱性が修正されました。今年これまでに200件以上の脆弱性が修正されており、2025年の16件、2024年の22件と比較して大幅に増加しています。",
+        "financial_impact": "金融機関でSpring Application Frameworkを利用している場合に限り、適用性確認の対象になります。記事からは具体的な影響や悪用状況は確認できません。",
+        "recommended_actions": [
+          "Spring Application Frameworkの利用有無と影響バージョンを棚卸しする",
+          "ベンダーの一次情報を確認し、修正パッチや緩和策の適用要否を評価する"
+        ],
+        "reason": "重要度は、広く利用されるフレームワークの脆弱性修正だが、個々の脆弱性の詳細や金融機関への直接的な影響が記事から不明なため「中」です。確認目安は、悪用や緊急対応の根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a17500170f53d0ba7b09d8549aa2e47562a9bfe1c5e7ab2d6cc1492a183a178f",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/shipping-more-ai-code-than-you-can.html",
+      "canonical_url": "https://thehackernews.com/2026/08/shipping-more-ai-code-than-you-can.html",
+      "published_at": "2026-08-24T20:58:00+09:00",
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "Shipping More AI Code Than You Can Secure? Watch How to Control Remediation Debt",
+      "raw_title": "Shipping More AI Code Than You Can Secure? Watch How to Control Remediation Debt",
+      "raw_excerpt": null,
+      "content_hash": "sha256:fd48a2baadbd6646e9ca0051def9a6c1b8cef34851ed0af679a49f50db4bd282",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-25T07:25:03.446020+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIを活用したコード開発におけるセキュリティリスクと対策が主題であるため。",
+        "tags": [
+          "AI",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AIコーディングツールは開発速度を向上させる一方で、セキュリティチームが対応しきれないペースでオープンソースパッケージや依存関係を導入し、結果として脆弱性のレビューや修正作業のバックログが増加する「セキュリティ負債」を生み出す可能性があります。",
+        "financial_impact": "金融機関がAIコーディングツールを開発に利用している場合、セキュリティ負債の増大による潜在的な脆弱性リスクや、それに伴う修正コストの増加に関係します。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIコード開発におけるセキュリティ負債という中長期的なリスクに関する情報であり、即座の対応を要するものではないため「中」です。確認目安は、具体的な脅威や期限が示されておらず、中長期的な検討事項であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ecccd44f47e077d30972e13328c72de3d5ace85d8189694edd5c0ec35989b715",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/critical-keycloak-password-reset-flaw.html",
+      "canonical_url": "https://thehackernews.com/2026/08/critical-keycloak-password-reset-flaw.html",
+      "published_at": "2026-08-24T20:56:34+09:00",
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "Critical Keycloak Password Reset Flaw Could Let Unauthenticated Attackers Take Over Any Account",
+      "raw_title": "Critical Keycloak Password Reset Flaw Could Let Unauthenticated Attackers Take Over Any Account",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3119cb90ae322c24db75d152600f78a5d7244be29cbe94ee71db61a22ca63011",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-25T07:25:20.471639+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "オープンソースのIDおよびアクセス管理サーバーの脆弱性に関する記事であるため。",
+        "tags": [
+          "CVE",
+          "パッチ",
+          "認証",
+          "IAM"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "オープンソースのIDおよびアクセス管理サーバー「Keycloak」に重大なセキュリティ欠陥(CVE-2026-18963)が発見され、Red HatとKeycloakプロジェクトがパッチをリリースしました。この脆弱性を悪用すると、認証されていないリモート攻撃者がパスワードリセットを強制することで、任意のユーザーアカウントを乗っ取ることが可能になります。",
+        "financial_impact": "KeycloakはIDおよびアクセス管理サーバーとして金融機関でも利用される可能性があるため、利用している場合は適用性確認の対象となります。",
+        "recommended_actions": [
+          "Keycloakの利用有無と影響を受けるバージョンを確認する",
+          "Red HatおよびKeycloakプロジェクトから提供されているパッチや緩和策の情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、認証不要で任意のアカウント乗っ取りが可能となる重大な脆弱性であり、ID管理基盤として利用される可能性があるため「高」です。確認目安は、パッチがリリースされており、直ちに悪用が進行中であるとの記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:647d7c322525cb945c6065c1bec7a3f16448ac506691600d67308dd1055b93b1",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/operation-quicsilver-targets-myanmar.html",
+      "canonical_url": "https://thehackernews.com/2026/08/operation-quicsilver-targets-myanmar.html",
+      "published_at": "2026-08-24T20:51:36+09:00",
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "Operation QUICSILVER Targets Myanmar Government and IT with QUICAgent Backdoor",
+      "raw_title": "Operation QUICSILVER Targets Myanmar Government and IT with QUICAgent Backdoor",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a4b6295ffefe42bf33d33a47c79f3683ea4b75538157f12fd06176b1a4a240f4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-25T07:25:37.298872+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ミャンマー政府およびIT分野を標的としたサイバースパイキャンペーンと、それに使用されるバックドアが主題であるため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者らは、ミャンマーを標的としたサイバースパイキャンペーン「Operation QUICSILVER」を特定しました。このキャンペーンは、卒業式の招待状を装ったGo言語製バックドア「QUICAgent」を配布し、政府およびIT分野を狙っています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。特定の地域や政府機関を標的とした攻撃であり、一般的な脅威動向の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の地域・政府機関を標的とした攻撃であり、金融機関への直接的な適用性が限定的であるため「中」です。確認目安は、新たな脅威動向として状況把握の価値はあるものの、即時対応を要する具体的な根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:88f21efe833b4a1d88636c372201514ed0e9ac901f07b12347ff3a448b875fe2",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/the-outsized-shadow-why-5-of-ai-users.html",
+      "canonical_url": "https://thehackernews.com/2026/08/the-outsized-shadow-why-5-of-ai-users.html",
+      "published_at": "2026-08-24T20:30:00+09:00",
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "The Outsized Shadow: Why 5% of AI Users Are Your Biggest Security Risk",
+      "raw_title": "The Outsized Shadow: Why 5% of AI Users Are Your Biggest Security Risk",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bc0fe0a1e28f89294142fd2e2d64609d853a87bf904fc7bb0a5146abc44b0ef6",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-25T07:25:54.314691+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAI利用におけるセキュリティリスクと、そのリスクをもたらす特定のユーザー層に焦点を当てているため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Akamaiの新たな調査によると、企業におけるAI利用者の上位5%が、未検証のAIツールを基幹業務に組み込むことで、組織にとって最大のセキュリティリスクとなっていることが判明しました。",
+        "financial_impact": "金融機関においても、一部の従業員が未検証のAIツールを業務に組み込むことで、情報漏えいやシステム障害などのセキュリティリスクが発生する可能性があります。",
+        "recommended_actions": [
+          "AIツールの利用状況に関する社内ポリシーの遵守状況を確認する",
+          "未検証のAIツールが基幹業務に組み込まれていないか棚卸しする"
+        ],
+        "reason": "重要度は、AI利用における潜在的なリスクを示唆するものの、具体的な侵害事例や金融機関への直接的な影響が記事から確認できないため「中」です。確認目安は、短期的な緊急対応を要する情報ではなく、中長期的なAI利用方針の検討に資するため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:17e59ce72fba83497aa6fb01394116597fc0c64ebf284a16cd61cc12ee5c4f97",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/venezuelan-gets-record-federal-prison-term-for-atm-jackpotting/",
+      "canonical_url": "https://www.securityweek.com/venezuelan-gets-record-federal-prison-term-for-atm-jackpotting/",
+      "published_at": "2026-08-24T19:59:30+09:00",
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "Venezuelan Gets Record Federal Prison Term for ATM Jackpotting",
+      "raw_title": "Venezuelan Gets Record Federal Prison Term for ATM Jackpotting",
+      "raw_excerpt": null,
+      "content_hash": "sha256:839d6f6f74ea77f2ccb4e7d482f99124523de67314904ccf0806104325f32f25",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-25T07:26:11.082734+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "ATMジャックポット詐欺による数百万ドルの損失という実際の被害事例が主題であるため。",
+        "tags": [
+          "インシデント"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Juan Manuel Gouveia-AguileraがATMジャックポット詐欺に関与し、数百万ドルの損失を引き起こしたとして、8年の連邦刑務所判決を受けました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。ATMに対する物理的な攻撃事例として、一般的な脅威情報として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、他国のATMに対する物理的な攻撃事例であり、自社への直接的な適用性評価の優先度が低いため「低」です。確認目安は、過去のインシデントに対する判決のニュースであり、短期的な対応を要する時間的根拠がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:501c31bffd7b42f927303eb735b12f694f1c2a768f51207afc27c8addab3d471",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/personal-information-exposed-in-apollo-global-data-breach/",
+      "canonical_url": "https://www.securityweek.com/personal-information-exposed-in-apollo-global-data-breach/",
+      "published_at": "2026-08-24T19:08:42+09:00",
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "Personal Information Exposed in Apollo Global Data Breach",
+      "raw_title": "Personal Information Exposed in Apollo Global Data Breach",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c41e8da379d7006df201aaa9c52ff9037543c9a84dfdea5f5877eef82927c184",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-25T07:26:27.708623+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "プライベートエクイティ企業における個人情報流出という実際の侵害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "プライベートエクイティ企業Apollo Globalがデータ侵害を受け、個人情報が流出しました。この攻撃は、大手金融企業を標的としたキャンペーンの一環であると見られています。",
+        "financial_impact": "大手金融企業を標的としたキャンペーンの一環であると報じられており、金融機関も同様の攻撃を受ける可能性があるため、脅威動向として関係します。",
+        "recommended_actions": [],
+        "reason": "重要度は、大手金融企業を標的とした攻撃キャンペーンの一環である可能性があり、他社事例として状況把握の価値があるため「中」です。確認目安は、自社への直接的な影響や緊急対応の必要性を示す情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:8d87a4340a35ef96327ae5b69eb6ab6fc901f3efe49062b5d502595841a14c88",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/rethinking-application-security-for-the-ai-era/",
+      "canonical_url": "https://www.securityweek.com/rethinking-application-security-for-the-ai-era/",
+      "published_at": "2026-08-24T19:00:00+09:00",
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "Rethinking Application Security for the AI Era",
+      "raw_title": "Rethinking Application Security for the AI Era",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bec483bdc4fbb4471be76e6bf2115022759fa37edac1f360f9d7293e9d63c697",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-25T07:26:44.402265+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AI技術の進化がアプリケーションセキュリティに与える影響と、それに対する新たなアプローチが主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AIの進化により脆弱性公開から悪用までの時間が劇的に短縮される中、企業はパッチ適用だけでなく、アプリケーションリスクを低減するための新たなセキュリティ戦略を検討する必要があるという提言です。",
+        "financial_impact": "金融機関においても、AI技術の導入や利用が進むにつれて、アプリケーションセキュリティの新たなリスクに直面する可能性があります。本記事は具体的な製品や脆弱性に関するものではなく、一般的な考察として関係します。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI時代におけるアプリケーションセキュリティの一般的な考察であり、特定の製品や脆弱性に関するものではないため「中」です。確認目安は、具体的な対応期限や緊急性が示されていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f34c9a3888c408de4b2d7c8b3dbba9f008942b7d9afaadbc53a3d670a865a68f",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/iran-linked-hackers-shut-down-uk-power-plant-for-four-days/",
+      "canonical_url": "https://www.securityweek.com/iran-linked-hackers-shut-down-uk-power-plant-for-four-days/",
+      "published_at": "2026-08-24T18:22:09+09:00",
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "Iran-Linked Hackers Shut Down UK Power Plant for Four Days",
+      "raw_title": "Iran-Linked Hackers Shut Down UK Power Plant for Four Days",
+      "raw_excerpt": null,
+      "content_hash": "sha256:97b8392bdf7701870c1b8be143c1e3a6493cc3fccc3549fbddf29f4b597f347e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-25T07:27:00.967460+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "実際の運用停止を伴う攻撃事例が主題であるため。",
+        "tags": [
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "イランに関連するハッカー集団が英国の発電所を攻撃し、4日間の運用停止を引き起こしました。この攻撃は、英国の分散型エネルギーインフラの回復力と、同様の攻撃が繰り返される可能性について懸念を引き起こしています。",
+        "financial_impact": "金融機関への直接的な影響は確認できません。他業界の重要インフラへの攻撃事例として、サプライチェーンリスクや運用継続性の観点から参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響は確認できないものの、重要インフラへの攻撃事例として参考になるため「中」です。確認目安は、記事に緊急対応を要する新たな情報や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a02830e149d4661f2c2cfaba5d5936753a29c4dc28a7e1d544b24b9d32f996ea",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/uat-10147-uses-ai-to-scale-server.html",
+      "canonical_url": "https://thehackernews.com/2026/08/uat-10147-uses-ai-to-scale-server.html",
+      "published_at": "2026-08-24T17:08:31+09:00",
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "UAT-10147 Uses AI to Scale Server Attacks, Deploys SPECTRE With EDR Bypass and Linux Rootkit",
+      "raw_title": "UAT-10147 Uses AI to Scale Server Attacks, Deploys SPECTRE With EDR Bypass and Linux Rootkit",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c6ca0170ba74ac4a0970cb2f36ccda90e7300e91b965bc8e13e99aebd261337a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-25T07:27:18.657030+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国語を話すサイバー犯罪グループUAT-10147によるAIを利用したサーバー攻撃の手法と動向が主題であるため。",
+        "tags": [
+          "APT",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者らは、中国語を話すサイバー犯罪グループUAT-10147が、AIを利用してWindowsおよびLinuxのWebサーバーを標的とした攻撃を拡大していることを明らかにしました。このグループは、EDRバイパスとLinuxルートキットを伴う「SPECTRE」を展開しています。",
+        "financial_impact": "金融機関がWindowsまたはLinuxのWebサーバーを運用している場合、本攻撃の標的となる可能性があります。記事からは金融機関への直接的な関連性は確認できません。",
+        "recommended_actions": [
+          "自社および委託先でWindows/LinuxのWebサーバーを運用しているか確認する",
+          "記事に記載された攻撃手法（EDRバイパス、Linuxルートキット）に対する防御策の有効性を評価する"
+        ],
+        "reason": "重要度は、金融機関への直接的な関連性や具体的な影響が記事から確認できず、適用範囲が不確実なため「中」です。確認目安は、新たな攻撃手法の動向であり、即時対応を要する具体的な期限や緊急情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d0fceef28051d6616317b0fe5f9f6bfffc0b257a3274f811e17f89a792199e72",
+      "source_id": "cisa_kev",
+      "source_name": "CISA KEV",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "cisa_kev_json",
+      "language": "en",
+      "url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "canonical_url": "https://www.cisa.gov/known-exploited-vulnerabilities-catalog",
+      "published_at": null,
+      "fetched_at": "2026-08-25T07:23:20.342417+09:00",
+      "title": "CVE-2026-21962 — Oracle HTTP Server and Oracle Weblogic Server Proxy Plug-in Improper Access Control Vulnerability",
+      "raw_title": "CVE-2026-21962 — Oracle HTTP Server and Oracle Weblogic Server Proxy Plug-in Improper Access Control Vulnerability",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4ef8312002a7555444e759305c0ffd8b4b51ec0d6274712d562826ccf1942882",
+      "rule_flags": [
+        "kev_entry"
+      ],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "output_length_violation",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-21962",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-08-24T22:23:20Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-21962",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-01-20T22:15:59Z",
+              "last_modified_at": "2026-08-24T19:58:10Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 10.0,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:N",
+                "source": "secalert_us@oracle.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-08-24T22:23:20Z",
+              "date_added": "2026-08-24"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
