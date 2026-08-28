@@ -2740,7 +2740,7 @@ class WorkflowStaticCheckTest(unittest.TestCase):
     def test_workflow_trigger_and_permissions_unchanged(self):
         text = self._workflow_text()
         self.assertIn("workflow_dispatch:", text)
-        self.assertIn("cron: '0 22 * * *'", text)
+        self.assertIn("cron: '17 22 * * *'", text)
         self.assertIn("contents: write", text)
 
     def test_timeout_and_python_version_unchanged(self):
