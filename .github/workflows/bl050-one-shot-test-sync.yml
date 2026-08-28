@@ -1,0 +1,41 @@
+name: BL-050 one-shot test sync
+
+on:
+  push:
+    branches:
+      - feature/bl050-schedule-minute
+    paths:
+      - '.github/workflows/bl050-one-shot-test-sync.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync-test:
+    if: github.event.head_commit.message == 'BL-050: bootstrap one-shot test sync'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout feature branch
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: feature/bl050-schedule-minute
+
+      - name: Sync schedule contract test and remove this workflow
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          path = Path('test_fetch.py')
+          text = path.read_text(encoding='utf-8')
+          old = 'self.assertIn("cron: \'0 22 * * *\'", text)'
+          new = 'self.assertIn("cron: \'17 22 * * *\'", text)'
+          if text.count(old) != 1:
+              raise SystemExit(f'expected exactly one old schedule assertion, found {text.count(old)}')
+          path.write_text(text.replace(old, new), encoding='utf-8')
+          PY
+          git rm .github/workflows/bl050-one-shot-test-sync.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add test_fetch.py
+          git diff --cached --check
+          git commit -m "BL-050: sync schedule contract test"
+          git push origin HEAD:feature/bl050-schedule-minute
