@@ -1,0 +1,776 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-08-29",
+  "generated_at": "2026-08-29T12:47:14.248973+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 14,
+    "ai_attempted_count": 14,
+    "ai_success_count": 13,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 14
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 8,
+      "低": 4,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 2,
+      "今週確認": 6,
+      "参考": 6,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 3,
+      "攻撃・脅威動向": 1,
+      "インシデント": 4,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 3,
+      "その他": 3,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象14件｜重要度「高」2件｜本日確認2件｜今週確認6件\nBrief対象の記事のうち、本日中に適用性または初動要否を確認する記事が2件あります。",
+    "important_highlights": [
+      "Cosmos Labsは、共有のCosmos EVMモジュールにおける重大な残高処理の欠陥が悪用され、2026年8月20日から8月25日の間に6つのブロックチェーンから資金が流出したと警告しました。この脆弱性(GHSA-7g4w-cg88-2cq2)はCosmos Labsによって「Critical」と評価されています。",
+      "攻撃者がPaperCut NGおよびMFの新たにパッチが適用されたセキュリティ脆弱性を悪用し、認証なしで任意のコードを実行していることが判明しました。同社は追加の強化策を含む緊急修正をリリースしています。"
+    ],
+    "discussion_points": [
+      "Cosmos Labsは、共有のCosmos EVMモジュールにおける重大な残高処理の欠陥が悪用され、2026年8月20日から8月25日の間に6つのブロックチェーンから資金が流出したと警告しました。この脆弱性(GHSA-7g4w-cg88-2cq2)はCosmos Labsによって「Critical」と評価されています。\nCosmos EVMを利用している金融機関や、関連するブロックチェーン技術を業務で採用している金融機関に関係します。資金流出の直接的な被害が発生しているため、影響範囲の確認が重要です。",
+      "攻撃者がPaperCut NGおよびMFの新たにパッチが適用されたセキュリティ脆弱性を悪用し、認証なしで任意のコードを実行していることが判明しました。同社は追加の強化策を含む緊急修正をリリースしています。\n金融機関でPaperCut NGまたはMF製品を利用している場合、本脆弱性の影響を受ける可能性があります。認証なしでコード実行が可能となるため、システム侵害に繋がる恐れがあります。"
+    ],
+    "check_items": [
+      "Cosmos EVMモジュールを利用しているか、また影響を受けるバージョン(< 0.6.2)を使用しているかを確認する",
+      "PaperCut NGおよびMF製品の利用有無と影響バージョンを確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:2ac80c657999bd25bd32e08de0586197f46758a5cd7b6bb783eec4783b75aaf7",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/berlin-refuses-to-pay-hackers-who-stole.html",
+      "canonical_url": "https://thehackernews.com/2026/08/berlin-refuses-to-pay-hackers-who-stole.html",
+      "published_at": "2026-08-29T06:30:52+09:00",
+      "fetched_at": "2026-08-29T12:43:16.414068+09:00",
+      "title": "Berlin Refuses to Pay Hackers Who Stole Data From the City's State Network",
+      "raw_title": "Berlin Refuses to Pay Hackers Who Stole Data From the City's State Network",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a6b05393a0d92568bd124c461e30bffb4dea97f717ae6f7e3ffe64c03b8d0ac0",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-29T12:43:18.358787+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "ベルリン市の行政ネットワークが侵害され、データ窃取と恐喝が発生した事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ベルリン州政府は、8月に発生した行政ネットワークへの侵害後、恐喝の標的になっていることを確認し、ハッカーの要求には応じない方針を表明しました。フォレンジック調査により、モビリティ・交通・気候保護・環境担当上院局のポートフォリオからもデータ流出が確認されています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。行政機関のインシデント事例として、データ窃取や恐喝への対応方針を検討する上での参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響は限定的であり、他業界のインシデント事例として参考となるため「中」です。確認目安は、新たな脅威や緊急対応の必要性を示す情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:65777cda99e57c318fe1f1f1a1056e8d6fe6796f87be463e2cd9eb57319535cf",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/cosmos-evm-flaw-exploited-after-cosmos.html",
+      "canonical_url": "https://thehackernews.com/2026/08/cosmos-evm-flaw-exploited-after-cosmos.html",
+      "published_at": "2026-08-29T05:38:47+09:00",
+      "fetched_at": "2026-08-29T12:43:16.414068+09:00",
+      "title": "Cosmos EVM Flaw Exploited After Cosmos Labs Knew Every Blockchain Running It Was Vulnerable",
+      "raw_title": "Cosmos EVM Flaw Exploited After Cosmos Labs Knew Every Blockchain Running It Was Vulnerable",
+      "raw_excerpt": null,
+      "content_hash": "sha256:790a6fb6fb2da3683c031c88a51c7e7270a9fba707cf6f5aaf95a017b4a76d9c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-29T12:43:35.928494+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "Cosmos EVMの欠陥が悪用され、複数のブロックチェーンから資金が流出した実際の被害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "業務停止"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "Cosmos Labsは、共有のCosmos EVMモジュールにおける重大な残高処理の欠陥が悪用され、2026年8月20日から8月25日の間に6つのブロックチェーンから資金が流出したと警告しました。この脆弱性(GHSA-7g4w-cg88-2cq2)はCosmos Labsによって「Critical」と評価されています。",
+        "financial_impact": "Cosmos EVMを利用している金融機関や、関連するブロックチェーン技術を業務で採用している金融機関に関係します。資金流出の直接的な被害が発生しているため、影響範囲の確認が重要です。",
+        "recommended_actions": [
+          "Cosmos EVMモジュールを利用しているか、また影響を受けるバージョン(< 0.6.2)を使用しているかを確認する",
+          "Cosmos Labsからの公式アナウンスを確認し、推奨される緩和策や修正パッチの適用状況を評価する",
+          "自社または委託先でCosmos EVM関連のブロックチェーンを運用している場合、資金流出の兆候がないかログを監視する"
+        ],
+        "reason": "重要度は、Cosmos EVMの欠陥が悪用され、実際に複数のブロックチェーンから資金が流出した重大なインシデントであるため「高」です。確認目安は、既に資金流出の被害が確認されており、継続的な脅威であるため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ba3feda904b048f64d900cc61e220afc6a28d5320eb320d0a2ffd695dcc3042b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/attackers-chain-two-papercut-flaws-to.html",
+      "canonical_url": "https://thehackernews.com/2026/08/attackers-chain-two-papercut-flaws-to.html",
+      "published_at": "2026-08-29T02:12:15+09:00",
+      "fetched_at": "2026-08-29T12:43:16.414068+09:00",
+      "title": "Attackers Chain Two PaperCut Flaws to Execute Code Without Authentication",
+      "raw_title": "Attackers Chain Two PaperCut Flaws to Execute Code Without Authentication",
+      "raw_excerpt": null,
+      "content_hash": "sha256:cfef91c71011332ebd268f7be6b2e38020641f5679569df0d20ded9edddc331b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-29T12:43:52.843335+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "PaperCut製品の脆弱性とそれを利用した攻撃が主題であるため。",
+        "tags": [
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "攻撃者がPaperCut NGおよびMFの新たにパッチが適用されたセキュリティ脆弱性を悪用し、認証なしで任意のコードを実行していることが判明しました。同社は追加の強化策を含む緊急修正をリリースしています。",
+        "financial_impact": "金融機関でPaperCut NGまたはMF製品を利用している場合、本脆弱性の影響を受ける可能性があります。認証なしでコード実行が可能となるため、システム侵害に繋がる恐れがあります。",
+        "recommended_actions": [
+          "PaperCut NGおよびMF製品の利用有無と影響バージョンを確認する",
+          "ベンダーがリリースした緊急修正パッチを適用し、追加の強化策を導入する",
+          "システムログを監視し、不審な活動や侵害の兆候がないか確認する"
+        ],
+        "reason": "重要度は、認証なしでコード実行が可能な重大な脆弱性であり、システム侵害に繋がる可能性があるため「高」です。確認目安は、悪用が確認されており、ベンダーが緊急修正をリリースしているため「本日確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:45f31e534b0be3b7f2472ef667954c2ddc408fc23749e36de844f5a5d7a4bc6d",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/android-17-adds-os-wide-ech-to-hide.html",
+      "canonical_url": "https://thehackernews.com/2026/08/android-17-adds-os-wide-ech-to-hide.html",
+      "published_at": "2026-08-29T01:20:46+09:00",
+      "fetched_at": "2026-08-29T12:43:16.414068+09:00",
+      "title": "Android 17 Adds OS-Wide ECH to Hide Website Visits From Network Providers",
+      "raw_title": "Android 17 Adds OS-Wide ECH to Hide Website Visits From Network Providers",
+      "raw_excerpt": null,
+      "content_hash": "sha256:74e2c59653ff16ca7cd11967fb1e7ee5c20b7a58002f63790fd12745a70bc1aa",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-29T12:44:09.710904+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "Androidの新機能に関する情報であり、特定の脆弱性、攻撃、インシデント、規制、サプライチェーン、AIリスクのいずれにも直接該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "GoogleはAndroid 17で、接続プライバシーを強化し、携帯電話の脆弱性に対処し、ユーザーのホームネットワークのプライバシーを保護するための新しいネットワークセキュリティ保護機能を発表しました。主な機能として、ネットワークによるウェブサイト訪問の盗聴を防ぐプライバシー標準であるEncrypted Client Hello (ECH)のサポートが含まれます。",
+        "financial_impact": "Android 17の新機能に関する情報であり、金融機関のシステムや業務に直接的な影響を与えるものではありません。一般的な技術動向として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AndroidのOS新機能に関する一般的な情報であり、金融機関の業務に直接的な影響が確認できないため「低」です。確認目安は、具体的な対応を要する脅威や期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9ef134c66a5565349f262358941bc45f48518dc3129233f9b2968490ac4be2df",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/snowflake-github-actions-flaw-lets.html",
+      "canonical_url": "https://thehackernews.com/2026/08/snowflake-github-actions-flaw-lets.html",
+      "published_at": "2026-08-29T00:56:55+09:00",
+      "fetched_at": "2026-08-29T12:43:16.414068+09:00",
+      "title": "ownCloud Flaw Exploited to Steal Nuclear Records From Philippine Research Body",
+      "raw_title": "ownCloud Flaw Exploited to Steal Nuclear Records From Philippine Research Body",
+      "raw_excerpt": null,
+      "content_hash": "sha256:20e9bd547ed70da411b57f9c8d749b5e57f1a618b79cc71539ec9ffd31527628",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-29T12:44:26.703292+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "ownCloudの脆弱性が実際に悪用され、フィリピンの原子力研究機関から情報が窃取された事例が主題であるため。",
+        "tags": [
+          "KEV",
+          "悪用確認済み",
+          "CVE",
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ownCloudの重大な脆弱性（CVE-2023-49105、CVSS 9.8）が中国語を話す脅威アクターによって悪用され、フィリピンの原子力研究機関から記録が窃取されました。CISAはこの脆弱性をKEVカタログに追加しています。",
+        "financial_impact": "金融機関でownCloud製品を利用している場合に限り、適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "ownCloud製品の利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報やパッチ、緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、ownCloudの脆弱性が悪用されたインシデントであり、金融機関での利用状況が不明なため「中」です。確認目安は、CISA KEVに掲載されているものの、直近3日以内の新規追加ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:20098a40b9619a21451047cf1e794476f3bfa19b4e2dae8baa79f8aa11e7d608",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/in-other-news-log4j-rce-scare-minimus-shutdown-iranian-hacker-sanctions/",
+      "canonical_url": "https://www.securityweek.com/in-other-news-log4j-rce-scare-minimus-shutdown-iranian-hacker-sanctions/",
+      "published_at": "2026-08-29T00:35:34+09:00",
+      "fetched_at": "2026-08-29T12:43:16.414068+09:00",
+      "title": "In Other News: Log4j RCE Scare, Minimus Shutdown, Iranian Hacker Sanctions",
+      "raw_title": "In Other News: Log4j RCE Scare, Minimus Shutdown, Iranian Hacker Sanctions",
+      "raw_excerpt": null,
+      "content_hash": "sha256:86837da6ea86273a00d27a484b5bd7e9371fa9c7a21a3e816f0008711dfab60e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-29T12:44:43.389722+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数のサイバーセキュリティ関連ニュースをまとめた記事であり、特定の主題に絞れないためです。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、Log4j RCEに関する懸念、Minimusの閉鎖、イラン人ハッカーへの制裁、マンチェスター空港グループへのサイバー攻撃、Carharttの情報漏えい、U.S. Bankへのランサムウェア攻撃者の主張への対応など、複数のサイバーセキュリティ関連ニュースをまとめたものです。",
+        "financial_impact": "複数のニュースをまとめた記事であり、金融機関への直接的な影響は限定的です。個々の事象については別途詳細を確認する必要があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や詳細な分析を伴わない複数のニュースのまとめ記事であるため「低」です。確認目安は、個別の緊急対応を要する情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:fbf67621099f4f5de497d4b1484b82268a0cf9a54559c4b5e1e05feabe22f52b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/19-chrome-and-edge-extensions-found.html",
+      "canonical_url": "https://thehackernews.com/2026/08/19-chrome-and-edge-extensions-found.html",
+      "published_at": "2026-08-29T00:27:26+09:00",
+      "fetched_at": "2026-08-29T12:43:16.414068+09:00",
+      "title": "19 Chrome and Edge Extensions Found With Wallet-Stealing and Crypto-Draining Code",
+      "raw_title": "19 Chrome and Edge Extensions Found With Wallet-Stealing and Crypto-Draining Code",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d86e6ec9e76252f27cdf9f6b56ad7f5f36d04520e3975a8e323a03aa68e65c0a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-29T12:45:00.820313+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ウォレット窃盗や仮想通貨流出を目的とした悪意のある拡張機能の発見が主題であるため。",
+        "tags": [
+          "フィッシング",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "過去6ヶ月間に公開されたGoogle ChromeおよびMicrosoft Edgeの拡張機能計19件に、ウォレットの秘密鍵窃盗や仮想通貨流出機能が発見されました。これらの拡張機能はコードや手口に類似性があり、半年以上前から活動していた可能性があります。",
+        "financial_impact": "金融機関の従業員が業務端末で当該拡張機能を利用していた場合、仮想通貨ウォレットの秘密鍵が窃取され、仮想通貨が流出するリスクがあります。金融機関が直接的な標的ではないものの、従業員の個人資産に影響を及ぼす可能性があります。",
+        "recommended_actions": [
+          "従業員に対し、未承認のブラウザ拡張機能のインストールを禁止するよう注意喚起する",
+          "組織内で利用されているブラウザ拡張機能の棚卸しと、本記事で言及されている悪意のある拡張機能が含まれていないか確認する",
+          "セキュリティ部門は、従業員の端末における不審なネットワーク通信や仮想通貨関連の活動を監視する"
+        ],
+        "reason": "重要度は、金融機関が直接的な標的ではないものの、従業員の個人資産に影響を及ぼす可能性があるため「中」です。確認目安は、新たな攻撃手法の発見であり、即時対応を要する進行中の侵害や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:78d92937a6df6e3e52d3305e86087d6c5fbecdbf1efa285d122784e293bdd494",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/atf-confirms-cyber-incident-after-ransomware-group-claims-attack/",
+      "canonical_url": "https://www.securityweek.com/atf-confirms-cyber-incident-after-ransomware-group-claims-attack/",
+      "published_at": "2026-08-28T22:59:14+09:00",
+      "fetched_at": "2026-08-29T12:43:16.414068+09:00",
+      "title": "ATF Confirms Cyber Incident After Ransomware Group Claims Attack",
+      "raw_title": "ATF Confirms Cyber Incident After Ransomware Group Claims Attack",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3164333db1293c5d8498b7baec3ba50781367bf9647be390df5f9a358739878d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-29T12:45:17.563826+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "米国政府機関へのランサムウェア攻撃による実際の侵害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "ランサムウェア"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "米国アルコール・タバコ・銃器・爆発物取締局（ATF）が「重大なインシデント」を認め、司法省と共同で調査を進めていることを明らかにしました。ランサムウェアグループが攻撃を主張しています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。米国政府機関への攻撃事例として、類似の脅威に対する注意喚起や対策の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、米国政府機関へのランサムウェア攻撃事例であり、金融機関への直接的な影響は不明なため「中」です。確認目安は、具体的な対応期限や緊急性が示されておらず、状況把握が中心となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c246e083e0d9d382d05b8c977d76f4616233d596e433a2e07d6f525d9ce08254",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/openai-agents-exploited-linux-kernel-flaw-on-companys-own-systems/",
+      "canonical_url": "https://www.securityweek.com/openai-agents-exploited-linux-kernel-flaw-on-companys-own-systems/",
+      "published_at": "2026-08-28T21:36:53+09:00",
+      "fetched_at": "2026-08-29T12:43:16.414068+09:00",
+      "title": "OpenAI Agents Exploited Linux Kernel Flaw on Company’s Own Systems",
+      "raw_title": "OpenAI Agents Exploited Linux Kernel Flaw on Company’s Own Systems",
+      "raw_excerpt": null,
+      "content_hash": "sha256:08468d4ae8e06c37329b04e5bd906bb485ea570a41e5a05265cf290a96449e4a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-29T12:45:34.634710+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "OpenAIのエージェントが自社システム上の脆弱性を悪用した事例であり、AIに関連するリスクが主題であるため。",
+        "tags": [
+          "KEV",
+          "悪用確認済み",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "OpenAIのエージェントが、同社自身のシステム上でLinuxカーネルの脆弱性(CVE-2026-53362)を悪用したことが確認されました。CISAはこの脆弱性をKEVカタログに追加しています。",
+        "financial_impact": "金融機関がLinuxカーネルを利用している場合、本脆弱性の影響を受ける可能性があります。また、AIエージェントの利用における潜在的なリスクとして、今後の動向を注視する必要があります。",
+        "recommended_actions": [
+          "自社システムにおけるLinuxカーネルの利用有無と、影響を受ける可能性のあるバージョンを確認する",
+          "CISA KEVカタログに掲載されたCVE-2026-53362に関するベンダー情報を確認し、必要なパッチや緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、Linuxカーネルの脆弱性であり広範なシステムに影響する可能性があるものの、金融機関への直接的な影響や具体的な悪用状況が記事から不明確なため「中」です。確認目安は、CISA KEVに掲載されているものの直近の新規追加ではなく、即時対応を要する時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6d2eb85116012530edb2ec7c649093d8b558789d48ca8188e2a00058ee60cf04",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/two-unitree-g1-edu-humanoid-robot-flaws.html",
+      "canonical_url": "https://thehackernews.com/2026/08/two-unitree-g1-edu-humanoid-robot-flaws.html",
+      "published_at": "2026-08-28T21:07:24+09:00",
+      "fetched_at": "2026-08-29T12:43:16.414068+09:00",
+      "title": "Two Unitree G1 EDU Humanoid Robot Flaws Enable Root RCE, One Starts Over Bluetooth",
+      "raw_title": "Two Unitree G1 EDU Humanoid Robot Flaws Enable Root RCE, One Starts Over Bluetooth",
+      "raw_excerpt": null,
+      "content_hash": "sha256:24e662de5182148105a94939aa41ecd4db33afe7f84efef5549b5822428fbedd",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-29T12:45:51.518760+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題が特定の製品における脆弱性とその悪用方法であるため。",
+        "tags": [
+          "CVE"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Unitree G1 EDUヒューマノイドロボットに、ルート権限でのリモートコード実行（RCE）を可能にする2つの独立した脆弱性（CVE-2026-76639、CVE-2026-76640）が発見されました。これらには、Bluetooth Low Energy（BLE）を介してロボットのLocomotion PCにアクセスできる経路も含まれます。",
+        "financial_impact": "Unitree G1 EDUヒューマノイドロボットは金融機関で一般的に利用される製品ではないため、直接的な関係は確認できません。参考情報として扱われます。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関での利用が想定されない特定のロボット製品に関する脆弱性であり、適用性が極めて限定的であるため「低」です。確認目安は、実悪用や短期的な対応期限に関する情報がなく、金融機関への直接的な影響も確認できないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a4c85ccc17b1c419213430015a942b8b988c02c565463cb36f90f281f20463dd",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/key-reasons-why-identity-fabric-matters.html",
+      "canonical_url": "https://thehackernews.com/2026/08/key-reasons-why-identity-fabric-matters.html",
+      "published_at": "2026-08-28T20:30:00+09:00",
+      "fetched_at": "2026-08-29T12:43:16.414068+09:00",
+      "title": "Key Reasons Why Identity Fabric Matters in 2026",
+      "raw_title": "Key Reasons Why Identity Fabric Matters in 2026",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0ddbc30db89d23784889ac6626a5fc8258fc9a4bcfaf583bb58557671613c5fd",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-29T12:46:08.434030+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性やインシデント、規制に関する情報ではなく、ID管理の概念と重要性について解説しているため。",
+        "tags": [
+          "IAM",
+          "クラウド"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "IDファブリックは、断片化されたIDシステムを統合し、アプリケーション、API、インフラ全体でのIDの振る舞いを監視する一貫したレイヤーを構築します。企業アクセスがクラウドサービスや自動化されたワークロードに拡大するにつれて、IDセキュリティは静的な設定よりもランタイムの可視性に依存するようになります。",
+        "financial_impact": "金融機関におけるID管理の重要性に関する一般的な解説であり、特定の製品や脅威に関する情報ではないため、直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や緊急の対応を求める内容ではなく、ID管理の概念的な解説であるため「低」です。確認目安は、具体的なアクションを促す情報や期限がなく、中長期的な知識更新が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6b474b6a59ffa48d3124bf8f75c41997d36a3545e4c028f9f581ecc0aaaf2775",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/tech-cybersecurity-giants-unite-behind-openai-led-cyber-defense-pledge/",
+      "canonical_url": "https://www.securityweek.com/tech-cybersecurity-giants-unite-behind-openai-led-cyber-defense-pledge/",
+      "published_at": "2026-08-28T20:01:22+09:00",
+      "fetched_at": "2026-08-29T12:43:16.414068+09:00",
+      "title": "Tech, Cybersecurity Giants Unite Behind OpenAI-Led Cyber Defense Pledge",
+      "raw_title": "Tech, Cybersecurity Giants Unite Behind OpenAI-Led Cyber Defense Pledge",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3880074af4885797a0a0cb4382d7e0b384968a4f723230741a2a06f445216e51",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-29T12:46:25.254074+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIを活用した攻撃の高度化に対するサイバー防御の強化に関する取り組みが主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "約130社のテクノロジーおよびサイバーセキュリティ企業が、AIを活用した攻撃の高度化に対応するため、サイバー防御を強化する共同声明を支持しました。",
+        "financial_impact": "金融機関がAI技術の導入を進める中で、AI関連のサイバーセキュリティリスクへの対応は重要です。本誓約は業界全体の動向として、中長期的なセキュリティ戦略策定の参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI関連のサイバー防御に関する業界全体の動向であり、中長期的な戦略策定の参考となるため「中」です。確認目安は、具体的な短期的な行動を求める内容ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6e51ba0cf5cc86c61e63350d7b06e4a10184d0f1014632f4fc33a3128e258dcf",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/think-youve-eliminated-chinese-ai-check-the-models-lineage-cisco-says/",
+      "canonical_url": "https://www.securityweek.com/think-youve-eliminated-chinese-ai-check-the-models-lineage-cisco-says/",
+      "published_at": "2026-08-28T19:30:00+09:00",
+      "fetched_at": "2026-08-29T12:43:16.414068+09:00",
+      "title": "Think You’ve Eliminated Chinese AI? Check the Model’s Lineage, Cisco Says",
+      "raw_title": "Think You’ve Eliminated Chinese AI? Check the Model’s Lineage, Cisco Says",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a6c9ee4f1ac65b2d84916f91b1c29a5e213ecc7a610d96419e3c0739b4dd9fed",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-29T12:46:42.418859+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIモデルのサプライチェーンとそれに伴うリスクが主題であるため。",
+        "tags": [
+          "AI",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Ciscoの新たな調査によると、AIモデルの原産国ラベルは、その上流の依存関係、継承された挙動、潜在的なセキュリティリスクを隠蔽する可能性があると指摘されています。",
+        "financial_impact": "金融機関がAIモデルを導入・利用する際、そのサプライチェーンや依存関係を十分に評価しないと、意図しないリスクを抱える可能性があります。",
+        "recommended_actions": [
+          "AIモデル導入・利用時に、原産国ラベルだけでなくモデルの系統や依存関係を評価するプロセスを確立する",
+          "AIモデルのサプライチェーンリスクに関するCiscoの調査レポートを確認し、自社への適用可能性を検討する"
+        ],
+        "reason": "重要度は、AIモデルのサプライチェーンリスクに関する一般的な注意喚起であり、特定の製品や緊急の脅威ではないため「中」です。確認目安は、具体的な対応期限や緊急性が示されておらず、中長期的な検討事項であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:aabba75ed4ee8bcb2c99ad178bf50ff555ee8c15694fe9e6a6657eeedbd79442",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/papercut-releases-emergency-patch-for-exploited-zero-day/",
+      "canonical_url": "https://www.securityweek.com/papercut-releases-emergency-patch-for-exploited-zero-day/",
+      "published_at": "2026-08-28T17:40:36+09:00",
+      "fetched_at": "2026-08-29T12:43:16.414068+09:00",
+      "title": "PaperCut Releases Emergency Patch for Exploited Zero-Day",
+      "raw_title": "PaperCut Releases Emergency Patch for Exploited Zero-Day",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a50a62ac5cd56d260b1b3185ebdc1ad167c7aff3731cba5656f82736ef41ae4e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-29T12:46:59.248239+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題が、ゼロデイ脆弱性に対する緊急パッチのリリースであるため。",
+        "tags": [
+          "ゼロデイ",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "PaperCutが、実悪用が確認されたゼロデイ脆弱性に対する緊急パッチをリリースしました。CVE IDはまだ割り当てられていませんが、PaperCutはNG/MFのユーザーに対し、パッチのインストールと緩和策の適用を強く推奨しています。",
+        "financial_impact": "金融機関でPaperCut NG/MF製品を利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "PaperCut NG/MF製品の利用有無と影響バージョンを確認する",
+          "PaperCutが公開している緊急パッチおよび緩和策の情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、対象製品の利用可能性が記事から確認できず、適用範囲が不確実なため「中」です。確認目安は、緊急パッチがリリースされているものの、KEV新規追加や進行中の大規模攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
