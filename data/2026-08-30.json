@@ -1,0 +1,200 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-08-30",
+  "generated_at": "2026-08-30T09:21:42.084400+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 3,
+    "ai_attempted_count": 1,
+    "ai_success_count": 1,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 2,
+    "ai_eligible_count": 1
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 0,
+      "低": 1,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 0,
+      "参考": 1,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 0,
+      "攻撃・脅威動向": 0,
+      "インシデント": 1,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 0,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象1件｜重要度「高」0件｜本日確認0件｜今週確認0件\nBrief対象の記事では、緊急の確認対象はありません。短期的な確認対象はなく、参考・状況把握が中心です。",
+    "important_highlights": [],
+    "discussion_points": [],
+    "check_items": [],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:20d327a204a5298e63074340c6e8ca4de0e808c3f887b5d17f1252a2384ab3f2",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/five-critical-wordpress-plugin-and.html",
+      "canonical_url": "https://thehackernews.com/2026/08/five-critical-wordpress-plugin-and.html",
+      "published_at": "2026-08-30T01:25:03+09:00",
+      "fetched_at": "2026-08-30T09:21:08.351399+09:00",
+      "title": "Five Critical WordPress Plugin and Theme Flaws Enable Site Takeover or RCE",
+      "raw_title": "Five Critical WordPress Plugin and Theme Flaws Enable Site Takeover or RCE",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3057adcffa6a97e82a6e8c890788bdacd6e2a40238d148dca6e5e38f3feded9f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "verbatim_long_match",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:451f21362943d34251a0ea79f280c1866f9721f1a7296bf602bd6562690bbc41",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/hasbro-data-breach-exposed-employee-personal-information/",
+      "canonical_url": "https://www.securityweek.com/hasbro-data-breach-exposed-employee-personal-information/",
+      "published_at": "2026-08-29T20:55:00+09:00",
+      "fetched_at": "2026-08-30T09:21:08.351399+09:00",
+      "title": "Hasbro Data Breach Exposed Employee Personal Information",
+      "raw_title": "Hasbro Data Breach Exposed Employee Personal Information",
+      "raw_excerpt": null,
+      "content_hash": "sha256:dbe4f3d6a04fa0d2d6412fd3cda415357c98b8e8362679585c3a635feb41a617",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-08-30T09:21:27.084055+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "玩具・ゲーム大手ハズブロ社で発生したデータ侵害と個人情報流出が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "玩具・ゲーム大手のハズブロ社は、今年初めに発生したサイバー攻撃による混乱が原因で、従業員の個人情報が流出したデータ侵害を公表しました。",
+        "financial_impact": "金融機関への直接的な影響は確認できず、他業界のインシデント事例として参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な関係が確認できない他業界のインシデント事例であるため「低」です。確認目安は、記事に金融機関が取るべき具体的な短期アクションの記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:3a4096e5ddae827147ec0560290f59fbcdf792f712748811623ad4a4111c32bd",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/08/28/terminalfix-campaign-deploys-reverse-tunnel-through-multistage-intrusion/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/08/28/terminalfix-campaign-deploys-reverse-tunnel-through-multistage-intrusion/",
+      "published_at": "2026-08-29T12:43:27+09:00",
+      "fetched_at": "2026-08-30T09:21:08.351399+09:00",
+      "title": "TerminalFix campaign deploys a reverse tunnel through multistage intrusion",
+      "raw_title": "TerminalFix campaign deploys a reverse tunnel through multistage intrusion",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a71a2f281e4210e696354a092a6e74d3d61939145622599e5169a84f175292f1",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
