@@ -19,14 +19,8 @@ class TopicDefinitionContractTest(unittest.TestCase):
         self.assertEqual(
             slugs,
             [
-                "vulnerabilities",
-                "threats",
-                "incidents",
-                "regulation-governance",
-                "identity-access",
-                "cloud-supply-chain",
-                "ai",
-                "ransomware",
+                "vulnerabilities", "threats", "incidents", "regulation-governance",
+                "identity-access", "cloud-supply-chain", "ai", "ransomware",
             ],
         )
 
@@ -42,15 +36,9 @@ class TopicDefinitionContractTest(unittest.TestCase):
 class TopicPublicationThresholdTest(unittest.TestCase):
     def _article(self, date, index=1):
         return tp.TopicArticle(
-            digest_date=date,
-            article_index=index,
-            title=f"article-{date}-{index}",
-            source="Source",
-            summary="summary",
-            importance="中",
-            urgency="今週確認",
-            category="脆弱性・パッチ",
-            tags=("CVE",),
+            digest_date=date, article_index=index, title=f"article-{date}-{index}",
+            source="Source", summary="summary", importance="中", urgency="今週確認",
+            category="脆弱性・パッチ", tags=("CVE",),
         )
 
     def test_requires_five_articles_and_two_distinct_dates(self):
@@ -71,20 +59,14 @@ class TopicCollectionTest(unittest.TestCase):
         digest = {"digest_date": "2026-08-29"}
         display_items = [
             {
-                "title": "Incident first",
-                "source": "A",
-                "ai_analysis": {
-                    "category": "インシデント", "tags": ["情報漏えい"], "summary": "one",
-                    "importance": "高", "urgency": "本日確認",
-                },
+                "title": "Incident first", "source": "A", "link": "https://example.com/a",
+                "ai_analysis": {"category": "インシデント", "tags": ["情報漏えい"],
+                                "summary": "one", "importance": "高", "urgency": "本日確認"},
             },
             {
-                "title": "Vulnerability second",
-                "source": "B",
-                "ai_analysis": {
-                    "category": "脆弱性・パッチ", "tags": ["CVE"], "summary": "two",
-                    "importance": "中", "urgency": "今週確認",
-                },
+                "title": "Vulnerability second", "source": "B", "link": "https://example.com/b",
+                "ai_analysis": {"category": "脆弱性・パッチ", "tags": ["CVE"],
+                                "summary": "two", "importance": "中", "urgency": "今週確認"},
             },
         ]
         with (
@@ -92,12 +74,40 @@ class TopicCollectionTest(unittest.TestCase):
             patch.object(tp.fetch, "load_daily_digest", return_value=digest),
             patch.object(tp.fetch, "digest_items_for_html", return_value=list(reversed(display_items))),
             patch.object(tp.fetch, "sort_items_for_display", return_value=display_items),
+            patch.object(tp.fetch, "render_source_attribution_html", return_value=""),
         ):
             collected = tp.collect_topic_articles(Path("data"), Path("docs"))
         self.assertEqual(collected["incidents"][0].article_index, 1)
         self.assertEqual(collected["incidents"][0].archive_href, "/archive/2026-08-29.html#article-1")
         self.assertEqual(collected["vulnerabilities"][0].article_index, 2)
         self.assertEqual(collected["vulnerabilities"][0].archive_href, "/archive/2026-08-29.html#article-2")
+
+    def test_source_policy_attribution_original_link_and_original_title_are_preserved(self):
+        item = {
+            "raw_title": "Original title", "title": "翻訳タイトル", "source": "Source",
+            "link": "https://example.com/original",
+            "content_policy": {"effective_mode": "limited_feed_analysis"},
+            "ai_analysis": {"category": "攻撃・脅威動向", "tags": ["APT"],
+                            "summary": "analysis", "importance": "中", "urgency": "今週確認"},
+        }
+        attribution = '<p class="article-attribution">policy note</p>'
+        with patch.object(tp.fetch, "render_source_attribution_html", return_value=attribution) as render:
+            article = tp._article_from_display_item("2026-08-29", 3, item)
+        self.assertIsNotNone(article)
+        self.assertEqual(article.title, "Original title")
+        self.assertEqual(article.original_url, "https://example.com/original")
+        self.assertEqual(article.attribution_html, attribution)
+        render.assert_called_once_with(item, generated_at_ymd="2026-08-29")
+
+    def test_unsafe_original_url_is_not_exposed(self):
+        item = {
+            "title": "x", "link": "javascript:alert(1)",
+            "ai_analysis": {"category": "脆弱性・パッチ", "tags": ["CVE"]},
+        }
+        with patch.object(tp.fetch, "render_source_attribution_html", return_value=""):
+            article = tp._article_from_display_item("2026-08-01", 1, item)
+        self.assertIsNotNone(article)
+        self.assertEqual(article.original_url, "")
 
     def test_missing_or_unclassified_analysis_is_not_forced_into_a_topic(self):
         self.assertIsNone(tp._article_from_display_item("2026-08-01", 1, {"title": "x"}))
@@ -117,12 +127,14 @@ class TopicHtmlTest(unittest.TestCase):
                 digest_date="2026-08-29" if i < 4 else "2026-08-28",
                 article_index=i + 1,
                 title="<script>title</script>" if i == 0 else f"Article {i + 1}",
-                source="Source & Co",
-                summary="summary <b>unsafe</b>",
+                source="Source & Co", summary="summary <b>unsafe</b>",
                 importance="高" if i == 0 else "中",
                 urgency="本日確認" if i == 0 else "今週確認",
-                category="脆弱性・パッチ",
-                tags=("CVE",),
+                category="脆弱性・パッチ", tags=("CVE",),
+                original_url=f"https://example.com/{i}",
+                attribution_html=(
+                    '<p class="article-attribution">policy note</p>' if i == 0 else ""
+                ),
             )
             for i in range(5)
         )
@@ -163,6 +175,18 @@ class TopicHtmlTest(unittest.TestCase):
         self.assertIn("summary &lt;b&gt;unsafe&lt;/b&gt;", page)
         self.assertIn('/archive/2026-08-29.html#article-1', page)
 
+    def test_topic_page_preserves_attribution_and_safe_original_article_link(self):
+        topic = self._published_topic()
+        with (
+            patch.object(tp.fetch, "public_url", side_effect=lambda path: f"https://monomidigest.com/{path}"),
+            patch.object(tp.fetch, "render_analytics_footer_html", return_value=""),
+            patch.object(tp.fetch, "render_cloudflare_web_analytics_html", return_value=""),
+        ):
+            page = tp.build_topic_html(topic)
+        self.assertIn('<p class="article-attribution">policy note</p>', page)
+        self.assertIn('href="https://example.com/0" target="_blank" rel="noopener noreferrer"', page)
+        self.assertIn(">元記事を読む</a>", page)
+
 
 class TopicOutputIntegrationTest(unittest.TestCase):
     @staticmethod
@@ -201,8 +225,7 @@ class TopicOutputIntegrationTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             docs, data = root / "docs", root / "data"
-            docs.mkdir()
-            data.mkdir()
+            docs.mkdir(); data.mkdir()
             (docs / "index.html").write_text(
                 '<div class="archive-nav-group archive-global-nav">'
                 '<a class="archive-link" href="archive/index.html">過去のダイジェスト</a>'
@@ -227,8 +250,7 @@ class TopicOutputIntegrationTest(unittest.TestCase):
             docs = Path(tmp)
             stale = docs / "topics" / "threats"
             unknown = docs / "topics" / "manual-note"
-            stale.mkdir(parents=True)
-            unknown.mkdir(parents=True)
+            stale.mkdir(parents=True); unknown.mkdir(parents=True)
             (stale / "index.html").write_text("stale", encoding="utf-8")
             (unknown / "keep.txt").write_text("keep", encoding="utf-8")
             with (

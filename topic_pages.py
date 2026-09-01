@@ -1,19 +1,15 @@
 #!/usr/bin/env python3
 """BL-051: Monomi Digest topic-page v0.1 generator.
 
-This module is intentionally separate from ``fetch.py``. The daily collector remains the
-source of truth for article analysis and ordering; after ``fetch.py`` has generated the normal
-site output, this module derives topic pages from the already validated daily digests.
+Topic pages are a deterministic secondary navigation layer derived from already validated
+published daily digests. Existing ARTICLE ``category`` is the primary classification signal
+and existing ``tags`` are cross-cutting signals. No new AI request, prompt/schema change, or
+historical daily-JSON rewrite is introduced.
 
-v0.1 does not add a new AI classification step and does not change the daily JSON schema.
-Existing ARTICLE ``category`` is treated as the primary classification and existing ``tags``
-are used as cross-cutting signals. A topic is published only when it has at least five matching
-articles spanning at least two digest dates.
-
-The existing BL-009 Phase A-3 sitemap contract is deliberately left untouched in v0.1. Topic
-pages are crawl-discoverable through the top-page ``テーマから探す`` link. Extending the sitemap
-becomes a separate follow-up only if we deliberately supersede the existing generator contract;
-this keeps topic-page introduction from silently rewriting an already accepted crawl-file owner.
+The accepted BL-009 Phase A-3 sitemap contract is deliberately unchanged in v0.1. Topic pages
+are crawl-discoverable through the top-page ``テーマから探す`` link. Source-policy-required
+attribution and original-article links are preserved whenever a topic entry exposes stored AI
+analysis text, so this secondary surface does not weaken BL-032 publication controls.
 """
 
 from __future__ import annotations
@@ -115,6 +111,8 @@ class TopicArticle:
     urgency: str
     category: str
     tags: tuple[str, ...]
+    original_url: str = ""
+    attribution_html: str = ""
 
     @property
     def archive_href(self) -> str:
@@ -162,9 +160,20 @@ def _article_from_display_item(digest_date: str, index: int, item: dict) -> Topi
     if not isinstance(category, str) or not isinstance(tags, list):
         return None
     tags = tuple(tag for tag in tags if isinstance(tag, str))
-    title = item.get("title")
+
+    # Prefer the original title when available. This mirrors the accepted article-card
+    # hierarchy and avoids reintroducing a translated title for limited_feed_analysis.
+    raw_title = item.get("raw_title")
+    translated_title = item.get("title")
+    title = raw_title if isinstance(raw_title, str) and raw_title.strip() else translated_title
     if not isinstance(title, str) or not title.strip():
         return None
+
+    original_url = fetch.safe_url(item.get("link") or "") or ""
+    attribution_html = fetch.render_source_attribution_html(
+        item,
+        generated_at_ymd=digest_date,
+    )
     return TopicArticle(
         digest_date=digest_date,
         article_index=index,
@@ -175,15 +184,13 @@ def _article_from_display_item(digest_date: str, index: int, item: dict) -> Topi
         urgency=str(analysis.get("urgency") or ""),
         category=category,
         tags=tags,
+        original_url=original_url,
+        attribution_html=attribution_html,
     )
 
 
 def collect_topic_articles(data_dir: Path, docs_dir: Path) -> dict[str, list[TopicArticle]]:
-    """Collect topic matches from the same validated, published digests used by Archive.
-
-    Display positions are computed with ``fetch.sort_items_for_display`` so the generated
-    ``#article-N`` link points at the exact card position in the daily Archive.
-    """
+    """Collect matches from the same validated published digests used by Archive."""
     collected = {definition.slug: [] for definition in TOPIC_DEFINITIONS}
     published_dates = fetch.load_validated_published_digest_dates(
         data_dir=data_dir,
@@ -202,7 +209,9 @@ def collect_topic_articles(data_dir: Path, docs_dir: Path) -> dict[str, list[Top
     return collected
 
 
-def select_published_topics(collected: dict[str, Sequence[TopicArticle]]) -> tuple[PublishedTopic, ...]:
+def select_published_topics(
+    collected: dict[str, Sequence[TopicArticle]],
+) -> tuple[PublishedTopic, ...]:
     published = []
     for definition in TOPIC_DEFINITIONS:
         articles = tuple(collected.get(definition.slug, ()))
@@ -221,14 +230,17 @@ def _shared_style() -> str:
         "header{background:#161b22;border-bottom:1px solid #30363d;padding:14px 20px;position:sticky;top:0;z-index:10}\n"
         "header h1{font-size:18px;font-weight:600;color:#e6edf3}\n"
         ".sub,.topic-meta{font-size:12px;color:#8b949e;line-height:1.5}\n"
-        ".topic-nav{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}\n"
-        ".topic-link{color:#79c0ff;text-decoration:none;font-weight:700}\n"
-        ".topic-link:hover{text-decoration:underline}\n"
+        ".topic-nav,.topic-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px}\n"
+        ".topic-link,.topic-source-link{color:#79c0ff;text-decoration:none;font-weight:700}\n"
+        ".topic-link:hover,.topic-source-link:hover{text-decoration:underline}\n"
+        ".topic-source-link{font-size:11px;font-weight:500}\n"
         ".topic-list{max-width:680px;margin:12px auto 0;padding:0 12px;list-style:none;display:grid;gap:10px}\n"
         ".topic-item{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;display:grid;gap:5px}\n"
         ".topic-item h2{font-size:14px;line-height:1.5}\n"
         ".topic-description,.topic-summary{font-size:12px;color:#c9d1d9;line-height:1.65}\n"
         ".topic-summary{margin-top:2px}\n"
+        ".article-attribution{font-size:10px;color:#768496;line-height:1.6;margin-top:5px}\n"
+        ".article-attribution a{color:#8b949e;text-decoration:underline}.article-attribution a:hover{color:#79c0ff}\n"
         ".site-footer{max-width:680px;margin:20px auto 0;padding:0 12px}\n"
         ".analytics-notice{font-size:11px;color:#768496;line-height:1.6}\n"
         "@media(max-width:600px){header{padding:12px}.topic-list{padding:0 10px}.topic-item{padding:12px 14px}}"
@@ -260,12 +272,12 @@ def _page_shell(*, title: str, description: str, canonical_url: str, body: str) 
 def build_topic_index_html(published_topics: Sequence[PublishedTopic]) -> str:
     items = []
     for topic in published_topics:
-        d = topic.definition
+        definition = topic.definition
         items.append(
             f"""<li class="topic-item">
-      <h2><a class="topic-link" href="/topics/{_esc(d.slug)}/">{_esc(d.label)}</a></h2>
+      <h2><a class="topic-link" href="/topics/{_esc(definition.slug)}/">{_esc(definition.label)}</a></h2>
       <div class="topic-meta">{topic.article_count}件 ・ {_esc(str(topic.date_count))}日 ・ 最新 {_esc(_format_date_ja(topic.latest_date))}</div>
-      <p class="topic-description">{_esc(d.description)}</p>
+      <p class="topic-description">{_esc(definition.description)}</p>
     </li>"""
         )
     list_body = "\n    ".join(items) if items else (
@@ -288,7 +300,7 @@ def build_topic_index_html(published_topics: Sequence[PublishedTopic]) -> str:
 
 
 def build_topic_html(topic: PublishedTopic) -> str:
-    d = topic.definition
+    definition = topic.definition
     items = []
     for article in topic.articles:
         assessment_parts = []
@@ -303,26 +315,36 @@ def build_topic_html(topic: PublishedTopic) -> str:
         summary_html = (
             f'<p class="topic-summary">{_esc(article.summary)}</p>' if article.summary else ""
         )
+        source_link_html = ""
+        if article.original_url:
+            source_link_html = (
+                '<div class="topic-actions">'
+                f'<a class="topic-source-link" href="{_esc(article.original_url)}" '
+                'target="_blank" rel="noopener noreferrer">元記事を読む</a>'
+                '</div>'
+            )
         items.append(
             f"""<li class="topic-item">
       <h2><a class="topic-link" href="{_esc(article.archive_href)}">{_esc(article.title)}</a></h2>
       <div class="topic-meta">{meta}</div>
       {summary_html}
+      {article.attribution_html}
+      {source_link_html}
     </li>"""
         )
     items_body = "\n    ".join(items)
     body = f"""  <header>
-    <h1>{_esc(d.label)}</h1>
-    <div class="sub">{_esc(d.description)} {topic.article_count}件を掲載。</div>
+    <h1>{_esc(definition.label)}</h1>
+    <div class="sub">{_esc(definition.description)} {topic.article_count}件を掲載。</div>
     <nav class="topic-nav"><a class="topic-link" href="/topics/">テーマ一覧</a><a class="topic-link" href="/">最新のダイジェスト</a></nav>
   </header>
   <ul class="topic-list">
     {items_body}
   </ul>"""
     return _page_shell(
-        title=f"{d.label} | Monomi Digest",
-        description=f"Monomi Digestで公開した{d.label}に関するサイバーセキュリティ情報をまとめています。",
-        canonical_url=fetch.public_url(f"topics/{d.slug}/"),
+        title=f"{definition.label} | Monomi Digest",
+        description=f"Monomi Digestで公開した{definition.label}に関するサイバーセキュリティ情報をまとめています。",
+        canonical_url=fetch.public_url(f"topics/{definition.slug}/"),
         body=body,
     )
 
@@ -339,10 +361,12 @@ def write_topic_pages(docs_dir: Path, published_topics: Sequence[PublishedTopic]
 
     published_slugs = {topic.definition.slug for topic in published_topics}
     for topic in published_topics:
-        _write_text(topics_dir / topic.definition.slug / "index.html", build_topic_html(topic))
+        _write_text(
+            topics_dir / topic.definition.slug / "index.html",
+            build_topic_html(topic),
+        )
 
-    # Remove only files/directories owned by this registry. Unknown siblings under
-    # docs/topics are never swept, so a future manually managed asset is not deleted.
+    # Delete only directories owned by the explicit registry. Unknown siblings remain.
     for definition in TOPIC_DEFINITIONS:
         if definition.slug in published_slugs:
             continue
@@ -373,7 +397,10 @@ def inject_top_navigation_link(index_path: Path) -> None:
     fetch.atomic_write_text(index_path, text.replace(marker, replacement, 1))
 
 
-def generate_topic_outputs(data_dir: Path | None = None, docs_dir: Path | None = None) -> tuple[PublishedTopic, ...]:
+def generate_topic_outputs(
+    data_dir: Path | None = None,
+    docs_dir: Path | None = None,
+) -> tuple[PublishedTopic, ...]:
     data_dir = Path(data_dir) if data_dir is not None else Path(daily_json.DATA_DIR)
     docs_dir = Path(docs_dir) if docs_dir is not None else Path(fetch.DOCS_DIR)
     collected = collect_topic_articles(data_dir, docs_dir)
@@ -384,13 +411,16 @@ def generate_topic_outputs(data_dir: Path | None = None, docs_dir: Path | None =
 
 
 def main(argv: Sequence[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description="Generate Monomi Digest topic pages from published daily digests")
-    parser.add_argument("--data-dir", type=Path, default=None)
-    parser.add_argument("--docs-dir", type=Path, default=None)
-    args = parser.parse_args(argv)
-    published = generate_topic_outputs(data_dir=args.data_dir, docs_dir=args.docs_dir)
-    summary = ", ".join(f"{topic.definition.slug}:{topic.article_count}" for topic in published) or "none"
-    print(f"topic pages: {summary}")
+    parser = argparse.ArgumentParser(
+        description="Generate Monomi Digest topic pages from published daily digests"
+    )
+    parser.parse_args(argv)
+    published = generate_topic_outputs()
+    for topic in published:
+        print(
+            f"topic {topic.definition.slug}: {topic.article_count} articles / "
+            f"{topic.date_count} dates"
+        )
     return 0
 
 
