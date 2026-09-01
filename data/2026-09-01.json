@@ -1,0 +1,830 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-09-01",
+  "generated_at": "2026-09-01T10:23:07.297666+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 15,
+    "ai_attempted_count": 15,
+    "ai_success_count": 15,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 15
+  },
+  "counts": {
+    "importance": {
+      "高": 1,
+      "中": 12,
+      "低": 2,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 12,
+      "参考": 3,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 3,
+      "攻撃・脅威動向": 5,
+      "インシデント": 3,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 3,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象15件｜重要度「高」1件｜本日確認0件｜今週確認12件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が12件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が1件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "「Fire Ant」と追跡される中国関連のサイバースパイアクターが、VMwareハイパーバイザーに加え、Cisco IOS XRルーター、TACACSサーバー、Linux管理ホストを侵害し、認証情報の窃取とセキュリティログの無効化を行っていたことが判明しました。"
+    ],
+    "discussion_points": [
+      "「Fire Ant」と追跡される中国関連のサイバースパイアクターが、VMwareハイパーバイザーに加え、Cisco IOS XRルーター、TACACSサーバー、Linux管理ホストを侵害し、認証情報の窃取とセキュリティログの無効化を行っていたことが判明しました。\n金融機関でCisco IOS XRルーター、TACACSサーバー、Linux管理ホストを利用している場合、攻撃対象となる可能性があります。特に認証・アクセス管理に関わるシステムへの影響は重大です。",
+      "北朝鮮に関連する脅威アクターが、IT分野に留まらず、営業・マーケティングや医療分野の職種にも求職詐欺を拡大していることが確認されました。これは「ITワーカー詐欺スキーム」の一部として継続的に行われている内部脅威です。\n金融機関への直接的な影響は記事からは確認できません。しかし、金融機関が採用活動を行う際や、委託先企業が採用する際に、同様の詐欺に遭遇するリスクがあるため、注意が必要です。"
+    ],
+    "check_items": [
+      "Cisco IOS XRルーター、TACACSサーバー、Linux管理ホストの利用有無と設定状況を確認する",
+      "採用プロセスにおいて、候補者の身元確認や経歴調査を強化し、不審な点がないか確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:cbe1eb1a526e86a5240c409457902f23be9623739a5b33432e685bf118669fe4",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/north-korean-job-fraud-expands-beyond.html",
+      "canonical_url": "https://thehackernews.com/2026/08/north-korean-job-fraud-expands-beyond.html",
+      "published_at": "2026-09-01T02:24:28+09:00",
+      "fetched_at": "2026-09-01T10:18:49.372829+09:00",
+      "title": "North Korean Job Fraud Expands Beyond IT Into Healthcare and Sales",
+      "raw_title": "North Korean Job Fraud Expands Beyond IT Into Healthcare and Sales",
+      "raw_excerpt": null,
+      "content_hash": "sha256:46c80c3a63f0b8abfe2d4c780c67a9ee344a7de39a059b6fd32fcde956995e54",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-01T10:18:51.645479+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "北朝鮮に関連する脅威アクターによる求職詐欺の動向が主題であるため。",
+        "tags": [
+          "APT",
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "北朝鮮に関連する脅威アクターが、IT分野に留まらず、営業・マーケティングや医療分野の職種にも求職詐欺を拡大していることが確認されました。これは「ITワーカー詐欺スキーム」の一部として継続的に行われている内部脅威です。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。しかし、金融機関が採用活動を行う際や、委託先企業が採用する際に、同様の詐欺に遭遇するリスクがあるため、注意が必要です。",
+        "recommended_actions": [
+          "採用プロセスにおいて、候補者の身元確認や経歴調査を強化し、不審な点がないか確認する",
+          "委託先企業に対し、同様の求職詐欺に対する注意喚起と対策状況の確認を促す"
+        ],
+        "reason": "重要度は、金融機関への直接的な影響は限定的だが、採用活動における潜在的なリスクがあるため「中」です。確認目安は、具体的な期限や緊急対応の必要性が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:88634f7e2b02400e7351f0dba1f56fe4099eec0e506f50143f61b4e261586c87",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/nightmare-eclipse-drops-hardbreacher-kaspersky-product-exploit/",
+      "canonical_url": "https://www.securityweek.com/nightmare-eclipse-drops-hardbreacher-kaspersky-product-exploit/",
+      "published_at": "2026-08-31T23:32:34+09:00",
+      "fetched_at": "2026-09-01T10:18:49.372829+09:00",
+      "title": "Nightmare Eclipse Drops ‘HardBreacher’ Kaspersky Product Exploit",
+      "raw_title": "Nightmare Eclipse Drops ‘HardBreacher’ Kaspersky Product Exploit",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d03f06fa48ac9a1c60028f6d1ec6ed998c58b18a98fd7a5624973bcd5b0df2fc",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-01T10:19:08.593208+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Kaspersky製品の脆弱性とそれに対するパッチが主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "「Nightmare Eclipse」がKaspersky Endpoint Security製品に影響する脆弱性「HardBreacher」の悪用コードを公開しました。KasperskyはSecurityWeekに対し、この脆弱性には既にパッチを適用済みであると述べています。",
+        "financial_impact": "金融機関でKaspersky Endpoint Security製品を利用している場合に限り、適用性確認の対象になります。記事からは利用有無を確認できません。",
+        "recommended_actions": [
+          "Kaspersky Endpoint Security製品の利用有無と、影響を受ける可能性のあるバージョンを確認する",
+          "Kasperskyからの一次情報を確認し、パッチ適用状況および緩和策の要否を評価する"
+        ],
+        "reason": "重要度は、Kaspersky製品の利用状況によって適用範囲が限定されるため「中」です。確認目安は、ベンダーが既にパッチ適用済みと表明しており、緊急対応の根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b3285ed45f9b487921578ec021c64b2a4421ca97a50c32f246d623ae696b420b",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/servicenow-patches-3-critical-code-injection-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/servicenow-patches-3-critical-code-injection-vulnerabilities/",
+      "published_at": "2026-08-31T22:59:19+09:00",
+      "fetched_at": "2026-09-01T10:18:49.372829+09:00",
+      "title": "ServiceNow Patches 3 Critical Code Injection Vulnerabilities",
+      "raw_title": "ServiceNow Patches 3 Critical Code Injection Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:494a1ffb0b1657f4ed750a425399a53d935d16a4fb0ddcfecfe30190279a0672",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-01T10:19:25.546792+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "ServiceNow製品の重大な脆弱性修正が主題であるため。",
+        "tags": [
+          "パッチ",
+          "SaaS"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ServiceNowは、攻撃者が任意のコードを実行し、データへのアクセスや改ざんが可能となる3件の重大なコードインジェクション脆弱性を修正しました。",
+        "financial_impact": "金融機関でServiceNow製品を利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "ServiceNow製品の利用有無と影響バージョンを確認する",
+          "ServiceNowからのパッチ適用状況や緩和策について確認する"
+        ],
+        "reason": "重要度は、ServiceNow製品の利用状況によって影響が異なるため「中」です。確認目安は、パッチが既に提供されており、直ちに悪用が進行中であるとの記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:46defbbddb217e9ff0017193e38e5dbf81c818620a32aa53f448cde65931cf2a",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/weekly-recap-chinese-spy-proxy-ai.html",
+      "canonical_url": "https://thehackernews.com/2026/08/weekly-recap-chinese-spy-proxy-ai.html",
+      "published_at": "2026-08-31T22:50:00+09:00",
+      "fetched_at": "2026-09-01T10:18:49.372829+09:00",
+      "title": "⚡ Weekly Recap: Chinese Spy Proxy, AI Agents Go Off-Task, Router Backdoors and More",
+      "raw_title": "⚡ Weekly Recap: Chinese Spy Proxy, AI Agents Go Off-Task, Router Backdoors and More",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bdfe510a6291c790b046887c8b3123d4cfa379d91735d21d2d6ebcde00a90f98",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-01T10:19:42.478291+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の異なる脅威動向やインシデントをまとめた週次記事であり、特定の主題に絞られないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、中国のスパイプロキシ、AIエージェントのタスク逸脱、ルーターのバックドア、古い脆弱性を利用した新たな攻撃チェーンなど、様々なサイバーセキュリティの脅威動向をまとめた週次リキャップです。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。個々の事象は金融機関に関係する可能性がありますが、本記事はそれらを網羅的にまとめたものであり、具体的なアクションを促すものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や分析を伴わない週次まとめ記事であり、個々の深刻度を合算して過大評価しないため「低」です。確認目安は、具体的な短期アクションを促す情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:731f873f3ee10106569a6091d91254f1e317772d9dc19e4ece078aa98e7748a8",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/mckesson-confirms-data-breach-as-attacker-deadline-looms/",
+      "canonical_url": "https://www.securityweek.com/mckesson-confirms-data-breach-as-attacker-deadline-looms/",
+      "published_at": "2026-08-31T22:14:46+09:00",
+      "fetched_at": "2026-09-01T10:18:49.372829+09:00",
+      "title": "McKesson Confirms Data Breach as Attacker Deadline Looms",
+      "raw_title": "McKesson Confirms Data Breach as Attacker Deadline Looms",
+      "raw_excerpt": null,
+      "content_hash": "sha256:054eaf7f99c02c03b823d1616f88f8580a7dbb17a66cc8e84820d6990380d13b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-01T10:19:59.638930+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "McKesson社がデータ侵害を認め、攻撃者によるデータ窃取が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ShinyHunters恐喝グループが、McKesson社のシステムから2億8400万件の記録を窃取したと主張しており、McKesson社はこのデータ侵害を認めました。",
+        "financial_impact": "McKesson社は医療関連企業であり、金融機関への直接的な影響は限定的です。ただし、McKesson社を委託先として利用している金融機関がある場合は、情報漏えいの影響を確認する必要があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、医療関連企業におけるデータ侵害であり、金融機関への直接的な影響が限定的であるため「中」です。確認目安は、データ侵害の事実確認は必要ですが、金融機関に直接的な緊急対応を求める情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b9d88dd12ef59b74aebeb19f023869083496402a72c15c6076739d3a3fc6f2b8",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/what-the-hugging-face-incident-teaches-security-leaders-about-ai-agent-access/",
+      "canonical_url": "https://www.securityweek.com/what-the-hugging-face-incident-teaches-security-leaders-about-ai-agent-access/",
+      "published_at": "2026-08-31T21:15:00+09:00",
+      "fetched_at": "2026-09-01T10:18:49.372829+09:00",
+      "title": "What the Hugging Face Incident Teaches Security Leaders About AI Agent Access",
+      "raw_title": "What the Hugging Face Incident Teaches Security Leaders About AI Agent Access",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5745a41a71a27b97d0863915f4b152a40fe352e471f1a66798f732a4aab36230",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-01T10:20:16.767769+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIエージェントのアクセス管理とセキュリティリスクであるため。",
+        "tags": [
+          "AI",
+          "AIエージェント",
+          "IAM"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Hugging Faceのインシデントは、AIエージェントを特権IDとして扱う必要性を示唆しており、セキュリティリーダーはAIエージェントのアクセス管理について学ぶべき教訓があると報じられています。",
+        "financial_impact": "金融機関がAIエージェントを導入・利用している場合、そのアクセス管理や特権IDとしての扱いの適切性を評価する上で関係します。",
+        "recommended_actions": [
+          "自社でAIエージェントを利用している場合、そのアクセス管理が適切に行われているか確認する",
+          "AIエージェントを特権IDとして扱い、セキュリティポリシーや制御が適用されているか評価する"
+        ],
+        "reason": "重要度は、AIエージェントの利用状況により適用性が異なるため「中」です。確認目安は、具体的な侵害や期限の記述がなく、中長期的な対策検討が中心となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:50276d2dc3e7e3b98ac7d21f1021034c8c5bbc50379be3db6aa8274531d626e2",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/valleyrat-backdoor-hides-in-signed.html",
+      "canonical_url": "https://thehackernews.com/2026/08/valleyrat-backdoor-hides-in-signed.html",
+      "published_at": "2026-08-31T21:14:00+09:00",
+      "fetched_at": "2026-09-01T10:18:49.372829+09:00",
+      "title": "ValleyRAT Backdoor Hides in Signed Adware That Users Add to Antivirus Exclusions",
+      "raw_title": "ValleyRAT Backdoor Hides in Signed Adware That Users Add to Antivirus Exclusions",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f0eddf4888b1d39aa0d50234bf8f5e4ccf982bc3962678a7e23819c6b27cb76d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-01T10:20:34.262688+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "脅威アクターによる特定の攻撃手法とマルウェアの配布に関する記事であるため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Silver Foxとして知られる脅威アクターが、署名付き中国製アドウェアアプリケーションに偽装したValleyRATバックドアを配布していることが確認されました。ユーザーがこのアドウェアをアンチウイルス除外設定に追加することで、マルウェアが信頼されたプロセスとして実行され、検出を回避します。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。一般的な脅威動向として、従業員が業務端末にアドウェアをインストールし、アンチウイルス除外設定を行うことで、同様のマルウェア感染リスクが生じる可能性があります。",
+        "recommended_actions": [
+          "従業員に対し、業務端末への不要なソフトウェアインストールやアンチウイルス除外設定の追加に関する注意喚起を行う",
+          "エンドポイントセキュリティ製品のログを監視し、ValleyRATバックドアの活動を示すIOCがないか確認する"
+        ],
+        "reason": "重要度は、特定の脅威アクターによる攻撃手法の報告であり、金融機関への直接的な関連性や広範な影響が不明確なため「中」です。確認目安は、新たな脆弱性や緊急のパッチ情報ではなく、一般的な脅威動向の把握が目的のため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0f9eda81256fa1749c2eceaa52abe4d3f3e32dac714ade6cf494858cfd9528dc",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/anthropic-warns-claude-users-of-infostealer-malware-infections/",
+      "canonical_url": "https://www.securityweek.com/anthropic-warns-claude-users-of-infostealer-malware-infections/",
+      "published_at": "2026-08-31T21:11:58+09:00",
+      "fetched_at": "2026-09-01T10:18:49.372829+09:00",
+      "title": "Anthropic Warns Claude Users of Infostealer Malware Infections",
+      "raw_title": "Anthropic Warns Claude Users of Infostealer Malware Infections",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2c463eadd9e0464847223c39dc136e0e1ba6ea0c4b35e82320a0ac0b99989dbe",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-01T10:20:51.483770+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIサービスであるClaudeのユーザーが情報窃取マルウェアに感染した事例が主題であるため。",
+        "tags": [
+          "AI",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "AI企業Anthropicは、同社のAIチャットボット「Claude」のユーザーが情報窃取マルウェアに感染している可能性があると警告しました。同社は不正なClaude利用を防ぐため、顧客アカウントからのログアウトや支払いデータの削除といった措置を講じています。",
+        "financial_impact": "金融機関がAnthropicのClaudeを業務で利用している場合、従業員が情報窃取マルウェアに感染していないか確認する必要があるため関係します。",
+        "recommended_actions": [
+          "Anthropic Claudeを業務で利用している場合、従業員の端末が情報窃取マルウェアに感染していないか確認する",
+          "Anthropicからの公式なガイダンスや推奨される対応策を確認する"
+        ],
+        "reason": "重要度は、AIサービスのユーザーが情報窃取マルウェアに感染した事例であり、金融機関での利用状況により影響が異なるため「中」です。確認目安は、具体的な期限や進行中の大規模な攻撃の記述がなく、利用有無の確認から着手するため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:45779382730661a1a4b8ae8f3ec686b1454747873fa184445755d5bccbcc2ce8",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/aurora-ransomware-operators-use-cursor.html",
+      "canonical_url": "https://thehackernews.com/2026/08/aurora-ransomware-operators-use-cursor.html",
+      "published_at": "2026-08-31T20:47:24+09:00",
+      "fetched_at": "2026-09-01T10:18:49.372829+09:00",
+      "title": "Aurora Ransomware Operators Use Cursor AI in Attacks Against 10 Targets",
+      "raw_title": "Aurora Ransomware Operators Use Cursor AI in Attacks Against 10 Targets",
+      "raw_excerpt": null,
+      "content_hash": "sha256:eacd6f199a68905ee0c9201e73042ad41829bb10ee6ae75c574d5711d0c52e8f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-01T10:21:08.769422+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Auroraランサムウェア攻撃者がAIツールを攻撃に利用した事例が主題であるため。",
+        "tags": [
+          "ランサムウェア",
+          "AI",
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Auroraランサムウェアの攻撃者が、SpaceXのAI搭載コーディングアシスタント「Cursor」を標的ネットワークへの侵入に利用していることが、CloudSEKとGambit Securityの分析により判明しました。この発見は、ロシア語圏のサイバー犯罪グループに関連する公開されたインフラストに基づいています。",
+        "financial_impact": "金融機関が直接的な標的とされているわけではありませんが、ランサムウェア攻撃は業種を問わず発生し、AIツールの悪用は新たな脅威動向として注意が必要です。",
+        "recommended_actions": [
+          "AIツールの利用状況を棚卸しし、セキュリティポリシーに沿った利用がされているか確認する",
+          "ランサムウェア攻撃に対する既存の防御策やインシデント対応計画を再評価する"
+        ],
+        "reason": "重要度は、ランサムウェア攻撃におけるAIツールの悪用という新たな脅威動向であり、金融機関も標的となり得るため「中」です。確認目安は、具体的な緊急対応の指示や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:dd23bc750fd6056632a2d845ee272bf146fa92ae8c3f7a0a9aedb2e369655731",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/securing-claude-code-new-compliance-api.html",
+      "canonical_url": "https://thehackernews.com/2026/08/securing-claude-code-new-compliance-api.html",
+      "published_at": "2026-08-31T20:31:47+09:00",
+      "fetched_at": "2026-09-01T10:18:49.372829+09:00",
+      "title": "Securing Claude Code: The New Compliance API, Local Visibility, and Identity Governance",
+      "raw_title": "Securing Claude Code: The New Compliance API, Local Visibility, and Identity Governance",
+      "raw_excerpt": null,
+      "content_hash": "sha256:56e10414bc7b793cd8e43168ed22abaccdc41a77821d36dae50e9c77948ae8bd",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-01T10:21:26.013877+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIエージェントのセキュリティとガバナンスに関する新しいAPIについてであるため。",
+        "tags": [
+          "AI",
+          "AIエージェント",
+          "ガイドライン"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Anthropicが、AIエージェント「Claude Code」の活動をセキュリティチームが監視するための新しいコンプライアンスAPIエンドポイントを公開しました。これにより、AIエージェントのローカルでのファイル読み取り、シェルコマンド実行、ツール呼び出しなどの活動の可視性が向上します。",
+        "financial_impact": "金融機関がAIエージェント「Claude Code」を開発環境などで利用している場合に、そのセキュリティ管理やガバナンス体制を強化するための参考情報となります。直接的なインシデントや脆弱性に関する情報ではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントのセキュリティガバナンスに関する情報であり、現時点での金融機関への直接的な影響は限定的であるため「中」です。確認目安は、具体的な脅威や緊急対応の必要性が示されておらず、中長期的な情報収集が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2f15f09494d679710ce2ce306a3724febad312bd968031c583924c9562cff2cc",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/critical-ruby-on-rails-vulnerability-in-attackers-crosshairs/",
+      "canonical_url": "https://www.securityweek.com/critical-ruby-on-rails-vulnerability-in-attackers-crosshairs/",
+      "published_at": "2026-08-31T20:24:17+09:00",
+      "fetched_at": "2026-09-01T10:18:49.372829+09:00",
+      "title": "Critical Ruby on Rails Vulnerability in Attackers’ Crosshairs",
+      "raw_title": "Critical Ruby on Rails Vulnerability in Attackers’ Crosshairs",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3e0ec0edb74041780a4e31dc26256b61c80b7faf7010c17a31bd2c9de26328eb",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-01T10:21:43.164813+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がRuby on Railsの脆弱性とその悪用に関するものであるため。",
+        "tags": [
+          "パッチ",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "KindaRails2Shellと名付けられたRuby on Railsの任意のファイル読み取りの脆弱性が攻撃者の標的となっており、攻撃者は機密情報を抽出したり、リモートで任意のコードを実行したりできる可能性があります。",
+        "financial_impact": "Ruby on Railsをウェブアプリケーション開発やシステム基盤として利用している金融機関において、本脆弱性の影響を受ける可能性があります。",
+        "recommended_actions": [
+          "Ruby on Railsの利用有無と影響を受けるバージョンを確認する",
+          "ベンダーの一次情報を確認し、パッチや緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、Ruby on Railsの利用状況が金融機関によって異なるため、適用範囲が限定的となる可能性があるため「中」です。確認目安は、実悪用が示唆されているものの、CISA KEVへの新規追加や緊急対応を促す明確な期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:007f427551095a5ca0838d60685e483bbbe2dc3fc8bd7b421316ca58bf5bec9a",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/boston-scientific-still-recovering-from-cyberattack/",
+      "canonical_url": "https://www.securityweek.com/boston-scientific-still-recovering-from-cyberattack/",
+      "published_at": "2026-08-31T19:50:57+09:00",
+      "fetched_at": "2026-09-01T10:18:49.372829+09:00",
+      "title": "Boston Scientific Still Recovering From Cyberattack",
+      "raw_title": "Boston Scientific Still Recovering From Cyberattack",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c196886ee7fc486c3679376b0421da6ee78591a103a9c68aaef9014181513ca9",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-01T10:22:01.186555+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "医療機器メーカーへのサイバー攻撃によるネットワーク障害と復旧状況が主題であるため。",
+        "tags": [
+          "インシデント",
+          "業務停止"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "医療機器メーカーのBoston Scientificがサイバー攻撃からの復旧を続けており、CrowdStrikeなどの外部専門家を招いて調査を進めています。この攻撃により、同社のグローバルネットワークに混乱が生じました。",
+        "financial_impact": "金融機関への直接的な影響は確認できません。他業界のインシデント事例として、サプライチェーンリスクや事業継続計画の参考情報となり得ます。",
+        "recommended_actions": [],
+        "reason": "重要度は、他業界のインシデント事例であり、金融機関への直接的な影響が確認できないため「中」です。確認目安は、具体的な脅威や期限に関する情報がなく、状況把握が中心となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:bc6b6cce4807f08705e42bcf770609f6201f69f8b586f1b7ca45674b8f8bba8b",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/extortion-group-claims-manchester-airports-group-data-breach/",
+      "canonical_url": "https://www.securityweek.com/extortion-group-claims-manchester-airports-group-data-breach/",
+      "published_at": "2026-08-31T19:29:10+09:00",
+      "fetched_at": "2026-09-01T10:18:49.372829+09:00",
+      "title": "Extortion Group Claims Manchester Airports Group Data Breach",
+      "raw_title": "Extortion Group Claims Manchester Airports Group Data Breach",
+      "raw_excerpt": null,
+      "content_hash": "sha256:20d8e01fc5868a574b03f37db17c112eff78fdc4f60cbbd721ec1de3a2d615d3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-01T10:22:17.823970+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "恐喝グループによるデータ侵害の主張が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "恐喝グループ「FulcrumSec」が、マンチェスター空港グループから80GB以上のデータを窃取したと主張し、オンラインでの公開を計画していると発表しました。",
+        "financial_impact": "金融機関への直接的な関係は確認できず、他業界のインシデント事例として参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が確認できない他業界のインシデント事例であるため「低」です。確認目安は、短期的な対応を要する情報や期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a645320d36fc7caf347dd76939d329238e28bc6a09eb396085eccaac1fd124c4",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/china-linked-fire-ant-hijacks-cisco.html",
+      "canonical_url": "https://thehackernews.com/2026/08/china-linked-fire-ant-hijacks-cisco.html",
+      "published_at": "2026-08-31T18:04:55+09:00",
+      "fetched_at": "2026-09-01T10:18:49.372829+09:00",
+      "title": "China-Linked Fire Ant Hijacks Cisco Routers to Steal Credentials and Blind Security Logs",
+      "raw_title": "China-Linked Fire Ant Hijacks Cisco Routers to Steal Credentials and Blind Security Logs",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e29e8601d32eb92b3608f724fd202c721456032bf7d72281be9d09d2808e8952",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-01T10:22:35.340779+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国関連の攻撃グループによる、特定の攻撃手法と標的が主題であるため。",
+        "tags": [
+          "APT",
+          "認証",
+          "IAM",
+          "インシデント"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "「Fire Ant」と追跡される中国関連のサイバースパイアクターが、VMwareハイパーバイザーに加え、Cisco IOS XRルーター、TACACSサーバー、Linux管理ホストを侵害し、認証情報の窃取とセキュリティログの無効化を行っていたことが判明しました。",
+        "financial_impact": "金融機関でCisco IOS XRルーター、TACACSサーバー、Linux管理ホストを利用している場合、攻撃対象となる可能性があります。特に認証・アクセス管理に関わるシステムへの影響は重大です。",
+        "recommended_actions": [
+          "Cisco IOS XRルーター、TACACSサーバー、Linux管理ホストの利用有無と設定状況を確認する",
+          "当該製品のセキュリティログが適切に機能しているか、不審な改ざんがないかを確認する",
+          "ベンダーのセキュリティアドバイザリや推奨事項を確認し、必要な対策を検討する"
+        ],
+        "reason": "重要度は、国家支援型攻撃グループによる認証情報窃取とログ無効化の攻撃であり、金融機関の基盤システムに影響する可能性があるため「高」です。確認目安は、進行中の攻撃に関する情報であり、自社環境への影響有無を速やかに確認する必要があるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0a5826ce9e99e3db29e45450c06a2f37494764d7895c859b6c4cc9a21cdd85dd",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/doj-corrects-china-hacking-claim-says.html",
+      "canonical_url": "https://thehackernews.com/2026/08/doj-corrects-china-hacking-claim-says.html",
+      "published_at": "2026-08-31T16:56:53+09:00",
+      "fetched_at": "2026-09-01T10:18:49.372829+09:00",
+      "title": "DoJ Corrects China Hacking Claim, Says U.S. Agencies Were Targets, Not Victims",
+      "raw_title": "DoJ Corrects China Hacking Claim, Says U.S. Agencies Were Targets, Not Victims",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0973a2deed11b0396a99bbe4b7beccad58390af1be639659cd8133e47e17832a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-01T10:22:52.297009+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国の脅威アクターによる米政府機関への攻撃主張に関する報道であり、攻撃・脅威動向が主題のため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "米司法省(DoJ)は、以前発表した中国の脅威アクターによる攻撃で複数の政府機関が「被害者」であったとするプレス声明を修正し、実際には「標的」であったと発表しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。米政府機関が標的となった事例として、脅威動向の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、米政府機関が標的となった事例であり、金融機関への直接的な影響は限定的であるため「中」です。確認目安は、新たな攻撃や緊急対応を要する情報ではなく、脅威動向の参考情報であるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
