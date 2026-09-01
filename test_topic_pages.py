@@ -58,7 +58,6 @@ class TopicPublicationThresholdTest(unittest.TestCase):
         four = [self._article("2026-08-01", i) for i in range(1, 5)]
         five_one_day = [self._article("2026-08-01", i) for i in range(1, 6)]
         five_two_days = five_one_day[:4] + [self._article("2026-08-02", 1)]
-
         self.assertEqual(tp.select_published_topics({slug: four}), ())
         self.assertEqual(tp.select_published_topics({slug: five_one_day}), ())
         published = tp.select_published_topics({slug: five_two_days})
@@ -75,22 +74,16 @@ class TopicCollectionTest(unittest.TestCase):
                 "title": "Incident first",
                 "source": "A",
                 "ai_analysis": {
-                    "category": "インシデント",
-                    "tags": ["情報漏えい"],
-                    "summary": "one",
-                    "importance": "高",
-                    "urgency": "本日確認",
+                    "category": "インシデント", "tags": ["情報漏えい"], "summary": "one",
+                    "importance": "高", "urgency": "本日確認",
                 },
             },
             {
                 "title": "Vulnerability second",
                 "source": "B",
                 "ai_analysis": {
-                    "category": "脆弱性・パッチ",
-                    "tags": ["CVE"],
-                    "summary": "two",
-                    "importance": "中",
-                    "urgency": "今週確認",
+                    "category": "脆弱性・パッチ", "tags": ["CVE"], "summary": "two",
+                    "importance": "中", "urgency": "今週確認",
                 },
             },
         ]
@@ -101,13 +94,10 @@ class TopicCollectionTest(unittest.TestCase):
             patch.object(tp.fetch, "sort_items_for_display", return_value=display_items),
         ):
             collected = tp.collect_topic_articles(Path("data"), Path("docs"))
-
-        incidents = collected["incidents"]
-        vulnerabilities = collected["vulnerabilities"]
-        self.assertEqual(incidents[0].article_index, 1)
-        self.assertEqual(incidents[0].archive_href, "/archive/2026-08-29.html#article-1")
-        self.assertEqual(vulnerabilities[0].article_index, 2)
-        self.assertEqual(vulnerabilities[0].archive_href, "/archive/2026-08-29.html#article-2")
+        self.assertEqual(collected["incidents"][0].article_index, 1)
+        self.assertEqual(collected["incidents"][0].archive_href, "/archive/2026-08-29.html#article-1")
+        self.assertEqual(collected["vulnerabilities"][0].article_index, 2)
+        self.assertEqual(collected["vulnerabilities"][0].archive_href, "/archive/2026-08-29.html#article-2")
 
     def test_missing_or_unclassified_analysis_is_not_forced_into_a_topic(self):
         self.assertIsNone(tp._article_from_display_item("2026-08-01", 1, {"title": "x"}))
@@ -121,7 +111,7 @@ class TopicCollectionTest(unittest.TestCase):
 
 class TopicHtmlTest(unittest.TestCase):
     def _published_topic(self):
-        d = tp.TOPIC_DEFINITIONS[0]
+        definition = tp.TOPIC_DEFINITIONS[0]
         articles = tuple(
             tp.TopicArticle(
                 digest_date="2026-08-29" if i < 4 else "2026-08-28",
@@ -136,26 +126,26 @@ class TopicHtmlTest(unittest.TestCase):
             )
             for i in range(5)
         )
-        return tp.PublishedTopic(d, articles)
+        return tp.PublishedTopic(definition, articles)
 
-    def test_index_and_topic_pages_have_unique_title_description_and_canonical(self):
-        topic = self._published_topic()
-        with (
+    def _render_patches(self):
+        return (
             patch.object(tp.fetch, "public_url", side_effect=lambda path: f"https://monomidigest.com/{path}"),
             patch.object(tp.fetch, "render_analytics_footer_html", return_value='<footer class="site-footer">analytics</footer>'),
             patch.object(tp.fetch, "render_cloudflare_web_analytics_html", return_value='<script src="https://static.cloudflareinsights.com/beacon.min.js"></script>'),
-        ):
+        )
+
+    def test_index_and_topic_pages_have_unique_title_description_and_canonical(self):
+        topic = self._published_topic()
+        p1, p2, p3 = self._render_patches()
+        with p1, p2, p3:
             index = tp.build_topic_index_html([topic])
             page = tp.build_topic_html(topic)
-
         self.assertIn("<title>テーマから探す | Monomi Digest</title>", index)
         self.assertIn('<link rel="canonical" href="https://monomidigest.com/topics/">', index)
-        self.assertIn("<meta name=\"description\"", index)
+        self.assertIn('<meta name="description"', index)
         self.assertIn("<title>脆弱性・パッチ | Monomi Digest</title>", page)
-        self.assertIn(
-            '<link rel="canonical" href="https://monomidigest.com/topics/vulnerabilities/">',
-            page,
-        )
+        self.assertIn('<link rel="canonical" href="https://monomidigest.com/topics/vulnerabilities/">', page)
         self.assertIn("site-footer", page)
         self.assertIn("static.cloudflareinsights.com", page)
 
@@ -175,6 +165,12 @@ class TopicHtmlTest(unittest.TestCase):
 
 
 class TopicOutputIntegrationTest(unittest.TestCase):
+    @staticmethod
+    def _write_text(path, text):
+        path = Path(path)
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text(text, encoding="utf-8")
+
     def test_top_navigation_injection_is_idempotent_and_scoped(self):
         base = (
             '<nav><div class="archive-nav-group archive-global-nav">'
@@ -184,11 +180,7 @@ class TopicOutputIntegrationTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "index.html"
             path.write_text(base, encoding="utf-8")
-            with patch.object(
-                tp.fetch,
-                "atomic_write_text",
-                side_effect=lambda p, text: Path(p).write_text(text, encoding="utf-8"),
-            ):
+            with patch.object(tp.fetch, "atomic_write_text", side_effect=self._write_text):
                 tp.inject_top_navigation_link(path)
                 first = path.read_text(encoding="utf-8")
                 tp.inject_top_navigation_link(path)
@@ -208,34 +200,26 @@ class TopicOutputIntegrationTest(unittest.TestCase):
         topic = TopicHtmlTest()._published_topic()
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            docs = root / "docs"
-            data = root / "data"
+            docs, data = root / "docs", root / "data"
             docs.mkdir()
             data.mkdir()
             (docs / "index.html").write_text(
                 '<div class="archive-nav-group archive-global-nav">'
                 '<a class="archive-link" href="archive/index.html">過去のダイジェスト</a>'
-                '</div>',
-                encoding="utf-8",
+                '</div>', encoding="utf-8",
             )
-            sitemap = "<?xml version=\"1.0\"?><urlset><url><loc>https://monomidigest.com/</loc></url></urlset>\n"
+            sitemap = '<?xml version="1.0"?><urlset><url><loc>https://monomidigest.com/</loc></url></urlset>\n'
             (docs / "sitemap.xml").write_text(sitemap, encoding="utf-8")
-
-            def write_text(path, text):
-                path = Path(path)
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_text(text, encoding="utf-8")
-
             with (
                 patch.object(tp, "collect_topic_articles", return_value={topic.definition.slug: list(topic.articles)}),
                 patch.object(tp, "select_published_topics", return_value=(topic,)),
-                patch.object(tp.fetch, "public_url", side_effect=lambda p: f"https://monomidigest.com/{p}"),
+                patch.object(tp.fetch, "public_url", side_effect=lambda path: f"https://monomidigest.com/{path}"),
                 patch.object(tp.fetch, "render_analytics_footer_html", return_value=""),
                 patch.object(tp.fetch, "render_cloudflare_web_analytics_html", return_value=""),
-                patch.object(tp.fetch, "atomic_write_text", side_effect=write_text),
+                patch.object(tp.fetch, "atomic_write_text", side_effect=self._write_text),
             ):
                 tp.generate_topic_outputs(data_dir=data, docs_dir=docs)
-        self.assertEqual((docs / "sitemap.xml").read_text(encoding="utf-8"), sitemap)
+            self.assertEqual((docs / "sitemap.xml").read_text(encoding="utf-8"), sitemap)
 
     def test_write_topic_pages_removes_only_stale_registered_topic_directory(self):
         topic = TopicHtmlTest()._published_topic()
@@ -247,17 +231,11 @@ class TopicOutputIntegrationTest(unittest.TestCase):
             unknown.mkdir(parents=True)
             (stale / "index.html").write_text("stale", encoding="utf-8")
             (unknown / "keep.txt").write_text("keep", encoding="utf-8")
-
-            def write_text(path, text):
-                path = Path(path)
-                path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_text(text, encoding="utf-8")
-
             with (
-                patch.object(tp.fetch, "public_url", side_effect=lambda p: f"https://monomidigest.com/{p}"),
+                patch.object(tp.fetch, "public_url", side_effect=lambda path: f"https://monomidigest.com/{path}"),
                 patch.object(tp.fetch, "render_analytics_footer_html", return_value=""),
                 patch.object(tp.fetch, "render_cloudflare_web_analytics_html", return_value=""),
-                patch.object(tp.fetch, "atomic_write_text", side_effect=write_text),
+                patch.object(tp.fetch, "atomic_write_text", side_effect=self._write_text),
             ):
                 tp.write_topic_pages(docs, [topic])
             self.assertFalse(stale.exists())
@@ -267,9 +245,7 @@ class TopicOutputIntegrationTest(unittest.TestCase):
 
 class TopicWorkflowContractTest(unittest.TestCase):
     def test_production_workflow_runs_topic_generator_after_fetch_and_before_commit(self):
-        workflow = (
-            Path(__file__).resolve().parent / ".github" / "workflows" / "fetch.yml"
-        ).read_text(encoding="utf-8")
+        workflow = (Path(__file__).resolve().parent / ".github" / "workflows" / "fetch.yml").read_text(encoding="utf-8")
         fetch_pos = workflow.index("python3 fetch.py")
         topic_pos = workflow.index("python3 topic_pages.py")
         commit_pos = workflow.index("- name: Commit and push")
