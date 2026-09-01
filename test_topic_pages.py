@@ -204,34 +204,38 @@ class TopicOutputIntegrationTest(unittest.TestCase):
             with self.assertRaises(RuntimeError):
                 tp.inject_top_navigation_link(path)
 
-    def test_sitemap_topic_block_is_idempotent_and_contains_only_published_topics(self):
+    def test_generate_topic_outputs_does_not_modify_existing_sitemap_contract(self):
         topic = TopicHtmlTest()._published_topic()
-        base = (
-            '<?xml version="1.0" encoding="UTF-8"?>\n'
-            '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-            '  <url>\n    <loc>https://monomidigest.com/</loc>\n  </url>\n'
-            '</urlset>\n'
-        )
         with tempfile.TemporaryDirectory() as tmp:
-            path = Path(tmp) / "sitemap.xml"
-            path.write_text(base, encoding="utf-8")
+            root = Path(tmp)
+            docs = root / "docs"
+            data = root / "data"
+            docs.mkdir()
+            data.mkdir()
+            (docs / "index.html").write_text(
+                '<div class="archive-nav-group archive-global-nav">'
+                '<a class="archive-link" href="archive/index.html">過去のダイジェスト</a>'
+                '</div>',
+                encoding="utf-8",
+            )
+            sitemap = "<?xml version=\"1.0\"?><urlset><url><loc>https://monomidigest.com/</loc></url></urlset>\n"
+            (docs / "sitemap.xml").write_text(sitemap, encoding="utf-8")
+
+            def write_text(path, text):
+                path = Path(path)
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(text, encoding="utf-8")
+
             with (
+                patch.object(tp, "collect_topic_articles", return_value={topic.definition.slug: list(topic.articles)}),
+                patch.object(tp, "select_published_topics", return_value=(topic,)),
                 patch.object(tp.fetch, "public_url", side_effect=lambda p: f"https://monomidigest.com/{p}"),
-                patch.object(
-                    tp.fetch,
-                    "atomic_write_text",
-                    side_effect=lambda p, text: Path(p).write_text(text, encoding="utf-8"),
-                ),
+                patch.object(tp.fetch, "render_analytics_footer_html", return_value=""),
+                patch.object(tp.fetch, "render_cloudflare_web_analytics_html", return_value=""),
+                patch.object(tp.fetch, "atomic_write_text", side_effect=write_text),
             ):
-                tp.update_sitemap(path, [topic])
-                first = path.read_text(encoding="utf-8")
-                tp.update_sitemap(path, [topic])
-                second = path.read_text(encoding="utf-8")
-        self.assertEqual(first, second)
-        self.assertEqual(first.count(tp.SITEMAP_BLOCK_START), 1)
-        self.assertIn("https://monomidigest.com/topics/", first)
-        self.assertIn("https://monomidigest.com/topics/vulnerabilities/", first)
-        self.assertNotIn("topics/threats/", first)
+                tp.generate_topic_outputs(data_dir=data, docs_dir=docs)
+        self.assertEqual((docs / "sitemap.xml").read_text(encoding="utf-8"), sitemap)
 
     def test_write_topic_pages_removes_only_stale_registered_topic_directory(self):
         topic = TopicHtmlTest()._published_topic()

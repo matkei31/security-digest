@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 """BL-051: Monomi Digest topic-page v0.1 generator.
 
-This module is intentionally separate from ``fetch.py``.  The daily collector remains the
+This module is intentionally separate from ``fetch.py``. The daily collector remains the
 source of truth for article analysis and ordering; after ``fetch.py`` has generated the normal
-site output, this module derives topic index pages from the already validated daily digests.
+site output, this module derives topic pages from the already validated daily digests.
 
 v0.1 does not add a new AI classification step and does not change the daily JSON schema.
 Existing ARTICLE ``category`` is treated as the primary classification and existing ``tags``
-are used as cross-cutting signals.  A topic is published only when it has at least five matching
+are used as cross-cutting signals. A topic is published only when it has at least five matching
 articles spanning at least two digest dates.
+
+The existing BL-009 Phase A-3 sitemap contract is deliberately left untouched in v0.1. Topic
+pages are crawl-discoverable through the top-page ``テーマから探す`` link. Extending the sitemap
+becomes a separate follow-up only if we deliberately supersede the existing generator contract;
+this keeps topic-page introduction from silently rewriting an already accepted crawl-file owner.
 """
 
 from __future__ import annotations
@@ -28,10 +33,7 @@ import fetch
 MIN_TOPIC_ARTICLES = 5
 MIN_TOPIC_DATES = 2
 TOPICS_DIRNAME = "topics"
-TOPIC_INDEX_LABEL = "テーマから探す"
 TOPIC_INDEX_PATH = "topics/"
-SITEMAP_BLOCK_START = "  <!-- BEGIN topic_pages.py -->"
-SITEMAP_BLOCK_END = "  <!-- END topic_pages.py -->"
 TOP_NAV_LINK_HTML = '<a class="archive-link" href="topics/">テーマから探す</a>'
 
 
@@ -339,7 +341,7 @@ def write_topic_pages(docs_dir: Path, published_topics: Sequence[PublishedTopic]
     for topic in published_topics:
         _write_text(topics_dir / topic.definition.slug / "index.html", build_topic_html(topic))
 
-    # Remove only files/directories owned by this registry.  Unknown siblings under
+    # Remove only files/directories owned by this registry. Unknown siblings under
     # docs/topics are never swept, so a future manually managed asset is not deleted.
     for definition in TOPIC_DEFINITIONS:
         if definition.slug in published_slugs:
@@ -371,32 +373,6 @@ def inject_top_navigation_link(index_path: Path) -> None:
     fetch.atomic_write_text(index_path, text.replace(marker, replacement, 1))
 
 
-def _topic_sitemap_block(published_topics: Sequence[PublishedTopic]) -> str:
-    urls = [fetch.public_url(TOPIC_INDEX_PATH)] + [
-        fetch.public_url(f"topics/{topic.definition.slug}/") for topic in published_topics
-    ]
-    url_lines = []
-    for url in urls:
-        url_lines.extend(("  <url>", f"    <loc>{_esc(url)}</loc>", "  </url>"))
-    return "\n".join((SITEMAP_BLOCK_START, *url_lines, SITEMAP_BLOCK_END))
-
-
-def update_sitemap(sitemap_path: Path, published_topics: Sequence[PublishedTopic]) -> None:
-    text = sitemap_path.read_text(encoding="utf-8")
-    if SITEMAP_BLOCK_START in text or SITEMAP_BLOCK_END in text:
-        if text.count(SITEMAP_BLOCK_START) != 1 or text.count(SITEMAP_BLOCK_END) != 1:
-            raise RuntimeError("topic sitemap block markers are incomplete or duplicated")
-        before, remainder = text.split(SITEMAP_BLOCK_START, 1)
-        _, after = remainder.split(SITEMAP_BLOCK_END, 1)
-        text = before.rstrip() + "\n" + after.lstrip("\n")
-    closing = "</urlset>"
-    if text.count(closing) != 1:
-        raise RuntimeError("sitemap urlset closing tag is missing or ambiguous")
-    block = _topic_sitemap_block(published_topics)
-    updated = text.replace(closing, f"{block}\n{closing}", 1)
-    fetch.atomic_write_text(sitemap_path, updated)
-
-
 def generate_topic_outputs(data_dir: Path | None = None, docs_dir: Path | None = None) -> tuple[PublishedTopic, ...]:
     data_dir = Path(data_dir) if data_dir is not None else Path(daily_json.DATA_DIR)
     docs_dir = Path(docs_dir) if docs_dir is not None else Path(fetch.DOCS_DIR)
@@ -404,7 +380,6 @@ def generate_topic_outputs(data_dir: Path | None = None, docs_dir: Path | None =
     published = select_published_topics(collected)
     write_topic_pages(docs_dir, published)
     inject_top_navigation_link(docs_dir / "index.html")
-    update_sitemap(docs_dir / "sitemap.xml", published)
     return published
 
 

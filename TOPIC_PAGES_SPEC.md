@@ -43,7 +43,7 @@ A registered topic is public only when both are true:
 - at least **5 matching articles** exist; and
 - the matches span at least **2 distinct digest dates**.
 
-The topic index itself is always generated. A registered topic that does not meet the gate is omitted from the index, sitemap topic block, and topic-detail output. If a previously public registered topic falls below the gate because historical data is deliberately removed, its generated directory is removed on the next topic generation.
+The topic index itself is always generated. A registered topic that does not meet the gate is omitted from the index and topic-detail output. If a previously public registered topic falls below the gate because historical data is deliberately removed, its generated directory is removed on the next topic generation.
 
 ## 5. URL and navigation contract
 
@@ -80,11 +80,12 @@ Each matching article shows:
 
 The page does not duplicate `financial_impact`, `recommended_actions`, NVD/KEV facts, or the full daily card. The daily Archive remains the canonical reading surface for the full analysis.
 
-## 7. Search metadata and measurement
+## 7. Search metadata, crawl discovery, and measurement
 
 - Every topic page has a deterministic unique `<title>` and meta description.
 - Every topic page has one absolute HTTPS apex canonical URL.
-- `/topics/` and currently published topic-detail canonical URLs are appended to the existing sitemap after the normal `fetch.py` sitemap generation.
+- v0.1 **does not modify `docs/sitemap.xml`**. The existing BL-009 Phase A-3 sitemap generator/contract remains unchanged; topic pages are discoverable from the public top page through `テーマから探す`.
+- Adding `/topics/` URLs to the sitemap is a follow-up only if the project deliberately supersedes the accepted Phase A-3 crawl-file contract. This avoids treating a post-generator rewrite as though `fetch.py` still fully owned the committed sitemap.
 - The same Cloudflare Web Analytics footer/beacon renderers already used by the existing public pages are reused. No new analytics provider, token, cookie flow, or third-party script is added.
 
 ## 8. Generation architecture
@@ -96,9 +97,8 @@ The post-generator:
 1. reads only validated published digest dates;
 2. derives topic matches from the existing display items;
 3. writes `docs/topics/...`;
-4. injects the single top-page topic link using a narrowly scoped exact marker;
-5. appends an idempotent bounded topic block to `docs/sitemap.xml`; and
-6. fails closed if the top-page marker or sitemap closing structure is missing/ambiguous.
+4. injects the single top-page topic link using a narrowly scoped exact marker; and
+5. leaves the Phase A-3 sitemap byte-for-byte untouched.
 
 This separation is intentional: no network request, Gemini call, source collection rule, or daily JSON schema change is needed for topic pages.
 
@@ -112,6 +112,7 @@ This separation is intentional: no network request, Gemini call, source collecti
 - `.github/workflows/fetch.yml`
 - `.github/workflows/pr-ci.yml`
 - project-state/documentation synchronization required by BL-051
+- narrowly scoped correction of a pre-existing test whose analytics-copy assertion accidentally scans article body/title content rather than the analytics notice itself
 
 ### Prohibited changes
 
@@ -121,6 +122,7 @@ This separation is intentional: no network request, Gemini call, source collecti
 - collection/relevance/promotion rules
 - Gemini/NVD/KEV network behavior
 - existing daily Archive article-card markup/interaction contract
+- BL-009 Phase A-3 sitemap ownership/URL-set contract in v0.1
 - production `workflow_dispatch`, repository settings, DNS, Pages settings, or manual production generation
 - Entity extraction, article-unit URLs, or automatic page creation for every tag
 
@@ -133,7 +135,8 @@ Implementation verification requires:
 - HTML escaping tests;
 - canonical/title/description tests;
 - analytics renderer reuse test;
-- top-navigation and sitemap idempotence/fail-closed tests;
+- top-navigation idempotence/fail-closed tests;
+- an explicit regression that topic generation leaves the existing sitemap unchanged;
 - stale registered-topic cleanup without sweeping unknown siblings;
 - workflow ordering test (`fetch.py` → `topic_pages.py` → commit);
 - full existing unittest suite; and
