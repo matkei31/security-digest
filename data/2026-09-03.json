@@ -1,0 +1,883 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-09-03",
+  "generated_at": "2026-09-03T09:21:47.253051+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 16,
+    "ai_attempted_count": 16,
+    "ai_success_count": 16,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 16
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 14,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 1,
+      "今週確認": 9,
+      "参考": 6,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 4,
+      "攻撃・脅威動向": 4,
+      "インシデント": 1,
+      "規制・ガバナンス": 1,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 6,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象16件｜重要度「高」2件｜本日確認1件｜今週確認9件\nBrief対象の記事のうち、本日中に適用性または初動要否を確認する記事が1件あります。",
+    "important_highlights": [
+      "SonicWallは、Secure Mobile Access (SMA) 1000シリーズVPNアプライアンスに影響を与える2つのゼロデイ脆弱性(CVE-2026-83548など)に対処するセキュリティアップデートをリリースしました。これらの脆弱性は既に攻撃で悪用されています。",
+      "英国はサイバーセキュリティ・レジリエンス法案の修正案により、重要インフラにおける高リスク技術プロバイダーを制限する新たな権限を大臣に付与する動きを見せています。これはサプライチェーン攻撃の激化に対応するものです。"
+    ],
+    "discussion_points": [
+      "SonicWallは、Secure Mobile Access (SMA) 1000シリーズVPNアプライアンスに影響を与える2つのゼロデイ脆弱性(CVE-2026-83548など)に対処するセキュリティアップデートをリリースしました。これらの脆弱性は既に攻撃で悪用されています。\n金融機関でSonicWall SMA 1000シリーズVPNアプライアンスを利用している場合、外部からのアクセス経路として悪用される可能性があるため、早急な確認が必要です。",
+      "現在進行中のマルウェアキャンペーンが、偽のソフトウェアダウンロードサイトを利用して正規ベンダーを装い、悪意のあるインストーラーを配布しています。このキャンペーンは、人気ソフトウェアをダウンロードしようとするユーザーを標的とし、主に多国籍企業の中国拠点や中国語話者を中心に、複数の組織や業界で侵害を引き起こしています。\n金融機関の従業員が業務端末で正規ソフトウェアをダウンロードする際に、誤って悪意のあるインストーラーを実行した場合に影響を受ける可能性があります。特に中国に拠点を置く金融機関は、標的となるリスクが高いと考えられます。"
+    ],
+    "check_items": [
+      "SonicWall SMA 1000シリーズVPNアプライアンスの利用有無と影響バージョンを確認する",
+      "従業員に対し、ソフトウェアのダウンロード元が正規ベンダーの公式サイトであることを確認するよう注意喚起する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:c660b2e46ae1f109ea20f23c48c45817ea8ae66dfdaad2cb029cca530f686fb3",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/openleash-adds-a-human-check-to-risky-ai-agent-actions/",
+      "canonical_url": "https://www.securityweek.com/openleash-adds-a-human-check-to-risky-ai-agent-actions/",
+      "published_at": "2026-09-03T04:30:00+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "OpenLeash Adds a Human Check to Risky AI Agent Actions",
+      "raw_title": "OpenLeash Adds a Human Check to Risky AI Agent Actions",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f2e1f9dc25c1bbadd9b1b583815ca319e0493867d702fc96ff36a00b617412f1",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:17:14.765545+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントのセキュリティツールに関する記事であり、AI・新技術リスクが主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "セキュリティツール「OpenLeash」は、AIエージェントが実行する可能性のある危険なアクションを傍受し、明確な脅威をブロックするとともに、意図が不明確な場合には人間による承認を要求します。",
+        "financial_impact": "金融機関がAIエージェントを業務に導入する際に、セキュリティ対策として検討する可能性のあるツールに関する情報です。直接的な影響は現時点では限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントのセキュリティに関する新しいツールの紹介であり、現時点での金融機関への直接的な影響が不確実なため「中」です。確認目安は、具体的な脅威や期限に関する記述がなく、中長期的な情報収集が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9885e3b9c4a2864eae0b8b69b387455d0db56558d7c730c4007961a5c24171b7",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/google-anthropic-and-openai-unveil.html",
+      "canonical_url": "https://thehackernews.com/2026/09/google-anthropic-and-openai-unveil.html",
+      "published_at": "2026-09-03T03:27:49+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "Google, Anthropic, and OpenAI Unveil Cyber AI Models, Safeguards, and Access Programs",
+      "raw_title": "Google, Anthropic, and OpenAI Unveil Cyber AI Models, Safeguards, and Access Programs",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d9a27d14ffbf9b0affdc327963b4bb12130cb83ff161feefc9b057b4403cc461",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:17:31.745143+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "Google、Anthropic、OpenAIがサイバーセキュリティ分野でのAIモデルと関連プログラムを発表しており、AI・新技術リスクが主題であるため。",
+        "tags": [
+          "AI",
+          "LLM"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Googleは、最も高性能なサイバーセキュリティモデル「Gemini 3.8 Flash Cyber」を発表し、Fairwindプログラムを通じて政府機関や医療機関などの高優先度防衛者に早期アクセスを提供します。AnthropicとOpenAIも同様に、サイバーセキュリティに特化したAIモデルと保護策を発表しました。",
+        "financial_impact": "金融機関がこれらのAIモデルをサイバーセキュリティ対策に導入する場合、その利用方法やリスク評価が関係します。現時点では具体的な影響は確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIモデルの発表であり、金融機関での具体的な利用や影響が不明確なため「中」です。確認目安は、新技術の動向に関する情報であり、短期的な対応を要する具体的な脅威や期限がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:64ac102057daee2e8ab43e28e0bce328f9d3deb30428b0379e4bdc0169015af2",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/fake-software-installers-disable.html",
+      "canonical_url": "https://thehackernews.com/2026/09/fake-software-installers-disable.html",
+      "published_at": "2026-09-03T01:41:06+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "Fake Software Installers Disable Windows Update and Weaken Microsoft Defender",
+      "raw_title": "Fake Software Installers Disable Windows Update and Weaken Microsoft Defender",
+      "raw_excerpt": null,
+      "content_hash": "sha256:01877de00958726b9bd16a9aff21a049bd071bcd1169ee9f57944819e8dea4fb",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:17:49.228847+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "偽のソフトウェアインストーラーを用いたマルウェアキャンペーンと攻撃手法が主題であるため。",
+        "tags": [
+          "フィッシング",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "現在進行中のマルウェアキャンペーンが、偽のソフトウェアダウンロードサイトを利用して正規ベンダーを装い、悪意のあるインストーラーを配布しています。このキャンペーンは、人気ソフトウェアをダウンロードしようとするユーザーを標的とし、主に多国籍企業の中国拠点や中国語話者を中心に、複数の組織や業界で侵害を引き起こしています。",
+        "financial_impact": "金融機関の従業員が業務端末で正規ソフトウェアをダウンロードする際に、誤って悪意のあるインストーラーを実行した場合に影響を受ける可能性があります。特に中国に拠点を置く金融機関は、標的となるリスクが高いと考えられます。",
+        "recommended_actions": [
+          "従業員に対し、ソフトウェアのダウンロード元が正規ベンダーの公式サイトであることを確認するよう注意喚起する",
+          "エンドポイントセキュリティ製品のログを監視し、不審なソフトウェアのインストールやWindows Updateの無効化、Microsoft Defenderの設定変更がないか確認する"
+        ],
+        "reason": "重要度は、特定の地域とユーザーを主な標的とするマルウェアキャンペーンであり、金融機関への直接的な影響は利用状況に依存するため「中」です。確認目安は、進行中の攻撃ではあるものの、即時対応を要する具体的な期限や脆弱性情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d74130c360e38e09d6e0e32224ea087bef6f0ae3ef277249f1a201c5bd0afb73",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/uk-moves-to-block-high-risk-tech-suppliers-from-critical-infrastructure/",
+      "canonical_url": "https://www.securityweek.com/uk-moves-to-block-high-risk-tech-suppliers-from-critical-infrastructure/",
+      "published_at": "2026-09-03T00:45:08+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "UK Moves to Block High-Risk Tech Suppliers From Critical Infrastructure",
+      "raw_title": "UK Moves to Block High-Risk Tech Suppliers From Critical Infrastructure",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5257f89a6b2e9ae005495e2f1e753c978a2cf33f6e58e107da752c9526b2397d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:18:06.323505+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "英国の法改正が主題であり、規制・ガバナンスに関する情報であるため。",
+        "tags": [
+          "規制",
+          "サプライチェーン"
+        ],
+        "importance": "高",
+        "urgency": "参考",
+        "summary": "英国はサイバーセキュリティ・レジリエンス法案の修正案により、重要インフラにおける高リスク技術プロバイダーを制限する新たな権限を大臣に付与する動きを見せています。これはサプライチェーン攻撃の激化に対応するものです。",
+        "financial_impact": "英国に拠点を置く、または英国の重要インフラにサービスを提供する金融機関は、本法案の動向を注視し、サプライチェーンリスク管理体制への影響を評価する必要があります。",
+        "recommended_actions": [
+          "英国のサイバーセキュリティ・レジリエンス法案の最終的な内容と適用範囲を確認する",
+          "英国の重要インフラに該当する場合、サプライチェーンにおける技術プロバイダーのリスク評価基準を見直す"
+        ],
+        "reason": "重要度は、金融機関を含む重要インフラのサプライチェーンリスク管理に直接影響する規制動向であるため「高」です。確認目安は、法案の動向であり具体的な対応期限や緊急性を示す情報がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:335721a8136cc299e91a1e581f90399c4f6392fcdb777730335e00903afaef05",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/malicious-git-configs-can-make-claude.html",
+      "canonical_url": "https://thehackernews.com/2026/09/malicious-git-configs-can-make-claude.html",
+      "published_at": "2026-09-02T23:06:59+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "Malicious .git Configs Can Make Claude, Codex, Cursor, and Other AI Agents Run Attacker Code",
+      "raw_title": "Malicious .git Configs Can Make Claude, Codex, Cursor, and Other AI Agents Run Attacker Code",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a7a856e12040892c899796e3386bef34a2a0b88eb1db351a855b490d72e662c9",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:18:23.534058+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIコーディングエージェントのセキュリティ脆弱性が主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Manifold Securityは、7つのAIコーディングエージェントにおける8つのセキュリティ脆弱性を開示しました。これらは、リポジトリのGit設定が、エージェントが開発者のマシン上で実行するコマンドを悪意を持って指定できるというもので、4つは記事公開時点で未パッチです。",
+        "financial_impact": "金融機関がAIコーディングエージェントを開発業務に利用している場合に影響する可能性があります。利用状況は記事からは確認できません。",
+        "recommended_actions": [
+          "自社および委託先でAIコーディングエージェントの利用有無と、影響を受ける製品・バージョンを確認する",
+          "利用している場合は、ベンダーの一次情報を確認し、パッチ適用状況や緩和策を評価する"
+        ],
+        "reason": "重要度は、AIコーディングエージェントの利用が限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:cc6eebb4ccdc34f3f6671b29775230fa5e74f4b0380a1d74ffdbde62af83d05c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/malicious-apache-modules-hijack.html",
+      "canonical_url": "https://thehackernews.com/2026/09/malicious-apache-modules-hijack.html",
+      "published_at": "2026-09-02T22:44:16+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "Malicious Apache Modules Hijack Brazilian Government Site Traffic to Push Betting Pages",
+      "raw_title": "Malicious Apache Modules Hijack Brazilian Government Site Traffic to Push Betting Pages",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8ebf7551c74a8847e051dba1bb364ffb555bb35ec4cff7f30fa12909eb8e6d0a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:18:40.751214+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国語を話すサイバー犯罪集団が、悪意あるApacheモジュールを使用して政府機関のウェブサイトトラフィックを賭博サイトへ誘導した攻撃事例が主題であるため。",
+        "tags": [
+          "APT",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "「Gambling Goblin」と呼ばれる中国語を話すサイバー犯罪集団が、ブラジルの政府機関や教育機関のウェブサーバーに悪意あるApacheモジュールをインストールし、訪問者をオンライン賭博サイトへ誘導していたことが判明しました。このキャンペーンは2025年半ばから追跡されています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。Apacheウェブサーバーを利用している場合、同様の手法による改ざんリスクの参考情報となります。",
+        "recommended_actions": [
+          "自社でApacheウェブサーバーを運用している場合、設定やログに不審なモジュールやトラフィック誘導の兆候がないか確認する",
+          "ウェブサーバーのセキュリティ設定を見直し、不正なモジュールのインストールを防ぐための対策を強化する"
+        ],
+        "reason": "重要度は、金融機関への直接的な影響が確認できず、他業界の事例として参考情報となるため「中」です。確認目安は、特定の脆弱性や緊急の対応期限が示されておらず、一般的な脅威動向として評価するため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0c1e353de769530beb65b43b6c37d4710443535dca25576edee8bd087121559a",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/bgp-hijack-delivers-malicious.html",
+      "canonical_url": "https://thehackernews.com/2026/09/bgp-hijack-delivers-malicious.html",
+      "published_at": "2026-09-02T22:12:45+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "BGP Hijack Delivers Malicious Virtualizor Update That Establishes Persistent Root Access",
+      "raw_title": "BGP Hijack Delivers Malicious Virtualizor Update That Establishes Persistent Root Access",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e75d5019a5e2d7663035b571a25301bf5831e04bee9fe342616b05ae7bcead1c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:18:57.995773+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "BGPハイジャックによる悪意のあるアップデート配信とrootレベルの侵害が報告されており、実際の被害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Virtualizorは、ハッカーがBGPハイジャックを利用してSoftaculousのトラフィックを乗っ取り、悪意のあるVirtualizorパッケージを一部のインストール環境に配信したと発表しました。あるホスティングプロバイダーは、チェックしたVirtualizorハイパーバイザー34台のうち5台がrootレベルの侵害を受けたと報告しています。",
+        "financial_impact": "金融機関がVirtualizor製品を直接利用している場合、または委託先が利用している場合に影響を受ける可能性があります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Virtualizor製品の利用有無と、影響を受ける可能性のあるバージョン・構成を確認する",
+          "VirtualizorおよびSoftaculousからの公式情報を確認し、侵害の兆候や緩和策について評価する"
+        ],
+        "reason": "重要度は、特定の製品の侵害事例であり、金融機関での利用状況が記事から不明なため「中」です。確認目安は、BGPハイジャックと悪意のあるアップデート配信という重大な攻撃手法ですが、即時対応を要する明確な期限や進行中の広範な攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2bafb704965b3dd2b21408b702aa8b700e5370b754c477f07b5c6513bd544de6",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/rockwell-automation-patches-over-a-dozen-vulnerabilities-across-products/",
+      "canonical_url": "https://www.securityweek.com/rockwell-automation-patches-over-a-dozen-vulnerabilities-across-products/",
+      "published_at": "2026-09-02T21:39:07+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "Rockwell Automation Patches Over a Dozen Vulnerabilities Across Products",
+      "raw_title": "Rockwell Automation Patches Over a Dozen Vulnerabilities Across Products",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8b399ab09ce68c4902a8519f71d560303e9685b2cdda36aee066994769415ae5",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:19:15.099892+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がRockwell Automation製品の脆弱性とそれに対するパッチ公開であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Rockwell Automationが、RSLinx Classic、ArmorStart、ControlFLASH、FactoryTalkなどの製品における十数件の脆弱性に対応するアドバイザリとパッチを公開しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。ただし、金融機関がRockwell Automationの産業用制御システム製品を間接的に利用している場合（例えば、データセンターの設備管理など）には、適用性確認の対象となり得ます。",
+        "recommended_actions": [
+          "Rockwell Automation製品の利用有無を棚卸しし、該当する場合は影響を受ける製品とバージョンを確認する",
+          "Rockwell Automationが公開したアドバイザリを参照し、パッチ適用や緩和策の要否を評価する"
+        ],
+        "reason": "重要度は、産業用制御システム製品の脆弱性であり、金融機関での直接的な利用が限定的であるため「中」です。確認目安は、新たな悪用や緊急の対応期限が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:43ff6a4cc6fb5f5857e67ec0537eb496b0314f84881379212202e376aeeed4c5",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/meta-ads-push-streamrat-android-trojan.html",
+      "canonical_url": "https://thehackernews.com/2026/09/meta-ads-push-streamrat-android-trojan.html",
+      "published_at": "2026-09-02T21:22:02+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "Meta Ads Push StreamRat Android Trojan That Can Gain Near-Complete Device Control",
+      "raw_title": "Meta Ads Push StreamRat Android Trojan That Can Gain Near-Complete Device Control",
+      "raw_excerpt": null,
+      "content_hash": "sha256:09060a1f977a4b19cb46988fcb679ef379d94a4c7420a8b035ef7dfc1798fe6c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:19:32.769885+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Meta広告を利用したAndroidトロイの木馬の拡散キャンペーンに関する記事であり、攻撃手法と脅威動向が主題のため。",
+        "tags": [
+          "フィッシング",
+          "ランサムウェア"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、Meta広告を通じてスペイン語圏のユーザーに拡散された新しいAndroidバンキングトロイの木馬「StreamRat」の詳細を公開しました。このトロイの木馬は感染したデバイスをほぼ完全に制御できる能力を持ちます。",
+        "financial_impact": "金融機関の顧客がAndroidデバイスでMeta広告を利用している場合、このトロイの木馬に感染する可能性があります。直接的な金融機関システムへの影響は記事からは確認できませんが、顧客の認証情報や個人情報が窃取されるリスクがあります。",
+        "recommended_actions": [
+          "顧客に対し、Meta広告を含む不審な広告やアプリのダウンロードに注意を促す啓発を行う",
+          "モバイルバンキングアプリの利用状況について、不審な挙動がないか監視を強化する"
+        ],
+        "reason": "重要度は、金融機関の顧客が標的となる可能性はあるものの、直接的な金融機関システムへの影響が記事から確認できないため「中」です。確認目安は、新たな攻撃キャンペーンに関する情報であり、即座の対応を要する具体的な期限や脆弱性情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f60cc758d5ba90387cee18c0f1f1e3c936b2e61287ca0be9b41b617aa6b05740",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/exploit-published-for-fresh-cleo-harmony-vulnerability/",
+      "canonical_url": "https://www.securityweek.com/exploit-published-for-fresh-cleo-harmony-vulnerability/",
+      "published_at": "2026-09-02T21:18:15+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "Exploit Published for Fresh Cleo Harmony Vulnerability",
+      "raw_title": "Exploit Published for Fresh Cleo Harmony Vulnerability",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e2fd01473e6970fb5cd406cc0123cb6d286524dcdc04c1fdbcaaa1a1146d76a6",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:19:49.577725+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がCleo Harmonyの脆弱性とそれに対するエクスプロイトの公開であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Cleo Harmonyの新たなセキュリティ欠陥に対するエクスプロイトが公開されました。この脆弱性は、引数のベアラー操作を通じてリモート攻撃者が認証をバイパスすることを可能にします。",
+        "financial_impact": "金融機関でCleo Harmony製品を利用している場合に限り、適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Cleo Harmony製品の利用有無と影響バージョンを確認する",
+          "ベンダーからの一次情報やパッチ、緩和策の有無を確認する"
+        ],
+        "reason": "重要度は、対象製品の利用可能性や普及度が記事から確認できず適用範囲が不確実なため「中」です。確認目安は、エクスプロイトが公開されたものの、CISA KEVへの新規追加や進行中の攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b7632e071b486ff4db3393f28276086b77d722cca1ef4d943c2d995266892208",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/anthropic-details-response-to-security-incidents-unveils-enterprise-safeguards/",
+      "canonical_url": "https://www.securityweek.com/anthropic-details-response-to-security-incidents-unveils-enterprise-safeguards/",
+      "published_at": "2026-09-02T20:48:31+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "Anthropic Details Response to Security Incidents, Unveils Enterprise Safeguards",
+      "raw_title": "Anthropic Details Response to Security Incidents, Unveils Enterprise Safeguards",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bb453c41bf1b52012daef7bbf5ae492ad82f16d81ec5c7c92f4679ef5848f950",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:20:06.652907+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AnthropicのAIサービスにおけるセキュリティインシデント対応と企業向け保護策が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Anthropicは、セキュリティインシデントへの対応と、誤用を自動監視するゼロデータ保持システム「Enterprise Frontier Safeguards (EFS)」の導入について詳細を説明しました。",
+        "financial_impact": "金融機関がAnthropicのAIサービスを利用している場合、そのセキュリティ対策やデータ保持ポリシーが関係します。記事からは具体的なインシデント内容や金融機関への直接的な影響は確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIサービスのセキュリティ対策に関する情報であり、利用状況によって適用性が異なるため「中」です。確認目安は、具体的な脅威や緊急対応の必要性を示す情報がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4bee803ffe761f8ed0c241cbcbc45f8f13949e82ec8893ba3d16f3fb7968aae2",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/malicious-virtualizor-update-served-via-bgp-hijacking/",
+      "canonical_url": "https://www.securityweek.com/malicious-virtualizor-update-served-via-bgp-hijacking/",
+      "published_at": "2026-09-02T20:31:36+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "Malicious Virtualizor Update Served via BGP Hijacking",
+      "raw_title": "Malicious Virtualizor Update Served via BGP Hijacking",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3932940313b3f95665cca2280706f66f60247e7f0b29016bdc74a535d85def75",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:20:23.833219+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "BGPハイジャックという攻撃手法と、それを利用した悪意のあるソフトウェアアップデートの配信が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "脅威アクターがSoftaculousのドメインに対する有効なTLS証明書を利用し、BGPハイジャックによってトラフィックを偽のソフトウェアアップデートに誘導しました。これにより、Virtualizorの悪意のあるアップデートが配信されました。",
+        "financial_impact": "金融機関がVirtualizorまたはSoftaculous製品を利用している場合、サプライチェーン攻撃のリスクとして関係します。利用有無は記事から確認できません。",
+        "recommended_actions": [
+          "自社および委託先でVirtualizorまたはSoftaculous製品の利用有無を確認する",
+          "BGPハイジャックによるソフトウェア配信の改ざんリスクについて、サプライチェーンリスク評価の観点から再評価する"
+        ],
+        "reason": "重要度は、特定の製品を対象とした攻撃であり、金融機関での利用有無が不明なため「中」です。確認目安は、攻撃手法に関する情報であり、即時対応を要する具体的な期限や進行中の脅威の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a83ce8fc6466123d33dc534530c9e5e467e96c555c7d44edb166bb5d7524a639",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/how-to-secure-enterprise-ai-from.html",
+      "canonical_url": "https://thehackernews.com/2026/09/how-to-secure-enterprise-ai-from.html",
+      "published_at": "2026-09-02T20:30:00+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "How to Secure Enterprise AI: From Adoption to Incident Readiness",
+      "raw_title": "How to Secure Enterprise AI: From Adoption to Incident Readiness",
+      "raw_excerpt": null,
+      "content_hash": "sha256:be8939ad48d47a3f796918bfdf21ccaf1b0a0a57e5473f34990b578793143f6b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:20:40.905522+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題が企業におけるAIの導入とセキュリティ確保、およびインシデント対応に関するものであるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "企業におけるAI導入の価値は確立されており、現在はサイバーリスクを管理しつつ、あらゆる機能でAIを大規模かつ安全に実装することが課題となっています。組織はビジネススピードでAIを導入しつつ、サイバーリスクの制御を失わないことに注力する必要があります。",
+        "financial_impact": "金融機関においてもAIの導入が進む中で、そのセキュリティ確保は重要な課題です。本記事は一般的なガイダンスであり、具体的な製品や脅威に関する情報ではないため、直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI導入における一般的なセキュリティ課題と対応に関する情報であり、特定の脅威や緊急の対応を求めるものではないため「中」です。確認目安は、具体的なアクションや期限が示されておらず、中長期的な情報収集として参考となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:8071e541fd79f3e371c05b831ac68f2c723d387e5cf5a1de02ca6dc76856301c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/attackers-exploit-two-sonicwall-sma.html",
+      "canonical_url": "https://thehackernews.com/2026/09/attackers-exploit-two-sonicwall-sma.html",
+      "published_at": "2026-09-02T19:53:49+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "Attackers Exploit Two SonicWall SMA 1000 Zero-Days That May Form an Attack Chain",
+      "raw_title": "Attackers Exploit Two SonicWall SMA 1000 Zero-Days That May Form an Attack Chain",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4f36d57ee3abbcbff9e38d2cc9b6b03739e0da9ee4384cac5e00d178ce8c8f4c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:20:58.273065+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "SonicWallのVPNアプライアンスにおけるゼロデイ脆弱性の悪用とパッチリリースが主題であるため。",
+        "tags": [
+          "ゼロデイ",
+          "悪用確認済み",
+          "パッチ",
+          "CVE"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "SonicWallは、Secure Mobile Access (SMA) 1000シリーズVPNアプライアンスに影響を与える2つのゼロデイ脆弱性(CVE-2026-83548など)に対処するセキュリティアップデートをリリースしました。これらの脆弱性は既に攻撃で悪用されています。",
+        "financial_impact": "金融機関でSonicWall SMA 1000シリーズVPNアプライアンスを利用している場合、外部からのアクセス経路として悪用される可能性があるため、早急な確認が必要です。",
+        "recommended_actions": [
+          "SonicWall SMA 1000シリーズVPNアプライアンスの利用有無と影響バージョンを確認する",
+          "SonicWallが公開したセキュリティアップデートおよび緩和策を適用する",
+          "侵害の兆候がないかログなどを確認する"
+        ],
+        "reason": "重要度は、CVSSスコア10.0のゼロデイ脆弱性が既に悪用されており、外部公開されやすいVPNアプライアンスに影響するため「高」です。確認目安は、ゼロデイ攻撃が確認され、緊急のパッチがリリースされているため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:30dfe06ea0970deac73df3cc3e2de18645a72aa6395890375a1f67341c20b046",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/openais-astra-becomes-first-model-to-cross-critical-cybersecurity-threshold/",
+      "canonical_url": "https://www.securityweek.com/openais-astra-becomes-first-model-to-cross-critical-cybersecurity-threshold/",
+      "published_at": "2026-09-02T19:38:13+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "OpenAI’s Astra Crosses ‘Critical’ Cyber Threshold After Finding Zero-Days",
+      "raw_title": "OpenAI’s Astra Crosses ‘Critical’ Cyber Threshold After Finding Zero-Days",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ccafeadb8b99f78fda0928b1f1583be674d2c5408a5d33baa288dff89ccd3052",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:21:15.303519+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIモデルによるサイバーセキュリティ能力の評価であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "OpenAIのAIモデル「Astra」が、独立してゼロデイ脆弱性を発見し、多くの防御されたシステムで悪用できる能力を持つことで、「クリティカル」なサイバーセキュリティ閾値を超えたと報じられました。",
+        "financial_impact": "金融機関がAIモデルをサイバーセキュリティ業務に利用する際の潜在的なリスクと機会に関する参考情報となります。直接的な影響は確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIモデルの能力に関する情報であり、金融機関への直接的な影響や適用性が現時点では不明確なため「中」です。確認目安は、具体的な脅威や対応期限の記述がなく、中長期的な動向把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:33eca463dce2633c5327a6a967e1627858099961364e3314b8ace66c86c18f34",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/chrome-and-firefox-updates-patch-dozens-of-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/chrome-and-firefox-updates-patch-dozens-of-vulnerabilities/",
+      "published_at": "2026-09-02T18:12:29+09:00",
+      "fetched_at": "2026-09-03T09:17:12.885976+09:00",
+      "title": "Chrome and Firefox Updates Patch Dozens of Vulnerabilities",
+      "raw_title": "Chrome and Firefox Updates Patch Dozens of Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2d96358556e7ef039b6632355e10a0e86860d8198815c51a3748329d55b99fee",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-03T09:21:32.252233+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がWebブラウザの脆弱性修正とパッチに関する情報であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Google ChromeとMozilla Firefoxの最新アップデートで、use-after-free、サンドボックスエスケープ、権限昇格など多数の脆弱性が修正されました。",
+        "financial_impact": "金融機関でこれらのWebブラウザを業務利用している場合、または顧客が利用する環境に影響する場合に関係します。",
+        "recommended_actions": [
+          "自社および委託先で利用しているChromeおよびFirefoxのバージョンを確認する",
+          "ベンダーのリリースノートを確認し、修正内容と適用要否を評価する"
+        ],
+        "reason": "重要度は、広く利用されるWebブラウザの脆弱性修正であり、適用性確認の価値があるため「中」です。確認目安は、緊急の悪用情報や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
