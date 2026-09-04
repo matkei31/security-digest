@@ -1,0 +1,920 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-09-04",
+  "generated_at": "2026-09-04T09:11:48.587076+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 17,
+    "ai_attempted_count": 15,
+    "ai_success_count": 15,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 2,
+    "ai_eligible_count": 15
+  },
+  "counts": {
+    "importance": {
+      "高": 1,
+      "中": 12,
+      "低": 2,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 12,
+      "参考": 3,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 3,
+      "攻撃・脅威動向": 5,
+      "インシデント": 4,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 3,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象15件｜重要度「高」1件｜本日確認0件｜今週確認12件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が12件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が1件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "Ciscoは、Silicon OneベースのNexus 9000スイッチ10機種に影響を与える重大なセキュリティ脆弱性（CVE-2026-20212、CVSSスコア9.8）に対するパッチをリリースしました。この脆弱性は、認証されていないリモート攻撃者がroot権限でコードを実行することを可能にします。"
+    ],
+    "discussion_points": [
+      "Ciscoは、Silicon OneベースのNexus 9000スイッチ10機種に影響を与える重大なセキュリティ脆弱性（CVE-2026-20212、CVSSスコア9.8）に対するパッチをリリースしました。この脆弱性は、認証されていないリモート攻撃者がroot権限でコードを実行することを可能にします。\n金融機関でCisco Nexus 9000シリーズスイッチを利用している場合、システムへの不正アクセスや業務停止のリスクがあるため、適用性確認の対象になります。",
+      "本記事は、ITからの電話、共有ファイル、信頼できるアプリ、OAuthの許可要求など、正規に見える手口で攻撃者が侵入を試みる脅威動向をまとめています。攻撃者は正規のツール、偽のログインページ、古いアカウントリンク、安全でないダウンロードを促すソフトウェアガイドなどを利用しています。\n金融機関においても、従業員を狙ったフィッシング攻撃や、クラウドサービスのアカウント乗っ取り、OAuthの悪用などが発生する可能性があり、関連する脅威動向として注意が必要です。"
+    ],
+    "check_items": [
+      "Cisco Nexus 9000シリーズスイッチの利用有無と影響を受けるバージョンを棚卸しする",
+      "BraZetsuマルウェアのIOC（侵害指標）が公開されているか確認し、自社環境での侵害兆候を監視する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:eae08603ec40cb975fc89664ee6585afd73684bdb81c2f8fd7581c96b134df42",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/threatsday-ceo-phishing-kits-5k-dropbox.html",
+      "canonical_url": "https://thehackernews.com/2026/09/threatsday-ceo-phishing-kits-5k-dropbox.html",
+      "published_at": "2026-09-04T03:02:47+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "ThreatsDay: CEO Phishing Kits, 5K Dropbox Account Hacks, OAuth Traps + 17 More Stories",
+      "raw_title": "ThreatsDay: CEO Phishing Kits, 5K Dropbox Account Hacks, OAuth Traps + 17 More Stories",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a96d3d013adfe4e9f08b7e79c9584de3620148b4a13ee18cc55cb3f98037790c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-04T09:07:15.933679+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "CEOフィッシング、Dropboxアカウントハック、OAuthトラップなど、複数の攻撃手法や脅威動向が主題であるため。",
+        "tags": [
+          "フィッシング",
+          "クラウド",
+          "IAM"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "本記事は、ITからの電話、共有ファイル、信頼できるアプリ、OAuthの許可要求など、正規に見える手口で攻撃者が侵入を試みる脅威動向をまとめています。攻撃者は正規のツール、偽のログインページ、古いアカウントリンク、安全でないダウンロードを促すソフトウェアガイドなどを利用しています。",
+        "financial_impact": "金融機関においても、従業員を狙ったフィッシング攻撃や、クラウドサービスのアカウント乗っ取り、OAuthの悪用などが発生する可能性があり、関連する脅威動向として注意が必要です。",
+        "recommended_actions": [],
+        "reason": "重要度は、複数の攻撃手法が紹介されており、金融機関においても発生し得る脅威動向であるため「中」です。確認目安は、具体的な緊急対応を要する情報や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:960caab2afaaa73e0f939e2c4ab025133746d0be51e510789e5783db19a579ec",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/the-story-behind-the-intelligence/",
+      "canonical_url": "https://blog.talosintelligence.com/the-story-behind-the-intelligence/",
+      "published_at": "2026-09-04T03:00:13+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "The story behind the intelligence",
+      "raw_title": "The story behind the intelligence",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3e16a28f4f0f6712f3681c6511dee728691038e472aadaa28b516997d4ef05b5",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a60156beb3f521d95182817ffbe93f6949cf9a011d15a5c6a3fcca64ab86033a",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/09/03/ascii-smuggling-crosses-over-from-ai-prompt-injection-to-phishing-evasion/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/09/03/ascii-smuggling-crosses-over-from-ai-prompt-injection-to-phishing-evasion/",
+      "published_at": "2026-09-04T01:00:00+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "ASCII smuggling crosses over from AI prompt injection to phishing evasion",
+      "raw_title": "ASCII smuggling crosses over from AI prompt injection to phishing evasion",
+      "raw_excerpt": null,
+      "content_hash": "sha256:801633f47485f1a6efed5d816e74b4b932d0a35608bc8fc16ea517eb19bdbe98",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:10869e1cb2f94267097db0303e292e744802aa16350ebfbffb0af4494701542b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/critical-cisco-nexus-9000-flaw-lets.html",
+      "canonical_url": "https://thehackernews.com/2026/09/critical-cisco-nexus-9000-flaw-lets.html",
+      "published_at": "2026-09-04T00:52:07+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "Critical Cisco Nexus 9000 Flaw Lets Unauthenticated Remote Attackers Run Code as Root",
+      "raw_title": "Critical Cisco Nexus 9000 Flaw Lets Unauthenticated Remote Attackers Run Code as Root",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2d7aa341617d253752b02fcc0353cb661b725541d5aae3b3f26a59f56bfa16e9",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-04T09:07:33.272057+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Cisco製品の重大な脆弱性に関する情報が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Ciscoは、Silicon OneベースのNexus 9000スイッチ10機種に影響を与える重大なセキュリティ脆弱性（CVE-2026-20212、CVSSスコア9.8）に対するパッチをリリースしました。この脆弱性は、認証されていないリモート攻撃者がroot権限でコードを実行することを可能にします。",
+        "financial_impact": "金融機関でCisco Nexus 9000シリーズスイッチを利用している場合、システムへの不正アクセスや業務停止のリスクがあるため、適用性確認の対象になります。",
+        "recommended_actions": [
+          "Cisco Nexus 9000シリーズスイッチの利用有無と影響を受けるバージョンを棚卸しする",
+          "Ciscoがリリースしたパッチの適用状況を確認し、必要に応じて対応を検討する",
+          "Cisco IOS XRの hardening releaseに含まれる7つのCVEについても影響を確認する"
+        ],
+        "reason": "重要度は、CVSSスコア9.8の重大な脆弱性であり、認証なしでリモートからroot権限でコード実行が可能であるため「高」です。確認目安は、悪用が確認されているとの記述がなく、KEV新規追加にも含まれないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ccbb703251575fb6f2ae765cffc04abe2c5ce54a42563974e733806dac721d8a",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/manchester-airports-group-data-on-8-8-million-people-leaked-after-ransom-refusal/",
+      "canonical_url": "https://www.securityweek.com/manchester-airports-group-data-on-8-8-million-people-leaked-after-ransom-refusal/",
+      "published_at": "2026-09-04T00:35:19+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "Manchester Airports Group Data on 8.8 Million People Leaked After Ransom Refusal",
+      "raw_title": "Manchester Airports Group Data on 8.8 Million People Leaked After Ransom Refusal",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b70753a66cbdbb8c03642aaa641e8df682a4477544973e1d9412b4d13195f751",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-04T09:07:50.204671+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "マンチェスター空港グループで身代金拒否後にデータが流出したという実際の侵害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "ランサムウェア"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "マンチェスター空港グループ(MAG)は、身代金要求を拒否した後、ハッカーグループによって約550GBのデータが公開されました。ハッカーグループは、公開された管理者キーを介してアクセスを得たと主張しています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。空港グループのインシデント事例として、委託先管理やサプライチェーンリスク評価の参考情報となり得ます。",
+        "recommended_actions": [],
+        "reason": "重要度は、他業界のインシデント事例であり、金融機関への直接的な影響が確認できないため「中」です。確認目安は、記事に緊急対応を要する新たな情報や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9d9736b815d582ed8ce686114c0b3206d9ce0fde65ef624de23d744802199b9b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/brazetsu-malware-turns-compromised.html",
+      "canonical_url": "https://thehackernews.com/2026/09/brazetsu-malware-turns-compromised.html",
+      "published_at": "2026-09-04T00:26:47+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "BraZetsu Malware Turns Compromised Windows Hosts Into Criminal Marketplace Inventory",
+      "raw_title": "BraZetsu Malware Turns Compromised Windows Hosts Into Criminal Marketplace Inventory",
+      "raw_excerpt": null,
+      "content_hash": "sha256:66ed45a58c22614bb15fc74eabec1ef6b7804826d7dde8ec09e8442a2e26a893",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-04T09:08:08.939146+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "BraZetsuマルウェアによる攻撃手法と脅威動向が主題であるため。",
+        "tags": [
+          "APT",
+          "ランサムウェア"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、BraZetsuと呼ばれる高度なPythonベースのWindowsマルウェアフレームワークの詳細を公開しました。このマルウェアは、侵害されたホストへのアクセスを商品化するアンダーグラウンド市場を活性化させています。",
+        "financial_impact": "金融機関が利用するWindowsホストが侵害された場合、機密情報の窃取やシステムへの不正アクセスにつながる可能性があります。",
+        "recommended_actions": [
+          "BraZetsuマルウェアのIOC（侵害指標）が公開されているか確認し、自社環境での侵害兆候を監視する",
+          "Windowsホストのセキュリティ設定とパッチ適用状況を確認し、マルウェア感染のリスクを低減する"
+        ],
+        "reason": "重要度は、新たなマルウェアフレームワークの脅威動向であり、金融機関への直接的な影響は利用状況に依存するため「中」です。確認目安は、具体的な緊急対応の期限や進行中の大規模攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:13479441cfdf216156732112010d3d08cffbbdbb4da229d3d313ff2070dcd210",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/capsule-security-launches-ai-circuit-breaker-to-stop-rogue-agents/",
+      "canonical_url": "https://www.securityweek.com/capsule-security-launches-ai-circuit-breaker-to-stop-rogue-agents/",
+      "published_at": "2026-09-04T00:15:00+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "Capsule Security Launches ‘AI Circuit Breaker’ to Stop Rogue Agents",
+      "raw_title": "Capsule Security Launches ‘AI Circuit Breaker’ to Stop Rogue Agents",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e35f856d1ccae8d4ccfd064dbf380756cf338ddbfca425a1c470321a0d85f1fb",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-04T09:08:28.620568+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントのセキュリティ対策に関する新技術が主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Capsule Securityは、NVIDIA Nemotron 3 Ultraでトレーニングされた新しいモデル「AIサーキットブレーカー」を発表しました。これは、大規模モデルによるレビューの遅延なしに、不正なAIエージェントの挙動を実行前に捕捉することを目的としています。",
+        "financial_impact": "金融機関がAIエージェントを業務に導入している場合、そのセキュリティ対策を検討する上での参考情報となります。現時点での直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントのセキュリティ対策に関する新技術の紹介であり、現時点での金融機関への直接的な適用性や緊急性が不明確なため「中」です。確認目安は、具体的な脅威や対応期限の記述がなく、情報収集・中長期検討が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9fe0a5b020907206bd3962c5a7b1f3dab3ec5b11c83be154c68e4a83ccb3156d",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/thomson-reuters-court-software-breach.html",
+      "canonical_url": "https://thehackernews.com/2026/09/thomson-reuters-court-software-breach.html",
+      "published_at": "2026-09-03T23:39:05+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "Thomson Reuters Court Software Breach May Have Exposed SSNs and Sealed Data",
+      "raw_title": "Thomson Reuters Court Software Breach May Have Exposed SSNs and Sealed Data",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e1cbd22c78550a4e61af7041c544d0f19e109c09e54ba7f5001b39b70e08bca9",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-04T09:08:46.024851+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "トムソン・ロイターが提供する裁判所向けソフトウェアからのデータ流出が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "トムソン・ロイターは、同社の裁判所事件管理プラットフォーム「C-Track」から、2026年3月に不正アクセスによりファイルが取得されたことを公表しました。この侵害は米国11州、米領ヴァージン諸島、カナダのオンタリオ州の裁判所に影響し、一部の裁判記録には個人の社会保障番号や封印されたデータが含まれている可能性があります。",
+        "financial_impact": "金融機関がトムソン・ロイターのC-Trackソフトウェアを直接利用している場合、または当該裁判所の情報にアクセスする業務がある場合に影響する可能性があります。記事からは金融機関との直接的な関係は確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が記事から確認できず、適用範囲が限定的であるため「中」です。確認目安は、インシデントの発生時期が3月で、緊急対応を要する新たな情報や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:58e5104e4df207551f0643e15108ed8f2fa3e5c84b26beb90967080ee959325c",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/hiddenlayer-raises-100-million-for-ai-runtime-security/",
+      "canonical_url": "https://www.securityweek.com/hiddenlayer-raises-100-million-for-ai-runtime-security/",
+      "published_at": "2026-09-03T21:17:30+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "HiddenLayer Raises $100 Million for AI Runtime Security",
+      "raw_title": "HiddenLayer Raises $100 Million for AI Runtime Security",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6839b2d91bf31952d8330793391859e3f4806642b7dbc4e43721c4d7909929f3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-04T09:09:06.413322+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIのランタイムセキュリティに関する資金調達が主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "HiddenLayer社がAIランタイムセキュリティの強化に向けて1億ドルを調達しました。同社はこの資金をAIコーディングエージェントを保護するためのエージェント型ランタイムセキュリティ機能に投資する予定です。",
+        "financial_impact": "本記事は特定の製品や脆弱性に関するものではなく、AIセキュリティ分野の資金調達に関するニュースです。金融機関への直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIセキュリティ分野の資金調達に関する一般的なニュースであり、金融機関への直接的な影響が確認できないため「低」です。確認目安は、具体的な脅威や対応期限に関する情報がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:368eeb2ae9f1145937e183eeb58202b141abf03ee929aa9ca8cda246fdb53ed2",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ai-agent-firewall-startup-air-security-emerges-from-stealth-with-50-million/",
+      "canonical_url": "https://www.securityweek.com/ai-agent-firewall-startup-air-security-emerges-from-stealth-with-50-million/",
+      "published_at": "2026-09-03T21:00:00+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "AI Agent Firewall Startup AIR Security Emerges From Stealth With $50 Million",
+      "raw_title": "AI Agent Firewall Startup AIR Security Emerges From Stealth With $50 Million",
+      "raw_excerpt": null,
+      "content_hash": "sha256:623c13e843e2f05f84af6121b9d09860a383981992c184e5fb7ef56eb6ba43d0",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-04T09:09:27.055020+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントのセキュリティ対策に関する新しい技術と企業の動向が主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント",
+          "サプライチェーン"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "AIエージェント向けファイアウォールを開発するスタートアップAIR Securityが、5,000万ドルの資金調達を完了し、ステルスモードから脱却しました。このファイアウォールは、AIスキル、プラグイン、MCPサーバーを悪意のある指示、過剰な権限、ソフトウェアサプライチェーンリスクについて評価します。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AIエージェントのセキュリティ対策に関する技術動向として参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントのセキュリティに関する新しい技術動向であり、現時点での直接的な適用性や影響が不明確なため「低」です。確認目安は、具体的な脅威や対応期限の記述がなく、情報収集が主となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:54e49c42f26d7b730f6f3543ee6739fc03898633e87c72a3d3b77d398ce7c534",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/us-becomes-top-target-in-rmm-phishing.html",
+      "canonical_url": "https://thehackernews.com/2026/09/us-becomes-top-target-in-rmm-phishing.html",
+      "published_at": "2026-09-03T20:58:00+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "US Becomes Top Target in RMM Phishing Campaign Spanning 46 Countries",
+      "raw_title": "US Becomes Top Target in RMM Phishing Campaign Spanning 46 Countries",
+      "raw_excerpt": null,
+      "content_hash": "sha256:871af770ea8b3eff2ca51de12562b6a1eb56eb4af6c49d7535f3b3df3be402dd",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-04T09:09:50.751409+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "RMMフィッシングキャンペーンという攻撃手法と脅威動向が主題であるため。",
+        "tags": [
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "カナダ歳入庁の税務フォームを悪用したRMMフィッシングキャンペーンが、当初のカナダ標的から46カ国に拡大し、観測された活動の約45%が米国を標的としていることが判明しました。ANY.RUNの調査により、601件の事例がこの広範な作戦に関連付けられています。",
+        "financial_impact": "金融機関がRMMツールを利用している場合、または従業員がフィッシングの標的となる可能性があるため、関連する脅威動向として把握しておくことが重要です。直接的な被害は確認されていません。",
+        "recommended_actions": [
+          "RMMツールの利用状況と設定を確認し、不審な接続や活動がないか監視する",
+          "従業員に対し、フィッシングメールの識別と報告に関する注意喚起と教育を強化する"
+        ],
+        "reason": "重要度は、金融機関がRMMツールを利用している場合や従業員が標的となる可能性があるため、脅威動向として把握する価値があるため「中」です。確認目安は、具体的な緊急対応の指示や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:fda4621905089d3d88de414ac16abe2562abf8d38abd1d8e3be2046d95ba4b9c",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/153-million-driver-license-images-offered-on-dark-web/",
+      "canonical_url": "https://www.securityweek.com/153-million-driver-license-images-offered-on-dark-web/",
+      "published_at": "2026-09-03T19:54:18+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "153 Million Driver License Images Offered on Dark Web",
+      "raw_title": "153 Million Driver License Images Offered on Dark Web",
+      "raw_excerpt": null,
+      "content_hash": "sha256:73ba56f59106b1c95dff55de2d78efbdee66ec308af31e1fd974e6f80e8b14f0",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-04T09:10:08.181690+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "サイバー犯罪者がダークウェブで大量の運転免許証画像を販売しているという実際の情報漏えい事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバー犯罪者が、IDScan.netから盗まれた可能性のある米国およびカナダの運転免許証のデジタルスキャン画像をダークウェブで販売していることが確認されました。その数は1億5300万件に上るとされています。",
+        "financial_impact": "金融機関が顧客確認（KYC）プロセスなどでIDScan.netのサービスを利用している場合、または顧客情報に運転免許証画像が含まれている場合に、情報漏えいの影響を受ける可能性があります。",
+        "recommended_actions": [
+          "自社および委託先におけるIDScan.net製品・サービスの利用有無を確認する",
+          "顧客情報に運転免許証画像が含まれる場合、今回の情報漏えいとの関連性や影響範囲を評価する"
+        ],
+        "reason": "重要度は、金融機関が直接的な標的ではないものの、顧客情報に影響する可能性があり、適用性確認の価値があるため「中」です。確認目安は、具体的な期限や進行中の攻撃の記述がなく、情報漏えいの事実確認が主となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0ffead6ad9f846a17b980f621d70737df02f62acbec41c5db285151c3ee86cb4",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/attackers-turn-trusted-nodejs-runtime.html",
+      "canonical_url": "https://thehackernews.com/2026/09/attackers-turn-trusted-nodejs-runtime.html",
+      "published_at": "2026-09-03T19:43:01+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "Attackers Turn Trusted Node.js Runtime Into Malware Delivery Tool in Targeted Attacks",
+      "raw_title": "Attackers Turn Trusted Node.js Runtime Into Malware Delivery Tool in Targeted Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:673429ad638b5a5af1268a7a4546bdd850b27a01694ec509e88da46819b1d604",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-04T09:10:25.312239+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "攻撃者がNode.jsランタイムを悪用してマルウェアを配信する手口が主題であるため。",
+        "tags": [
+          "APT",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "攻撃者がNode.js JavaScriptランタイムを悪用し、マルウェアを配信するサイバー攻撃が確認されました。この手口は2026年2月から政府機関、テクノロジー企業、ホテルを標的とした攻撃で利用されています。",
+        "financial_impact": "金融機関でNode.jsランタイムを利用している場合、この攻撃手法が適用される可能性があります。記事からは金融機関への直接的な影響は確認できません。",
+        "recommended_actions": [
+          "Node.jsランタイムの利用状況と、関連するシステム・アプリケーションのセキュリティ設定を確認する",
+          "Symantec Threat Hunter Teamのレポートを参照し、攻撃手法の詳細と検出・防御策を評価する"
+        ],
+        "reason": "重要度は、Node.jsランタイムの利用状況により影響が異なるため「中」です。確認目安は、特定の脆弱性ではなく攻撃手法に関する情報であり、即時対応の根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2504101768298d9cd58c06c519b8fbb9b4736a167822cb1b4117197160571383",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/over-3-million-wordpress-sites-affected-by-migration-plugin-vulnerability/",
+      "canonical_url": "https://www.securityweek.com/over-3-million-wordpress-sites-affected-by-migration-plugin-vulnerability/",
+      "published_at": "2026-09-03T19:40:00+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "Over 3 Million WordPress Sites Affected by Migration Plugin Vulnerability",
+      "raw_title": "Over 3 Million WordPress Sites Affected by Migration Plugin Vulnerability",
+      "raw_excerpt": null,
+      "content_hash": "sha256:866240f98ad0cf3d266539b81e1d82c397d2bf9b25bc25d1a34eeb52bc07ef65",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-04T09:10:42.454934+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "WordPressプラグインのSQLインジェクション脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "WordPressの移行プラグインに深刻度の高いSQLインジェクションの脆弱性(CVE-2026-19949)が発見されました。この脆弱性は認証されていない攻撃者によるリモートコード実行を許す可能性があり、300万以上のWordPressサイトに影響を与える可能性があります。",
+        "financial_impact": "金融機関がWordPressをウェブサイトや特定の業務システムで利用し、かつ当該移行プラグインを使用している場合に影響を受ける可能性があります。利用状況は記事からは確認できません。",
+        "recommended_actions": [
+          "自社および委託先でWordPressを利用している場合、当該移行プラグインの利用有無と影響バージョンを確認する",
+          "ベンダーからの修正パッチや緩和策の情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、WordPressプラグインの脆弱性であり、金融機関での利用状況が限定的または不確実なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:28b73ab0049071506ea9029b461b823e9fb5f1de93c7b1ade20bc678320360d2",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/shai-huluds-reach-just-grew-to-469.html",
+      "canonical_url": "https://thehackernews.com/2026/09/shai-huluds-reach-just-grew-to-469.html",
+      "published_at": "2026-09-03T19:36:39+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "Shai-Hulud's Reach Just Grew to 469 Credential Locations. Here's What That Means",
+      "raw_title": "Shai-Hulud's Reach Just Grew to 469 Credential Locations. Here's What That Means",
+      "raw_excerpt": null,
+      "content_hash": "sha256:faf45755b48642ce376cbd86b41ad7e74b3ba550a6a032c5499427cfb7381ec3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-04T09:10:59.586391+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Shai-Huludインフォスティーラーの進化と攻撃手法の拡大が主題であるため。",
+        "tags": [
+          "APT",
+          "クラウド",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Shai-Huludインフォスティーラーの新しい亜種が、開発環境、CI/CDツール、クラウド設定、AIツール設定など、469か所の認証情報保存場所をスキャンするよう進化しました。以前の亜種では189パスしかチェックしていませんでした。",
+        "financial_impact": "金融機関の開発環境、CI/CDツール、クラウド設定、AIツール設定で認証情報が管理されている場合、本インフォスティーラーの標的となる可能性があります。",
+        "recommended_actions": [
+          "開発環境、CI/CDツール、クラウド設定、AIツール設定における認証情報の管理状況と保護策を確認する",
+          "Shai-HuludインフォスティーラーのIOC（存在する場合）を監視し、自社環境での侵害兆候がないか確認する"
+        ],
+        "reason": "重要度は、金融機関の開発環境やクラウド設定が標的となり得るため「中」です。確認目安は、具体的な緊急対応の指示や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1db68394268a31c410ea705e0cd37d4c75aeb86815bf159261541901dbeb4d50",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/cisco-warns-of-unpatched-secure-email-flaws-patches-critical-switch-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/cisco-warns-of-unpatched-secure-email-flaws-patches-critical-switch-vulnerabilities/",
+      "published_at": "2026-09-03T19:30:00+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "Cisco Warns of Unpatched Secure Email Flaws, Patches Critical Switch Vulnerabilities",
+      "raw_title": "Cisco Warns of Unpatched Secure Email Flaws, Patches Critical Switch Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f98de444df26f5f7b5c01d77796e0aebc7d5e38d42d73c8ce83697db3c11cc3e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-04T09:11:16.794375+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Cisco製品の未パッチ脆弱性とパッチが提供された重大な脆弱性について報じているため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Ciscoは、S/MIMEの公開された脆弱性により暗号化されたメールコンテンツが露呈する可能性と、IOS XRおよびNexus製品におけるリモートコード実行および認証バイパスを可能にする重大な脆弱性へのパッチについて警告しました。",
+        "financial_impact": "Cisco Secure Email製品、またはIOS XRおよびNexusスイッチ製品を金融機関で利用している場合に限り、適用性確認の対象になります。記事からは利用有無を確認できません。",
+        "recommended_actions": [
+          "Cisco Secure Email製品、IOS XRおよびNexusスイッチ製品の利用有無と影響バージョンを確認する",
+          "Ciscoが提供するパッチや緩和策の情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、Cisco製品の脆弱性に関する情報であり、利用状況によって適用性が異なるため「中」です。確認目安は、KEV新規追加のCVEは含まれておらず、即時対応を促す時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b6e02e04385587bfc94fbc2569c3b9baa87beadc68c8d5cebde9ffd9a973bae1",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/pegasus-zero-click-spyware-exploit.html",
+      "canonical_url": "https://thehackernews.com/2026/09/pegasus-zero-click-spyware-exploit.html",
+      "published_at": "2026-09-03T17:43:17+09:00",
+      "fetched_at": "2026-09-04T09:07:10.119449+09:00",
+      "title": "Pegasus Zero-Click Spyware Exploit Infects Serbian Student Movement Member's iPhone",
+      "raw_title": "Pegasus Zero-Click Spyware Exploit Infects Serbian Student Movement Member's iPhone",
+      "raw_excerpt": null,
+      "content_hash": "sha256:182b8b897beaae9cd284cd0825e14ae24f6a63bd783f21503eeacaedfe5b6a29",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-04T09:11:33.586502+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "セルビアの学生運動メンバーのiPhoneがPegasusスパイウェアに感染したという具体的な被害事例が主題であるため。",
+        "tags": [
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セルビアの学生運動メンバーのiPhoneが、NSO GroupのPegasusスパイウェアにゼロクリックエクスプロイトを介して感染したことが、Citizen LabとSHARE Foundationの調査で判明しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。特定の個人を標的としたスパイウェア攻撃の事例として、脅威動向の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の個人を標的としたスパイウェア攻撃であり、金融機関への直接的な適用性が限定的であるため「中」です。確認目安は、新たな脆弱性や緊急対応を要する情報ではなく、脅威動向の参考情報であるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
