@@ -1,0 +1,1158 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-09-10",
+  "generated_at": "2026-09-10T09:21:21.583397+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 22,
+    "ai_attempted_count": 19,
+    "ai_success_count": 19,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 3,
+    "ai_eligible_count": 19
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 14,
+      "低": 3,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 1,
+      "今週確認": 11,
+      "参考": 7,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 8,
+      "攻撃・脅威動向": 2,
+      "インシデント": 0,
+      "規制・ガバナンス": 1,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 6,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象19件｜重要度「高」2件｜本日確認1件｜今週確認11件\nBrief対象の記事のうち、本日中に適用性または初動要否を確認する記事が1件あります。",
+    "important_highlights": [
+      "Googleは、ChromeのJavaScriptおよびWebAssemblyエンジンであるV8における境界外書き込みのゼロデイ脆弱性(CVE-2026-87491)を修正するアップデートを公開しました。この脆弱性は実悪用が確認されています。",
+      "金融庁は、インターネット取引サービスにおける不正アクセスや不正取引に関する注意喚起ページを更新しました。これは、金融機関の顧客が被害に遭うリスクに対する継続的な警戒を促すものです。"
+    ],
+    "discussion_points": [
+      "Googleは、ChromeのJavaScriptおよびWebAssemblyエンジンであるV8における境界外書き込みのゼロデイ脆弱性(CVE-2026-87491)を修正するアップデートを公開しました。この脆弱性は実悪用が確認されています。\n金融機関でGoogle Chromeを業務利用している場合、この脆弱性の影響を受ける可能性があります。特に、インターネットに接続された端末や、機密情報を扱う環境での利用状況を確認する必要があります。",
+      "金融庁は、インターネット取引サービスにおける不正アクセスや不正取引に関する注意喚起ページを更新しました。これは、金融機関の顧客が被害に遭うリスクに対する継続的な警戒を促すものです。\n金融庁からの直接的な注意喚起であり、金融機関は顧客保護の観点から、不正アクセス・不正取引対策の状況を確認し、必要に応じて顧客への注意喚起を強化することが求められます。"
+    ],
+    "check_items": [
+      "自社および委託先におけるGoogle Chromeの利用状況とバージョンを確認する",
+      "金融庁の更新された注意喚起内容を確認し、自社のインターネット取引サービスにおける不正アクセス・不正取引対策の状況を評価する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:9b9da64271b4c227c6c1d2030232e784080fa5e6451e404a360b16d60a527b04",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/09/09/threat-matrix-mapping-threats-across-cloud-web-applications/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/09/09/threat-matrix-mapping-threats-across-cloud-web-applications/",
+      "published_at": "2026-09-10T06:30:00+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "Threat matrix: Mapping threats across cloud web applications",
+      "raw_title": "Threat matrix: Mapping threats across cloud web applications",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2b9fc4b64ea4f1388c4adaef8d0715845aa2b15fbd5f423876a02dfa72e6686e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:8df866a72a613bf82dc20578093fdcd5aa0c1582b0e8677741791f4a601fb1f6",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/us-disrupts-xinbi-guarantee-scam.html",
+      "canonical_url": "https://thehackernews.com/2026/09/us-disrupts-xinbi-guarantee-scam.html",
+      "published_at": "2026-09-10T03:26:05+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "U.S. Disrupts Xinbi Guarantee Scam Marketplace, Freezes $52.8 Million in Crypto",
+      "raw_title": "U.S. Disrupts Xinbi Guarantee Scam Marketplace, Freezes $52.8 Million in Crypto",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5185c4d209d7b62116bb842525a848c6334c8343315e0baac944402b85675036",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:15:58.736310+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "記事は、詐欺サービスを提供する違法なオンラインマーケットプレイスの摘発と、それに関わる攻撃者の活動を主題としているため。",
+        "tags": [
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "米国司法省は、詐欺サービスを提供する違法なオンラインマーケットプレイス「Xinbi Guarantee」に対する協調行動を発表しました。この作戦では、サービス運営に使用されていたTelegramチャンネルの押収、2つの仮想通貨ウォレットの没収、およびマダガスカルでの中国系組織犯罪が運営する13の詐欺拠点の摘発支援が含まれます。",
+        "financial_impact": "金融機関への直接的な影響は限定的ですが、仮想通貨を利用した詐欺の手口や国際的な法執行機関の対応動向を把握する上で参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が限定的で、主に脅威動向の参考情報となるため「中」です。確認目安は、具体的な短期的な対応を求める内容ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7f0d096051dc9ce46b9300526209d37694c0f765b258177dccb35b99a1d79f3a",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/09/09/passkey-themed-social-engineering-leads-identity-cloud-compromise/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/09/09/passkey-themed-social-engineering-leads-identity-cloud-compromise/",
+      "published_at": "2026-09-10T02:41:18+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "Passkey-themed social engineering leads to identity and cloud compromise",
+      "raw_title": "Passkey-themed social engineering leads to identity and cloud compromise",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c3c808e8b41fb53e3c6335e6d7c32c5453938a47ed95777fec880b5b0a22568c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9b331a9751d2d1f91f1c0efd5e1d2ef26e51d26680801cd1b182dbc934d77e9c",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/helmguard-raises-7-3-million-for-agentic-grc-and-security/",
+      "canonical_url": "https://www.securityweek.com/helmguard-raises-7-3-million-for-agentic-grc-and-security/",
+      "published_at": "2026-09-10T02:23:58+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "HelmGuard Raises $7.3 Million for Agentic GRC and Security",
+      "raw_title": "HelmGuard Raises $7.3 Million for Agentic GRC and Security",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e09fe807985d677fe1a11369eda36693366b2cd65d6685344e64ea14c8c0d53f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:16:15.439592+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも直接関連しない、企業資金調達に関するニュースのため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "HelmGuard社がAgentic GRCおよびセキュリティ分野で730万ドルの資金調達を実施しました。同社はこの資金を米国市場でのプレゼンス拡大、エンジニアリングおよび市場開拓チームの強化に充てる予定です。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。セキュリティ企業の資金調達に関する情報であり、自社のセキュリティ対策に直接関係するものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、セキュリティ企業の資金調達に関する情報であり、金融機関のセキュリティ運用に直接的な影響がないため「低」です。確認目安は、具体的な脅威や対応期限に関する情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:55aa0d115e88b8b3c79d7a78911561e7b2797af8b0b7ae60ddb9c0e79eb19862",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ai-is-giving-lesser-resourced-attackers-nation-state-level-reach-google-warns/",
+      "canonical_url": "https://www.securityweek.com/ai-is-giving-lesser-resourced-attackers-nation-state-level-reach-google-warns/",
+      "published_at": "2026-09-10T01:56:25+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "AI Is Giving Lesser-Resourced Attackers Nation-State-Level Reach, Google Warns",
+      "raw_title": "AI Is Giving Lesser-Resourced Attackers Nation-State-Level Reach, Google Warns",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b0e0799da0c1690f6969168219522ceede8fe1af8c049db6ba8ce536cb7fbd79",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:16:32.418995+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIの悪用とそれに伴う攻撃能力の向上に関する警告であるため。",
+        "tags": [
+          "AI",
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Googleの脅威情報グループ(GTIG)によると、犯罪者や国家支援型攻撃者がAIを悪用し、攻撃の自動化と規模拡大を進めており、リソースの少ない攻撃者でも国家レベルの攻撃能力を持つようになっていると警告しています。",
+        "financial_impact": "AIの悪用による攻撃能力の向上は、金融機関を含むあらゆる組織に対するサイバー攻撃のリスクを高める可能性があります。具体的な攻撃手法や対象は記事からは確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIの悪用による脅威動向に関する一般的な警告であり、特定の製品や脆弱性への直接的な影響が不明確なため「中」です。確認目安は、具体的な短期アクションや期限の記述がなく、中長期的な状況把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9927501cbbee3b724e98e57628c97305d129e939bf3064dfe2f8b3e85c6cf12e",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/four-spy-groups-used-same-chrome-and.html",
+      "canonical_url": "https://thehackernews.com/2026/09/four-spy-groups-used-same-chrome-and.html",
+      "published_at": "2026-09-10T01:34:05+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "Four Spy Groups Used the Same Chrome and Windows Exploit Kit Within a Week",
+      "raw_title": "Four Spy Groups Used the Same Chrome and Windows Exploit Kit Within a Week",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5721ae4c10aac68adeec989ed1804b84ab4909b568200e25e94f85d993fad199",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:16:49.696762+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "複数のスパイグループが特定の攻撃ツールキットを悪用した脅威動向が主題であるため。",
+        "tags": [
+          "APT",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "複数のスパイグループが、Microsoft WindowsとGoogle Chromeの複数の脆弱性を組み合わせた「BlueMoon」と呼ばれる未確認のエクスプロイトキットを展開していることが判明しました。このキットの最初の実使用は、中国関連の国家支援グループAPT31に起因するとされています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。一般的なOSおよびブラウザの脆弱性を悪用する攻撃であり、金融機関でも利用されている製品が標的となる可能性はありますが、具体的な製品名や影響範囲は不明です。",
+        "recommended_actions": [],
+        "reason": "重要度は、一般的なOSとブラウザを標的とする攻撃動向であり、金融機関でも利用されている可能性はあるものの、具体的な影響製品や範囲が記事から不明なため「中」です。確認目安は、実悪用が確認されているものの、KEV新規追加のCVEはなく、具体的な対応期限や緊急性が示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:21e3904e2ceb049bbf4efffa12d54b66940b5bb3e5870a84f5c69b80a55fb673",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/androids-september-2026-updates-patch-180-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/androids-september-2026-updates-patch-180-vulnerabilities/",
+      "published_at": "2026-09-10T01:30:40+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "Android’s September 2026 Updates Patch 180 Vulnerabilities",
+      "raw_title": "Android’s September 2026 Updates Patch 180 Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2abe778bbf43893e666829a58217c1dbbd3719232bf57fbcac5b5182f192743e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:17:06.824179+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Androidの月次セキュリティアップデートによる多数の脆弱性修正が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Androidの2026年9月セキュリティアップデートにより、Framework、System、Kernelコンポーネントにおける180件の脆弱性が修正されました。これには複数の重大な欠陥が含まれています。",
+        "financial_impact": "金融機関でAndroidデバイスを業務利用している場合や、顧客向けサービスでAndroidアプリを提供している場合に関係します。直接的な影響は利用状況に依存します。",
+        "recommended_actions": [
+          "自社および委託先で利用しているAndroidデバイスの棚卸しを行い、影響を受けるバージョンがないか確認する",
+          "ベンダーの公開情報を確認し、最新のセキュリティアップデート適用計画を評価する"
+        ],
+        "reason": "重要度は、Androidの脆弱性修正は広範な影響の可能性があるものの、記事からは金融機関への直接的な影響や具体的な悪用状況が不明確なため「中」です。確認目安は、多数の脆弱性修正が含まれるため今週中に適用性確認を行う価値があるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:de29fff528b718af34b62e8bc93178af05cd7bfe142ce07b5e6d215686eb29b5",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/chipmaker-patch-tuesday-nvidia-amd-arm-issue-security-advisories/",
+      "canonical_url": "https://www.securityweek.com/chipmaker-patch-tuesday-nvidia-amd-arm-issue-security-advisories/",
+      "published_at": "2026-09-10T01:22:54+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "Chipmaker Patch Tuesday: Nvidia, AMD, Arm Issue Security Advisories",
+      "raw_title": "Chipmaker Patch Tuesday: Nvidia, AMD, Arm Issue Security Advisories",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f1e72f75ec8e07a2d14a59c5bb0efd70e309c811f746fb40fd1550cb85f3054a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:17:24.971253+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がチップメーカー各社が公開した脆弱性に関するセキュリティアドバイザリであるため。",
+        "tags": [
+          "パッチ",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "主要チップメーカーであるNvidia、AMD、Armが、自社製品で最近発見された脆弱性に対するパッチに関するセキュリティアドバイザリを公開しました。",
+        "financial_impact": "金融機関がNvidia、AMD、Armの製品を直接的または間接的に利用している場合に、適用性確認の対象となります。利用状況は記事からは確認できません。",
+        "recommended_actions": [
+          "自社および委託先におけるNvidia、AMD、Arm製品の利用有無と影響バージョンを確認する",
+          "各ベンダーのセキュリティアドバイザリを参照し、パッチ適用や緩和策の要否を評価する"
+        ],
+        "reason": "重要度は、特定の製品に限定される脆弱性であり、金融機関での利用状況が記事から不明なため「中」です。確認目安は、緊急の悪用や期限に関する情報が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0ef308ce9d4e9c5d638c6844994e4ba250d67f3984ea4e566fa4075d9943af34",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/fmc-ongoing-exploitation/",
+      "canonical_url": "https://blog.talosintelligence.com/fmc-ongoing-exploitation/",
+      "published_at": "2026-09-10T01:08:59+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "Active exploitation of Cisco Secure Firewall Management Center vulnerabilities",
+      "raw_title": "Active exploitation of Cisco Secure Firewall Management Center vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ec4755c3ffd6921b8744e896658db30268f1aac18ac075e4533c82a55e0e35a4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:656ecabad0f3549515b4f1a844ec19d1166c44cbd2628544c7e1d4ed96a8b119",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/fortinet-patches-critical-vulnerabilities-in-fortimonitoronsight-chrome-extension/",
+      "canonical_url": "https://www.securityweek.com/fortinet-patches-critical-vulnerabilities-in-fortimonitoronsight-chrome-extension/",
+      "published_at": "2026-09-09T23:33:52+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "Fortinet Patches Critical Vulnerabilities in FortiMonitorOnSight, Chrome Extension",
+      "raw_title": "Fortinet Patches Critical Vulnerabilities in FortiMonitorOnSight, Chrome Extension",
+      "raw_excerpt": null,
+      "content_hash": "sha256:601723a1f4fccc32b1d23463ab70ec7db17267bc09a9b7cff9485a228dce2ad6",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:17:41.801441+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Fortinet製品の脆弱性修正が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Fortinetは、FortiMonitorOnSightおよびChrome拡張機能における認証不要で認証をバイパスし、ユーザーのブラウザトラフィックをプロキシできる重大な脆弱性を修正しました。",
+        "financial_impact": "金融機関でFortiMonitorOnSightまたは関連するChrome拡張機能を利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "FortiMonitorOnSightおよび関連するChrome拡張機能の利用有無と影響バージョンを確認する",
+          "Fortinetの一次情報を確認し、修正パッチの適用または緩和策の実施を検討する"
+        ],
+        "reason": "重要度は、対象製品の利用可能性が記事から確認できず、適用範囲が不確実なため「中」です。確認目安は、パッチが公開されているものの、実悪用や緊急対応の明確な時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a7397cc291ced5fd3a77e403300ddcfa4c85dadd3e9ed2799cad47bfd71a23c4",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/infostealer-logs-expose-replayable-ai.html",
+      "canonical_url": "https://thehackernews.com/2026/09/infostealer-logs-expose-replayable-ai.html",
+      "published_at": "2026-09-09T23:23:55+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "Infostealer Logs Expose Replayable AI Tokens That Can Bypass MFA",
+      "raw_title": "Infostealer Logs Expose Replayable AI Tokens That Can Bypass MFA",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6720e60cd648c162632c9332d06a44bf658755cfba82feef74c1a8d9feb26ce4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:17:59.269742+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題が情報窃取マルウェアによるAIアカウントの乗っ取りとAIトークンの悪用であるため。",
+        "tags": [
+          "AI",
+          "フィッシング",
+          "認証"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "情報窃取マルウェアがAIユーザーアカウントを乗っ取り、GoogleやAnthropicなどのモデルプロバイダーのツールへの不正アクセスを可能にする「盗まれたキー」を作成していることが判明しました。Lumma StealerやVidarなどの情報窃取マルウェアは、侵害されたシステムから認証情報、セッショントークン、APIキーなど広範なデータを収集できます。",
+        "financial_impact": "金融機関がAIサービスを業務で利用している場合、従業員のアカウントが情報窃取マルウェアによって侵害されると、AIサービスへの不正アクセスや機密情報の漏洩につながる可能性があります。",
+        "recommended_actions": [
+          "従業員が利用するAIサービスの認証情報やセッショントークンが情報窃取マルウェアによって窃取されていないか、ログやセキュリティツールで確認する",
+          "情報窃取マルウェアへの対策状況（エンドポイントセキュリティ、メールセキュリティなど）を再確認し、必要に応じて強化を検討する"
+        ],
+        "reason": "重要度は、AIサービスの利用状況によって影響が異なるため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、AI利用状況の確認が必要なため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7554102078b435388fafd4cc7f28842e1bca5530e4d49a9b7dfd726bdc4b54b6",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/us-agencies-warn-china-is-systematically-extracting-frontier-ai-capabilities/",
+      "canonical_url": "https://www.securityweek.com/us-agencies-warn-china-is-systematically-extracting-frontier-ai-capabilities/",
+      "published_at": "2026-09-09T21:32:13+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "US Agencies Warn China Is Systematically Extracting Frontier AI Capabilities",
+      "raw_title": "US Agencies Warn China Is Systematically Extracting Frontier AI Capabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1810342232aecdafc7ef80665a74d39a90ec293137f43ed28dff0d0cefa676fc",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:18:15.995994+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIモデルへの攻撃手法と国家によるAI能力の抽出に関する警告であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "米国政府機関は、中国が「蒸留（Distillation）」と呼ばれる手法を用いて、最先端のAIモデルから出力や推論プロセスを抽出し、別のモデルのトレーニングに利用していると警告しました。",
+        "financial_impact": "金融機関がAIモデルを導入・利用している場合、AIモデルへの攻撃手法に関する情報として関係します。直接的な影響は記事からは確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIモデルへの攻撃手法に関する情報であり、金融機関でのAI利用状況により適用性が異なるため「中」です。確認目安は、具体的な脅威や短期的な対応期限が記事に示されていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:92e32f753cebfcdefdb28dfa00233988a2791b2f2b2eed8444f57993e3b79280",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/meta-launches-personal-ai-agent-muse-emphasizes-safety-and-privacy/",
+      "canonical_url": "https://www.securityweek.com/meta-launches-personal-ai-agent-muse-emphasizes-safety-and-privacy/",
+      "published_at": "2026-09-09T21:00:00+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "Meta Launches Personal AI Agent, Muse, Emphasizes Safety and Privacy",
+      "raw_title": "Meta Launches Personal AI Agent, Muse, Emphasizes Safety and Privacy",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ecf6242d4e0fb0449420f25d828cb3447b53e69f6eab4b09b67e8292e9450bfc",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:18:32.781731+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIエージェントの発表とそれに伴うリスク・安全性に関するものであるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Metaが個人向けAIエージェント「Muse」を発表しました。Museは専用のセキュアな仮想マシン上で動作し、エージェントとユーザーデータを保護すると強調されています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AIエージェントの一般的な動向として、将来的なリスクや機会を検討する上での参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関の業務に直接的な影響を与える情報ではなく、一般的なAI技術動向に関する発表であるため「低」です。確認目安は、具体的な脅威や対応期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:8abca2d5974c3170aac370fbf07368d943b91ce0c59bdd6c060ecc7d023d5020",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/webinar-learn-how-to-answer-are-we.html",
+      "canonical_url": "https://thehackernews.com/2026/09/webinar-learn-how-to-answer-are-we.html",
+      "published_at": "2026-09-09T20:57:36+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "Webinar: Learn How to Answer “Are We Exposed?” Faster After a New CVE",
+      "raw_title": "Webinar: Learn How to Answer “Are We Exposed?” Faster After a New CVE",
+      "raw_excerpt": null,
+      "content_hash": "sha256:399f0f286bc67f06cd336d773274246abdb5ac842d3013272267f1aec59e137f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:18:49.638457+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性や攻撃に関する情報ではなく、一般的なセキュリティ運用に関するウェビナーの告知が主題であるため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、新たなCVEが公開された際に、セキュリティチームが自社のシステムが影響を受けるかどうかを迅速に判断するための課題と、その解決策を提示するウェビナーの告知です。AIによる脆弱性発見の加速により、この判断の遅れがより重要になると述べています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。セキュリティ運用に関する一般的な情報であり、特定の脅威や規制に関するものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威やインシデントに関する情報ではなく、一般的なセキュリティ運用に関するウェビナーの告知であるため「低」です。確認目安は、具体的な対応を要する情報や期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c33829733f1a8e1bb99008c13e51c6a04377b35d772d5f55e215d6c417eaa53b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/deepseek-harness-flaw-let-ai-agents.html",
+      "canonical_url": "https://thehackernews.com/2026/09/deepseek-harness-flaw-let-ai-agents.html",
+      "published_at": "2026-09-09T20:17:07+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "DeepSeek Harness Flaw Let AI Agents Disable Their Own File Sandbox Without Approval",
+      "raw_title": "DeepSeek Harness Flaw Let AI Agents Disable Their Own File Sandbox Without Approval",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ee0a9e4982916ad7c796d962c99fbe77e69ff6ffb247955e2f608b49d0189ccf",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:19:06.788478+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントのセキュリティに関する脆弱性が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "DeepSeekのオープンソースAIコーディングエージェントツール「DeepSeek Harness」に脆弱性が発見されました。これにより、サンドボックス内で動作するエージェントが、単一のコマンドで自身のサンドボックス機能を無効化できる状態でした。",
+        "financial_impact": "金融機関がDeepSeek HarnessをAIコーディングエージェントとして利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "DeepSeek Harnessの利用有無と影響バージョンを確認する",
+          "ベンダーから提供される修正パッチや緩和策の情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、AIエージェントの利用が限定的である可能性があり、金融機関への直接的な影響が不確実なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c3a171cdeb601849928646f739fbeb69ce9844dbf6dd478e269d75c2b270a439",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ics-patch-tuesday-schneider-electric-siemens-fix-critical-flaws/",
+      "canonical_url": "https://www.securityweek.com/ics-patch-tuesday-schneider-electric-siemens-fix-critical-flaws/",
+      "published_at": "2026-09-09T19:49:30+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "ICS Patch Tuesday: Schneider Electric, Siemens Fix Critical Flaws",
+      "raw_title": "ICS Patch Tuesday: Schneider Electric, Siemens Fix Critical Flaws",
+      "raw_excerpt": null,
+      "content_hash": "sha256:df3cdd7a995ac698d02978635cd7a90f32e41b9def4af62d8e9404aacf19c265",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:19:24.021110+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "産業用制御システム製品の脆弱性修正に関する記事であるため。",
+        "tags": [
+          "パッチ",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Schneider ElectricとSiemensが、産業用制御システム(ICS)製品における重大な脆弱性に対するパッチを公開しました。AVEVAとRockwell Automationも同様に脆弱性修正のためのパッチをリリースしています。",
+        "financial_impact": "金融機関が産業用制御システム製品を直接利用している場合、またはサプライチェーンを通じて間接的に影響を受ける場合に限り関係します。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "自社および委託先において、Schneider Electric、Siemens、AVEVA、Rockwell AutomationのICS製品の利用有無と影響バージョンを確認する",
+          "該当製品を利用している場合、各ベンダーの公開情報を参照し、速やかにパッチ適用または緩和策の実施を検討する"
+        ],
+        "reason": "重要度は、ICS製品の脆弱性修正に関する情報であり、金融機関での直接的な利用が限定的である可能性が高いため「中」です。確認目安は、KEV新規追加のCVEがなく、即時対応を要する時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6724d5b1aa8774968772018ffb882768555cc1ec89387b6d9de745458202d82e",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/alby-hub-critical-flaw-could-let.html",
+      "canonical_url": "https://thehackernews.com/2026/09/alby-hub-critical-flaw-could-let.html",
+      "published_at": "2026-09-09T19:43:04+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "Alby Hub Critical Flaw Could Let Attackers Take Over Internet-Exposed Bitcoin Wallets",
+      "raw_title": "Alby Hub Critical Flaw Could Let Attackers Take Over Internet-Exposed Bitcoin Wallets",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ff4bd2675557affa4e4dad8198864b34d554a6a076de352494ca94a22fc646f4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:19:41.175698+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Bitcoinウォレットのソフトウェアにおける重大な脆弱性が主題であるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Bitcoinウォレット企業Albyは、Alby Hubの重大な脆弱性について警告しました。この脆弱性は、ウォレットがインターネットからアクセス可能な状態にある場合に限り、攻撃者がウォレットを乗っ取り、資金を送金できる可能性がありました。影響を受けるのはバージョンv1.7.0以降です。",
+        "financial_impact": "金融機関がAlby Hubを直接利用している場合、または顧客が利用している場合に間接的な影響が生じる可能性があります。ただし、Alby Hubは自己ホスト型であり、インターネットに公開されている場合に限定されるため、影響は限定的であると考えられます。",
+        "recommended_actions": [
+          "Alby Hubの利用有無と、インターネット公開状態にあるかを確認する",
+          "Alby Hubを利用している場合、ベンダーの公開情報を確認し、推奨される緩和策やアップデートを適用する"
+        ],
+        "reason": "重要度は、対象製品の利用が限定的であり、インターネット公開という特定の条件でのみ影響があるため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:898e89677a090ce8f206c64256acf99eb42c2273c7d901664b6a5b6bc3122bfb",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/us-agencies-accuse-china-ai-firms-of.html",
+      "canonical_url": "https://thehackernews.com/2026/09/us-agencies-accuse-china-ai-firms-of.html",
+      "published_at": "2026-09-09T18:32:26+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "U.S. Agencies Accuse China AI Firms of Distilling Claude, GPT, Gemini, and Grok",
+      "raw_title": "U.S. Agencies Accuse China AI Firms of Distilling Claude, GPT, Gemini, and Grok",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f7ee81b8aecaa4591a5d7e71766587a2b43ae55cdbfe58f4948f5915f6faf6c4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:19:58.239485+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "中国のAI企業が米国の主要AIモデルの機能を抽出しているという、AIに関連するリスクが主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "米国サイバーセキュリティ・情報機関は、中国を拠点とするAI企業が、蒸留攻撃を通じて米国の最先端AIモデル（Claude、GPT、Gemini、Grokなど）の独自の機能や能力を「体系的に抽出」していると非難しました。これは産業規模で行われ、中国のAI開発戦略の「核」をなしているとされています。",
+        "financial_impact": "金融機関がAIモデルを開発・利用する際に、知的財産権侵害やモデルのセキュリティに関するリスクを考慮する必要があるため、中長期的な参考情報となります。直接的なシステム侵害や情報漏えいの報告はありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関がAIモデルの利用・開発において考慮すべき中長期的なリスク情報であるため「中」です。確認目安は、具体的な緊急対応や期限が示されておらず、状況把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:375dd8a3b2ed53b2a949659779634d8e6b3b1ed0987325eac351e3335fe5c1a0",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/chrome-v8-zero-day-exploited-in-wild.html",
+      "canonical_url": "https://thehackernews.com/2026/09/chrome-v8-zero-day-exploited-in-wild.html",
+      "published_at": "2026-09-09T18:11:03+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "Chrome V8 Zero-Day Exploited in the Wild Enables Code Execution Inside Sandbox",
+      "raw_title": "Chrome V8 Zero-Day Exploited in the Wild Enables Code Execution Inside Sandbox",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6b2d8f2ff3a36134bfe57e60eba6b64a00863b81c9f422c41b133847aae31363",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:20:15.308795+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Google ChromeのV8エンジンにおけるゼロデイ脆弱性と実悪用が主題であるため。",
+        "tags": [
+          "ゼロデイ",
+          "悪用確認済み",
+          "パッチ",
+          "CVE"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "Googleは、ChromeのJavaScriptおよびWebAssemblyエンジンであるV8における境界外書き込みのゼロデイ脆弱性(CVE-2026-87491)を修正するアップデートを公開しました。この脆弱性は実悪用が確認されています。",
+        "financial_impact": "金融機関でGoogle Chromeを業務利用している場合、この脆弱性の影響を受ける可能性があります。特に、インターネットに接続された端末や、機密情報を扱う環境での利用状況を確認する必要があります。",
+        "recommended_actions": [
+          "自社および委託先におけるGoogle Chromeの利用状況とバージョンを確認する",
+          "Google Chromeを最新バージョンにアップデートする",
+          "実悪用の有無を示すログや挙動がないか確認する"
+        ],
+        "reason": "重要度は、広く利用されるGoogle Chromeのゼロデイ脆弱性であり、実悪用が確認されているため「高」です。確認目安は、実悪用が確認されており、即座の対応が求められるため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2609ff10c09fe47e2b8ba0e942135a5ba20abd44dec79ed727c12cd590608bf5",
+      "source_id": "fsa",
+      "source_name": "金融庁",
+      "source_type": "規制・監督",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.fsa.go.jp/ordinary/chuui/chuui_phishing.html",
+      "canonical_url": "https://www.fsa.go.jp/ordinary/chuui/chuui_phishing.html",
+      "published_at": "2026-09-09T16:00:00+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "「インターネット取引サービスへの不正アクセス・不正取引にご注意ください」のページを更新しました。",
+      "raw_title": "「インターネット取引サービスへの不正アクセス・不正取引にご注意ください」のページを更新しました。",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b429829776c25c1dc0d20b5c1fba40f2111c4409688f4882ced1968ca1bc5970",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:20:32.501002+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "金融庁による注意喚起の更新であり、規制・監督機関からの情報であるため。",
+        "tags": [
+          "規制",
+          "監督",
+          "フィッシング"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "金融庁は、インターネット取引サービスにおける不正アクセスや不正取引に関する注意喚起ページを更新しました。これは、金融機関の顧客が被害に遭うリスクに対する継続的な警戒を促すものです。",
+        "financial_impact": "金融庁からの直接的な注意喚起であり、金融機関は顧客保護の観点から、不正アクセス・不正取引対策の状況を確認し、必要に応じて顧客への注意喚起を強化することが求められます。",
+        "recommended_actions": [
+          "金融庁の更新された注意喚起内容を確認し、自社のインターネット取引サービスにおける不正アクセス・不正取引対策の状況を評価する",
+          "顧客への注意喚起や情報提供の内容が最新の情報に基づいているかを確認し、必要に応じて更新を検討する"
+        ],
+        "reason": "重要度は、金融庁からの直接的な注意喚起であり、顧客保護の観点から金融機関にとって重要な情報であるため「高」です。確認目安は、ページ更新であり即時対応を要する新たな脅威情報ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:64a44ea9bc6eac486e0136b10d61629bfd25b351ceffb4eaee004283a099a759",
+      "source_id": "jpcert_cc",
+      "source_name": "JPCERT/CC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.jpcert.or.jp/at/2026/at260026.html",
+      "canonical_url": "https://www.jpcert.or.jp/at/2026/at260026.html",
+      "published_at": "2026-09-09T11:20:00+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "注意喚起: Adobe AcrobatおよびReaderの脆弱性（APSB26-141）に関する注意喚起  (公開)",
+      "raw_title": "注意喚起: Adobe AcrobatおよびReaderの脆弱性（APSB26-141）に関する注意喚起  (公開)",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7041405c1f374fd68a3e4d86a2a7df3bbaf427c0d5d2a158073e2fbda9e58464",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "feed_summary",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:20:49.518565+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Adobe AcrobatおよびReaderの脆弱性に関する注意喚起が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "JPCERT/CCがAdobe AcrobatおよびReaderの脆弱性（APSB26-141）に関する注意喚起を公開しました。この脆弱性の詳細や影響については記事に具体的な記述がありません。",
+        "financial_impact": "金融機関でAdobe AcrobatおよびReaderを利用している場合に限り、適用性確認の対象になります。記事からは脆弱性の詳細や影響範囲が不明なため、具体的な関係性は確認できません。",
+        "recommended_actions": [
+          "Adobe AcrobatおよびReaderの利用有無と影響バージョンを確認する",
+          "Adobeからの一次情報（APSB26-141）を確認し、脆弱性の詳細と対応策を評価する"
+        ],
+        "reason": "重要度は、広く利用される製品の脆弱性だが、記事に詳細な影響や悪用状況の記述がなく適用範囲が不確実なため「中」です。確認目安は、悪用や緊急対応の具体的な時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7ba32e43849d337f75dd388589252573bf788a1e0244df6e7e05cb18687fef64",
+      "source_id": "jpcert_cc",
+      "source_name": "JPCERT/CC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.jpcert.or.jp/at/2026/at260025.html",
+      "canonical_url": "https://www.jpcert.or.jp/at/2026/at260025.html",
+      "published_at": "2026-09-09T11:20:00+09:00",
+      "fetched_at": "2026-09-10T09:15:56.596863+09:00",
+      "title": "注意喚起: 2026年9月マイクロソフトセキュリティ更新プログラムに関する注意喚起  (公開)",
+      "raw_title": "注意喚起: 2026年9月マイクロソフトセキュリティ更新プログラムに関する注意喚起  (公開)",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d627302aa25a83ac245201c212e82d81192e8362dc9fa2d7f1fbbae6027cd249",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "feed_summary",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-10T09:21:06.582486+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "マイクロソフトのセキュリティ更新プログラムに関する注意喚起が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "JPCERT/CCが2026年9月のマイクロソフトセキュリティ更新プログラムに関する注意喚起を公開しました。この更新プログラムには複数の脆弱性に対する修正が含まれています。",
+        "financial_impact": "多くの金融機関でマイクロソフト製品が利用されているため、これらの製品に影響する脆弱性が含まれる可能性があります。自社で利用している製品の適用性確認が必要です。",
+        "recommended_actions": [
+          "自社で利用しているマイクロソフト製品の棚卸しを行い、影響を受ける可能性のある製品を特定する",
+          "マイクロソフトが公開しているセキュリティ更新プログラムの詳細を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、マイクロソフト製品の利用が広範であるものの、具体的な脆弱性の詳細や金融機関への直接的な影響が記事からは不明確なため「中」です。確認目安は、一般的な月例セキュリティ更新プログラムに関する注意喚起であり、緊急対応を要する具体的な時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
