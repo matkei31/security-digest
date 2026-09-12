@@ -29,8 +29,14 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Generate topic pages from committed corpus
+        run: python3 topic_pages.py
+
       - name: Run full unittest suite
         run: python3 -m unittest discover -p "test_*.py"
+
+      - name: Check generated working-tree whitespace
+        run: git diff --check
 
       - name: Check pull request diff
         env:

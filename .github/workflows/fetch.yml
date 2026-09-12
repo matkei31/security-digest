@@ -31,6 +31,9 @@ jobs:
           NVD_API_KEY: ${{ secrets.NVD_API_KEY }}
         run: python3 fetch.py
 
+      - name: Generate topic pages
+        run: python3 topic_pages.py
+
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
