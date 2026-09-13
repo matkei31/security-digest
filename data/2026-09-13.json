@@ -1,0 +1,320 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-09-13",
+  "generated_at": "2026-09-13T09:01:42.948180+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 5,
+    "ai_attempted_count": 5,
+    "ai_success_count": 5,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 5
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 5,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 3,
+      "参考": 2,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 1,
+      "攻撃・脅威動向": 1,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 3,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象5件｜重要度「高」0件｜本日確認0件｜今週確認3件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が3件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "CISAは、JFrog Artifactory、ConnectWise ScreenConnect、MikroTik RouterOSに影響を与える5つの脆弱性を、実悪用が確認されたとしてKEVカタログに追加しました。これらの脆弱性には、CVE-2026-42016（CVSSスコア8.1）などが含まれます。\n金融機関でJFrog Artifactory、ConnectWise ScreenConnect、MikroTik RouterOSのいずれかを利用している場合に限り、適用性確認の対象になります。記事からは利用有無を確認できません。",
+      "複数のスパイ活動を目的とした脅威アクターが、BlueMoon Exploit Kitを日和見的かつ急いで展開していることが確認されました。このエクスプロイトキットは、最近のChromeとWindowsのゼロデイ脆弱性を連鎖的に悪用しています。\n金融機関でChromeやWindowsを利用している場合に関係します。記事からは具体的な攻撃対象や影響範囲が不明なため、直接的な影響は限定的である可能性があります。"
+    ],
+    "check_items": [
+      "JFrog Artifactory、ConnectWise ScreenConnect、MikroTik RouterOSの利用有無と影響バージョンを確認する",
+      "自社および委託先におけるChromeとWindowsの利用状況を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:0ddc7c58e041304080d6a0b0c9112048113b0133c17e5268e4c73655190613eb",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/cisa-adds-5-actively-exploited.html",
+      "canonical_url": "https://thehackernews.com/2026/09/cisa-adds-5-actively-exploited.html",
+      "published_at": "2026-09-13T00:54:45+09:00",
+      "fetched_at": "2026-09-13T09:00:16.165121+09:00",
+      "title": "CISA Adds 5 Actively Exploited Artifactory, ScreenConnect, and RouterOS Flaws to KEV",
+      "raw_title": "CISA Adds 5 Actively Exploited Artifactory, ScreenConnect, and RouterOS Flaws to KEV",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2c852e7c0712046551e83959b32f9e051330ecf3079b263be4bce6d11cbb0036",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-13T09:00:18.521299+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CISA KEVカタログへの脆弱性追加が主題であるため。",
+        "tags": [
+          "KEV",
+          "悪用確認済み",
+          "CVE"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "CISAは、JFrog Artifactory、ConnectWise ScreenConnect、MikroTik RouterOSに影響を与える5つの脆弱性を、実悪用が確認されたとしてKEVカタログに追加しました。これらの脆弱性には、CVE-2026-42016（CVSSスコア8.1）などが含まれます。",
+        "financial_impact": "金融機関でJFrog Artifactory、ConnectWise ScreenConnect、MikroTik RouterOSのいずれかを利用している場合に限り、適用性確認の対象になります。記事からは利用有無を確認できません。",
+        "recommended_actions": [
+          "JFrog Artifactory、ConnectWise ScreenConnect、MikroTik RouterOSの利用有無と影響バージョンを確認する",
+          "各製品ベンダーの一次情報を確認し、パッチや緩和策の適用要否を評価する"
+        ],
+        "reason": "重要度は、対象製品の金融機関での利用状況が記事から不明で、適用範囲が不確実なため「中」です。確認目安は、KEV掲載だが直近の新規追加ではなく、即時対応の根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5fcbcfa827600c4b49eb9a74cc3312ce284b640bc59e97ce4d4b7a0547eec61b",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/bluemoon-exploit-kit-chains-recent-chrome-windows-zero-days/",
+      "canonical_url": "https://www.securityweek.com/bluemoon-exploit-kit-chains-recent-chrome-windows-zero-days/",
+      "published_at": "2026-09-12T20:10:00+09:00",
+      "fetched_at": "2026-09-13T09:00:16.165121+09:00",
+      "title": "BlueMoon Exploit Kit Chains Recent Chrome, Windows Zero-Days",
+      "raw_title": "BlueMoon Exploit Kit Chains Recent Chrome, Windows Zero-Days",
+      "raw_excerpt": null,
+      "content_hash": "sha256:603b0a69ea4c2b9f928e86a671349376f24de0db5a57ce7ac60633253b1a02bc",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-13T09:00:35.701179+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "BlueMoon Exploit Kitによる攻撃手法と脅威アクターの動向が主題であるため。",
+        "tags": [
+          "ゼロデイ",
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "複数のスパイ活動を目的とした脅威アクターが、BlueMoon Exploit Kitを日和見的かつ急いで展開していることが確認されました。このエクスプロイトキットは、最近のChromeとWindowsのゼロデイ脆弱性を連鎖的に悪用しています。",
+        "financial_impact": "金融機関でChromeやWindowsを利用している場合に関係します。記事からは具体的な攻撃対象や影響範囲が不明なため、直接的な影響は限定的である可能性があります。",
+        "recommended_actions": [
+          "自社および委託先におけるChromeとWindowsの利用状況を確認する",
+          "ベンダーからのセキュリティアップデートや緩和策の情報を確認する"
+        ],
+        "reason": "重要度は、一般的なOSとブラウザのゼロデイ悪用であり、金融機関での利用可能性を考慮すると適用性評価の価値があるため「中」です。確認目安は、具体的な攻撃対象や期限が記事から不明であり、直近のKEV新規追加も確認されないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d66479afd965673d3489c296ef999ffbeeaee9e247c41fe7d553a4d56eeb46fa",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/when-whole-company-adopts-ai-what-it.html",
+      "canonical_url": "https://thehackernews.com/2026/09/when-whole-company-adopts-ai-what-it.html",
+      "published_at": "2026-09-12T19:24:44+09:00",
+      "fetched_at": "2026-09-13T09:00:16.165121+09:00",
+      "title": "When the Whole Company Adopts AI: What It Does to Your SOC",
+      "raw_title": "When the Whole Company Adopts AI: What It Does to Your SOC",
+      "raw_excerpt": null,
+      "content_hash": "sha256:fff080759bcd1f988613c8fcdf167e149a89ac489cc7f00592ccd7b938187702",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-13T09:00:53.104512+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題が、企業におけるAIツールの導入がセキュリティ運用に与える影響についてであるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "企業全体でAIツールやAIエージェントの導入が進むにつれて、セキュリティ運用センター(SOC)ではAIツールに起因するアラートが急増しています。これはAIに対する攻撃ではなく、開発者によるコーディングエージェントの利用や、非技術系スタッフによる消費者向けAIツールの企業アカウントでの利用など、組織内での日常的なAI利用の痕跡が原因です。",
+        "financial_impact": "金融機関においてもAIツールの導入が進むにつれて、セキュリティ運用における新たな課題やアラートの増加が想定されます。これにより、既存のセキュリティ運用体制やツールの見直しが必要となる可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関におけるAI導入に伴うセキュリティ運用の課題提起であり、中長期的な検討が必要となるため「中」です。確認目安は、具体的な緊急対応や期限の記述がなく、状況把握や中長期的な検討が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f05890c0a6ffeeaa8052a314a8ec36a82f351ccab9309b2c97f40414913d9ead",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/openai-agents-linked-to-rubygems.html",
+      "canonical_url": "https://thehackernews.com/2026/09/openai-agents-linked-to-rubygems.html",
+      "published_at": "2026-09-12T18:07:56+09:00",
+      "fetched_at": "2026-09-13T09:00:16.165121+09:00",
+      "title": "OpenAI Agents Linked to RubyGems Campaign That Gained RCE on RubyDoc Servers",
+      "raw_title": "OpenAI Agents Linked to RubyGems Campaign That Gained RCE on RubyDoc Servers",
+      "raw_excerpt": null,
+      "content_hash": "sha256:fc67e7057dab652fd450f64b4c5bae09a04f5026df7925130d9b0ed10c49f9c0",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-13T09:01:11.097245+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "OpenAIエージェントが攻撃に利用された事例であり、AI技術の悪用リスクが主題であるため。",
+        "tags": [
+          "AI",
+          "サプライチェーン",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "2026年5月にRubyGemsを標的とした「大規模な悪意のある攻撃」は、OpenAIエージェントの群れによって実行されたことが新たなレポートで明らかになりました。この攻撃により、RubyDocサーバー上でリモートコード実行（RCE）の権限が獲得されました。",
+        "financial_impact": "金融機関がRubyGemsやRubyDocサーバーを直接利用している場合、またはサプライチェーンの一部として利用している場合に影響する可能性があります。AIエージェントによる攻撃手法は、将来的に金融機関を標的とする攻撃にも応用されるリスクがあり、動向を注視する必要があります。",
+        "recommended_actions": [
+          "自社および委託先でRubyGemsまたはRubyDocサーバーの利用有無を確認する",
+          "AIエージェントが悪用された攻撃手法について、自社の脅威インテリジェンスに反映させる",
+          "AI利用におけるセキュリティリスク評価と対策について、関連部署と協議する"
+        ],
+        "reason": "重要度は、AIエージェントによる攻撃事例であり、将来的な脅威動向として評価する価値があるため「中」です。確認目安は、過去のインシデントに関する分析レポートであり、即時対応を要する新たな脅威や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d89ce8dbe6ae6c2a3be730768ac068752d086895aef460952ee1c3f57d87886a",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/users-in-houthi-held-yemen-tried-to-develop-advanced-weapons-with-ai-anthropic-says/",
+      "canonical_url": "https://www.securityweek.com/users-in-houthi-held-yemen-tried-to-develop-advanced-weapons-with-ai-anthropic-says/",
+      "published_at": "2026-09-12T10:50:53+09:00",
+      "fetched_at": "2026-09-13T09:00:16.165121+09:00",
+      "title": "Users in Houthi-Held Yemen Tried to Develop Advanced Weapons With AI, Anthropic Says",
+      "raw_title": "Users in Houthi-Held Yemen Tried to Develop Advanced Weapons With AI, Anthropic Says",
+      "raw_excerpt": null,
+      "content_hash": "sha256:362ce8fc4c5aeefd2efbb8f6ca7b95beafff41f4acb8ddb267631a8fc69b7a22",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-13T09:01:27.947676+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIの悪用事例と、それに伴うリスクが主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Anthropicの報告によると、フーシ派支配下のイエメンのユーザーがAIを利用して高度な兵器開発を試みたものの、実用的なデバイスの配備には至らず、誘導ロケットの試験も失敗に終わりました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AIの悪用に関する一般的な脅威動向として、中長期的なリスク評価の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIの悪用事例として中長期的なリスク評価の参考となるため「中」です。確認目安は、金融機関への直接的な影響や緊急対応の必要性が記事から確認できないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
