@@ -1,0 +1,854 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-09-15",
+  "generated_at": "2026-09-15T09:43:31.520719+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 16,
+    "ai_attempted_count": 16,
+    "ai_success_count": 15,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 16
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 13,
+      "低": 3,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 9,
+      "参考": 7,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 2,
+      "攻撃・脅威動向": 3,
+      "インシデント": 4,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 5,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象16件｜重要度「高」0件｜本日確認0件｜今週確認9件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が9件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "研究者らは、Intel TDXおよびAMD SEV-SNPの機密コンピューティングにおけるメモリ保護を破る新しいハードウェア攻撃「DDRop」を公開しました。この攻撃は、サーバーのメモリへの書き込みを密かに破棄することで、プロセッサが古い暗号化データを現在のものとして読み続けるように仕向けます。\n金融機関がIntel TDXまたはAMD SEV-SNPを採用した機密コンピューティング環境を利用している場合に、そのセキュリティモデルへの影響を評価する必要があります。攻撃にはサーバーソフトウェアの制御と物理アクセスが必要であり、適用範囲は限定的である可能性があります。",
+      "タイの大手ブロードバンドプロバイダー3BBのネットワーク内で攻撃者が活動し、正規の管理ツール「MeshCentral」を悪用して内部マシンを遠隔操作していたことが判明しました。攻撃者はインターネット上に公開していたサーバーに自身のツールと標\n金融機関への直接的な影響は確認できず、他業界のインシデント事例として参考情報にとどまります。ただし、委託先が同様の管理ツールを利用している場合は、そのセキュリティ対策を確認する価値はあります。"
+    ],
+    "check_items": [
+      "自社および委託先でIntel TDXまたはAMD SEV-SNPを利用した機密コンピューティング環境の有無を確認する",
+      "Telegramデスクトップ版の利用有無と、チャットのエクスポート機能の利用状況を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:d1e3ec21956720a9ee1f45d31272f848bdec4cc93506e6226bb120d1e660ff99",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/new-ddrop-attack-breaks-intel-tdx-and.html",
+      "canonical_url": "https://thehackernews.com/2026/09/new-ddrop-attack-breaks-intel-tdx-and.html",
+      "published_at": "2026-09-15T03:02:13+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "New DDRop Attack Breaks Intel TDX and AMD SEV-SNP Confidential Computing",
+      "raw_title": "New DDRop Attack Breaks Intel TDX and AMD SEV-SNP Confidential Computing",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3c60e3af54ff9fe4ac05f3743cbaaf0bde2e91dd66f6724afb048d2b5774a533",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:39:00.549936+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "IntelとAMDの機密コンピューティング技術を標的とした新しいハードウェア攻撃手法が主題であるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "研究者らは、Intel TDXおよびAMD SEV-SNPの機密コンピューティングにおけるメモリ保護を破る新しいハードウェア攻撃「DDRop」を公開しました。この攻撃は、サーバーのメモリへの書き込みを密かに破棄することで、プロセッサが古い暗号化データを現在のものとして読み続けるように仕向けます。",
+        "financial_impact": "金融機関がIntel TDXまたはAMD SEV-SNPを採用した機密コンピューティング環境を利用している場合に、そのセキュリティモデルへの影響を評価する必要があります。攻撃にはサーバーソフトウェアの制御と物理アクセスが必要であり、適用範囲は限定的である可能性があります。",
+        "recommended_actions": [
+          "自社および委託先でIntel TDXまたはAMD SEV-SNPを利用した機密コンピューティング環境の有無を確認する",
+          "当該技術のベンダーから、DDRop攻撃に関する詳細情報と推奨される緩和策が公開されていないか確認する"
+        ],
+        "reason": "重要度は、特定のハードウェア技術に限定され、攻撃成立にサーバーソフトウェアの制御と物理アクセスが必要なため「中」です。確認目安は、新しい攻撃手法の開示であり、直ちに広範な影響が懸念される状況ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2e4ea22accc39550c1ec2a6ae5eb27806ba23a0f4beed8fc531c0cfbb3f00226",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/3bb-attacker-used-meshcentral-backdoor.html",
+      "canonical_url": "https://thehackernews.com/2026/09/3bb-attacker-used-meshcentral-backdoor.html",
+      "published_at": "2026-09-15T03:01:49+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "3BB Attacker Used MeshCentral Backdoor for Root Access, Targeted Subscriber Credentials",
+      "raw_title": "3BB Attacker Used MeshCentral Backdoor for Root Access, Targeted Subscriber Credentials",
+      "raw_excerpt": null,
+      "content_hash": "sha256:75e5f1da303142f515a8c8a228720a091b7c0f566293dcde714146ce934c001d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:39:17.442370+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "タイのブロードバンドプロバイダーに対する実際のネットワーク侵入と認証情報窃取が主題であるため。",
+        "tags": [
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "タイの大手ブロードバンドプロバイダー3BBのネットワーク内で攻撃者が活動し、正規の管理ツール「MeshCentral」を悪用して内部マシンを遠隔操作していたことが判明しました。攻撃者はインターネット上に公開していたサーバーに自身のツールと標",
+        "financial_impact": "金融機関への直接的な影響は確認できず、他業界のインシデント事例として参考情報にとどまります。ただし、委託先が同様の管理ツールを利用している場合は、そのセキュリティ対策を確認する価値はあります。",
+        "recommended_actions": [],
+        "reason": "重要度は、他業界のインシデント事例であり、金融機関への直接的な影響が確認できないため「中」です。確認目安は、具体的な脅威や期限が記事から確認できず、一般的な情報収集として「今週確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7b20c25c567224b9c49589c2110e2a141bb8f86935f173658bcc6dace3bd88d1",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/telegram-desktop-flaw-lets-hidden.html",
+      "canonical_url": "https://thehackernews.com/2026/09/telegram-desktop-flaw-lets-hidden.html",
+      "published_at": "2026-09-15T02:58:16+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "Telegram Desktop Flaw Lets Hidden JavaScript Exfiltrate Messages From HTML Exports",
+      "raw_title": "Telegram Desktop Flaw Lets Hidden JavaScript Exfiltrate Messages From HTML Exports",
+      "raw_excerpt": null,
+      "content_hash": "sha256:822dc0c492eeab2d6baae5f9c3e8d27b797c09106b9025c3b8e75ba7c65a15f2",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:39:34.828243+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Telegramデスクトップ版の脆弱性が主題であり、その悪用方法について解説しているため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Telegramデスクトップ版の脆弱性により、ボットのメッセージがチャットのHTMLエクスポートファイル内に隠しJavaScriptを埋め込むことが可能でした。このスクリプトは、ユーザーがエクスポートファイルをWebブラウザで開いた際に実行され、ファイル内の全メッセージをコピーする可能性があります。",
+        "financial_impact": "金融機関でTelegramデスクトップ版を業務利用しており、かつチャットのエクスポート機能を利用している場合に、情報漏えいのリスクに関係する可能性があります。",
+        "recommended_actions": [
+          "Telegramデスクトップ版の利用有無と、チャットのエクスポート機能の利用状況を確認する",
+          "ベンダーからの修正情報や緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、特定のアプリケーションの利用と機能の利用に依存し、適用範囲が限定的であるため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:09d1dd4eafdffbfc8d8e23989218f89b5c06920b5a513a18d45db57a93dba409",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/red-heron-exploits-gitea-rce-to.html",
+      "canonical_url": "https://thehackernews.com/2026/09/red-heron-exploits-gitea-rce-to.html",
+      "published_at": "2026-09-15T01:56:30+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "Red Heron Exploits Gitea RCE to Compromise 13 Organizations Across Six Countries",
+      "raw_title": "Red Heron Exploits Gitea RCE to Compromise 13 Organizations Across Six Countries",
+      "raw_excerpt": null,
+      "content_hash": "sha256:10ffe9da63e6d1b3478c9a2935da8bf36eb41b11cf6eb513dd814406ee4d3452",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:39:51.996323+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国の脅威アクターによるGiteaの脆弱性悪用と多国籍キャンペーンが主題のため。",
+        "tags": [
+          "APT",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "「Red Heron」と追跡される中国の脅威アクターが、Giteaの最近公開されたリモートコード実行（RCE）脆弱性を迅速に悪用し、多国籍キャンペーンの一環としてインターネットに公開されたインスタンスを侵害しました。",
+        "financial_impact": "金融機関でGiteaを外部公開している場合、本攻撃キャンペーンの対象となる可能性があります。利用有無は記事から確認できません。",
+        "recommended_actions": [
+          "自社および委託先でGiteaの利用有無と外部公開状況を確認する",
+          "Giteaを利用している場合、ベンダーの一次情報を確認し、脆弱性への対応状況と緩和策を評価する",
+          "侵害の兆候がないか、ログやシステムを監視する"
+        ],
+        "reason": "重要度は、Giteaの利用状況が金融機関で限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、実悪用が確認されているものの、具体的な期限やKEV新規追加の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0c1a781fba3e0a0af363f056ebd751a286d5532946d29ad9b48f25f443dc9589",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/wordpress-adds-automated-plugin-reviews.html",
+      "canonical_url": "https://thehackernews.com/2026/09/wordpress-adds-automated-plugin-reviews.html",
+      "published_at": "2026-09-15T01:00:04+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "WordPress Adds Automated Plugin Reviews to Block High-Risk Updates Before Distribution",
+      "raw_title": "WordPress Adds Automated Plugin Reviews to Block High-Risk Updates Before Distribution",
+      "raw_excerpt": null,
+      "content_hash": "sha256:cd267b5805c12e01bdf451803a4e40e4cbfc87b98363869767dfdf1c2dda5a03",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:40:08.890468+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "WordPressのセキュリティ強化策に関するニュースであり、特定の脆弱性や攻撃、規制には直接該当しないため「その他」に分類します。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "WordPressは、WordPress.orgの更新APIを通じて配布されるプラグインのすべてのリリースに対し、潜在的なセキュリティ問題を分析しリスクがないことを確認するための自動セキュリティレビューを開始すると発表しました。これにより、新規プラグインだけでなく、その後の更新も継続的にレビューされます。",
+        "financial_impact": "金融機関がWordPressをウェブサイトやブログ基盤として利用している場合、プラグインのセキュリティが強化されることで、間接的にセキュリティリスクの低減に寄与する可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、WordPressのセキュリティ強化策であり、直接的な脅威や緊急対応を求めるものではないため「中」です。確認目安は、具体的な対応期限や緊急性がなく、情報収集としての価値が中心であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:161dd11ccccf6c5948903133bc0fedeb9d4da64a5c9e3e768ebeba05bc4dbabe",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/weekly-recap-rogue-ai-agents-wechat.html",
+      "canonical_url": "https://thehackernews.com/2026/09/weekly-recap-rogue-ai-agents-wechat.html",
+      "published_at": "2026-09-14T23:40:34+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "⚡ Weekly Recap: Rogue AI Agents, WeChat Worm, PaperCut Attacks, AI Espionage, and Rootkits",
+      "raw_title": "⚡ Weekly Recap: Rogue AI Agents, WeChat Worm, PaperCut Attacks, AI Espionage, and Rootkits",
+      "raw_excerpt": null,
+      "content_hash": "sha256:768e7abd4374914c02fa89542e677a74ad041a954d9cac21343a6e8b73768f47",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:40:25.936428+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の異なる脅威動向をまとめた週次記事であり、特定の主題に限定されないため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、AIが悪用される事例（エクスプロイトの高速化、防御テスト、自動化）や、モデル自体が逸脱する問題に焦点を当てた週次まとめです。その他、古い脆弱性の悪用、新たなエクスプロイトチェーン、露出したシステム、弱いデフォルト設定など、一般的なサイバー脅威動向も取り上げています。",
+        "financial_impact": "本記事は複数の脅威動向をまとめた週次リキャップであり、金融機関に直接関係する具体的な製品やインシデントは特定されていません。一般的な情報収集として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や具体的なアクションを伴わない週次まとめ記事であり、個別のトリアージ根拠に乏しいため「低」です。確認目安は、具体的な脅威や期限に関する情報がなく、短期的な対応を要しないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4f2f57de9c0d5b550e85319b46ce60542a00e8d07a12803e59b90ef0fcb5f7c2",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/beijing-hits-back-at-anthropic-ceos-call-to-curb-chinas-ai-development/",
+      "canonical_url": "https://www.securityweek.com/beijing-hits-back-at-anthropic-ceos-call-to-curb-chinas-ai-development/",
+      "published_at": "2026-09-14T23:28:26+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "Beijing Hits Back at Anthropic CEO’s Call to Curb China’s AI Development",
+      "raw_title": "Beijing Hits Back at Anthropic CEO’s Call to Curb China’s AI Development",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b7c4db313d50da7b5c2ac65cea3d9e339d520bb4d50062de97181846d4eb3ce4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:40:42.922693+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AI開発に関する国際的な議論が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "AnthropicのCEOが中国のAI開発を抑制するよう提言したことに対し、中国外交部が全ての関係者がAIについて協力すべきだと反論しました。",
+        "financial_impact": "金融機関のAI利用やAI戦略に直接的な影響を与えるものではなく、国際的なAI政策動向に関する参考情報です。",
+        "recommended_actions": [],
+        "reason": "重要度は、国際的なAI政策に関する議論であり、金融機関への直接的な影響が限定的であるため「低」です。確認目安は、具体的な行動を促す情報ではなく、中長期的な動向把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b7e29e80ac96f5a7ed725a9a2faace8c4cf9918540857b7ae7aac16fb41e862e",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/new-warnings-about-the-risks-of-ai-to-humanity-revive-a-long-running-debate/",
+      "canonical_url": "https://www.securityweek.com/new-warnings-about-the-risks-of-ai-to-humanity-revive-a-long-running-debate/",
+      "published_at": "2026-09-14T22:31:15+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "New Warnings About the Risks of AI to Humanity Revive a Long-Running Debate",
+      "raw_title": "New Warnings About the Risks of AI to Humanity Revive a Long-Running Debate",
+      "raw_excerpt": null,
+      "content_hash": "sha256:634fd4b74cce1de6bec1eed060dbb78e24deaafcc6cf92a65594a70f0a622ebe",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:40:59.675123+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AI技術の潜在的リスクと悪用可能性が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "新しいAIモデルの高性能化に伴い、悪意ある者による悪用の可能性が高まり、AI技術が人類にもたらす潜在的リスクへの懸念が再燃しています。",
+        "financial_impact": "AI技術の悪用は金融機関の業務プロセスや顧客サービスに影響を及ぼす可能性がありますが、記事は一般的なリスク議論であり、金融機関への直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIの潜在的リスクに関する一般的な議論であり、金融機関への具体的な影響が不明確なため「中」です。確認目安は、具体的な脅威や期限が示されておらず、中長期的な動向把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7106821c8e6e798ec82640d9abaf3fd78f7162e992cddf5428957e92ea0074bd",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/personal-financial-info-exposed-in-revolut-data-breach/",
+      "canonical_url": "https://www.securityweek.com/personal-financial-info-exposed-in-revolut-data-breach/",
+      "published_at": "2026-09-14T22:03:35+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "Personal, Financial Info Exposed in Revolut Data Breach",
+      "raw_title": "Personal, Financial Info Exposed in Revolut Data Breach",
+      "raw_excerpt": null,
+      "content_hash": "sha256:184f9c4fa3fa21e5dc09329ac127f49efc06e0dbc99e593a771fccf112cbc9f8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:41:16.969055+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "金融サービス企業Revolutにおける個人情報および金融情報の漏えい事案が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "金融テクノロジー企業Revolutにおいて、政府機関を装った第三者に対し、意図せずユーザーの個人情報および金融情報が開示されるデータ漏えいが発生しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的ですが、金融サービスを提供する企業におけるデータ漏えい事例として、類似の脅威に対する情報セキュリティ対策の参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融サービス企業におけるデータ漏えい事例として、他社事例の把握と自社対策への示唆があるため「中」です。確認目安は、記事に緊急対応を要する新たな情報や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7667ec306319448c70b2551d645f38b5ba59a00e9b69618763d784dd37ade2a5",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/the-race-to-control-ai-and-protect-what-makes-us-human/",
+      "canonical_url": "https://www.securityweek.com/the-race-to-control-ai-and-protect-what-makes-us-human/",
+      "published_at": "2026-09-14T22:00:00+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "The Race to Control AI and Protect What Makes Us Human",
+      "raw_title": "The Race to Control AI and Protect What Makes Us Human",
+      "raw_excerpt": null,
+      "content_hash": "sha256:178ab85cce76e5d57a21bf3cdca94fede62d30d73eafa5bec3b8531be31f5d4c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:41:34.286949+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIの制御と人間性への影響という、AIがもたらすリスクが主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "研究者たちは、誤ったAIが人類の生存を脅かす可能性があると警告しており、たとえ有益なシステムであっても、人間性を定義する批判的思考を蝕む可能性があると指摘しています。",
+        "financial_impact": "AIの倫理的・社会的な影響に関する一般的な議論であり、金融機関への直接的な影響は限定的です。中長期的なAI戦略やガバナンス検討の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIの倫理的・社会的な影響に関する一般的な議論であり、金融機関固有の具体的な対応を求めるものではないため「低」です。確認目安は、具体的な脅威や期限が示されておらず、中長期的な視点での情報収集が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d82614babf1bb8c0d83c04733b4a4240a08e26bf11fe8ebd40baed6bafce3dd5",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/ai-changed-exposure-problem-validation.html",
+      "canonical_url": "https://thehackernews.com/2026/09/ai-changed-exposure-problem-validation.html",
+      "published_at": "2026-09-14T20:58:00+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "AI Changed the Exposure Problem. Validation Needs to Change With It.",
+      "raw_title": "AI Changed the Exposure Problem. Validation Needs to Change With It.",
+      "raw_excerpt": null,
+      "content_hash": "sha256:eda991c57944e4a71d7288e17891bbb2abe9a38b85c9d28a5f2c917ffb542938",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:41:51.445580+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAI技術の進化がサイバーセキュリティ、特に脆弱性管理に与える影響についてであるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AIの進化により脆弱性の発見が加速し、その規模が拡大している一方で、防御側はどの脆弱性に対応すべきかを見極める課題に直面しています。2026年上半期には35,853件のCVEが公開され、前年同期比で約49%増加しました。",
+        "financial_impact": "AI技術の活用は金融機関のシステム開発や運用にも広がりつつあり、AIによる脆弱性発見の加速は、金融機関の脆弱性管理プロセスや対応体制にも影響を与える可能性があります。しかし、具体的な製品やサービスへの影響は記事からは確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI技術の進展が脆弱性管理に与える中長期的な影響について考察されており、現時点での直接的な影響が不明確なため「中」です。確認目安は、具体的な脆弱性や緊急の対応を求める情報ではなく、動向把握が主となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:13ffadda8b22a730ff6bf7940c953bb790a9f14de2975d3b3d0e117ad90a8b48",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/chinese-hackers-exploit-critical-tencent-software-flaw-for-one-click-code-execution/",
+      "canonical_url": "https://www.securityweek.com/chinese-hackers-exploit-critical-tencent-software-flaw-for-one-click-code-execution/",
+      "published_at": "2026-09-14T20:51:29+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "Chinese Hackers Exploit Critical Tencent Software Flaw for One-Click Code Execution",
+      "raw_title": "Chinese Hackers Exploit Critical Tencent Software Flaw for One-Click Code Execution",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5f5fe624d9165235585a16f11e32be46171a06d75ecb251891110e12c776c9b2",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:42:08.175902+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国のハッカーグループによる特定のソフトウェアの脆弱性悪用が主題であるため。",
+        "tags": [
+          "APT",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "中国のハッカーが、Windows向け中国語入力メソッドエディタ(IME)であるTencent製ソフトウェアの重大な脆弱性を悪用し、ワンクリックでリモートから任意のコードを実行できることが確認されました。",
+        "financial_impact": "金融機関で当該Tencent製ソフトウェアを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定のTencent製ソフトウェアの脆弱性悪用であり、金融機関での利用状況が不明なため「中」です。確認目安は、実悪用が確認されているものの、KEV新規追加や緊急の対応期限が示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:09cb7f3df82b461423ae1070fd9c092b3a5a6e18f80163fecfc5c77021733507",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/cisos-race-to-control-ai-agents-without-destroying-their-value/",
+      "canonical_url": "https://www.securityweek.com/cisos-race-to-control-ai-agents-without-destroying-their-value/",
+      "published_at": "2026-09-14T19:30:00+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "CISOs Race to Control AI Agents Without Destroying Their Value",
+      "raw_title": "CISOs Race to Control AI Agents Without Destroying Their Value",
+      "raw_excerpt": null,
+      "content_hash": "sha256:437c998a86db992b4132d514ee521b53649d87e3f87acc4536b30f4d09851da5",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:42:25.063625+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIエージェントのリスクと制御に関するものであるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "セキュリティリーダーは、AIエージェントが意図しない損害を引き起こすのを防ぎつつ、サイバー衛生を近代化することに苦慮しています。",
+        "financial_impact": "金融機関においてもAIエージェントの導入が進む中で、その適切な制御とリスク管理は重要な課題となります。過剰な権限を持つAIエージェントは、情報漏えいやシステム障害のリスクを高める可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントの利用が金融機関で拡大する可能性があり、そのリスク管理が中長期的な課題となるため「中」です。確認目安は、具体的な脅威や期限が示されておらず、短期的な対応を要する情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1f707ac6b8e0a2e6313efdbed496534e884880eea36a36fd43d962b4d1bd774b",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/telus-warns-customers-of-account-breaches/",
+      "canonical_url": "https://www.securityweek.com/telus-warns-customers-of-account-breaches/",
+      "published_at": "2026-09-14T18:56:57+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "Telus Warns Customers of Account Breaches",
+      "raw_title": "Telus Warns Customers of Account Breaches",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7b7f735d2702ceaee0de6982d0841f44eb7da8bf63947064dd5d363d4e6affc3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:42:41.885543+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "顧客アカウントへの不正アクセスと個人情報・請求記録の漏えいが主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "認証"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "カナダの通信大手Telusは、盗まれた認証情報が数か月にわたるキャンペーンで利用され、加入者の個人データおよび請求記録が不正アクセスされたことを顧客に警告しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。通信事業者の顧客情報漏えい事例として、認証情報の使い回しによるリスクや、委託先における顧客データ管理の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が限定的であり、他業界のインシデント事例として参考となるため「中」です。確認目安は、記事に緊急対応を要する新たな情報や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:31900a8a63ccbc1d86fc5667708026449f76c572b2188f71b9350f51d32dc70f",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/three-jfrog-artifactory-flaws-exploited-for-backdoor-deployment/",
+      "canonical_url": "https://www.securityweek.com/three-jfrog-artifactory-flaws-exploited-for-backdoor-deployment/",
+      "published_at": "2026-09-14T18:27:29+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "Three JFrog Artifactory Flaws Exploited for Backdoor Deployment",
+      "raw_title": "Three JFrog Artifactory Flaws Exploited for Backdoor Deployment",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1006a58aa2d3f2a80c4c38352a5ae0eacb943174545afcbc44f66b605a7f7ddf",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:42:59.050880+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "JFrog Artifactoryの脆弱性が悪用され、バックドア展開に繋がった事例が主題であるため。",
+        "tags": [
+          "悪用確認済み",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "JFrog Artifactoryの3つの脆弱性が悪用され、攻撃者が認証を回避し、管理者権限に昇格してバックドアを展開したことが確認されました。",
+        "financial_impact": "JFrog Artifactoryを開発環境やサプライチェーン管理に利用している金融機関において、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "JFrog Artifactoryの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報を確認し、これらの脆弱性に対する修正パッチや緩和策の有無を評価する"
+        ],
+        "reason": "重要度は、JFrog Artifactoryの利用状況が金融機関によって異なるため、適用範囲が限定的である可能性があるため「中」です。確認目安は、悪用が確認されているものの、KEV新規追加のCVEはなく、即時対応を要する時間的根拠が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:69430c4b5fd5fb96bdcaf9718ae8ba0b165c063b6112e632f412e3958e94051c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/malicious-twitch-browser-extension.html",
+      "canonical_url": "https://thehackernews.com/2026/09/malicious-twitch-browser-extension.html",
+      "published_at": "2026-09-14T16:24:39+09:00",
+      "fetched_at": "2026-09-15T09:38:57.996044+09:00",
+      "title": "Malicious Twitch Browser Extension Leaks OAuth Tokens From Nearly 31,000 Users",
+      "raw_title": "Malicious Twitch Browser Extension Leaks OAuth Tokens From Nearly 31,000 Users",
+      "raw_excerpt": null,
+      "content_hash": "sha256:10e465a5028f3ea2e62ee575ca4ea9a790fe6714c018a47263dfddf5b33e91f4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-15T09:43:16.520188+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "悪意あるブラウザ拡張機能によるOAuthトークンの漏洩という実際の被害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "認証"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "悪意あるTwitchブラウザ拡張機能「Twitch Enhanced Viewer | JeetBot」が、約31,000ユーザーのOAuthトークンをロシアの商用ボットサービスが運営するプロキシサーバーへ漏洩させました。",
+        "financial_impact": "金融機関がTwitchを業務で利用している可能性は低いですが、従業員が個人利用している場合、他のサービスで同じOAuthトークンや認証情報を使用していると、二次的なリスクが生じる可能性があります。",
+        "recommended_actions": [
+          "従業員に対し、信頼できないブラウザ拡張機能のインストールを避けるよう注意喚起する",
+          "OAuthトークンを利用するサービスにおいて、定期的なトークンの棚卸しと無効化のプロセスを確認する"
+        ],
+        "reason": "重要度は、金融機関の業務への直接的な影響は低いものの、認証情報漏洩の事例として注意喚起の価値があるため「中」です。確認目安は、特定のサービスにおけるインシデントであり、即時対応を要する時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
