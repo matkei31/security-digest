@@ -1,0 +1,972 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-09-17",
+  "generated_at": "2026-09-17T09:38:09.427926+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 18,
+    "ai_attempted_count": 16,
+    "ai_success_count": 15,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 2,
+    "ai_eligible_count": 16
+  },
+  "counts": {
+    "importance": {
+      "高": 1,
+      "中": 13,
+      "低": 2,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 10,
+      "参考": 6,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 5,
+      "攻撃・脅威動向": 4,
+      "インシデント": 0,
+      "規制・ガバナンス": 1,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 4,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象16件｜重要度「高」1件｜本日確認0件｜今週確認10件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が10件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が1件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "N0vaフィッシングキットが、信頼されたサービスを偽装し正規の認証フローを悪用するフィッシングキャンペーンで、北米および欧州の組織を標的にしています。攻撃が成功すると、脅威アクターはマルウェアに頼らず正規のアカウントにアクセスし、機密データやビジネスシステムへの侵入を可能にします。"
+    ],
+    "discussion_points": [
+      "N0vaフィッシングキットが、信頼されたサービスを偽装し正規の認証フローを悪用するフィッシングキャンペーンで、北米および欧州の組織を標的にしています。攻撃が成功すると、脅威アクターはマルウェアに頼らず正規のアカウントにアクセスし、機密データやビジネスシステムへの侵入を可能にします。\n金融機関は顧客や従業員の認証情報を狙ったフィッシング攻撃の主要な標的となるため、本攻撃キャンペーンはIDセキュリティに対する新たな脅威として関係します。",
+      "スペインの規制当局は、AIエージェントがログイン、脆弱性発見、個人データへのアクセスを連鎖的に実行し、データ侵害を引き起こしたと報告しました。これは自律型サイバー攻撃における潜在的な転換点となる可能性があります。\nAIエージェントの利用が拡大する中で、金融機関においても同様のリスクが発生する可能性があります。現時点では直接的な影響は確認できませんが、将来的な脅威動向として注視が必要です。"
+    ],
+    "check_items": [
+      "N0vaフィッシングキットが利用する可能性のある正規サービスや認証フローの悪用パターンについて情報収集する",
+      "AIエージェントの利用状況とセキュリティ対策について、自社および委託先での現状を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:fa62722b82a04c81f11ab489302e30b865ad6ec3cc6258148dfc322637a314d5",
+      "source_id": "krebs_on_security",
+      "source_name": "Krebs on Security",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://krebsonsecurity.com/2026/09/data-broker-radaris-loses-domains-in-privacy-fight/",
+      "canonical_url": "https://krebsonsecurity.com/2026/09/data-broker-radaris-loses-domains-in-privacy-fight/",
+      "published_at": "2026-09-17T03:14:22+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "Data Broker Radaris Loses Domains in Privacy Fight",
+      "raw_title": "Data Broker Radaris Loses Domains in Privacy Fight",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2b74ec0d3fc2a51f571330a810fd6d472d8428a4c94fe69ed81ef3ecc0b8a83c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:33:21.258050+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "データブローカーがプライバシー法違反でドメインを喪失した事例であり、規制と法的な側面が主題であるため。",
+        "tags": [
+          "規制",
+          "情報漏えい",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "消費者データブローカーのRadaris.comが、ニュージャージー州のプライバシー法に違反し、州の法執行官の個人情報を公開したとして提訴されました。同社が情報削除要求を無視し続けた結果、裁判官はradaris.comを含む10以上のデータブローカー関連ドメインを原告側に移管するよう命じました。",
+        "financial_impact": "金融機関がデータブローカーを利用している場合、委託先のプライバシー法遵守状況を確認する上での参考情報となります。直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、データブローカーの法規制違反事例であり、金融機関の委託先管理における参考情報となるため「中」です。確認目安は、特定の法執行措置に関する事例であり、金融機関に直接的な短期対応を求めるものではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4647ccdbc87822c74642e9b633f7e04af29ba99e67928045048edaf91dab4322",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/first-agentic-ai-data-breach-reported-to-spanish-regulator/",
+      "canonical_url": "https://www.securityweek.com/first-agentic-ai-data-breach-reported-to-spanish-regulator/",
+      "published_at": "2026-09-17T01:39:19+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "First Agentic AI Data Breach Reported to Spanish Regulator",
+      "raw_title": "First Agentic AI Data Breach Reported to Spanish Regulator",
+      "raw_excerpt": null,
+      "content_hash": "sha256:eb2d1b55933d6c860692044f3ae6769a4b4f43fdc39a13336ab93fba54edff7c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:33:38.433803+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントによるデータ侵害が主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント",
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "スペインの規制当局は、AIエージェントがログイン、脆弱性発見、個人データへのアクセスを連鎖的に実行し、データ侵害を引き起こしたと報告しました。これは自律型サイバー攻撃における潜在的な転換点となる可能性があります。",
+        "financial_impact": "AIエージェントの利用が拡大する中で、金融機関においても同様のリスクが発生する可能性があります。現時点では直接的な影響は確認できませんが、将来的な脅威動向として注視が必要です。",
+        "recommended_actions": [
+          "AIエージェントの利用状況とセキュリティ対策について、自社および委託先での現状を確認する",
+          "AIエージェントのセキュリティリスクに関する最新動向を継続的に情報収集する"
+        ],
+        "reason": "重要度は、AIエージェントによる攻撃事例として将来的な影響が懸念されるものの、現時点での金融機関への直接的な適用性や具体的な影響が不明確なため「中」です。確認目安は、新たな攻撃手法の事例として状況把握の価値があるものの、即時対応を要する具体的な期限や脅威が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4a519778a75aa182655b26560c0ed80a317816ee4868817e7b0281b80b3fb6f4",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/attackers-exploit-issabel-framework.html",
+      "canonical_url": "https://thehackernews.com/2026/09/attackers-exploit-issabel-framework.html",
+      "published_at": "2026-09-17T00:50:59+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "Attackers Exploit Issabel Framework Flaw Enabling Unauthenticated OS Command Execution",
+      "raw_title": "Attackers Exploit Issabel Framework Flaw Enabling Unauthenticated OS Command Execution",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a66ca69d127f2816276e9aaaa3fc42959a79c67c04901e9a45ad79a47ec1711c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:33:55.973668+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Issabel Frameworkの脆弱性（CVE-2026-89026）が悪用されていることが主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "オープンソースのユニファイドコミュニケーションPBXソフトウェアであるIssabel Frameworkのウェブベースフレームワークに存在する重大な脆弱性（CVE-2026-89026）が、現在活発に悪用されています。この脆弱性は、認証されていないリモート攻撃者がハードコードされた欠陥を利用して任意のOSコマンドを実行することを可能にします。",
+        "financial_impact": "金融機関でIssabel Frameworkを利用している場合に限り、適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Issabel Frameworkの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報や修正パッチ、緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、CVSSスコアは高いものの、Issabel Frameworkの金融機関での利用状況が記事から不明で適用範囲が不確実なため「中」です。確認目安は、悪用が確認されているものの、CISA KEVへの新規追加がなく即時対応の明確な時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:27afdbdfcf69780c5afb5914a3674bd638ae6f9d12d48dd6fa1077e2761d07e5",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/three-threat-groups-target-russian.html",
+      "canonical_url": "https://thehackernews.com/2026/09/three-threat-groups-target-russian.html",
+      "published_at": "2026-09-17T00:27:49+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "Three Threat Groups Target Russian Enterprises With Backdoors, Ransomware, and Wipers",
+      "raw_title": "Three Threat Groups Target Russian Enterprises With Backdoors, Ransomware, and Wipers",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ce4298838c4f02edbca6b63d1b116e99e3065b9f95505fd013bc14cae8703ef1",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:34:12.846651+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "3つの脅威グループによる攻撃活動と攻撃手法が主題であるため。",
+        "tags": [
+          "APT",
+          "ランサムウェア"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Kasperskyの報告によると、NightEagle、Hacking Cat、Toy Ghoulsという3つの脅威グループがロシア企業を標的としています。NightEagleは少なくとも2023年から活動しており、新たな永続化およびラテラルムーブメントの技術を使用していることが確認されています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。ロシア企業を標的とした攻撃動向として、脅威インテリジェンスの参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、ロシア企業を標的とした攻撃であり、金融機関への直接的な関連性が不明確なため「中」です。確認目安は、特定の緊急対応を要する情報や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d58c7f1a86f68a9cf2d5118d4d5c82f623776cd849dfc126357cec5be73c76fb",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/one-extension-could-hijack-ai.html",
+      "canonical_url": "https://thehackernews.com/2026/09/one-extension-could-hijack-ai.html",
+      "published_at": "2026-09-16T23:36:44+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "One Extension Could Hijack AI Assistants Across Chrome, Comet, Edge, Opera Neon and Claude",
+      "raw_title": "One Extension Could Hijack AI Assistants Across Chrome, Comet, Edge, Opera Neon and Claude",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a0344d735f1c5039e8d0148b4d8190ba849d0d86293bae8e625978252ac821bc",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "output_length_violation",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e9cc8b3c32fa88e6e1ff99679bcdac7c9c5f085a6f9a0d5b7f0af7e494f33702",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/virtual-event-today-attack-surface-management-summit-2/",
+      "canonical_url": "https://www.securityweek.com/virtual-event-today-attack-surface-management-summit-2/",
+      "published_at": "2026-09-16T23:35:04+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "Virtual Event Today: Attack Surface Management Summit",
+      "raw_title": "Virtual Event Today: Attack Surface Management Summit",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4f18a856ec9d8dca1d58e57526695d286d49e509db1903a7747e593101d93566",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:34:46.919380+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも該当せず、一般的な情報提供が主題のため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "SecurityWeekが本日、組織が拡大するアタックサーフェスを発見し、優先順位を付け、防御するために必要な戦略とツールを探求するバーチャルサミットを開催します。",
+        "financial_impact": "金融機関への直接的な影響は限定的であり、アタックサーフェス管理に関する一般的な情報収集として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、一般的な情報提供イベントであり、金融機関に固有の緊急性の高いアクションを伴わないため「低」です。確認目安は、具体的な脅威や期限に関する情報がなく、中長期的な知識更新が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:65644170963997673e32c76f67505d046e1e637aa0512853485ba3a287d12cfd",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/eu-chief-warns-of-ai-powered-hacking-moves-to-rein-in-social-media/",
+      "canonical_url": "https://www.securityweek.com/eu-chief-warns-of-ai-powered-hacking-moves-to-rein-in-social-media/",
+      "published_at": "2026-09-16T23:15:18+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "EU Chief Warns of AI-Powered Hacking, Moves to Rein In Social Media",
+      "raw_title": "EU Chief Warns of AI-Powered Hacking, Moves to Rein In Social Media",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2f132efc03d77f149f38506dd5e4df872999dbdd684d48f7cbd391869bfc6290",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:35:03.834516+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIによるハッキングの脅威とソーシャルメディア規制であり、AIと新技術リスクに該当するため。",
+        "tags": [
+          "AI",
+          "規制"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "EUのウルズラ・フォン・デア・ライエン委員長は、高度なAIが前例のない規模のハッキングを引き起こす可能性について警告しました。また、欧州ではソーシャルメディアによる子供たちの「囲い込み」に対する新たな保護策を準備しています。",
+        "financial_impact": "AIによるハッキングの脅威は、金融機関を含むあらゆる組織にとって潜在的なリスクとなり得ます。ソーシャルメディア規制は、金融機関のマーケティング活動や顧客とのコミュニケーションに影響を与える可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIによるハッキングの潜在的脅威とソーシャルメディア規制の動向は中長期的な影響が考えられるため「中」です。確認目安は、具体的なアクションや期限が示されておらず、状況把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:28c3ddb61c9c0018dcc16f5bd387b8f1f47ec368f75cd83a9aec6a2c4a820fa4",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/aiuc-raises-40-million-to-certify-enterprise-ai-agents/",
+      "canonical_url": "https://www.securityweek.com/aiuc-raises-40-million-to-certify-enterprise-ai-agents/",
+      "published_at": "2026-09-16T22:38:36+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "AIUC Raises $40 Million to Certify Enterprise AI Agents",
+      "raw_title": "AIUC Raises $40 Million to Certify Enterprise AI Agents",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ada6d6c47738d21956b83d5794ce176d8041e861bb766f6d8fb22af9d05637fd",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:35:20.721031+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "企業向けAIエージェントの認証に関する資金調達が主題であり、AI・新技術リスクに該当するため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AIUC社が企業向けAIエージェントの認証サービスで4,000万ドルの資金を調達しました。同社は、AIシステムをジェイルブレイク、プロンプトインジェクション、不正なアクションなどのリスクに対してテストし、標準を提供しています。",
+        "financial_impact": "金融機関がAIエージェントの導入を検討する際、セキュリティ評価やリスク管理の参考情報となり得ます。直接的な影響は現時点では限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントのセキュリティ認証に関する情報であり、金融機関のAI導入におけるリスク評価の参考となるため「中」です。確認目安は、具体的な脅威や期限に関する記述がなく、中長期的な情報収集が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ffa867bf23d68de49dd7d37c89d87fdf3d7e4e0c75f6fbc716a4ac2b6d1c7982",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/attacker-hijacks-ai-coding-assistant.html",
+      "canonical_url": "https://thehackernews.com/2026/09/attacker-hijacks-ai-coding-assistant.html",
+      "published_at": "2026-09-16T22:37:07+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "Attacker Hijacks AI Coding Assistant Session, Spreads Shai-Hulud Across About 100 Repositories",
+      "raw_title": "Attacker Hijacks AI Coding Assistant Session, Spreads Shai-Hulud Across About 100 Repositories",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8b1049f642d1f4a6b9f9612d680607d747e686782f42224c4e2a44b0122af1d8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:35:38.100094+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIコーディングアシスタントの悪用と、それによるコードリポジトリへのマルウェア拡散が主題であるため。",
+        "tags": [
+          "AI",
+          "SaaS",
+          "サプライチェーン",
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Mandiantによると、攻撃者がSaaSプロバイダーのAIコーディングアシスタントのセッションを乗っ取り、約100の内部コードリポジトリに「Shai-Hulud」というマルウェアを拡散しました。このマルウェアはリポジトリのシークレットとソースコードを窃取しました。",
+        "financial_impact": "金融機関がAIコーディングアシスタントやSaaSプロバイダーを利用している場合、同様の攻撃を受けるリスクがあるため関係します。特に、開発環境におけるAIツールの利用状況を確認する必要があります。",
+        "recommended_actions": [
+          "AIコーディングアシスタントやSaaSプロバイダーの利用状況を棚卸しし、セキュリティ設定を確認する",
+          "AIツールが推奨するコードのレビュープロセスを強化し、悪意のあるコードが混入しないか評価する",
+          "コードリポジトリのアクセス制御と監視体制を見直し、不審な活動がないか確認する"
+        ],
+        "reason": "重要度は、AIコーディングアシスタントの悪用事例であり、金融機関の開発環境への適用可能性を評価する必要があるため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、利用有無の確認から始めるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f1a5ac76bbe37ec43f269421531ad0d71481dcb77a5051592b6305ad6176c714",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/parallels-desktop-flaw-lets-non-admin.html",
+      "canonical_url": "https://thehackernews.com/2026/09/parallels-desktop-flaw-lets-non-admin.html",
+      "published_at": "2026-09-16T22:14:05+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "Parallels Desktop Flaw Lets Non-Admin Mac Users Gain Root, but Intel Macs Can't Install Fix",
+      "raw_title": "Parallels Desktop Flaw Lets Non-Admin Mac Users Gain Root, but Intel Macs Can't Install Fix",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4f22be54a6310b6c06c1d7d5181da857bb4f970d1c28d3ebdb26b547fec097ed",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:35:55.285119+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Parallels Desktopの脆弱性とそれに対する修正が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Parallels Desktop for Macに、通常のローカルアカウントがroot権限でコードを実行できる脆弱性が発見されました。この攻撃はネットワーク経由ではなく、マシン上で通常のユーザーとして既に実行されているコードを必要とします。修正はParallels Desktop 27に含まれますが、Intel Macではこのバージョンをインストールできません。",
+        "financial_impact": "金融機関でParallels Desktop for Macを利用している場合に限り、適用性確認の対象になります。特にIntel Macを利用している場合は、修正版の適用ができないため影響が大きくなる可能性があります。",
+        "recommended_actions": [
+          "Parallels Desktop for Macの利用有無と、影響を受けるバージョンおよびIntel Macでの利用状況を確認する",
+          "ベンダーの一次情報を確認し、利用可能な緩和策や代替手段の有無を評価する"
+        ],
+        "reason": "重要度は、対象製品の利用が限定的である可能性があり、攻撃にはローカルでのコード実行が必要なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9a262ecad05f618812a826fee9d90a185aae47f6f000b3bf8166dd2841823f81",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/pixel-modem-zero-day-exploited-in-targeted-attacks/",
+      "canonical_url": "https://www.securityweek.com/pixel-modem-zero-day-exploited-in-targeted-attacks/",
+      "published_at": "2026-09-16T22:10:54+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "Pixel Modem Zero-Day Exploited in Targeted Attacks",
+      "raw_title": "Pixel Modem Zero-Day Exploited in Targeted Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b1e900d67058688921c366475ea4fb0f1a596c56583e97810cdcbeb7446edfaf",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:36:12.283083+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Google Pixelモデムのゼロデイ脆弱性とそれに対するパッチが主題であるため。",
+        "tags": [
+          "ゼロデイ",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Googleは9月15日、Pixelモデムの特権昇格のゼロデイ脆弱性（CVE-2026-58704）に対するパッチを公開しました。この脆弱性は標的型攻撃で悪用されたことが確認されています。",
+        "financial_impact": "金融機関でGoogle Pixelデバイスを業務利用している場合に限り関係します。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Google Pixelデバイスの業務利用状況と影響バージョンを確認する",
+          "Googleからのパッチ適用状況を確認し、必要に応じて適用を検討する"
+        ],
+        "reason": "重要度は、Google Pixelデバイスの脆弱性であり、金融機関での利用が限定的である可能性が高いため「中」です。確認目安は、ゼロデイ脆弱性であり悪用が確認されているものの、KEV新規追加ではなく即時対応の明確な期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f6002acdda56c2aa1ee9e269f843fc0b15ac1816eef0a581e998d3f17487f7f1",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/us-uk-dutch-agencies-expose-iranian-chosen-brick-surveillance-malware/",
+      "canonical_url": "https://www.securityweek.com/us-uk-dutch-agencies-expose-iranian-chosen-brick-surveillance-malware/",
+      "published_at": "2026-09-16T21:00:14+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "US, UK, Dutch Agencies Expose Iranian ‘Chosen Brick’ Surveillance Malware",
+      "raw_title": "US, UK, Dutch Agencies Expose Iranian ‘Chosen Brick’ Surveillance Malware",
+      "raw_excerpt": null,
+      "content_hash": "sha256:fbedc1f51a8bd1fc06f1eb803e435391d99dbb23fd96693a23b10a57576dc0de",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:36:29.084005+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "イランの攻撃グループが使用する監視マルウェアの詳細が公開されたことが主題のため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "米国、英国、オランダの政府機関が共同で、イランの攻撃グループが使用する監視マルウェア「Chosen Brick」に関する詳細なレポートを公開しました。FBIは、このマルウェアがTelegramをC2通信に悪用していると説明しています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。特定の製品やサービスを標的としたものではなく、一般的な脅威動向として情報収集の対象となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の金融機関を標的とした攻撃ではなく、一般的な脅威動向の共有であるため「中」です。確認目安は、新たな緊急の脅威や対応期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f2f24ea2e19aab10b99a954d8bb93591f31df9e7f12c4d0081c7e99616aabf6c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/n0va-phishkit-targets-us-and-eu.html",
+      "canonical_url": "https://thehackernews.com/2026/09/n0va-phishkit-targets-us-and-eu.html",
+      "published_at": "2026-09-16T20:58:00+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "N0va Phishkit Targets US and EU Businesses: A New Challenge for Identity Security",
+      "raw_title": "N0va Phishkit Targets US and EU Businesses: A New Challenge for Identity Security",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4dc986ff6972eae1cfb03ae07c3853b9dfe9a698ce855e7d833e4a2b720519ae",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:36:46.722767+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "N0vaフィッシングキットによる攻撃キャンペーンと脅威動向が主題であるため。",
+        "tags": [
+          "フィッシング",
+          "認証",
+          "IAM"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "N0vaフィッシングキットが、信頼されたサービスを偽装し正規の認証フローを悪用するフィッシングキャンペーンで、北米および欧州の組織を標的にしています。攻撃が成功すると、脅威アクターはマルウェアに頼らず正規のアカウントにアクセスし、機密データやビジネスシステムへの侵入を可能にします。",
+        "financial_impact": "金融機関は顧客や従業員の認証情報を狙ったフィッシング攻撃の主要な標的となるため、本攻撃キャンペーンはIDセキュリティに対する新たな脅威として関係します。",
+        "recommended_actions": [
+          "N0vaフィッシングキットが利用する可能性のある正規サービスや認証フローの悪用パターンについて情報収集する",
+          "従業員および顧客に対し、フィッシング攻撃の手口と正規の認証フローの確認方法について注意喚起と教育を強化する",
+          "認証ログやアクセスログを監視し、不審な認証試行やアカウント利用がないか確認する"
+        ],
+        "reason": "重要度は、金融機関が主要な標的となり得るフィッシング攻撃の手法に関する情報であり、IDセキュリティへの影響が大きいため「高」です。確認目安は、新たな攻撃キャンペーンに関する情報であり、即時対応を要する具体的な期限や脆弱性情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7e51b3ed2d0e12ceb8e0100739c5e68f8be389d9b08152356823083283792272",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/unauthenticated-rce-flaws-could-expose-200000-wordpress-sites-to-takeover/",
+      "canonical_url": "https://www.securityweek.com/unauthenticated-rce-flaws-could-expose-200000-wordpress-sites-to-takeover/",
+      "published_at": "2026-09-16T20:32:53+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "Unauthenticated RCE Flaws Could Expose 200,000+ WordPress Sites to Takeover",
+      "raw_title": "Unauthenticated RCE Flaws Could Expose 200,000+ WordPress Sites to Takeover",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a01d2a256dcdd0e2b9c0101e82cfb5d5d62b86c0c1cd96de40a37aac48a1a807",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:37:03.558189+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "WordPressプラグインの脆弱性が主題であるため。",
+        "tags": [
+          "パッチ",
+          "CVE"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "WordPressプラグイン「The Events Calendar」に認証不要のリモートコード実行（RCE）の脆弱性が発見され、20万以上のWordPressサイトが乗っ取られる可能性があります。",
+        "financial_impact": "金融機関がWordPressをウェブサイトや情報発信基盤として利用し、かつ「The Events Calendar」プラグインを使用している場合に影響する可能性があります。",
+        "recommended_actions": [
+          "自社および委託先でWordPressおよび「The Events Calendar」プラグインの利用有無を確認する",
+          "利用している場合は、ベンダーの一次情報を確認し、修正パッチの適用または緩和策の実施を検討する"
+        ],
+        "reason": "重要度は、WordPressプラグインの脆弱性であり、金融機関での利用状況が限定的である可能性を考慮し「中」です。確認目安は、悪用確認や緊急の期限に関する記述がないため「今週確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:8f4404937cb63f29b4d89ed4a114969e028ca131e8756bfc016f2a6d90bca3e7",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/google-patches-pixel-modem-flaw-amid.html",
+      "canonical_url": "https://thehackernews.com/2026/09/google-patches-pixel-modem-flaw-amid.html",
+      "published_at": "2026-09-16T20:15:58+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "Google Patches Pixel Modem Flaw Amid Signs of Limited Targeted Exploitation",
+      "raw_title": "Google Patches Pixel Modem Flaw Amid Signs of Limited Targeted Exploitation",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a92bf6f40e84bc0f053675016936065249ff77e6b4a7a4a5f6e9a2e0ece472b8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:37:20.736095+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Google Pixelのモデムにおける脆弱性と、それに対するパッチ公開が主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Googleは、Pixel Cellular Modemに存在する深刻度「高」の権限昇格の脆弱性（CVE-2026-58704、CVSSスコア8.0）が限定的な標的型攻撃で悪用されていることを公表し、パッチをリリースしました。",
+        "financial_impact": "金融機関でGoogle Pixelデバイスを業務利用している場合に限り、適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Google Pixelデバイスの業務利用有無を確認し、該当する場合は影響バージョンとパッチ適用状況を棚卸しする",
+          "Googleからの一次情報を確認し、推奨される緩和策や対応手順を評価する"
+        ],
+        "reason": "重要度は、Google Pixelデバイスの業務利用が限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、悪用が確認されているものの、限定的な標的型攻撃であり、KEV新規追加ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5a937b962d20ac975d21b84f7e06b7f522e3af28dd11977d8c73eec7b0150771",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/threat-intelligence-alone-wont-close.html",
+      "canonical_url": "https://thehackernews.com/2026/09/threat-intelligence-alone-wont-close.html",
+      "published_at": "2026-09-16T20:15:48+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "Threat Intelligence Alone Won't Close the Exploitation Gap",
+      "raw_title": "Threat Intelligence Alone Won't Close the Exploitation Gap",
+      "raw_excerpt": null,
+      "content_hash": "sha256:08f8ae64f4c59d0b4034c5f2925768da15e2f2c1714866f03b338faff30c6133",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:37:37.747313+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "記事は、脅威インテリジェンスとAIを組み合わせた攻撃者の手法と、それに対するセキュリティチームの対応の遅れについて述べているため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "漏洩した認証情報や脆弱性情報が悪用されるまでの時間が短縮されており、攻撃者はAIを活用してそのプロセスを加速させています。これにより、多くのセキュリティプログラムが悪用に対応するよりも早く侵害が発生する可能性があります。",
+        "financial_impact": "金融機関は機密性の高い情報を扱い、サイバー攻撃の標的となりやすいため、脅威インテリジェンスの活用とAIを用いた攻撃への対策は重要です。しかし、この記事は一般的な動向の解説であり、特定の製品や脆弱性への直接的な関係は確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIを活用した攻撃の加速という脅威動向に関する一般的な解説であり、特定の金融機関への直接的な影響や具体的な行動を促す内容ではないため「中」です。確認目安は、具体的な期限や緊急対応を要する情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:da48e05844653cd9f3490a5907992780e08fdeb0610423e7d09994f4e6e1260d",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/hackuity-raises-19-million-for-ai-powered-vulnerability-management/",
+      "canonical_url": "https://www.securityweek.com/hackuity-raises-19-million-for-ai-powered-vulnerability-management/",
+      "published_at": "2026-09-16T20:11:23+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "Hackuity Raises $19 Million for AI-Powered Vulnerability Management",
+      "raw_title": "Hackuity Raises $19 Million for AI-Powered Vulnerability Management",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d6684164401af716addff961fd7fc19c2e6c136e2228d57026de801ec5169ab1",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-17T09:37:54.427202+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "AIを活用した脆弱性管理プラットフォームを提供する企業の資金調達に関するニュースであり、特定の脆弱性や攻撃、規制に関するものではないため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Hackuity社は、AIを活用した脆弱性運用プラットフォームの拡張と国際的な成長を支援するため、新たに1,900万ドルを調達しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AIを活用した脆弱性管理ソリューションの市場動向に関する参考情報として位置付けられます。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脆弱性やインシデントに関する情報ではなく、企業の資金調達ニュースであるため「低」です。確認目安は、金融機関に直接的な影響や緊急の対応を求める内容ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9c1fb2ffc843220e68fb26022a338f364824cd1d70b14a82905a377ca0952cca",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/securing-the-unpatchable-in-an-age-of-ai-driven-vulnerabilities/",
+      "canonical_url": "https://blog.talosintelligence.com/securing-the-unpatchable-in-an-age-of-ai-driven-vulnerabilities/",
+      "published_at": "2026-09-16T19:00:36+09:00",
+      "fetched_at": "2026-09-17T09:33:19.114629+09:00",
+      "title": "Securing the unpatchable in an age of AI-driven vulnerabilities",
+      "raw_title": "Securing the unpatchable in an age of AI-driven vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9819a868d44cd1ac4fe1cc9364c0be60032b3b491adaddde3cb0bd1f0a370a62",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
