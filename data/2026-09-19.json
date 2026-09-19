@@ -1,0 +1,935 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-09-19",
+  "generated_at": "2026-09-19T09:26:59.635359+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 17,
+    "ai_attempted_count": 17,
+    "ai_success_count": 16,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 17
+  },
+  "counts": {
+    "importance": {
+      "高": 1,
+      "中": 13,
+      "低": 3,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 14,
+      "参考": 3,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 5,
+      "攻撃・脅威動向": 4,
+      "インシデント": 2,
+      "規制・ガバナンス": 1,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 3,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象17件｜重要度「高」1件｜本日確認0件｜今週確認14件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が14件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が1件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "ハッカーが侵害されたAPIキーを利用し、Cloudflare Workerを展開して悪意のあるスクリプトを10万のウェブサイトに注入しました。"
+    ],
+    "discussion_points": [
+      "ハッカーが侵害されたAPIキーを利用し、Cloudflare Workerを展開して悪意のあるスクリプトを10万のウェブサイトに注入しました。\nBrevoのサービスを利用している金融機関は、自社ウェブサイトへのマルウェア注入の有無を確認する必要があります。特に、顧客情報や決済情報を取り扱うウェブサイトの場合、情報漏えいや業務停止のリスクが高まります。",
+      "セキュリティ研究者が、ローカルユーザーがroot権限を取得できるLinuxカーネルの4つの脆弱性に対するエクスプロイトコードを公開しました。これらの脆弱性は過去数週間のうちに修正済みですが、古いカーネルを実行しているシステムは影響を受ける可能性があります。\n金融機関でLinuxカーネルを使用しているシステムが存在し、かつカーネルが最新の状態に更新されていない場合に影響する可能性があります。特に、ローカルアクセスが可能な環境や、特権昇格が次の攻撃ステップとなるような環境では、適用性確認の対象となります。"
+    ],
+    "check_items": [
+      "Brevoのサービスを利用している場合、自社ウェブサイトへのマルウェア注入の有無を確認する",
+      "自社および委託先でLinuxカーネルを使用しているシステムを棚卸しし、影響を受ける可能性のあるバージョンを確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:23227162b6f68818e2591d62a82d8e818d0f1653482ccf496e70236a5f847126",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/public-exploits-released-for-four-linux.html",
+      "canonical_url": "https://thehackernews.com/2026/09/public-exploits-released-for-four-linux.html",
+      "published_at": "2026-09-19T03:02:24+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "Public Exploits Released for Four Linux Kernel Flaws That Enable Local Root",
+      "raw_title": "Public Exploits Released for Four Linux Kernel Flaws That Enable Local Root",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4d5373cc861d5486b21a582050a6910620eeab3f6626ff6ea80c9df513eb2fa4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:22:10.310200+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Linuxカーネルの脆弱性とそれに対するエクスプロイトコードの公開が主題であるため。",
+        "tags": [
+          "パッチ",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セキュリティ研究者が、ローカルユーザーがroot権限を取得できるLinuxカーネルの4つの脆弱性に対するエクスプロイトコードを公開しました。これらの脆弱性は過去数週間のうちに修正済みですが、古いカーネルを実行しているシステムは影響を受ける可能性があります。",
+        "financial_impact": "金融機関でLinuxカーネルを使用しているシステムが存在し、かつカーネルが最新の状態に更新されていない場合に影響する可能性があります。特に、ローカルアクセスが可能な環境や、特権昇格が次の攻撃ステップとなるような環境では、適用性確認の対象となります。",
+        "recommended_actions": [
+          "自社および委託先でLinuxカーネルを使用しているシステムを棚卸しし、影響を受ける可能性のあるバージョンを確認する",
+          "Linuxカーネルのバージョンが最新に保たれているかを確認し、必要に応じてアップデートを計画する"
+        ],
+        "reason": "重要度は、Linuxカーネルの脆弱性であり、利用状況によっては影響が大きくなる可能性があるため「中」です。確認目安は、脆弱性は修正済みであり、KEV新規追加の対象でもなく即時対応の根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:55eb40df3f2670c86d6a63354fd2954b90264b101384c69fb384188632936015",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/new-wordpress-click2shell-flaw-forces.html",
+      "canonical_url": "https://thehackernews.com/2026/09/new-wordpress-click2shell-flaw-forces.html",
+      "published_at": "2026-09-19T01:56:19+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "New WordPress Click2Shell Flaw Forces Theme Installs, Can Chain to Code Execution",
+      "raw_title": "New WordPress Click2Shell Flaw Forces Theme Installs, Can Chain to Code Execution",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e0c14f122965a0c0012fad1e0e92c2275503ba2377ac51eb925cd0ac06c88206",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:22:27.396312+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "WordPressの脆弱性とそれに対するパッチが主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "WordPressは、ログイン中の管理者が細工されたウェブリンクを開くことで、WordPress.orgディレクトリからテーマを強制的にインストールさせることが可能な脆弱性に対するパッチを公開しました。この脆弱性は「Click2Shell」と名付けられ、単体ではテーマのインストールに留まりますが、コード実行に連鎖する可能性があります。",
+        "financial_impact": "金融機関がWordPressをウェブサイトやブログ基盤として利用している場合に、適用性確認の対象となります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "自社および委託先でWordPressの利用有無と影響バージョンを確認する",
+          "WordPressのベンダー一次情報を確認し、公開されているパッチや緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、WordPressの脆弱性であり、金融機関での利用状況によっては影響があるため「中」です。確認目安は、パッチが公開されており、即時対応を要する進行中の攻撃やKEV新規追加の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:eb5aad65b2515888fa52ac01678a356827d1a2ce9d19415e9f1136433440610d",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/transparent-tribe-deploys-new-rust.html",
+      "canonical_url": "https://thehackernews.com/2026/09/transparent-tribe-deploys-new-rust.html",
+      "published_at": "2026-09-19T00:24:16+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "Transparent Tribe Deploys New Rust Backdoor Using Private GitHub Repositories for C2",
+      "raw_title": "Transparent Tribe Deploys New Rust Backdoor Using Private GitHub Repositories for C2",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e199dcb0de5b0052fe2185c754d8fb291ec1cbb894cca6b1e214347f86f78a52",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:22:44.451236+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "パキスタン関連の脅威グループによる新たなサイバー攻撃キャンペーンと、その攻撃手法・ツールが主題であるため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "パキスタン関連の脅威グループTransparent Tribe（APT36）が、インドおよびアフガニスタンの政府・防衛機関を標的とした新たなサイバー攻撃を展開しています。この攻撃では、RUSTYSHADEやRUSTYMOVEといった未確認のRust製ツールが、プライベートGitHubリポジトリをコマンド＆コントロール（C2）に利用して展開されています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。特定の標的型攻撃キャンペーンに関する情報として、脅威動向の把握に役立ちます。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の政府・防衛機関を標的とした攻撃であり、金融機関への直接的な関連が不明なため「中」です。確認目安は、新たな攻撃手法の動向把握が目的であり、即時対応を要する具体的な期限や脆弱性情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e0ab0e720900624cc3548b12fc20ed7d3794f869dd6da569b2333fc8a503c397",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/in-other-news-ransomware-developer-sentenced-plugin4shell-ai-attack-critical-sap-flaw/",
+      "canonical_url": "https://www.securityweek.com/in-other-news-ransomware-developer-sentenced-plugin4shell-ai-attack-critical-sap-flaw/",
+      "published_at": "2026-09-18T23:25:00+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "In Other News: Ransomware Developer Sentenced, Plugin4Shell AI Attack, Critical SAP Flaw",
+      "raw_title": "In Other News: Ransomware Developer Sentenced, Plugin4Shell AI Attack, Critical SAP Flaw",
+      "raw_excerpt": null,
+      "content_hash": "sha256:45596f5bd8d388ae8712b8a5a55892457d1fe276a0c40cd5a5b5b5da27869a3e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:23:01.174711+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の異なるセキュリティ関連ニュースをまとめた記事であり、特定の主題に絞れないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "ランサムウェア開発者の判決、AI攻撃「Plugin4Shell」、SAPの重大な欠陥など、見過ごされがちな注目すべきセキュリティニュースをまとめた記事です。",
+        "financial_impact": "複数の異なるトピックをまとめた記事であり、金融機関への直接的な関係は限定的です。個々のトピックについては記事から詳細が確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、複数のトピックをまとめた記事であり、個々の詳細や金融機関への関連性が不明確なため「低」です。確認目安は、新しい事実や緊急対応を要する情報が記事から確認できないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:baffdffe14565b922566ee11bd403c93fcf9f9b0e07f7d2f7b78a5d3da0f8c7e",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/microsoft-patches-cvss-100-azure-ai.html",
+      "canonical_url": "https://thehackernews.com/2026/09/microsoft-patches-cvss-100-azure-ai.html",
+      "published_at": "2026-09-18T21:47:04+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "Microsoft Patches CVSS 10.0 Azure AI Foundry Flaw Enabling Unauthorized Privilege Escalation",
+      "raw_title": "Microsoft Patches CVSS 10.0 Azure AI Foundry Flaw Enabling Unauthorized Privilege Escalation",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a573946448b1d5045a0011e769771b2939159c470430c7afec37fc4d07b32703",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:23:18.110101+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Microsoft Azure AI Foundryの脆弱性修正が主題であるため。",
+        "tags": [
+          "パッチ",
+          "クラウド",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Microsoftは、Azure AI FoundryにおけるCVSSスコア10.0の最大深刻度の権限昇格の脆弱性(CVE-2026-85889)に対する修正をリリースしました。この脆弱性は、ネットワーク経由で認証されていない攻撃者が特権を昇格できるものです。",
+        "financial_impact": "金融機関がMicrosoft Azure AI Foundryを利用している場合に限り、適用性確認の対象になります。記事からは顧客側での対応は不要とされています。",
+        "recommended_actions": [
+          "自社および委託先でMicrosoft Azure AI Foundryの利用有無を確認する",
+          "Microsoftからの公式情報を確認し、顧客側での追加対応が不要であることを再確認する"
+        ],
+        "reason": "重要度は、Azure AI Foundryの利用有無により影響が変わり、適用範囲が限定的であるため「中」です。確認目安は、Microsoftが既に修正をリリースしており、顧客側での対応は不要とされているため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4fb2dca3fedbfdfb6e3daef304a3225ec94f14504623debe5628d673eebc0ea8",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ai-built-exploit-and-sign-in-flaw-opened-path-to-internal-openai-code/",
+      "canonical_url": "https://www.securityweek.com/ai-built-exploit-and-sign-in-flaw-opened-path-to-internal-openai-code/",
+      "published_at": "2026-09-18T21:45:24+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "AI-Built Exploit and Sign-In Flaw Opened Path to Internal OpenAI Code",
+      "raw_title": "AI-Built Exploit and Sign-In Flaw Opened Path to Internal OpenAI Code",
+      "raw_excerpt": null,
+      "content_hash": "sha256:aae5f19f632f70b7d14b35451990b4420a340b3eca407655dbb822ddfae9ba62",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:23:35.274711+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIが生成したエクスプロイトとOpenAIの内部コードへのアクセスが主題であるため。",
+        "tags": [
+          "AI",
+          "認証",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Hacktronの研究者が、OpenAIの従業員アカウントへのアクセスを実証し、バグバウンティを獲得しました。これはAIが生成したエクスプロイトとサインインの欠陥を利用したものです。",
+        "financial_impact": "金融機関がOpenAIのサービスを業務で利用している場合、同様の脆弱性や攻撃手法が自社のシステムにも影響を及ぼす可能性を評価する上で参考になります。直接的な影響は確認できません。",
+        "recommended_actions": [
+          "OpenAIのサービスを利用している場合、提供者からのセキュリティ情報や推奨事項を確認する",
+          "AI関連サービスやプラットフォームの利用における認証・アクセス管理のセキュリティ設定を再評価する"
+        ],
+        "reason": "重要度は、AI関連サービスの認証・アクセス管理における潜在的なリスクを示唆するものの、金融機関への直接的な影響が不明確なため「中」です。確認目安は、具体的な期限や進行中の大規模攻撃の記述がなく、情報収集と評価に時間的猶予があるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f0ed36e6cfc80c67544a176f53eb300f9d9a6a50b835bcf4528601309e45baa4",
+      "source_id": "nist",
+      "source_name": "NIST",
+      "source_type": "政府・公的機関",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.nist.gov/news-events/news/2026/09/nist-awards-more-17-million-support-cybersecurity-workforce-development",
+      "canonical_url": "https://www.nist.gov/news-events/news/2026/09/nist-awards-more-17-million-support-cybersecurity-workforce-development",
+      "published_at": "2026-09-18T21:00:00+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "NIST、8州のサイバーセキュリティ人材育成に170万ドル超を助成",
+      "raw_title": "NIST Awards More Than $1.7 Million to Support Cybersecurity Workforce Development Across 8 States",
+      "raw_excerpt": "Projects will address local cybersecurity workforce needs and will offer practical learning opportunities including internships, apprenticeships and hands-on projects.",
+      "content_hash": "sha256:8dc394becee51090dfdce6c9a4e8f95c2a597b48bcd08500120c39b6663ce5cf",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:23:52.797514+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "NISTによるサイバーセキュリティ人材育成への助成金に関する記事であり、規制・ガバナンスの枠組みにおける取り組みが主題であるため。",
+        "tags": [
+          "NIST",
+          "ガイドライン"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "NISTは、8つの州におけるサイバーセキュリティ人材育成プロジェクトに対し、総額170万ドル以上の助成金を授与しました。これらのプロジェクトは、インターンシップや実習を含む実践的な学習機会を提供し、地域の人材ニーズに対応します。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。サイバーセキュリティ人材育成は業界全体の課題ですが、本記事は特定の金融機関に直接関係する規制や義務を伴いません。",
+        "recommended_actions": [],
+        "reason": "重要度は、NISTによる人材育成助成のニュースであり、個別の金融機関への直接的な影響や行動を求めるものではないため「低」です。確認目安は、具体的な脅威や期限、対応を求める情報がなく、状況把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:be9daf1b6b3c6d98033b577a36d356c85ecd9531b9ee10499fe187cfe162080f",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/23-million-user-records-compromised-in-gyazo-data-breach/",
+      "canonical_url": "https://www.securityweek.com/23-million-user-records-compromised-in-gyazo-data-breach/",
+      "published_at": "2026-09-18T20:38:40+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "23 Million User Records Compromised in Gyazo Data Breach",
+      "raw_title": "23 Million User Records Compromised in Gyazo Data Breach",
+      "raw_excerpt": null,
+      "content_hash": "sha256:61e2f9c8acec80e04f66a8e65289d17b3ccb3dcc318d382c822851d203a99afd",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:24:09.981401+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "画像アップロードサーバーの脆弱性が悪用され、2,300万件のユーザー記録が侵害されたインシデントが主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "画像共有サービスGyazoの提供元であるHelpfeel社は、画像アップロードサーバーの脆弱性が悪用され、2,300万件のユーザー記録が不正アクセスにより侵害されたことを発表しました。",
+        "financial_impact": "Gyazoサービスを業務で利用している金融機関や、委託先が利用している場合に情報漏えいの影響を受ける可能性があります。記事からは金融機関との直接的な関係は確認できません。",
+        "recommended_actions": [
+          "自社および委託先におけるGyazoサービスの利用有無を確認する",
+          "Gyazoサービスを利用している場合、提供元からの公式発表や指示を確認し、必要な対応を検討する"
+        ],
+        "reason": "重要度は、特定のサービスにおけるデータ侵害であり、金融機関との直接的な関係が記事から確認できないため「中」です。確認目安は、インシデント発生の報告であり、即時対応を要する新たな脆弱性情報や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:8513523c6f095a735476d0cfcb6d55801cf57b8e5c84ae261add29e8dc2c3437",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/an-abandoned-cdn-domain-was-re.html",
+      "canonical_url": "https://thehackernews.com/2026/09/an-abandoned-cdn-domain-was-re.html",
+      "published_at": "2026-09-18T20:01:16+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "An Abandoned CDN Domain Was Re-Registered. Thousands of Sites Still Call It.",
+      "raw_title": "An Abandoned CDN Domain Was Re-Registered. Thousands of Sites Still Call It.",
+      "raw_excerpt": null,
+      "content_hash": "sha256:813126e2f1256a47ead96274d0007890b8b66b3517aaa5b871d4fb4f4986e23e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:24:27.410702+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "放棄されたCDNドメインの再登録とそれに伴う潜在的なリスクが主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "2025年7月、かつてコンテンツデリバリーネットワーク（CDN）に属していたドメインが再登録されました。このCDNは数年前に閉鎖され、ドメインは失効していましたが、数千のウェブサイト、コードリポジトリ、ドキュメントページが、そのドメイン下の",
+        "financial_impact": "金融機関がウェブサイトやアプリケーションで、過去に利用していたCDNのドメインへのハードコードされた参照を残している場合、意図しないコンテンツの読み込みやセキュリティリスクに繋がる可能性があります。",
+        "recommended_actions": [
+          "自社および委託先のウェブサイトやアプリケーションで、過去に利用していたCDNドメインへのハードコードされた参照がないか確認する",
+          "参照が確認された場合、そのドメインが現在誰によって管理されているか、また悪意のあるコンテンツが配信されていないか調査する",
+          "不要な外部ドメインへの参照を削除または更新し、サプライチェーンリスクを低減する"
+        ],
+        "reason": "重要度は、金融機関が過去のCDNドメインへの参照を残している場合に潜在的なリスクがあるため「中」です。確認目安は、具体的な攻撃や期限の記述がなく、利用有無の確認が必要なため「今週確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:68651eea862d133227bbc7fcd32f4ed2ba6541645b6dc62c29f5691973a4b922",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/plugin4shell-lets-repository-owners.html",
+      "canonical_url": "https://thehackernews.com/2026/09/plugin4shell-lets-repository-owners.html",
+      "published_at": "2026-09-18T20:01:01+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "Plugin4Shell Lets Repository Owners Swap Pinned Plugin Code Across Four AI Coding Agents",
+      "raw_title": "Plugin4Shell Lets Repository Owners Swap Pinned Plugin Code Across Four AI Coding Agents",
+      "raw_excerpt": null,
+      "content_hash": "sha256:177b0b1f6436037a241e1daca0ea1b2747f41f1e94478bf299125c7397dde771",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:24:44.516708+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIコーディングエージェントの脆弱性であるため。",
+        "tags": [
+          "AI",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セキュリティ企業Air Securityによると、広く利用されている4つのAIコーディングエージェントに脆弱性があり、プラグインのリポジトリ所有者が、エージェントが特定のレビュー済みバージョンにロックしているプラグインを悪意のあるものにすり替えることが可能です。AnthropicとOpenAIは既にこの脆弱性を修正済みです。",
+        "financial_impact": "金融機関がAIコーディングエージェントを開発・利用している場合に、サプライチェーンリスクとして関係します。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "自社でAIコーディングエージェント（Anthropic Claude Code、OpenAI Codex、GitHub Copilot、Cursor）の利用有無を確認する",
+          "利用している場合は、ベンダーの修正状況を確認し、最新バージョンへの更新または緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、AIコーディングエージェントの利用が限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、既にベンダーによる修正が提供されており、緊急対応の根拠が乏しいため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:8e140a0241ad43a1e9a3a45e9564b3eac1468c9668c4f48b15fb023a3f54aff1",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/microsoft-patches-18-vulnerabilities-in-ai-cloud-products/",
+      "canonical_url": "https://www.securityweek.com/microsoft-patches-18-vulnerabilities-in-ai-cloud-products/",
+      "published_at": "2026-09-18T19:57:03+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "Microsoft Patches 18 Vulnerabilities in AI, Cloud Products",
+      "raw_title": "Microsoft Patches 18 Vulnerabilities in AI, Cloud Products",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c1c2590bcdec5cb2321ea40fb094998212e5a95e874072c00d5e07c197942169",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:25:01.365668+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Microsoft製品の脆弱性修正が主題であるため。",
+        "tags": [
+          "パッチ",
+          "クラウド",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Microsoftは、AzureおよびAI関連製品にわたる18件の脆弱性を修正しました。これらの脆弱性の大半は権限昇格の欠陥です。",
+        "financial_impact": "金融機関でMicrosoft AzureやAI関連製品を利用している場合に限り、適用性確認の対象になります。記事からは具体的な製品名や影響範囲が不明なため、利用有無は確認が必要です。",
+        "recommended_actions": [
+          "Microsoft AzureおよびAI関連製品の利用有無と影響バージョンを確認する",
+          "Microsoftのセキュリティ更新プログラム情報を確認し、自社環境への適用要否を評価する"
+        ],
+        "reason": "重要度は、Microsoft製品の脆弱性修正であり、利用状況により適用性が異なるため「中」です。確認目安は、緊急対応を要する悪用や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:987fdbb14989de685462b433ba7cbc14ffc65a10b8e1cf46b8b9be5364b66e66",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/weaselbiscuit-stealer-spreads-via-13.html",
+      "canonical_url": "https://thehackernews.com/2026/09/weaselbiscuit-stealer-spreads-via-13.html",
+      "published_at": "2026-09-18T19:40:06+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "WeaselBiscuit Stealer Spreads via 13 npm Packages to Harvest Chrome Extension Storage",
+      "raw_title": "WeaselBiscuit Stealer Spreads via 13 npm Packages to Harvest Chrome Extension Storage",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7647c5c5f583a2e543425aba24bc9d23916a57d567782259eac26f449148a86c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:25:18.741876+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "npmパッケージを悪用した新たなマルウェアの拡散と攻撃手法が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "APT",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者らは、これまで文書化されていなかったJavaScriptベースのマルウェア「WeaselBiscuit Stealer」を拡散する13個のnpmパッケージを発見しました。このマルウェアは、北朝鮮のContagious Interviewキャンペーンに関連するマルウェアと機能的な重複が見られます。",
+        "financial_impact": "金融機関でnpmパッケージを利用した開発を行っている場合、サプライチェーンリスクとして関係します。また、従業員がChrome拡張機能を利用している場合、情報窃取の対象となる可能性があります。",
+        "recommended_actions": [
+          "自社および委託先で利用しているnpmパッケージに、記事で言及されている悪性パッケージが含まれていないか確認する",
+          "従業員が利用するChrome拡張機能について、不審なものがないか確認し、セキュリティ教育を強化する"
+        ],
+        "reason": "重要度は、npmパッケージを介したマルウェア拡散であり、開発環境や従業員の利用状況によっては影響が及ぶ可能性があるため「中」です。確認目安は、新たなマルウェアの発見であり、即時対応を要する進行中の大規模攻撃や明確な期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:bfaaf7dd5120e273dc0ef0aeb6f07343d67999218a4fdae42b32fb3efaa4cff7",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/nightmarestresser-ddos-service-disrupted-in-international-operation/",
+      "canonical_url": "https://www.securityweek.com/nightmarestresser-ddos-service-disrupted-in-international-operation/",
+      "published_at": "2026-09-18T19:12:33+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "NightmareStresser DDoS Service Disrupted in International Operation",
+      "raw_title": "NightmareStresser DDoS Service Disrupted in International Operation",
+      "raw_excerpt": null,
+      "content_hash": "sha256:16b00c9b35cb59addcc06b7053cebaa723b044458d531fbe54fe625e331ad6ef",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:25:35.408794+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "DDoS攻撃サービスとその停止に関する記事であり、攻撃手法や脅威動向が主題であるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "2022年から活動していたDDoS攻撃代行サービス「NightmareStresser」が、国際的な法執行機関の作戦により停止されました。同サービスは世界で最も長く運営されていたDDoS-for-hireサービスの一つでした。",
+        "financial_impact": "金融機関はDDoS攻撃の標的となることが多いため、主要なDDoS攻撃サービスが停止されたことは脅威環境の変化として関係します。ただし、直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、DDoS攻撃サービスの停止という脅威動向の変化であり、直接的な影響は限定的であるため「中」です。確認目安は、新たな脆弱性や緊急対応の必要性がなく、状況把握が中心となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:110c0e0c97cb2e8d186c68ed7880cf6d62019a6d8518b07bfb937db7febae825",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/brevo-supply-chain-attack-injects-malware-into-100000-websites/",
+      "canonical_url": "https://www.securityweek.com/brevo-supply-chain-attack-injects-malware-into-100000-websites/",
+      "published_at": "2026-09-18T18:46:57+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "Brevo Supply Chain Attack Injects Malware Into 100,000 Websites",
+      "raw_title": "Brevo Supply Chain Attack Injects Malware Into 100,000 Websites",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7117a23867917557487acdd0c63e1c9cb18efcc99e98d25d203ed0d5fdd345e3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:25:52.652976+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "Brevoのサプライチェーンが侵害され、マルウェアがウェブサイトに注入された実際の攻撃事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "サプライチェーン",
+          "情報漏えい",
+          "業務停止"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "ハッカーが侵害されたAPIキーを利用し、Cloudflare Workerを展開して悪意のあるスクリプトを10万のウェブサイトに注入しました。",
+        "financial_impact": "Brevoのサービスを利用している金融機関は、自社ウェブサイトへのマルウェア注入の有無を確認する必要があります。特に、顧客情報や決済情報を取り扱うウェブサイトの場合、情報漏えいや業務停止のリスクが高まります。",
+        "recommended_actions": [
+          "Brevoのサービスを利用している場合、自社ウェブサイトへのマルウェア注入の有無を確認する",
+          "Brevoからの公式発表やセキュリティアドバイザリを確認し、推奨される対応策を評価する",
+          "侵害されたAPIキーの利用状況を確認し、必要に応じてキーの無効化や再発行を検討する"
+        ],
+        "reason": "重要度は、広範なウェブサイトへのマルウェア注入を伴うサプライチェーン攻撃であり、金融機関のウェブサイトが影響を受ける可能性があるため「高」です。確認目安は、攻撃が既に発生しているものの、直ちに自社への影響が確認できる具体的な期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1963d1923e71383cfdc7ff37dd1f76ca0a56f0d28f67f1caa48dbd847001cd69",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/claimed-bug-bounty-hunter-likely-used.html",
+      "canonical_url": "https://thehackernews.com/2026/09/claimed-bug-bounty-hunter-likely-used.html",
+      "published_at": "2026-09-18T18:18:03+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "Claimed Bug Bounty Hunter Likely Used LLM to Build PhantomRaven npm Stealer",
+      "raw_title": "Claimed Bug Bounty Hunter Likely Used LLM to Build PhantomRaven npm Stealer",
+      "raw_excerpt": null,
+      "content_hash": "sha256:32ca4ed5a8d76c6114420be65e451d7b99c5f7eec61c17ac5a3642d5d2e026bf",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:26:10.891902+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題が、LLMを利用したマルウェア開発というAI・新技術リスクに関するものであるため。",
+        "tags": [
+          "AI",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "npmパッケージレジストリを通じてJavaScriptベースの情報窃取マルウェア「PhantomRaven」が配布されており、金銭目的の攻撃者が大規模言語モデル（LLM）を使用してこのマルウェアを開発した可能性が高いと指摘されています。",
+        "financial_impact": "金融機関がnpmパッケージを利用してシステム開発を行っている場合、サプライチェーンリスクとして関係します。LLMの悪用事例として、今後の脅威動向を把握する上で参考になります。",
+        "recommended_actions": [
+          "自社および委託先におけるnpmパッケージの利用状況と、PhantomRavenの検出状況を確認する",
+          "開発プロセスにおけるサードパーティ製パッケージのセキュリティ評価基準を見直す"
+        ],
+        "reason": "重要度は、LLMの悪用事例として今後の脅威動向を把握する上で参考になるため「中」です。確認目安は、具体的な緊急対応の必要性や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a36ec0e8e772e32b44c210b9387bddcbb67075bea9e05505f5c4136cb0bd3b13",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/critical-orkes-conductor-vulnerability-exploited-in-attacks/",
+      "canonical_url": "https://www.securityweek.com/critical-orkes-conductor-vulnerability-exploited-in-attacks/",
+      "published_at": "2026-09-18T17:42:18+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "Critical Orkes Conductor Vulnerability Exploited in Attacks",
+      "raw_title": "Critical Orkes Conductor Vulnerability Exploited in Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d25f8974e992f45bbf3f0db458059192c59eadfcef206db805b94f2acc7ffb71",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:26:27.823508+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がCVEに関連する脆弱性と、その悪用状況についてであるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Orkes Conductorに認証不要のリモートコード実行の脆弱性CVE-2026-58138が確認され、攻撃者がインラインワークフロー定義を介して悪用していることが報じられました。",
+        "financial_impact": "金融機関でOrkes Conductorを利用している場合に限り、適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Orkes Conductorの利用有無と影響バージョンを確認する",
+          "ベンダーからの一次情報や修正パッチ、緩和策を確認し対応要否を評価する"
+        ],
+        "reason": "重要度は、Orkes Conductorの利用状況が記事から不明で、金融機関への直接的な影響が不確実なため「中」です。確認目安は、悪用が確認されているものの、CISA KEVへの新規追加がなく、即時対応の明確な期限も示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c4650126bd185e1e5572913622abf75c8f4ebab307bec16930c177e95bfa9d98",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/mind-secures-72-million-for-ai-powered-dlp/",
+      "canonical_url": "https://www.securityweek.com/mind-secures-72-million-for-ai-powered-dlp/",
+      "published_at": "2026-09-18T16:25:27+09:00",
+      "fetched_at": "2026-09-19T09:22:07.886448+09:00",
+      "title": "MIND Secures $72 Million for AI-Powered DLP",
+      "raw_title": "MIND Secures $72 Million for AI-Powered DLP",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f213f3bf7dda370a9f57c32f67d7a8006cd656ee972c8e1d0683c2253f6e0c78",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-19T09:26:44.634807+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "AI関連技術の資金調達に関するニュースであり、特定の脆弱性、攻撃、インシデント、規制、サプライチェーンリスクには直接該当しないため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "MIND社がAI搭載のデータ損失防止（DLP）プラットフォーム開発と主要エンタープライズ市場での事業拡大のため、7,200万ドルの資金調達を確保しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AI搭載DLPソリューションの市場動向に関する参考情報として捉えられます。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や規制変更ではなく、AI関連技術企業の資金調達に関する情報であるため「低」です。確認目安は、金融機関に直接的な影響や緊急対応を求める内容ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
