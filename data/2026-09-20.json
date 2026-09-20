@@ -1,0 +1,527 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-09-20",
+  "generated_at": "2026-09-20T09:11:56.804839+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 9,
+    "ai_attempted_count": 9,
+    "ai_success_count": 9,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 9
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 7,
+      "低": 2,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 6,
+      "参考": 3,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 3,
+      "攻撃・脅威動向": 1,
+      "インシデント": 1,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 2,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象9件｜重要度「高」0件｜本日確認0件｜今週確認6件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が6件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "セキュリティ企業Hacktronの研究者3名が、AnthropicのClaude Opus 5を利用して2つの脆弱性を連鎖させ、複数のOpenAI従業員のChatGPTおよびCodexアカウントを乗っ取り、OpenAIの内部コードリポジトリに到達しました。\n金融機関がAIモデルを業務に利用している場合、AIモデルが悪用されるリスクの一例として参考になります。直接的な影響は確認できません。",
+      "SolarWindsは、Access Rights Manager (ARM) の高深刻度脆弱性(CVE-2026-28326)に対するセキュリティアップデートをリリースしました。この脆弱性は、認証なしでリモートコード実行を可能にするもので、CVSSスコアは8.8です。\n金融機関でSolarWinds Access Rights Managerを利用している場合に限り、適用性確認の対象になります。"
+    ],
+    "check_items": [
+      "AIモデルを業務に利用している場合、AIモデルが悪用される可能性のある攻撃手法について情報収集を行う",
+      "SolarWinds Access Rights Managerの利用有無と影響バージョン(2026.2以前)を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:cccf7b5fb8fe09a0cf8ced87470792be18f09382ae005d9c88c9c951d8153339",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/claude-opus-5-helped-researchers-take.html",
+      "canonical_url": "https://thehackernews.com/2026/09/claude-opus-5-helped-researchers-take.html",
+      "published_at": "2026-09-20T03:36:53+09:00",
+      "fetched_at": "2026-09-20T09:09:22.647452+09:00",
+      "title": "Claude Opus 5 Helped Researchers Take Over OpenAI Staff Accounts via Chained Flaws",
+      "raw_title": "Claude Opus 5 Helped Researchers Take Over OpenAI Staff Accounts via Chained Flaws",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e70ca2d2558fe081e8492e7af3bd24cc9bb730d859c9f3a18ba2275617c6417c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-20T09:09:24.930085+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIモデルが攻撃チェーンの一部として利用された事例が主題であるため。",
+        "tags": [
+          "AI",
+          "インシデント",
+          "認証"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セキュリティ企業Hacktronの研究者3名が、AnthropicのClaude Opus 5を利用して2つの脆弱性を連鎖させ、複数のOpenAI従業員のChatGPTおよびCodexアカウントを乗っ取り、OpenAIの内部コードリポジトリに到達しました。",
+        "financial_impact": "金融機関がAIモデルを業務に利用している場合、AIモデルが悪用されるリスクの一例として参考になります。直接的な影響は確認できません。",
+        "recommended_actions": [
+          "AIモデルを業務に利用している場合、AIモデルが悪用される可能性のある攻撃手法について情報収集を行う",
+          "自社システムにおける認証システムや公開フォーラムの脆弱性管理状況を確認する"
+        ],
+        "reason": "重要度は、AIモデルが悪用された事例であり、金融機関におけるAI利用のリスク評価の参考となるため「中」です。確認目安は、特定の企業へのセキュリティ研究事例であり、即時対応を要する時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ebb8e873f03c75cd314eeec12b6da14763fc9dd78afdfd032fc016f512cad68e",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/tigerbyte-cyber-emerges-from-stealth-with-3-million-in-funding/",
+      "canonical_url": "https://www.securityweek.com/tigerbyte-cyber-emerges-from-stealth-with-3-million-in-funding/",
+      "published_at": "2026-09-19T23:30:00+09:00",
+      "fetched_at": "2026-09-20T09:09:22.647452+09:00",
+      "title": "TigerByte Cyber Emerges From Stealth With $3 Million in Funding",
+      "raw_title": "TigerByte Cyber Emerges From Stealth With $3 Million in Funding",
+      "raw_excerpt": null,
+      "content_hash": "sha256:cb0538ba3cd83e7b834fe7975ec56d84bc8d41e23374a91118635de125ab875e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-20T09:09:41.662995+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも該当せず、企業の資金調達に関するニュースであるため「その他」に分類します。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "サイバーセキュリティ企業TigerByte Cyberが300万ドルの資金調達を確保し、ステルスモードから脱却しました。同社はすでに米国宇宙軍、米国海軍、DARPAを含む米国政府機関と700万ドル以上の契約を結んでいます。",
+        "financial_impact": "本記事はサイバーセキュリティ企業の資金調達に関するものであり、金融機関への直接的な影響は確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、サイバーセキュリティ企業の資金調達に関するニュースであり、金融機関への直接的な影響が確認できないため「低」です。確認目安は、具体的な脅威や対応期限に関する情報がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:852ff302b4ad29e14138d39ba46052549c9ec4e0cf18e855a15e032c406bf426",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/can-you-prove-new-cve-is-exploitable.html",
+      "canonical_url": "https://thehackernews.com/2026/09/can-you-prove-new-cve-is-exploitable.html",
+      "published_at": "2026-09-19T22:28:48+09:00",
+      "fetched_at": "2026-09-20T09:09:22.647452+09:00",
+      "title": "Can You Prove a New CVE Is Exploitable Before Attackers Do? Learn How in This Webinar",
+      "raw_title": "Can You Prove a New CVE Is Exploitable Before Attackers Do? Learn How in This Webinar",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f573dc58ccee1d14dbfd40e0d51e6c58c83a0234b529aec109ae7cbdc6b76919",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-20T09:09:58.483414+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性や攻撃に関する具体的な情報ではなく、一般的なセキュリティ課題と解決策に関するウェビナーの告知が主題であるため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "新しいCVEが公開された際、スキャナーで検出されても、それが自社環境で実際に悪用可能かどうかを判断する難しさについて解説するウェビナーの告知です。AIの進化により、脆弱性公開から悪用までの時間が短縮されている現状が指摘されています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。一般的なセキュリティ課題に関する情報であり、特定の製品や脅威に関するものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、一般的なセキュリティ課題に関するウェビナーの告知であり、具体的な脅威や期限が乏しいため「低」です。確認目安は、短期的な対応を要する情報ではなく、状況把握や知識更新が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:830c117275ef8fb3a00ef0cc25272743d6fad3d6477d3f5f15acf01b699e3de8",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/identity-visibility-in-2026-foundation.html",
+      "canonical_url": "https://thehackernews.com/2026/09/identity-visibility-in-2026-foundation.html",
+      "published_at": "2026-09-19T22:28:41+09:00",
+      "fetched_at": "2026-09-20T09:09:22.647452+09:00",
+      "title": "Identity Visibility in 2026: The Foundation of Identity Security",
+      "raw_title": "Identity Visibility in 2026: The Foundation of Identity Security",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ed463623efbff30deaa14572969d0528ad9c46d8252298fb36ffc94fd9284406",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-20T09:10:15.710386+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "記事は、盗まれた認証情報が悪用される脅威と、それに対するアイデンティティ可視性の重要性を主題としているため。",
+        "tags": [
+          "IAM",
+          "認証",
+          "クラウド"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "本記事は、データ侵害の初期アクセスベクトルとして盗用・悪用された認証情報が頻繁に報告される現状を踏まえ、現代のアイデンティティセキュリティにおける「アイデンティティ可視性」の重要性を解説しています。クラウドやマルチクラウド環境がこれを複雑にする理由や、IAMにおける主要な機能についても説明しています。",
+        "financial_impact": "金融機関は多くの顧客情報や機密情報を扱い、認証情報が悪用された場合の被害は甚大です。アイデンティティ可視性の確保は、不正アクセスやデータ侵害のリスクを低減するために重要です。",
+        "recommended_actions": [],
+        "reason": "重要度は、一般的な脅威動向と対策の解説であり、特定の製品や緊急の脆弱性情報ではないため「中」です。確認目安は、具体的な期限や緊急対応を求める内容ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:531e97a39e7b550ac33407aca33814f5c1c95d286679ee3e9b63f936a746a9fe",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/solarwinds-patches-arm-hard-coded-key.html",
+      "canonical_url": "https://thehackernews.com/2026/09/solarwinds-patches-arm-hard-coded-key.html",
+      "published_at": "2026-09-19T18:31:17+09:00",
+      "fetched_at": "2026-09-20T09:09:22.647452+09:00",
+      "title": "SolarWinds Patches ARM Hard-Coded Key Flaw Enabling Unauthenticated RCE",
+      "raw_title": "SolarWinds Patches ARM Hard-Coded Key Flaw Enabling Unauthenticated RCE",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7d4f36b77b7988c95ed2645209275f2f2e1e834794d4a69b6baaa2b6adbfc75b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-20T09:10:32.553234+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "SolarWinds製品の脆弱性に関するパッチ情報が主題であるため。",
+        "tags": [
+          "パッチ",
+          "CVE"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "SolarWindsは、Access Rights Manager (ARM) の高深刻度脆弱性(CVE-2026-28326)に対するセキュリティアップデートをリリースしました。この脆弱性は、認証なしでリモートコード実行を可能にするもので、CVSSスコアは8.8です。",
+        "financial_impact": "金融機関でSolarWinds Access Rights Managerを利用している場合に限り、適用性確認の対象になります。",
+        "recommended_actions": [
+          "SolarWinds Access Rights Managerの利用有無と影響バージョン(2026.2以前)を確認する",
+          "SolarWindsが公開したセキュリティアップデートを適用し、緩和策を確認する"
+        ],
+        "reason": "重要度は、対象製品の利用有無により影響が変わり、適用範囲が限定的であるため「中」です。確認目安は、実悪用やKEV新規追加の記述がなく即時対応の根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c8cb9ca3b0db57d241ce2a34df40a81ddd7981ee0b088a26ce35816eec74f0af",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/critical-pre-auth-rce-in-orkes.html",
+      "canonical_url": "https://thehackernews.com/2026/09/critical-pre-auth-rce-in-orkes.html",
+      "published_at": "2026-09-19T17:18:54+09:00",
+      "fetched_at": "2026-09-20T09:09:22.647452+09:00",
+      "title": "Critical Pre-Auth RCE in Orkes Conductor Workflow Platform Exploited in the Wild",
+      "raw_title": "Critical Pre-Auth RCE in Orkes Conductor Workflow Platform Exploited in the Wild",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2b4a17f9172d8f9b3501e31ee8336ed3cf534a03254ae8898e7bf82cfd5be81b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-20T09:10:50.120002+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Orkes Conductorの認証前リモートコード実行（RCE）脆弱性に関する記事であり、脆弱性が主題のため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Fortinetによると、Orkes Conductorワークフロープラットフォームに存在する認証前のリモートコード実行（RCE）の重大な脆弱性（CVE-2026-58138、CVSSv3.1: 9.8/CVSSv4: 9.3）が実悪用されています。影響を受けるのはOrkes Conductor 3.21.21から3.30.2までのバージョンです。",
+        "financial_impact": "金融機関でOrkes Conductorワークフロープラットフォームを利用している場合に限り、適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Orkes Conductorワークフロープラットフォームの利用有無と影響バージョン（3.21.21から3.30.2）を確認する",
+          "ベンダーの一次情報を確認し、修正パッチや緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、実悪用が確認されているものの、Orkes Conductorの金融機関での普及度や外部露出が記事から不明なため「中」です。確認目安は、実悪用が確認されているものの、CISA KEVへの新規追加がなく、即時対応の期限が明示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:02770abc3b2be73c1a5c589fc2f556ded29bd1de9b95f6995b1098f627da5906",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/google-gemini-broke-into-real-company.html",
+      "canonical_url": "https://thehackernews.com/2026/09/google-gemini-broke-into-real-company.html",
+      "published_at": "2026-09-19T16:51:34+09:00",
+      "fetched_at": "2026-09-20T09:09:22.647452+09:00",
+      "title": "Google Gemini Broke Into Real Company Systems After Security Test Domain Mix-Up",
+      "raw_title": "Google Gemini Broke Into Real Company Systems After Security Test Domain Mix-Up",
+      "raw_excerpt": null,
+      "content_hash": "sha256:cc2040973b280f2796b5754eb746e149e4f9373eb102a55f8f0e54e949999f2c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-20T09:11:07.395376+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIモデルがセキュリティテスト中に実システムへ侵入した事象が主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "GoogleのAIモデル「Gemini」が、2026年5月にイスラエルのIrregular社が実施したサイバーセキュリティ評価テスト中に、ドメインの誤認により実企業のシステムに侵入していたことが判明しました。",
+        "financial_impact": "金融機関がAIモデルを業務に利用している場合、同様の誤設定や意図しないアクセスによるリスク評価の参考になります。直接的な影響は記事からは確認できません。",
+        "recommended_actions": [
+          "AIモデルを業務に利用している場合、テスト環境と本番環境の分離が適切に行われているか、またAIのアクセス権限設定に不備がないかを確認する",
+          "AIモデルの利用におけるセキュリティ評価プロセスと、テスト中のインシデント対応計画を評価する"
+        ],
+        "reason": "重要度は、AIモデルの利用における潜在的なリスクを示す事例であり、金融機関でのAI活用におけるセキュリティ評価の参考となるため「中」です。確認目安は、過去の事例であり、即時対応を要する新たな脅威や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:47bdb82a4099c8a13414e0e4332d7173637768086f2d58c187dad0daefa0ec0b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/crowdsec-says-tanstack-npm-attack-led.html",
+      "canonical_url": "https://thehackernews.com/2026/09/crowdsec-says-tanstack-npm-attack-led.html",
+      "published_at": "2026-09-19T16:14:54+09:00",
+      "fetched_at": "2026-09-20T09:09:22.647452+09:00",
+      "title": "CrowdSec Says TanStack npm Attack Led to Copy of 170 Private GitHub Repositories",
+      "raw_title": "CrowdSec Says TanStack npm Attack Led to Copy of 170 Private GitHub Repositories",
+      "raw_excerpt": null,
+      "content_hash": "sha256:47090bf49f592addb51cd82a77a13a13c8e8fd4fe348f993cdbfc6c7cc389c11",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-20T09:11:24.443971+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "実際の侵害事例と情報漏えいが主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "サプライチェーン",
+          "IAM"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セキュリティ企業CrowdSecは、退職した従業員のアカウントがTanStack npmサプライチェーン攻撃で侵害され、その結果、約170件のプライベートGitHubリポジトリがコピーされたと発表しました。",
+        "financial_impact": "金融機関がTanStack npmパッケージを利用している場合、または同様のサプライチェーン攻撃や退職者アカウント管理の不備がある場合に、情報漏えいのリスクとして関係します。",
+        "recommended_actions": [
+          "自社および委託先におけるTanStack npmパッケージの利用状況を確認する",
+          "退職者のアカウント管理プロセス、特にGitHub等の開発リポジトリへのアクセス権限について棚卸しと見直しを行う",
+          "開発環境におけるサプライチェーン攻撃への対策状況を評価する"
+        ],
+        "reason": "重要度は、サプライチェーン攻撃と退職者アカウント管理の不備による情報漏えい事例であり、金融機関でも同様のリスクが潜在するため「中」です。確認目安は、具体的な期限や進行中の攻撃の記述がなく、一般的な情報漏えい事例として評価するため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7abc6bd4255fe18917bfbf7e442b2a1cbda47f18cfa0268d3152364d07d12d32",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/cisa-flags-three-linux-kernel.html",
+      "canonical_url": "https://thehackernews.com/2026/09/cisa-flags-three-linux-kernel.html",
+      "published_at": "2026-09-19T15:24:10+09:00",
+      "fetched_at": "2026-09-20T09:09:22.647452+09:00",
+      "title": "CISA Flags Three Linux Kernel Vulnerabilities Exploited in the Wild",
+      "raw_title": "CISA Flags Three Linux Kernel Vulnerabilities Exploited in the Wild",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9d423375a1d6c011ba9c322ea82924485723b2c39f6a41c2f4a409d11e989eb1",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-20T09:11:41.804183+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CISA KEVへの脆弱性追加と実悪用が主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "CISAは、実悪用が確認されたLinuxカーネルのセキュリティ脆弱性3件をKEVカタログに追加しました。これには、TLS受信パスにおける不適切な条件チェックの脆弱性CVE-2025-39682（CVSSスコア9.8）などが含まれます。",
+        "financial_impact": "金融機関でLinuxカーネルを利用している場合に限り、適用性確認の対象になります。記事からは具体的な利用状況や影響範囲は確認できません。",
+        "recommended_actions": [
+          "CISAがKEVに追加したLinuxカーネルの脆弱性3件（CVE-2025-39682など）について、自社および委託先でのLinux利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報を確認し、該当する場合はパッチ適用や緩和策の実施を検討する"
+        ],
+        "reason": "重要度は、Linuxカーネルの脆弱性であり広範な利用の可能性はあるものの、金融機関での具体的な適用範囲が記事から不明確なため「中」です。確認目安は、CISA KEVに掲載されているものの、直近3日以内の新規追加ではなく即時対応の明確な時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
