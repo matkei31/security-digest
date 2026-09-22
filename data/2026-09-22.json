@@ -1,0 +1,872 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-09-22",
+  "generated_at": "2026-09-22T09:55:27.746642+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 16,
+    "ai_attempted_count": 16,
+    "ai_success_count": 16,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 16
+  },
+  "counts": {
+    "importance": {
+      "高": 1,
+      "中": 12,
+      "低": 3,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 10,
+      "参考": 6,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 0,
+      "攻撃・脅威動向": 8,
+      "インシデント": 2,
+      "規制・ガバナンス": 2,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 3,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象16件｜重要度「高」1件｜本日確認0件｜今週確認10件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が10件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が1件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "Googleは、2018年5月から2020年2月にかけて、3つの機能における位置情報データの取り扱いがEUのデータ保護法GDPRに違反したとして、4億300万ユーロの罰金を科されました。アイルランドのデータ保護委員会(DPC)は、Googleに対し6ヶ月以内に法令遵守を命じています。"
+    ],
+    "discussion_points": [
+      "GitHubで提供されていた偽のLastPass Authenticatorインストーラーが、Microsoftのハードウェア互換性プログラムによって署名されたWindowsカーネルドライバーをインストールし、パスワード窃取マルウェア実行前にアンチウイルスやEDRなどのセキュリティソフトウェアを停止させることが判明しました。\nLastPass Authenticatorを利用している金融機関において、従業員が偽のインストーラーをダウンロード・実行した場合、セキュリティソフトウェアが無効化され、パスワード窃取の被害に遭う可能性があります。",
+      "北朝鮮の脅威アクターが「Contagious Interview」キャンペーンを展開し、100カ国以上で少なくとも3万台のデバイスを侵害しました。この攻撃により、7,000以上の仮想通貨ウォレットから合計1,071万ドルが窃取されています。\n金融機関への直接的な影響は記事からは確認できません。主に個人のウェブデザイナー、エンジニア、仮想通貨専門家が標的とされており、金融機関が直接的な標的ではないと考えられます。"
+    ],
+    "check_items": [
+      "LastPass Authenticatorのインストーラーが正規の提供元から入手されているか確認する",
+      "LastPassの正規インストーラーの入手経路について従業員へ注意喚起を行う"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:f2aa6f9693d4bf840038ffaf83992ca8accac35557fd46618b02a59c5bb9538f",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/fake-lastpass-authenticator-installer.html",
+      "canonical_url": "https://thehackernews.com/2026/09/fake-lastpass-authenticator-installer.html",
+      "published_at": "2026-09-22T02:31:01+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "Fake LastPass Authenticator Installer Abuses Microsoft-Signed Driver to Kill Antivirus and EDR",
+      "raw_title": "Fake LastPass Authenticator Installer Abuses Microsoft-Signed Driver to Kill Antivirus and EDR",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1ec0fd98cb4b160ae9c519cb7531e83ca89a59b974f92b5e11257e8583ffa184",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:50:57.413326+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "攻撃者が正規のツールを装い、セキュリティソフトウェアを無効化する新しい攻撃手法が主題であるため。",
+        "tags": [
+          "フィッシング",
+          "認証",
+          "IAM"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "GitHubで提供されていた偽のLastPass Authenticatorインストーラーが、Microsoftのハードウェア互換性プログラムによって署名されたWindowsカーネルドライバーをインストールし、パスワード窃取マルウェア実行前にアンチウイルスやEDRなどのセキュリティソフトウェアを停止させることが判明しました。",
+        "financial_impact": "LastPass Authenticatorを利用している金融機関において、従業員が偽のインストーラーをダウンロード・実行した場合、セキュリティソフトウェアが無効化され、パスワード窃取の被害に遭う可能性があります。",
+        "recommended_actions": [
+          "LastPass Authenticatorのインストーラーが正規の提供元から入手されているか確認する",
+          "従業員に対し、ソフトウェアのダウンロード元を厳格に確認するよう注意喚起を行う"
+        ],
+        "reason": "重要度は、LastPass Authenticatorの利用状況に依存し、攻撃手法が特定のソフトウェアの偽装に限定されるため「中」です。確認目安は、新たな攻撃手法の報告であり、即時対応を要する進行中の侵害や緊急パッチの公開情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:80aeffa58d55925260cd199e5199549ee2d23db442a9f502cb00ac29c8631d49",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/google-hit-with-463-million-fine-for-eu-location-data-rule-breach/",
+      "canonical_url": "https://www.securityweek.com/google-hit-with-463-million-fine-for-eu-location-data-rule-breach/",
+      "published_at": "2026-09-22T02:19:53+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "Google Hit With $463 Million Fine for EU Location Data Rule Breach",
+      "raw_title": "Google Hit With $463 Million Fine for EU Location Data Rule Breach",
+      "raw_excerpt": null,
+      "content_hash": "sha256:57e718209dcfa0a72efb37aead0b95dd11cd575aef86ed30f359b0557d8077f7",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:51:14.302148+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "GoogleがEUのプライバシー規則に違反し罰金を科された事案であり、規制・ガバナンスが主題であるため。",
+        "tags": [
+          "規制",
+          "ガイドライン"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "GoogleがEUの厳格なプライバシー規則に違反し、ユーザーの位置情報データの取り扱いを誤ったとして、4億300万ユーロ（約4億6300万ドル）の罰金を科されました。",
+        "financial_impact": "金融機関が直接的に罰金の対象となる事案ではありませんが、EUのプライバシー規則（GDPRなど）への対応状況を再確認する上での参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関が直接的な罰金の対象ではないものの、EUのプライバシー規則遵守の重要性を示す事例として参考になるため「中」です。確認目安は、具体的な対応期限や緊急のアクションが示されていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c533abc4730ac9558e06dea033f36be81b0a90c224d07f3426cbec08722969d1",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/contagious-interview-campaign.html",
+      "canonical_url": "https://thehackernews.com/2026/09/contagious-interview-campaign.html",
+      "published_at": "2026-09-22T02:19:00+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "Contagious Interview Campaign Compromises 30,000 Devices, Steals $10.71M in Crypto",
+      "raw_title": "Contagious Interview Campaign Compromises 30,000 Devices, Steals $10.71M in Crypto",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ec671f6b177f2791a0186894e298e376196db5cc3c8987300ebd3b945962335b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:51:31.243409+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "北朝鮮の脅威アクターによる特定の攻撃キャンペーンと、その手法・被害状況が主題であるため。",
+        "tags": [
+          "APT",
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "北朝鮮の脅威アクターが「Contagious Interview」キャンペーンを展開し、100カ国以上で少なくとも3万台のデバイスを侵害しました。この攻撃により、7,000以上の仮想通貨ウォレットから合計1,071万ドルが窃取されています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。主に個人のウェブデザイナー、エンジニア、仮想通貨専門家が標的とされており、金融機関が直接的な標的ではないと考えられます。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関が直接的な標的ではないものの、脅威アクターの動向として把握する価値があるため「中」です。確認目安は、新たな脆弱性や緊急の対応を要する情報ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d1a929f886de84bb1316c36c2fe4e03be61c403f9327e0c96af75f3eece4a0db",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/google-fined-403-million-over-gdpr.html",
+      "canonical_url": "https://thehackernews.com/2026/09/google-fined-403-million-over-gdpr.html",
+      "published_at": "2026-09-22T01:57:31+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "Google Fined €403 Million Over GDPR Violations Tied to Location Data",
+      "raw_title": "Google Fined €403 Million Over GDPR Violations Tied to Location Data",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0988a2d47a9c3806c46150fce50b2dfae8e910781f7539f379bb8b4710301211",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:51:48.505880+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "GoogleがGDPR違反で罰金を科されたという、データ保護規制に関するニュースが主題であるため。",
+        "tags": [
+          "規制",
+          "ガイドライン",
+          "監督"
+        ],
+        "importance": "高",
+        "urgency": "参考",
+        "summary": "Googleは、2018年5月から2020年2月にかけて、3つの機能における位置情報データの取り扱いがEUのデータ保護法GDPRに違反したとして、4億300万ユーロの罰金を科されました。アイルランドのデータ保護委員会(DPC)は、Googleに対し6ヶ月以内に法令遵守を命じています。",
+        "financial_impact": "金融機関がGoogleのサービスを利用し、かつEU域内の顧客データを扱っている場合、同様のデータ保護規制遵守の観点から関係します。自社のデータ処理慣行を見直す際の参考となります。",
+        "recommended_actions": [
+          "自社における顧客の位置情報データを含む個人データの取り扱いについて、GDPR等の関連法規への遵守状況を再確認する",
+          "委託先がGoogleのサービスを利用している場合、当該委託先におけるデータ処理慣行の適切性を確認する"
+        ],
+        "reason": "重要度は、GDPR違反による巨額の罰金事例であり、金融機関のデータ保護規制遵守の観点から重要性が高いため「高」です。確認目安は、具体的な対応期限や緊急の行動を求める内容ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:56037aa0642846f6b893794ec48773a1877ddbaef5e5fb576761df98dc922893",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/fake-lastpass-installers-push-kernel-level-edr-killer-rapuncel-stealer/",
+      "canonical_url": "https://www.securityweek.com/fake-lastpass-installers-push-kernel-level-edr-killer-rapuncel-stealer/",
+      "published_at": "2026-09-22T00:46:58+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "Fake LastPass Installers Push Kernel-Level EDR Killer, ‘Rapuncel’ Stealer",
+      "raw_title": "Fake LastPass Installers Push Kernel-Level EDR Killer, ‘Rapuncel’ Stealer",
+      "raw_excerpt": null,
+      "content_hash": "sha256:990c0e931963bc39d2fb9f84bf1595de33656be89f57a882f2ab392666be5fc2",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:52:05.720629+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "攻撃者が偽のインストーラーを用いてマルウェアを展開し、セキュリティ製品を無効化する手口が主題であるため。",
+        "tags": [
+          "フィッシング",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "攻撃者は、少なくとも40社の企業になりすまし、偽のLastPassインストーラーを悪用して、カーネルレベルのEDRキラーと情報窃取マルウェア「Rapuncel」を展開しています。この攻撃では、145種類のセキュリティ製品が無効化されます。",
+        "financial_impact": "金融機関がLastPassを利用している場合、従業員が偽のインストーラーをダウンロードするリスクがあり、情報窃取やセキュリティ製品の無効化による影響を受ける可能性があります。また、他の企業になりすます手口はフィッシング詐欺にも応用される可能性があります。",
+        "recommended_actions": [
+          "LastPassの正規インストーラーの入手経路について従業員へ注意喚起を行う",
+          "EDR製品の無効化や不審なプロセスに関するログを監視し、異常がないか確認する"
+        ],
+        "reason": "重要度は、特定の製品を標的とした攻撃であり、金融機関での利用状況により影響が異なるため「中」です。確認目安は、広範な攻撃動向ではあるものの、即座の対応を要する具体的な期限や脆弱性情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d5771c1e8cd9b114183cc3f136acb2823015dd3e87981bd085d0ca4853e124eb",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ciso-conversations-noopur-davis-the-accidental-global-ciso-at-comcast/",
+      "canonical_url": "https://www.securityweek.com/ciso-conversations-noopur-davis-the-accidental-global-ciso-at-comcast/",
+      "published_at": "2026-09-21T23:30:00+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "CISO Conversations: Noopur Davis – The Accidental Global CISO at Comcast",
+      "raw_title": "CISO Conversations: Noopur Davis – The Accidental Global CISO at Comcast",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d0acdcbd40ace526a64f8d6cf93776b24c8d180b8611e794d9b7be3f6e6b74bc",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:52:22.499662+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも該当せず、CISOのキャリアに関する記事であるため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "ComcastのグローバルCISOであるヌープル・デイビス氏のキャリアに関する対談記事です。彼女は当初サイバーセキュリティのキャリアを計画しておらず、長年開発者として働いていました。",
+        "financial_impact": "金融機関のサイバーセキュリティ業務に直接関係する具体的な脅威やインシデント、規制変更に関する情報ではないため、直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威やインシデントに関する情報ではなく、CISOのキャリアに関する一般的な対談記事であるため「低」です。確認目安は、短期的な対応を要する情報ではなく、状況把握や知識更新のための参考情報であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f81c96de5547c387ed8125a28581f44a90076f391b7fefd86cfc80296378a102",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/weekly-recap-cisco-0-day-ai-agent-rce.html",
+      "canonical_url": "https://thehackernews.com/2026/09/weekly-recap-cisco-0-day-ai-agent-rce.html",
+      "published_at": "2026-09-21T23:24:13+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "⚡ Weekly Recap: Cisco 0-Day, AI Agent RCE, ClickFix Attacks, ClickFix Surge, and Browser Hijacks",
+      "raw_title": "⚡ Weekly Recap: Cisco 0-Day, AI Agent RCE, ClickFix Attacks, ClickFix Surge, and Browser Hijacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:be6916f6aadc62eea4c19a739cc5ae5394f4b8de051bb9fdd6dcf3dc3e4bd0fb",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:52:39.288721+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の異なる脅威動向や脆弱性に関する情報をまとめた週次記事であり、特定の主題に限定されないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、Ciscoのゼロデイ脆弱性、AIエージェントのリモートコード実行、ClickFix攻撃の増加、ブラウザハイジャックなど、今週の主要なサイバーセキュリティ脅威動向をまとめたものです。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。個々の脅威については別途詳細な情報収集と評価が必要です。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や詳細な分析を伴わない週次まとめ記事であり、個々の脅威の深刻度を合算して過大評価しないため「低」です。確認目安は、具体的な短期アクションを要する情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f38e756e9338c9fb8ef97d31873991cd80e3e2d0d01a66b984bfbe6b161f50ca",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/taskstomp-powershell-backdoor-steals.html",
+      "canonical_url": "https://thehackernews.com/2026/09/taskstomp-powershell-backdoor-steals.html",
+      "published_at": "2026-09-21T23:15:40+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "TASK#STOMP PowerShell Backdoor Steals Documents, Wi-Fi Passwords, and Clipboard Data",
+      "raw_title": "TASK#STOMP PowerShell Backdoor Steals Documents, Wi-Fi Passwords, and Clipboard Data",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e70b281bb9955a0453880b51162e5ece4f4dc50fb136aa3b0606dfa9e7341167",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:52:56.439140+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "TASK#STOMPキャンペーンとPowerShellバックドアによるデータ窃取の手法が主題であるため。",
+        "tags": [
+          "APT",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、TASK#STOMPと名付けられた新たなキャンペーンの詳細を公開しました。このキャンペーンは、侵害されたホストから機密データを収集するように設計されたPowerShellバックドアを配布します。",
+        "financial_impact": "金融機関で当該PowerShellバックドアの標的となる環境が存在する場合、機密文書、Wi-Fiパスワード、クリップボードデータなどの情報漏えいにつながる可能性があります。",
+        "recommended_actions": [
+          "記事に記載されたPowerShellバックドアの挙動やIOCに関する情報を確認し、自社環境での侵害兆候の有無を監視する",
+          "PowerShellスクリプトの実行ポリシーやログ設定を見直し、不正なスクリプト実行を検知・防止する対策を評価する"
+        ],
+        "reason": "重要度は、特定の攻撃キャンペーンに関する情報であり、金融機関への直接的な標的化や広範な影響が記事から確認できないため「中」です。確認目安は、新たな攻撃手法の開示であり、即時対応を要する緊急の脆弱性や進行中の大規模攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1ee8afc30e309ef43e0ace95789c6aec19ec3e67f27303cc561ab3ed2b8656cc",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/dragos-completes-netrise-and-runzero-acquisitions-following-accenture-deal/",
+      "canonical_url": "https://www.securityweek.com/dragos-completes-netrise-and-runzero-acquisitions-following-accenture-deal/",
+      "published_at": "2026-09-21T23:00:13+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "Dragos Completes NetRise and runZero Acquisitions Following Accenture Deal",
+      "raw_title": "Dragos Completes NetRise and runZero Acquisitions Following Accenture Deal",
+      "raw_excerpt": null,
+      "content_hash": "sha256:29b7a1d5fd4eae7010937285273da8c8b395d48bae6ce37c32dd69956a05ba37",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:53:13.283747+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "OTセキュリティ企業の買収に関するニュースであり、特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも直接該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "OTセキュリティ企業のDragosが、NetRiseとrunZeroの買収を完了しました。これは、AccentureがDragosの過半数株式を取得した41億ドルの取引の一環であり、OTサイバーセキュリティ分野の強化を目的としています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。OT（運用技術）セキュリティ分野の企業買収に関するニュースであり、金融機関のIT環境に直接関連する情報ではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関のIT環境への直接的な関連性が低く、状況把握のための参考情報であるため「低」です。確認目安は、具体的な脅威や期限を伴う情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b966b4a73a7911c3a1ca8b81e19f0c3cc10659d66ffa2cb692869cea5981ccea",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/rathat-android-trojan-uses-ai-for-automation/",
+      "canonical_url": "https://www.securityweek.com/rathat-android-trojan-uses-ai-for-automation/",
+      "published_at": "2026-09-21T21:51:41+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "RatHat Android Trojan Uses AI for Automation",
+      "raw_title": "RatHat Android Trojan Uses AI for Automation",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7893f002b892ab8e8d00ec33ed853a38095942ad8d4edea149ea026da14e0d70",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:53:30.308238+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "記事は、AIを活用した新しいAndroidトロイの木馬の攻撃手法と脅威動向について述べているため。",
+        "tags": [
+          "AI",
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "RatHatと呼ばれるAndroidトロイの木馬が、AIを利用してリアルタイムでのデバイス操作と制御を自動化していることが確認されました。これにより、マルウェアの適応性と回避能力が向上しています。",
+        "financial_impact": "金融機関が従業員に貸与するモバイルデバイスや、顧客が利用するモバイルバンキングアプリを狙った攻撃に悪用される可能性があります。直接的な影響は、金融機関がAndroidデバイスを業務で利用しているか、または顧客がAndroidデバイスで金融サービスを利用しているかに依存します。",
+        "recommended_actions": [
+          "従業員が利用するAndroidデバイスのセキュリティポリシーと設定を確認する",
+          "モバイルバンキングアプリのセキュリティ対策が最新の脅威に対応しているか評価する"
+        ],
+        "reason": "重要度は、AIを活用した新しい攻撃手法であり、モバイルデバイスを利用する金融機関にとって潜在的な脅威となるため「中」です。確認目安は、具体的な侵害事例や緊急対応の期限が記事に示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b6d406ece8bb58b37e63e52c8b725671838f4d3b435683607b15db7bc4689461",
+      "source_id": "ncsc",
+      "source_name": "NCSC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.ncsc.gov.uk/blogs/one-does-not-simply-defend-agentically",
+      "canonical_url": "https://www.ncsc.gov.uk/blogs/one-does-not-simply-defend-agentically",
+      "published_at": "2026-09-21T21:00:00+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "AIエージェントによるサイバー防御の可能性",
+      "raw_title": "One does not simply defend agentically",
+      "raw_excerpt": "Defenders can’t use AI in the same way attackers can, but there’s much they can do to unlock the potential of agentic cyber defence.",
+      "content_hash": "sha256:bbfdfebdb1e72272d976a517183b4da589d5bce1f01c626033dfcf1e4c0dd864",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:53:46.935289+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIエージェントを用いたサイバー防御の可能性と課題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "防御側は攻撃側と同じ方法でAIを利用できないが、AIエージェントによるサイバー防御の可能性を最大限に引き出すためにできることは多いとNCSCが指摘しています。",
+        "financial_impact": "AIエージェントのサイバー防御への活用は、金融機関のセキュリティ戦略に中長期的な影響を与える可能性があります。現時点での直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントのサイバー防御への活用という中長期的な技術動向に関する情報であるため「中」です。確認目安は、具体的な短期アクションや期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5cb8b0ed24295166f875f25930809e9e03204967898b530cab04fe1069759368",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/rust-team-members-and-popular-crate-owners-targeted-via-video-calls/",
+      "canonical_url": "https://www.securityweek.com/rust-team-members-and-popular-crate-owners-targeted-via-video-calls/",
+      "published_at": "2026-09-21T20:57:35+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "Rust Team Members and Popular Crate Owners Targeted via Video Calls",
+      "raw_title": "Rust Team Members and Popular Crate Owners Targeted via Video Calls",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8552db1e490acfc35542e495f5a7dbbce88d6a678cb0444416733dc3d8566f5a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:54:04.031513+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Rust開発者やクレート所有者を標的とした攻撃手法が主題であるため。",
+        "tags": [
+          "APT",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Rustチームメンバーと人気クレート所有者がビデオ通話を通じて標的型攻撃を受けていることが判明しました。攻撃手法は北朝鮮の攻撃グループが使用するものと一致しているとされています。",
+        "financial_impact": "金融機関がRust言語を開発に利用している場合、サプライチェーンリスクとして関連する可能性があります。直接的な影響は限定的です。",
+        "recommended_actions": [
+          "自社でRust言語を利用している場合、開発チームや関連する委託先に対し、本件の情報共有と注意喚起を行う",
+          "Rust関連のサプライチェーンにおけるセキュリティリスクについて、改めて評価・確認を行う"
+        ],
+        "reason": "重要度は、Rust言語の利用状況により影響が異なるため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、状況把握が中心となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:041aae38d4c359790539cab6fef39bce0350d71c0816ae7b9f33c68126855d68",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/crowdsec-confirms-source-code-stolen-in-supply-chain-attack/",
+      "canonical_url": "https://www.securityweek.com/crowdsec-confirms-source-code-stolen-in-supply-chain-attack/",
+      "published_at": "2026-09-21T19:55:46+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "CrowdSec Confirms Source Code Stolen in Supply Chain Attack",
+      "raw_title": "CrowdSec Confirms Source Code Stolen in Supply Chain Attack",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5156c6b514723b32be0e1e20cdb816f276ceef500be5d25e7d2557f662abbc02",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:54:20.894222+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "サイバーセキュリティ企業CrowdSecがサプライチェーン攻撃によりソースコードを盗まれたインシデントが主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ企業CrowdSecは、2026年5月に発生したTanStackへのサプライチェーン攻撃の結果として、同社のソースコードが盗難されたデータ侵害を認めたと報じられています。",
+        "financial_impact": "CrowdSecの製品を利用している金融機関、またはCrowdSecをサプライチェーンの一部として利用している委託先を持つ金融機関に関係する可能性があります。",
+        "recommended_actions": [
+          "CrowdSec製品の利用有無、および委託先での利用状況を確認する",
+          "CrowdSecからの公式発表や追加情報がないか監視する"
+        ],
+        "reason": "重要度は、CrowdSec製品の利用状況によって影響が異なるため「中」です。確認目安は、記事に緊急対応を要する新たな情報や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:be507c73d619686f375367ea2ee9576a6c9fa87a795261b13e8e9e51a6dc7d6f",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/colorado-water-utilities-hit-by-cyberattacks-targeting-ot-systems/",
+      "canonical_url": "https://www.securityweek.com/colorado-water-utilities-hit-by-cyberattacks-targeting-ot-systems/",
+      "published_at": "2026-09-21T19:03:44+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "Colorado Water Utilities Hit by Cyberattacks Targeting OT Systems",
+      "raw_title": "Colorado Water Utilities Hit by Cyberattacks Targeting OT Systems",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0511a9d39726ce443b050479124c627c3c2265edf602ece433dcd0875b894297",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:54:37.961890+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "OTシステムへのサイバー攻撃による被害事例が主題であるため。",
+        "tags": [
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "コロラド州の複数の水道事業者がサイバー攻撃を受け、OTシステムが標的となりました。攻撃者は機器設定の変更、リモートアクセスとアラームの無効化、ポンプサイクル変更などを行ったと当局が発表しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。OTシステムを持つインフラ事業者への攻撃事例として、サプライチェーンリスクや類似のシステムを持つ場合の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が限定的であり、他業界の事例として参考情報となるため「中」です。確認目安は、具体的な期限や緊急対応の必要性が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5b62ce8df6dfa4f31b546c84425f9bd0209fe33d94778b46d9f99000d2904ad9",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/clickfix-lures-deploy-chainscript-rat.html",
+      "canonical_url": "https://thehackernews.com/2026/09/clickfix-lures-deploy-chainscript-rat.html",
+      "published_at": "2026-09-21T17:39:38+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "ClickFix Lures Deploy ChainScript RAT Using Polygon to Rotate C2 Infrastructure",
+      "raw_title": "ClickFix Lures Deploy ChainScript RAT Using Polygon to Rotate C2 Infrastructure",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5af9eef25481a5fe99fd4a7ccf1fac3244dadef6145f8f7729213bf7d91f3f4e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:54:55.304372+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "脅威アクターが新たなRATを展開し、C2インフラにブロックチェーン技術を利用している攻撃手法が主題のため。",
+        "tags": [
+          "APT",
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "脅威アクターがClickFixに似た手口を悪用し、これまで文書化されていなかったリモートアクセス型トロイの木馬（RAT）「ChainScript」を展開しています。ChainScriptはSpotify、Zoom Workplace、Microsoft Teamsなどのソフトウェアを装い、複数のビルド名で出現しています。",
+        "financial_impact": "金融機関を直接の標的とした攻撃であるとの記述は記事からは確認できません。一般的なソフトウェアを装う手口であるため、従業員が利用するソフトウェアを介して感染する可能性があり、注意が必要です。",
+        "recommended_actions": [
+          "従業員に対し、不審なソフトウェアのダウンロードや実行に関する注意喚起を行う",
+          "セキュリティソリューションのログを監視し、ChainScript RATの活動を示す兆候がないか確認する"
+        ],
+        "reason": "重要度は、特定の金融機関を標的とした攻撃ではないものの、一般的なソフトウェアを装う手口で感染する可能性があるため「中」です。確認目安は、新たなRATの出現と攻撃手法の報告であり、即時対応を要する緊急の脆弱性や進行中の大規模攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7de86307010bfa2d691153644fa75cd9d0f0dfef92acf3a0430d9ab5d9347f19",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/jade-sleet-linked-to-indian-it-provider.html",
+      "canonical_url": "https://thehackernews.com/2026/09/jade-sleet-linked-to-indian-it-provider.html",
+      "published_at": "2026-09-21T15:06:44+09:00",
+      "fetched_at": "2026-09-22T09:50:55.226051+09:00",
+      "title": "Jade Sleet Linked to Indian IT Provider Breach With FLATROOF and ROOFDECK Backdoors",
+      "raw_title": "Jade Sleet Linked to Indian IT Provider Breach With FLATROOF and ROOFDECK Backdoors",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c5e486f28218318a2c55533a8be63ae987a7bd0ae1ee2e19d2504ad43ce66ad3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-22T09:55:12.745958+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "北朝鮮の脅威アクターによる特定の攻撃手法とバックドアの使用が主題であるため。",
+        "tags": [
+          "APT",
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "北朝鮮の脅威アクター「Jade Sleet」が、インドの小規模ITサービスプロバイダーの侵害に関与したとされています。この攻撃では、FLATROOFとROOFDECKというバックドアが使用され、開発者を標的としてネットワークへの侵入を試みる手口が再び確認されました。",
+        "financial_impact": "金融機関が当該インドITプロバイダーを委託先として利用している場合、または同様の手口で開発者を狙う攻撃の標的となる可能性がある場合に、間接的に関係します。記事からは特定の金融機関への直接的な影響は確認できません。",
+        "recommended_actions": [
+          "自社の委託先ITサービスプロバイダーに、同様の攻撃手法に対するセキュリティ対策状況を確認する",
+          "開発環境におけるセキュリティ対策、特にサプライチェーン攻撃への防御策を評価する"
+        ],
+        "reason": "重要度は、特定の脅威アクターによる攻撃事例であり、金融機関への直接的な影響は限定的であるため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、状況把握が主な目的となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
