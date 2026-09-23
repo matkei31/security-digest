@@ -1,0 +1,1021 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-09-23",
+  "generated_at": "2026-09-23T09:39:02.572014+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 19,
+    "ai_attempted_count": 16,
+    "ai_success_count": 15,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 3,
+    "ai_eligible_count": 16
+  },
+  "counts": {
+    "importance": {
+      "高": 3,
+      "中": 11,
+      "低": 2,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 3,
+      "今週確認": 10,
+      "参考": 3,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 6,
+      "攻撃・脅威動向": 6,
+      "インシデント": 1,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象16件｜重要度「高」3件｜本日確認3件｜今週確認10件\nBrief対象の記事のうち、本日中に適用性または初動要否を確認する記事が3件あります。",
+    "important_highlights": [
+      "Check Pointは、同社のSecurity Management Serverにおける以前は未知の脆弱性(CVE-2026-93616)が、7月23日に少数の標的型攻撃で悪用されたと発表しました。この脆弱性は、サーバーのWebサービス",
+      "WordPressは、アカウントを持たない攻撃者がテーマフォルダ外からPHPファイルをロードさせ、一部のサーバーでは任意のコード実行を可能にするコアソフトウェアの重大な脆弱性を修正しました。この修正はWordPress 7.1.2で9月22日にリリースされ、バージョン4.7以降のすべてのサポート対象ブランチに適用されます。",
+      "9月19日、Microsoft Defenderがプラットフォームおよびシグネチャの更新をインストールできないように、利用可能なディスクスペースをすべて埋めるゼロデイの概念実証ツール「BigDiskBuster」がGitHubで公開されました。このツールにはパッチもCVEもMicrosoftのアドバイザリもありません。"
+    ],
+    "discussion_points": [
+      "Check Pointは、同社のSecurity Management Serverにおける以前は未知の脆弱性(CVE-2026-93616)が、7月23日に少数の標的型攻撃で悪用されたと発表しました。この脆弱性は、サーバーのWebサービス\nCheck Point Security Management Serverを導入し、ファイアウォールポリシー管理に利用している金融機関に関係します。悪用されると、ファイアウォール設定の改ざんなどによりネットワークセキュリティが侵害される可能性があります。",
+      "WordPressは、アカウントを持たない攻撃者がテーマフォルダ外からPHPファイルをロードさせ、一部のサーバーでは任意のコード実行を可能にするコアソフトウェアの重大な脆弱性を修正しました。この修正はWordPress 7.1.2で9月22日にリリースされ、バージョン4.7以降のすべてのサポート対象ブランチに適用されます。\n金融機関がWordPressをウェブサイトや情報発信基盤として利用している場合、本脆弱性の影響を受ける可能性があります。特に外部公開されているWordPressサイトは、悪用のリスクが高まります。"
+    ],
+    "check_items": [
+      "Check Point Security Management Serverの利用有無と影響バージョンを確認する",
+      "自社および委託先でWordPressの利用有無と影響を受けるバージョンを確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:5871a8a80040f207e79245f43ab6444372b2dc115b56fe42d9f13fe5f071b967",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/check-point-warns-of-management-server.html",
+      "canonical_url": "https://thehackernews.com/2026/09/check-point-warns-of-management-server.html",
+      "published_at": "2026-09-23T03:29:39+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "Check Point Warns of Management Server Zero-Day Exploited in Targeted Attacks",
+      "raw_title": "Check Point Warns of Management Server Zero-Day Exploited in Targeted Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:779a9e929d6bf4ce9347e66d0c4a4395163d36ffe81e3d93b4d04dc4dff207be",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:34:31.849812+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Check Pointの管理サーバーにおけるゼロデイ脆弱性の悪用と修正パッチの公開が主題であるため。",
+        "tags": [
+          "ゼロデイ",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "Check Pointは、同社のSecurity Management Serverにおける以前は未知の脆弱性(CVE-2026-93616)が、7月23日に少数の標的型攻撃で悪用されたと発表しました。この脆弱性は、サーバーのWebサービス",
+        "financial_impact": "Check Point Security Management Serverを導入し、ファイアウォールポリシー管理に利用している金融機関に関係します。悪用されると、ファイアウォール設定の改ざんなどによりネットワークセキュリティが侵害される可能性があります。",
+        "recommended_actions": [
+          "Check Point Security Management Serverの利用有無と影響バージョンを確認する",
+          "Check Pointが提供する修正パッチを適用し、緩和策を評価する",
+          "過去のログを確認し、不審なアクセスや侵害の痕跡がないか調査する"
+        ],
+        "reason": "重要度は、ゼロデイ脆弱性が実際に標的型攻撃で悪用され、ファイアウォール管理サーバーという基幹システムに影響するため「高」です。確認目安は、ゼロデイ脆弱性の悪用が確認されており、修正パッチが公開されているため即時対応の根拠があるため「本日確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a94b0a5ed1ae3c208545d09f4372ede74cbae880806da737847648ba66ae259a",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/wordpress-issues-patch-for-critical.html",
+      "canonical_url": "https://thehackernews.com/2026/09/wordpress-issues-patch-for-critical.html",
+      "published_at": "2026-09-23T03:03:10+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "WordPress Issues Patch for Critical Flaw That Can Enable Code Execution on Some Servers",
+      "raw_title": "WordPress Issues Patch for Critical Flaw That Can Enable Code Execution on Some Servers",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b142ad0e398bbef3e68f71ef16f8a67000e986fd58d403d10593d967838654e4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:34:49.233331+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "WordPressのコアソフトウェアにおける重大な脆弱性とそれに対するパッチが主題であるため。",
+        "tags": [
+          "パッチ",
+          "悪用確認済み"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "WordPressは、アカウントを持たない攻撃者がテーマフォルダ外からPHPファイルをロードさせ、一部のサーバーでは任意のコード実行を可能にするコアソフトウェアの重大な脆弱性を修正しました。この修正はWordPress 7.1.2で9月22日にリリースされ、バージョン4.7以降のすべてのサポート対象ブランチに適用されます。",
+        "financial_impact": "金融機関がWordPressをウェブサイトや情報発信基盤として利用している場合、本脆弱性の影響を受ける可能性があります。特に外部公開されているWordPressサイトは、悪用のリスクが高まります。",
+        "recommended_actions": [
+          "自社および委託先でWordPressの利用有無と影響を受けるバージョンを確認する",
+          "WordPressのバージョンを7.1.2以降、または利用中のブランチの最新版へ速やかにアップデートする",
+          "アップデートが困難な場合は、ベンダーが提供する緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、広く利用されているWordPressのコアソフトウェアにおける認証不要でコード実行が可能な重大な脆弱性であるため「高」です。確認目安は、パッチが公開されており、悪用されると外部公開サイトに影響が及ぶ可能性があるため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b38195d46412b678f0dd8c772bf70d5a19cae7939da376b79ebb8e36d8300d81",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/malicious-npm-package-poses-as-twilio.html",
+      "canonical_url": "https://thehackernews.com/2026/09/malicious-npm-package-poses-as-twilio.html",
+      "published_at": "2026-09-23T02:58:15+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "Malicious npm Package Poses as Twilio Bug-Bounty Probe, Can Exfiltrate Credentials",
+      "raw_title": "Malicious npm Package Poses as Twilio Bug-Bounty Probe, Can Exfiltrate Credentials",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e8000f29468693435e0b8cbbb69be6773eaf88bfd8095fef778d578943670822",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:35:06.391550+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "悪意あるnpmパッケージによる認証情報窃取の手法と動向が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セキュリティ研究者らは、悪意あるnpmパッケージ「tw-pkgprobe-7731」の詳細を公開しました。これはTwilioをアプリケーションに統合する開発者を標的としたセキュリティツールを装い、機密データを密かに窃取しようとします。",
+        "financial_impact": "金融機関がTwilioを利用し、かつ開発プロセスで当該npmパッケージを誤って導入した場合に関係します。直接的な影響は限定的である可能性があります。",
+        "recommended_actions": [
+          "自社および委託先における開発環境で「tw-pkgprobe-7731」パッケージの利用有無を確認する",
+          "開発プロセスにおけるnpmパッケージの導入・利用に関するセキュリティガイドラインを再確認する"
+        ],
+        "reason": "重要度は、特定の開発環境におけるnpmパッケージの利用に限定され、適用範囲が不確実なため「中」です。確認目安は、新たな攻撃手法の報告であり、即時対応を要する進行中の攻撃や明確な期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2f79c73abb028a55c536d2e4a14b7de6e47792afbd9d0611d2d568844efc6178",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/bigcommerce-data-stolen-via-ribon-apps-hack/",
+      "canonical_url": "https://www.securityweek.com/bigcommerce-data-stolen-via-ribon-apps-hack/",
+      "published_at": "2026-09-23T02:58:00+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "BigCommerce Data Stolen via Ribon Apps Hack",
+      "raw_title": "BigCommerce Data Stolen via Ribon Apps Hack",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0139b0c4d3514eed3015082657f09c9cb0eba14010caa99680ffa37a6a44cba3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:35:23.284431+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "BigCommerceの顧客データが窃取された実際の侵害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Ribon Appsが保有していたBigCommerceのアプリケーションキーが侵害され、攻撃者がBigCommerceの顧客データにアクセスし窃取しました。",
+        "financial_impact": "BigCommerceをECプラットフォームとして利用している金融機関、またはBigCommerceを利用する委託先を持つ金融機関に関係します。直接的な金融機関への影響は記事からは確認できません。",
+        "recommended_actions": [
+          "BigCommerceの利用有無、および委託先での利用有無を確認する",
+          "BigCommerceまたはRibon Appsからの公式発表や追加情報を確認し、自社への影響を評価する"
+        ],
+        "reason": "重要度は、BigCommerceの利用状況によって影響が異なるため「中」です。確認目安は、具体的な対応期限や進行中の攻撃に関する情報が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ac1280aee3db8b04969375111d710499a08beb96cdf62a62cd703a7d8d26aac4",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/microsoft-takes-down-eviltokens-device.html",
+      "canonical_url": "https://thehackernews.com/2026/09/microsoft-takes-down-eviltokens-device.html",
+      "published_at": "2026-09-23T02:03:31+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "Microsoft Takes Down EvilTokens Device-Code Phishing Service Tied to 12,000 Inbox Compromises",
+      "raw_title": "Microsoft Takes Down EvilTokens Device-Code Phishing Service Tied to 12,000 Inbox Compromises",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0d5b856b6cd690db35ef1c60f9caac787ad4b25801d07a1884193f2af7387a20",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:35:41.029698+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "AIを活用したフィッシングサービスとそのテイクダウンが主題であるため。",
+        "tags": [
+          "フィッシング",
+          "AI",
+          "認証"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Microsoftは、AIを攻撃チェーンのあらゆる段階で利用していた「EvilTokens」デバイスコードフィッシングサービスを停止したと発表しました。このサービスは12,000件の受信トレイ侵害に関連しているとされています。",
+        "financial_impact": "金融機関の従業員が標的となるフィッシング攻撃は、認証情報の窃取やシステムへの不正アクセスにつながる可能性があります。AIを活用した高度なフィッシング手法は、従来の対策をすり抜けるリスクがあるため、動向を把握しておく必要があります。",
+        "recommended_actions": [
+          "AIを活用したフィッシング攻撃の手法について、社内での注意喚起や教育コンテンツへの反映を検討する",
+          "デバイスコードフィッシングに対する認証・アクセス管理の強化策を評価する"
+        ],
+        "reason": "重要度は、AIを活用したフィッシング攻撃の動向であり、金融機関の従業員が標的となる可能性があるため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、状況把握が中心となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ba859ad0f6f0f955274dc328cf9d5889219202359e5a89f0c0065772b1a7d094",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/critical-bifrost-ai-gateway-flaw-lets.html",
+      "canonical_url": "https://thehackernews.com/2026/09/critical-bifrost-ai-gateway-flaw-lets.html",
+      "published_at": "2026-09-23T01:41:12+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "Critical Bifrost AI Gateway Flaw Lets Attackers Run Commands Without Credentials",
+      "raw_title": "Critical Bifrost AI Gateway Flaw Lets Attackers Run Commands Without Credentials",
+      "raw_excerpt": null,
+      "content_hash": "sha256:fd29dd0c5bc626d8253f196c8c4147fdbd778ca8b4a5899fd5614f6722e72c5d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:35:58.118183+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題が、AIゲートウェイ製品の重大な脆弱性に関するものであるため。",
+        "tags": [
+          "CVE",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "オープンソースのAIゲートウェイ「Bifrost」に、認証されていない攻撃者が単一のHTTPリクエストでゲートウェイサーバー上で任意のコマンドを実行できる重大な脆弱性(CVE-2026-90898、CVSS 9.8)が発見されました。この脆弱性は、管理認証が有効な場合のBifrost HTTPトランスポートのバージョン2.1.0より前の全バージョンに影響します。",
+        "financial_impact": "金融機関がBifrost AI Gatewayを利用している場合に限り、適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Bifrost AI Gatewayの利用有無と影響を受けるバージョン(2.1.0未満)の稼働状況を確認する",
+          "ベンダーの一次情報を確認し、修正パッチの適用または緩和策の実施を検討する"
+        ],
+        "reason": "重要度は、CVSSは高いものの、Bifrost AI Gatewayの金融機関における普及度や利用状況が記事から不明確なため「中」です。確認目安は、実悪用やCISA KEVへの新規追加の記述がなく、即時対応の根拠が不足しているため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:fa09678c05a66ffcc797baed32f5b7807b4faa02b8a9d8129a31acc3b3bb3795",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/researcher-drops-bigdiskbuster-zero-day.html",
+      "canonical_url": "https://thehackernews.com/2026/09/researcher-drops-bigdiskbuster-zero-day.html",
+      "published_at": "2026-09-23T01:14:04+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "Researcher Drops BigDiskBuster Zero-Day PoC That Blocks Microsoft Defender Updates",
+      "raw_title": "Researcher Drops BigDiskBuster Zero-Day PoC That Blocks Microsoft Defender Updates",
+      "raw_excerpt": null,
+      "content_hash": "sha256:188432ad7f171c9d034105d086c46094269247083a5deb956aac637c587c9e1e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:36:15.451412+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Microsoft Defenderの更新を妨害するゼロデイ脆弱性の概念実証ツールに関する記事であるため。",
+        "tags": [
+          "ゼロデイ",
+          "悪用確認済み"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "9月19日、Microsoft Defenderがプラットフォームおよびシグネチャの更新をインストールできないように、利用可能なディスクスペースをすべて埋めるゼロデイの概念実証ツール「BigDiskBuster」がGitHubで公開されました。このツールにはパッチもCVEもMicrosoftのアドバイザリもありません。",
+        "financial_impact": "金融機関でMicrosoft Defenderを利用している場合、更新がブロックされることでセキュリティ対策が機能しなくなる可能性があります。これにより、マルウェア感染や攻撃に対する防御能力が低下するリスクがあります。",
+        "recommended_actions": [
+          "Microsoft Defenderの更新状況を監視し、ディスク容量が意図せず消費されていないか確認する",
+          "Microsoftからの公式アドバイザリやパッチ情報を継続的に確認する",
+          "Microsoft Defenderの代替または補完的なエンドポイントセキュリティソリューションの導入を検討する"
+        ],
+        "reason": "重要度は、Microsoft Defenderの更新を妨害するゼロデイ脆弱性であり、金融機関のセキュリティ対策に直接影響するため「高」です。確認目安は、パッチが未提供で概念実証ツールが公開されており、即時対応の根拠があるため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6072e1b4b7e2ba7cf3a68ca5584e717c2624ede83068d6d22f16300855e54cba",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/09/22/unmasking-eviltokens-getting-to-the-root-of-device-code-phishing/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/09/22/unmasking-eviltokens-getting-to-the-root-of-device-code-phishing/",
+      "published_at": "2026-09-23T00:00:00+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "Unmasking EvilTokens: Getting to the root of device code phishing",
+      "raw_title": "Unmasking EvilTokens: Getting to the root of device code phishing",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4f2112ae8f9c3fb5023001c763dcda13398b604c06dbc05abdeb250d349429a3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:22a766d1138ae674494889dc320e804ae17b9f1b251d92d6130125b977699812",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/cyera-raises-400-million-at-12-billion-valuation/",
+      "canonical_url": "https://www.securityweek.com/cyera-raises-400-million-at-12-billion-valuation/",
+      "published_at": "2026-09-22T23:29:34+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "Cyera Raises $400 Million at $12+ Billion Valuation",
+      "raw_title": "Cyera Raises $400 Million at $12+ Billion Valuation",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9607e348273351eeff35220ce6ae61453ea30d59dba5a53d4489401eaf5bcaaf",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:36:32.281193+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "データセキュリティ企業の資金調達に関するニュースであり、特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも直接該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "データセキュリティ企業Cyeraが、Goldman Sachs Alternativesから4億ドルの新規投資を受け、シリーズG資金調達ラウンドを拡大しました。これにより同社の評価額は120億ドルを超えました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。データセキュリティ分野の動向として参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威やインシデントに関する情報ではなく、企業の資金調達に関するニュースであるため「低」です。確認目安は、金融機関に直接的な対応を求める内容ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:53610b04e75ac843ca7278e05760f3d69c2275f041b8f886df6b523f61f339b7",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/nightmare-eclipse-drops-new-microsoft-defender-exploit-after-revealing-identity/",
+      "canonical_url": "https://www.securityweek.com/nightmare-eclipse-drops-new-microsoft-defender-exploit-after-revealing-identity/",
+      "published_at": "2026-09-22T22:26:51+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "Nightmare Eclipse Drops New Microsoft Defender Exploit After Revealing Identity",
+      "raw_title": "Nightmare Eclipse Drops New Microsoft Defender Exploit After Revealing Identity",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3ab1439f2ead8d48a7f09cc6c913c7d23c4caffe5017bbe82c272df67dfbb516",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:36:49.079644+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "元Microsoft従業員が新たなエクスプロイトを公開したという攻撃者と攻撃手法に関する情報が主題であるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "元Microsoftドイツの従業員であるAbdelhamid Naceri氏が、Nightmare Eclipse（別名Chaotic Eclipse）として身元を明かし、Microsoft Defenderの新たなエクスプロイト情報を公開しました。",
+        "financial_impact": "Microsoft Defenderは多くの金融機関で利用されている可能性がありますが、記事からは具体的な脆弱性の詳細や悪用状況が不明なため、直接的な影響は現時点では限定的です。",
+        "recommended_actions": [
+          "Microsoft Defenderの利用状況と、本件に関するMicrosoftからの公式情報を確認する"
+        ],
+        "reason": "重要度は、Microsoft Defenderの脆弱性情報公開に関するものであり、適用性評価の価値があるため「中」です。確認目安は、具体的な脆弱性情報や悪用状況、緊急対応の必要性が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:456273433b445fde6769cf25c61f3570e1640dddd96d4e6addf55195dbf53e45",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/ai-agents-are-rewriting-rules-of.html",
+      "canonical_url": "https://thehackernews.com/2026/09/ai-agents-are-rewriting-rules-of.html",
+      "published_at": "2026-09-22T21:30:00+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "AI Agents Are Rewriting the Rules of Lateral Movement",
+      "raw_title": "AI Agents Are Rewriting the Rules of Lateral Movement",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5d834d5741f501278f0fee184ebc759035bb275c37f12ae46c9f63dda454d927",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:37:06.008821+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントがもたらす新たなセキュリティリスクと脅威動向が主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AIエージェントは、従来のアプリケーションとは異なり、タスク達成のために自律的に複数の経路を探索するため、セキュリティチームは、AIエージェントが持つアクセス権限からどのような経路を発見し得るかを判断するという、より困難な課題に直面しています。",
+        "financial_impact": "金融機関がAIエージェントを業務に導入・利用する場合、その自律的な動作特性が既存のアクセス管理やセキュリティ監視のルールに新たな課題をもたらす可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントの利用が金融機関で本格化するにつれて、新たなセキュリティリスクとして評価対象となるため「中」です。確認目安は、具体的な脅威や期限が示されておらず、中長期的な動向把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f619ad1c6009e9220eed33fe462286a56e9002373131360e8ae5c398ee336d65",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/09/new-cvss-100-velocloud-orchestrator.html",
+      "canonical_url": "https://thehackernews.com/2026/09/new-cvss-100-velocloud-orchestrator.html",
+      "published_at": "2026-09-22T21:29:00+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "New CVSS 10.0 VeloCloud Orchestrator Flaw Actively Exploited in Certificate-Based Setups",
+      "raw_title": "New CVSS 10.0 VeloCloud Orchestrator Flaw Actively Exploited in Certificate-Based Setups",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7d5bf0565edacdb75c828c3b6a3c5abe76558b188d97251b133f9e2bfd7521a1",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:37:23.649208+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "VeloCloud Orchestratorの新たな脆弱性とその悪用が主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Aristaによると、オンプレミス版VeloCloud Orchestrator (VCO) に新たな脆弱性(CVE-2026-93952)が確認され、証明書ベースでEdgeデバイスを認証するVCO環境で積極的に悪用されています。この脆弱性は、ログインアクセスを持たないリモート攻撃者が内部機能を昇格させ、VCOホストに影響を与える可能性があります。",
+        "financial_impact": "金融機関でVeloCloud Orchestratorをオンプレミス環境で利用し、かつEdgeデバイスの認証に証明書を使用している場合に限り、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "VeloCloud Orchestratorの利用有無、特にオンプレミス環境で証明書ベースの認証を使用しているかを確認する",
+          "ベンダーであるAristaからの一次情報を確認し、修正パッチや緩和策の有無を評価する",
+          "VeloCloud Orchestratorのログや設定を確認し、不審な活動や侵害の兆候がないか調査する"
+        ],
+        "reason": "重要度は、CVSS 10.0の脆弱性で悪用が確認されていますが、対象がオンプレミスVCOの特定の認証設定に限定されるため「中」です。確認目安は、悪用が確認されているもののCISA KEVへの新規追加はなく、即時対応の明確な期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9c268aa553e3f1e897c520e728440e2b4432a1a81e3a509a7d4c1a22903bb870",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/only-13-of-ot-network-segments-are-fully-isolated-analysis/",
+      "canonical_url": "https://www.securityweek.com/only-13-of-ot-network-segments-are-fully-isolated-analysis/",
+      "published_at": "2026-09-22T21:24:30+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "Only 13% of OT Network Segments Are Fully Isolated: Analysis",
+      "raw_title": "Only 13% of OT Network Segments Are Fully Isolated: Analysis",
+      "raw_excerpt": null,
+      "content_hash": "sha256:58503763ef315c751dfade9aace1040b534c9d4952060a210f615e458343b287",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:37:40.418171+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "OTネットワークのセグメンテーションに関する調査結果であり、特定の脆弱性や攻撃、規制には該当しないため「その他」に分類します。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Forescoutの新たなネットワークセグメンテーション調査によると、OTデバイスや医療機器が他のエンタープライズ資産とネットワークセグメントを共有しているケースが多く、OTネットワークセグメントの完全分離はわずか13%に留まっていることが明らかになりました。",
+        "financial_impact": "金融機関がOT（Operational Technology）システムを保有している場合、そのネットワークセグメンテーションの状況を確認する上での参考情報となります。直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、OTネットワークセグメンテーションに関する一般的な調査結果であり、金融機関への直接的な影響や具体的なアクションを求めるものではないため「低」です。確認目安は、特定の脅威や期限に関する情報がなく、中長期的なセキュリティ戦略の参考となる情報のため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:95750cd7ad9330fdbe57814f9462962b7a6f1c6e0e4d17ef8f2cd9c8364ff962",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/recent-zyxel-switch-vulnerability-exploited-by-chinese-hackers/",
+      "canonical_url": "https://www.securityweek.com/recent-zyxel-switch-vulnerability-exploited-by-chinese-hackers/",
+      "published_at": "2026-09-22T20:55:20+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "Recent ZyXEL Switch Vulnerability Exploited by Chinese Hackers",
+      "raw_title": "Recent ZyXEL Switch Vulnerability Exploited by Chinese Hackers",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b51e99abd46791ca9e5c2b6ca3d9a4f213b38795aefa432a2eac6bc7df72a103",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:37:57.215084+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国の脅威アクターによる特定の脆弱性の悪用と情報窃取が主題であるため。",
+        "tags": [
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "中国の脅威アクターが、最近発見されたZyXEL製スイッチの脆弱性を悪用し、約1,000台のスイッチから機密情報を窃取しました。",
+        "financial_impact": "金融機関で当該ZyXEL製スイッチを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "該当するZyXEL製スイッチの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報やパッチ、緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、対象製品の利用可能性が記事から確認できず、適用範囲が不確実なため「中」です。確認目安は、実悪用が確認されているものの、CISA KEVへの新規追加や緊急対応の期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:90fcfd488b694da50d701203b40aadd9eeb0bd0ea28172284c7ffef421e644b4",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/malicious-b-tree-npm-package-accumulates-millions-of-downloads/",
+      "canonical_url": "https://www.securityweek.com/malicious-b-tree-npm-package-accumulates-millions-of-downloads/",
+      "published_at": "2026-09-22T20:33:59+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "Malicious B-tree NPM Package Accumulates Millions of Downloads",
+      "raw_title": "Malicious B-tree NPM Package Accumulates Millions of Downloads",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5ee11f87daf30418af3186405c56f90f3de5a3356d75f6610a276f3bc371a017",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:38:14.148846+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "悪意のあるパッケージによる攻撃手法と脅威動向が主題であるため。",
+        "tags": [
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "正規のsorted-btreeパッケージを装った悪意のあるNPMパッケージ「indexed-btree」が、プロトタイプメソッド内にマルウェアのトリガーを隠し、数百万回ダウンロードされたことが判明しました。",
+        "financial_impact": "金融機関がNPMパッケージを利用した開発を行っている場合、サプライチェーンリスクとして関係します。特に、当該パッケージが開発環境や本番環境に導入されている場合は影響を受ける可能性があります。",
+        "recommended_actions": [
+          "自社および委託先におけるNPMパッケージ「indexed-btree」の利用有無を確認する",
+          "利用が確認された場合、当該パッケージの削除および影響範囲の調査を検討する"
+        ],
+        "reason": "重要度は、NPMパッケージの利用状況により影響が異なるため「中」です。確認目安は、具体的な攻撃の進行状況や金融機関への直接的な影響が記事から不明なため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c57545becb57187609c29cfd16944fded01100ec0ef2519962fff5d76c095ad4",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/wordpress-patches-click2shell-vulnerability/",
+      "canonical_url": "https://www.securityweek.com/wordpress-patches-click2shell-vulnerability/",
+      "published_at": "2026-09-22T19:22:27+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "WordPress Patches ‘Click2Shell’ Vulnerability",
+      "raw_title": "WordPress Patches ‘Click2Shell’ Vulnerability",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f8845d7389b03e6b6ee907200a2d9f44d19b0366105e77867649fdb0b9cc4985",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:38:30.824200+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "WordPressの脆弱性修正が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "WordPressに「Click2Shell」と呼ばれる脆弱性が発見され、修正されました。この脆弱性は、攻撃者がテーマを自動的にインストールおよびプレビューすることを可能にし、リモートコード実行につながる可能性があります。",
+        "financial_impact": "金融機関でWordPressをウェブサイトやブログ基盤として利用している場合に限り、適用性確認の対象になります。",
+        "recommended_actions": [
+          "自社および委託先でWordPressの利用有無と影響バージョンを確認する",
+          "WordPressのベンダー情報を確認し、修正パッチの適用を検討する"
+        ],
+        "reason": "重要度は、WordPressの脆弱性であり、利用状況によって影響が異なるため「中」です。確認目安は、パッチが公開されており、実悪用や緊急対応の明確な根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9ee50fe992d6dced9292f44bdc9aedcd022238da2ebda34827ee0813e05e3d20",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/the-closed-quorum-inside-the-first-reported-autonomous-ai-c2-implant/",
+      "canonical_url": "https://blog.talosintelligence.com/the-closed-quorum-inside-the-first-reported-autonomous-ai-c2-implant/",
+      "published_at": "2026-09-22T19:00:58+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "The Closed Quorum: Inside the first reported autonomous AI C2 implant",
+      "raw_title": "The Closed Quorum: Inside the first reported autonomous AI C2 implant",
+      "raw_excerpt": null,
+      "content_hash": "sha256:edcd3a71495938a6cc4a286f3e5ac1243dffb42f62dbd1aea200cb29f01a6c16",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:672067da4c44a0349c00571ca71ed82c2baaeb9ccf61aa75288532e81b074d06",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/introducing-cairn-frontier-tracking-for-ai-integrated-malware/",
+      "canonical_url": "https://blog.talosintelligence.com/introducing-cairn-frontier-tracking-for-ai-integrated-malware/",
+      "published_at": "2026-09-22T19:00:25+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "Introducing CAIRN: Frontier tracking for AI-integrated malware",
+      "raw_title": "Introducing CAIRN: Frontier tracking for AI-integrated malware",
+      "raw_excerpt": null,
+      "content_hash": "sha256:adde23f57b9b9e345d479b4d201f88c7a29940fba116ea0f499c38cd9dd00400",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6070cf1d38b497fcbfebfe27d4d25ca506619dcaae882bc4e6b2ace991bb13da",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/japan-dismantles-first-north-korean-laptop-farm-as-us-and-allies-detail-wider-scheme/",
+      "canonical_url": "https://www.securityweek.com/japan-dismantles-first-north-korean-laptop-farm-as-us-and-allies-detail-wider-scheme/",
+      "published_at": "2026-09-22T17:37:06+09:00",
+      "fetched_at": "2026-09-23T09:34:29.320404+09:00",
+      "title": "Japan Dismantles First North Korean Laptop Farm as US and Allies Detail Wider Scheme",
+      "raw_title": "Japan Dismantles First North Korean Laptop Farm as US and Allies Detail Wider Scheme",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1caabc5aed7538554faf497ee87532f900293c3986476e40c166cf377b3bc110",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-09-23T09:38:47.571485+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "北朝鮮の攻撃作戦と、そのインフラ解体に関する詳細が主題であるため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "日米独豪は共同レポートを公開し、北朝鮮の「WaterPlum」作戦の全容と、日本で初めて解体された北朝鮮のラップトップファームについて詳述しました。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できませんが、国家支援型攻撃グループの動向は脅威インテリジェンスとして参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、国家支援型攻撃グループの動向であり、脅威インテリジェンスとして状況把握の価値があるため「中」です。確認目安は、具体的な緊急対応を要する情報が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
