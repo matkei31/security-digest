@@ -1,7 +1,16 @@
 {
   "schema_version": 2,
-  "updated_at": "2026-09-24T09:35:40.715456+09:00",
+  "updated_at": "2026-09-25T09:38:55.649630+09:00",
   "digests": [
+    {
+      "digest_date": "2026-09-25",
+      "path": "data/2026-09-25.json",
+      "generated_at": "2026-09-25T09:38:55.649630+09:00",
+      "total_items": 21,
+      "high_count": 0,
+      "ai_run_status": "success",
+      "archive_path": "docs/archive/2026-09-25.html"
+    },
     {
       "digest_date": "2026-09-24",
       "path": "data/2026-09-24.json",
