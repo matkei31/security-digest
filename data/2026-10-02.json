@@ -1,0 +1,1032 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-10-02",
+  "generated_at": "2026-10-02T10:46:29.256404+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 20,
+    "ai_attempted_count": 16,
+    "ai_success_count": 16,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 4,
+    "ai_eligible_count": 16
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 11,
+      "低": 5,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 7,
+      "参考": 9,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 3,
+      "攻撃・脅威動向": 3,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 1,
+      "AI・新技術リスク": 5,
+      "その他": 4,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象16件｜重要度「高」0件｜本日確認0件｜今週確認7件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が7件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "スペイン警察は、ランサムウェアグループKillSecの運営に関与した疑いで16歳の少年を逮捕しました。KillSecは組織からデータを窃取し、身代金が支払われない場合にリークサイトで公開すると脅迫していたとされています。警察は9月30日にリークサイトも押収しました。\nランサムウェアグループの活動停止は、金融機関を含む潜在的な被害組織にとって脅威の軽減につながります。しかし、直接的な影響は限定的です。",
+      "サイバーセキュリティ研究者らは、WordPressサイトへの侵害事例を報告しました。攻撃者は複数の永続化メカニズムを導入し、バックドア「SC」がサイトを再感染させることなく自己再生し続けることを確認しました。\n金融機関がWordPressをウェブサイトやブログ基盤として利用している場合に関係します。特に外部公開されているサイトでは、侵害による情報漏えいや改ざんのリスクがあります。"
+    ],
+    "check_items": [
+      "自社および委託先でWordPressサイトの利用有無と外部公開状況を確認する",
+      "Zimbra製品の利用有無と影響バージョンを確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:9683c144565001d9a7fcae4724a769fda3b59a17571ed9d37216c4a4f67a6640",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/give-yourself-room-to-be-human/",
+      "canonical_url": "https://blog.talosintelligence.com/give-yourself-room-to-be-human/",
+      "published_at": "2026-10-02T03:00:52+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "Give yourself room to be human",
+      "raw_title": "Give yourself room to be human",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2088b39d5f32c61e54047bad39f49ce9af434ae0ba63fa2d9cbceb81660f0074",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:777488c279d50ebda0067506e0761a08c23104d8b8b7561cc42c5944e4474f71",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/zero-trust-creator-says-model-holds-firm-against-ai-assisted-attacks/",
+      "canonical_url": "https://www.securityweek.com/zero-trust-creator-says-model-holds-firm-against-ai-assisted-attacks/",
+      "published_at": "2026-10-02T03:00:00+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "Zero Trust Creator Says Model Holds Firm Against AI-Assisted Attacks",
+      "raw_title": "Zero Trust Creator Says Model Holds Firm Against AI-Assisted Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d6b332130842f879134b23a6091d6d010f54fa9f2407ee2728a0db090fdc38a6",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:41:57.971636+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AI時代のセキュリティモデルの有効性に関する議論が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "ゼロトラストの提唱者であるジョン・キンダーバーグ氏が、AI時代においてもゼロトラストモデルは有効であると主張しています。ただし、適切な実装が前提であると述べています。",
+        "financial_impact": "金融機関におけるゼロトラスト導入やAIリスク対策の検討において、参考情報となります。直接的な影響や緊急の対応を求めるものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI時代のセキュリティモデルに関する一般的な議論であり、特定の製品や脆弱性に関するものではないため「中」です。確認目安は、具体的な脅威や期限に関する情報がなく、中長期的な検討の参考となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:586f023c6db7dbe677003ac74e8b37820a81a38b3477fbcdd45311d81c3e0f5e",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/osavul-lands-10-million-to-spot-hostile-intent-across-cyber-physical-domains/",
+      "canonical_url": "https://www.securityweek.com/osavul-lands-10-million-to-spot-hostile-intent-across-cyber-physical-domains/",
+      "published_at": "2026-10-02T02:16:41+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "Osavul Lands $10 Million to Spot Hostile Intent Across Cyber, Physical Domains",
+      "raw_title": "Osavul Lands $10 Million to Spot Hostile Intent Across Cyber, Physical Domains",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7d39eed190f12b33bc1aa85efa6562be2a031191dc0a4864000ef5ac5dd4aa45",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:42:14.728846+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "サイバーセキュリティ関連企業の資金調達に関するニュースであり、特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも直接該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "ハイブリッドリスクインテリジェンス企業Osavulが、33N Ventures主導のシリーズA資金調達ラウンドで1,000万ドルを調達しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。サイバーセキュリティ業界の動向に関する参考情報として位置づけられます。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や規制変更に関する情報ではなく、業界動向に関するニュースのため「低」です。確認目安は、金融機関に直接的な対応を求める内容ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1ba8da53d09e99343886ecfafc67449967d1f73bbe706904874b2042476cecdc",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/police-arrest-16-year-old-suspected-of.html",
+      "canonical_url": "https://thehackernews.com/2026/10/police-arrest-16-year-old-suspected-of.html",
+      "published_at": "2026-10-02T01:55:57+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "Police Arrest 16-Year-Old Suspected of Running KillSec, Seize Ransomware Leak Site and Servers",
+      "raw_title": "Police Arrest 16-Year-Old Suspected of Running KillSec, Seize Ransomware Leak Site and Servers",
+      "raw_excerpt": null,
+      "content_hash": "sha256:91cc4807982f9e9964ff9d115804b2d23af58749a8ec67b734f7339367bc5b8e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:42:31.786856+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ランサムウェアグループの逮捕と活動停止が主題であり、攻撃者の動向に関する情報であるため。",
+        "tags": [
+          "ランサムウェア"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "スペイン警察は、ランサムウェアグループKillSecの運営に関与した疑いで16歳の少年を逮捕しました。KillSecは組織からデータを窃取し、身代金が支払われない場合にリークサイトで公開すると脅迫していたとされています。警察は9月30日にリークサイトも押収しました。",
+        "financial_impact": "ランサムウェアグループの活動停止は、金融機関を含む潜在的な被害組織にとって脅威の軽減につながります。しかし、直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、ランサムウェアグループの活動停止という脅威動向に関する情報であり、状況把握の価値があるため「中」です。確認目安は、具体的な緊急対応を要する情報ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ab51ae9f2bbed371b21a57ed5862a8b05852b5f48be2e70e30eaa9e4ad123970",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/threatsday-ai-powered-zero-day-chain.html",
+      "canonical_url": "https://thehackernews.com/2026/10/threatsday-ai-powered-zero-day-chain.html",
+      "published_at": "2026-10-02T01:45:38+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "ThreatsDay: AI-Powered Zero-Day Chain, 543K Live Secrets, Model Inspection RCE and 13 More Stories",
+      "raw_title": "ThreatsDay: AI-Powered Zero-Day Chain, 543K Live Secrets, Model Inspection RCE and 13 More Stories",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7b5e71222128f335763a7a806650e289ef99c12423a618e7a9f08a38702ebf7b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:42:48.709680+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の脅威動向をまとめた週次レポートであり、特定の主題に絞られないため「その他」に分類します。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、AIを活用したゼロデイ攻撃連鎖、54万件の公開された秘密情報、モデル検査におけるRCEなど、複数のサイバーセキュリティ脅威に関する週次まとめレポートです。システムが想定以上の動作をする際に攻撃経路となり得る「検査」「キャッシュ」「コンパイル」「保存」「信頼」といったキーワードを挙げ、攻撃者が必ずしも新しい巧妙な手口を必要としないことを示唆しています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。一般的な脅威動向のまとめであり、特定の製品やサービスへの影響は記事からは確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や具体的なアクションを伴わない一般的な週次まとめ記事であるため「低」です。確認目安は、短期的な対応を促す具体的な情報がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:dcd4b62c704ac0a9913324912247813b1c03adbf90baaa6e72cc249100724d1c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/wordpress-backdoor-rebuilds-itself.html",
+      "canonical_url": "https://thehackernews.com/2026/10/wordpress-backdoor-rebuilds-itself.html",
+      "published_at": "2026-10-01T23:37:35+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "WordPress Backdoor Rebuilds Itself After Cleanup Using Files, Database, and Shared Memory",
+      "raw_title": "WordPress Backdoor Rebuilds Itself After Cleanup Using Files, Database, and Shared Memory",
+      "raw_excerpt": null,
+      "content_hash": "sha256:622f7b81455135bbb4b84d5a7101cf54c7d98418ad40592885827dedf67cb303",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:43:06.085028+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "WordPressサイトへの攻撃手法とバックドアの永続化メカニズムが主題であるため。",
+        "tags": [
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者らは、WordPressサイトへの侵害事例を報告しました。攻撃者は複数の永続化メカニズムを導入し、バックドア「SC」がサイトを再感染させることなく自己再生し続けることを確認しました。",
+        "financial_impact": "金融機関がWordPressをウェブサイトやブログ基盤として利用している場合に関係します。特に外部公開されているサイトでは、侵害による情報漏えいや改ざんのリスクがあります。",
+        "recommended_actions": [
+          "自社および委託先でWordPressサイトの利用有無と外部公開状況を確認する",
+          "WordPressサイトのセキュリティ設定、特にファイル権限とデータベースの整合性を確認する",
+          "Sucuriが提供するマルウェア「SC」に関する詳細情報と検出・駆除方法を確認する"
+        ],
+        "reason": "重要度は、WordPressの利用状況によって影響が異なるため「中」です。確認目安は、特定の製品への攻撃事例であり、緊急の脆弱性情報や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b6def06efdd15e757154e834c87316a919155fb279081efee33c155341680d42",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/hacker-conversations-rob-juncker-a-knock-at-the-door-and-a-moral-compass/",
+      "canonical_url": "https://www.securityweek.com/hacker-conversations-rob-juncker-a-knock-at-the-door-and-a-moral-compass/",
+      "published_at": "2026-10-01T23:30:00+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "Hacker Conversations: Rob Juncker, a Knock at the Door and a Moral Compass",
+      "raw_title": "Hacker Conversations: Rob Juncker, a Knock at the Door and a Moral Compass",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2273eb02917541446ec617ac147ca0fd83405819f0ed12d34a723ffb3f2dd0df",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:43:23.268158+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも該当せず、一般的なインタビュー記事であるため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Mimecastの最高製品技術責任者であるRob Juncker氏へのインタビュー記事です。同氏が自身を「ハッカー」と認識していることや、セキュリティ業界における倫理観について語られています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。セキュリティ業界のリーダーの視点として参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や脆弱性に関する情報ではなく、一般的なインタビュー記事であるため「低」です。確認目安は、具体的な対応を要する情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:8f523d3c9d55ee0976d311fe0f484035b728ad162f1a6f5367eb16276852daa5",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/enterprises-struggle-to-prepare-for-ai-and-quantum-threats-pwc-says/",
+      "canonical_url": "https://www.securityweek.com/enterprises-struggle-to-prepare-for-ai-and-quantum-threats-pwc-says/",
+      "published_at": "2026-10-01T23:30:00+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "Enterprises Struggle to Prepare for AI and Quantum Threats, PwC Says",
+      "raw_title": "Enterprises Struggle to Prepare for AI and Quantum Threats, PwC Says",
+      "raw_excerpt": null,
+      "content_hash": "sha256:dfbf744308a4f44888a993e5b734015c2c599a9556d0ac26ec351c61ac338e63",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:43:40.238838+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIと量子技術がもたらすサイバーセキュリティ上の脅威とそれに対する企業の準備状況に関するものであるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "PwCの調査によると、サイバー防御に完全自律型AIを使用すると回答したリーダーは22%に過ぎず、量子耐性セキュリティ対策を導入している企業は21%にとどまっていることが明らかになりました。",
+        "financial_impact": "金融機関もAIや量子技術の導入・活用を進める中で、これらの新技術がもたらす潜在的なサイバー脅威への準備状況を評価し、対策を検討する上での参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIや量子技術が金融機関のセキュリティに与える中長期的な影響を考慮し、状況把握の価値があるため「中」です。確認目安は、具体的な脅威や期限が示されておらず、短期的な対応を要する情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:35f80672fffac92c39507d9299ed7ebb85e82736f13c0a9e4a5ed9f80fd8e9fe",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/police-shut-down-killsec-ransomware-identify-alleged-teen-leader/",
+      "canonical_url": "https://www.securityweek.com/police-shut-down-killsec-ransomware-identify-alleged-teen-leader/",
+      "published_at": "2026-10-01T23:17:07+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "Police Shut Down KillSec Ransomware, Identify Alleged Teen Leader",
+      "raw_title": "Police Shut Down KillSec Ransomware, Identify Alleged Teen Leader",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5d59c608a54d5baa6a1f38aa4ea74afff60b7442e69b740269be6232b77591e7",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:43:57.237010+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "KillSecランサムウェアグループの活動停止とリーダー特定に関する記事であり、攻撃者と脅威動向が主題のため。",
+        "tags": [
+          "ランサムウェア"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "警察当局がランサムウェアグループKillSecのリークサイトを停止させ、被害者から盗まれた少なくとも110テラバイトのデータを確保しました。また、グループのリーダーとされる10代の人物を特定したと報じられています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できませんが、ランサムウェアグループの動向は一般的な脅威情報として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定のランサムウェアグループの活動停止に関する情報であり、一般的な脅威動向として把握する価値があるため「中」です。確認目安は、新たな緊急対応を要する情報ではなく、一般的な脅威動向として今週中に確認すれば十分なため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:cb18ddd0c6a9898f5ac37a5f9451fec3c3a3ece22ac86f919d3c1c9a8301c173",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blogs.microsoft.com/on-the-issues/2026/10/01/preparing-governments-for-an-era-of-interconnected-cyber-risk/",
+      "canonical_url": "https://blogs.microsoft.com/on-the-issues/2026/10/01/preparing-governments-for-an-era-of-interconnected-cyber-risk/",
+      "published_at": "2026-10-01T23:00:00+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "Preparing governments for an era of interconnected cyber risk",
+      "raw_title": "Preparing governments for an era of interconnected cyber risk",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8c8ca71b7377cea556c6e61de29a04766ce1a3cb84ecb4d429ac158429c45246",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4c01afce667539985c61ede130a35a00a56e9935e10a2ec65247d0c076e89b5a",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/10/01/insights-from-the-2026-microsoft-digital-defense-report/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/10/01/insights-from-the-2026-microsoft-digital-defense-report/",
+      "published_at": "2026-10-01T23:00:00+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "Insights from the 2026 Microsoft Digital Defense Report",
+      "raw_title": "Insights from the 2026 Microsoft Digital Defense Report",
+      "raw_excerpt": null,
+      "content_hash": "sha256:691445dfe229e6298d4fec34e93effa1b8b45be5fd582b9024212f2681336db5",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d93d0d7377e524a55b747ffcf0cbbf38418eeabac2eeb0ac840ac621f7207402",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ai-has-changed-attack-speed-not-security-fundamentals/",
+      "canonical_url": "https://www.securityweek.com/ai-has-changed-attack-speed-not-security-fundamentals/",
+      "published_at": "2026-10-01T22:15:00+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "AI Has Changed Attack Speed, Not Security Fundamentals",
+      "raw_title": "AI Has Changed Attack Speed, Not Security Fundamentals",
+      "raw_excerpt": null,
+      "content_hash": "sha256:779f26da8bad7a9c825420524d2eae93c1c380ed4f2b8cbd25a2b521955f3590",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:44:14.099789+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIとセキュリティの関連性、特にAIが攻撃速度に与える影響と防御の基本原則についてであるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "AIの進化により脆弱性の発見と悪用が加速しているが、いわゆる仮想パッチングは依然として多層防御と強力なアプリケーションセキュリティの基本原則に帰着するという見解が示されています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AI技術の進展がサイバー攻撃に与える影響に関する一般的な考察であり、具体的な脅威や対応を求めるものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIとセキュリティの一般的な考察であり、具体的な脅威や金融機関への直接的な影響が記事から確認できないため「低」です。確認目安は、短期的な対応を求める具体的な情報や期限が記事にないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:bb1cb46b2e505a51fd3d2bb2a1691517ad21205df48179f79f0f349b544762c3",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/zimbra-vulnerability-exploited-in-the-wild-prior-to-public-disclosure/",
+      "canonical_url": "https://www.securityweek.com/zimbra-vulnerability-exploited-in-the-wild-prior-to-public-disclosure/",
+      "published_at": "2026-10-01T21:55:57+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "Zimbra Vulnerability Exploited in the Wild Prior to Public Disclosure",
+      "raw_title": "Zimbra Vulnerability Exploited in the Wild Prior to Public Disclosure",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f6a7ec4b485395da3f9d2ecd53e3be6f15a51e26fe2f0419273b1bbc5efa4315",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:44:31.107087+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題が特定の製品の脆弱性とその悪用に関するものであるため。",
+        "tags": [
+          "悪用確認済み",
+          "CVE"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Zimbraの脆弱性CVE-2026-73570が、公開前に実環境で悪用されていたことが判明しました。特定の条件下で、ユーザー操作なしに細工されたメールを介して悪用される可能性があります。",
+        "financial_impact": "金融機関でZimbra製品を利用している場合に限り、適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Zimbra製品の利用有無と影響バージョンを確認する",
+          "ベンダーからの一次情報やパッチ、緩和策の有無を確認する"
+        ],
+        "reason": "重要度は、Zimbra製品の利用状況が金融機関で限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、悪用が確認されているものの、KEV新規追加ではなく即時対応の明確な時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1866931397eaa08cbf0d4d262ecee7cccf4ef71fce9f592341dba41a4caa5c75",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/how-financial-services-companies-can.html",
+      "canonical_url": "https://thehackernews.com/2026/10/how-financial-services-companies-can.html",
+      "published_at": "2026-10-01T20:45:00+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "How Financial Services Companies Can Modernize Their Software Supply Chain",
+      "raw_title": "How Financial Services Companies Can Modernize Their Software Supply Chain",
+      "raw_excerpt": null,
+      "content_hash": "sha256:434718f1d36c6f6a7c41d10af7f89a31716b8f1124ffc4cebd3e44d60e24e803",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:44:48.224835+09:00",
+        "category": "クラウド・サプライチェーン",
+        "category_version": "v1",
+        "category_reason": "記事の主題が金融機関のソフトウェアサプライチェーンの近代化とセキュリティに関するものであるため。",
+        "tags": [
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "金融機関のセキュリティリーダーは、脆弱性の排除、プラットフォームのアップグレード、回帰テスト、変更凍結といった課題に直面しており、これらに対する例外処理や補償的コントロール、対応期限の設定が行われている現状が述べられています。",
+        "financial_impact": "金融機関のソフトウェアサプライチェーンのセキュリティ強化は、システム全体の堅牢性を高め、将来的な脆弱性やインシデントのリスクを低減するために重要です。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関のサプライチェーンセキュリティに関する一般的な課題提起であり、特定の緊急対応を求めるものではないため「中」です。確認目安は、具体的な脅威や期限が示されておらず、中長期的な検討事項であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f390713cce46bd61687558debaec34379b1296ecd141d8419027f54df8f9a40d",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/kevin-mandias-armadin-raises-255-million-at-2-5-billion-valuation/",
+      "canonical_url": "https://www.securityweek.com/kevin-mandias-armadin-raises-255-million-at-2-5-billion-valuation/",
+      "published_at": "2026-10-01T20:40:51+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "Kevin Mandia’s Armadin Raises $255 Million at $2.5 Billion Valuation",
+      "raw_title": "Kevin Mandia’s Armadin Raises $255 Million at $2.5 Billion Valuation",
+      "raw_excerpt": null,
+      "content_hash": "sha256:943c3638c20de040f6a5e78d964120532ed4691752197aacf1d9d6575501cc79",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:45:05.318845+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "AIを活用したセキュリティスタートアップの資金調達に関するニュースであり、特定の脆弱性、攻撃、インシデント、規制、サプライチェーン、AIリスクのいずれにも直接該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "AIを活用した攻撃的セキュリティスタートアップであるArmadinが、シリーズBラウンドで2億5,500万ドルを調達し、評価額が25億ドルに達しました。これにより、公開からわずか7ヶ月で総資金調達額は約4億4,500万ドルとなりました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。セキュリティ業界の資金調達動向に関する情報として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や規制変更に関する情報ではなく、業界動向に関する参考情報であるため「低」です。確認目安は、金融機関に直接的な対応を求める内容ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:33c11d72966e45365da8433fbb506b2cbfd2d1ef18603425a9c41a519da7c0c5",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/openai-disrupts-reasoning-extraction.html",
+      "canonical_url": "https://thehackernews.com/2026/10/openai-disrupts-reasoning-extraction.html",
+      "published_at": "2026-10-01T19:42:36+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "OpenAI Disrupts Reasoning Extraction Campaign Linked to Moonshot AI Associates",
+      "raw_title": "OpenAI Disrupts Reasoning Extraction Campaign Linked to Moonshot AI Associates",
+      "raw_excerpt": null,
+      "content_hash": "sha256:65f94bdcc56922dbbe461eca1643287fdaf1f6022e90df9684bf4d9a130b7f5b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:45:22.520759+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIモデルからの不正な情報抽出に関するキャンペーンが主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "OpenAIは、同社のAIモデルから保護された推論を不正に抽出する目的で調整された蒸留キャンペーンを特定し、阻止したと発表しました。この活動の中心的なクラスターは、7月第1週に遡り、中国のAI企業Moonshot AIに関連する個人に起因するとされています。",
+        "financial_impact": "金融機関がOpenAIのAIモデルを利用している場合、同様の推論抽出攻撃のリスク評価や対策の参考になります。直接的な影響は限定的です。",
+        "recommended_actions": [
+          "自社でOpenAIのAIモデルを利用している場合、不正な推論抽出のリスクについて評価する",
+          "AIモデルの利用に関するセキュリティガイドラインや利用規約を再確認する"
+        ],
+        "reason": "重要度は、AIモデルの不正利用に関する事例であり、金融機関でのAI利用におけるリスク評価の参考となるため「中」です。確認目安は、具体的な侵害や緊急対応の必要性が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:346b23ad75b1b976dc9cd3345dae4d8f9962bed293eef0683d7062bb2bf2595c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/cisa-adds-exploited-cisco-catalyst-sd.html",
+      "canonical_url": "https://thehackernews.com/2026/10/cisa-adds-exploited-cisco-catalyst-sd.html",
+      "published_at": "2026-10-01T19:33:16+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "CISA Adds Exploited Cisco Catalyst SD-WAN Manager Auth Bypass to KEV",
+      "raw_title": "CISA Adds Exploited Cisco Catalyst SD-WAN Manager Auth Bypass to KEV",
+      "raw_excerpt": null,
+      "content_hash": "sha256:acd7630b0d1753bc0d830ef2acbaec6a4f0b36ad5ff89ae92798f417343c7bfa",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:45:39.561784+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Cisco製品の認証バイパス脆弱性がCISA KEVに追加されたことが主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "CISAは、Cisco Catalyst SD-WAN Managerに影響を与える認証バイパスの重大な脆弱性（CVE-2026-76504、CVSSスコア9.8）を、実悪用が確認されたとして既知の悪用されている脆弱性（KEV）カタログに追加しました。",
+        "financial_impact": "Cisco Catalyst SD-WAN Managerを導入している金融機関において、認証・アクセス管理に影響を及ぼす可能性があります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Cisco Catalyst SD-WAN Managerの利用有無と影響バージョンを確認する",
+          "Ciscoからの一次情報やパッチ、緩和策の有無を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、Cisco製品の重大な脆弱性ですが、金融機関での利用状況が記事から不明確なため「中」です。確認目安は、CISA KEVに掲載されていますが、直近3日以内の新規追加ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:54c6751f20db6a8536cc41122e4464eb753d8351087aad09edf618d8e860b5ce",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/the-fine-art-of-frustrating-the-adversary/",
+      "canonical_url": "https://blog.talosintelligence.com/the-fine-art-of-frustrating-the-adversary/",
+      "published_at": "2026-10-01T19:00:05+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "The Fine Art of Frustrating the Adversary",
+      "raw_title": "The Fine Art of Frustrating the Adversary",
+      "raw_excerpt": null,
+      "content_hash": "sha256:82bdd837b75798a3252db82f9e8de9c1792e2eedd325e32135eeb0803c190540",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0a705b1644e1dc140778fdc1526bda0a0102ac9edbd89307708dffad6608554a",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/google-rolls-out-gemini-4-argon-to.html",
+      "canonical_url": "https://thehackernews.com/2026/10/google-rolls-out-gemini-4-argon-to.html",
+      "published_at": "2026-10-01T16:49:36+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "Google Rolls Out Gemini 4 Argon to Trusted Cyber Defenders, Plans Guardrail-Free Version",
+      "raw_title": "Google Rolls Out Gemini 4 Argon to Trusted Cyber Defenders, Plans Guardrail-Free Version",
+      "raw_excerpt": null,
+      "content_hash": "sha256:064e40478cbe9fb3664043998ae47191441a961104b37d60c8dedcd05f9586a4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:45:56.770763+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がGoogleの新しいAIモデル「Gemini 4 Argon」の発表と、そのサイバーセキュリティ分野での活用に関するものであるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Googleは、最新のフロンティアAIモデル「Gemini 4 Argon」を、Fairwindプログラムを通じて信頼できるサイバー防御者向けに提供開始したと発表しました。このモデルは、ソフトウェアエンジニアリング、法務・金融などの企業知識業務、サイバーセキュリティ防御といった複雑なワークフローで優れた性能を発揮するとされています。",
+        "financial_impact": "金融機関がサイバーセキュリティ防御や企業知識業務でAIモデルの導入を検討している場合、本モデルが選択肢の一つとなる可能性があります。現時点では具体的な影響やリスクは不明です。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しいAIモデルの発表であり、金融機関での具体的な利用状況や影響が不明確なため「中」です。確認目安は、現時点では情報収集段階であり、具体的な対応期限や緊急性を示す情報がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:43ea94fc4334db43054f4e6efdb26c9ac9879438fcf1b3966aad0fbcf853db57",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/apple-coregraphics-poc-emerges-as.html",
+      "canonical_url": "https://thehackernews.com/2026/10/apple-coregraphics-poc-emerges-as.html",
+      "published_at": "2026-10-01T14:54:41+09:00",
+      "fetched_at": "2026-10-02T10:41:56.111546+09:00",
+      "title": "Apple CoreGraphics PoC Emerges as WhatsApp PDF Checks Hint at Possible Delivery Path",
+      "raw_title": "Apple CoreGraphics PoC Emerges as WhatsApp PDF Checks Hint at Possible Delivery Path",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5b118855da64ef78ec596caa45adc5c0d675fd9f5991369a7d4952f754f7fe99",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-02T10:46:14.255528+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Apple CoreGraphicsの脆弱性CVE-2026-86950と、そのPoC公開が主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セキュリティ研究者が、Apple CoreGraphicsの脆弱性CVE-2026-86950に対する初の公開PoCを公開しました。この脆弱性は、細工された埋め込みフォントを含む悪意のあるPDFによって、パッチ未適用のiPhoneやMacがクラッシュするものです。Appleは、特定の標的型攻撃で悪用された可能性があると述べています。",
+        "financial_impact": "金融機関でApple製品（iPhone、Mac）を業務利用している場合に、本脆弱性の影響を受ける可能性があります。記事からは金融機関への直接的な影響は確認できません。",
+        "recommended_actions": [
+          "自社で利用しているApple製品（iPhone、Mac）の利用有無と影響バージョンを確認する",
+          "Appleからの公式パッチや緩和策の情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、Apple製品の脆弱性であり、特定の標的型攻撃での悪用可能性が示唆されているものの、金融機関での適用範囲が限定的であるため「中」です。確認目安は、PoCが公開されたものの、直ちに広範な攻撃に繋がる時間的根拠が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
