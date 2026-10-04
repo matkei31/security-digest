@@ -1,0 +1,317 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-10-04",
+  "generated_at": "2026-10-04T09:39:54.077475+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 5,
+    "ai_attempted_count": 5,
+    "ai_success_count": 5,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 5
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 4,
+      "低": 1,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 3,
+      "参考": 2,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 1,
+      "攻撃・脅威動向": 2,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象5件｜重要度「高」0件｜本日確認0件｜今週確認3件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が3件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "英国の国内情報機関MI5は、中国国家安全部(MSS)が英国の学者100人以上の研究に資金を提供し、情報収集活動を強化していると警告しました。MI5は「Security Service Espionage Alert」を発行し、中国通用技術研究院(CGTRI)が研究資金提供を主な目的としていると述べています。\n金融機関への直接的な影響は記事からは確認できません。国家が関与する情報収集活動の動向として、サプライチェーンリスクや地政学リスクの観点から参考情報となり得ます。",
+      "中国関連の脅威アクター「Warlock」が、Microsoft SharePointの脆弱性（新旧両方）を悪用し、ポルトガル語圏およびスペイン語圏の組織を標的とした攻撃を継続しています。この活動は重要インフラ、政府機関、教育機関に影響を与えています。\n金融機関でMicrosoft SharePointを利用している場合、攻撃対象となる可能性があります。記事からは金融機関への直接的な影響は確認できません。"
+    ],
+    "check_items": [
+      "自社および委託先におけるMicrosoft SharePointの利用状況とバージョンを確認する",
+      "Fortra BoKS製品の利用有無と影響バージョンを確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:515631664ea57a3b6ac8e8b84b3339a056b148b2531753573e096fa7a42a5238",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/mi5-says-chinas-mss-funded-research.html",
+      "canonical_url": "https://thehackernews.com/2026/10/mi5-says-chinas-mss-funded-research.html",
+      "published_at": "2026-10-03T23:38:46+09:00",
+      "fetched_at": "2026-10-04T09:38:28.809873+09:00",
+      "title": "MI5 Says China’s MSS Funded Research Involving 100+ U.K.-Linked Academics",
+      "raw_title": "MI5 Says China’s MSS Funded Research Involving 100+ U.K.-Linked Academics",
+      "raw_excerpt": null,
+      "content_hash": "sha256:cf249c3992e1ca365f0a544f5995bff647815f3dae8ef93aaebdeb6885c263f8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-04T09:38:31.110912+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国国家安全部による情報収集活動への資金提供という攻撃者側の動向が主題であるため。",
+        "tags": [
+          "APT",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "英国の国内情報機関MI5は、中国国家安全部(MSS)が英国の学者100人以上の研究に資金を提供し、情報収集活動を強化していると警告しました。MI5は「Security Service Espionage Alert」を発行し、中国通用技術研究院(CGTRI)が研究資金提供を主な目的としていると述べています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。国家が関与する情報収集活動の動向として、サプライチェーンリスクや地政学リスクの観点から参考情報となり得ます。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が記事から確認できず、一般的な脅威動向として情報収集の価値があるため「中」です。確認目安は、具体的な緊急対応や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d5d7c3b1775bb907651a5209a9a02d959c4f1dc67651df4f839696133b3aac2b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/warlock-exploits-sharepoint-flaws-to.html",
+      "canonical_url": "https://thehackernews.com/2026/10/warlock-exploits-sharepoint-flaws-to.html",
+      "published_at": "2026-10-03T23:36:33+09:00",
+      "fetched_at": "2026-10-04T09:38:28.809873+09:00",
+      "title": "Warlock Exploits SharePoint Flaws to Disable Security Tools and Deploy Ransomware",
+      "raw_title": "Warlock Exploits SharePoint Flaws to Disable Security Tools and Deploy Ransomware",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3956496f2b1bcfc55fc485c7b5e6ce15772f233808c59191d4982bf3de68b698",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-04T09:38:48.253796+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国関連の脅威アクター「Warlock」によるSharePointの脆弱性悪用とランサムウェア展開が主題であるため。",
+        "tags": [
+          "APT",
+          "ランサムウェア",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "中国関連の脅威アクター「Warlock」が、Microsoft SharePointの脆弱性（新旧両方）を悪用し、ポルトガル語圏およびスペイン語圏の組織を標的とした攻撃を継続しています。この活動は重要インフラ、政府機関、教育機関に影響を与えています。",
+        "financial_impact": "金融機関でMicrosoft SharePointを利用している場合、攻撃対象となる可能性があります。記事からは金融機関への直接的な影響は確認できません。",
+        "recommended_actions": [
+          "自社および委託先におけるMicrosoft SharePointの利用状況とバージョンを確認する",
+          "Microsoft SharePointのセキュリティ設定とパッチ適用状況を確認し、必要に応じて強化・適用を検討する",
+          "SharePoint環境における不審な活動やセキュリティツールの無効化兆候を監視する"
+        ],
+        "reason": "重要度は、広く利用される製品の脆弱性悪用事例ですが、金融機関への直接的な関連性や具体的な影響が記事から確認できないため「中」です。確認目安は、進行中の攻撃事例ではあるものの、緊急対応を要する明確な期限やKEV新規追加の根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2b1a5f0c50905b2f3b88674320508e58051b14d167edbda72f0e5a315a37157b",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/doxx-net-raises-38-million-to-prevent-ai-agent-on-the-internet-misadventures/",
+      "canonical_url": "https://www.securityweek.com/doxx-net-raises-38-million-to-prevent-ai-agent-on-the-internet-misadventures/",
+      "published_at": "2026-10-03T20:45:00+09:00",
+      "fetched_at": "2026-10-04T09:38:28.809873+09:00",
+      "title": "doxx.net Raises $38 Million to Prevent AI Agent-on-the-Internet Misadventures",
+      "raw_title": "doxx.net Raises $38 Million to Prevent AI Agent-on-the-Internet Misadventures",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3264c961b68f42c8b984ae5a89b8f68193100b59b7056ca2148e963fafd108cd",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-04T09:39:05.017246+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントのセキュリティ対策に関する資金調達が主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "doxx.netが、AIエージェントがユーザーの権限下で動作する際の誤動作を防ぐ新しいADNプラットフォームの開発のため、3,800万ドルの資金調達を実施しました。",
+        "financial_impact": "金融機関がAIエージェントを業務に導入する際、その安全性と制御は重要な検討事項となります。本件は、AIエージェントの誤動作防止技術の動向として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントのセキュリティ対策技術の動向であり、現時点での直接的な影響が不確実なため「中」です。確認目安は、具体的な脅威や対応期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a28608a1a39437747ecf4cf4fe49f38f52be0978443456922d1302cb7c75ea55",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/fortra-patches-critical-vulnerabilities-in-boks/",
+      "canonical_url": "https://www.securityweek.com/fortra-patches-critical-vulnerabilities-in-boks/",
+      "published_at": "2026-10-03T20:34:00+09:00",
+      "fetched_at": "2026-10-04T09:38:28.809873+09:00",
+      "title": "Fortra Patches Critical Vulnerabilities in BoKS",
+      "raw_title": "Fortra Patches Critical Vulnerabilities in BoKS",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a2211898aa020c1e89418d7e80bdfea0bb24dade67a87ac624e75608ed027f9d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-04T09:39:21.844213+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Fortra製品の複数の脆弱性に関するパッチ提供が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Fortraは、BoKS製品における複数の重大な脆弱性に対処するパッチを公開しました。これらの脆弱性は、認証バイパス、シェルコマンド実行、メモリ破損につながる可能性があります。",
+        "financial_impact": "金融機関でFortra BoKS製品を利用している場合に限り、適用性確認の対象になります。記事からは利用状況を確認できません。",
+        "recommended_actions": [
+          "Fortra BoKS製品の利用有無と影響バージョンを確認する",
+          "Fortraが公開しているパッチおよび関連情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、対象製品の利用可能性や影響範囲が記事から確認できず、適用性が不確実なため「中」です。確認目安は、パッチが公開されており、即時対応を要する進行中の攻撃やKEV新規追加の根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:71c997ccf55f908fe9dfa512002a7328f573638326a305c48292488684f1b14b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/the-state-of-cybersecurity-in-2026key.html",
+      "canonical_url": "https://thehackernews.com/2026/10/the-state-of-cybersecurity-in-2026key.html",
+      "published_at": "2026-10-03T20:00:00+09:00",
+      "fetched_at": "2026-10-04T09:38:28.809873+09:00",
+      "title": "The State of Cybersecurity in 2026: Key Segments, Insights, and Innovations",
+      "raw_title": "The State of Cybersecurity in 2026: Key Segments, Insights, and Innovations",
+      "raw_excerpt": null,
+      "content_hash": "sha256:484cb8298018c885a39db0687ed94b2b2cee856f9d5252c92565537a4b912dce",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-04T09:39:39.077002+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "記事は特定の脆弱性やインシデントではなく、サイバーセキュリティ全体の動向と将来の展望を主題としているため。",
+        "tags": [
+          "クラウド",
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "クラウドインフラ、AI、分散システム、複雑化するデジタル環境の拡大により、サイバーセキュリティの状況が変化していると報告されています。組織がより多くのID、デバイス、データ、インターネットに接続されたインフラを管理するにつれて、セキュリティは継続的な可視性、制御、および大規模なリスク対応能力へと移行しています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。業界全体の動向に関する一般的な情報であり、特定の製品や脅威に関するものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や緊急対応を要する情報ではなく、業界の一般的な動向に関する記事であるため「低」です。確認目安は、具体的なアクションや期限が示されておらず、中長期的な情報収集として参考となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
