@@ -1,0 +1,215 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-10-05",
+  "generated_at": "2026-10-05T09:57:23.760244+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 3,
+    "ai_attempted_count": 3,
+    "ai_success_count": 3,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 3
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 3,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 1,
+      "参考": 2,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 0,
+      "攻撃・脅威動向": 2,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象3件｜重要度「高」0件｜本日確認0件｜今週確認1件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が1件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "中国と関連するサイバースパイグループTA419が、米国のシンクタンク、大学、法曹界のAI専門家を標的とした複数のクレデンシャルフィッシングキャンペーンを展開しています。著名な経済学者やAI政策立案者、Anthropicの従業員になりすまし、MicrosoftのAiTMフィッシング手法を用いています。\n金融機関が直接的な標的とはされていませんが、AI関連の専門家や部門を持つ金融機関は、同様の標的型フィッシング攻撃のリスク評価を行う必要があります。また、サプライチェーン上のAI関連ベンダーが標的となる可能性も考慮すべきです。"
+    ],
+    "check_items": [
+      "AI関連部門や専門家を抱える部署において、標的型フィッシング攻撃に対する注意喚起と教育を強化する",
+      "Microsoft 365等のクラウドサービスにおけるAiTMフィッシング対策の状況を確認し、必要に応じて強化を検討する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:e21f9da74af7e57e3b2a80f4f22c48cc50b60bf12755a1dc2cf310b97c944694",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/trump-names-national-intelligence-director-jay-clayton-to-lead-a-new-federal-ai-task-force/",
+      "canonical_url": "https://www.securityweek.com/trump-names-national-intelligence-director-jay-clayton-to-lead-a-new-federal-ai-task-force/",
+      "published_at": "2026-10-04T23:57:25+09:00",
+      "fetched_at": "2026-10-05T09:56:32.518455+09:00",
+      "title": "Trump Names National Intelligence Director Jay Clayton to Lead a New Federal AI Task Force",
+      "raw_title": "Trump Names National Intelligence Director Jay Clayton to Lead a New Federal AI Task Force",
+      "raw_excerpt": null,
+      "content_hash": "sha256:52705df0a4f7191bfa0abc30108ec0726ce47bdf1a88908fa2e7dbaaa02cd366",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-05T09:56:34.465512+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題が、連邦政府によるAIタスクフォースの設立とリーダー指名というAIに関する新しい取り組みであるため。",
+        "tags": [
+          "AI",
+          "規制",
+          "ガイドライン"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "トランプ氏は、先週ホワイトハウスでAI企業のトップエグゼクティブを招いた会合の後、国家情報長官のジェイ・クレイトン氏を新たな連邦AIタスクフォースのリーダーに指名したと発表しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。米国政府のAI政策動向として、中長期的な規制やガイドライン策定の可能性を把握するための参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、米国政府のAI政策動向に関する情報であり、中長期的な影響を考慮し評価する価値があるため「中」です。確認目安は、具体的な行動を求める内容ではなく、短期的な対応期限もないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5b2c328286dbcd0bcb164c376697e6e8d0da2696e037abafb2df0d80008df55b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/shinyhunters-suspect-rey-reportedly.html",
+      "canonical_url": "https://thehackernews.com/2026/10/shinyhunters-suspect-rey-reportedly.html",
+      "published_at": "2026-10-04T16:22:05+09:00",
+      "fetched_at": "2026-10-05T09:56:32.518455+09:00",
+      "title": "ShinyHunters Suspect Rey Reportedly Detained in Jordan, Helping FBI Identify Group Members",
+      "raw_title": "ShinyHunters Suspect Rey Reportedly Detained in Jordan, Helping FBI Identify Group Members",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6eae421586b8314c040c09a7cea44364860b7ebb8111f4317800e33bcf9b2198",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-05T09:56:51.301184+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "著名なサイバー犯罪グループのメンバー拘束と捜査協力に関する記事であり、攻撃者と脅威動向が主題のため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "報道によると、デジタル恐喝グループShinyHuntersのメンバーとされる「Rey」（本名Saif al-Din Khader）が9月29日にヨルダン当局に拘束され、米連邦捜査局（FBI）に協力しているとされています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。サイバー犯罪グループの動向を把握するための参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、著名なサイバー犯罪グループのメンバー拘束に関する情報であり、脅威動向の把握に資するため「中」です。確認目安は、具体的な短期的な対応を要する情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:aac5cc1a7d26e13fa0a5f7d7365a0ed8fd8515b8b7334c47b468a810f22db7f6",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/china-aligned-ta419-targets-us-ai.html",
+      "canonical_url": "https://thehackernews.com/2026/10/china-aligned-ta419-targets-us-ai.html",
+      "published_at": "2026-10-04T16:20:32+09:00",
+      "fetched_at": "2026-10-05T09:56:32.518455+09:00",
+      "title": "China-Aligned TA419 Targets U.S. AI Policy Experts With Microsoft AitM Phishing",
+      "raw_title": "China-Aligned TA419 Targets U.S. AI Policy Experts With Microsoft AitM Phishing",
+      "raw_excerpt": null,
+      "content_hash": "sha256:53032d65d7cb3c26b2cbc2421f79215e0d843deadac37d1b9e372b09aed336c8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-05T09:57:08.759864+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国系APTグループによる特定の専門家を狙ったフィッシング攻撃の手法と動向が主題であるため。",
+        "tags": [
+          "APT",
+          "フィッシング",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "中国と関連するサイバースパイグループTA419が、米国のシンクタンク、大学、法曹界のAI専門家を標的とした複数のクレデンシャルフィッシングキャンペーンを展開しています。著名な経済学者やAI政策立案者、Anthropicの従業員になりすまし、MicrosoftのAiTMフィッシング手法を用いています。",
+        "financial_impact": "金融機関が直接的な標的とはされていませんが、AI関連の専門家や部門を持つ金融機関は、同様の標的型フィッシング攻撃のリスク評価を行う必要があります。また、サプライチェーン上のAI関連ベンダーが標的となる可能性も考慮すべきです。",
+        "recommended_actions": [
+          "AI関連部門や専門家を抱える部署において、標的型フィッシング攻撃に対する注意喚起と教育を強化する",
+          "Microsoft 365等のクラウドサービスにおけるAiTMフィッシング対策の状況を確認し、必要に応じて強化を検討する"
+        ],
+        "reason": "重要度は、金融機関が直接的な標的ではないものの、AI関連の専門家を狙う攻撃動向として情報共有の価値があるため「中」です。確認目安は、特定の標的型攻撃の動向であり、即時対応を要する具体的な期限や脆弱性情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
