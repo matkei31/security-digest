@@ -1,0 +1,971 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-10-10",
+  "generated_at": "2026-10-10T10:50:45.487653+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 18,
+    "ai_attempted_count": 18,
+    "ai_success_count": 18,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 18
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 14,
+      "低": 2,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 12,
+      "参考": 6,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 4,
+      "攻撃・脅威動向": 7,
+      "インシデント": 1,
+      "規制・ガバナンス": 2,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 3,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象18件｜重要度「高」2件｜本日確認0件｜今週確認12件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が12件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が2件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "金融庁は、インターネット取引サービスにおける不正アクセスや不正取引に関する注意喚起のページを更新しました。これは、金融機関の顧客が被害に遭うことを防ぐための情報提供です。",
+      "Citrixは、NetScaler製品に存在するCVE-2026-107406として追跡される重大なセキュリティ欠陥に対し、緊急のパッチ適用を要請しています。この脆弱性は、リモートコード実行またはサービス拒否につながる可能性があります。"
+    ],
+    "discussion_points": [
+      "金融庁は、インターネット取引サービスにおける不正アクセスや不正取引に関する注意喚起のページを更新しました。これは、金融機関の顧客が被害に遭うことを防ぐための情報提供です。\n金融機関は、顧客保護の観点から、金融庁が発信するこのような注意喚起の内容を把握し、自社のインターネット取引サービスにおけるセキュリティ対策や顧客への情報提供に役立てる必要があります。",
+      "Citrixは、NetScaler製品に存在するCVE-2026-107406として追跡される重大なセキュリティ欠陥に対し、緊急のパッチ適用を要請しています。この脆弱性は、リモートコード実行またはサービス拒否につながる可能性があります。\n金融機関でCitrix NetScaler製品を利用している場合、本脆弱性の影響を受ける可能性があります。特に外部に公開されている環境では、早急な確認が必要です。"
+    ],
+    "check_items": [
+      "金融庁の更新された注意喚起ページの内容を確認し、自社の顧客向け情報提供やセキュリティ対策に反映可能か評価する",
+      "自社および委託先におけるCitrix NetScaler製品の利用有無と影響バージョンを確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:9d4120ee38afb875e2dcb492ba81ac687419fdda46206eb3cc7cc11fb768d49c",
+      "source_id": "krebs_on_security",
+      "source_name": "Krebs on Security",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://krebsonsecurity.com/2026/10/fbi-arrests-founder-of-ransomware-negotiation-firm/",
+      "canonical_url": "https://krebsonsecurity.com/2026/10/fbi-arrests-founder-of-ransomware-negotiation-firm/",
+      "published_at": "2026-10-10T09:17:42+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "FBI Arrests Founder of Ransomware Negotiation Firm",
+      "raw_title": "FBI Arrests Founder of Ransomware Negotiation Firm",
+      "raw_excerpt": null,
+      "content_hash": "sha256:015df35ffa0f1aaf4914e42dfe83ac39d8698bad42406b56d93827bbc23adc5b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:45:38.292515+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ランサムウェア交渉企業の創設者が逮捕された事件であり、攻撃者側の動向に関する情報であるため。",
+        "tags": [
+          "ランサムウェア",
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "FBIは、カナダのサイバーセキュリティ企業の共同創設者を逮捕しました。これは、最近FBIから数千人のエージェントに関する機密データを盗んだShinyHuntersハッキンググループの調査に関連しています。",
+        "financial_impact": "金融機関への直接的な影響は限定的ですが、ランサムウェア交渉企業の活動やハッキンググループの動向は、金融機関の脅威インテリジェンスとして参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、ランサムウェア交渉企業とハッキンググループに関する情報であり、脅威動向を把握する上で中程度の価値があるため「中」です。確認目安は、具体的な緊急対応を要する情報ではなく、脅威インテリジェンスとして今週中に確認する価値があるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f97fd409a633247b3db222e731b80dab73edc6a6d2ea33858f301f8ebdffe09a",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/openai-fires-3-safety-researchers-in-dispute-over-ai-risks/",
+      "canonical_url": "https://www.securityweek.com/openai-fires-3-safety-researchers-in-dispute-over-ai-risks/",
+      "published_at": "2026-10-10T06:07:46+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "OpenAI Fires 3 Safety Researchers in Dispute Over AI Risks",
+      "raw_title": "OpenAI Fires 3 Safety Researchers in Dispute Over AI Risks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4888c47647b560e9bfb9a4dee2cd4b5f07527464531ffebfe1ee25ebad8f1f85",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:45:55.153910+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIのリスクとそれに関する組織内の問題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "ChatGPTの開発元であるOpenAIが、AIの安全性に関する意見の相違を理由に3名の安全性研究者を解雇しました。同社は、研究者たちが「機密情報の取り扱いに関する明確なポリシーに違反した」と述べています。",
+        "financial_impact": "金融機関がAI技術、特にOpenAIの製品を利用している場合、AIの安全性に関する内部統制やリスク管理の状況について間接的に関係する可能性があります。直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIの安全性に関する組織内部の問題であり、金融機関への直接的な影響が限定的であるため「中」です。確認目安は、具体的な脅威や期限が示されておらず、状況把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:bf89595af7c39e7a025ec626eeeb09ce33b8e83a8d0e785473c5926e951fd3f1",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/credential-stealing-github-actions.html",
+      "canonical_url": "https://thehackernews.com/2026/10/credential-stealing-github-actions.html",
+      "published_at": "2026-10-10T04:14:28+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "Credential-Stealing GitHub Actions Workflows Planted in Tens of Thousands of Repositories",
+      "raw_title": "Credential-Stealing GitHub Actions Workflows Planted in Tens of Thousands of Repositories",
+      "raw_excerpt": null,
+      "content_hash": "sha256:130cbb3f1cee7c5cc67917612ab75e9c886e161e5257aedc8ed7b404f5f84e20",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:46:12.869617+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "GitHub Actionsワークフローを悪用した認証情報窃取キャンペーンに関する記事であり、攻撃手法と脅威動向が主題のため。",
+        "tags": [
+          "サプライチェーン",
+          "認証",
+          "IAM"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者によると、進行中の認証情報窃取キャンペーンで、2つの著名なオープンソースメンテナーアカウントが侵害され、340以上のリポジトリに悪意のあるワークフローがプッシュされました。攻撃者は、18,400のスターを持つゲームエンジンpyxelの作者であるTakashi Kitao氏のアカウントを利用し、27のリポジトリに悪意のあるワークフローをプッシュしました。",
+        "financial_impact": "金融機関がGitHubを開発基盤として利用し、特にオープンソースプロジェクトに貢献している場合、サプライチェーンリスクとして関係します。直接的な影響は限定的ですが、開発環境のセキュリティは重要です。",
+        "recommended_actions": [
+          "自社および委託先でGitHub Actionsを利用している場合、関連するリポジトリに不審なワークフローが追加されていないか確認する",
+          "GitHubアカウントの認証情報が侵害されていないか、ログや監査証跡を確認する",
+          "GitHubアカウントのセキュリティ設定（MFAなど）が適切に構成されているか確認する"
+        ],
+        "reason": "重要度は、GitHubを利用する開発環境への影響が考えられるものの、金融機関への直接的な影響は限定的であるため「中」です。確認目安は、進行中の攻撃キャンペーンではあるものの、即時対応を要する具体的な期限や緊急情報が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:30dc1b1f3fcaab410b5efcd32458f684fe358030d092f75ca11d87d829b3b070",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/fbi-arrests-another-shinyhunters.html",
+      "canonical_url": "https://thehackernews.com/2026/10/fbi-arrests-another-shinyhunters.html",
+      "published_at": "2026-10-10T02:45:26+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "FBI Arrests Another ShinyHunters Suspect Reportedly Involved in Its Jobs Portal Hack",
+      "raw_title": "FBI Arrests Another ShinyHunters Suspect Reportedly Involved in Its Jobs Portal Hack",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d65032320d6c3f0450c665b029928acc835dc7e8a879b9c0c860a2f3f047e8ee",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:46:30.008239+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "FBIの求人ポータルへのハッキングに関与したとされる攻撃グループShinyHuntersの容疑者逮捕に関する記事であり、攻撃者と脅威動向が主題のため。",
+        "tags": [
+          "APT",
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "FBIは、求人ポータルへのハッキングに関与したとされる恐喝グループShinyHuntersの共犯容疑者を新たに逮捕しました。このハッキングでは、ほぼ全てのFBI捜査官と求職者の機密データが窃取されたとされています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。ただし、サイバー犯罪グループの動向や捜査機関による逮捕事例として、脅威インテリジェンスの参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響は限定的であり、一般的な脅威動向の把握が中心となるため「中」です。確認目安は、新たな脅威や緊急対応を要する情報ではなく、状況把握が目的のため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2d8b2a661271f3ed2fea9ffea1009da3eb0d31cfcb71f22ceaa1c55663a4c0fb",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/p7-darksword-ios-exploit-kit-adds.html",
+      "canonical_url": "https://thehackernews.com/2026/10/p7-darksword-ios-exploit-kit-adds.html",
+      "published_at": "2026-10-10T01:29:55+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "P7 DarkSword iOS Exploit Kit Adds Crypto Wallet Data Theft and Remote Commands",
+      "raw_title": "P7 DarkSword iOS Exploit Kit Adds Crypto Wallet Data Theft and Remote Commands",
+      "raw_excerpt": null,
+      "content_hash": "sha256:02172ae3b2fb5ad1c26028a88c4349c4ba091c9ccfdac81fe3cc90e8fce8533e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:46:47.660799+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "iOSエクスプロイトキットの新たな亜種と、その攻撃機能の追加に関する記事であるため。",
+        "tags": [
+          "APT",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、これまで未確認だったDarkSword iOSエクスプロイトキットの亜種「P7 DarkSword」の詳細を公開しました。この亜種は、デバイス上の痕跡を減らし、キーチェーンや仮想通貨ウォレットからのデータ窃盗、および攻撃者インフラとの双方向C2通信機能を追加しています。",
+        "financial_impact": "金融機関が従業員にiOSデバイスを貸与している場合、または従業員が業務で個人所有のiOSデバイスを利用している場合に、情報窃取のリスクに関係します。仮想通貨ウォレットのデータ窃盗機能は、金融機関の顧客資産に直接影響する可能性は低いですが、従業員の個人資産や、業務と関連する仮想通貨の利用状況によっては間接的なリスクとなり得ます。",
+        "recommended_actions": [
+          "従業員が利用するiOSデバイスのセキュリティ対策状況を確認する",
+          "iOSデバイスにおける仮想通貨ウォレットアプリの利用ポリシーとセキュリティ対策を評価する"
+        ],
+        "reason": "重要度は、iOSエクスプロイトキットの新たな脅威動向であり、金融機関の従業員デバイスに影響する可能性があるため「中」です。確認目安は、具体的な侵害事例や緊急対応の指示が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:691c52c7547cb8e5972847540cf606cb31c007b4412eadac983184cc2bd327f9",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/tp-link-sued-by-four-more-us-states.html",
+      "canonical_url": "https://thehackernews.com/2026/10/tp-link-sued-by-four-more-us-states.html",
+      "published_at": "2026-10-09T22:22:53+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "TP-Link Sued by Four More U.S. States Over Router Security and China Ties",
+      "raw_title": "TP-Link Sued by Four More U.S. States Over Router Security and China Ties",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7037e71e354f121553748a5d5a2993434e89fdde841bee1479dd4c2896ba383c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:47:04.583633+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "ルーターメーカーがセキュリティと中国との関係について消費者を誤解させたとして、米国複数州から提訴された事案が主題であるため。",
+        "tags": [
+          "規制",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "米国4州がルーターメーカーTP-Link Systemsを提訴し、同様の訴訟を起こした州は合計5州となりました。フロリダ、アイオワ、モンタナ、ネブラスカの各州は、同社がルーターのセキュリティと中国との関係について購入者を誤解させたと主張しています。",
+        "financial_impact": "金融機関がTP-Link製ルーターを業務で利用している場合、製品のセキュリティに関する懸念やサプライチェーンリスクの評価に関連する可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の製品に関する訴訟であり、金融機関への直接的な影響は限定的であるため「中」です。確認目安は、訴訟に関する情報であり、短期的な対応を要する具体的な脅威や期限が示されていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b8e2f39fd1297ab6dbeb3bac5fdd0aa67885420082e4d6ed8c7ce7e1347fa9bc",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/researchers-publish-working-exploit-for.html",
+      "canonical_url": "https://thehackernews.com/2026/10/researchers-publish-working-exploit-for.html",
+      "published_at": "2026-10-09T21:59:22+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "Researchers Publish Working Exploit for Pre-Auth AnyDesk Linux Flaw That Gives Root Access",
+      "raw_title": "Researchers Publish Working Exploit for Pre-Auth AnyDesk Linux Flaw That Gives Root Access",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0863c4db9b92c6f34dd0e8a6dc7a11bdbf71462995e5e1dd2e74b00c67d51126",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:47:21.850875+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "AnyDesk Linuxの認証前RCE脆弱性とそれに対する実証コードの公開が主題であるため。",
+        "tags": [
+          "パッチ",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セキュリティ研究者が、AnyDesk Linuxの認証前リモートコード実行（RCE）脆弱性に対する実証コードを公開しました。この脆弱性を悪用すると、接続承認なしに攻撃者がroot権限を取得する可能性があります。AnyDeskはバージョン8.0.3でこの問題を修正済みですが、CVEは割り当てられていません。",
+        "financial_impact": "金融機関でAnyDesk Linuxをリモートアクセスツールとして利用している場合に、適用性確認の対象になります。",
+        "recommended_actions": [
+          "AnyDesk Linuxの利用有無と影響を受けるバージョン（8.0.3未満）を確認する",
+          "AnyDeskの公式情報を確認し、バージョン8.0.3以降へのアップデートまたは緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、AnyDesk Linuxの利用状況が金融機関によって異なり、適用範囲が限定的である可能性があるため「中」です。確認目安は、実証コードが公開されたものの、CISA KEVへの新規追加や進行中の攻撃の記述がなく、既に修正版が提供されているため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6df49761e69e4df829e7a2a170a85ff037fae5eb237d8351f6acebf8e004448f",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/anthropic-launches-free-ai.html",
+      "canonical_url": "https://thehackernews.com/2026/10/anthropic-launches-free-ai.html",
+      "published_at": "2026-10-09T21:47:28+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "Anthropic Launches Free AI Vulnerability Scanner for Open-Source Projects",
+      "raw_title": "Anthropic Launches Free AI Vulnerability Scanner for Open-Source Projects",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5dafbb00a090407cc94f5be3e9182695bea3b6348c17df077846a555272c7dde",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:47:38.542202+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIを活用した新しいセキュリティツールに関する情報であり、AI・新技術リスクが主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Anthropicは、AIを活用したオープンソースプロジェクト向けの無料脆弱性スキャナー「OSS Scanner」を発表しました。これは、同社のAIモデル「Claude」を用いて脆弱性を発見する「Project Glasswing」の経験に基づいています。",
+        "financial_impact": "金融機関がオープンソースソフトウェアを開発・利用している場合、そのセキュリティ強化に役立つ可能性があります。直接的な影響は限定的であり、利用有無により関係性が変わります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関がオープンソースソフトウェアを利用している場合にセキュリティ強化の選択肢となり得るため「中」です。確認目安は、具体的な脅威や緊急対応の必要性が記事にないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d33e86be6de0bd5dd04ebc92d4b37c3ebcb9fae0cfa1118ce15ddad9eedf01e8",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/attackers-exploit-ahsaycbs-flaws-to.html",
+      "canonical_url": "https://thehackernews.com/2026/10/attackers-exploit-ahsaycbs-flaws-to.html",
+      "published_at": "2026-10-09T21:47:26+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "Attackers Exploit AhsayCBS Flaws to Deploy XMRig Miners Disguised as Microsoft Edge",
+      "raw_title": "Attackers Exploit AhsayCBS Flaws to Deploy XMRig Miners Disguised as Microsoft Edge",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2650dc7d2ab46142a6883c14d50acdfb57192894dc9dbf6fc678c17e81907550",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:47:55.797992+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "AhsayCBSバックアップユーティリティの脆弱性を悪用した攻撃手法と脅威動向が主題であるため。",
+        "tags": [
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "AhsayCBSバックアップユーティリティの2つの脆弱性（CVE-2026-105133、CVSSv4: 5.5）が悪用され、影響を受けるデバイスが乗っ取られ、ウェブシェルやXMRigクリプトマイナーが展開されていることが確認されました。",
+        "financial_impact": "金融機関でAhsayCBSバックアップユーティリティを利用している場合に限り、適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "AhsayCBSバックアップユーティリティの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報を確認し、パッチや緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、特定のバックアップ製品の脆弱性を悪用した攻撃であり、金融機関での利用状況が不明で適用範囲が限定的であるため「中」です。確認目安は、実悪用が確認されているものの、KEV新規追加ではなく即時対応の強い時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d96e6fa992364d217b8d1acf524131bc8f3587c99146bdf5db2b8ec2e9352a70",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/flax-typhoon-exploits-five-flaws-as.html",
+      "canonical_url": "https://thehackernews.com/2026/10/flax-typhoon-exploits-five-flaws-as.html",
+      "published_at": "2026-10-09T21:21:51+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "Flax Typhoon Exploits Five Flaws as CISA Sets October 11 Deadline for Federal Agencies",
+      "raw_title": "Flax Typhoon Exploits Five Flaws as CISA Sets October 11 Deadline for Federal Agencies",
+      "raw_excerpt": null,
+      "content_hash": "sha256:37bb6913b6e366ffb876f614d017407fcb4064f404ae6e14c67ae490f6a3467c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:48:13.012554+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CISAがKEVカタログに5つの脆弱性を追加し、連邦政府機関に対応期限を設定したことが主題であるため。",
+        "tags": [
+          "KEV",
+          "悪用確認済み",
+          "CVE",
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "CISAは、中国関連の脅威アクター「Flax Typhoon」が悪用している5つのセキュリティ脆弱性をKEVカタログに追加しました。連邦政府機関には10月11日までの対応期限が設定されています。",
+        "financial_impact": "記事に記載されている脆弱性の対象製品（ProFTPDなど）を金融機関が利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "記事に記載されたCVE IDを基に対象製品を特定し、自社および委託先での利用有無を確認する",
+          "CISA KEVカタログで各CVEの詳細を確認し、ベンダーの一次情報や緩和策を評価する"
+        ],
+        "reason": "重要度は、KEV掲載の脆弱性だが、対象製品の金融機関での利用状況が不明確で適用範囲が不確実なため「中」です。確認目安は、KEVへの新規追加ではない既存掲載であり、金融機関への直接的な対応期限の指示がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:77e8a1bce957924c21411708e5c65022a41ceffbdfd71420e5330676ba95ff74",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/in-other-news-ai-used-in-korean-bank-breaches-poem-guided-botnet-empire-admin-gets-40-years/",
+      "canonical_url": "https://www.securityweek.com/in-other-news-ai-used-in-korean-bank-breaches-poem-guided-botnet-empire-admin-gets-40-years/",
+      "published_at": "2026-10-09T21:03:50+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "In Other News: AI Used in Korean Bank Breaches, Poem-Guided Botnet, Empire Admin Gets 40 Years",
+      "raw_title": "In Other News: AI Used in Korean Bank Breaches, Poem-Guided Botnet, Empire Admin Gets 40 Years",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d3bfe7eb27b3df2824eabf21272c418e24c53104153ca530b6574e077e51b3b6",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:48:29.989412+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の異なるサイバーセキュリティ関連の話題をまとめた記事であり、特定の主題に絞れないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、Tensorlake npm SDKの侵害、Empire Market共同創設者への40年判決、NVIDIA GPUモニターからのテレメトリ漏洩など、見過ごされがちな注目すべきサイバーセキュリティ関連のニュースをまとめたものです。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。記事は複数の異なる話題を簡潔にまとめたものであり、個別の事象に関する詳細な情報や金融機関への具体的な関連性は確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、複数の異なる話題をまとめた記事であり、個別の事象に関する詳細な情報や金融機関への具体的な関連性が確認できないため「低」です。確認目安は、新たな緊急対応を要する情報や明確な期限が示されていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9fbb4937f47542c1137f685c7be372fb540335aa3bb282435b4c163cfb1d3a33",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/google-domains-impacted-by-recent-cctld-domain-hijacks/",
+      "canonical_url": "https://www.securityweek.com/google-domains-impacted-by-recent-cctld-domain-hijacks/",
+      "published_at": "2026-10-09T20:43:14+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "Google Domains Impacted by Recent ccTLD Hijacks",
+      "raw_title": "Google Domains Impacted by Recent ccTLD Hijacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:15e1582615d2f5cfd02b0894972aceeccfefc42c9230250358fbffe46dd8820f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:48:47.136110+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "ハッカーがccTLDをハイジャックし、GoogleドメインのHTTPS証明書を取得したという実際の侵害事例が主題であるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ハッカーが.gh、.sl、.asの国別コードトップレベルドメイン(ccTLD)をハイジャックし、複数のGoogleドメインのHTTPS証明書を取得しました。",
+        "financial_impact": "金融機関がGoogle Domainsを利用している場合、または同様のccTLD管理の脆弱性に晒されている場合に、ドメインハイジャックのリスク評価の参考になります。",
+        "recommended_actions": [
+          "自社で利用しているドメインのccTLD管理状況を確認し、セキュリティ対策が適切に講じられているかを評価する",
+          "ドメイン登録事業者やDNSプロバイダーのセキュリティ体制について確認する"
+        ],
+        "reason": "重要度は、Google Domainsが影響を受けた事例であり、金融機関への直接的な影響は限定的であるため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、自社への適用性評価に時間的猶予があるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ff63f58751b625a492dc461e4b025c64f1e96e13e30da52d380127939600de97",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/unpatched-ahsaycbs-vulnerabilities-exploited-in-the-wild/",
+      "canonical_url": "https://www.securityweek.com/unpatched-ahsaycbs-vulnerabilities-exploited-in-the-wild/",
+      "published_at": "2026-10-09T19:23:42+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "Unpatched AhsayCBS Vulnerabilities Exploited in the Wild",
+      "raw_title": "Unpatched AhsayCBS Vulnerabilities Exploited in the Wild",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3e8db2357986f140cb614eebc5f88201c01055ff8e9b036df30a3337d87336b8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:49:04.382197+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "未パッチの脆弱性が実悪用されていることが主題であるため。",
+        "tags": [
+          "悪用確認済み",
+          "パッチ",
+          "CVE"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "AhsayCBSの未パッチ脆弱性CVE-2026-105133とCVE-2026-105134が実悪用されていることが確認されました。これらの脆弱性は認証バイパスとOSコマンドインジェクションを可能にします。",
+        "financial_impact": "金融機関でAhsayCBS製品を利用している場合に限り、適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "AhsayCBS製品の利用有無と影響バージョンを確認する",
+          "ベンダーからの公式パッチや緩和策の情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、対象製品の金融機関での利用状況が記事から不明であり、適用範囲が不確実なため「中」です。確認目安は、実悪用が確認されているものの、KEV新規追加ではなく即時対応の明確な期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:04744af1d6372d87f2e09118abdfedc67e703780f25e921efdd0365a8110327b",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/pre-baked-firmware-malware-hits-budget-android-devices-in-150-countries/",
+      "canonical_url": "https://www.securityweek.com/pre-baked-firmware-malware-hits-budget-android-devices-in-150-countries/",
+      "published_at": "2026-10-09T18:55:35+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "Pre-Baked Firmware Malware Hits Budget Android Devices in 150+ Countries",
+      "raw_title": "Pre-Baked Firmware Malware Hits Budget Android Devices in 150+ Countries",
+      "raw_excerpt": null,
+      "content_hash": "sha256:65fa8f7ce39a18d9a9f8f303f2fe68f372bef99e3ec1d87c675658fb9caa13a0",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:49:22.230976+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "低価格Androidデバイスにプリインストールされたマルウェアキャンペーンに関する記事であり、攻撃手法と脅威動向が主題であるため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "「Midnight Mimosa」と名付けられたマルウェアキャンペーンが、主に低価格のAndroidデバイスにプリインストールされた状態で150カ国以上で確認されています。",
+        "financial_impact": "金融機関が直接的に利用するシステムやサービスへの影響は記事からは確認できません。従業員が個人利用するデバイスが対象となる可能性はありますが、金融機関の業務への直接的な関係は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関の業務システムへの直接的な影響が確認できず、対象が低価格Androidデバイスに限定されるため「低」です。確認目安は、具体的な脅威や期限、金融機関への直接的なアクションが記事にないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6357f6c8dfde06d78ccbd706bfa4bcd7b4f309bd90b761cd3bac458ce298a2a3",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/us-disrupts-chinese-state-sponsored-hacking-tools/",
+      "canonical_url": "https://www.securityweek.com/us-disrupts-chinese-state-sponsored-hacking-tools/",
+      "published_at": "2026-10-09T17:36:37+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "US Disrupts Chinese State-Sponsored Hacking Tools",
+      "raw_title": "US Disrupts Chinese State-Sponsored Hacking Tools",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6608b72cd65b96beefc856a0ce3d46f8c6614ceaf6e022496653eb04a9a83e44",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:49:39.035276+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国政府支援のAPTグループによるハハッキングツールと攻撃活動が主題であるため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "米国が、Flax TyphoonなどのAPTグループがMicroScanやFishHubといったツールを使用して、米国および外国の重要インフラをスキャン・ハッキングしていた活動を妨害したと報じられています。",
+        "financial_impact": "金融機関が直接的な標的とされたという記述は記事からは確認できませんが、重要インフラへの攻撃はサプライチェーンを通じて間接的な影響を及ぼす可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、中国政府支援のAPTグループによる重要インフラへの攻撃動向であり、金融機関への直接的な影響は不明確なため「中」です。確認目安は、具体的な緊急対応を要する情報や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:dada16fa3e4cf93e439c0dec6f33baed2590dada3a08f56b8845aed2dda669e2",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/anthropic-fast-tracks-ai-bug-reports-to-oss-maintainers-taps-11-firms-for-ot-security/",
+      "canonical_url": "https://www.securityweek.com/anthropic-fast-tracks-ai-bug-reports-to-oss-maintainers-taps-11-firms-for-ot-security/",
+      "published_at": "2026-10-09T17:19:33+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "Anthropic Fast-Tracks AI Bug Reports to OSS Maintainers, Taps 11 Firms for OT Security",
+      "raw_title": "Anthropic Fast-Tracks AI Bug Reports to OSS Maintainers, Taps 11 Firms for OT Security",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c69acadbf9979e1c0c3e0d907a6dbd839a7f5adc3f54730fce0eff073040f67f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:49:56.120779+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIが生成する脆弱性レポートの提供や、AI企業がOTセキュリティに取り組むという、AIと新技術のリスク・活用に関する話題が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Anthropicが、AIモデルが生成した未レビューの脆弱性レポートを、オプトインしたオープンソースメンテナーに迅速に送信する「OSS Scanner」を開始しました。また、OT（Operational Technology）セキュリティ強化のため11社と提携しています。",
+        "financial_impact": "金融機関がオープンソースソフトウェアを利用している場合、AIによる脆弱性検出の動向は参考になります。ただし、直接的な影響や具体的なアクションは記事からは確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIによる脆弱性検出の動向は中長期的な参考情報となるものの、金融機関への直接的な影響が限定的であるため「中」です。確認目安は、具体的な脅威や対応期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2609ff10c09fe47e2b8ba0e942135a5ba20abd44dec79ed727c12cd590608bf5",
+      "source_id": "fsa",
+      "source_name": "金融庁",
+      "source_type": "規制・監督",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.fsa.go.jp/ordinary/chuui/chuui_phishing.html",
+      "canonical_url": "https://www.fsa.go.jp/ordinary/chuui/chuui_phishing.html",
+      "published_at": "2026-10-09T16:00:00+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "「インターネット取引サービスへの不正アクセス・不正取引にご注意ください」のページを更新しました。",
+      "raw_title": "「インターネット取引サービスへの不正アクセス・不正取引にご注意ください」のページを更新しました。",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b429829776c25c1dc0d20b5c1fba40f2111c4409688f4882ced1968ca1bc5970",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:50:13.398832+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "金融庁による注意喚起の更新であり、規制・監督機関からの情報提供が主題であるため。",
+        "tags": [
+          "規制",
+          "監督",
+          "フィッシング",
+          "インシデント"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "金融庁は、インターネット取引サービスにおける不正アクセスや不正取引に関する注意喚起のページを更新しました。これは、金融機関の顧客が被害に遭うことを防ぐための情報提供です。",
+        "financial_impact": "金融機関は、顧客保護の観点から、金融庁が発信するこのような注意喚起の内容を把握し、自社のインターネット取引サービスにおけるセキュリティ対策や顧客への情報提供に役立てる必要があります。",
+        "recommended_actions": [
+          "金融庁の更新された注意喚起ページの内容を確認し、自社の顧客向け情報提供やセキュリティ対策に反映可能か評価する",
+          "インターネット取引サービスにおける不正アクセス・不正取引の最新動向について情報収集を継続する"
+        ],
+        "reason": "重要度は、金融庁からの顧客保護に関する注意喚起であり、金融機関の顧客に直接関係するため「高」です。確認目安は、新たな緊急の対応を求めるものではなく、内容の確認と対応方針の検討に時間的猶予があるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:8d2528422f22ae446c0875076d3924e6d676e343b7e979aa1deb888420701f09",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/citrix-urges-immediate-patching-of-critical-netscaler-vulnerability/",
+      "canonical_url": "https://www.securityweek.com/citrix-urges-immediate-patching-of-critical-netscaler-vulnerability/",
+      "published_at": "2026-10-09T15:53:53+09:00",
+      "fetched_at": "2026-10-10T10:45:36.224239+09:00",
+      "title": "Citrix Urges Immediate Patching of Critical NetScaler Vulnerability",
+      "raw_title": "Citrix Urges Immediate Patching of Critical NetScaler Vulnerability",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0e43bbab5c15b4e54f718535faae94245bfe3167752ee21334bdcfbb023d3fe9",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-10T10:50:30.486778+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Citrix NetScalerの重大な脆弱性とパッチ適用が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Citrixは、NetScaler製品に存在するCVE-2026-107406として追跡される重大なセキュリティ欠陥に対し、緊急のパッチ適用を要請しています。この脆弱性は、リモートコード実行またはサービス拒否につながる可能性があります。",
+        "financial_impact": "金融機関でCitrix NetScaler製品を利用している場合、本脆弱性の影響を受ける可能性があります。特に外部に公開されている環境では、早急な確認が必要です。",
+        "recommended_actions": [
+          "自社および委託先におけるCitrix NetScaler製品の利用有無と影響バージョンを確認する",
+          "Citrixが提供する一次情報およびパッチを確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、リモートコード実行やサービス拒否につながる重大な脆弱性であり、広く利用される可能性のある製品のため「高」です。確認目安は、緊急のパッチ適用が要請されているものの、CISA KEVへの新規追加や実悪用が確認されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
