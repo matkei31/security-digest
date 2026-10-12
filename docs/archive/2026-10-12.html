@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026年10月12日のサイバーセキュリティ情報 | Monomi Digest</title>
+  <meta name="description" content="2026年10月12日に公開した、金融機関に関連するサイバーセキュリティ情報の日次ダイジェストです。重要度、確認目安、金融機関との関連、確認事項を整理しています。">
+  <link rel="canonical" href="https://monomidigest.com/archive/2026-10-12.html">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--anchor-offset:218px}
+    @media (max-width:600px){:root{--anchor-offset:226px}}
+    body{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:40px}
+    header{background:#161b22;border-bottom:1px solid #21262d;padding:20px 16px 16px;position:sticky;top:0;z-index:10}
+    header h1{font-size:18px;font-weight:600;letter-spacing:.02em}
+    .sub{font-size:12px;color:#8b949e;margin-top:4px}
+    .count{font-size:12px;color:#58a6ff;margin-top:2px}
+    .archive-nav{display:flex;flex-direction:column;align-items:flex-start;row-gap:8px;margin-top:8px}
+    .archive-nav-group{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;min-width:0}
+    .archive-bottom-nav{max-width:680px;margin:20px auto 0;padding:0 12px}
+    .archive-link{display:inline-flex;align-items:center;min-height:32px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}
+    .archive-link:hover{text-decoration:underline}
+    .article-list-header{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .article-list-header h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}
+    .article-list-note{font-size:12px;color:#8b949e;line-height:1.5}
+    .cards{padding:12px 12px 0;display:flex;flex-direction:column;gap:10px;max-width:680px;margin:0 auto}
+    .card{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;scroll-margin-top:var(--anchor-offset)}
+    .card:active{background:#1c2128;border-color:#388bfd}
+    .card:target{border-color:#388bfd;box-shadow:0 0 0 1px #388bfd}
+    h2{font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3}
+    .article-heading{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:6px;align-items:start;font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3;overflow-wrap:anywhere}
+    .article-index{color:#8b949e;font-weight:700;white-space:nowrap}
+    .article-title-stack{display:grid;gap:2px;min-width:0}
+    .article-title-translation{font-size:12px;color:#8b949e;line-height:1.5;font-weight:500}
+    .article-title-link,.priority-title-link{color:inherit;text-decoration:none}
+    .article-title-link:hover,.article-source-link:hover,.priority-title-link:hover{text-decoration:underline}
+    .summary{font-size:12px;color:#8b949e;line-height:1.5;margin-top:6px}
+    .article-meta{margin-top:4px;font-size:12px;color:#8b949e;line-height:1.5}
+    .article-assessment{margin-top:8px;font-size:12px;color:#8b949e;line-height:1.6}
+    .assessment-item strong{color:#e6edf3;font-weight:700}
+    .assessment-item.is-accent{display:inline-block;color:#f85149;font-weight:700;padding-left:7px;border-left:2px solid #f85149}
+    .ai-analysis{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:grid;gap:10px}
+    .article-tags{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
+    .article-tags-label{padding-top:3px;font-size:10px;color:#768496;white-space:nowrap}
+    .article-tag{font-size:10px;font-weight:600;line-height:1.2;padding:3px 9px;border-radius:100px;border:1px solid #30363d;color:#8b949e;background:#0d1117}
+    .article-section h3{font-size:11px;font-weight:600;color:#8b949e}
+    .article-section p,.article-section li{font-size:12px;color:#c9d1d9;line-height:1.6}
+    .article-section p,.article-section ul{margin-top:3px}
+    .action-list{padding-left:18px}
+    .action-list li+li{margin-top:3px}
+    .vulnerability-facts{margin-top:8px}
+    .vulnerability-facts-title{font-size:11px;font-weight:600;color:#8b949e}
+    .vulnerability-list{list-style:none;margin-top:4px;display:grid;gap:4px}
+    .vulnerability-item{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;color:#c9d1d9;line-height:1.6}
+    .vulnerability-cve-link{color:#79c0ff;text-decoration:none;font-weight:600}
+    .vulnerability-cve-link:hover{text-decoration:underline}
+    .vulnerability-cvss{color:#8b949e}
+    .kev-badge{font-size:10px;font-weight:700;line-height:1;padding:3px 8px;border-radius:100px;border:1px solid #9e6a03;color:#e3b341;background:#1c1506;white-space:nowrap}
+    .article-attribution{margin-top:10px;font-size:10px;color:#768496;line-height:1.6;overflow-wrap:anywhere}
+    .article-attribution a{color:#8b949e;text-decoration:underline;text-underline-offset:2px}
+    .article-attribution a:hover{color:#79c0ff}
+    .article-source-link{display:inline-flex;align-items:center;width:max-content;max-width:100%;margin-top:10px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}
+    .empty{text-align:center;color:#8b949e;padding:60px 0;font-size:14px}
+    .todays-brief{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .brief-box{background:#161b22;border:1px solid #9e6a03;border-radius:10px;padding:14px 16px;display:grid;gap:12px}
+    .brief-box h2{font-size:13px;font-weight:700;color:#f0b429}
+    .brief-section-title{font-size:12px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .brief-status-line{font-size:13px;color:#e6edf3;line-height:1.6;background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:8px 10px;margin-bottom:8px;overflow-wrap:break-word}
+    .brief-overview{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word}
+    .brief-list{list-style:none;display:grid;gap:6px}
+    .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
+    .brief-list li::before{content:"・";position:absolute;left:0}
+    .brief-priority-list{list-style:none;display:grid;gap:12px;margin:0;padding:0}
+    .brief-priority-item{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;display:grid;gap:4px}
+    .brief-priority-summary,.brief-priority-impact{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word;margin:0}
+    .dashboard{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .dashboard-head{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+    .dashboard-head h2{font-size:13px;font-weight:700;color:#e6edf3}
+    .dashboard-count{font-size:12px;color:#8b949e}
+    .dashboard-count strong{font-size:16px;font-weight:700;color:#e6edf3;margin:0 2px}
+    .dashboard-axes{background:#161b22;border-left:1px solid #21262d;border-right:1px solid #21262d;border-top:1px solid #21262d;display:grid;grid-template-columns:1fr 1fr}
+    .dashboard-axis{padding:10px 16px}
+    .dashboard-axis+.dashboard-axis{border-left:1px solid #21262d}
+    .dashboard-axis h3{font-size:11px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .dashboard-axis-list{list-style:none;display:grid;gap:4px}
+    .dashboard-axis-item{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:#c9d1d9;line-height:1.4;padding-left:8px;border-left:2px solid transparent}
+    .dashboard-axis-item strong{font-size:14px;font-weight:700;color:#e6edf3}
+    .dashboard-axis-item.is-accent{border-left-color:#f85149;color:#f85149}
+    .dashboard-axis-item.is-accent strong{color:#f85149}
+    .dashboard-categories{background:#161b22;border:1px solid #21262d;border-top:1px solid #21262d;border-radius:0 0 10px 10px;padding:10px 16px}
+    .dashboard-categories h3{font-size:11px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .dashboard-category-list{list-style:none;display:flex;flex-wrap:wrap;gap:4px 14px}
+    .dashboard-category-item{font-size:11px;color:#8b949e;display:flex;gap:4px}
+    .dashboard-category-item strong{color:#8b949e;font-weight:600}
+    .dashboard-empty{list-style:none;font-size:12px;color:#8b949e;line-height:1.5}
+    @media (max-width:600px){
+      .dashboard-axes{grid-template-columns:1fr}
+      .dashboard-axis+.dashboard-axis{border-left:none;border-top:1px solid #21262d}
+    }
+    .important-items{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .important-items h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}
+    .important-items-note{font-size:12px;color:#8b949e;line-height:1.5;margin-bottom:8px}
+    .important-items-list{display:grid;gap:6px}
+    .priority-item{border-top:1px solid #21262d;padding:10px 0;display:grid;gap:6px}
+    .priority-item:first-child{border-top:0;padding-top:0}
+    .priority-item .article-heading{font-size:13px;font-weight:600}
+    .priority-item-link{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none;width:max-content;max-width:100%}
+    .priority-item-link:hover{text-decoration:underline}
+    .priority-item-meta{font-size:11px;color:#8b949e}
+    .important-item-reason,.important-items-empty{font-size:12px;color:#c9d1d9;line-height:1.6}
+    .sources{max-width:680px;margin:20px auto 0;padding:0 12px}
+    .sources details{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 16px}
+    .sources summary{font-size:12px;color:#8b949e;cursor:pointer;list-style:none}
+    .sources summary::before{content:"▶  ";font-size:10px}
+    details[open] summary::before{content:"▼  "}
+    .sources ul{margin:10px 0 0;padding-left:18px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:18px;row-gap:5px}
+    .sources li{font-size:11px;line-height:1.5;color:#8b949e;overflow-wrap:anywhere}
+    @media (max-width:600px){.sources ul{grid-template-columns:1fr}}
+    .site-footer{max-width:680px;margin:20px auto 0;padding:0 12px}
+    .analytics-notice{font-size:11px;color:#768496;line-height:1.6}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Monomi Digest</h1>
+    <div class="sub">日次ダイジェスト：2026年10月12日</div>
+    <div class="sub">最終更新: 2026年10月12日 10:20</div>
+    <div class="count">1 件</div>
+    <nav class="archive-nav" aria-label="日別ダイジェスト上部ナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link archive-prev-link" href="2026-10-11.html">← 前のダイジェスト</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="index.html">過去のダイジェスト</a><a class="archive-link" href="../index.html">最新のダイジェスト</a></div></nav>
+  </header>
+  <div class="todays-brief">
+    <div class="brief-box">
+      <h2>本日の要点</h2>
+      <div class="brief-section">
+      <h3 class="brief-section-title">概況</h3>
+      <p class="brief-status-line">Brief対象1件｜重要度「高」0件｜本日確認0件｜今週確認1件</p>
+      <p class="brief-overview">Brief対象の記事では、緊急の確認対象はありません。今週確認の対象が1件あり、計画的な確認が必要です。</p>
+    </div><div class="brief-section">
+      <h3 class="brief-section-title">重要・優先事項</h3>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">サイバーセキュリティ研究者が、これまで未確認だったiOSエクスプロイトキット「DarkSword」の亜種「P7 DarkSword」の詳細を公開しました。この亜種は、デバイス上の痕跡を減らし、キーチェーンや仮想通貨ウォレットからのデータ窃盗、および攻撃者インフラとの双方向C2通信機能を追加しています。</p><p class="brief-priority-impact">金融機関が従業員に支給するiOSデバイスや、BYODポリシーで利用されるiOSデバイスが標的となる可能性があります。特に、仮想通貨関連業務を行う部署や従業員は、ウォレットデータの窃盗リスクに注意が必要です。</p></li></ul>
+    </div><div class="brief-section">
+      <h3 class="brief-section-title">確認事項</h3>
+      <ul class="brief-list"><li>従業員が利用するiOSデバイスのセキュリティ対策状況を確認する</li><li>仮想通貨関連業務を行う部署に対し、iOSデバイスの利用に関するセキュリティガイダンスを再確認する</li></ul>
+    </div>
+    </div>
+  </div>
+  <section class="important-items">
+    <h2>優先確認</h2>
+    <div class="important-items-list">
+      <p class="important-items-empty">本日の優先確認対象はありません。</p>
+    </div>
+  </section>
+  <section class="dashboard">
+    <div class="dashboard-head">
+      <h2>本日のダッシュボード</h2>
+      <p class="dashboard-count"><span>掲載</span><strong>1</strong>件</p>
+    </div>
+    <div class="dashboard-axes">
+      <div class="dashboard-axis">
+        <h3>重要度</h3>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item"><span>高</span><strong>0</strong></li><li class="dashboard-axis-item"><span>中</span><strong>1</strong></li><li class="dashboard-axis-item"><span>低</span><strong>0</strong></li></ul>
+      </div>
+      <div class="dashboard-axis">
+        <h3>確認目安</h3>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item"><span>本日確認</span><strong>0</strong></li><li class="dashboard-axis-item"><span>今週確認</span><strong>1</strong></li><li class="dashboard-axis-item"><span>参考</span><strong>0</strong></li></ul>
+      </div>
+    </div>
+    <div class="dashboard-categories">
+      <h3>主なカテゴリ</h3>
+      <ul class="dashboard-category-list"><li class="dashboard-category-item"><span>攻撃・脅威動向</span><strong>1</strong></li></ul>
+    </div>
+  </section>
+  <section class="article-list-header">
+    <h2>本日の情報</h2>
+    <p class="article-list-note">確認目安、重要度、元の収集順で表示しています。</p>
+  </section>
+  <div class="cards">
+    <article class="card" id="article-1">
+      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/10/p7-darksword-ios-exploit-kit-adds.html" target="_blank" rel="noopener noreferrer" lang="en">P7 DarkSword iOS Exploit Kit Adds Crypto Wallet Data Theft and Remote Commands</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 10/11 13:24</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>サイバーセキュリティ研究者が、これまで未確認だったiOSエクスプロイトキット「DarkSword」の亜種「P7 DarkSword」の詳細を公開しました。この亜種は、デバイス上の痕跡を減らし、キーチェーンや仮想通貨ウォレットからのデータ窃盗、および攻撃者インフラとの双方向C2通信機能を追加しています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関が従業員に支給するiOSデバイスや、BYODポリシーで利用されるiOSデバイスが標的となる可能性があります。特に、仮想通貨関連業務を行う部署や従業員は、ウォレットデータの窃盗リスクに注意が必要です。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>従業員が利用するiOSデバイスのセキュリティ対策状況を確認する</li><li>仮想通貨関連業務を行う部署に対し、iOSデバイスの利用に関するセキュリティガイダンスを再確認する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/10/p7-darksword-ios-exploit-kit-adds.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">APT</span><span class="article-tag">フィッシング</span></div>
+    </article></div>
+  <div class="sources">
+    <details>
+      <summary>収集元 (13ソース)</summary>
+      <ul><li>金融庁</li><li>JPCERT/CC</li><li>IPA</li><li>NIST</li><li>Microsoft Security</li><li>Mandiant</li><li>Google TAG</li><li>NCSC</li><li>Krebs on Security</li><li>The Hacker News</li><li>Cisco Talos</li><li>CISA KEV</li><li>SecurityWeek</li></ul>
+    </details>
+  </div>
+  <nav class="archive-nav archive-bottom-nav" aria-label="日別ダイジェスト下部ナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link archive-prev-link" href="2026-10-11.html">← 前のダイジェスト</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="index.html">過去のダイジェスト</a><a class="archive-link" href="../index.html">最新のダイジェスト</a></div></nav>
+  <footer class="site-footer">
+    <p class="analytics-notice">本サイトは閲覧状況の把握にCloudflare Web Analyticsを利用しています。Cloudflareは、CookieやlocalStorageを使用せず、個々の訪問者を追跡しないと説明しています。ページビュー、参照元、国、デバイス種別等を集計し、解析用スクリプトをstatic.cloudflareinsights.comから読み込み、計測データをcloudflareinsights.comへ送信します。</p>
+  </footer>
+  <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "61817bf1677944c191c8933b207fdc7d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

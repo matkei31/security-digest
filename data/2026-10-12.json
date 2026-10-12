@@ -1,0 +1,116 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-10-12",
+  "generated_at": "2026-10-12T10:20:48.524327+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 1,
+    "ai_attempted_count": 1,
+    "ai_success_count": 1,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 1
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 1,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 1,
+      "参考": 0,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 0,
+      "攻撃・脅威動向": 1,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 0,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象1件｜重要度「高」0件｜本日確認0件｜今週確認1件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が1件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "サイバーセキュリティ研究者が、これまで未確認だったiOSエクスプロイトキット「DarkSword」の亜種「P7 DarkSword」の詳細を公開しました。この亜種は、デバイス上の痕跡を減らし、キーチェーンや仮想通貨ウォレットからのデータ窃盗、および攻撃者インフラとの双方向C2通信機能を追加しています。\n金融機関が従業員に支給するiOSデバイスや、BYODポリシーで利用されるiOSデバイスが標的となる可能性があります。特に、仮想通貨関連業務を行う部署や従業員は、ウォレットデータの窃盗リスクに注意が必要です。"
+    ],
+    "check_items": [
+      "従業員が利用するiOSデバイスのセキュリティ対策状況を確認する",
+      "仮想通貨関連業務を行う部署に対し、iOSデバイスの利用に関するセキュリティガイダンスを再確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:2d8b2a661271f3ed2fea9ffea1009da3eb0d31cfcb71f22ceaa1c55663a4c0fb",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/p7-darksword-ios-exploit-kit-adds.html",
+      "canonical_url": "https://thehackernews.com/2026/10/p7-darksword-ios-exploit-kit-adds.html",
+      "published_at": "2026-10-11T13:24:34+09:00",
+      "fetched_at": "2026-10-12T10:20:31.079277+09:00",
+      "title": "P7 DarkSword iOS Exploit Kit Adds Crypto Wallet Data Theft and Remote Commands",
+      "raw_title": "P7 DarkSword iOS Exploit Kit Adds Crypto Wallet Data Theft and Remote Commands",
+      "raw_excerpt": null,
+      "content_hash": "sha256:02172ae3b2fb5ad1c26028a88c4349c4ba091c9ccfdac81fe3cc90e8fce8533e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-12T10:20:33.524007+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "iOSエクスプロイトキットの新たな亜種と機能追加に関する記事であり、攻撃手法と脅威動向が主題であるため。",
+        "tags": [
+          "APT",
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、これまで未確認だったiOSエクスプロイトキット「DarkSword」の亜種「P7 DarkSword」の詳細を公開しました。この亜種は、デバイス上の痕跡を減らし、キーチェーンや仮想通貨ウォレットからのデータ窃盗、および攻撃者インフラとの双方向C2通信機能を追加しています。",
+        "financial_impact": "金融機関が従業員に支給するiOSデバイスや、BYODポリシーで利用されるiOSデバイスが標的となる可能性があります。特に、仮想通貨関連業務を行う部署や従業員は、ウォレットデータの窃盗リスクに注意が必要です。",
+        "recommended_actions": [
+          "従業員が利用するiOSデバイスのセキュリティ対策状況を確認する",
+          "仮想通貨関連業務を行う部署に対し、iOSデバイスの利用に関するセキュリティガイダンスを再確認する"
+        ],
+        "reason": "重要度は、特定のモバイルOSを標的としたエクスプロイトキットであり、金融機関の利用状況により影響が異なるため「中」です。確認目安は、新たな脅威動向の報告であり、直ちに緊急対応を要する具体的な期限や進行中の攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
