@@ -1,0 +1,807 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-10-13",
+  "generated_at": "2026-10-13T12:07:45.270679+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 15,
+    "ai_attempted_count": 14,
+    "ai_success_count": 13,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 1,
+    "ai_eligible_count": 14
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 9,
+      "低": 5,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 8,
+      "参考": 6,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 3,
+      "攻撃・脅威動向": 2,
+      "インシデント": 4,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 4,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象14件｜重要度「高」0件｜本日確認0件｜今週確認8件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が8件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "WordPressプラグイン「Bricksforge」の脆弱性(CVE-2026-85097)が実悪用され、攻撃者が対象のWordPressウェブサイトを制御できる状態になっていることが確認されました。\n金融機関がWordPressをウェブサイト基盤として利用し、かつBricksforgeプラグインを使用している場合に影響する可能性があります。利用有無は記事から確認できません。",
+      "Canonicalの主要ウェブサイト（Ubuntuのブログや開発者ポータルを含む）が、今年2度目となるDDoS攻撃によりサービス停止に追い込まれました。\n金融機関がCanonicalの製品やサービス（Ubuntuなど）を直接利用している場合、またはそれらを基盤とするシステムに依存している場合に、サービス提供への影響を評価する関係が生じます。直接的な金融システムへの影響は記事からは確認できません。"
+    ],
+    "check_items": [
+      "Bricksforge WordPressプラグインの利用有無と影響バージョンを確認する",
+      "Canonical製品やサービスを利用している場合、今回のDDoS攻撃による影響範囲や復旧状況についてCanonicalからの公式情報を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:6297931f11be8be3b1576ac6ea66cef90802dddda730cb48ac08a94cbda4b3f8",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/weekly-recap-helpdesk-0-days-rogue.html",
+      "canonical_url": "https://thehackernews.com/2026/10/weekly-recap-helpdesk-0-days-rogue.html",
+      "published_at": "2026-10-13T00:16:26+09:00",
+      "fetched_at": "2026-10-13T12:03:26.047852+09:00",
+      "title": "⚡ Weekly Recap: Helpdesk 0-Days, Rogue Certs, ShinyHunters Arrest, AI-Fooling Malware and More",
+      "raw_title": "⚡ Weekly Recap: Helpdesk 0-Days, Rogue Certs, ShinyHunters Arrest, AI-Fooling Malware and More",
+      "raw_excerpt": null,
+      "content_hash": "sha256:12ea53093a8c44a295914ebc2c9ea99de862ad180441dba19a829ebc7258b137",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-13T12:03:28.624042+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の異なるサイバーセキュリティ関連トピックをまとめた週次記事であるため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、ヘルプデスクのゼロデイ脆弱性悪用、不正な証明書、ShinyHuntersの逮捕、AIを欺くマルウェアなど、様々なサイバーセキュリティ関連のニュースをまとめた週次リキャップです。",
+        "financial_impact": "金融機関への直接的な影響は限定的であり、個別の脅威に関する詳細な情報や具体的な行動を求めるものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や具体的な分析を伴わない週次まとめ記事であり、個別の深刻度を合算して過大評価しないため「低」です。確認目安は、短期的な対応を求める具体的な情報や期限が示されていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:bbbe9bf4dab76ba04e07487daeded9d81ecbe5277f332ad4c778288d829dc771",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ionq-to-acquire-zero-trust-firm-elisity-for-up-to-1-3-billion/",
+      "canonical_url": "https://www.securityweek.com/ionq-to-acquire-zero-trust-firm-elisity-for-up-to-1-3-billion/",
+      "published_at": "2026-10-12T23:25:00+09:00",
+      "fetched_at": "2026-10-13T12:03:26.047852+09:00",
+      "title": "IonQ to Acquire Zero Trust Firm Elisity for Up to $1.3 Billion",
+      "raw_title": "IonQ to Acquire Zero Trust Firm Elisity for Up to $1.3 Billion",
+      "raw_excerpt": null,
+      "content_hash": "sha256:929fac66aebed585de80aae039bbc6202e6d3982adebec3a75144114face123f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-13T12:03:46.715680+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "量子コンピューティング企業によるゼロトラスト企業の買収というM&Aに関するニュースであり、特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも直接該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "量子コンピューティング企業IonQが、ゼロトラスト技術を提供するElisityを最大13億ドルの全株式取引で買収すると発表しました。これにより、Elisityの最小特権アクセス技術がIonQのセキュリティポートフォリオに加わります。",
+        "financial_impact": "本件は量子コンピューティング企業によるセキュリティ企業の買収に関するニュースであり、金融機関への直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が限定的で、一般的な業界動向に関する情報であるため「低」です。確認目安は、具体的な脅威や対応期限がなく、短期的なアクションを要しないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1c16974ba9b7c0965864d75a3508ace00a065bf4260447950cc28e04958faae4",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/bricksforge-wordpress-plugin-vulnerability-exploited-in-the-wild/",
+      "canonical_url": "https://www.securityweek.com/bricksforge-wordpress-plugin-vulnerability-exploited-in-the-wild/",
+      "published_at": "2026-10-12T22:14:37+09:00",
+      "fetched_at": "2026-10-13T12:03:26.047852+09:00",
+      "title": "Bricksforge WordPress Plugin Vulnerability Exploited in the Wild",
+      "raw_title": "Bricksforge WordPress Plugin Vulnerability Exploited in the Wild",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a8ceaf4243401d1ac8f6034fa1e92c56de009733197e471660fa077ea27aa5cf",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-13T12:04:04.469564+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "WordPressプラグインの脆弱性が実悪用された事例が主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "WordPressプラグイン「Bricksforge」の脆弱性(CVE-2026-85097)が実悪用され、攻撃者が対象のWordPressウェブサイトを制御できる状態になっていることが確認されました。",
+        "financial_impact": "金融機関がWordPressをウェブサイト基盤として利用し、かつBricksforgeプラグインを使用している場合に影響する可能性があります。利用有無は記事から確認できません。",
+        "recommended_actions": [
+          "Bricksforge WordPressプラグインの利用有無と影響バージョンを確認する",
+          "ベンダーからの修正パッチや緩和策の情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、WordPressプラグインの脆弱性であり、金融機関での利用状況が限定的である可能性を考慮し「中」です。確認目安は、実悪用が確認されているものの、CISA KEVへの新規追加がなく即時対応の明確な期限が記事にないため「今週確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:bd329adf4cfc001e9bf69eb918bbcc541bebb34240973852cd9c88f722bf67ad",
+      "source_id": "ncsc",
+      "source_name": "NCSC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.ncsc.gov.uk/blogs/help-ncsc-understand-how-organisations-approach-external-attack-surface-risk",
+      "canonical_url": "https://www.ncsc.gov.uk/blogs/help-ncsc-understand-how-organisations-approach-external-attack-surface-risk",
+      "published_at": "2026-10-12T21:00:00+09:00",
+      "fetched_at": "2026-10-13T12:03:26.047852+09:00",
+      "title": "NCSC、組織の外部攻撃対象領域リスクへのアプローチに関する情報提供を呼びかけ",
+      "raw_title": "Help the NCSC understand how organisations approach external attack surface risk",
+      "raw_excerpt": "We're looking to hear from people involved in evaluating, selecting or adopting EASM.",
+      "content_hash": "sha256:c646001c45e0cb9a08d30f7340e389c65fe115483d18aff5ebddd6681b647331",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-13T12:04:21.363766+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性やインシデントではなく、組織のセキュリティアプローチに関する情報収集の呼びかけが主題であるため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "英国NCSCは、組織が外部攻撃対象領域管理(EASM)にどのように取り組んでいるかを理解するため、EASMの評価、選定、導入に関わる担当者からの情報提供を求めています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。EASMは一般的なセキュリティ管理の一環であり、本記事は情報提供の呼びかけにとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威やインシデントに関するものではなく、情報提供の呼びかけであるため「低」です。確認目安は、短期的な対応を求める内容ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:bde5f57d0e6735f15b34a241f64d1d41ac9d3dc6bdf1c7be0ba941a832004ab2",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/canonical-websites-disrupted-in-second-ddos-attack-this-year/",
+      "canonical_url": "https://www.securityweek.com/canonical-websites-disrupted-in-second-ddos-attack-this-year/",
+      "published_at": "2026-10-12T20:58:39+09:00",
+      "fetched_at": "2026-10-13T12:03:26.047852+09:00",
+      "title": "Canonical Websites Disrupted in Second DDoS Attack This Year",
+      "raw_title": "Canonical Websites Disrupted in Second DDoS Attack This Year",
+      "raw_excerpt": null,
+      "content_hash": "sha256:15e4e534c7b1273d846e0112a8694c9585f012526b1c2667bb16d3eb4c30601a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-13T12:04:38.701972+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "CanonicalのウェブサイトがDDoS攻撃により停止したという実際の被害事例が主題であるため。",
+        "tags": [
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Canonicalの主要ウェブサイト（Ubuntuのブログや開発者ポータルを含む）が、今年2度目となるDDoS攻撃によりサービス停止に追い込まれました。",
+        "financial_impact": "金融機関がCanonicalの製品やサービス（Ubuntuなど）を直接利用している場合、またはそれらを基盤とするシステムに依存している場合に、サービス提供への影響を評価する関係が生じます。直接的な金融システムへの影響は記事からは確認できません。",
+        "recommended_actions": [
+          "Canonical製品やサービスを利用している場合、今回のDDoS攻撃による影響範囲や復旧状況についてCanonicalからの公式情報を確認する",
+          "自社システムがCanonical製品に依存している場合、同様のDDoS攻撃に対する耐性や緩和策について評価する"
+        ],
+        "reason": "重要度は、Canonical製品の利用状況により影響が異なるため「中」です。確認目安は、DDoS攻撃によるサービス停止は発生したが、金融機関への直接的な影響や緊急対応を要する時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:87353277b1ca0d62137b6e36f3d992237d89d574e12313452a5949b3a8cf1055",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/bring-your-own-agent-your-employees.html",
+      "canonical_url": "https://thehackernews.com/2026/10/bring-your-own-agent-your-employees.html",
+      "published_at": "2026-10-12T20:55:00+09:00",
+      "fetched_at": "2026-10-13T12:03:26.047852+09:00",
+      "title": "Bring Your Own Agent: Your Employees' Assistants Are Already Logged In",
+      "raw_title": "Bring Your Own Agent: Your Employees' Assistants Are Already Logged In",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b4639a1b43a90bb655a6ed11283d516b2b9afc2b884f2c9f2709cad25f5428ae",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-13T12:04:56.131149+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "個人AIエージェントの利用に伴うプライバシーやセキュリティ上の懸念が主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "個人AIエージェントの導入が進む中で、AmazonがMetaのMuseをブロックしたり、Instinctがプライバシー懸念を提起したりするなど、様々な問題が浮上しています。これらのAIエージェントは、その機能と可能性で注目を集める一方で、セキュリティとプライバシーのリスクを増大させています。",
+        "financial_impact": "金融機関の従業員が個人AIエージェントを業務に利用した場合、機密情報の漏洩や不正アクセス、データプライバシー侵害のリスクが高まる可能性があります。組織としてAI利用に関するポリシー策定や従業員への注意喚起が関係します。",
+        "recommended_actions": [
+          "従業員による個人AIエージェントの業務利用に関するポリシーの策定状況を確認する",
+          "個人AIエージェント利用時の情報漏洩リスクについて従業員への注意喚起を検討する"
+        ],
+        "reason": "重要度は、個人AIエージェントの利用がもたらす潜在的な情報漏洩やプライバシー侵害リスクが金融機関にとって無視できないため「中」です。確認目安は、具体的な攻撃や緊急の対応期限が記事に示されていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1ab75555dc2885894aadc2133fe9f321c4a33c7406908663930a6b03666d7430",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/mastermind-of-15000-mule-cybercrime-laundering-network-pleads-guilty-in-us/",
+      "canonical_url": "https://www.securityweek.com/mastermind-of-15000-mule-cybercrime-laundering-network-pleads-guilty-in-us/",
+      "published_at": "2026-10-12T20:24:50+09:00",
+      "fetched_at": "2026-10-13T12:03:26.047852+09:00",
+      "title": "Mastermind of 15,000-Mule Cybercrime Laundering Network Pleads Guilty in US",
+      "raw_title": "Mastermind of 15,000-Mule Cybercrime Laundering Network Pleads Guilty in US",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7b2d04978fcca4bd9b2e1fe3ffb03a7ab3d5406aa2defe897acc990fc7388e68",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-13T12:05:13.153371+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "サイバー犯罪組織によるマネーロンダリングネットワークの活動と、その首謀者の有罪判決が主題であるため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Oleg Kornievは、ハッカーが米国外へ資金を移動させるのを助ける洗練されたマネーミュールネットワーク「YMCO」のリーダーであり、米国で有罪を認めました。",
+        "financial_impact": "金融機関は、マネーロンダリング対策や不正送金対策において、このような大規模なマネーミュールネットワークの存在を認識し、警戒を継続する必要があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、大規模なマネーロンダリングネットワークの事例であり、金融機関の不正対策に関連するため「中」です。確認目安は、具体的な緊急対応の必要性や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:001d5c2cb7d776f3d0934251eeeb36a1c3b17f6cebb7edf15b3efffba1830128",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/ledger-finds-unauthorized-hardware.html",
+      "canonical_url": "https://thehackernews.com/2026/10/ledger-finds-unauthorized-hardware.html",
+      "published_at": "2026-10-12T20:21:48+09:00",
+      "fetched_at": "2026-10-13T12:03:26.047852+09:00",
+      "title": "Ledger Finds Unauthorized Hardware Implant in CryptoBilis-Sold Wallet Amid Fund Theft Reports",
+      "raw_title": "Ledger Finds Unauthorized Hardware Implant in CryptoBilis-Sold Wallet Amid Fund Theft Reports",
+      "raw_excerpt": null,
+      "content_hash": "sha256:dd153cb66c736ff83b7a403b589f4d9332652d299106b9dac38ffb2c1e93952d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-13T12:05:30.639602+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "仮想通貨ハードウェアウォレットの販売経路における不正なハードウェアの混入とそれに伴う資金盗難が主題であるため。",
+        "tags": [
+          "インシデント",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "仮想通貨ハードウェアウォレットメーカーのLedgerは、再販業者CryptoBilisを通じて販売されたデバイスに関連する資金盗難報告を受け、同社経由での製品販売を一時停止しました。東南アジアのユーザーから、CryptoBilisから購入した製品からの資金損失報告があり、合計86,000ドル以上の損失が発生したとされています。",
+        "financial_impact": "金融機関が直接的にLedger製品を顧客向けに提供している場合や、従業員が業務で利用している場合に、サプライチェーンリスクおよび資産保護の観点から関係します。",
+        "recommended_actions": [
+          "Ledger製品を業務で利用している場合、または顧客向けに推奨・提供している場合は、CryptoBilis経由での購入履歴がないか確認する",
+          "Ledgerからの公式発表や追加のセキュリティアドバイザリを継続的に監視する"
+        ],
+        "reason": "重要度は、特定の再販業者経由の製品に限定されたインシデントであり、金融機関への直接的な影響が限定的であるため「中」です。確認目安は、進行中の調査であり、即時対応を要する具体的な期限や広範な影響が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7efaee3b0a668c94cbd708dddcc06b2eaa39dafd1fa51ce92251fd962a17ead3",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/irhythm-data-breach-impacts-over-360000-people/",
+      "canonical_url": "https://www.securityweek.com/irhythm-data-breach-impacts-over-360000-people/",
+      "published_at": "2026-10-12T20:05:43+09:00",
+      "fetched_at": "2026-10-13T12:03:26.047852+09:00",
+      "title": "iRhythm Data Breach Impacts at Least 360,000 People",
+      "raw_title": "iRhythm Data Breach Impacts at Least 360,000 People",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e561cad1a6afd3bfe22b226a4e75c70ae25f0073671e4394b1259548c288894a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-13T12:05:47.322602+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "実際のデータ侵害と個人情報流出が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "医療機器メーカーiRhythmがデータ侵害を受け、患者の氏名、住所、メールアドレス、生年月日、電話番号を含む個人情報が少なくとも36万人分流出したことが判明しました。",
+        "financial_impact": "金融機関への直接的な関係は確認できず、他業界のデータ侵害事例として参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が確認できない他業界のインシデント事例であるため「低」です。確認目安は、金融機関への直接的な影響や短期的な対応を促す情報がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c7baac5e718b8a6f18aa8271904624a36c63ee98bc3d3038eaf395351b54ec61",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/critical-sonicwall-sma-1000-flaw.html",
+      "canonical_url": "https://thehackernews.com/2026/10/critical-sonicwall-sma-1000-flaw.html",
+      "published_at": "2026-10-12T19:36:56+09:00",
+      "fetched_at": "2026-10-13T12:03:26.047852+09:00",
+      "title": "Critical SonicWall SMA 1000 Flaw Targeted in 135 Exploitation Attempts After Patch",
+      "raw_title": "Critical SonicWall SMA 1000 Flaw Targeted in 135 Exploitation Attempts After Patch",
+      "raw_excerpt": null,
+      "content_hash": "sha256:456108609c039ae05c38343dcbc8cb4613062570bebeea20b7d6a320644c5d04",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "verbatim_long_match",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c54aebde31922240f119c2bc00aa2319d20f0499ca4e8c77fa7d6e13491d1d33",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ransomware-response-expert-arrested-in-shinyhunters-fbi-hack-probe/",
+      "canonical_url": "https://www.securityweek.com/ransomware-response-expert-arrested-in-shinyhunters-fbi-hack-probe/",
+      "published_at": "2026-10-12T19:32:05+09:00",
+      "fetched_at": "2026-10-13T12:03:26.047852+09:00",
+      "title": "Ransomware Response Expert Arrested in ShinyHunters FBI Hack Probe",
+      "raw_title": "Ransomware Response Expert Arrested in ShinyHunters FBI Hack Probe",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0fbff32ddd8e1f21feeccde73f1f04c4332d3e10a077ef6d7f7e8d4fc34d8e37",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-13T12:06:21.727321+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "ランサムウェア対応専門家がFBIハッキング調査に関連して逮捕されたという実際の事件が主題であるため。",
+        "tags": [
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ランサムウェア対応の専門家が、FBIのハッキング調査に関連して逮捕されました。この容疑者は、会議のために米国を訪れていたカナダのサイバーセキュリティ幹部Edward Dubrovsky氏であるとされています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。サイバーセキュリティ専門家が関与したインシデント事例として、委託先管理や内部犯行リスクの観点で参考情報となり得ます。",
+        "recommended_actions": [],
+        "reason": "重要度は、サイバーセキュリティ専門家が関与するインシデント事例として、委託先管理や内部犯行リスクの観点で状況把握の価値があるため「中」です。確認目安は、金融機関への直接的な影響や緊急対応の根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c9dce304dcc90255d486ef511a80e2965f2fe6e8c10b552a1ec675073de46cda",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/attackers-exploit-cvss-100-bricksforge.html",
+      "canonical_url": "https://thehackernews.com/2026/10/attackers-exploit-cvss-100-bricksforge.html",
+      "published_at": "2026-10-12T18:02:14+09:00",
+      "fetched_at": "2026-10-13T12:03:26.047852+09:00",
+      "title": "Attackers Exploit CVSS 10.0 Bricksforge WordPress Flaw Enabling Unauthenticated RCE",
+      "raw_title": "Attackers Exploit CVSS 10.0 Bricksforge WordPress Flaw Enabling Unauthenticated RCE",
+      "raw_excerpt": null,
+      "content_hash": "sha256:966c1196a6cef90d134dad2b46a8eaa3209f1efcdcfe6d0c3381acc6ec555869",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-13T12:06:38.995557+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "WordPressプラグインの脆弱性と実悪用が主題であるため。",
+        "tags": [
+          "悪用確認済み",
+          "パッチ",
+          "CVE"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "WordPressプラグイン「Bricksforge」に最大深刻度の脆弱性CVE-2026-85097（CVSSスコア10.0）が発見され、実悪用が確認されています。この脆弱性により、認証されていない攻撃者が脆弱なWordPressサイトで任意のPHPコードをアップロード・実行し、リモートコード実行（RCE）が可能になります。",
+        "financial_impact": "金融機関がWordPressおよびBricksforgeプラグインをウェブサイトや業務システムで利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "自社および委託先でWordPressおよびBricksforgeプラグインの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報を確認し、パッチ適用や緩和策の実施を検討する"
+        ],
+        "reason": "重要度は、CVSSスコアは高いものの、WordPressプラグインの利用が限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、実悪用が確認されているものの、CISA KEVへの新規追加がなく、即時対応の明確な期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d58e65970256458b43ad7cc3813eedc4621dd829999b31a8609c1acb0a249304",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/critical-sonicwall-vulnerability-exploited-days-after-disclosure/",
+      "canonical_url": "https://www.securityweek.com/critical-sonicwall-vulnerability-exploited-days-after-disclosure/",
+      "published_at": "2026-10-12T17:36:01+09:00",
+      "fetched_at": "2026-10-13T12:03:26.047852+09:00",
+      "title": "Critical SonicWall Vulnerability Exploited Days After Disclosure",
+      "raw_title": "Critical SonicWall Vulnerability Exploited Days After Disclosure",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5f45c734786e8acb6db1cd96ac351c13b47ca91a989119113e214bb937065984",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-13T12:06:56.040176+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "SonicWall製品の脆弱性CVE-2026-102255の悪用が主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "SonicWall製品の事前認証型SSRF脆弱性CVE-2026-102255が、公開から数日で悪用されていることが確認されました。この脆弱性は、攻撃者が認証なしで不正な操作を実行できる可能性があります。",
+        "financial_impact": "金融機関でSonicWall製品を利用している場合に限り、適用性確認の対象になります。記事からは利用有無を確認できません。",
+        "recommended_actions": [
+          "SonicWall製品の利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報を確認し、パッチ適用や緩和策の要否を評価する"
+        ],
+        "reason": "重要度は、SonicWall製品の利用が限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、悪用が確認されているものの、KEV新規追加に含まれず即時対応の明確な期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:78017b91ed5ea1ae589b72202f9b2667ffbf2c05b0b90ac0c6cc2a7d60020dcf",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/lets-encrypt-cuts-default-certificate-validity-to-64-days-ahead-of-45-day-switch/",
+      "canonical_url": "https://www.securityweek.com/lets-encrypt-cuts-default-certificate-validity-to-64-days-ahead-of-45-day-switch/",
+      "published_at": "2026-10-12T16:53:28+09:00",
+      "fetched_at": "2026-10-13T12:03:26.047852+09:00",
+      "title": "Let’s Encrypt Cuts Default Certificate Validity to 64 Days Ahead of 45-Day Switch",
+      "raw_title": "Let’s Encrypt Cuts Default Certificate Validity to 64 Days Ahead of 45-Day Switch",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8a089f67c1da4fe404a780340dd6242778c6d42d3718406079dae3170df4f537",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-13T12:07:13.204287+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "Let's Encryptの証明書有効期間変更に関する情報であり、特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも直接該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Let's Encryptは、2027年2月から新規発行されるすべての証明書のデフォルト有効期間を64日に短縮すると発表しました。これは将来的な45日への移行に先立つものです。",
+        "financial_impact": "金融機関がLet's Encryptの証明書を利用している場合、証明書の更新頻度が増加する可能性があります。ただし、直接的なセキュリティリスクや緊急の対応を要するものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、Let's Encryptの証明書有効期間変更は一般的な運用変更であり、金融機関への直接的なセキュリティリスクや緊急対応の必要性が低いため「低」です。確認目安は、変更が将来の予定であり、短期的な対応を要する情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7e4ca9da052231497996de39f1fdabe7d2c2d1df4c1b6cf47d04e771ffbf9177",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/cyberxero-uses-claude-code-in-campaign.html",
+      "canonical_url": "https://thehackernews.com/2026/10/cyberxero-uses-claude-code-in-campaign.html",
+      "published_at": "2026-10-12T16:26:12+09:00",
+      "fetched_at": "2026-10-13T12:03:26.047852+09:00",
+      "title": "CyberXero Uses Claude Code in Campaign That Stole Over 628,000 Ukrainian Records",
+      "raw_title": "CyberXero Uses Claude Code in Campaign That Stole Over 628,000 Ukrainian Records",
+      "raw_excerpt": null,
+      "content_hash": "sha256:56e7c7d4917bb416fa0e0d8cb894291f1d1b1b3e390ad72bb5c9c29add6f542d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-13T12:07:30.270121+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "攻撃者、攻撃手法、キャンペーンが主題であるため。",
+        "tags": [
+          "AI",
+          "APT",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、ウクライナのWordPressサイト、eコマースプラットフォーム、重要インフラを標的とした、AIを活用した二段階の初期アクセスキャンペーンの詳細を公開しました。この活動は、Cobalt Strikeのような汎用的な攻撃ツールとAnthropicのClaude Codeを搭載したAIオーケストレーションレイヤーを組み合わせています。",
+        "financial_impact": "金融機関がWordPressサイトやeコマースプラットフォームを利用している場合、同様の攻撃手法が適用される可能性があります。AIを活用した攻撃手法の動向として、情報収集の対象となります。",
+        "recommended_actions": [
+          "自社および委託先でWordPressサイトやeコマースプラットフォームの利用状況を確認する",
+          "AIを活用した攻撃手法の動向について情報収集を継続し、自社のセキュリティ対策への影響を評価する"
+        ],
+        "reason": "重要度は、AIを活用した攻撃手法の動向として注目されるが、金融機関への直接的な影響は限定的であるため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、情報収集と中長期的な対策検討が中心となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
