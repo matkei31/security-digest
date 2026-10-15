@@ -1,0 +1,1148 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-10-15",
+  "generated_at": "2026-10-15T09:37:49.974700+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 21,
+    "ai_attempted_count": 17,
+    "ai_success_count": 16,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 4,
+    "ai_eligible_count": 17
+  },
+  "counts": {
+    "importance": {
+      "高": 3,
+      "中": 12,
+      "低": 2,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 2,
+      "今週確認": 12,
+      "参考": 3,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 7,
+      "攻撃・脅威動向": 4,
+      "インシデント": 1,
+      "規制・ガバナンス": 1,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 3,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象17件｜重要度「高」3件｜本日確認2件｜今週確認12件\nBrief対象の記事のうち、本日中に適用性または初動要否を確認する記事が2件あります。",
+    "important_highlights": [
+      "Ciscoは、Secure Email Gatewayの重大な脆弱性について警告しました。この脆弱性は、認証されていない送信者が細工された添付ファイル付きメールを送ることで、アプライアンスのOSにファイルを書き込み、root権限でコマンドを実行できる可能性があります。",
+      "CISAは、Ivanti Connect Secure (ICS) アプライアンスに存在する認証バイパスの脆弱性（CVE-2026-104935、CVSSスコア8.6）が悪用されていることを受け、組織に対し最新バージョンへの即時アップデートを強く推奨しました。ハニーポットでは105件の悪用試行が記録されています。",
+      "英国は、ランサムウェア、麻薬、ダークネット市場、詐欺、サイバー犯罪サービスに関連する支払いの主要な経路として機能し、ロシアによる既存の金融規制回避を支援しているとされる暗号通貨プラットフォーム「Cryptomus」に対し、経済制裁を課しまし"
+    ],
+    "discussion_points": [
+      "Ciscoは、Secure Email Gatewayの重大な脆弱性について警告しました。この脆弱性は、認証されていない送信者が細工された添付ファイル付きメールを送ることで、アプライアンスのOSにファイルを書き込み、root権限でコマンドを実行できる可能性があります。\n金融機関でCisco Secure Email Gatewayを利用している場合、メールセキュリティとシステムへの不正アクセスリスクに関係します。悪用されると、組織のメールフィルタリング機能が侵害され、内部システムへの侵入経路となる可能性があります。",
+      "CISAは、Ivanti Connect Secure (ICS) アプライアンスに存在する認証バイパスの脆弱性（CVE-2026-104935、CVSSスコア8.6）が悪用されていることを受け、組織に対し最新バージョンへの即時アップデートを強く推奨しました。ハニーポットでは105件の悪用試行が記録されています。\nIvanti Connect Secureを導入している金融機関は、本脆弱性の影響を受ける可能性があります。認証バイパスはシステムへの不正アクセスにつながるため、速やかな対応が求められます。"
+    ],
+    "check_items": [
+      "Cisco Secure Email Gatewayの利用有無と影響バージョンを確認する",
+      "Ivanti Connect Secureの利用有無、および影響を受けるバージョン・外部露出の有無を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:402aaeff71af9a0903716f2ab9c965044fe95b98a71ddd82b1e9397fc681f0ef",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/cisco-warns-of-active-attacks.html",
+      "canonical_url": "https://thehackernews.com/2026/10/cisco-warns-of-active-attacks.html",
+      "published_at": "2026-10-15T03:38:56+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "Cisco Warns of Active Attacks Exploiting New Critical Secure Email Gateway Vulnerability",
+      "raw_title": "Cisco Warns of Active Attacks Exploiting New Critical Secure Email Gateway Vulnerability",
+      "raw_excerpt": null,
+      "content_hash": "sha256:58a6232c08ca64b3c9d9acb28ce79e3e4ccae465c5ca148c49be3e0751d1f55e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:32:26.154970+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Cisco製品の新たな重大脆弱性と、それに対する活発な攻撃が主題であるため。",
+        "tags": [
+          "悪用確認済み",
+          "パッチ",
+          "CVE"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "Ciscoは、Secure Email Gatewayの重大な脆弱性について警告しました。この脆弱性は、認証されていない送信者が細工された添付ファイル付きメールを送ることで、アプライアンスのOSにファイルを書き込み、root権限でコマンドを実行できる可能性があります。",
+        "financial_impact": "金融機関でCisco Secure Email Gatewayを利用している場合、メールセキュリティとシステムへの不正アクセスリスクに関係します。悪用されると、組織のメールフィルタリング機能が侵害され、内部システムへの侵入経路となる可能性があります。",
+        "recommended_actions": [
+          "Cisco Secure Email Gatewayの利用有無と影響バージョンを確認する",
+          "Ciscoからの一次情報（アドバイザリ）を確認し、パッチ適用や緩和策の実施を検討する",
+          "侵害の兆候がないか、システムログやメールフローを監視する"
+        ],
+        "reason": "重要度は、広く利用される可能性のあるCisco製品の重大な脆弱性であり、実悪用が確認されているため「高」です。確認目安は、実悪用が活発に進行中であり、即時対応の根拠があるため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2720649a8fdd7cf6e4c8edecfb9604ba9a21cc78ab2d0373fb31c086339f95cf",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/hackers-backdoor-nextcloud-servers.html",
+      "canonical_url": "https://thehackernews.com/2026/10/hackers-backdoor-nextcloud-servers.html",
+      "published_at": "2026-10-15T02:38:31+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "Hackers Backdoor Nextcloud Servers Through Critical Flaw in Collabora’s Built-in CODE App",
+      "raw_title": "Hackers Backdoor Nextcloud Servers Through Critical Flaw in Collabora’s Built-in CODE App",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4b3a31d7f2dc8e6f0521dc6c4c1d366b99f38ed3c94e7a5becb02e158e45508b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:32:43.338897+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "Nextcloudサーバーが実際に攻撃され、バックドアが仕掛けられた事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "攻撃者がNextcloudのオプションアプリであるCollabora Online - Built-in CODE Serverの脆弱性を悪用し、Nextcloudサーバーにウェブシェルを設置したことが報告されました。9月10日に最初の攻撃が記録され、3人の管理者がGitHubで問題を報告しています。",
+        "financial_impact": "金融機関でNextcloudサーバーおよびCollabora Online - Built-in CODE Serverアプリを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "NextcloudサーバーおよびCollabora Online - Built-in CODE Serverアプリの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報やセキュリティアドバイザリを確認し、修正パッチや緩和策の適用を検討する",
+          "ウェブシェル設置の兆候がないか、サーバーログやファイルシステムを監視・確認する"
+        ],
+        "reason": "重要度は、Nextcloudのオプションアプリの脆弱性悪用事例であり、金融機関での利用状況が限定的である可能性があるため「中」です。確認目安は、実際の攻撃事例が報告されているものの、緊急のパッチ公開やKEV新規追加の記述がなく、即時対応の根拠が不足しているため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:fbe33babcbabc6a0c3e7d55eb9e04074b2407a56aae3371c06f5eb77975f779d",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/microsoft-disrupts-3-phishing-kits.html",
+      "canonical_url": "https://thehackernews.com/2026/10/microsoft-disrupts-3-phishing-kits.html",
+      "published_at": "2026-10-15T02:09:15+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "Microsoft Disrupts 3 Phishing Kits Linked to Over 1 Billion Scam Messages",
+      "raw_title": "Microsoft Disrupts 3 Phishing Kits Linked to Over 1 Billion Scam Messages",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ca1cc9f21bdbaa84ae7c5d8adfb18070014da312505a6a8d9d4d9f9b5771eccd",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:33:00.717034+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Microsoftが複数の組織と連携してフィッシングキットを停止した事例であり、攻撃手法と脅威動向が主題であるため。",
+        "tags": [
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "MicrosoftはHealth-ISAC、日本サイバー犯罪対策センター(JC3)および複数の民間企業と連携し、CoGUI、Haozi、Iron Man Systemという3つのフィッシングキットを停止させました。これらのキットの背後にいる脅威アクターは、2026年1月以降、10億通以上の詐欺メッセージに関与していました。",
+        "financial_impact": "金融機関はフィッシング攻撃の主要な標的となるため、これらのフィッシングキットの停止は脅威環境の変化として関係します。自社のフィッシング対策の有効性を評価する上で参考となる情報です。",
+        "recommended_actions": [
+          "自社および委託先におけるフィッシング対策の有効性を再評価する",
+          "最新のフィッシング攻撃手法に関する情報を収集し、従業員への注意喚起を継続する"
+        ],
+        "reason": "重要度は、金融機関も標的となるフィッシング攻撃の脅威動向に関する情報であり、対策の参考となるため「中」です。確認目安は、具体的な緊急対応を要する情報ではなく、中長期的な対策検討の参考となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6d011349c01c46dc04b8a0b81b3e1e8d62991f835d569a3a879e32821fe12c46",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/us-shuts-down-over-40-laptop-farms.html",
+      "canonical_url": "https://thehackernews.com/2026/10/us-shuts-down-over-40-laptop-farms.html",
+      "published_at": "2026-10-15T01:34:31+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "U.S. Shuts Down Over 40 Laptop Farms, Charges 14 in North Korean IT Worker Fraud",
+      "raw_title": "U.S. Shuts Down Over 40 Laptop Farms, Charges 14 in North Korean IT Worker Fraud",
+      "raw_excerpt": null,
+      "content_hash": "sha256:663ec2d4ea09a83185433252181b94c6950ebd6f3b1317f07ecb50d69b1b70df",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:33:17.985225+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "北朝鮮の攻撃者が関与する詐欺スキームと、その対策に関する動向が主題であるため。",
+        "tags": [
+          "APT",
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "米国司法省は、北朝鮮の不正なリモートIT労働者スキームを阻止する取り組みの一環として、14人を起訴し、約187台のコンピューターを押収しました。この詐欺は70以上の米国企業に影響を与え、被告は電信詐欺共謀などの罪に問われています。",
+        "financial_impact": "金融機関が不正なIT労働者を雇用するリスク、またはサプライチェーンを通じて間接的に関与するリスクを認識する上で関係します。直接的な被害は記事からは確認できません。",
+        "recommended_actions": [
+          "委託先やリモートワーカーの身元確認プロセス、および継続的な監視体制を再確認する",
+          "不審なアクセスや活動がないか、システムログやネットワークトラフィックを監視する"
+        ],
+        "reason": "重要度は、北朝鮮の不正なIT労働者スキームが70以上の米国企業に影響を与えており、金融機関も同様のリスクに晒される可能性があるため「中」です。確認目安は、具体的な期限や進行中の緊急対応が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b33a7bddb2dff5f393f9f7aab1ec7e6b5d81d80bab67a1de0326c7e2e7fe4c30",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ai-agents-navigate-unfamiliar-ot-systems-and-move-equipment-in-minutes-booz-allen-finds/",
+      "canonical_url": "https://www.securityweek.com/ai-agents-navigate-unfamiliar-ot-systems-and-move-equipment-in-minutes-booz-allen-finds/",
+      "published_at": "2026-10-15T01:00:00+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "AI Agents Navigate Unfamiliar OT Systems and Move Equipment in Minutes, Booz Allen Finds",
+      "raw_title": "AI Agents Navigate Unfamiliar OT Systems and Move Equipment in Minutes, Booz Allen Finds",
+      "raw_excerpt": null,
+      "content_hash": "sha256:08ec650d6195521ee9c07c78e7b96ed94602f0205c2739909bfcb4213861f63f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:33:34.833446+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントがOTシステムを操作する可能性に関する研究が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Booz Allenの隔離されたOTラボでの実験により、AIモデルが8つのシナリオ全てで目標を達成し、境界侵害から産業用制御ネットワークへわずか16分強で到達し、機器を操作できることが判明しました。",
+        "financial_impact": "金融機関の直接的なOTシステム利用は限定的ですが、AI技術の進化が将来的にサプライチェーンや関連するインフラに影響を与える可能性があり、中長期的なリスクとして関係します。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントによるOTシステム操作の可能性を示す研究であり、金融機関への直接的な影響は現時点では限定的であるため「中」です。確認目安は、具体的な脅威や期限が示されておらず、中長期的な動向把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:3e16f8a63b6117bbf72fa270149a121a0fd2b47a307ab6d1537fcbac70ba53fb",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ics-patch-tuesday-siemens-issues-17-advisories-rockwell-fixes-armorblock-takeover-flaw/",
+      "canonical_url": "https://www.securityweek.com/ics-patch-tuesday-siemens-issues-17-advisories-rockwell-fixes-armorblock-takeover-flaw/",
+      "published_at": "2026-10-15T00:15:15+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "ICS Patch Tuesday: Siemens Issues 17 Advisories, Rockwell Fixes ArmorBlock Takeover Flaw",
+      "raw_title": "ICS Patch Tuesday: Siemens Issues 17 Advisories, Rockwell Fixes ArmorBlock Takeover Flaw",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a06eb38d2504a77230841fa9d64e32d63df5a05706fc8bbda18851d5e56bc097",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:33:51.939043+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がICS製品の脆弱性修正に関する情報であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "シーメンスが17件のアドバイザリを公開し、ロックウェルがArmorBlockの乗っ取りに関する欠陥を修正しました。ABBもdynovaPROの脆弱性に関する警告を発しています。",
+        "financial_impact": "金融機関がICS（産業制御システム）製品を直接利用している場合、または委託先が利用している場合に限り関係します。一般的な金融機関の業務システムへの直接的な影響は限定的です。",
+        "recommended_actions": [
+          "自社および委託先において、シーメンス、ロックウェル、ABBのICS製品の利用有無と影響バージョンを確認する",
+          "各ベンダーが公開したアドバイザリを参照し、該当する脆弱性への対応要否を評価する"
+        ],
+        "reason": "重要度は、ICS製品の脆弱性であり、金融機関での直接的な利用が限定的であるため「中」です。確認目安は、パッチ公開情報であり、直ちに悪用が確認されているとの記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:679425e2c5ab85db838a94c30e74c7ef2dbd2fec14425120584cab212b166333",
+      "source_id": "krebs_on_security",
+      "source_name": "Krebs on Security",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://krebsonsecurity.com/2026/10/u-k-sanctions-cryptomus-for-ru-money-laundering/",
+      "canonical_url": "https://krebsonsecurity.com/2026/10/u-k-sanctions-cryptomus-for-ru-money-laundering/",
+      "published_at": "2026-10-14T23:22:49+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "U.K. Sanctions Cryptomus for RU Money Laundering",
+      "raw_title": "U.K. Sanctions Cryptomus for RU Money Laundering",
+      "raw_excerpt": null,
+      "content_hash": "sha256:746de0b65db9a83f900d2d82d13d589ffb75b3120078efbe5aa8fc9480ff2f69",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:34:09.447062+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "英国政府による暗号通貨プラットフォームへの制裁措置が主題であるため。",
+        "tags": [
+          "規制",
+          "監督"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "英国は、ランサムウェア、麻薬、ダークネット市場、詐欺、サイバー犯罪サービスに関連する支払いの主要な経路として機能し、ロシアによる既存の金融規制回避を支援しているとされる暗号通貨プラットフォーム「Cryptomus」に対し、経済制裁を課しまし",
+        "financial_impact": "金融機関は、制裁対象となったCryptomusとの直接的または間接的な取引がないかを確認し、マネーロンダリング対策（AML）およびテロ資金供与対策（CFT）の観点からリスク評価を行う必要があります。特に、暗号資産関連サービスを提供している場合は、顧客の取引履歴やウォレットアドレス",
+        "recommended_actions": [
+          "自社および委託先において、Cryptomusとの直接的・間接的な取引の有無を確認する",
+          "制裁対象リストを更新し、AML/CFTシステムへの反映状況を確認する",
+          "暗号資産関連サービスを提供している場合、顧客の取引におけるCryptomusとの関連性を調査する"
+        ],
+        "reason": "重要度は、金融機関のAML/CFT規制遵守に直接関係し、制裁対象との取引リスク評価が求められるため「高」です。確認目安は、新たな制裁措置であり、自社への影響評価を今週中に実施する必要があるため「今週確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:13445d3736b691af90cd3de51ce8a94acbd23f1c17d340c6e1898565a0b07348",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/harmonic-security-raises-50-million-for-workforce-ai-protection/",
+      "canonical_url": "https://www.securityweek.com/harmonic-security-raises-50-million-for-workforce-ai-protection/",
+      "published_at": "2026-10-14T23:09:51+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "Harmonic Security Raises $50 Million for Workforce AI Protection",
+      "raw_title": "Harmonic Security Raises $50 Million for Workforce AI Protection",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6f9a087fe83167d2a8998ae6197c1c4a8cb96c847f851e622aa7f98625a4d962",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:34:26.256860+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIを活用したセキュリティソリューションに関する資金調達であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "サイバーセキュリティスタートアップのHarmonic Securityが、従業員向けAI保護ソリューションの開発・展開のため5,000万ドルを調達しました。同社は米国と英国でエンジニアリングおよび市場開拓チームを拡大する計画です。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AI利用におけるセキュリティ対策の動向を示す参考情報として捉えられます。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威やインシデントではなく、AIセキュリティ分野の資金調達に関するニュースであり、金融機関への直接的な影響が低いため「低」です。確認目安は、具体的な対応を要する情報ではなく、中長期的な動向把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:3e8819502e102eb5a519fe1d33aa995e0c363e0128b09558d6bdee7adc39c803",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/break-the-silence-kazakhstan-nexus-uat-6275-targets-cis-government-organizations/",
+      "canonical_url": "https://blog.talosintelligence.com/break-the-silence-kazakhstan-nexus-uat-6275-targets-cis-government-organizations/",
+      "published_at": "2026-10-14T23:00:00+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "Break the silence: Kazakhstan-nexus UAT-6275 targets CIS government organizations",
+      "raw_title": "Break the silence: Kazakhstan-nexus UAT-6275 targets CIS government organizations",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7a1fb01bacd764e1748561841d832e5a4e4852756dc7a99056903496922fadc0",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7ec37cc007f1e6623c70cf4be3b852b181713cde0ac1335640c94bc023eb95aa",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/virtual-event-today-zero-trust-strategies-summit-2/",
+      "canonical_url": "https://www.securityweek.com/virtual-event-today-zero-trust-strategies-summit-2/",
+      "published_at": "2026-10-14T22:56:36+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "Virtual Event Today: Zero Trust Strategies Summit",
+      "raw_title": "Virtual Event Today: Zero Trust Strategies Summit",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8f526aa09e33d1efe8d3f01cfce9989b8f35a4e0f89da318a26d15746628efb4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:34:42.835528+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも直接関連しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本サミットは、次世代のゼロトラストとIDセキュリティに焦点を当て、理論を超えた実践的な戦略を提供することを目的としています。",
+        "financial_impact": "金融機関への直接的な影響は限定的であり、一般的な情報収集として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威やインシデントに関する情報ではなく、一般的なセキュリティ戦略に関するイベント情報のため「低」です。確認目安は、本日開催のイベント情報であり、短期的な対応を要するものではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2133158b65435a39113509c06da7c3ea95a56d15693ccb207c2ec28ba4fa6d5b",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/10/14/the-hidden-network-inside-the-phishing-infrastructure-ecosystem-powering-global-cybercrime/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/10/14/the-hidden-network-inside-the-phishing-infrastructure-ecosystem-powering-global-cybercrime/",
+      "published_at": "2026-10-14T22:00:00+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "The hidden network: Inside the phishing infrastructure ecosystem powering global cybercrime",
+      "raw_title": "The hidden network: Inside the phishing infrastructure ecosystem powering global cybercrime",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3ec4e8d6f436a3f2d0af249c6ade97b62e7761e9f51a9e3a8f08cd525d7b227e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:69760cfba5f489cce97444440c1c52db47c4a201354339b610d841c136a5f9be",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/microsoft-disrupts-chinese-language-phishing-market-behind-1b-messages/",
+      "canonical_url": "https://www.securityweek.com/microsoft-disrupts-chinese-language-phishing-market-behind-1b-messages/",
+      "published_at": "2026-10-14T22:00:00+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "Microsoft Disrupts Chinese-Language Phishing Market Behind 1B+ Messages",
+      "raw_title": "Microsoft Disrupts Chinese-Language Phishing Market Behind 1B+ Messages",
+      "raw_excerpt": null,
+      "content_hash": "sha256:462f53135583c2d3627bd55b6e06d9ba00668f1b0e2b268a975bc422073cd521",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:34:59.844076+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Microsoftが主導したフィッシング市場の摘発と、その背後にある攻撃手法が主題であるため。",
+        "tags": [
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "MicrosoftとHealth-ISACは、連邦裁判所の命令に基づき、YAM Store、CoGUI、Iron Manといった中国語フィッシング市場を支えるドメインを押収しました。これにより、10億通以上のフィッシングメッセージを配信していた大規模なインフラが停止されました。",
+        "financial_impact": "金融機関を標的としたフィッシング攻撃は継続的に発生しており、本件は大規模なフィッシングインフラが摘発された事例として、脅威動向の把握に役立ちます。直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、大規模なフィッシングインフラの摘発事例であり、脅威動向把握の観点から確認する価値があるため「中」です。確認目安は、具体的な緊急対応を要する情報や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:13d15f9231c43ced0025597415b2102b047308219e866af8614cd231cd0a7479",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/cisa-urges-immediate-ivanti-connect.html",
+      "canonical_url": "https://thehackernews.com/2026/10/cisa-urges-immediate-ivanti-connect.html",
+      "published_at": "2026-10-14T21:30:42+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "CISA Urges Immediate Ivanti Connect Secure Updates as Honeypots Log 105 Exploit Attempts",
+      "raw_title": "CISA Urges Immediate Ivanti Connect Secure Updates as Honeypots Log 105 Exploit Attempts",
+      "raw_excerpt": null,
+      "content_hash": "sha256:87c0245ccaab93f9616de90d3aebe26fb827fe2e23c6b7acb4dc0eeba32515e7",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:35:17.373023+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CISAが特定の製品の脆弱性に対する緊急アップデートを要請しており、脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "CISAは、Ivanti Connect Secure (ICS) アプライアンスに存在する認証バイパスの脆弱性（CVE-2026-104935、CVSSスコア8.6）が悪用されていることを受け、組織に対し最新バージョンへの即時アップデートを強く推奨しました。ハニーポットでは105件の悪用試行が記録されています。",
+        "financial_impact": "Ivanti Connect Secureを導入している金融機関は、本脆弱性の影響を受ける可能性があります。認証バイパスはシステムへの不正アクセスにつながるため、速やかな対応が求められます。",
+        "recommended_actions": [
+          "Ivanti Connect Secureの利用有無、および影響を受けるバージョン・外部露出の有無を確認する",
+          "Ivantiの一次情報を参照し、最新バージョンへのアップデートまたは緩和策の適用を検討する",
+          "システムログを監視し、CVE-2026-104935の悪用試行や侵害の兆候がないか確認する"
+        ],
+        "reason": "重要度は、CISAが緊急アップデートを要請しており、認証バイパスの脆弱性が悪用されているため「高」です。確認目安は、CISAが即時対応を促しており、悪用が確認されているため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:05d981a16f272692a24f34eaa5bc01e7ab5c4753e1f4ea37669a38626c1e11cb",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/curl-patches-http2-upload-flaw-after.html",
+      "canonical_url": "https://thehackernews.com/2026/10/curl-patches-http2-upload-flaw-after.html",
+      "published_at": "2026-10-14T21:13:36+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "curl Patches HTTP/2 Upload Flaw After PoC Demonstrates Client-Side Code Execution",
+      "raw_title": "curl Patches HTTP/2 Upload Flaw After PoC Demonstrates Client-Side Code Execution",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7ddb400e45a7d66571d137c0fb1928ea0481fc73b98aa583ba53f71b7241fec4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:35:34.523107+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "curlのHTTP/2アップロードにおける脆弱性と、それに対するパッチが主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "curlのHTTP/2アップロード処理に欠陥があり、悪意のあるサーバーがアップロードを受信する際にクライアントのメモリを破損させ、コード実行につながる可能性があることが報告されました。この問題は2026年10月14日にcurl 8.23.0で修正されています。",
+        "financial_impact": "金融機関でcurlをHTTP/2アップロードに利用している場合に限り、適用性確認の対象になります。攻撃にはクライアントのビルドやメモリレイアウトに関する正確な知識が必要とされており、攻撃成立条件は限定的です。",
+        "recommended_actions": [
+          "自社および委託先でcurlをHTTP/2アップロードに利用しているか確認する",
+          "curl 8.23.0以降へのアップデート、またはベンダーが提供する緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、curlの脆弱性であり、攻撃成立には特定の条件が必要で適用範囲が限定的であるため「中」です。確認目安は、既に修正版が公開されており、直ちに広範な悪用が確認されているわけではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:72b689a43b33aab8cdac206a2d03f33631f1b146e6234b9712180cdb82dc0c9b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/how-to-run-deepfake-readiness-drill.html",
+      "canonical_url": "https://thehackernews.com/2026/10/how-to-run-deepfake-readiness-drill.html",
+      "published_at": "2026-10-14T20:50:00+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "How to Run a Deepfake Readiness Drill Before a Cloned Voice Calls Your Team",
+      "raw_title": "How to Run a Deepfake Readiness Drill Before a Cloned Voice Calls Your Team",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1f7abacfdba6f0df0d83af9f0f784a166c6e488aafe26f99b7b2ad7fd3da1e3b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:35:52.214604+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "クローン音声や合成ビデオ通話を用いた攻撃が主題であり、AI技術の悪用リスクに関する記事であるため。",
+        "tags": [
+          "AI",
+          "フィッシング",
+          "認証"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "クローン音声や合成ビデオ通話を用いたディープフェイク攻撃が、支払い詐欺やヘルプデスクのリセット、アクセス要求に利用されており、これに対する準備訓練の重要性が指摘されています。",
+        "financial_impact": "金融機関では、CFOなどの役員を装ったクローン音声による支払い詐欺や、ヘルプデスクを通じた認証情報リセットなど、直接的な金銭的被害やシステムへの不正アクセスにつながるリスクがあります。",
+        "recommended_actions": [
+          "ディープフェイク攻撃に対する社内での検証プロセスや対応手順を評価する",
+          "音声認証やビデオ通話による本人確認における追加的な検証方法の導入を検討する"
+        ],
+        "reason": "重要度は、金融機関においてディープフェイクを用いた詐欺や不正アクセスのリスクが高まっているため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、中長期的な対策検討が必要なため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2c2810e8b4ea0e8480b2ab75a2583c557e9b2be18a0688f12f37ecce43415c9c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/researchers-used-public-openai-model-to.html",
+      "canonical_url": "https://thehackernews.com/2026/10/researchers-used-public-openai-model-to.html",
+      "published_at": "2026-10-14T20:19:02+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "Researchers Used a Public OpenAI Model to Build a $250,000 Chrome Full-Chain Exploit in Six Days",
+      "raw_title": "Researchers Used a Public OpenAI Model to Build a $250,000 Chrome Full-Chain Exploit in Six Days",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1b468c51dfb7323d47d9990f2900f68e42ea37e8b30684866a4b309f064fa61d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "output_length_violation",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2a29077196100551b24a3acf0357d07abfd1030b472876be4cbb81aa574995cb",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/us-arrests-two-in-crackdown-on-north-korean-it-worker-laptop-farms/",
+      "canonical_url": "https://www.securityweek.com/us-arrests-two-in-crackdown-on-north-korean-it-worker-laptop-farms/",
+      "published_at": "2026-10-14T19:55:21+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "US Arrests Two in Crackdown on North Korean IT Worker Laptop Farms",
+      "raw_title": "US Arrests Two in Crackdown on North Korean IT Worker Laptop Farms",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4738bc4a33342c7d76d8439a13f29472800cbdc7affe2dd591a5b99617c66fdd",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:36:27.151504+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "北朝鮮のIT労働者による不正な活動と、それに対する法執行機関の摘発が主題であるため。",
+        "tags": [
+          "APT",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "米国当局はテキサス州の40か所を捜索し、北朝鮮のIT労働者が自身の所在地を隠すために使用していた187台のラップトップを押収、2名を逮捕しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的ですが、北朝鮮のサイバー攻撃グループが偽装したIT労働者を活用する手口は、サプライチェーンリスクとして間接的に関係する可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、北朝鮮のサイバー攻撃グループが偽装したIT労働者を活用する手口が、サプライチェーンリスクとして間接的に関係する可能性があるため「中」です。確認目安は、具体的な脅威や期限が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d1302977fca35241919fb8f6c1191832bb07988fa95e4424ac1af1ce20e23338",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/chrome-firefox-updates-patch-114-flaws-as-mozilla-unveils-firefox-enterprise/",
+      "canonical_url": "https://www.securityweek.com/chrome-firefox-updates-patch-114-flaws-as-mozilla-unveils-firefox-enterprise/",
+      "published_at": "2026-10-14T16:38:51+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "Chrome, Firefox Updates Patch 114 Flaws as Mozilla Unveils Firefox Enterprise",
+      "raw_title": "Chrome, Firefox Updates Patch 114 Flaws as Mozilla Unveils Firefox Enterprise",
+      "raw_excerpt": null,
+      "content_hash": "sha256:76fa3ec175000e20e615e48a1ad8d0fc96d460454f8b7b70f4ed135629844800",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:36:44.074971+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がChromeとFirefoxの脆弱性修正と新製品発表であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Mozillaは、厳格なコンプライアンス、ガバナンス、セキュリティ要件を持つ組織向けにFirefox Enterpriseを発表しました。また、ChromeとFirefoxのアップデートで合計114件の脆弱性が修正されました。",
+        "financial_impact": "金融機関でChromeやFirefoxを業務利用している場合、これらのブラウザの脆弱性修正が関係します。Firefox Enterpriseの導入は、セキュリティ要件の高い組織にとって検討対象となり得ます。",
+        "recommended_actions": [
+          "自社および委託先で利用しているChromeおよびFirefoxのバージョンを確認し、最新版へのアップデート状況を評価する",
+          "Firefox Enterpriseの機能やセキュリティ要件への適合性を確認し、導入の要否を検討する"
+        ],
+        "reason": "重要度は、広く利用されるブラウザの多数の脆弱性修正が含まれるため「中」です。確認目安は、緊急性の高い悪用情報やKEV新規追加の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:283a883f37c7bde8c8f7c0e2df8e911d492b1b2ef9f8459df8e452a780e1cf30",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/citrix-fortinet-ivanti-patch-29-vulnerabilities-across-their-products/",
+      "canonical_url": "https://www.securityweek.com/citrix-fortinet-ivanti-patch-29-vulnerabilities-across-their-products/",
+      "published_at": "2026-10-14T16:26:35+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "Citrix, Fortinet, Ivanti Patch 29 Vulnerabilities Across Their Products",
+      "raw_title": "Citrix, Fortinet, Ivanti Patch 29 Vulnerabilities Across Their Products",
+      "raw_excerpt": null,
+      "content_hash": "sha256:db59ef8b6597120fd2697c47b4c4ac16176a7e1b1c495d68f857de338c08c39c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:37:01.144933+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Citrix、Fortinet、Ivanti製品の複数の脆弱性に対するパッチ公開が主題であるため。",
+        "tags": [
+          "パッチ",
+          "認証",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Citrix、Fortinet、Ivantiの各製品において、認証バイパス、コード実行、機密認証情報の漏洩につながる可能性のある29件の脆弱性に対するパッチが公開されました。",
+        "financial_impact": "金融機関でCitrix、Fortinet、Ivantiのいずれかの製品を利用している場合に、適用性確認の対象となります。記事からは具体的な製品名や利用状況は確認できません。",
+        "recommended_actions": [
+          "自社および委託先でCitrix、Fortinet、Ivantiの製品を利用しているか棚卸しする",
+          "利用している場合は、各ベンダーの公開情報を確認し、影響を受ける製品とバージョンを特定する",
+          "特定された脆弱性に対するパッチ適用または緩和策の実施を検討する"
+        ],
+        "reason": "重要度は、複数の製品にわたる脆弱性であり、金融機関での利用可能性を考慮すると適用性評価の価値があるため「中」です。確認目安は、パッチが公開されたものの、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:440b0f5b9577890a621b49d49dcbe053a187c68085d4132db8c19287003bfe73",
+      "source_id": "jpcert_cc",
+      "source_name": "JPCERT/CC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.jpcert.or.jp/at/2026/at260032.html",
+      "canonical_url": "https://www.jpcert.or.jp/at/2026/at260032.html",
+      "published_at": "2026-10-14T14:18:00+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "注意喚起: SiteGuard Server EditionにおけるOSコマンドインジェクションの脆弱性（CVE-2026-106931）に関する注意喚起  (公開)",
+      "raw_title": "注意喚起: SiteGuard Server EditionにおけるOSコマンドインジェクションの脆弱性（CVE-2026-106931）に関する注意喚起  (公開)",
+      "raw_excerpt": null,
+      "content_hash": "sha256:040252ee9c58d0ae9fc9f5a1c3bdada6c87907c0379379eb923e35a95d8b97f2",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "output_length_violation",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-106931",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-10-15T00:32:23Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-106931",
+              "vuln_status": "Received",
+              "published_at": "2026-10-14T05:16:42Z",
+              "last_modified_at": "2026-10-14T10:17:51Z",
+              "cvss": {
+                "version": "4.0",
+                "base_score": 8.5,
+                "base_severity": "HIGH",
+                "vector": "CVSS:4.0/AV:L/AC:L/AT:N/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                "source": "vultures@jpcert.or.jp",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "not_listed",
+              "retrieval": "live",
+              "fetched_at": "2026-10-15T00:32:23Z",
+              "date_added": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:7ae47971411b23ad29bb744f0958ca408d8613d5965b17c0f7ef763f2608c001",
+      "source_id": "jpcert_cc",
+      "source_name": "JPCERT/CC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.jpcert.or.jp/at/2026/at260031.html",
+      "canonical_url": "https://www.jpcert.or.jp/at/2026/at260031.html",
+      "published_at": "2026-10-14T11:25:00+09:00",
+      "fetched_at": "2026-10-15T09:32:23.685976+09:00",
+      "title": "注意喚起: 2026年10月マイクロソフトセキュリティ更新プログラムに関する注意喚起  (公開)",
+      "raw_title": "注意喚起: 2026年10月マイクロソフトセキュリティ更新プログラムに関する注意喚起  (公開)",
+      "raw_excerpt": null,
+      "content_hash": "sha256:fd608f86e8155fdbb7ef53706cb629b8aa2da6bfa4908704a50fd1ef629cd78d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "feed_summary",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-15T09:37:34.973943+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "マイクロソフトの月例セキュリティ更新プログラムに関する注意喚起が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "JPCERT/CCが2026年10月のマイクロソフトセキュリティ更新プログラムに関する注意喚起を公開しました。これは、毎月の定例パッチ公開に伴う情報提供です。",
+        "financial_impact": "金融機関でマイクロソフト製品を幅広く利用している場合に関係します。更新プログラムの適用状況を確認し、必要に応じて対応を検討する必要があります。",
+        "recommended_actions": [
+          "自社で利用しているマイクロソフト製品の脆弱性情報を確認し、影響を受ける製品の有無を棚卸しする",
+          "マイクロソフトが公開するセキュリティ更新プログラムの適用計画を策定・実施する"
+        ],
+        "reason": "重要度は、マイクロソフト製品の月例更新であり、個別の脆弱性の深刻度や適用範囲が記事からは不明なため「中」です。確認目安は、定例の更新プログラムに関する注意喚起であり、緊急対応を要する具体的な時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
