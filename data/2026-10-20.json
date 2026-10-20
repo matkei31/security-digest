@@ -1,0 +1,994 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-10-20",
+  "generated_at": "2026-10-20T10:10:42.053972+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 18,
+    "ai_attempted_count": 17,
+    "ai_success_count": 16,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 1,
+    "ai_eligible_count": 17
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 16,
+      "低": 1,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 15,
+      "参考": 2,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 2,
+      "攻撃・脅威動向": 8,
+      "インシデント": 5,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象17件｜重要度「高」0件｜本日確認0件｜今週確認15件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が15件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "攻撃者は、正規署名されたSiemens Software Centerのコピーと悪意のあるDLLを組み合わせ、ClickFixを誘い水としてWindows PCを感染させていました。\n金融機関でSiemens Software Centerを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+      "Plex Media Serverの複数の脆弱性（総称してPlex2Shell）を悪用し、仮想通貨マイナーとリバースプロキシソフトウェアを展開する攻撃活動が確認されました。概念実証（PoC）が公開された翌日から悪用が始まっています。\n金融機関でPlex Media Serverを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため、直接的な関係は限定的です。"
+    ],
+    "check_items": [
+      "Siemens Software Centerの利用有無と影響バージョンを確認する",
+      "Plex Media Serverの利用有無と影響バージョンを確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:39a0affd637a47fcb3f4149b072f54b7f441f3ca715b3c6c6df4a300304a8be3",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/siemens-software-center-vulnerability-exploited-in-clickfix-malware-attacks/",
+      "canonical_url": "https://www.securityweek.com/siemens-software-center-vulnerability-exploited-in-clickfix-malware-attacks/",
+      "published_at": "2026-10-20T03:15:39+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "Siemens Software Center Vulnerability Exploited in ClickFix Malware Attacks",
+      "raw_title": "Siemens Software Center Vulnerability Exploited in ClickFix Malware Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2e43b115740f02e46d6e31ad985725128a15d26cc80a991a12eae2f4322dcae2",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:05:51.397691+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Siemens Software Centerの脆弱性を悪用したマルウェア攻撃の手法が主題であるため。",
+        "tags": [
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "攻撃者は、正規署名されたSiemens Software Centerのコピーと悪意のあるDLLを組み合わせ、ClickFixを誘い水としてWindows PCを感染させていました。",
+        "financial_impact": "金融機関でSiemens Software Centerを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Siemens Software Centerの利用有無と影響バージョンを確認する",
+          "ClickFixマルウェアのIOCs（もし公開されていれば）と自社環境のログを照合し、侵害の痕跡がないか確認する"
+        ],
+        "reason": "重要度は、Siemens Software Centerの利用が限定的である可能性があり、金融機関への直接的な影響が不確実なため「中」です。確認目安は、悪用が確認されているものの、CISA KEVへの新規追加や緊急の対応期限が示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2b433345de9bc12f06d26b410f4eb7c15f9e8e41e93bceff981af75e3d4eaf09",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/hackers-exploit-plex2shell-flaws-to.html",
+      "canonical_url": "https://thehackernews.com/2026/10/hackers-exploit-plex2shell-flaws-to.html",
+      "published_at": "2026-10-20T02:32:13+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "Hackers Exploit Plex2Shell Flaws to Install Crypto Miners and Linux Proxy Backdoor",
+      "raw_title": "Hackers Exploit Plex2Shell Flaws to Install Crypto Miners and Linux Proxy Backdoor",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f98c40c8433d0ef373e84a0ac7f0f86775d6770e569e63bdb57e0c3093f25847",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:06:08.508535+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Plex Media Serverの脆弱性を悪用した攻撃活動と、その手法（仮想通貨マイナー、バックドア展開）が主題であるため。",
+        "tags": [
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Plex Media Serverの複数の脆弱性（総称してPlex2Shell）を悪用し、仮想通貨マイナーとリバースプロキシソフトウェアを展開する攻撃活動が確認されました。概念実証（PoC）が公開された翌日から悪用が始まっています。",
+        "financial_impact": "金融機関でPlex Media Serverを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため、直接的な関係は限定的です。",
+        "recommended_actions": [
+          "Plex Media Serverの利用有無と影響バージョンを確認する",
+          "Plex Media Serverのベンダー情報を確認し、脆弱性への対応状況と緩和策を評価する"
+        ],
+        "reason": "重要度は、Plex Media Serverの利用状況が金融機関で限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、PoC公開後の悪用が確認されているものの、CISA KEVへの新規追加や緊急の期限が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:98fe862721adbe7cb835e226a2c58698efa3a9c6364425f27c644d8baf58f347",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/popular-wordpress-seo-plugin-rank-math.html",
+      "canonical_url": "https://thehackernews.com/2026/10/popular-wordpress-seo-plugin-rank-math.html",
+      "published_at": "2026-10-20T01:28:47+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "Popular WordPress SEO Plugin Rank Math PRO Hijacked to Deliver Self-Restoring Backdoor",
+      "raw_title": "Popular WordPress SEO Plugin Rank Math PRO Hijacked to Deliver Self-Restoring Backdoor",
+      "raw_excerpt": null,
+      "content_hash": "sha256:39345cd2ee6dea8cc5a578450b79dc65f6a6565b2cb4279f9ad3c9b749830422",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:06:26.028776+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "WordPressプラグインの正規版がマルウェアを配信した実際の侵害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "WordPressの人気SEOプラグイン「Rank Math PRO」の正規版が、2026年10月15日20:02 UTCから10月16日07:12 UTCの間にダウンロードまたは更新された際、マルウェアを含んでいました。この期間にインスト",
+        "financial_impact": "金融機関がWordPressサイトを運用しており、かつ当該期間に「Rank Math PRO」をダウンロードまたは更新していた場合に、侵害の適用性確認が必要となります。",
+        "recommended_actions": [
+          "自社および委託先でWordPressサイトを運用しているか確認する",
+          "「Rank Math PRO」の利用有無と、2026年10月15日20:02 UTCから10月16日07:12 UTCの間にダウンロードまたは更新した履歴がないか確認する",
+          "該当する場合は、Rank Mathが公開しているセキュリティ通知を確認し、推奨される対応策を評価する"
+        ],
+        "reason": "重要度は、WordPressプラグインの侵害事例であり、金融機関での利用有無により影響が異なるため「中」です。確認目安は、悪用期間が特定されており、即時対応の根拠は薄いが適用性確認の価値があるため「今週確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f6f5c9b3e6e369d5bd33ab85b9285699ad6c3021f037cbb38ae1ccff620004bc",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/drupal-warns-of-fast-exploitation-risk-for-critical-core-rce-flaw/",
+      "canonical_url": "https://www.securityweek.com/drupal-warns-of-fast-exploitation-risk-for-critical-core-rce-flaw/",
+      "published_at": "2026-10-20T00:47:50+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "Drupal Warns of Fast Exploitation Risk for Critical Core RCE Flaw",
+      "raw_title": "Drupal Warns of Fast Exploitation Risk for Critical Core RCE Flaw",
+      "raw_excerpt": null,
+      "content_hash": "sha256:797c0a625385492821664532a6166e5426ffffdb472febef8ec5587021754e2f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:06:43.128002+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がDrupalのRCE脆弱性に関する警告であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Drupalは、Entity ListおよびField UIモジュールに影響を与える重大な脆弱性について警告を発しました。これらの脆弱性には、コントリビュートモジュールを介した悪用経路が存在し、迅速な悪用のリスクがあります。",
+        "financial_impact": "金融機関でDrupalをウェブサイトやアプリケーションの基盤として利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "自社および委託先でDrupalの利用有無、特にEntity ListおよびField UIモジュール、コントリビュートモジュールの利用状況を確認する",
+          "Drupalのベンダー一次情報を確認し、本脆弱性に関する詳細情報、修正パッチ、緩和策の有無を評価する"
+        ],
+        "reason": "重要度は、Drupalの利用状況が金融機関によって異なるため、適用範囲が限定的である可能性があるため「中」です。確認目安は、迅速な悪用のリスクが指摘されているものの、KEV新規追加や進行中の攻撃の明確な記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4a3ed0d57d9118214265fae4e44996820a211a3864dd691a29781188ff7cbb32",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/rank-math-pro-wordpress-plugin-compromised-in-supply-chain-attack/",
+      "canonical_url": "https://www.securityweek.com/rank-math-pro-wordpress-plugin-compromised-in-supply-chain-attack/",
+      "published_at": "2026-10-20T00:20:53+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "Rank Math PRO WordPress Plugin Compromised in Supply Chain Attack",
+      "raw_title": "Rank Math PRO WordPress Plugin Compromised in Supply Chain Attack",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4621a608e594831c896f7546a54ee8791af2c022de1936869d761ab5cb9ecb4a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:07:00.265526+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "WordPressプラグインの配布パッケージにマルウェアが注入された実際の侵害事例が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "WordPressプラグイン「Rank Math PRO」のバージョン3.0.123のパッケージが、2026年10月15日から10月16日の間にハッカーによってマルウェアを注入され、サプライチェーン攻撃を受けました。",
+        "financial_impact": "金融機関がWordPressをウェブサイト基盤として利用し、かつ当該プラグインの対象バージョンを導入している場合に影響を受ける可能性があります。",
+        "recommended_actions": [
+          "自社および委託先でWordPressおよび「Rank Math PRO」プラグインの利用有無とバージョンを確認する",
+          "対象バージョンを利用している場合は、マルウェア感染の有無と影響範囲を調査する",
+          "ベンダーからの公式な情報提供や修正版の有無を確認し、対応を検討する"
+        ],
+        "reason": "重要度は、WordPressプラグインのサプライチェーン攻撃であり、金融機関での利用状況により影響が異なるため「中」です。確認目安は、具体的な期限や進行中の大規模な攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e6f76086848f718ff70f9bf84b6692c24974371aba24bfb2ef743b5309f12d42",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/weekly-recap-98-zero-days-rogue-ai.html",
+      "canonical_url": "https://thehackernews.com/2026/10/weekly-recap-98-zero-days-rogue-ai.html",
+      "published_at": "2026-10-19T23:14:07+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "⚡ Weekly Recap: 98 Zero-Days, Rogue AI Agents, $100M Crypto Theft, 700 Supermarkets Hit and More",
+      "raw_title": "⚡ Weekly Recap: 98 Zero-Days, Rogue AI Agents, $100M Crypto Theft, 700 Supermarkets Hit and More",
+      "raw_excerpt": null,
+      "content_hash": "sha256:86c032daf56534f0dcf39b43707a85f71b710cc95c0314e179def78d090b429e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:07:17.226704+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の異なるサイバーセキュリティ関連トピックをまとめた週次記事であるため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、98件のゼロデイ脆弱性、不正なAIエージェント、1億ドルの仮想通貨窃盗、700店舗のスーパーマーケットへの攻撃など、今週発生した様々なサイバーセキュリティ関連の出来事をまとめた週次リキャップです。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。複数の異なる事象をまとめた記事であり、個々の事象の詳細は本記事からは確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や詳細な分析を伴わない週次まとめ記事であり、個別のトリアージ根拠に乏しいため「低」です。確認目安は、具体的な短期アクションを要する情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:3e43e08eb436698d5b82061e1131043cc5b926d4cf09728c8d40c81e8ab80270",
+      "source_id": "krebs_on_security",
+      "source_name": "Krebs on Security",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://krebsonsecurity.com/2026/10/feds-suspect-ransom-negotiator-ran-shinyhunters-extortion-site/",
+      "canonical_url": "https://krebsonsecurity.com/2026/10/feds-suspect-ransom-negotiator-ran-shinyhunters-extortion-site/",
+      "published_at": "2026-10-19T22:48:56+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "Feds Suspect Ransom Negotiator Ran ShinyHunters Extortion Site",
+      "raw_title": "Feds Suspect Ransom Negotiator Ran ShinyHunters Extortion Site",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c6ae9ccf49776cbbf0a084b0dbad2d68311dabfc2c49590d6bd15c6daee8ffe8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:07:34.879640+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ランサムウェアグループShinyHuntersと交渉人の関係に関する攻撃者側の動向が主題であるため。",
+        "tags": [
+          "ランサムウェア",
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "米連邦捜査官は、FBIから機密データを窃取したハッキンググループShinyHuntersを追跡する中で、2つのランサムウェア交渉企業の幹部が同グループと異常に密接な関係を維持していたことを特定しました。情報筋によると、米国の幹部の一人は、被害者に身代金支払いを強要するShinyHuntersのウェブサイト運営を支援していた疑いがあるとのことです。",
+        "financial_impact": "ランサムウェア交渉サービスを利用する金融機関にとって、交渉企業の信頼性や潜在的な利益相反に関するリスクを評価する上で関係します。直接的なシステム侵害や情報漏えいに関する情報ではありません。",
+        "recommended_actions": [
+          "ランサムウェア交渉サービスを利用している場合、契約している交渉企業のデューデリジェンス状況を確認する",
+          "ランサムウェア攻撃発生時の対応プロセスにおいて、外部交渉企業の選定基準とリスク評価プロセスを再確認する"
+        ],
+        "reason": "重要度は、ランサムウェア交渉企業の信頼性に関わる問題であり、金融機関がサービスを利用している場合に影響し得るため「中」です。確認目安は、具体的な攻撃や緊急対応の必要性が示されておらず、中長期的なリスク評価に資する情報であるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6fe1a56abf01fa7ca7969880c57a3a381ac96c9c823656faaaa57c647bac22b6",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/connectwise-suspends-cloud-services-in-response-to-cyberattack/",
+      "canonical_url": "https://www.securityweek.com/connectwise-suspends-cloud-services-in-response-to-cyberattack/",
+      "published_at": "2026-10-19T22:16:20+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "ConnectWise Suspends Cloud Services in Response to Cyberattack",
+      "raw_title": "ConnectWise Suspends Cloud Services in Response to Cyberattack",
+      "raw_excerpt": null,
+      "content_hash": "sha256:25fcacedeedc9365851909a46dfd2ec0a5e8f19476d3110d83bccced6bbb3015",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:07:51.807686+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "ConnectWiseがサイバー攻撃を受け、クラウドサービスを停止したという実際の被害事例が主題であるため。",
+        "tags": [
+          "クラウド",
+          "インシデント",
+          "業務停止",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ConnectWiseはサイバー攻撃を受け、クラウドサービスを停止しました。同社は現在、復旧とセキュリティ検証を継続しており、サービスは依然として利用できない状態です。",
+        "financial_impact": "ConnectWiseのクラウドサービスを利用している金融機関は、業務停止やサービス利用への影響がないか確認する必要があります。記事からは具体的な影響範囲や攻撃手法は不明です。",
+        "recommended_actions": [
+          "ConnectWiseのクラウドサービスを利用している場合、自社への影響範囲と業務継続への影響を確認する",
+          "ConnectWiseからの公式発表や復旧状況に関する情報を継続的に監視する"
+        ],
+        "reason": "重要度は、ConnectWiseのサービス利用状況により影響が異なるため「中」です。確認目安は、サービス停止というインシデントであり、自社への影響確認が必要なため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:bdcf728a9e2a0cc66314adb0c36bd9399663ac73aa3057c3d1a4a521cb6c9bbf",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/ghostaction-attackers-plant-credential.html",
+      "canonical_url": "https://thehackernews.com/2026/10/ghostaction-attackers-plant-credential.html",
+      "published_at": "2026-10-19T22:05:45+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "GhostAction Attackers Plant Credential Stealer Disguised as Font in 94 GitHub Repositories",
+      "raw_title": "GhostAction Attackers Plant Credential Stealer Disguised as Font in 94 GitHub Repositories",
+      "raw_excerpt": null,
+      "content_hash": "sha256:735c9f2e4ec09874102e73333676ad3e5ec6f1b8f43c90258a139f1824b99cee",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:08:09.188966+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "GhostAction攻撃者の新たな攻撃手法とマルウェア配布に関する記事であるため。",
+        "tags": [
+          "サプライチェーン",
+          "フィッシング",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "GhostActionサプライチェーン攻撃の脅威アクターが、悪意のあるGitHub Actionsワークフローの注入に加え、オープンソース開発者を標的としたフィッシングと、偽のフォントファイルに偽装した認証情報窃取マルウェアの配布に攻撃手法を拡大しました。",
+        "financial_impact": "金融機関がGitHubを利用してオープンソース開発を行っている場合、または委託先がGitHubを利用している場合に、サプライチェーンリスクとして関係します。直接的な影響は限定的です。",
+        "recommended_actions": [
+          "GitHubリポジトリのセキュリティ設定とアクセスログを確認し、不審なアクティビティがないか監視する",
+          "開発環境におけるGitHub Actionsワークフローの利用状況と、外部からのコード変更に対するレビュー体制を確認する"
+        ],
+        "reason": "重要度は、GitHubを利用する開発環境におけるサプライチェーン攻撃であり、金融機関への直接的な影響は限定的であるため「中」です。確認目安は、新たな攻撃手法の報告であり、即時対応を要する具体的な期限や進行中の大規模な侵害の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b2187c28947ad4c66aa280f6ef1be21c7362c393bf52b8fc452296bddaf69a4f",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/10/19/agents-are-your-newest-insiders-security-must-move-at-their-speed/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/10/19/agents-are-your-newest-insiders-security-must-move-at-their-speed/",
+      "published_at": "2026-10-19T22:00:00+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "Agents are your newest insiders. Security must move at their speed.",
+      "raw_title": "Agents are your newest insiders. Security must move at their speed.",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3ac3e91dab27841ca3267f1e78e1602190959bc8aab389f8e2421436dcfc4cd3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:82bda94fe48fb703a5ad2a08011f678e6d9e6b82f73754031a8f87abe8e2042a",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/plex2shell-exploit-chain-weaponized-against-plex-servers-hours-after-disclosure/",
+      "canonical_url": "https://www.securityweek.com/plex2shell-exploit-chain-weaponized-against-plex-servers-hours-after-disclosure/",
+      "published_at": "2026-10-19T21:44:39+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "Plex2Shell Exploit Chain Weaponized Against Plex Servers Hours After Disclosure",
+      "raw_title": "Plex2Shell Exploit Chain Weaponized Against Plex Servers Hours After Disclosure",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a69f6910268dc2ac336105f40424cec4af1d1c885e00dbccc9aab5245ccc5613",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:08:26.356107+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Plex Media Serverの脆弱性が公開後すぐに攻撃に悪用された事例であり、攻撃手法と脅威動向が主題のため。",
+        "tags": [
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Plex Media Serverの脆弱性を悪用するエクスプロイトチェーン「Plex2Shell」が公開されてから数時間以内に、脅威アクターが暗号通貨マイナーやプロキシソフトウェアを配信するために悪用を開始したことが確認されました。",
+        "financial_impact": "金融機関がPlex Media Serverを業務で利用している場合、または委託先が利用している場合に影響する可能性があります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Plex Media Serverの利用有無と影響を受けるバージョンを確認する",
+          "Plex Media Serverのベンダーから提供される修正パッチや緩和策の情報を確認する",
+          "自社環境でPlex Media Serverが外部に公開されていないか確認する"
+        ],
+        "reason": "重要度は、Plex Media Serverの利用状況が金融機関で限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、脆弱性の悪用が確認されているものの、KEV新規追加や緊急対応の指示が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:cf85f7d1b455bf0ec6edecef0c8d2acdb5f712a537ffac4b3ae6dcbc3950ff2d",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/one-compromised-login-exposed-millions-of-california-students-records/",
+      "canonical_url": "https://www.securityweek.com/one-compromised-login-exposed-millions-of-california-students-records/",
+      "published_at": "2026-10-19T20:55:50+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "One Compromised Login Exposed Millions of California Students’ Records",
+      "raw_title": "One Compromised Login Exposed Millions of California Students’ Records",
+      "raw_excerpt": null,
+      "content_hash": "sha256:af8c041f77944917341d71be5876e828b7e526d01e9cd40b39f86a7f93ec6e4e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:08:43.498448+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "侵害されたログイン情報による学生記録の流出という具体的な被害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "認証",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "侵入者が侵害されたログイン情報を使用してETSのSFTPサーバーにアクセスし、2006年以降のカリフォルニア州の学生記録をコピーしました。このインシデントにより、数百万人の学生の個人情報が流出した可能性があります。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。ただし、委託先における認証情報の管理不備が大規模な情報漏えいにつながる事例として、サプライチェーンリスク管理の参考になります。",
+        "recommended_actions": [
+          "委託先における認証情報の管理状況やアクセス制御の適切性を定期的に確認する",
+          "SFTPなどのファイル転送プロトコルを利用している場合の認証強化策やログ監視体制を評価する"
+        ],
+        "reason": "重要度は、金融機関への直接的な影響は限定的であるものの、委託先における情報漏えい事例として参考になるため「中」です。確認目安は、具体的な期限や緊急対応の必要性が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:8674d78c6f98bb17df7573235af22d07577de646f580e8a0b07db4e2c0979eb2",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/from-email-to-case-to-boardroom-how.html",
+      "canonical_url": "https://thehackernews.com/2026/10/from-email-to-case-to-boardroom-how.html",
+      "published_at": "2026-10-19T20:50:00+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "From Email-to-Case to the Boardroom: How Inherited Agents Break Governance Built for Software",
+      "raw_title": "From Email-to-Case to the Boardroom: How Inherited Agents Break Governance Built for Software",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6d1d758e6397433c392bf544f2108461bdddb8789881de6497d0129473205324",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:09:00.912164+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "SalesforceのAI機能「Agentforce」におけるガバナンスの課題と、既存機能との連携によるリスクが主題であるため。",
+        "tags": [
+          "AI",
+          "SaaS",
+          "クラウド"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "SalesforceのAI機能「Agentforce」において、Email-to-CaseやWeb-to-Caseといった既存の顧客対応機能と連携させることで、設計されたガバナンスが損なわれる可能性があると指摘されています。",
+        "financial_impact": "SalesforceのAgentforce機能を利用しており、かつEmail-to-CaseやWeb-to-Caseと連携させている金融機関に関係します。これらの機能の利用有無により、影響の有無や程度が異なります。",
+        "recommended_actions": [
+          "Salesforce AgentforceおよびEmail-to-Case/Web-to-Case機能の利用状況と連携設定を確認する",
+          "Salesforceの公式ドキュメントやベンダー情報を参照し、Agentforce利用時のガバナンスに関する推奨事項を確認する"
+        ],
+        "reason": "重要度は、SalesforceのAI機能に関するガバナンスの課題であり、利用状況によって適用性が異なるため「中」です。確認目安は、具体的な攻撃や緊急の対応期限が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:68889579c06442c552747e4709b2b1ef3888f4496259915aa2e446e63c399aec",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/exploited-fortinet-bug-linked-to-stealthy-fortigate-implant-in-telecom-hack/",
+      "canonical_url": "https://www.securityweek.com/exploited-fortinet-bug-linked-to-stealthy-fortigate-implant-in-telecom-hack/",
+      "published_at": "2026-10-19T20:13:23+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "Exploited Fortinet Bug Linked to Stealthy FortiGate Implant in Telecom Hack",
+      "raw_title": "Exploited Fortinet Bug Linked to Stealthy FortiGate Implant in Telecom Hack",
+      "raw_excerpt": null,
+      "content_hash": "sha256:edf4d621bf3c6fc891b12ac7e46a2b966910a2667faf5ffbd059d180d3129211",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:09:18.144612+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Fortinet製品の脆弱性を悪用した、通信事業者への攻撃事例と脅威動向が主題であるため。",
+        "tags": [
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Fortinet製品の脆弱性が、通信事業者に対する持続的かつステルス性の高いFortiGateインプラントを用いた攻撃に関連していることが判明しました。",
+        "financial_impact": "金融機関でFortinet FortiGate製品を利用している場合に、本攻撃手法の適用性確認の対象となります。記事からは金融機関への直接的な影響は確認できません。",
+        "recommended_actions": [
+          "Fortinet FortiGate製品の利用有無と、関連する脆弱性の影響を受けるバージョンを確認する",
+          "FortiGate製品のログを監視し、記事に記載されたようなステルス性の高いインプラントの兆候がないか確認する"
+        ],
+        "reason": "重要度は、Fortinet製品の脆弱性を悪用した攻撃事例であり、金融機関での利用可能性を考慮すると適用性評価の価値があるため「中」です。確認目安は、実悪用が確認されているものの、KEV新規追加の記載がなく、即時対応を要する時間的根拠が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:62badca6addc0ac9c83b2642b4361e5f1f19734989a09d5df8cacfc24a91e8e6",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/fake-web3-accelerator-uses-npm-packages.html",
+      "canonical_url": "https://thehackernews.com/2026/10/fake-web3-accelerator-uses-npm-packages.html",
+      "published_at": "2026-10-19T19:06:40+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "Fake Web3 Accelerator Uses npm Packages to Spread Malware and Hijack AI Agent Traffic",
+      "raw_title": "Fake Web3 Accelerator Uses npm Packages to Spread Malware and Hijack AI Agent Traffic",
+      "raw_excerpt": null,
+      "content_hash": "sha256:84869e202b475fc6b2e751a81ea5e33166eb989e76f0066585d170793d6eebf9",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:09:35.596323+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "偽のWeb3アクセラレーターによるマルウェア拡散とAIエージェントのトラフィック乗っ取りという攻撃手法が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "AI",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "偽のWeb3アクセラレーターが、Anthropic ClaudeやGoogle Gemini向けの無料AIクレジット、コーディングツール、セキュリティ監査を装い、悪意のあるnpmパッケージを使用してWindowsおよびmacOSシステムに情報窃取マルウェアやバックドアを配布していることが確認されました。",
+        "financial_impact": "金融機関がWeb3関連の開発やAIエージェントの利用において、npmパッケージを介したサプライチェーンリスクに晒される可能性があります。特に開発環境やAI関連業務での利用有無を確認する必要があります。",
+        "recommended_actions": [
+          "自社および委託先でWeb3関連開発やAIエージェント利用においてnpmパッケージを使用しているか確認する",
+          "開発環境におけるnpmパッケージの利用状況と、信頼できるソースからの導入を徹底しているか確認する",
+          "マルウェア感染の兆候がないか、システムログやネットワークトラフィックを監視する"
+        ],
+        "reason": "重要度は、金融機関がWeb3開発やAIエージェント利用でnpmパッケージを使用している場合に影響する可能性があるため「中」です。確認目安は、具体的な攻撃の進行状況や緊急の対応期限が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:445532885d7fda6625653069d2e093dc5c60ecebed2d9a5b9de2b30ae6d4ea4e",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/mitre-attck-v20-catalogs-ai-abuse-mfa-bypass-water-utility-attacks/",
+      "canonical_url": "https://www.securityweek.com/mitre-attck-v20-catalogs-ai-abuse-mfa-bypass-water-utility-attacks/",
+      "published_at": "2026-10-19T18:37:04+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "MITRE ATT&CK v20 Catalogs AI Abuse, MFA Bypass, Water Utility Attacks",
+      "raw_title": "MITRE ATT&CK v20 Catalogs AI Abuse, MFA Bypass, Water Utility Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4e1c6031dfb7470a8a63ef39a3cca485fb90c7f854893ff2862ed8208b61c484",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:09:52.671716+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "MITRE ATT&CKの更新は、攻撃手法や脅威動向の進化を反映しているためです。",
+        "tags": [
+          "AI",
+          "認証"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "MITRE ATT&CKのバージョン20がリリースされ、AI悪用、MFAバイパス、水道事業体への攻撃など、新たな脅威と防御戦略が追加されました。エンタープライズ向けに6つ、ICS向けに9つの新しい検知戦略が導入され、合計38のアナリティクスでサポートされます。",
+        "financial_impact": "MITRE ATT&CKはサイバー攻撃のフレームワークであり、金融機関のセキュリティ対策の計画・評価に活用できます。直接的なインシデントや脆弱性情報ではないため、即時の影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関のセキュリティ対策に活用できるが、直接的な脅威情報ではないため「中」です。確認目安は、具体的な期限や緊急対応の必要性が記事にないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:13914d4891785130b3de313bd3acc2d8c33e6f6ac047155a05621c7350992d6a",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/unpatched-broadcom-wi-fi-flaw-lets.html",
+      "canonical_url": "https://thehackernews.com/2026/10/unpatched-broadcom-wi-fi-flaw-lets.html",
+      "published_at": "2026-10-19T15:29:44+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "Unpatched Broadcom Wi-Fi Flaw Lets Attackers in Range Run Code as Root on Routers",
+      "raw_title": "Unpatched Broadcom Wi-Fi Flaw Lets Attackers in Range Run Code as Root on Routers",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ec4669af905090e6aa8dc7408ce1bb2494a022af4117f27902fd5e3dcf7b786f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:10:10.052904+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Broadcom製Wi-Fiルーターの未パッチ脆弱性が主題であるため。",
+        "tags": [
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Broadcom製Wi-Fi設定ソフトウェアの脆弱性により、攻撃者が無線範囲内からネットワークパスワードやペアリングなしに、Broadcomベースのルーター上でルート権限でコードを実行できることが開示されました。この攻撃は、ベルギーのインターネットプロバイダーが提供するホームゲートウェイで実証されています。",
+        "financial_impact": "金融機関がBroadcom製Wi-Fiルーターを業務ネットワークで利用している場合、または委託先が利用している場合に、情報漏えいやネットワーク侵害のリスクに関係します。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Broadcom製Wi-Fiルーターの利用有無と影響を受ける可能性のあるバージョンを確認する",
+          "ベンダーからの公式情報やパッチの提供状況を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、Broadcom製Wi-Fiルーターの脆弱性であり、金融機関での利用可能性が限定的または不確実なため「中」です。確認目安は、実悪用が確認されているものの、CISA KEVへの新規追加や緊急の期限に関する情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6dda7c5d535ad3e23867f6c55ad15b5d360442a6ba6cb8256e74f6c28d6cba31",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/opencode-console-breach-may-have.html",
+      "canonical_url": "https://thehackernews.com/2026/10/opencode-console-breach-may-have.html",
+      "published_at": "2026-10-19T15:07:08+09:00",
+      "fetched_at": "2026-10-20T10:05:49.289278+09:00",
+      "title": "OpenCode Console Breach May Have Exposed OpenAI, Anthropic, and Google API Keys",
+      "raw_title": "OpenCode Console Breach May Have Exposed OpenAI, Anthropic, and Google API Keys",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e764e2f640a8bd6c57ad6bf749a3996884ffabf552b24d1e0c0210bbb0c45a45",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-20T10:10:27.053189+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "OpenCode Consoleへの不正アクセスとAPIキー流出の可能性が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "AI",
+          "SaaS"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "OpenCodeは、10月16日夜にレガシーシステムへの不正アクセスがあり、ユーザーがOpenCode Consoleに保存していたOpenAI、Anthropic、またはGoogleのサードパーティAIプロバイダーキーが流出した可能性があると発表しました。",
+        "financial_impact": "金融機関がOpenCode Consoleを利用し、かつOpenAI、Anthropic、GoogleのAPIキーを保存していた場合に影響を受ける可能性があります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "OpenCode Consoleの利用有無と、APIキーを保存していたかを確認する",
+          "OpenCodeからの公式発表や指示に基づき、APIキーのローテーションやアクセス権限の見直しを検討する"
+        ],
+        "reason": "重要度は、OpenCode Consoleの利用が限定的である可能性があり、金融機関への直接的な影響が不確実なため「中」です。確認目安は、APIキー流出の可能性があり確認は必要ですが、緊急対応を要する時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
