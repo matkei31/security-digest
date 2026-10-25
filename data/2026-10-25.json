@@ -1,0 +1,324 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-10-25",
+  "generated_at": "2026-10-25T09:22:14.005044+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 5,
+    "ai_attempted_count": 4,
+    "ai_success_count": 4,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 1,
+    "ai_eligible_count": 4
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 4,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 3,
+      "参考": 1,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 2,
+      "攻撃・脅威動向": 0,
+      "インシデント": 1,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象4件｜重要度「高」0件｜本日確認0件｜今週確認3件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が3件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "GoogleのBrotliデコーダーにメモリ破損の脆弱性(CVE-2026-111497)が発見されました。この欠陥はBrotli圧縮データを解凍する多くのプログラムに存在し、Node.jsのRCE脆弱性の原因ともなり、Bun、PythonのBrotliパッケージ、Envoyプロキシなどに影響を与えます。\n金融機関がNode.js、Bun、PythonのBrotli関連パッケージ、またはBrotli解凍を設定したEnvoyプロキシを業務システムで利用している場合に、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。",
+      "LiteLLMは、2026年5月下旬に公開GitHubリポジトリに誤って公開されたAgent Platformマスターキーにより、攻撃者がGitHubトークンを窃取し、人気Pythonパッケージの悪意あるバージョンを公開したことを明らかにしました。\n金融機関がLiteLLMまたはその影響を受けるPythonパッケージを開発・利用している場合、サプライチェーンリスクとして関係します。直接的な影響は限定的ですが、開発環境における類似のキー管理リスクの教訓となります。"
+    ],
+    "check_items": [
+      "CVE-2026-111497に関連するBrotliデコーダーを使用しているソフトウェア（Node.js、Bun、Python Brotliパッケージ、Envoyプロキシなど）の利用有無と影響バージョンを確認する",
+      "自社および委託先でLiteLLMまたは関連するPythonパッケージの利用有無を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:a64123d828297872a642cff5b055159f640284e80dcf89de6ec97689a63c0c06",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/brotli-decoder-flaw-behind-nodejs-rce.html",
+      "canonical_url": "https://thehackernews.com/2026/10/brotli-decoder-flaw-behind-nodejs-rce.html",
+      "published_at": "2026-10-24T20:09:29+09:00",
+      "fetched_at": "2026-10-25T09:20:46.144093+09:00",
+      "title": "Brotli Decoder Flaw Behind Node.js RCE Also Affects Bun, Python and Other Widely Used Software",
+      "raw_title": "Brotli Decoder Flaw Behind Node.js RCE Also Affects Bun, Python and Other Widely Used Software",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9d6ed56f0621bb5ceff2020643bf85b413b622a2052d428935b4ce82c8804f6f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-25T09:20:49.040494+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "GoogleのBrotliデコーダーにおけるメモリ破損の脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "GoogleのBrotliデコーダーにメモリ破損の脆弱性(CVE-2026-111497)が発見されました。この欠陥はBrotli圧縮データを解凍する多くのプログラムに存在し、Node.jsのRCE脆弱性の原因ともなり、Bun、PythonのBrotliパッケージ、Envoyプロキシなどに影響を与えます。",
+        "financial_impact": "金融機関がNode.js、Bun、PythonのBrotli関連パッケージ、またはBrotli解凍を設定したEnvoyプロキシを業務システムで利用している場合に、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "CVE-2026-111497に関連するBrotliデコーダーを使用しているソフトウェア（Node.js、Bun、Python Brotliパッケージ、Envoyプロキシなど）の利用有無と影響バージョンを確認する",
+          "各ベンダーからの修正パッチや緩和策の情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、広く利用される可能性のあるソフトウェアに影響するが、金融機関での具体的な利用状況や影響範囲が記事から不明確なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がなく、CISA KEVへの新規追加も確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c2f353f11fcac6078e3a8d417a06273b21c39d4ca93451ff32b6c5c6b61d7410",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/leaked-litellm-master-key-let-attackers.html",
+      "canonical_url": "https://thehackernews.com/2026/10/leaked-litellm-master-key-let-attackers.html",
+      "published_at": "2026-10-24T20:03:33+09:00",
+      "fetched_at": "2026-10-25T09:20:46.144093+09:00",
+      "title": "Leaked LiteLLM Master Key Let Attackers Steal GitHub Tokens and Hijack Release Pipeline",
+      "raw_title": "Leaked LiteLLM Master Key Let Attackers Steal GitHub Tokens and Hijack Release Pipeline",
+      "raw_excerpt": null,
+      "content_hash": "sha256:37ce369b538cb90e34e5b50982e4ae1ead368d86f32ad3558c6ec472d3a23591",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-25T09:21:06.780473+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "LiteLLMのマスターキー流出とそれに伴うGitHubトークン窃取、悪意あるパッケージ公開という実際の侵害事例が主題のため。",
+        "tags": [
+          "インシデント",
+          "サプライチェーン",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "LiteLLMは、2026年5月下旬に公開GitHubリポジトリに誤って公開されたAgent Platformマスターキーにより、攻撃者がGitHubトークンを窃取し、人気Pythonパッケージの悪意あるバージョンを公開したことを明らかにしました。",
+        "financial_impact": "金融機関がLiteLLMまたはその影響を受けるPythonパッケージを開発・利用している場合、サプライチェーンリスクとして関係します。直接的な影響は限定的ですが、開発環境における類似のキー管理リスクの教訓となります。",
+        "recommended_actions": [
+          "自社および委託先でLiteLLMまたは関連するPythonパッケージの利用有無を確認する",
+          "開発環境におけるAPIキーやマスターキーの管理体制、特に公開リポジトリへの誤公開防止策を再確認する",
+          "GitHubなどコードリポジトリへのアクセス権限とトークン管理状況を評価する"
+        ],
+        "reason": "重要度は、LiteLLMの利用状況が金融機関で限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、インシデント発生から時間が経過しており、即時対応を要する新たな脅威情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ed6cb319ad856dfd2ce738ab807d2266ea138e6be6befd7aedd84613d0cce1cf",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/google-says-gmail-and-photos-data.html",
+      "canonical_url": "https://thehackernews.com/2026/10/google-says-gmail-and-photos-data.html",
+      "published_at": "2026-10-24T19:36:33+09:00",
+      "fetched_at": "2026-10-25T09:20:46.144093+09:00",
+      "title": "Google Says Gmail and Photos Data Shared With AI Search Could Be Used for Targeted Ads",
+      "raw_title": "Google Says Gmail and Photos Data Shared With AI Search Could Be Used for Targeted Ads",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ef39ed53f3c1cb549a37dca8a85a50f6538e7568f824186e8c4616882e4ca3b0",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-25T09:21:24.386658+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "GoogleのAI機能と個人データの連携、およびそれによるターゲティング広告の可能性が主題であるため。",
+        "tags": [
+          "AI",
+          "規制",
+          "ガイドライン"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Googleはプライバシーポリシーを更新し、パーソナライズされたAI検索機能やGeminiアプリを利用する際、他のGoogleサービスからのデータ（Gmailや写真など）にアクセスすることを許可した場合、そのデータがターゲティング広告に利用される可能性があると明記しました。",
+        "financial_impact": "金融機関がGoogleのAI検索機能やGeminiアプリを業務で利用し、かつ他のGoogleサービスとのデータ連携を許可している場合、機密情報や顧客データが意図せず広告利用されるリスクについて検討が必要です。個人情報保護やデータガバナンスの観点から、利用方針の見直しが求められる可能性があります。",
+        "recommended_actions": [
+          "GoogleのAI検索機能やGeminiアプリの利用状況、および他のGoogleサービスとのデータ連携設定について棚卸しする",
+          "データ連携を許可している場合、そのデータが広告利用される可能性についてリスク評価を実施し、必要に応じて利用方針や設定を見直す"
+        ],
+        "reason": "重要度は、金融機関がGoogleのAIサービスを業務利用している場合にデータガバナンス上の検討が必要となるため「中」です。確認目安は、新たな規制や緊急対応の必要性を示す情報ではなく、中長期的な方針検討が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ae5fe3ec49b34664a0f640b9c8d64a84bd20a26cd684c54bb82f81e451b842b2",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/researchers-push-over-2-million-updates.html",
+      "canonical_url": "https://thehackernews.com/2026/10/researchers-push-over-2-million-updates.html",
+      "published_at": "2026-10-24T18:04:24+09:00",
+      "fetched_at": "2026-10-25T09:20:46.144093+09:00",
+      "title": "Researchers Push Over 2 Million Updates to Remotely Disable Popcorn Time Updater That Could Fuel a Botnet",
+      "raw_title": "Researchers Push Over 2 Million Updates to Remotely Disable Popcorn Time Updater That Could Fuel a Botnet",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5bad2afe8ecd38150bcccf044e53d53b159981e702f5a9963650c038a63fa91d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "output_length_violation",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ad7396463092f2b221e8ab244af2e43aab958163a26c2149f54d22f5a28be300",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/cisa-flags-two-actively-exploited.html",
+      "canonical_url": "https://thehackernews.com/2026/10/cisa-flags-two-actively-exploited.html",
+      "published_at": "2026-10-24T15:25:57+09:00",
+      "fetched_at": "2026-10-25T09:20:46.144093+09:00",
+      "title": "CISA Flags Two Actively Exploited Critical Flaws in Collabora Online and Arista VeloCloud",
+      "raw_title": "CISA Flags Two Actively Exploited Critical Flaws in Collabora Online and Arista VeloCloud",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9bbadf39829702a24301bcbe780bd4306d1b82152d0ae91353f525ae08a21256",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-25T09:21:59.004528+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CISA KEVへの脆弱性追加と実悪用が主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "CISAは、Collabora Online Built-in CODE ServerとArista VeloCloud Orchestrator (VCO)に影響を与える2つの深刻な脆弱性（CVE-2026-110447、CVSSスコア9.2）を、実悪用が確認されたとしてKEVカタログに追加しました。",
+        "financial_impact": "金融機関でCollabora Online Built-in CODE ServerまたはArista VeloCloud Orchestrator (VCO)を利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できません。",
+        "recommended_actions": [
+          "CVE-2026-110447の対象製品（Collabora Online Built-in CODE Server、Arista VeloCloud Orchestrator (VCO)）の利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報を確認し、修正パッチや緩和策の適用要否を評価する"
+        ],
+        "reason": "重要度は、対象製品の金融機関での普及度が記事から不明であり、適用範囲が不確実なため「中」です。確認目安は、CISA KEVに掲載されているものの、直近3日以内の新規追加ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
