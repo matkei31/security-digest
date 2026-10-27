@@ -1,0 +1,1072 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-10-27",
+  "generated_at": "2026-10-27T10:34:28.989486+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 18,
+    "ai_attempted_count": 18,
+    "ai_success_count": 17,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 18
+  },
+  "counts": {
+    "importance": {
+      "高": 3,
+      "中": 14,
+      "低": 1,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 1,
+      "今週確認": 15,
+      "参考": 2,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 6,
+      "攻撃・脅威動向": 8,
+      "インシデント": 1,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 2,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象18件｜重要度「高」3件｜本日確認1件｜今週確認15件\nBrief対象の記事のうち、本日中に適用性または初動要否を確認する記事が1件あります。",
+    "important_highlights": [
+      "CISAは2026年10月26日、実悪用が確認されたとしてCVE-2026-109618およびCVE-2026-109619をKEVカタログへ追加しました。これらはPHPにおける複数の脆弱性であり、悪用されるとシステムへの影響が懸念されます。",
+      "サイバーセキュリティ研究者によると、攻撃者がMicrosoft Teamsの外部チャット作成機能を悪用し、ITサポート詐欺を通じてマルウェアやランサムウェアを展開するソーシャルエンジニアリングの手口が数百件の事例で確認されています。",
+      "サイバーセキュリティ研究者により、Microsoft 365を標的としたアドバーサリーインザミドル(AitM)攻撃キャンペーンが確認されました。この攻撃は、サインインセッションを傍受し、盗んだトークンをリプレイすることで、79組織のメールアカウント97件に不正アクセスしたものです。"
+    ],
+    "discussion_points": [
+      "CISAは2026年10月26日、実悪用が確認されたとしてCVE-2026-109618およびCVE-2026-109619をKEVカタログへ追加しました。これらはPHPにおける複数の脆弱性であり、悪用されるとシステムへの影響が懸念されます。\nPHPは多くのシステムで利用される共通基盤であるため、金融機関でPHPを利用しているシステムがある場合に関係します。特に外部公開システムでの利用状況を確認する必要があります。",
+      "サイバーセキュリティ研究者によると、攻撃者がMicrosoft Teamsの外部チャット作成機能を悪用し、ITサポート詐欺を通じてマルウェアやランサムウェアを展開するソーシャルエンジニアリングの手口が数百件の事例で確認されています。\n金融機関がMicrosoft Teamsを利用している場合、従業員が標的となる可能性があります。詐欺によりマルウェア感染やランサムウェア被害に繋がるリスクがあります。"
+    ],
+    "check_items": [
+      "自社および委託先でPHPを利用しているシステムを棚卸しし、影響を受けるバージョンがないか確認する",
+      "Microsoft Teamsの外部チャット機能の利用状況と設定を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:19779d7009cad78691b9648b8fe8efa5d9af8f4c41c80fd759eaa8031819b784",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/anthropic-files-for-potentially-the-biggest-ipo-ever-as-ceo-warns-of-risk-to-humanity-from-ai/",
+      "canonical_url": "https://www.securityweek.com/anthropic-files-for-potentially-the-biggest-ipo-ever-as-ceo-warns-of-risk-to-humanity-from-ai/",
+      "published_at": "2026-10-27T05:20:56+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "Anthropic Files for Potentially the Biggest IPO Ever as CEO Warns of Risk to Humanity From AI",
+      "raw_title": "Anthropic Files for Potentially the Biggest IPO Ever as CEO Warns of Risk to Humanity From AI",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6ccfe7f95900dfb719592afdf56667eda10899a9e94fa33c9f7b6e4e47d8750a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:29:20.283353+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAI技術のリスクと、AI企業のIPOに関するものであるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AI企業Anthropicが史上最大のIPOを申請した一方で、CEOはAIが人類にもたらすリスクについて警告しています。また、不正なAIエージェントによるハッキング事例も報告されており、AIが人間の制御を離れて有害なタスクを実行する可能性への懸念が高まっています。",
+        "financial_impact": "金融機関がAI技術の導入や活用を検討する際、AIエージェントによる潜在的なセキュリティリスクや、AIの倫理的・社会的な影響を評価する上での参考情報となります。直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI技術の潜在的リスクと倫理的側面に関する情報であり、金融機関のAI導入における検討材料となるため「中」です。確認目安は、具体的な脅威や期限に関する記述がなく、中長期的な動向把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4764a547323cc60e09a947be683393ab6b2044139c1d655ed05398802e04247e",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/hackers-infect-953-online-stores-with.html",
+      "canonical_url": "https://thehackernews.com/2026/10/hackers-infect-953-online-stores-with.html",
+      "published_at": "2026-10-27T03:12:22+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "Hackers Infect 953 Online Stores With Scanner-Evading JavaScript, Mostly on Magento",
+      "raw_title": "Hackers Infect 953 Online Stores With Scanner-Evading JavaScript, Mostly on Magento",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8a1b21ce64b37c51bf287071a8305f75b8ca7224052ff6b5fcbc2150aa7b264c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:29:37.407473+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "オンラインストアへの攻撃キャンペーンとマルウェア感染の手法が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "2025年7月から活動している未知の脅威アクターが、主にMagentoで稼働する953のオンラインストアを感染させました。これは、ストアのページに悪意のあるJavaScriptローダーコードを仕込む手口です。",
+        "financial_impact": "金融機関がMagento等のEコマースプラットフォームを直接運用している場合、または委託先が利用している場合に、サプライチェーンリスクとして関係します。",
+        "recommended_actions": [
+          "自社および委託先でMagento等のEコマースプラットフォームの利用有無を確認する",
+          "Eコマースプラットフォームのセキュリティ設定や監視体制を再確認する"
+        ],
+        "reason": "重要度は、金融機関が直接Eコマースプラットフォームを運用するケースは限定的であり、適用範囲が不確実なため「中」です。確認目安は、長期的な攻撃キャンペーンであり、即時対応を要する新たな脅威や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c85198bbddef2ec11ea9bd7e48957ff3175a054e5f58fb8e067ecdf2918b369c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/php-issues-second-windows-security.html",
+      "canonical_url": "https://thehackernews.com/2026/10/php-issues-second-windows-security.html",
+      "published_at": "2026-10-27T02:45:57+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "PHP Issues Second Windows Security Update in Five Days to Fix Brotli Code Execution Flaw",
+      "raw_title": "PHP Issues Second Windows Security Update in Five Days to Fix Brotli Code Execution Flaw",
+      "raw_excerpt": null,
+      "content_hash": "sha256:da54baf837e7075184b064d6ec0665f7392a8fa39c36e91234b2fdf651a3c365",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:29:54.881320+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "PHPのBrotli圧縮ライブラリにおけるコード実行の脆弱性に関するセキュリティアップデートが主題のため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "PHPは、Brotli圧縮ライブラリに含まれるCVE-2026-111497の脆弱性を修正するため、PHP 8.2から8.5までのWindows向け公式パッケージを再構築しました。この脆弱性はメモリ破損を引き起こし、コード実行につながる可能性があります。",
+        "financial_impact": "金融機関でPHPをWindows環境で利用しており、かつcURL拡張機能でHTTPレスポンスの自動解凍を有効にしている場合に適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "自社および委託先でPHPをWindows環境で利用しているか、またそのバージョンが8.2から8.5の範囲にあるかを確認する",
+          "cURL拡張機能でHTTPレスポンスの自動解凍が有効になっているかを確認する",
+          "PHPの公式情報を参照し、最新のセキュリティアップデート適用を検討する"
+        ],
+        "reason": "重要度は、PHPの利用状況やcURL拡張機能の設定に依存し、適用範囲が限定的であるため「中」です。確認目安は、実悪用や緊急対応の明確な時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4b8826d6a66e074543d42962242b43c47c115efa1a641d10702956c2bb749253",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/attackers-use-microsoft-teams-it.html",
+      "canonical_url": "https://thehackernews.com/2026/10/attackers-use-microsoft-teams-it.html",
+      "published_at": "2026-10-27T00:52:40+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "Attackers Use Microsoft Teams IT Support Scams to Deploy Malware and Ransomware",
+      "raw_title": "Attackers Use Microsoft Teams IT Support Scams to Deploy Malware and Ransomware",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4ed6d61c94cff2d2d2af64238a85dbc510f27864c9ac488dc1b1c3e2b21283d0",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:30:12.330213+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Microsoft Teamsを悪用したソーシャルエンジニアリング攻撃の手法と脅威が主題であるため。",
+        "tags": [
+          "フィッシング",
+          "ランサムウェア"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者によると、攻撃者がMicrosoft Teamsの外部チャット作成機能を悪用し、ITサポート詐欺を通じてマルウェアやランサムウェアを展開するソーシャルエンジニアリングの手口が数百件の事例で確認されています。",
+        "financial_impact": "金融機関がMicrosoft Teamsを利用している場合、従業員が標的となる可能性があります。詐欺によりマルウェア感染やランサムウェア被害に繋がるリスクがあります。",
+        "recommended_actions": [
+          "Microsoft Teamsの外部チャット機能の利用状況と設定を確認する",
+          "従業員に対し、ITサポートを装った不審なチャットへの注意喚起と報告手順を再周知する",
+          "不審なチャットやファイル受信時の対応手順を再確認する"
+        ],
+        "reason": "重要度は、広く利用されるMicrosoft Teamsを悪用したソーシャルエンジニアリング攻撃であり、マルウェア感染やランサムウェア被害に繋がる可能性があるため「高」です。確認目安は、進行中の攻撃手法に関する情報であり、即時対応を要する脆弱性情報ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:71d69466750982d246dd93ce03cd7c2bdb2fd852395ad1c45abe9d60db1d7989",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/industrial-vendors-check-products-for-php2shell-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/industrial-vendors-check-products-for-php2shell-vulnerabilities/",
+      "published_at": "2026-10-26T23:52:14+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "Industrial Vendors Check Products for PHP2Shell Vulnerabilities",
+      "raw_title": "Industrial Vendors Check Products for PHP2Shell Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:cf861f76f138949141edd9d8107196c220a9c18ae51b03b5f008972d09d736d2",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:30:29.348675+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がPHP2Shellの脆弱性に関するものであるため。",
+        "tags": [
+          "パッチ",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Siemens、Schneider Electric、ABBなどの産業用ベンダーが、一部の製品がPHP2Shellの脆弱性の影響を受けることを確認しました。",
+        "financial_impact": "金融機関が当該産業用ベンダーの製品を直接利用している場合、またはサプライチェーンを通じて間接的に影響を受ける場合に、適用性確認の対象になります。",
+        "recommended_actions": [
+          "自社および委託先におけるSiemens、Schneider Electric、ABBなどの産業用製品の利用有無を確認する",
+          "利用している場合は、各ベンダーの公開情報を参照し、影響を受ける製品とバージョンを確認する",
+          "影響を受ける製品が確認された場合、ベンダーが提供する修正パッチや緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、金融機関での直接的な利用が限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e9bfff2540c89deb609acb1cd889d0aebaa1893862c67a377879a2d1d03d8a60",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/genesys-hack-exposes-customer-data-from-internal-systems/",
+      "canonical_url": "https://www.securityweek.com/genesys-hack-exposes-customer-data-from-internal-systems/",
+      "published_at": "2026-10-26T23:40:48+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "Genesys Hack Exposes Customer Data From Internal Systems",
+      "raw_title": "Genesys Hack Exposes Customer Data From Internal Systems",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9bea9ed3a5cec64459e075b373e5bfa333df3f26b159daadd5060e0705e4e065",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:30:46.444694+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "Genesysへのハッキングによる顧客データ流出という実際の侵害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Genesysがハッキングを受け、内部システムから顧客データが流出しました。ただし、Genesys Cloud、Genesys Engage、Genesys Engage Cloudの各プラットフォームは影響を受けていません。",
+        "financial_impact": "Genesysのサービスを委託先として利用している金融機関は、自社の顧客データが影響を受けていないか確認する必要があります。記事からは影響を受けた具体的なデータ内容や範囲は不明です。",
+        "recommended_actions": [
+          "Genesysのサービス利用状況を確認し、影響を受けた可能性のある内部システムとの関連性を評価する",
+          "Genesysからの公式発表や顧客向け通知を確認し、詳細な情報収集と対応要否を判断する"
+        ],
+        "reason": "重要度は、金融機関がGenesysのサービスを委託先として利用している場合に影響する可能性があるため「中」です。確認目安は、具体的な影響範囲や緊急対応の指示が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:3cd3e05b9ffb81b5c586f534e50130e6045364a5331822a226175f3b431704d6",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/stolen-ai-reasoning-could-help-china-build-cheaper-rivals/",
+      "canonical_url": "https://www.securityweek.com/stolen-ai-reasoning-could-help-china-build-cheaper-rivals/",
+      "published_at": "2026-10-26T23:30:09+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "Stolen AI Reasoning Could Help China Build Cheaper Rivals",
+      "raw_title": "Stolen AI Reasoning Could Help China Build Cheaper Rivals",
+      "raw_excerpt": null,
+      "content_hash": "sha256:72cb57ed4dd39f065bf00bbbdd4ca04221939254a16bd12c44a70ffd3965f74a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:31:03.467110+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIモデルの推論プロセスにおける欠陥と、それが競合AI開発に与える影響が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "OpenAIの圧縮プロセスにおける欠陥により、研究者がモデル間で推論トレースを移動できることが判明しました。これにより、競合AIの蒸留コストを削減できる可能性があります。",
+        "financial_impact": "金融機関がOpenAIのモデルを利用している場合、その推論プロセスにおける潜在的な情報漏えいリスクについて評価する必要があるかもしれません。ただし、記事からは直接的な金融機関への影響は確認できません。",
+        "recommended_actions": [
+          "OpenAIのモデルを利用している場合、当該の圧縮プロセスに関するベンダーからの追加情報を確認する",
+          "AIモデルの利用における情報セキュリティリスク評価を定期的に実施する"
+        ],
+        "reason": "重要度は、AIモデルの推論プロセスに関する潜在的なリスクであり、金融機関への直接的な影響が限定的または不確実なため「中」です。確認目安は、具体的な攻撃や緊急対応の期限が示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e0df996ac6f273db772adcd0c6a29aced11263ca5501f7bfb8c120e25427a665",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/weekly-recap-this2shell-that2shell.html",
+      "canonical_url": "https://thehackernews.com/2026/10/weekly-recap-this2shell-that2shell.html",
+      "published_at": "2026-10-26T23:06:13+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "⚡ Weekly Recap: This2Shell, That2Shell, Everything's an RCE? Rogue AI, Supply Chain Chaos and More",
+      "raw_title": "⚡ Weekly Recap: This2Shell, That2Shell, Everything's an RCE? Rogue AI, Supply Chain Chaos and More",
+      "raw_excerpt": null,
+      "content_hash": "sha256:cf811c8400d22e37668990419545a1927665847cc4147f66f9fc9ed5e4674921",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:31:20.395459+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の異なる脅威動向をまとめた週次記事であり、特定のカテゴリに分類できないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "先週はリモートコード実行の脆弱性が多発し、攻撃者が標的をスキャンし、一部の脆弱性は既に悪用されています。また、漏洩した鍵がソフトウェアサプライチェーンの混乱を引き起こしました。",
+        "financial_impact": "本記事は一般的な脅威動向の週次まとめであり、金融機関への直接的な影響は限定的です。個別の脅威については別途詳細な情報収集が必要です。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や具体的なアクションを伴わない一般的な週次まとめ記事のため「低」です。確認目安は、個別の脅威に対する具体的な対応期限や緊急性が示されていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:70e22aa6ff7342720bf4f4e9c97ca11cfd7429f6fdc5814002af429e96c9d423",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/php2shell-exploitation-moves-from-probes-to-working-shells/",
+      "canonical_url": "https://www.securityweek.com/php2shell-exploitation-moves-from-probes-to-working-shells/",
+      "published_at": "2026-10-26T22:30:10+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "PHP2Shell Exploitation Moves From Probes to Working Shells",
+      "raw_title": "PHP2Shell Exploitation Moves From Probes to Working Shells",
+      "raw_excerpt": null,
+      "content_hash": "sha256:55e039f413df717e46ff6d56d41a7abf897898fc5f2f6a24072de58958fdd20f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:31:37.449840+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "PHP2Shellの脆弱性を悪用した攻撃の動向が主題であるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "攻撃者がハニーポットに対してPHP2Shellの脆弱性を悪用し、10月24日に2つのIPアドレスから35個のシェルを起動することに成功しました。",
+        "financial_impact": "金融機関がPHP2Shellを導入している場合に関係します。記事からは利用状況が不明なため、適用性確認の対象となります。",
+        "recommended_actions": [
+          "PHP2Shellの利用有無を棚卸しし、導入している場合は影響範囲を確認する",
+          "PHP2Shellの脆弱性に関するベンダー情報を確認し、必要な緩和策やパッチの適用を検討する"
+        ],
+        "reason": "重要度は、特定のツールに関する攻撃動向であり、金融機関での利用状況が不明なため「中」です。確認目安は、実悪用が確認されたものの、KEV新規追加や緊急対応を要する明確な期限がないため「今週確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a2ffa5c60b8ef88ac66057e6d91284533e931f8e182c4f72f7c44db12721ce33",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/953-online-stores-infected-in-long-lasting-malware-campaign/",
+      "canonical_url": "https://www.securityweek.com/953-online-stores-infected-in-long-lasting-malware-campaign/",
+      "published_at": "2026-10-26T21:46:44+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "953 Online Stores Infected in Long-Lasting Malware Campaign",
+      "raw_title": "953 Online Stores Infected in Long-Lasting Malware Campaign",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bda8e0a246fc27e59e400fc4e82b643f8e0d565b6a1bd31a2874e393c0ba4e07",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:31:54.774136+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "オンラインストアへのマルウェア感染キャンペーンに関する記事であり、攻撃手法と脅威動向が主題のため。",
+        "tags": [
+          "情報漏えい",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "長期にわたるマルウェアキャンペーンにより、953のオンラインストアが感染しました。これらのストアに注入された小さなローダーコードは、訪問者にペイロードを提供するか、検出を避けるために何も実行しない場合がありました。",
+        "financial_impact": "金融機関がオンラインストアを運営している場合、同様のマルウェア感染リスクに注意が必要です。また、顧客が利用するオンラインストアが感染した場合、顧客情報の漏洩や決済情報の詐取につながる可能性があります。",
+        "recommended_actions": [
+          "自社が運営するオンラインストアのセキュリティ設定と監視体制を確認する",
+          "委託先のオンラインストア運営事業者に対し、セキュリティ対策状況を確認する"
+        ],
+        "reason": "重要度は、金融機関が直接的な標的ではないものの、オンラインストア運営や顧客保護の観点から関連性があるため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、状況把握と中長期的な対策検討が中心となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f67f5ee9f8e39aaf86854c69c2d092d7a4539704fd377367dcc0964a91d4d1b5",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/two-critical-wasmtime-flaws-could-let.html",
+      "canonical_url": "https://thehackernews.com/2026/10/two-critical-wasmtime-flaws-could-let.html",
+      "published_at": "2026-10-26T20:52:41+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "Two Critical Wasmtime Flaws Could Let Malicious WebAssembly Modules Escape Sandboxes",
+      "raw_title": "Two Critical Wasmtime Flaws Could Let Malicious WebAssembly Modules Escape Sandboxes",
+      "raw_excerpt": null,
+      "content_hash": "sha256:be0366964ea3e09bde2d550da381641d719b09a80a5b60e66422e878490119c7",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:32:12.733582+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "WebAssemblyランタイムWasmtimeの2つの重大な脆弱性が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "WebAssemblyランタイムWasmtimeに2つの重大な脆弱性が発見されました。悪意のあるWebAssemblyモジュールがサンドボックスを回避し、システムに影響を与える可能性があります。攻撃には脆弱なWasmtimeビルドが必要で、1つはARM64システムのみに影響します。",
+        "financial_impact": "Wasmtimeを組み込んだソフトウェアを利用している金融機関に関係します。利用有無は記事から確認できないため、適用性確認の対象となる可能性があります。",
+        "recommended_actions": [
+          "Wasmtimeを組み込んだソフトウェアの利用有無と影響バージョンを確認する",
+          "ベンダーが公開している修正済みバージョンへの更新を検討する"
+        ],
+        "reason": "重要度は、Wasmtimeの利用状況や影響範囲が記事から不明確であり、適用性が限定的である可能性があるため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:78ecc72d708194450fb1a7eb6f90cc3f0aca8c076b4f4d7b486b2e74d466fdd7",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/dutch-police-arrest-two-over-nfc-relay-attacks-that-drained-400000/",
+      "canonical_url": "https://www.securityweek.com/dutch-police-arrest-two-over-nfc-relay-attacks-that-drained-400000/",
+      "published_at": "2026-10-26T20:47:52+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "Dutch Police Arrest Two Over NFC Relay Attacks That Drained $400,000+ From Bank Accounts",
+      "raw_title": "Dutch Police Arrest Two Over NFC Relay Attacks That Drained $400,000+ From Bank Accounts",
+      "raw_excerpt": null,
+      "content_hash": "sha256:52a8668dbdd2fd5fa42a16eef97ab567bd1e9e234e018795844d15bb3657fda1",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:32:30.081507+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "NFCリレー攻撃という特定の攻撃手法と、それによる詐取事例が主題であるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "オランダ警察は、NFCリレー攻撃を用いて銀行口座から40万ドル以上を詐取したとして2名を逮捕しました。犯人らは被害者にアプリをインストールさせ、クレジットカードをスキャンさせる手口で銀行口座から資金を盗んでいました。",
+        "financial_impact": "NFCリレー攻撃は決済システムや認証プロセスに影響を与える可能性があり、金融機関は同様の詐欺手口に対する顧客への注意喚起や、関連するセキュリティ対策の再確認が求められる可能性があります。",
+        "recommended_actions": [
+          "NFCを利用した決済や認証プロセスにおけるセキュリティ対策の有効性を再確認する",
+          "顧客に対し、不審なアプリのインストールやクレジットカード情報のスキャンを促す手口への注意喚起を強化する"
+        ],
+        "reason": "重要度は、NFCリレー攻撃による詐欺事例であり、金融機関の決済システムや顧客に影響を与える可能性があるため「中」です。確認目安は、新たな脅威動向として情報収集の価値があるものの、即時対応を要する具体的な期限や進行中の攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ce0386ac22975ba196691f182b884946d00fd15c9ab51b62bb72c9c1827bab52",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/between-alerts-what-attackers-do-in.html",
+      "canonical_url": "https://thehackernews.com/2026/10/between-alerts-what-attackers-do-in.html",
+      "published_at": "2026-10-26T20:23:56+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "Between alerts: What Attackers Do in the Spaces Ordinary Detection Misses",
+      "raw_title": "Between alerts: What Attackers Do in the Spaces Ordinary Detection Misses",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f1265ea4cd066d6e076b054de1683b3aa8ec4dc315ef30e3994bbd608144d939",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:32:47.322789+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "SOCが直面するアラートの課題と、攻撃者が検知をすり抜ける手口について解説しているため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "本記事は、SOCが大量のアラートに直面する中で、攻撃の開始点や進行状況を把握することが困難であると指摘しています。ネットワークデータ（NDRプラットフォームなど）を活用することで、個々のアラートを攻撃のタイムラインに結びつけ、全体像を把握できると述べています。",
+        "financial_impact": "金融機関のSOCにおいても、大量のアラートから攻撃の全体像を把握することは共通の課題です。NDRのような技術は、インシデント対応能力の向上に寄与する可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、一般的なSOCの課題とNDRの活用に関する情報であり、特定の脅威や脆弱性ではないため「中」です。確認目安は、具体的な緊急対応を要する情報ではなく、中長期的なSOC運用改善の参考となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:15faad20100130033abdd3a4de096a0860a085deb1392715d22a674d80979a8d",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/node2shell-brotli-flaw-triggers-patching-across-microsoft-node-js-python-packages/",
+      "canonical_url": "https://www.securityweek.com/node2shell-brotli-flaw-triggers-patching-across-microsoft-node-js-python-packages/",
+      "published_at": "2026-10-26T19:21:57+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "Node2Shell: Brotli Flaw Triggers Patching Across Microsoft, Node.js, Python Packages",
+      "raw_title": "Node2Shell: Brotli Flaw Triggers Patching Across Microsoft, Node.js, Python Packages",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ca593b8bac3e022afef26799d0a6b850dea14f7687834cea9c6f3b239d5a4c4c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:33:04.510990+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Google Brotliデコーダの脆弱性と、それに対するパッチ適用が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "GoogleのBrotliデコーダにおける境界外書き込みの脆弱性が、Node.js、.NET、PowerShell、Pythonの各パッケージに影響を与え、コード実行につながる可能性があります。",
+        "financial_impact": "金融機関でNode.js、.NET、PowerShell、Pythonのいずれかのパッケージを利用している場合に、適用性確認の対象となります。これらの技術は広く利用されているため、関連するシステムがないか確認が必要です。",
+        "recommended_actions": [
+          "自社および委託先でNode.js、.NET、PowerShell、Pythonの各パッケージの利用有無と影響バージョンを確認する",
+          "各ベンダーから提供されるパッチや緩和策の情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、広く利用される可能性のある基盤技術の脆弱性であるものの、具体的な悪用状況や金融機関への直接的な影響が記事から不明なため「中」です。確認目安は、CISA KEVへの新規追加がなく、即時対応を要する時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:20494af63ce3fb8e1268344e5a5e46a89fb8745f8a818ef14ed0d1f00c0af8a9",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/ucreator-android-spyware-can-steal.html",
+      "canonical_url": "https://thehackernews.com/2026/10/ucreator-android-spyware-can-steal.html",
+      "published_at": "2026-10-26T18:54:02+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "uCreator Android Spyware Can Steal Telegram 2FA Passwords and Clone WeChat Accounts",
+      "raw_title": "uCreator Android Spyware Can Steal Telegram 2FA Passwords and Clone WeChat Accounts",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7b3e542542b9726b08d5e10a535006a8627d35b8618d9758ed0c935ea0d78255",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:33:21.899213+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Androidスパイウェア「uCreator」の機能と拡散方法に関する脅威動向が主題のため。",
+        "tags": [
+          "フィッシング",
+          "認証"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "「uCreator」と呼ばれるレンタル型Androidスパイウェアキットが、TelegramおよびWeChatアカウントを乗っ取ることが判明しました。このスパイウェアは、公式アプリストア外で配布される改ざんされたアプリ内にコードを隠し、Telegramの2FAパスワードを窃取したり、WeChatアカウントを複製したりします。",
+        "financial_impact": "金融機関の従業員が個人利用のAndroidデバイスでこれらの改ざんされたアプリをインストールした場合、個人情報や認証情報が窃取される可能性があります。業務利用のデバイスへの影響は限定的ですが、シャドーITのリスクとして関連します。",
+        "recommended_actions": [
+          "従業員に対し、公式アプリストア以外からのアプリインストールを避けるよう注意喚起する",
+          "業務利用デバイスにおける個人アプリの利用ポリシーを再確認し、必要に応じて強化を検討する"
+        ],
+        "reason": "重要度は、特定の改ざんアプリのインストールが前提であり、金融機関への直接的な影響が限定的であるため「中」です。確認目安は、新たな攻撃手法に関する情報であり、即時対応を要する具体的な期限や進行中の攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:399172439712b08d5e85ae1e75783c6c3387be4fdb196acb84a4e22c103b9a1f",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/microsoft-365-token-replay-attacks.html",
+      "canonical_url": "https://thehackernews.com/2026/10/microsoft-365-token-replay-attacks.html",
+      "published_at": "2026-10-26T17:35:51+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "Microsoft 365 Token-Replay Attacks Compromise 97 Accounts at 79 Organizations",
+      "raw_title": "Microsoft 365 Token-Replay Attacks Compromise 97 Accounts at 79 Organizations",
+      "raw_excerpt": null,
+      "content_hash": "sha256:27df106ecec492e71c44c67a953c98bb5c583e419553d63300025842fa67c65f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:33:39.511429+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Microsoft 365を標的とした攻撃手法とキャンペーンが主題であるため。",
+        "tags": [
+          "フィッシング",
+          "認証",
+          "クラウド",
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者により、Microsoft 365を標的としたアドバーサリーインザミドル(AitM)攻撃キャンペーンが確認されました。この攻撃は、サインインセッションを傍受し、盗んだトークンをリプレイすることで、79組織のメールアカウント97件に不正アクセスしたものです。",
+        "financial_impact": "多くの金融機関でMicrosoft 365が利用されているため、本攻撃手法は認証情報窃取や不正アクセスによる情報漏えい、業務停止のリスクに直接関係します。",
+        "recommended_actions": [
+          "Microsoft 365環境におけるAitM攻撃やトークンリプレイ攻撃の兆候がないか、ログを監視・分析する",
+          "Microsoft 365の認証設定を見直し、多要素認証(MFA)の強化や条件付きアクセスポリシーの適用状況を確認する",
+          "ユーザーへのフィッシング対策教育を強化し、不審なサインイン要求やリンクに対する注意喚起を行う"
+        ],
+        "reason": "重要度は、多くの金融機関で利用されるMicrosoft 365を標的とした実攻撃事例であり、情報漏えいや業務停止に直結するため「高」です。確認目安は、進行中の攻撃事例であり、自社環境への影響有無を評価する必要があるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5ae5985c69e5d9b716f57711b5d4d1cab736218da68e3c6d1a17718f1641b6ab",
+      "source_id": "jpcert_cc",
+      "source_name": "JPCERT/CC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.jpcert.or.jp/at/2026/at260034.html",
+      "canonical_url": "https://www.jpcert.or.jp/at/2026/at260034.html",
+      "published_at": "2026-10-26T16:25:00+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "注意喚起: BrotliのC言語実装における境界外書き込みの脆弱性（CVE-2026-111497）に関する注意喚起  (公開)",
+      "raw_title": "注意喚起: BrotliのC言語実装における境界外書き込みの脆弱性（CVE-2026-111497）に関する注意喚起  (公開)",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bec7f044c5967c7b0c25296f43ff5a3f96377e6bb35c127e9ea2d80f3386c4ad",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "feed_summary",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:33:56.723854+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CVEに関する注意喚起が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "BrotliのC言語実装において、境界外書き込みの脆弱性（CVE-2026-111497）が確認されました。この脆弱性は、悪用されるとサービス運用に影響を与える可能性があります。",
+        "financial_impact": "BrotliはWebコンテンツの圧縮に広く利用される技術であり、金融機関のWebサービスや関連システムで利用されている場合に関係します。直接的な影響は利用状況に依存します。",
+        "recommended_actions": [
+          "CVE-2026-111497の影響を受けるBrotliのC言語実装の利用有無とバージョンを確認する",
+          "ベンダーから提供される情報に基づき、パッチ適用や緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、Brotliの利用状況により適用範囲が限定的であるため「中」です。確認目安は、CISA KEVへの新規追加がなく、即時対応の明確な根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-111497",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-10-27T01:29:17Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-111497",
+              "vuln_status": "Awaiting Analysis",
+              "published_at": "2026-10-22T14:17:37Z",
+              "last_modified_at": "2026-10-26T18:17:36Z",
+              "cvss": {
+                "version": "4.0",
+                "base_score": 9.2,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:X/CR:X/IR:X/AR:X/MAV:X/MAC:X/MAT:X/MPR:X/MUI:X/MVC:X/MVI:X/MVA:X/MSC:X/MSI:X/MSA:X/S:X/AU:X/R:X/V:X/RE:X/U:X",
+                "source": "cve-coordination@google.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "not_listed",
+              "retrieval": "live",
+              "fetched_at": "2026-10-27T01:29:17Z",
+              "date_added": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:47020b964d9535efb8df925e9bda58ce28d11c8c9ecda97cbd91cd0c63cf5758",
+      "source_id": "jpcert_cc",
+      "source_name": "JPCERT/CC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.jpcert.or.jp/at/2026/at260033.html",
+      "canonical_url": "https://www.jpcert.or.jp/at/2026/at260033.html",
+      "published_at": "2026-10-26T16:25:00+09:00",
+      "fetched_at": "2026-10-27T10:29:17.004230+09:00",
+      "title": "注意喚起: PHPにおける複数の脆弱性（CVE-2026-109618、CVE-2026-109619）に関する注意喚起  (更新)",
+      "raw_title": "注意喚起: PHPにおける複数の脆弱性（CVE-2026-109618、CVE-2026-109619）に関する注意喚起  (更新)",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2d96c1a948f7c553fefef3f4b9e447441c5d5912d3915c584983a84fd908691b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "feed_summary",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-27T10:34:13.988665+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がPHPの複数のCVEに関する注意喚起であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "CISAは2026年10月26日、実悪用が確認されたとしてCVE-2026-109618およびCVE-2026-109619をKEVカタログへ追加しました。これらはPHPにおける複数の脆弱性であり、悪用されるとシステムへの影響が懸念されます。",
+        "financial_impact": "PHPは多くのシステムで利用される共通基盤であるため、金融機関でPHPを利用しているシステムがある場合に関係します。特に外部公開システムでの利用状況を確認する必要があります。",
+        "recommended_actions": [
+          "自社および委託先でPHPを利用しているシステムを棚卸しし、影響を受けるバージョンがないか確認する",
+          "ベンダーの一次情報を参照し、修正パッチの適用または緩和策の実施を検討する",
+          "システムログやセキュリティ監視ツールを用いて、これらの脆弱性の悪用兆候がないか確認する"
+        ],
+        "reason": "重要度は、広く利用される共通基盤であるPHPの脆弱性であり、CISA KEVに掲載され実悪用が確認されているため「高」です。確認目安は、CISA KEVへ直近3日以内に新規追加されたため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-109618",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-10-27T01:29:17Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-109618",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-10-21T14:17:09Z",
+              "last_modified_at": "2026-10-26T10:10:00Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 9.8,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                "source": "nvd@nist.gov",
+                "type": "Primary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-10-27T01:29:17Z",
+              "date_added": "2026-10-26"
+            }
+          },
+          {
+            "cve_id": "CVE-2026-109619",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-10-27T01:29:17Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-109619",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-10-21T14:17:09Z",
+              "last_modified_at": "2026-10-26T10:10:00Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 8.1,
+                "base_severity": "HIGH",
+                "vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                "source": "nvd@nist.gov",
+                "type": "Primary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-10-27T01:29:17Z",
+              "date_added": "2026-10-26"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
