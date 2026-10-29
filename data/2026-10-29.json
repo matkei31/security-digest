@@ -1,0 +1,961 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-10-29",
+  "generated_at": "2026-10-29T10:53:02.192405+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 18,
+    "ai_attempted_count": 16,
+    "ai_success_count": 16,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 2,
+    "ai_eligible_count": 16
+  },
+  "counts": {
+    "importance": {
+      "高": 1,
+      "中": 11,
+      "低": 4,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 9,
+      "参考": 7,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 7,
+      "攻撃・脅威動向": 4,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 1,
+      "AI・新技術リスク": 1,
+      "その他": 3,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象16件｜重要度「高」1件｜本日確認0件｜今週確認9件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が9件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が1件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "Oracle E-Business Suite (EBS) のOracle Application Object Libraryにおける認証不備の脆弱性(CVE-2026-101767、CVSSスコア9.8)が、パッチ公開後すぐに攻撃者によって探索されていることが確認されました。"
+    ],
+    "discussion_points": [
+      "Oracle E-Business Suite (EBS) のOracle Application Object Libraryにおける認証不備の脆弱性(CVE-2026-101767、CVSSスコア9.8)が、パッチ公開後すぐに攻撃者によって探索されていることが確認されました。\nOracle E-Business Suiteを基幹システムや業務システムとして利用している金融機関は、本脆弱性の影響を受ける可能性があります。特に外部に公開している場合は、早急な対応が求められます。",
+      "中国関連のサイバースパイグループVolt Typhoonが、Silent Trainと呼ばれる隠蔽されたアクセスネットワークをゼロデイ攻撃や戦略的アクセスに利用していたことが判明しました。このネットワークは、侵害されたSOHO、IoT、エンタープライズインフラストラクチャのローテーションチェーンを使用しています。\n金融機関への直接的な影響は記事からは確認できませんが、国家支援型攻撃グループによるゼロデイ攻撃は、広く利用されるSOHO、IoT、エンタープライズインフラストラクチャを標的とする可能性があり、サプライチェーンリスクとして関係する可能性があります。"
+    ],
+    "check_items": [
+      "Oracle E-Business Suiteの利用有無と、影響を受けるバージョンおよび外部公開状況を確認する",
+      "自社および委託先におけるSOHO、IoT、エンタープライズインフラストラクチャの利用状況とセキュリティ対策状況を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:196cb48efaf989d2df70f70c4d8652ac276d2f3884b14373e7b8b72576d42712",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/uat-11473-keydrift/",
+      "canonical_url": "https://blog.talosintelligence.com/uat-11473-keydrift/",
+      "published_at": "2026-10-29T06:32:02+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "Inside KeyDrift: Analyzing historical UAT-11473 activity on Cisco SD-WAN",
+      "raw_title": "Inside KeyDrift: Analyzing historical UAT-11473 activity on Cisco SD-WAN",
+      "raw_excerpt": null,
+      "content_hash": "sha256:91d04c68e7b0eaf61cacdb3ea33d12fec06a8c22da5ce7cda6d9f7a5faedb9fd",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:3402ef3be45eaaf5abfa887e5a5903a5fd4773a26c53e5d4f9d6720418fdd0e4",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/volt-typhoon-used-covert-silent-train.html",
+      "canonical_url": "https://thehackernews.com/2026/10/volt-typhoon-used-covert-silent-train.html",
+      "published_at": "2026-10-29T03:08:33+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "Volt Typhoon Used Covert Silent Train Network in Four Zero-Day Exploitation Campaigns",
+      "raw_title": "Volt Typhoon Used Covert Silent Train Network in Four Zero-Day Exploitation Campaigns",
+      "raw_excerpt": null,
+      "content_hash": "sha256:003c6ce43c8b2c35c7af849d57b0e6a25f64df3da188936aecc068d31d491082",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:48:32.246909+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国関連のサイバースパイグループVolt Typhoonによるゼロデイ攻撃キャンペーンと、その隠蔽されたネットワークの使用が主題であるため。",
+        "tags": [
+          "APT",
+          "ゼロデイ",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "中国関連のサイバースパイグループVolt Typhoonが、Silent Trainと呼ばれる隠蔽されたアクセスネットワークをゼロデイ攻撃や戦略的アクセスに利用していたことが判明しました。このネットワークは、侵害されたSOHO、IoT、エンタープライズインフラストラクチャのローテーションチェーンを使用しています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できませんが、国家支援型攻撃グループによるゼロデイ攻撃は、広く利用されるSOHO、IoT、エンタープライズインフラストラクチャを標的とする可能性があり、サプライチェーンリスクとして関係する可能性があります。",
+        "recommended_actions": [
+          "自社および委託先におけるSOHO、IoT、エンタープライズインフラストラクチャの利用状況とセキュリティ対策状況を確認する",
+          "Volt Typhoonの攻撃手法や関連するIOCに関する最新の脅威情報を継続的に監視する"
+        ],
+        "reason": "重要度は、国家支援型攻撃グループによるゼロデイ攻撃であり、サプライチェーンリスクとして関連する可能性があるため「中」です。確認目安は、具体的な侵害や期限の記述がなく、一般的な脅威動向情報であるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:346aefdaad097d5af65c53020f635dc9162b31a2aa95bfb94ae871855a6e652e",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/google-to-allow-one-tap-android-app.html",
+      "canonical_url": "https://thehackernews.com/2026/10/google-to-allow-one-tap-android-app.html",
+      "published_at": "2026-10-29T02:08:09+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "Google to Allow One-Tap Android App Installs From Approved Third-Party Stores Outside U.S.",
+      "raw_title": "Google to Allow One-Tap Android App Installs From Approved Third-Party Stores Outside U.S.",
+      "raw_excerpt": null,
+      "content_hash": "sha256:46e2739ed9a837e86b6cc9c73aa55340352c246fe28652fc754fb102ca107a11",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:48:49.201176+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "GoogleのAndroidアプリインストールに関するポリシー変更が主題であり、特定の脆弱性や攻撃、規制には直接関連しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Googleは、米国以外の地域で、承認されたサードパーティのAndroidアプリストアからのワンタップインストールとバックグラウンド更新を許可する方針を発表しました。対象となるストアは、身元確認と継続的なマルウェアスキャンのため、アプリカタログ全体をGoogleに提出する必要があります。",
+        "financial_impact": "金融機関が従業員や顧客に提供するモバイルアプリの配布方法やセキュリティ管理に間接的に影響する可能性がありますが、直接的な関係は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が限定的であり、一般的な情報収集としての価値が中心となるため「低」です。確認目安は、具体的な脅威や期限に関する記述がなく、中長期的な動向として把握する情報のため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4abc2dcf4334fae95bb4786199ce0d0e7ccab68addad061697543ee26a700ac6",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/researcher-reveals-how-logic-bugs-alone.html",
+      "canonical_url": "https://thehackernews.com/2026/10/researcher-reveals-how-logic-bugs-alone.html",
+      "published_at": "2026-10-29T01:23:34+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "Researcher Reveals How Logic Bugs Alone Cracked Microsoft Edge in $175,000 Pwn2Own Win",
+      "raw_title": "Researcher Reveals How Logic Bugs Alone Cracked Microsoft Edge in $175,000 Pwn2Own Win",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9fb538d3db1d84c0d5acadb1393f00daa57b8ae97a8805d795bf3c15e6ed1de9",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:49:06.252137+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Microsoft Edgeの論理バグの連鎖によるサンドボックス突破が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セキュリティ研究者が、メモリ破損を伴わない論理バグの連鎖によって、悪意のあるウェブページがMicrosoft Edgeのサンドボックス外でコードを実行できることを示しました。この手法はPwn2Own Berlinで17万5千ドルを獲得し、Microsoftはコンテストの翌日にバグを修正済みです。",
+        "financial_impact": "金融機関でMicrosoft Edgeを業務利用している場合に関係します。ただし、脆弱性は既に修正済みであり、最新版への更新が適用されていれば影響は限定的です。",
+        "recommended_actions": [
+          "Microsoft Edgeの利用状況とバージョンを確認し、最新版への更新状況を評価する"
+        ],
+        "reason": "重要度は、Microsoft Edgeの脆弱性だが既に修正済みであり、適用範囲が限定的であるため「中」です。確認目安は、既に修正済みであり緊急の対応を要する新たな脅威情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:257599f0048efc914687bf8cbe309cf14c54b57259dbb661be83599a2c582e36",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/php2shell-attack-roots-25-servers.html",
+      "canonical_url": "https://thehackernews.com/2026/10/php2shell-attack-roots-25-servers.html",
+      "published_at": "2026-10-29T01:02:45+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "PHP2Shell Attack Roots 25 Servers, Breaches U.S. Government-Affiliated Network",
+      "raw_title": "PHP2Shell Attack Roots 25 Servers, Breaches U.S. Government-Affiliated Network",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f1400e34fa19bfe5b08627b2abba7b0a0b16efd8ff56208e4da54590cbe83c93",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:49:23.324895+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "AIを悪用した攻撃手法と、中国関連の脅威アクターによる活動が主題であるため。",
+        "tags": [
+          "APT",
+          "AI",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、中国関連の脅威アクターによるAI支援型攻撃の詳細を公開しました。この攻撃はPHP2Shellの脆弱性を悪用し、露出したシステムを侵害しており、米国政府関連ネットワークも標的となりました。",
+        "financial_impact": "金融機関がPHP2Shellの脆弱性を持つシステムを運用している場合、攻撃の標的となる可能性があります。記事からは金融機関への直接的な影響は確認できません。",
+        "recommended_actions": [
+          "自社および委託先においてPHP2Shellの脆弱性を持つシステムが稼働していないか確認する",
+          "関連するシステムで不審な活動や侵害の兆候がないかログを調査する"
+        ],
+        "reason": "重要度は、AI支援型攻撃の事例として注目されるが、金融機関への直接的な適用性や影響が記事から不明確なため「中」です。確認目安は、具体的な緊急対応の指示や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9df20833f43de289ae4a0fd25c0bda506b4dcba5ba9d3b46222fe9db42c2c9cc",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/10/28/the-cisos-evolving-role-protecting-and-defending-in-the-agentic-era/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/10/28/the-cisos-evolving-role-protecting-and-defending-in-the-agentic-era/",
+      "published_at": "2026-10-29T01:00:00+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "The CISO’s evolving role: Protecting and defending in the agentic era",
+      "raw_title": "The CISO’s evolving role: Protecting and defending in the agentic era",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e4b4f844dc8103e6d17543c4a34d069b1b3075a94e646576fb914cd37b96ff49",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6609bbf49cdff375f1db365f2904396415a56b5f07a47ea0549438941512fe4f",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ukrainian-hive-and-nefilim-ransomware-affiliate-gets-70-months-in-us-prison/",
+      "canonical_url": "https://www.securityweek.com/ukrainian-hive-and-nefilim-ransomware-affiliate-gets-70-months-in-us-prison/",
+      "published_at": "2026-10-29T00:05:06+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "Ukrainian Hive and Nefilim Ransomware Affiliate Gets 70 Months in US Prison",
+      "raw_title": "Ukrainian Hive and Nefilim Ransomware Affiliate Gets 70 Months in US Prison",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b8972cb56db0316b4ca23460c1077fbedba2e4da99844dcce5bad670b19881cc",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:49:40.198376+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ランサムウェア攻撃者の逮捕と刑罰に関する記事であり、攻撃・脅威動向が主題のため。",
+        "tags": [
+          "ランサムウェア"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "ウクライナ人のArtem Stryzhakが、Nefilimランサムウェアを用いた攻撃に関与した罪を認め、米国で70ヶ月の懲役刑を言い渡されました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。ランサムウェア攻撃者への法執行機関による対応事例として、脅威動向を把握する上での参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定のランサムウェア攻撃者の逮捕と刑罰に関する事例であり、自社への直接的な影響が限定的なため「中」です。確認目安は、具体的な脅威や期限に関する情報がなく、短期的な対応を要しないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:49e8e9c207a58455c0c540c7851817045bebb60089888197a886d6bebefb3845",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/upwind-security-raises-400-million-at-3-8-billion-valuation/",
+      "canonical_url": "https://www.securityweek.com/upwind-security-raises-400-million-at-3-8-billion-valuation/",
+      "published_at": "2026-10-28T22:56:50+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "Upwind Security Raises $400 Million at $3.8 Billion Valuation",
+      "raw_title": "Upwind Security Raises $400 Million at $3.8 Billion Valuation",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3fbd4e149b9de7cae64ae985e0a1db558b826632ae88fb8c90dadfe43a2f2458",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:49:56.939812+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "セキュリティ企業の資金調達に関するニュースであり、特定の脆弱性、インシデント、攻撃、規制、クラウド、AIのリスクには該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "セキュリティ企業Upwind Securityが4億ドルの資金調達ラウンドを完了し、評価額が38億ドルに達しました。この大規模な資金調達は、Datadogを含む複数企業からの買収関心が報じられた直後に行われました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。セキュリティ業界の資金調達動向に関する参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関のセキュリティ運用に直接的な影響を与える情報ではなく、業界動向に関する参考情報であるため「低」です。確認目安は、具体的な対応を要する事象や期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:856ae868a06fc08a26ce6e04ac2b76998d3b5a4283b625b566ee3e93d568e42a",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/chrome-and-firefox-updates-patch-over-200-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/chrome-and-firefox-updates-patch-over-200-vulnerabilities/",
+      "published_at": "2026-10-28T22:39:35+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "Chrome and Firefox Updates Patch Over 200 Vulnerabilities",
+      "raw_title": "Chrome and Firefox Updates Patch Over 200 Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:740ca545f5cd4a86f258778797be7258236c08a696db9d00ac18f8250c07dee4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:50:13.907372+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "ChromeとFirefoxのアップデートによる多数の脆弱性修正が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Chrome 156のアップデートで52件、Firefox 159のアップデートで167件のセキュリティバグが修正されました。合計200件以上の脆弱性に対応しています。",
+        "financial_impact": "金融機関で従業員がChromeやFirefoxを利用している場合に関係します。これらのブラウザは広く利用されており、脆弱性が修正された場合は速やかなアップデートが推奨されます。",
+        "recommended_actions": [
+          "自社で利用しているChromeおよびFirefoxのバージョンを確認する",
+          "ベンダーのリリースノートを参照し、修正された脆弱性の内容と影響を評価する",
+          "該当するブラウザの最新バージョンへのアップデートを検討する"
+        ],
+        "reason": "重要度は、広く利用されるブラウザの多数の脆弱性修正であり、適用性評価の対象となり得るため「中」です。確認目安は、緊急の悪用情報や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:439d6e17d8c8ce64fe02f5c0e5d37c2bf6bb7b36bc264aa62f07c54dd252ec83",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/tls-flaws-found-in-goahead-web-server-used-in-hundreds-of-millions-of-devices/",
+      "canonical_url": "https://www.securityweek.com/tls-flaws-found-in-goahead-web-server-used-in-hundreds-of-millions-of-devices/",
+      "published_at": "2026-10-28T22:10:34+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "TLS Flaws Found in GoAhead Web Server Used in Hundreds of Millions of Devices",
+      "raw_title": "TLS Flaws Found in GoAhead Web Server Used in Hundreds of Millions of Devices",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3aaacd4cc8949befe72eba3474266312404bef1a11f10fbb9c5fa1c598f468e1",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:50:30.876178+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "GoAhead WebサーバーのTLSに関する脆弱性が主題であるため。",
+        "tags": [
+          "パッチ",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "FoxIOは、GoAhead Webサーバーにおける3つのTLS脆弱性を開示しました。これらの脆弱性により、失効した証明書が通過したり、一部の暗号化されたセッションが盗聴者に露呈する可能性があります。",
+        "financial_impact": "GoAhead Webサーバーは組み込みシステムやIoTデバイスで広く利用されており、金融機関が直接利用するケースは限定的と考えられます。ただし、サプライチェーンを通じて間接的に影響を受ける可能性があります。",
+        "recommended_actions": [
+          "GoAhead Webサーバーの利用有無を棚卸しし、影響を受ける可能性のあるデバイスを特定する",
+          "ベンダーからの修正パッチや緩和策の情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、GoAhead Webサーバーの利用が金融機関で限定的である可能性があり、直接的な影響が不確実なため「中」です。確認目安は、実悪用や緊急の対応期限に関する情報が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f83598082f121f26e38f677f533b4f91d72e5c052eacd1a3b46cc192c0c8b054",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/hackers-target-critical-oracle-e.html",
+      "canonical_url": "https://thehackernews.com/2026/10/hackers-target-critical-oracle-e.html",
+      "published_at": "2026-10-28T21:48:03+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "Hackers Target Critical Oracle E-Business Suite RCE Flaw Days After Security Patch",
+      "raw_title": "Hackers Target Critical Oracle E-Business Suite RCE Flaw Days After Security Patch",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ced4e44ef00c13a31ddf2247ef77a3802e384ec2fec9ab1677b3066424908aef",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:50:48.390192+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Oracle E-Business Suiteの認証不備の脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Oracle E-Business Suite (EBS) のOracle Application Object Libraryにおける認証不備の脆弱性(CVE-2026-101767、CVSSスコア9.8)が、パッチ公開後すぐに攻撃者によって探索されていることが確認されました。",
+        "financial_impact": "Oracle E-Business Suiteを基幹システムや業務システムとして利用している金融機関は、本脆弱性の影響を受ける可能性があります。特に外部に公開している場合は、早急な対応が求められます。",
+        "recommended_actions": [
+          "Oracle E-Business Suiteの利用有無と、影響を受けるバージョンおよび外部公開状況を確認する",
+          "Oracleが公開したパッチの適用状況を確認し、未適用であれば速やかに適用を検討する",
+          "システムログやネットワークトラフィックを監視し、不審なアクセスや悪用の兆候がないか確認する"
+        ],
+        "reason": "重要度は、CVSSスコア9.8の認証不備の脆弱性であり、パッチ公開後すぐに攻撃対象となっているため適用性評価の優先度が高いため「高」です。確認目安は、攻撃の探索が確認されているものの、CISA KEVへの新規追加や進行中の大規模攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c5592c7a9044125b1a7cd4b56b801673b907fd6afcde91a09458ccf80f99a06f",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/china-linked-hackers-exploit-php2shell-to-root-firewalls/",
+      "canonical_url": "https://www.securityweek.com/china-linked-hackers-exploit-php2shell-to-root-firewalls/",
+      "published_at": "2026-10-28T21:00:59+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "China-Linked Hackers Exploit PHP2Shell to Root Firewalls",
+      "raw_title": "China-Linked Hackers Exploit PHP2Shell to Root Firewalls",
+      "raw_excerpt": null,
+      "content_hash": "sha256:75f1b32c5874af8485a92b1092fcc1ce8bed27e880a26c721e026e271f3c7bab",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:51:05.420392+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国関連の攻撃者が特定の脆弱性を悪用してファイアウォールを侵害した事例が主題のため。",
+        "tags": [
+          "APT",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "中国に関連するハッカーグループが、PHP2ShellとFragnesiaの脆弱性を連鎖的に悪用し、米国政府関連組織の2つのサーバーに侵入しました。",
+        "financial_impact": "金融機関でPHP2ShellやFragnesiaの脆弱性を持つファイアウォール製品を利用している場合、同様の攻撃を受ける可能性があります。利用有無は記事から確認できません。",
+        "recommended_actions": [
+          "自社および委託先でPHP2ShellおよびFragnesiaに関連する製品やサービスを利用しているか確認する",
+          "利用している場合は、関連する脆弱性情報とベンダーのガイダンスを確認し、必要な対策を検討する"
+        ],
+        "reason": "重要度は、特定の脆弱性を悪用した攻撃事例であり、金融機関への直接的な影響は限定的であるため「中」です。確認目安は、実悪用が確認されているものの、緊急のパッチ情報や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9590ed7a40f8b7a4cf3f4901d2f3fa0af9dd1327fe10a707dcfebbf5172cf696",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/critical-16-year-old-uefi-flaw-can-run.html",
+      "canonical_url": "https://thehackernews.com/2026/10/critical-16-year-old-uefi-flaw-can-run.html",
+      "published_at": "2026-10-28T20:50:00+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "Critical 16-Year-Old UEFI Flaw Can Run Code Before Secure Boot on Network-Booting Servers",
+      "raw_title": "Critical 16-Year-Old UEFI Flaw Can Run Code Before Secure Boot on Network-Booting Servers",
+      "raw_excerpt": null,
+      "content_hash": "sha256:be262b2380861ae5c348b28f350e86e33269eac9f3f7b193c761b4485f963b6a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:51:22.694327+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "UEFIファームウェアの脆弱性が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "UEFIファームウェアの構築に広く使われるオープンソースコードEDK IIに、16年前から存在する重大な脆弱性が発見されました。この脆弱性は、マシンがネットワーク経由で起動する際に限り、OSがロードされる前に攻撃者がコードを実行することを可能にします。",
+        "financial_impact": "金融機関でネットワークブートを利用するサーバーやクライアントPCにおいて、当該UEFIファームウェアが使用されている場合に影響する可能性があります。ただし、攻撃成立には物理的またはネットワーク的なアクセスが必要であり、影響は限定的と考えられます。",
+        "recommended_actions": [
+          "自社および委託先でEDK IIベースのUEFIファームウェアを使用している機器の有無を確認する",
+          "当該機器がネットワークブートを利用しているか、またその際のセキュリティ対策状況を確認する",
+          "ベンダーからのパッチや緩和策の情報を確認し、適用要否を評価する"
+        ],
+        "reason": "重要度は、攻撃成立にネットワークブートという特定の条件が必要であり、適用範囲が限定的であるため「中」です。確認目安は、実悪用や緊急の対応期限に関する情報が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:be06f9a5da472d1cbaf7f54861109330ba4e46f8408ce36fbaae1b2712fcf0b8",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/wazuh-and-ai-for-enhanced-soc-workflows.html",
+      "canonical_url": "https://thehackernews.com/2026/10/wazuh-and-ai-for-enhanced-soc-workflows.html",
+      "published_at": "2026-10-28T20:30:00+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "Wazuh and AI for Enhanced SOC Workflows",
+      "raw_title": "Wazuh and AI for Enhanced SOC Workflows",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5abbf86c3cfe3b080917792243ae419232adc50a2ed63fa4ec5f9307d64f9220",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:51:39.470804+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIを活用したセキュリティ運用に関するものであるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AIは、反復作業の自動化、大規模データセット内のパターン発見、意思決定の迅速化を可能にする技術として、サイバーセキュリティ分野でも活用が進んでいます。WazuhはAIを活用し、セキュリティ運用センター(SOC)のワークフローを強化する可能性について解説しています。",
+        "financial_impact": "金融機関のセキュリティ運用においてAI活用を検討する際の参考情報となります。直接的なインシデントや脆弱性に関する情報ではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI活用によるセキュリティ運用強化の一般的な動向に関する情報であり、特定の緊急対応を要さないため「中」です。確認目安は、具体的な脅威や期限に関する記述がなく、中長期的な検討の参考となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d4f5d5baa8252d3b756bc8a97ed72acd9be1111362a50f0db6b24997d529be5e",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/adobe-fixes-8-critical-campaign-classic.html",
+      "canonical_url": "https://thehackernews.com/2026/10/adobe-fixes-8-critical-campaign-classic.html",
+      "published_at": "2026-10-28T20:15:51+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "Adobe Fixes 8 Critical Campaign Classic Flaws Allowing Code Execution and Security Bypass",
+      "raw_title": "Adobe Fixes 8 Critical Campaign Classic Flaws Allowing Code Execution and Security Bypass",
+      "raw_excerpt": null,
+      "content_hash": "sha256:436ece37aaaf056cef8c0df395c8bee6f55d65138b081594c613a43a09b8321f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:51:56.345505+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Adobe製品の複数の重大な脆弱性に関する修正が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Adobeは、Campaign Classicにおける複数の重大なセキュリティ脆弱性に対処するパッチを公開しました。これらの脆弱性が悪用されると、任意のコード実行、セキュリティ機能のバイパス、権限昇格につながる可能性があります。",
+        "financial_impact": "Adobe Campaign Classicを利用している金融機関は、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Adobe Campaign Classicの利用有無と影響バージョンを確認する",
+          "Adobeが公開したパッチおよびベンダーの一次情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、Adobe Campaign Classicの利用状況が金融機関によって異なるため適用範囲が不確実なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:62664df332c546b668d963faf52f22c78204e0bd7f78074125e80f54368b595f",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/long-hidden-flaws-patched-in-epics-research-facility-control-software/",
+      "canonical_url": "https://www.securityweek.com/long-hidden-flaws-patched-in-epics-research-facility-control-software/",
+      "published_at": "2026-10-28T19:48:00+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "Long-Hidden Flaws Patched in EPICS Research Facility Control Software",
+      "raw_title": "Long-Hidden Flaws Patched in EPICS Research Facility Control Software",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9d3e998bbbba8e0e39c56ab33475e329e24bde4c5d9062dc829b99d2fa9feb2d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:52:13.068654+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "EPICS Baseソフトウェアの脆弱性修正が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "自律システムによってEPICS Baseソフトウェアに4つの脆弱性が発見され、修正されました。これらの脆弱性は、粒子加速器や核融合研究所のプロセスをクラッシュさせる可能性があります。",
+        "financial_impact": "EPICS Baseソフトウェアは主に研究施設で使用される制御ソフトウェアであり、金融機関での直接的な利用は想定されません。金融機関への直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関での利用が想定されない特殊な研究施設向けソフトウェアの脆弱性であるため「低」です。確認目安は、金融機関への直接的な関連性が低く、緊急対応の根拠がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f67783325c37dce42e460663b9b119f85788d446d28da1414401f79f9a309e85",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/nobody-trusts-the-security-questionnaire-we-rely-on-it-anyway/",
+      "canonical_url": "https://www.securityweek.com/nobody-trusts-the-security-questionnaire-we-rely-on-it-anyway/",
+      "published_at": "2026-10-28T19:30:00+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "Nobody Trusts the Security Questionnaire. We Rely on It Anyway.",
+      "raw_title": "Nobody Trusts the Security Questionnaire. We Rely on It Anyway.",
+      "raw_excerpt": null,
+      "content_hash": "sha256:80d43b5e474ab8e79dc23b4c95351b4651eee9316fa7743f7f527bce79ed8886",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:52:30.113689+09:00",
+        "category": "クラウド・サプライチェーン",
+        "category_version": "v1",
+        "category_reason": "記事はB2B取引におけるセキュリティ質問票の信頼性と、企業間の信頼構築の改善策を主題としているため。",
+        "tags": [
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "B2B取引において広く利用されているセキュリティ質問票は、送信者も受信者も信頼していないにもかかわらず、依然として依存されている現状が指摘されています。記事は、企業間の信頼を築くためのより良い基盤の必要性を訴えています。",
+        "financial_impact": "金融機関は多くのB2B取引において、委託先管理やサプライチェーンリスク評価のためにセキュリティ質問票を利用しています。その信頼性の問題は、評価の有効性に影響を与える可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、セキュリティ質問票の信頼性に関する課題提起であり、金融機関の委託先管理プロセスに間接的に関係するため「中」です。確認目安は、具体的な脅威や緊急の対応を求める内容ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5884ebd1ad338872e464f6378c0b8abe5b374c19ca8abf8abfffe06f6d940211",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/secrets-management-firm-infisical-valued-at-600-million-after-40-million-raise/",
+      "canonical_url": "https://www.securityweek.com/secrets-management-firm-infisical-valued-at-600-million-after-40-million-raise/",
+      "published_at": "2026-10-28T18:48:24+09:00",
+      "fetched_at": "2026-10-29T10:48:29.813185+09:00",
+      "title": "Secrets Management Firm Infisical Valued at $600 Million After $40 Million Raise",
+      "raw_title": "Secrets Management Firm Infisical Valued at $600 Million After $40 Million Raise",
+      "raw_excerpt": null,
+      "content_hash": "sha256:24b4f47cf71ad7dfdd76441e16b1afd2c74142af91ef85e86e5cf53111b9dbec",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-29T10:52:47.191709+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "シークレット管理企業の資金調達に関するニュースであり、特定の脆弱性、攻撃、インシデント、規制、クラウド、AIリスクのいずれにも直接該当しないため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "シークレット管理企業InfisicalがシリーズBで4000万ドルを調達し、評価額が6億ドルに達しました。同社はこの資金を、AIエージェントの機密システムへのアクセスを保護するためのプラットフォーム拡張に利用する予定です。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AIエージェントのセキュリティに関する動向として、中長期的な参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威やインシデントではなく企業の資金調達に関する情報であり、金融機関への直接的な影響が確認できないため「低」です。確認目安は、具体的な対応を要する情報ではなく、中長期的な動向把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
