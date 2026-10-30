@@ -1,0 +1,1183 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-10-30",
+  "generated_at": "2026-10-30T11:02:56.231340+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 22,
+    "ai_attempted_count": 15,
+    "ai_success_count": 14,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 7,
+    "ai_eligible_count": 15
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 12,
+      "低": 3,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 7,
+      "参考": 8,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 3,
+      "攻撃・脅威動向": 1,
+      "インシデント": 3,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 6,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象15件｜重要度「高」0件｜本日確認0件｜今週確認7件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が7件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "Adobe、Veeam、Juniper Networksが、任意のコード実行、認証バイパス、権限昇格につながる可能性のある重大な脆弱性に対するパッチを公開しました。\n金融機関でこれらの製品を利用している場合に限り、適用性確認の対象になります。記事からは具体的な製品名や利用状況は確認できません。",
+      "BAE Systemsは、米国破産裁判所の通知システムを数週間にわたり混乱させたインシデントにおいて、データ抽出や個人識別情報（PII）の侵害はなかったと発表しました。\n金融機関への直接的な影響は限定的です。米国破産裁判所のシステムに関連するインシデントであり、金融機関が直接的な当事者となる可能性は低いと考えられます。"
+    ],
+    "check_items": [
+      "自社および委託先におけるOkta SSOシステムの利用状況を確認する",
+      "Telegram Android版の利用有無とバージョンを確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:7f056f665bfe428e129ca46d0ad2f3372b43502d041f393e9bd2d3b0dd8f6dfc",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/threatsday-critical-firewall-flaws.html",
+      "canonical_url": "https://thehackernews.com/2026/10/threatsday-critical-firewall-flaws.html",
+      "published_at": "2026-10-30T04:11:58+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "ThreatsDay: Critical Firewall Flaws, Banking Trojans Rented, Weaponized PDF, Token Theft + 26 More Stories",
+      "raw_title": "ThreatsDay: Critical Firewall Flaws, Banking Trojans Rented, Weaponized PDF, Token Theft + 26 More Stories",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9e20b8b5874422613d8377f50613041be9d2ccb2945a24b0b773e789a2afde4d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-30T10:58:03.886133+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の脅威動向をまとめた週次レポートであり、特定の主題に絞られていないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "今週の脅威動向として、公開されたパスワード、依然として悪用される古い脆弱性、信頼されたソフトウェアの不正利用など、巧妙な手口と不注意なミスが混在していることが報告されています。ハッカーは馴染みのあるアプリ、ウェブサイト、AIツールから信頼を借りて悪用しており、AIを利用して攻撃を加速させる動きも見られます。",
+        "financial_impact": "本記事は複数の脅威動向をまとめた週次レポートであり、金融機関への直接的な影響は限定的です。個別の脅威については別途詳細な情報収集が必要です。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や分析を伴わない複数の脅威動向をまとめた週次レポートであるため「低」です。確認目安は、具体的な短期アクションを要する情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:04e2761a8dfbfd40f87e62247b18406e0ce784d8804fd9eccaf024a14e7c7613",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/a-quiet-week-in-infosec/",
+      "canonical_url": "https://blog.talosintelligence.com/a-quiet-week-in-infosec/",
+      "published_at": "2026-10-30T03:00:00+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "A quiet week in infosec <.<",
+      "raw_title": "A quiet week in infosec <.<",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a59af56132e74166fefd7cb80d3fad3cf3a9306cb3658e497f7f4df3f5b68387",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9c57bf02dcfc7bfbaec53549c2f209c174398b4db246ee45413f1398fd33c362",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/when-risk-becomes-personal-what-security-leaders-can-learn-from-a-cancer-diagnosis/",
+      "canonical_url": "https://www.securityweek.com/when-risk-becomes-personal-what-security-leaders-can-learn-from-a-cancer-diagnosis/",
+      "published_at": "2026-10-30T01:30:00+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "When Risk Becomes Personal: What Security Leaders Can Learn From a Cancer Diagnosis",
+      "raw_title": "When Risk Becomes Personal: What Security Leaders Can Learn From a Cancer Diagnosis",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2d402601d8cff048041d5746c318a06891aafc248c1824f6a3d146244311a983",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-30T10:58:20.839850+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "セキュリティリーダーの個人的な経験からリスク管理について考察する記事であり、特定の技術的脅威や規制に関するものではないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、セキュリティリーダーが癌の診断という個人的な経験を通じて、リスク管理の原則をどのように適用し、不確実性の中で意思決定を行うかについて考察しています。",
+        "financial_impact": "金融機関のサイバーセキュリティに直接的な影響を与えるものではなく、リスク管理の考え方に関する一般的な参考情報です。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や規制に関する情報ではなく、リスク管理の一般的な考察であるため「低」です。確認目安は、具体的なアクションを必要とせず、中長期的な知識更新が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ecb2698675c7a29a11bca11abe4d196818734ef5c4f950fba13b6424385a603e",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/10/29/tracking-ai-adoption-in-north-korean-threat-actor-tradecraft/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/10/29/tracking-ai-adoption-in-north-korean-threat-actor-tradecraft/",
+      "published_at": "2026-10-30T01:00:00+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "Tracking AI adoption in North Korean threat actor tradecraft",
+      "raw_title": "Tracking AI adoption in North Korean threat actor tradecraft",
+      "raw_excerpt": null,
+      "content_hash": "sha256:86963ae444d65fbfbcb633442c7cffc866caf3bb1d263576fb105bb681866079",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5e19d9cdb73c43d7049c2e85020fc6edf8cc5c18b39b1b88fc1e18e97464b71b",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/10/29/idc-marketscape-names-microsoft-a-leader-in-the-2026-worldwide-modern-endpoint-security-for-enterprises-vendor-assessment/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/10/29/idc-marketscape-names-microsoft-a-leader-in-the-2026-worldwide-modern-endpoint-security-for-enterprises-vendor-assessment/",
+      "published_at": "2026-10-30T01:00:00+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "IDC MarketScape names Microsoft a Leader in the 2026 Worldwide Modern Endpoint Security for Enterprises Vendor Assessment",
+      "raw_title": "IDC MarketScape names Microsoft a Leader in the 2026 Worldwide Modern Endpoint Security for Enterprises Vendor Assessment",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7c3e8afdb6e216c4c9c61bcd0d68e4699c6cc5d31d8f57649d0879af5071b105",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1be6a1df25ca72b4139ae0bbc1cbca5b2d85d4e6a6ea5b695bedf9a91f8eda37",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/linux-kernel-tcp-flaw-with-98-cvss.html",
+      "canonical_url": "https://thehackernews.com/2026/10/linux-kernel-tcp-flaw-with-98-cvss.html",
+      "published_at": "2026-10-30T00:57:05+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "Linux Kernel TCP Flaw With 9.8 CVSS Score Affects Ubuntu, Red Hat and Other Distributions",
+      "raw_title": "Linux Kernel TCP Flaw With 9.8 CVSS Score Affects Ubuntu, Red Hat and Other Distributions",
+      "raw_excerpt": null,
+      "content_hash": "sha256:789fbf68b0ca37c63209aa0bcde5622fdce6b238ff0712fca5de32ef079c8f22",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "output_length_violation",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d9e7c9ddc0eb7fb8a152a482b9f1de6f3b5a1598bbb6e21338ded62dba8f7868",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/fake-chatgpt-and-claude-apps-abuse.html",
+      "canonical_url": "https://thehackernews.com/2026/10/fake-chatgpt-and-claude-apps-abuse.html",
+      "published_at": "2026-10-30T00:20:29+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "Fake ChatGPT and Claude Apps Abuse Signed Executables to Deploy Crypto Miners",
+      "raw_title": "Fake ChatGPT and Claude Apps Abuse Signed Executables to Deploy Crypto Miners",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d9ce9b83a2939094d8a3b9a3f4e3c78f0cb7b6d748eb11093a59b93e258ee054",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "output_length_violation",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:88b7f386fabbe7f2176fb7db9f83fa9cf306b279febb9d0f106c377f71b94cac",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/google-says-gemini-4-carbon-leads-in-finding-exploiting-and-fixing-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/google-says-gemini-4-carbon-leads-in-finding-exploiting-and-fixing-vulnerabilities/",
+      "published_at": "2026-10-30T00:01:00+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "Google Touts Powerful Cybersecurity Capabilities in Gemini 4 Carbon Model",
+      "raw_title": "Google Touts Powerful Cybersecurity Capabilities in Gemini 4 Carbon Model",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0585d266cd52400b50cfaa3290e3d0ffedfbb1abfb036f1781681cfd4a66e48a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-30T10:59:12.888016+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "Googleの新しいAIモデルのサイバーセキュリティ機能が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Googleは、新しいフロンティアモデル「Gemini 4 Carbon」がSEC-bench Proで88.2%のスコアを記録し、厳選されたサイバー防衛担当者向けのFairwindプログラムを通じて展開されることを発表しました。",
+        "financial_impact": "金融機関がAIモデルをサイバーセキュリティ対策に活用する際の参考情報となりますが、現時点での直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しいAI技術の紹介であり、金融機関への直接的な適用性や影響が不明確なため「中」です。確認目安は、具体的な脅威や対応期限の記述がなく、情報収集が主となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1ef1575d27b0637af955964f24528cb7f88a229b5febffa1b4e4e8cb750b0060",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/how-secure-are-us-elections-voting-machine-risks-and-the-growing-threat-of-ai/",
+      "canonical_url": "https://www.securityweek.com/how-secure-are-us-elections-voting-machine-risks-and-the-growing-threat-of-ai/",
+      "published_at": "2026-10-30T00:00:00+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "How Secure Are US Elections? Voting Machine Risks and the Growing Threat of AI",
+      "raw_title": "How Secure Are US Elections? Voting Machine Risks and the Growing Threat of AI",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f5276e99fbe507abb84d74663ccabbad06e66ecc6df72b795f46ae29b4d7c373",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-30T10:59:29.553887+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題が、投票機の脆弱性とAIが選挙に与える影響という新しい技術リスクに焦点を当てているため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "米国選挙において、未パッチの投票機、検証不可能なQRコード付き投票用紙、AIによる影響力行使キャンペーンがセキュリティ上の懸念を引き起こしており、選挙の安全性が確保されていないと指摘されています。",
+        "financial_impact": "金融機関への直接的な影響は確認できません。米国選挙におけるAIの脅威は、一般的な情報セキュリティリスクの動向として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が確認できず、他業界の事例として参考情報にとどまるため「低」です。確認目安は、具体的な短期アクションや期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:cb73782606f707a49b45dc0aeff179223920d74ab476a394fcaf4933af50e6ea",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/cisco-open-sources-quarry-to-catch-ai-agent-attacks-hidden-in-harmless-steps/",
+      "canonical_url": "https://www.securityweek.com/cisco-open-sources-quarry-to-catch-ai-agent-attacks-hidden-in-harmless-steps/",
+      "published_at": "2026-10-29T23:18:03+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "Cisco Open Sources Quarry to Catch AI Agent Attacks Hidden in Harmless Steps",
+      "raw_title": "Cisco Open Sources Quarry to Catch AI Agent Attacks Hidden in Harmless Steps",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a8fc4b674fc9595428c2a7b3bdeae5f4eff795df7738a19ddf8c707103dbc3db",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-30T10:59:46.124432+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントの攻撃検知に関する新しい技術が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Ciscoが、無害な一連の行動の中に隠されたAIエージェント攻撃を検知するためのルール言語「Project Quarry」をオープンソース化しました。",
+        "financial_impact": "金融機関がAIエージェントを業務に利用する場合、そのセキュリティ対策を検討する上で参考となる情報です。直接的な影響は現時点では限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントのセキュリティ対策に関する新しい技術情報であり、中長期的な検討対象となるため「中」です。確認目安は、具体的な脅威や緊急対応の必要性が記事から確認できないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:fe297ce9439a7675f517212eff7cd4619a6419278d2bcd2e66ebdfcebd6aa5af",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/ir-trends-q3-2026/",
+      "canonical_url": "https://blog.talosintelligence.com/ir-trends-q3-2026/",
+      "published_at": "2026-10-29T23:00:00+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "IR trends Q3 2026: Actors impersonate IT help desks in vishing attacks as ransomware activity increases",
+      "raw_title": "IR trends Q3 2026: Actors impersonate IT help desks in vishing attacks as ransomware activity increases",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bc501335cd278590c9d5654efe9591895552a03d019c111415cb5fb8fa0e870e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a1ae70d96eb78ee4cb9d00ae8caf31d89d2ac06c009e3701375dee4cd827e409",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/adobe-veeam-juniper-networks-patch-critical-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/adobe-veeam-juniper-networks-patch-critical-vulnerabilities/",
+      "published_at": "2026-10-29T22:42:52+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "Adobe, Veeam, Juniper Networks Patch Critical Vulnerabilities",
+      "raw_title": "Adobe, Veeam, Juniper Networks Patch Critical Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4f5504610d401eb52912c86a8a9df616a5e9b58e12056ed84ec189340a84aa80",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-30T11:00:02.763161+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Adobe、Veeam、Juniper Networks製品の脆弱性修正が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Adobe、Veeam、Juniper Networksが、任意のコード実行、認証バイパス、権限昇格につながる可能性のある重大な脆弱性に対するパッチを公開しました。",
+        "financial_impact": "金融機関でこれらの製品を利用している場合に限り、適用性確認の対象になります。記事からは具体的な製品名や利用状況は確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、複数の製品の脆弱性修正に関する情報であり、金融機関での利用状況が記事から不明なため「中」です。確認目安は、緊急性を示す具体的な情報やKEV新規追加の記載がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:17b1ed18b9db9df1dd4b4d47338a47c3092da53302d72c1b3e5c984c73d6af97",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/googles-gemini-4-carbon-leads.html",
+      "canonical_url": "https://thehackernews.com/2026/10/googles-gemini-4-carbon-leads.html",
+      "published_at": "2026-10-29T22:42:40+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "Google's Gemini 4 Carbon Leads Benchmarks for Finding, Exploiting, and Patching Vulnerabilities",
+      "raw_title": "Google's Gemini 4 Carbon Leads Benchmarks for Finding, Exploiting, and Patching Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6be64216cefcd8a37bfaf9dcec323b9f1577a2b6768c7cae1663a0ebd66a2ec4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-30T11:00:19.915580+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "Googleの最新AIモデル「Gemini 4 Carbon」がサイバーセキュリティ関連のベンチマークで高い性能を示したという、AI技術のリスクと可能性に関する記事であるため。",
+        "tags": [
+          "AI",
+          "LLM"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Googleは最新のフロンティアモデル「Gemini 4 Carbon」を発表しました。このモデルは、サイバーセキュリティと長期的タスク処理能力において最先端の性能を持ち、脆弱性発見、悪用、パッチ適用に関するベンチマークで高いスコアを記録しています。",
+        "financial_impact": "金融機関がAI技術をサイバーセキュリティ業務に導入する際の参考情報となります。AIの活用によるセキュリティ強化の可能性を示唆する一方で、AIモデル自体のリスク評価も重要になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI技術のサイバーセキュリティ分野での活用可能性を示すもので、中長期的な戦略検討の参考となるため「中」です。確認目安は、具体的な脅威や対応期限の記述がなく、短期的なアクションを要しないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ffe22298e45f190208cd5bc1d2f5c5346a5f2ab75ca4194953d429fabe04d265",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/bae-says-no-data-extracted-in-incident-hitting-bankruptcy-courts/",
+      "canonical_url": "https://www.securityweek.com/bae-says-no-data-extracted-in-incident-hitting-bankruptcy-courts/",
+      "published_at": "2026-10-29T22:26:49+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "BAE Says No Data Extracted in Incident Hitting Bankruptcy Courts",
+      "raw_title": "BAE Says No Data Extracted in Incident Hitting Bankruptcy Courts",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8e3916175cf6975d43736ebb2cfea2c63830381d05ad5f2b3b83d3f02ff5364f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-30T11:00:37.094527+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "米国破産裁判所の通知システムに影響を与えたインシデントについて、データ侵害の有無を報告しているため。",
+        "tags": [
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "BAE Systemsは、米国破産裁判所の通知システムを数週間にわたり混乱させたインシデントにおいて、データ抽出や個人識別情報（PII）の侵害はなかったと発表しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。米国破産裁判所のシステムに関連するインシデントであり、金融機関が直接的な当事者となる可能性は低いと考えられます。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が限定的であり、他業界のインシデント事例として参考となるため「中」です。確認目安は、新たな脅威や緊急対応の必要性を示す情報ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:74951bf57ed83ee8d2976b570ab900ac32a21c1a338cabb5e01d0244fb0e9140",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/over-41000-dhs-employee-records-leaked-online/",
+      "canonical_url": "https://www.securityweek.com/over-41000-dhs-employee-records-leaked-online/",
+      "published_at": "2026-10-29T21:54:14+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "Over 41,000 DHS Employee Records Leaked Online",
+      "raw_title": "Over 41,000 DHS Employee Records Leaked Online",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4ba29c3573fefde952be3265055731e48c7f7c8d5ac9359ffbc24202c9a86e54",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-30T11:00:56.262002+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "米国国土安全保障省の職員情報が流出したインシデントが主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "認証",
+          "SaaS"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "米国国土安全保障省（DHS）の職員4万1000人以上の個人情報および業務情報が、今年初めにOktaのシングルサインオン（SSO）システムから盗まれ、オンラインに流出したと報じられました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。Okta SSOシステムを利用している金融機関は、同様の攻撃リスクがないか確認する際の参考情報となります。",
+        "recommended_actions": [
+          "自社および委託先におけるOkta SSOシステムの利用状況を確認する",
+          "Okta SSOシステムを利用している場合、過去の不審なアクセスや情報流出の兆候がないかログを確認する"
+        ],
+        "reason": "重要度は、他業界のインシデントであり、金融機関への直接的な影響が確認できないため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、自社への適用性を評価する価値があるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:89ba8a41a1ee0be07879dd6b06ecae43cee5c3370fad66c88f0b09cc1e218801",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/08/learn-how-to-build-security-operations.html",
+      "canonical_url": "https://thehackernews.com/2026/08/learn-how-to-build-security-operations.html",
+      "published_at": "2026-10-29T20:39:41+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "Webinar: How to Build AI Threat Readiness Into Your Security Operations",
+      "raw_title": "Webinar: How to Build AI Threat Readiness Into Your Security Operations",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7155caa6ab63d29c3dcfc0d032e9e18e7788a71b66bdbdd3cd85f7e6896ea7f2",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-30T11:01:13.643551+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIの脅威とセキュリティ運用への影響に関するため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AIの進化により、攻撃者は脆弱性の発見やエクスプロイトコードの生成を迅速に行えるようになり、従来のセキュリティプロセスでは対応が困難になっています。本ウェビナーは、AI脅威への対応準備をセキュリティ運用に組み込む方法について解説します。",
+        "financial_impact": "AI技術の進化は金融機関のセキュリティ運用にも影響を及ぼす可能性があります。AIを活用した攻撃手法への対策は、中長期的なセキュリティ戦略において検討すべき事項です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI脅威への対応は中長期的な戦略課題であり、即座の個別対応を要するものではないため「中」です。確認目安は、具体的な脅威や期限が示されておらず、情報収集・知識更新が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b35772fb4a04069806c0762a4611bed0de7f7bf248de2b5d42cf67d351d1402b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/telegram-android-flaw-lets-attackers.html",
+      "canonical_url": "https://thehackernews.com/2026/10/telegram-android-flaw-lets-attackers.html",
+      "published_at": "2026-10-29T20:39:18+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "Telegram Android Flaw Lets Attackers Run Code When Users Answer Voice Calls",
+      "raw_title": "Telegram Android Flaw Lets Attackers Run Code When Users Answer Voice Calls",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6c1432ced5cb807869c026ebf672b01a3c439ce977c5902fa2effca9374406ce",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-30T11:01:31.067816+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Telegram Android版の脆弱性が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セキュリティ企業NebuSecによると、Telegram Android版の脆弱性が発見されました。この脆弱性は他の2つのバグと組み合わせることで、攻撃者が音声通話に応答した被害者のスマートフォンを完全に制御できる可能性があります。Telegramは9月下旬にリリースされたバージョン12.10.4でこの脆弱性を修正済みです。",
+        "financial_impact": "金融機関がTelegram Android版を業務で利用している場合、または従業員が業務関連で利用している場合に適用性確認の対象になります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Telegram Android版の利用有無とバージョンを確認する",
+          "Telegram Android版を利用している場合は、バージョン12.10.4以降へ更新されていることを確認する"
+        ],
+        "reason": "重要度は、Telegram Android版の脆弱性であり、金融機関での利用状況が限定的または不確実なため「中」です。確認目安は、脆弱性が既に修正済みであり、直ちに悪用が進行中であるとの記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ff04f1caf15467beeb1ba2299f5399ebf70dafef34b41136af0ea3f6099c166f",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/the-rise-of-threat-operator-how-ai-will.html",
+      "canonical_url": "https://thehackernews.com/2026/10/the-rise-of-threat-operator-how-ai-will.html",
+      "published_at": "2026-10-29T20:33:41+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "The Rise of the Threat Operator: How AI Will Redefine Security Operations and Careers",
+      "raw_title": "The Rise of the Threat Operator: How AI Will Redefine Security Operations and Careers",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6a9d77ac14398d2538beed20d594fb1e931e06d4a82838ff241a5441c2d207fe",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-30T11:01:48.060179+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIがセキュリティ運用に与える影響とキャリアの変化が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AIがセキュリティアナリストの従来の業務（アラート調査、証拠収集、ツール間の活動相関、対応アクション実行など）を代替し始めており、セキュリティ運用センター（SOC）の業務組織やキャリアパスに大きな変化をもたらす可能性が指摘されています。",
+        "financial_impact": "金融機関のセキュリティ運用部門においても、AI技術の導入による業務プロセスの変化や、セキュリティ担当者のスキルセットの見直しが必要となる可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI技術の進化がセキュリティ運用に与える中長期的な影響について情報収集の価値があるため「中」です。確認目安は、具体的な脅威や緊急対応の必要性が記事から確認できないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:026f7c77fb5eab48a643baaa2c5eff848b006e3f60f2b7e0082971131f7c48ee",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/26400-valid-cloud-and-ai-credentials.html",
+      "canonical_url": "https://thehackernews.com/2026/10/26400-valid-cloud-and-ai-credentials.html",
+      "published_at": "2026-10-29T20:33:15+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "26,400 Valid Cloud and AI Credentials Found Exposed in Public Gitee Repositories",
+      "raw_title": "26,400 Valid Cloud and AI Credentials Found Exposed in Public Gitee Repositories",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b4ee049c36ac6d82aec00af0439abb5ecdf68b8956cabb9d76483f7de788d5ce",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-30T11:02:05.814273+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "開発者が公開リポジトリに認証情報を誤って公開した事例であり、攻撃者が悪用しうる脅威動向を示すため。",
+        "tags": [
+          "クラウド",
+          "AI",
+          "サプライチェーン",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "研究者が中国のコードホスティングサービスGiteeの公開リポジトリをスキャンした結果、開発者が誤って公開した26,400件の有効なクラウドおよびAIサービスの認証情報が発見されました。これらの認証情報はテスト時にも機能していました。",
+        "financial_impact": "金融機関がGiteeを利用している場合、または委託先がGiteeを利用し、かつ認証情報を公開リポジトリに誤って公開している場合に、情報漏えいや不正アクセスにつながる可能性があります。",
+        "recommended_actions": [
+          "自社および委託先におけるGiteeの利用状況と、公開リポジトリへの認証情報公開の有無を確認する",
+          "クラウドおよびAIサービスの認証情報管理体制を再評価し、公開リポジトリへの誤公開防止策を強化する",
+          "公開された認証情報が悪用されていないか、関連するクラウドおよびAIサービスのアクセスログを監視する"
+        ],
+        "reason": "重要度は、Giteeの利用状況や認証情報の誤公開の有無により影響が異なるため「中」です。確認目安は、具体的な攻撃の進行や緊急の対応期限が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:68cc7bf957fbb593d576d3b50887279d7547b6f5333a4d9a0d7f75b53ef4db92",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/hackers-steal-2-6-million-records-from-sonys-japanese-isp-so-net/",
+      "canonical_url": "https://www.securityweek.com/hackers-steal-2-6-million-records-from-sonys-japanese-isp-so-net/",
+      "published_at": "2026-10-29T20:00:00+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "Hackers Steal 2.6 Million Records From Sony’s Japanese ISP So-net",
+      "raw_title": "Hackers Steal 2.6 Million Records From Sony’s Japanese ISP So-net",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1f6c5f6fa8946b954873dc92c5d1a268e69d69febbe2e28fccff18dab1dbb05b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-30T11:02:23.281832+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "ソニー系ISPからの大規模な顧客情報流出が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ソニーグループのインターネットサービスプロバイダ「So-net」および「Plala」の顧客情報260万件が流出し、54,401件のメールアカウントパスワードと16件の銀行口座情報も含まれていました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。ただし、流出した情報が悪用され、顧客が金融サービスで同じパスワードを使い回している場合、不正アクセスや詐欺のリスクが高まる可能性があります。",
+        "recommended_actions": [
+          "流出した情報が悪用されていないか、自社の顧客からの問い合わせや不正利用の兆候を監視する",
+          "顧客に対し、パスワードの使い回しを避けるよう注意喚起を検討する"
+        ],
+        "reason": "重要度は、金融機関への直接的な影響は限定的であるものの、顧客情報流出による二次被害の可能性を考慮し「中」です。確認目安は、インシデント発生の報告であり、即時対応を要する具体的な期限や進行中の脅威が示されていないため「今週確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6a79ba8a4f3d294f88ad650265742d1b506334f3bd47515bdae98ab4cbbce0b6",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/nik-c2-new-ai-enabled-framework/",
+      "canonical_url": "https://blog.talosintelligence.com/nik-c2-new-ai-enabled-framework/",
+      "published_at": "2026-10-29T19:00:00+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "NIK C2: The new AI-enabled command-and-control framework",
+      "raw_title": "NIK C2: The new AI-enabled command-and-control framework",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5ecf5e17c0fb5fe51f9c5ec5c57a03ebb6156a00de147459262dced1b8921b3c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:47020b964d9535efb8df925e9bda58ce28d11c8c9ecda97cbd91cd0c63cf5758",
+      "source_id": "jpcert_cc",
+      "source_name": "JPCERT/CC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.jpcert.or.jp/at/2026/at260033.html",
+      "canonical_url": "https://www.jpcert.or.jp/at/2026/at260033.html",
+      "published_at": "2026-10-29T15:43:00+09:00",
+      "fetched_at": "2026-10-30T10:58:01.372429+09:00",
+      "title": "注意喚起: PHPにおける複数の脆弱性（CVE-2026-109618、CVE-2026-109619）に関する注意喚起  (更新)",
+      "raw_title": "注意喚起: PHPにおける複数の脆弱性（CVE-2026-109618、CVE-2026-109619）に関する注意喚起  (更新)",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2d96c1a948f7c553fefef3f4b9e447441c5d5912d3915c584983a84fd908691b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "feed_summary",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-10-30T11:02:41.230708+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がPHPの複数の脆弱性に関する注意喚起であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "JPCERT/CCは、PHPにおける複数の脆弱性（CVE-2026-109618、CVE-2026-109619）について注意喚起を更新しました。これらの脆弱性はCISA KEVに掲載されています。",
+        "financial_impact": "金融機関でPHPを利用しているシステムがある場合に関係します。特に、外部に公開されているシステムで利用されている場合は、適用性確認の対象になります。",
+        "recommended_actions": [
+          "自社および委託先でPHPを利用しているシステムがあるか棚卸しする",
+          "CVE-2026-109618およびCVE-2026-109619の影響を受けるPHPのバージョンを確認する",
+          "JPCERT/CCおよびPHPの公式情報を参照し、修正パッチや緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、PHPは広く利用されるものの、記事から金融機関での具体的な利用状況や外部露出が不明確なため「中」です。確認目安は、CISA KEVに掲載されているものの、直近3日以内の新規追加ではなく、即時対応を要する時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-109618",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-10-30T01:58:01Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-109618",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-10-21T14:17:09Z",
+              "last_modified_at": "2026-10-29T17:30:09Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 9.8,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                "source": "nvd@nist.gov",
+                "type": "Primary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-10-30T01:58:01Z",
+              "date_added": "2026-10-26"
+            }
+          },
+          {
+            "cve_id": "CVE-2026-109619",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-10-30T01:58:01Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-109619",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-10-21T14:17:09Z",
+              "last_modified_at": "2026-10-28T04:17:54Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 8.1,
+                "base_severity": "HIGH",
+                "vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                "source": "nvd@nist.gov",
+                "type": "Primary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-10-30T01:58:01Z",
+              "date_added": "2026-10-26"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
