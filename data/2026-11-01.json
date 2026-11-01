@@ -1,0 +1,369 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-01",
+  "generated_at": "2026-11-01T10:13:06.521020+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 6,
+    "ai_attempted_count": 5,
+    "ai_success_count": 5,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 1,
+    "ai_eligible_count": 5
+  },
+  "counts": {
+    "importance": {
+      "高": 1,
+      "中": 3,
+      "低": 1,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 4,
+      "参考": 1,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 1,
+      "攻撃・脅威動向": 2,
+      "インシデント": 1,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象5件｜重要度「高」1件｜本日確認0件｜今週確認4件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が4件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が1件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "CISAは、Ivanti Connect Secure (ICS) に影響を与える2つの脆弱性（CVE-2026-111357、CVSSスコア8.8）を、実悪用が確認されたとしてKEVカタログに追加しました。攻撃者はこれらを含む3つの脆弱性を連鎖させて認証なしのrootアクセスを取得しています。"
+    ],
+    "discussion_points": [
+      "CISAは、Ivanti Connect Secure (ICS) に影響を与える2つの脆弱性（CVE-2026-111357、CVSSスコア8.8）を、実悪用が確認されたとしてKEVカタログに追加しました。攻撃者はこれらを含む3つの脆弱性を連鎖させて認証なしのrootアクセスを取得しています。\n金融機関でIvanti Connect Secureを利用している場合、これらの脆弱性が直接的な影響を及ぼす可能性があります。特に外部に公開されている環境では、認証なしでrootアクセスを許すため、早急な確認が必要です。",
+      "米国のブロックチェーン分析企業Chainalysisは、外部アクターによるサイバーセキュリティインシデントの標的となり、機密性の低い顧客データにアクセスされたことを確認しました。ただし、調査コンテンツ、認証情報、セッショントークンへの不正アクセスはなかったと述べています。\nChainalysisはブロックチェーン分析サービスを提供しており、金融機関が同社のサービスを利用している場合、委託先における情報漏えいとして関係します。直接的な金融機関への影響は限定的です。"
+    ],
+    "check_items": [
+      "自社および委託先でIvanti Connect Secureの利用有無、および影響を受けるバージョンを確認する",
+      "Chainalysisのサービスを委託先として利用している場合、本件に関する同社からの公式発表や追加情報を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:b84dfe472134279a715b0b44d9dc7ae993ccbe7b1f1f135c68856e8c46b7251b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/chainalysis-confirms-intrusion-into.html",
+      "canonical_url": "https://thehackernews.com/2026/10/chainalysis-confirms-intrusion-into.html",
+      "published_at": "2026-10-31T21:01:56+09:00",
+      "fetched_at": "2026-11-01T10:11:39.865561+09:00",
+      "title": "Chainalysis Confirms Intrusion Into Internal Tools and Exposure of Customer Identity Data",
+      "raw_title": "Chainalysis Confirms Intrusion Into Internal Tools and Exposure of Customer Identity Data",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2f77c52c4e1af04966a9c6ababa66a56544e52afe65b0daedd014e624da67d6c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-01T10:11:42.429570+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "ブロックチェーン分析企業Chainalysisがサイバーセキュリティインシデントにより顧客データが流出した事案が主題のため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "米国のブロックチェーン分析企業Chainalysisは、外部アクターによるサイバーセキュリティインシデントの標的となり、機密性の低い顧客データにアクセスされたことを確認しました。ただし、調査コンテンツ、認証情報、セッショントークンへの不正アクセスはなかったと述べています。",
+        "financial_impact": "Chainalysisはブロックチェーン分析サービスを提供しており、金融機関が同社のサービスを利用している場合、委託先における情報漏えいとして関係します。直接的な金融機関への影響は限定的です。",
+        "recommended_actions": [
+          "Chainalysisのサービスを委託先として利用している場合、本件に関する同社からの公式発表や追加情報を確認する",
+          "委託先管理プロセスに基づき、Chainalysisからの説明と対応状況を評価する"
+        ],
+        "reason": "重要度は、金融機関がChainalysisのサービスを利用している場合に委託先管理の観点から確認が必要となるため「中」です。確認目安は、記事に緊急対応を要する具体的な期限や進行中の攻撃に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ef006b6d1900eae33747e3a0134b944c7c31f8ab9a5408e1d54692d868440d19",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/appraisal-by-ai-model-driven-victim-prioritization-in-the-volta-infostealer/",
+      "canonical_url": "https://blog.talosintelligence.com/appraisal-by-ai-model-driven-victim-prioritization-in-the-volta-infostealer/",
+      "published_at": "2026-10-31T21:00:00+09:00",
+      "fetched_at": "2026-11-01T10:11:39.865561+09:00",
+      "title": "Appraisal by AI: Model-driven victim prioritization in the VOLTA infostealer",
+      "raw_title": "Appraisal by AI: Model-driven victim prioritization in the VOLTA infostealer",
+      "raw_excerpt": null,
+      "content_hash": "sha256:73eb48a28ce524d75a1146f035b7a26d2c7d6a56fbcb680015c3b42413c7452c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9e07f828cbbb7522dbae735e0c793aa03669f795042ce668a28089138671e676",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/syrian-hacker-gets-prison-time-in-us-after-over-a-decade-on-the-run/",
+      "canonical_url": "https://www.securityweek.com/syrian-hacker-gets-prison-time-in-us-after-over-a-decade-on-the-run/",
+      "published_at": "2026-10-31T20:00:00+09:00",
+      "fetched_at": "2026-11-01T10:11:39.865561+09:00",
+      "title": "Syrian Hacker Gets Prison Time in US After Over a Decade on the Run",
+      "raw_title": "Syrian Hacker Gets Prison Time in US After Over a Decade on the Run",
+      "raw_excerpt": null,
+      "content_hash": "sha256:97540b3d06e6fdd200f0b2df039c83a100f9b0b30c1e0d9cf55e116f0ff41321",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-01T10:11:59.179594+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "親アサド政権のハッカーによる攻撃事例が主題であるため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "米国裁判所は、メディア、企業、政府機関に対する親アサド政権の攻撃に関与したシリア人ハッカーAhmad Umar Aghaに対し、42ヶ月の懲役刑を言い渡しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。過去の攻撃事例と判決に関する情報であり、現在の具体的な脅威や対応を求めるものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、過去の攻撃事例と判決に関する情報であり、金融機関への直接的な影響や具体的な脅威が確認できないため「低」です。確認目安は、短期的な対応を要する情報ではなく、一般的な脅威動向の参考情報であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c305d693e177d5ef64daf367acfc1e634711244980670e6d6392ac16514ee3d1",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/attackers-chain-three-ivanti-connect.html",
+      "canonical_url": "https://thehackernews.com/2026/10/attackers-chain-three-ivanti-connect.html",
+      "published_at": "2026-10-31T17:27:43+09:00",
+      "fetched_at": "2026-11-01T10:11:39.865561+09:00",
+      "title": "Attackers Chain Three Ivanti Connect Secure Flaws to Gain Unauthenticated Root Access",
+      "raw_title": "Attackers Chain Three Ivanti Connect Secure Flaws to Gain Unauthenticated Root Access",
+      "raw_excerpt": null,
+      "content_hash": "sha256:77d8707d731533e14b474efded3324a4becf279583bd1fd40590652acee5a88c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-01T10:12:16.941704+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Ivanti Connect Secureの複数の脆弱性が悪用され、CISA KEVに追加されたことが主題のため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "CISAは、Ivanti Connect Secure (ICS) に影響を与える2つの脆弱性（CVE-2026-111357、CVSSスコア8.8）を、実悪用が確認されたとしてKEVカタログに追加しました。攻撃者はこれらを含む3つの脆弱性を連鎖させて認証なしのrootアクセスを取得しています。",
+        "financial_impact": "金融機関でIvanti Connect Secureを利用している場合、これらの脆弱性が直接的な影響を及ぼす可能性があります。特に外部に公開されている環境では、認証なしでrootアクセスを許すため、早急な確認が必要です。",
+        "recommended_actions": [
+          "自社および委託先でIvanti Connect Secureの利用有無、および影響を受けるバージョンを確認する",
+          "Ivantiからの公式アナウンスを確認し、パッチ適用や緩和策の実施を検討する",
+          "システムログやネットワークトラフィックを監視し、既知の攻撃兆候や不審なアクティビティがないか確認する"
+        ],
+        "reason": "重要度は、広く利用される可能性のある製品の重大な脆弱性であり、実悪用が確認されているため「高」です。確認目安は、KEVに掲載されているものの、直近3日以内の新規追加ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:09f142bd2640f27254d9a6b271336ed0701f8abb81fc1d3f81cb660b2bf78370",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/a-shared-chatgpt-link-could-run.html",
+      "canonical_url": "https://thehackernews.com/2026/10/a-shared-chatgpt-link-could-run.html",
+      "published_at": "2026-10-31T14:33:41+09:00",
+      "fetched_at": "2026-11-01T10:11:39.865561+09:00",
+      "title": "A Shared ChatGPT Link Could Run Attacker Code in Your Session and Read Private Chats",
+      "raw_title": "A Shared ChatGPT Link Could Run Attacker Code in Your Session and Read Private Chats",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5c0758d57bf51e4e597a11bf68f850c19134923433cb8586921cb42f38093add",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-01T10:12:34.121831+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "ChatGPTの脆弱性に関する記事であり、AI技術のリスクが主題であるため。",
+        "tags": [
+          "AI",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "悪意のあるChatGPT共有リンクを開くと、ログイン中のセッションで攻撃者のコードが実行され、プライベートチャットが読み取られる可能性があったとセキュリティ企業Parameterの研究者が報告しました。OpenAIはこの脆弱性をP1（最も深刻なカテゴリ）と評価し、報告から8日後に修正を完了しています。",
+        "financial_impact": "金融機関でChatGPTを業務利用している場合、従業員のプライベートチャットが漏洩するリスクがあり、情報管理上の問題となる可能性があります。ただし、OpenAIにより既に修正済みです。",
+        "recommended_actions": [
+          "自社および委託先におけるChatGPTの業務利用状況を確認する",
+          "OpenAIの公式発表を確認し、最新のセキュリティ対策が適用されていることを確認する",
+          "従業員に対し、不審なChatGPT共有リンクを開かないよう注意喚起を行う"
+        ],
+        "reason": "重要度は、ChatGPTの利用状況に依存し、OpenAIにより既に修正済みであるため「中」です。確認目安は、既に修正済みであり、即時対応を要する進行中の脅威ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:293569318dde9da7ae44a07f3330bce40883d4ced65e6525e8d42d75ef80d154",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/10/cloudflare-reports-182-million-network.html",
+      "canonical_url": "https://thehackernews.com/2026/10/cloudflare-reports-182-million-network.html",
+      "published_at": "2026-10-31T13:56:12+09:00",
+      "fetched_at": "2026-11-01T10:11:39.865561+09:00",
+      "title": "Cloudflare Reports 18.2 Million Network-Layer DDoS Attacks in Q3, Up 38%",
+      "raw_title": "Cloudflare Reports 18.2 Million Network-Layer DDoS Attacks in Q3, Up 38%",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e4183df50e634207df24b38d9a50d6e0f8e286efe6dd6495a304491fd1da556d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-01T10:12:51.520507+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "DDoS攻撃の件数増加と傾向に関する報告が主題であるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Cloudflareは、2026年第3四半期にネットワーク層（L3）DDoS攻撃を1,820万件、HTTP DDoSリクエストを14.4兆件自動的に軽減したと報告しました。これは1時間あたり約8,226件のネットワーク層DDoS攻撃が発生していることを示しており、前年同期比で38%増加しています。",
+        "financial_impact": "金融機関はDDoS攻撃の主要な標的となることが多く、サービス停止や風評被害につながる可能性があります。本レポートは、DDoS攻撃の脅威動向を把握し、自社の防御態勢を評価する上で参考となります。",
+        "recommended_actions": [
+          "自社のDDoS防御態勢について、最新の脅威動向を踏まえた評価を実施する",
+          "DDoS攻撃発生時のインシデント対応計画と手順を確認・見直す"
+        ],
+        "reason": "重要度は、金融機関がDDoS攻撃の標的となり得るため、脅威動向の把握が重要であるため「中」です。確認目安は、具体的な緊急対応を要する情報ではなく、中長期的な対策検討の参考となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}

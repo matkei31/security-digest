@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026年11月1日のサイバーセキュリティ情報 | Monomi Digest</title>
+  <meta name="description" content="2026年11月1日に公開した、金融機関に関連するサイバーセキュリティ情報の日次ダイジェストです。重要度、確認目安、金融機関との関連、確認事項を整理しています。">
+  <link rel="canonical" href="https://monomidigest.com/archive/2026-11-01.html">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--anchor-offset:218px}
+    @media (max-width:600px){:root{--anchor-offset:226px}}
+    body{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:40px}
+    header{background:#161b22;border-bottom:1px solid #21262d;padding:20px 16px 16px;position:sticky;top:0;z-index:10}
+    header h1{font-size:18px;font-weight:600;letter-spacing:.02em}
+    .sub{font-size:12px;color:#8b949e;margin-top:4px}
+    .count{font-size:12px;color:#58a6ff;margin-top:2px}
+    .archive-nav{display:flex;flex-direction:column;align-items:flex-start;row-gap:8px;margin-top:8px}
+    .archive-nav-group{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;min-width:0}
+    .archive-bottom-nav{max-width:680px;margin:20px auto 0;padding:0 12px}
+    .archive-link{display:inline-flex;align-items:center;min-height:32px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}
+    .archive-link:hover{text-decoration:underline}
+    .article-list-header{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .article-list-header h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}
+    .article-list-note{font-size:12px;color:#8b949e;line-height:1.5}
+    .cards{padding:12px 12px 0;display:flex;flex-direction:column;gap:10px;max-width:680px;margin:0 auto}
+    .card{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;scroll-margin-top:var(--anchor-offset)}
+    .card:active{background:#1c2128;border-color:#388bfd}
+    .card:target{border-color:#388bfd;box-shadow:0 0 0 1px #388bfd}
+    h2{font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3}
+    .article-heading{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:6px;align-items:start;font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3;overflow-wrap:anywhere}
+    .article-index{color:#8b949e;font-weight:700;white-space:nowrap}
+    .article-title-stack{display:grid;gap:2px;min-width:0}
+    .article-title-translation{font-size:12px;color:#8b949e;line-height:1.5;font-weight:500}
+    .article-title-link,.priority-title-link{color:inherit;text-decoration:none}
+    .article-title-link:hover,.article-source-link:hover,.priority-title-link:hover{text-decoration:underline}
+    .summary{font-size:12px;color:#8b949e;line-height:1.5;margin-top:6px}
+    .article-meta{margin-top:4px;font-size:12px;color:#8b949e;line-height:1.5}
+    .article-assessment{margin-top:8px;font-size:12px;color:#8b949e;line-height:1.6}
+    .assessment-item strong{color:#e6edf3;font-weight:700}
+    .assessment-item.is-accent{display:inline-block;color:#f85149;font-weight:700;padding-left:7px;border-left:2px solid #f85149}
+    .ai-analysis{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:grid;gap:10px}
+    .article-tags{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
+    .article-tags-label{padding-top:3px;font-size:10px;color:#768496;white-space:nowrap}
+    .article-tag{font-size:10px;font-weight:600;line-height:1.2;padding:3px 9px;border-radius:100px;border:1px solid #30363d;color:#8b949e;background:#0d1117}
+    .article-section h3{font-size:11px;font-weight:600;color:#8b949e}
+    .article-section p,.article-section li{font-size:12px;color:#c9d1d9;line-height:1.6}
+    .article-section p,.article-section ul{margin-top:3px}
+    .action-list{padding-left:18px}
+    .action-list li+li{margin-top:3px}
+    .vulnerability-facts{margin-top:8px}
+    .vulnerability-facts-title{font-size:11px;font-weight:600;color:#8b949e}
+    .vulnerability-list{list-style:none;margin-top:4px;display:grid;gap:4px}
+    .vulnerability-item{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;color:#c9d1d9;line-height:1.6}
+    .vulnerability-cve-link{color:#79c0ff;text-decoration:none;font-weight:600}
+    .vulnerability-cve-link:hover{text-decoration:underline}
+    .vulnerability-cvss{color:#8b949e}
+    .kev-badge{font-size:10px;font-weight:700;line-height:1;padding:3px 8px;border-radius:100px;border:1px solid #9e6a03;color:#e3b341;background:#1c1506;white-space:nowrap}
+    .article-attribution{margin-top:10px;font-size:10px;color:#768496;line-height:1.6;overflow-wrap:anywhere}
+    .article-attribution a{color:#8b949e;text-decoration:underline;text-underline-offset:2px}
+    .article-attribution a:hover{color:#79c0ff}
+    .article-source-link{display:inline-flex;align-items:center;width:max-content;max-width:100%;margin-top:10px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}
+    .empty{text-align:center;color:#8b949e;padding:60px 0;font-size:14px}
+    .todays-brief{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .brief-box{background:#161b22;border:1px solid #9e6a03;border-radius:10px;padding:14px 16px;display:grid;gap:12px}
+    .brief-box h2{font-size:13px;font-weight:700;color:#f0b429}
+    .brief-section-title{font-size:12px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .brief-status-line{font-size:13px;color:#e6edf3;line-height:1.6;background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:8px 10px;margin-bottom:8px;overflow-wrap:break-word}
+    .brief-overview{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word}
+    .brief-list{list-style:none;display:grid;gap:6px}
+    .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
+    .brief-list li::before{content:"・";position:absolute;left:0}
+    .brief-priority-list{list-style:none;display:grid;gap:12px;margin:0;padding:0}
+    .brief-priority-item{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;display:grid;gap:4px}
+    .brief-priority-summary,.brief-priority-impact{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word;margin:0}
+    .dashboard{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .dashboard-head{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+    .dashboard-head h2{font-size:13px;font-weight:700;color:#e6edf3}
+    .dashboard-count{font-size:12px;color:#8b949e}
+    .dashboard-count strong{font-size:16px;font-weight:700;color:#e6edf3;margin:0 2px}
+    .dashboard-axes{background:#161b22;border-left:1px solid #21262d;border-right:1px solid #21262d;border-top:1px solid #21262d;display:grid;grid-template-columns:1fr 1fr}
+    .dashboard-axis{padding:10px 16px}
+    .dashboard-axis+.dashboard-axis{border-left:1px solid #21262d}
+    .dashboard-axis h3{font-size:11px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .dashboard-axis-list{list-style:none;display:grid;gap:4px}
+    .dashboard-axis-item{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:#c9d1d9;line-height:1.4;padding-left:8px;border-left:2px solid transparent}
+    .dashboard-axis-item strong{font-size:14px;font-weight:700;color:#e6edf3}
+    .dashboard-axis-item.is-accent{border-left-color:#f85149;color:#f85149}
+    .dashboard-axis-item.is-accent strong{color:#f85149}
+    .dashboard-categories{background:#161b22;border:1px solid #21262d;border-top:1px solid #21262d;border-radius:0 0 10px 10px;padding:10px 16px}
+    .dashboard-categories h3{font-size:11px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .dashboard-category-list{list-style:none;display:flex;flex-wrap:wrap;gap:4px 14px}
+    .dashboard-category-item{font-size:11px;color:#8b949e;display:flex;gap:4px}
+    .dashboard-category-item strong{color:#8b949e;font-weight:600}
+    .dashboard-empty{list-style:none;font-size:12px;color:#8b949e;line-height:1.5}
+    @media (max-width:600px){
+      .dashboard-axes{grid-template-columns:1fr}
+      .dashboard-axis+.dashboard-axis{border-left:none;border-top:1px solid #21262d}
+    }
+    .important-items{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .important-items h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}
+    .important-items-note{font-size:12px;color:#8b949e;line-height:1.5;margin-bottom:8px}
+    .important-items-list{display:grid;gap:6px}
+    .priority-item{border-top:1px solid #21262d;padding:10px 0;display:grid;gap:6px}
+    .priority-item:first-child{border-top:0;padding-top:0}
+    .priority-item .article-heading{font-size:13px;font-weight:600}
+    .priority-item-link{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none;width:max-content;max-width:100%}
+    .priority-item-link:hover{text-decoration:underline}
+    .priority-item-meta{font-size:11px;color:#8b949e}
+    .important-item-reason,.important-items-empty{font-size:12px;color:#c9d1d9;line-height:1.6}
+    .sources{max-width:680px;margin:20px auto 0;padding:0 12px}
+    .sources details{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 16px}
+    .sources summary{font-size:12px;color:#8b949e;cursor:pointer;list-style:none}
+    .sources summary::before{content:"▶  ";font-size:10px}
+    details[open] summary::before{content:"▼  "}
+    .sources ul{margin:10px 0 0;padding-left:18px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:18px;row-gap:5px}
+    .sources li{font-size:11px;line-height:1.5;color:#8b949e;overflow-wrap:anywhere}
+    @media (max-width:600px){.sources ul{grid-template-columns:1fr}}
+    .site-footer{max-width:680px;margin:20px auto 0;padding:0 12px}
+    .analytics-notice{font-size:11px;color:#768496;line-height:1.6}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Monomi Digest</h1>
+    <div class="sub">日次ダイジェスト：2026年11月01日</div>
+    <div class="sub">最終更新: 2026年11月01日 10:13</div>
+    <div class="count">6 件</div>
+    <nav class="archive-nav" aria-label="日別ダイジェスト上部ナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link archive-prev-link" href="2026-10-31.html">← 前のダイジェスト</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="index.html">過去のダイジェスト</a><a class="archive-link" href="../index.html">最新のダイジェスト</a></div></nav>
+  </header>
+  <div class="todays-brief">
+    <div class="brief-box">
+      <h2>本日の要点</h2>
+      <div class="brief-section">
+      <h3 class="brief-section-title">概況</h3>
+      <p class="brief-status-line">Brief対象5件｜重要度「高」1件｜本日確認0件｜今週確認4件</p>
+      <p class="brief-overview">Brief対象の記事では、緊急の確認対象はありません。今週確認の対象が4件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が1件あるため、内容は優先的に把握する必要があります。</p>
+    </div><div class="brief-section">
+      <h3 class="brief-section-title">重要・優先事項</h3>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">CISAは、Ivanti Connect Secure (ICS) に影響を与える2つの脆弱性（CVE-2026-111357、CVSSスコア8.8）を、実悪用が確認されたとしてKEVカタログに追加しました。攻撃者はこれらを含む3つの脆弱性を連鎖させて認証なしのrootアクセスを取得しています。</p><p class="brief-priority-impact">金融機関でIvanti Connect Secureを利用している場合、これらの脆弱性が直接的な影響を及ぼす可能性があります。特に外部に公開されている環境では、認証なしでrootアクセスを許すため、早急な確認が必要です。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">米国のブロックチェーン分析企業Chainalysisは、外部アクターによるサイバーセキュリティインシデントの標的となり、機密性の低い顧客データにアクセスされたことを確認しました。ただし、調査コンテンツ、認証情報、セッショントークンへの不正アクセスはなかったと述べています。</p><p class="brief-priority-impact">Chainalysisはブロックチェーン分析サービスを提供しており、金融機関が同社のサービスを利用している場合、委託先における情報漏えいとして関係します。直接的な金融機関への影響は限定的です。</p></li></ul>
+    </div><div class="brief-section">
+      <h3 class="brief-section-title">確認事項</h3>
+      <ul class="brief-list"><li>自社および委託先でIvanti Connect Secureの利用有無、および影響を受けるバージョンを確認する</li><li>Chainalysisのサービスを委託先として利用している場合、本件に関する同社からの公式発表や追加情報を確認する</li></ul>
+    </div>
+    </div>
+  </div>
+  <section class="important-items">
+    <h2>優先確認</h2>
+    <p class="important-items-note">重要度が高い、または確認目安が本日確認の記事です。</p>
+    <div class="important-items-list">
+      <article class="priority-item">
+        <h3 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-1" lang="en">Attackers Chain Three Ivanti Connect Secure Flaws to Gain Unauthenticated Root Access</a></span></h3>
+        <p class="priority-item-meta">重要度 高 ・ 確認目安 今週確認</p>
+        <p class="important-item-reason">重要度は、広く利用される可能性のある製品の重大な脆弱性であり、実悪用が確認されているため「高」です。確認目安は、KEVに掲載されているものの、直近3日以内の新規追加ではないため「今週確認」です。</p>
+        <a class="priority-item-link" href="#article-1">本文を見る</a>
+      </article>
+    </div>
+  </section>
+  <section class="dashboard">
+    <div class="dashboard-head">
+      <h2>本日のダッシュボード</h2>
+      <p class="dashboard-count"><span>掲載</span><strong>6</strong>件</p>
+    </div>
+    <div class="dashboard-axes">
+      <div class="dashboard-axis">
+        <h3>重要度</h3>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item is-accent"><span>高</span><strong>1</strong></li><li class="dashboard-axis-item"><span>中</span><strong>3</strong></li><li class="dashboard-axis-item"><span>低</span><strong>1</strong></li></ul>
+      </div>
+      <div class="dashboard-axis">
+        <h3>確認目安</h3>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item"><span>本日確認</span><strong>0</strong></li><li class="dashboard-axis-item"><span>今週確認</span><strong>4</strong></li><li class="dashboard-axis-item"><span>参考</span><strong>1</strong></li></ul>
+      </div>
+    </div>
+    <div class="dashboard-categories">
+      <h3>主なカテゴリ</h3>
+      <ul class="dashboard-category-list"><li class="dashboard-category-item"><span>脆弱性・パッチ</span><strong>1</strong></li><li class="dashboard-category-item"><span>攻撃・脅威動向</span><strong>2</strong></li><li class="dashboard-category-item"><span>インシデント</span><strong>1</strong></li><li class="dashboard-category-item"><span>AI・新技術リスク</span><strong>1</strong></li></ul>
+    </div>
+  </section>
+  <section class="article-list-header">
+    <h2>本日の情報</h2>
+    <p class="article-list-note">確認目安、重要度、元の収集順で表示しています。</p>
+  </section>
+  <div class="cards">
+    <article class="card" id="article-1">
+      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/10/attackers-chain-three-ivanti-connect.html" target="_blank" rel="noopener noreferrer" lang="en">Attackers Chain Three Ivanti Connect Secure Flaws to Gain Unauthenticated Root Access</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 10/31 17:27</p>
+      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>CISAは、Ivanti Connect Secure (ICS) に影響を与える2つの脆弱性（CVE-2026-111357、CVSSスコア8.8）を、実悪用が確認されたとしてKEVカタログに追加しました。攻撃者はこれらを含む3つの脆弱性を連鎖させて認証なしのrootアクセスを取得しています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関でIvanti Connect Secureを利用している場合、これらの脆弱性が直接的な影響を及ぼす可能性があります。特に外部に公開されている環境では、認証なしでrootアクセスを許すため、早急な確認が必要です。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先でIvanti Connect Secureの利用有無、および影響を受けるバージョンを確認する</li><li>Ivantiからの公式アナウンスを確認し、パッチ適用や緩和策の実施を検討する</li><li>システムログやネットワークトラフィックを監視し、既知の攻撃兆候や不審なアクティビティがないか確認する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/10/attackers-chain-three-ivanti-connect.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">KEV</span><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span></div>
+    </article>
+
+    <article class="card" id="article-2">
+      <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/10/chainalysis-confirms-intrusion-into.html" target="_blank" rel="noopener noreferrer" lang="en">Chainalysis Confirms Intrusion Into Internal Tools and Exposure of Customer Identity Data</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 10/31 21:01</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>米国のブロックチェーン分析企業Chainalysisは、外部アクターによるサイバーセキュリティインシデントの標的となり、機密性の低い顧客データにアクセスされたことを確認しました。ただし、調査コンテンツ、認証情報、セッショントークンへの不正アクセスはなかったと述べています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>Chainalysisはブロックチェーン分析サービスを提供しており、金融機関が同社のサービスを利用している場合、委託先における情報漏えいとして関係します。直接的な金融機関への影響は限定的です。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>Chainalysisのサービスを委託先として利用している場合、本件に関する同社からの公式発表や追加情報を確認する</li><li>委託先管理プロセスに基づき、Chainalysisからの説明と対応状況を評価する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/10/chainalysis-confirms-intrusion-into.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">インシデント</span><span class="article-tag">情報漏えい</span><span class="article-tag">委託先管理</span></div>
+    </article>
+
+    <article class="card" id="article-3">
+      <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/10/a-shared-chatgpt-link-could-run.html" target="_blank" rel="noopener noreferrer" lang="en">A Shared ChatGPT Link Could Run Attacker Code in Your Session and Read Private Chats</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 10/31 14:33</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>悪意のあるChatGPT共有リンクを開くと、ログイン中のセッションで攻撃者のコードが実行され、プライベートチャットが読み取られる可能性があったとセキュリティ企業Parameterの研究者が報告しました。OpenAIはこの脆弱性をP1（最も深刻なカテゴリ）と評価し、報告から8日後に修正を完了しています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関でChatGPTを業務利用している場合、従業員のプライベートチャットが漏洩するリスクがあり、情報管理上の問題となる可能性があります。ただし、OpenAIにより既に修正済みです。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先におけるChatGPTの業務利用状況を確認する</li><li>OpenAIの公式発表を確認し、最新のセキュリティ対策が適用されていることを確認する</li><li>従業員に対し、不審なChatGPT共有リンクを開かないよう注意喚起を行う</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/10/a-shared-chatgpt-link-could-run.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">情報漏えい</span></div>
+    </article>
+
+    <article class="card" id="article-4">
+      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/10/cloudflare-reports-182-million-network.html" target="_blank" rel="noopener noreferrer" lang="en">Cloudflare Reports 18.2 Million Network-Layer DDoS Attacks in Q3, Up 38%</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 10/31 13:56</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>Cloudflareは、2026年第3四半期にネットワーク層（L3）DDoS攻撃を1,820万件、HTTP DDoSリクエストを14.4兆件自動的に軽減したと報告しました。これは1時間あたり約8,226件のネットワーク層DDoS攻撃が発生していることを示しており、前年同期比で38%増加しています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関はDDoS攻撃の主要な標的となることが多く、サービス停止や風評被害につながる可能性があります。本レポートは、DDoS攻撃の脅威動向を把握し、自社の防御態勢を評価する上で参考となります。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社のDDoS防御態勢について、最新の脅威動向を踏まえた評価を実施する</li><li>DDoS攻撃発生時のインシデント対応計画と手順を確認・見直す</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/10/cloudflare-reports-182-million-network.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article>
+
+    <article class="card" id="article-5">
+      <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/syrian-hacker-gets-prison-time-in-us-after-over-a-decade-on-the-run/" target="_blank" rel="noopener noreferrer" lang="en">Syrian Hacker Gets Prison Time in US After Over a Decade on the Run</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 10/31 20:00</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>米国裁判所は、メディア、企業、政府機関に対する親アサド政権の攻撃に関与したシリア人ハッカーAhmad Umar Aghaに対し、42ヶ月の懲役刑を言い渡しました。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関への直接的な影響は限定的です。過去の攻撃事例と判決に関する情報であり、現在の具体的な脅威や対応を求めるものではありません。</p>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/syrian-hacker-gets-prison-time-in-us-after-over-a-decade-on-the-run/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article>
+
+    <article class="card card-metadata-only" id="article-6">
+      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://blog.talosintelligence.com/appraisal-by-ai-model-driven-victim-prioritization-in-the-volta-infostealer/" target="_blank" rel="noopener noreferrer" lang="en">Appraisal by AI: Model-driven victim prioritization in the VOLTA infostealer</a></span></h2>
+      <p class="article-meta">Cisco Talos ・ 10/31 21:00</p>
+      <p class="article-attribution">AIによる要約・評価は行っていません。</p>
+      <a class="article-source-link" href="https://blog.talosintelligence.com/appraisal-by-ai-model-driven-victim-prioritization-in-the-volta-infostealer/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article></div>
+  <div class="sources">
+    <details>
+      <summary>収集元 (13ソース)</summary>
+      <ul><li>金融庁</li><li>JPCERT/CC</li><li>IPA</li><li>NIST</li><li>Microsoft Security</li><li>Mandiant</li><li>Google TAG</li><li>NCSC</li><li>Krebs on Security</li><li>The Hacker News</li><li>Cisco Talos</li><li>CISA KEV</li><li>SecurityWeek</li></ul>
+    </details>
+  </div>
+  <nav class="archive-nav archive-bottom-nav" aria-label="日別ダイジェスト下部ナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link archive-prev-link" href="2026-10-31.html">← 前のダイジェスト</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="index.html">過去のダイジェスト</a><a class="archive-link" href="../index.html">最新のダイジェスト</a></div></nav>
+  <footer class="site-footer">
+    <p class="analytics-notice">本サイトは閲覧状況の把握にCloudflare Web Analyticsを利用しています。Cloudflareは、CookieやlocalStorageを使用せず、個々の訪問者を追跡しないと説明しています。ページビュー、参照元、国、デバイス種別等を集計し、解析用スクリプトをstatic.cloudflareinsights.comから読み込み、計測データをcloudflareinsights.comへ送信します。</p>
+  </footer>
+  <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "61817bf1677944c191c8933b207fdc7d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
