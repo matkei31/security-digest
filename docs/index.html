@@ -137,47 +137,41 @@
     </div>
   </div>
   <header>
-    <div class="sub">最終更新: 2026年11月01日 10:13</div>
-    <div class="count">6 件</div>
-    <nav class="archive-nav" aria-label="トップページのダイジェストナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link" href="archive/2026-10-31.html">← 前のダイジェスト</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="archive/index.html">過去のダイジェスト</a></div></nav>
+    <div class="sub">最終更新: 2026年11月02日 10:31</div>
+    <div class="count">5 件</div>
+    <nav class="archive-nav" aria-label="トップページのダイジェストナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link" href="archive/2026-11-01.html">← 前のダイジェスト</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="archive/index.html">過去のダイジェスト</a></div></nav>
   </header>
   <div class="todays-brief">
     <div class="brief-box">
       <h2>本日の要点</h2>
       <div class="brief-section">
       <h3 class="brief-section-title">概況</h3>
-      <p class="brief-status-line">Brief対象5件｜重要度「高」1件｜本日確認0件｜今週確認4件</p>
-      <p class="brief-overview">Brief対象の記事では、緊急の確認対象はありません。今週確認の対象が4件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が1件あるため、内容は優先的に把握する必要があります。</p>
+      <p class="brief-status-line">Brief対象5件｜重要度「高」0件｜本日確認0件｜今週確認4件</p>
+      <p class="brief-overview">Brief対象の記事では、緊急の確認対象はありません。今週確認の対象が4件あり、計画的な確認が必要です。</p>
     </div><div class="brief-section">
       <h3 class="brief-section-title">重要・優先事項</h3>
-      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">CISAは、Ivanti Connect Secure (ICS) に影響を与える2つの脆弱性（CVE-2026-111357、CVSSスコア8.8）を、実悪用が確認されたとしてKEVカタログに追加しました。攻撃者はこれらを含む3つの脆弱性を連鎖させて認証なしのrootアクセスを取得しています。</p><p class="brief-priority-impact">金融機関でIvanti Connect Secureを利用している場合、これらの脆弱性が直接的な影響を及ぼす可能性があります。特に外部に公開されている環境では、認証なしでrootアクセスを許すため、早急な確認が必要です。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">米国のブロックチェーン分析企業Chainalysisは、外部アクターによるサイバーセキュリティインシデントの標的となり、機密性の低い顧客データにアクセスされたことを確認しました。ただし、調査コンテンツ、認証情報、セッショントークンへの不正アクセスはなかったと述べています。</p><p class="brief-priority-impact">Chainalysisはブロックチェーン分析サービスを提供しており、金融機関が同社のサービスを利用している場合、委託先における情報漏えいとして関係します。直接的な金融機関への影響は限定的です。</p></li></ul>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">CanonicalのLXDおよびMicroCloudに重大な脆弱性が発見されました。これにより、攻撃者は信頼されたクライアントの秘密鍵を持たずに、そのクライアントとしてHTTPS API経由でログインし、クラスターや仮想マシンにアクセスできる可能性があります。</p><p class="brief-priority-impact">金融機関でLXDまたはMicroCloudを仮想化基盤として利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">予測市場Polymarketのウェブサイト上で、外部企業から読み込まれたページ速度スクリプトが不正なコードに置き換えられ、ログイン中のトレーダーから約270万ドルが盗難されました。Polymarketは影響を受けた726のウォレットに返金すると発表しています。</p><p class="brief-priority-impact">金融機関が直接的な被害を受けたわけではありませんが、サプライチェーンを介したウェブサイトの改ざんによる顧客資産の窃取は、金融サービス提供におけるセキュリティリスクとして参考になります。</p></li></ul>
     </div><div class="brief-section">
       <h3 class="brief-section-title">確認事項</h3>
-      <ul class="brief-list"><li>自社および委託先でIvanti Connect Secureの利用有無、および影響を受けるバージョンを確認する</li><li>Chainalysisのサービスを委託先として利用している場合、本件に関する同社からの公式発表や追加情報を確認する</li></ul>
+      <ul class="brief-list"><li>LXDおよびMicroCloudの利用有無と影響バージョンを確認する</li><li>自社ウェブサイトで利用している外部スクリプトやサードパーティコンポーネントのセキュリティ管理状況を再確認する</li></ul>
     </div>
     </div>
   </div>
   <section class="important-items">
     <h2>優先確認</h2>
-    <p class="important-items-note">重要度が高い、または確認目安が本日確認の記事です。</p>
     <div class="important-items-list">
-      <article class="priority-item">
-        <h3 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-1" lang="en">Attackers Chain Three Ivanti Connect Secure Flaws to Gain Unauthenticated Root Access</a></span></h3>
-        <p class="priority-item-meta">重要度 高 ・ 確認目安 今週確認</p>
-        <p class="important-item-reason">重要度は、広く利用される可能性のある製品の重大な脆弱性であり、実悪用が確認されているため「高」です。確認目安は、KEVに掲載されているものの、直近3日以内の新規追加ではないため「今週確認」です。</p>
-        <a class="priority-item-link" href="#article-1">本文を見る</a>
-      </article>
+      <p class="important-items-empty">本日の優先確認対象はありません。</p>
     </div>
   </section>
   <section class="dashboard">
     <div class="dashboard-head">
       <h2>本日のダッシュボード</h2>
-      <p class="dashboard-count"><span>掲載</span><strong>6</strong>件</p>
+      <p class="dashboard-count"><span>掲載</span><strong>5</strong>件</p>
     </div>
     <div class="dashboard-axes">
       <div class="dashboard-axis">
         <h3>重要度</h3>
-        <ul class="dashboard-axis-list"><li class="dashboard-axis-item is-accent"><span>高</span><strong>1</strong></li><li class="dashboard-axis-item"><span>中</span><strong>3</strong></li><li class="dashboard-axis-item"><span>低</span><strong>1</strong></li></ul>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item"><span>高</span><strong>0</strong></li><li class="dashboard-axis-item"><span>中</span><strong>4</strong></li><li class="dashboard-axis-item"><span>低</span><strong>1</strong></li></ul>
       </div>
       <div class="dashboard-axis">
         <h3>確認目安</h3>
@@ -186,7 +180,7 @@
     </div>
     <div class="dashboard-categories">
       <h3>主なカテゴリ</h3>
-      <ul class="dashboard-category-list"><li class="dashboard-category-item"><span>脆弱性・パッチ</span><strong>1</strong></li><li class="dashboard-category-item"><span>攻撃・脅威動向</span><strong>2</strong></li><li class="dashboard-category-item"><span>インシデント</span><strong>1</strong></li><li class="dashboard-category-item"><span>AI・新技術リスク</span><strong>1</strong></li></ul>
+      <ul class="dashboard-category-list"><li class="dashboard-category-item"><span>脆弱性・パッチ</span><strong>1</strong></li><li class="dashboard-category-item"><span>攻撃・脅威動向</span><strong>2</strong></li><li class="dashboard-category-item"><span>インシデント</span><strong>1</strong></li><li class="dashboard-category-item"><span>その他</span><strong>1</strong></li></ul>
     </div>
   </section>
   <section class="article-list-header">
@@ -195,119 +189,109 @@
   </section>
   <div class="cards">
     <article class="card" id="article-1">
-      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/10/attackers-chain-three-ivanti-connect.html" target="_blank" rel="noopener noreferrer" lang="en">Attackers Chain Three Ivanti Connect Secure Flaws to Gain Unauthenticated Root Access</a></span></h2>
-      <p class="article-meta">The Hacker News ・ 10/31 17:27</p>
-      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/critical-lxd-and-microcloud-flaw-cvss.html" target="_blank" rel="noopener noreferrer" lang="en">CVSS 10.0 LXD, MicroCloud Flaw Lets Attackers Impersonate Trusted Clients Without a Private Key</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/01 17:51</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>CISAは、Ivanti Connect Secure (ICS) に影響を与える2つの脆弱性（CVE-2026-111357、CVSSスコア8.8）を、実悪用が確認されたとしてKEVカタログに追加しました。攻撃者はこれらを含む3つの脆弱性を連鎖させて認証なしのrootアクセスを取得しています。</p>
+          <p>CanonicalのLXDおよびMicroCloudに重大な脆弱性が発見されました。これにより、攻撃者は信頼されたクライアントの秘密鍵を持たずに、そのクライアントとしてHTTPS API経由でログインし、クラスターや仮想マシンにアクセスできる可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>金融機関でIvanti Connect Secureを利用している場合、これらの脆弱性が直接的な影響を及ぼす可能性があります。特に外部に公開されている環境では、認証なしでrootアクセスを許すため、早急な確認が必要です。</p>
+          <p>金融機関でLXDまたはMicroCloudを仮想化基盤として利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社および委託先でIvanti Connect Secureの利用有無、および影響を受けるバージョンを確認する</li><li>Ivantiからの公式アナウンスを確認し、パッチ適用や緩和策の実施を検討する</li><li>システムログやネットワークトラフィックを監視し、既知の攻撃兆候や不審なアクティビティがないか確認する</li></ul>
+          <ul class="action-list"><li>LXDおよびMicroCloudの利用有無と影響バージョンを確認する</li><li>ベンダーの一次情報を確認し、パッチや緩和策の適用を検討する</li></ul>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://thehackernews.com/2026/10/attackers-chain-three-ivanti-connect.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">KEV</span><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span></div>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/critical-lxd-and-microcloud-flaw-cvss.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-2">
-      <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/10/chainalysis-confirms-intrusion-into.html" target="_blank" rel="noopener noreferrer" lang="en">Chainalysis Confirms Intrusion Into Internal Tools and Exposure of Customer Identity Data</a></span></h2>
-      <p class="article-meta">The Hacker News ・ 10/31 21:01</p>
+      <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/hackers-steal-about-27-million-from.html" target="_blank" rel="noopener noreferrer" lang="en">Hackers Steal About $2.7 Million From Polymarket Traders via Hijacked DebugBear Script</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/01 16:25</p>
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>米国のブロックチェーン分析企業Chainalysisは、外部アクターによるサイバーセキュリティインシデントの標的となり、機密性の低い顧客データにアクセスされたことを確認しました。ただし、調査コンテンツ、認証情報、セッショントークンへの不正アクセスはなかったと述べています。</p>
+          <p>予測市場Polymarketのウェブサイト上で、外部企業から読み込まれたページ速度スクリプトが不正なコードに置き換えられ、ログイン中のトレーダーから約270万ドルが盗難されました。Polymarketは影響を受けた726のウォレットに返金すると発表しています。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>Chainalysisはブロックチェーン分析サービスを提供しており、金融機関が同社のサービスを利用している場合、委託先における情報漏えいとして関係します。直接的な金融機関への影響は限定的です。</p>
+          <p>金融機関が直接的な被害を受けたわけではありませんが、サプライチェーンを介したウェブサイトの改ざんによる顧客資産の窃取は、金融サービス提供におけるセキュリティリスクとして参考になります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>Chainalysisのサービスを委託先として利用している場合、本件に関する同社からの公式発表や追加情報を確認する</li><li>委託先管理プロセスに基づき、Chainalysisからの説明と対応状況を評価する</li></ul>
+          <ul class="action-list"><li>自社ウェブサイトで利用している外部スクリプトやサードパーティコンポーネントのセキュリティ管理状況を再確認する</li><li>サプライチェーンリスク管理の一環として、外部ベンダーが提供するサービスのセキュリティ評価基準を見直す</li></ul>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://thehackernews.com/2026/10/chainalysis-confirms-intrusion-into.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">インシデント</span><span class="article-tag">情報漏えい</span><span class="article-tag">委託先管理</span></div>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/hackers-steal-about-27-million-from.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">インシデント</span><span class="article-tag">サプライチェーン</span><span class="article-tag">情報漏えい</span></div>
     </article>
 
     <article class="card" id="article-3">
-      <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/10/a-shared-chatgpt-link-could-run.html" target="_blank" rel="noopener noreferrer" lang="en">A Shared ChatGPT Link Could Run Attacker Code in Your Session and Read Private Chats</a></span></h2>
-      <p class="article-meta">The Hacker News ・ 10/31 14:33</p>
+      <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/fbi-links-north-koreas-tradertraitor-to.html" target="_blank" rel="noopener noreferrer" lang="en">FBI Links North Korea&#39;s TraderTraitor to Record $6.43 Billion Binance Crypto Heist</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/01 16:03</p>
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>悪意のあるChatGPT共有リンクを開くと、ログイン中のセッションで攻撃者のコードが実行され、プライベートチャットが読み取られる可能性があったとセキュリティ企業Parameterの研究者が報告しました。OpenAIはこの脆弱性をP1（最も深刻なカテゴリ）と評価し、報告から8日後に修正を完了しています。</p>
+          <p>FBIは、北朝鮮関連のハッキンググループ「TraderTraitor」（別名：Jade Sleet、Pressure Chollimaなど）が、Binanceから60億ドル以上の仮想資産を窃盗した事件に関与していると公式に発表しました。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>金融機関でChatGPTを業務利用している場合、従業員のプライベートチャットが漏洩するリスクがあり、情報管理上の問題となる可能性があります。ただし、OpenAIにより既に修正済みです。</p>
+          <p>金融機関への直接的な影響は限定的ですが、仮想通貨関連サービスを提供する金融機関や、北朝鮮関連のサイバー攻撃動向を監視する上で参考となる情報です。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社および委託先におけるChatGPTの業務利用状況を確認する</li><li>OpenAIの公式発表を確認し、最新のセキュリティ対策が適用されていることを確認する</li><li>従業員に対し、不審なChatGPT共有リンクを開かないよう注意喚起を行う</li></ul>
+          <ul class="action-list"><li>北朝鮮関連のサイバー攻撃グループの動向について情報収集を継続し、自社の脅威インテリジェンスを更新する</li><li>仮想通貨関連サービスを提供している場合、関連する脅威情報やセキュリティ対策について再確認する</li></ul>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://thehackernews.com/2026/10/a-shared-chatgpt-link-could-run.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">情報漏えい</span></div>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/fbi-links-north-koreas-tradertraitor-to.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">APT</span></div>
     </article>
 
     <article class="card" id="article-4">
-      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/10/cloudflare-reports-182-million-network.html" target="_blank" rel="noopener noreferrer" lang="en">Cloudflare Reports 18.2 Million Network-Layer DDoS Attacks in Q3, Up 38%</a></span></h2>
-      <p class="article-meta">The Hacker News ・ 10/31 13:56</p>
+      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/netamloader-malware-targets-government.html" target="_blank" rel="noopener noreferrer" lang="en">NetamLoader Malware Targets Government Windows 10 Systems in Asia via .NET Injection</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/01 16:02</p>
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>Cloudflareは、2026年第3四半期にネットワーク層（L3）DDoS攻撃を1,820万件、HTTP DDoSリクエストを14.4兆件自動的に軽減したと報告しました。これは1時間あたり約8,226件のネットワーク層DDoS攻撃が発生していることを示しており、前年同期比で38%増加しています。</p>
+          <p>サイバーセキュリティ研究者が、アジアの政府機関を標的とした「NetamLoader」と呼ばれる高度な感染チェーンの詳細を公開しました。この活動は、アジアの政府機関が独占的に使用するカスタムWindows 10ビルドを標的としています。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>金融機関はDDoS攻撃の主要な標的となることが多く、サービス停止や風評被害につながる可能性があります。本レポートは、DDoS攻撃の脅威動向を把握し、自社の防御態勢を評価する上で参考となります。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社のDDoS防御態勢について、最新の脅威動向を踏まえた評価を実施する</li><li>DDoS攻撃発生時のインシデント対応計画と手順を確認・見直す</li></ul>
+          <p>金融機関への直接的な影響は限定的です。ただし、政府機関を標的とした高度な攻撃手法は、将来的に金融機関へ転用される可能性があり、脅威動向として参考になります。</p>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://thehackernews.com/2026/10/cloudflare-reports-182-million-network.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/netamloader-malware-targets-government.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">APT</span></div>
     </article>
 
     <article class="card" id="article-5">
-      <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/syrian-hacker-gets-prison-time-in-us-after-over-a-decade-on-the-run/" target="_blank" rel="noopener noreferrer" lang="en">Syrian Hacker Gets Prison Time in US After Over a Decade on the Run</a></span></h2>
-      <p class="article-meta">SecurityWeek ・ 10/31 20:00</p>
+      <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/northstar-security-exits-stealth-with-7m-to-expose-toxic-risk-combinations/" target="_blank" rel="noopener noreferrer" lang="en">Northstar Security Exits Stealth With $7M to Expose Toxic Risk Combinations</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/01 20:15</p>
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>米国裁判所は、メディア、企業、政府機関に対する親アサド政権の攻撃に関与したシリア人ハッカーAhmad Umar Aghaに対し、42ヶ月の懲役刑を言い渡しました。</p>
+          <p>セキュリティスタートアップのNorthstar Securityが700万ドルの資金調達を発表し、ステルスモードを解除しました。同社はAIエージェントを活用し、ID、資産、脆弱性の関連性をマッピングしてリスクの高い組み合わせを特定・修正するソリューションを提供します。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>金融機関への直接的な影響は限定的です。過去の攻撃事例と判決に関する情報であり、現在の具体的な脅威や対応を求めるものではありません。</p>
+          <p>金融機関への直接的な影響は限定的です。新たなセキュリティソリューションの動向として、中長期的な情報収集の参考となります。</p>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://www.securityweek.com/syrian-hacker-gets-prison-time-in-us-after-over-a-decade-on-the-run/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </article>
-
-    <article class="card card-metadata-only" id="article-6">
-      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://blog.talosintelligence.com/appraisal-by-ai-model-driven-victim-prioritization-in-the-volta-infostealer/" target="_blank" rel="noopener noreferrer" lang="en">Appraisal by AI: Model-driven victim prioritization in the VOLTA infostealer</a></span></h2>
-      <p class="article-meta">Cisco Talos ・ 10/31 21:00</p>
-      <p class="article-attribution">AIによる要約・評価は行っていません。</p>
-      <a class="article-source-link" href="https://blog.talosintelligence.com/appraisal-by-ai-model-driven-victim-prioritization-in-the-volta-infostealer/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://www.securityweek.com/northstar-security-exits-stealth-with-7m-to-expose-toxic-risk-combinations/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span></div>
     </article></div>
   <div class="sources">
     <details>

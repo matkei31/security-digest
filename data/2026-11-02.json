@@ -1,0 +1,314 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-02",
+  "generated_at": "2026-11-02T10:31:44.578473+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 5,
+    "ai_attempted_count": 5,
+    "ai_success_count": 4,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 5
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 4,
+      "低": 1,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 4,
+      "参考": 1,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 1,
+      "攻撃・脅威動向": 2,
+      "インシデント": 1,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 0,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象5件｜重要度「高」0件｜本日確認0件｜今週確認4件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が4件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "CanonicalのLXDおよびMicroCloudに重大な脆弱性が発見されました。これにより、攻撃者は信頼されたクライアントの秘密鍵を持たずに、そのクライアントとしてHTTPS API経由でログインし、クラスターや仮想マシンにアクセスできる可能性があります。\n金融機関でLXDまたはMicroCloudを仮想化基盤として利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+      "予測市場Polymarketのウェブサイト上で、外部企業から読み込まれたページ速度スクリプトが不正なコードに置き換えられ、ログイン中のトレーダーから約270万ドルが盗難されました。Polymarketは影響を受けた726のウォレットに返金すると発表しています。\n金融機関が直接的な被害を受けたわけではありませんが、サプライチェーンを介したウェブサイトの改ざんによる顧客資産の窃取は、金融サービス提供におけるセキュリティリスクとして参考になります。"
+    ],
+    "check_items": [
+      "LXDおよびMicroCloudの利用有無と影響バージョンを確認する",
+      "自社ウェブサイトで利用している外部スクリプトやサードパーティコンポーネントのセキュリティ管理状況を再確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:20e411a0cb2bc19ecffc1bbae778215a58df90a2187ae4a597f061a830524d63",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/northstar-security-exits-stealth-with-7m-to-expose-toxic-risk-combinations/",
+      "canonical_url": "https://www.securityweek.com/northstar-security-exits-stealth-with-7m-to-expose-toxic-risk-combinations/",
+      "published_at": "2026-11-01T20:15:00+09:00",
+      "fetched_at": "2026-11-02T10:30:17.826713+09:00",
+      "title": "Northstar Security Exits Stealth With $7M to Expose Toxic Risk Combinations",
+      "raw_title": "Northstar Security Exits Stealth With $7M to Expose Toxic Risk Combinations",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c14dc8522ca64596709ac40bbc9deba5e898803a8d36e9a547c028c0792aa576",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-02T10:30:19.988003+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性や攻撃、規制に関する情報ではなく、セキュリティスタートアップの資金調達と事業内容に関する記事であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "セキュリティスタートアップのNorthstar Securityが700万ドルの資金調達を発表し、ステルスモードを解除しました。同社はAIエージェントを活用し、ID、資産、脆弱性の関連性をマッピングしてリスクの高い組み合わせを特定・修正するソリューションを提供します。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。新たなセキュリティソリューションの動向として、中長期的な情報収集の参考となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威やインシデントに関する情報ではなく、新たなセキュリティ企業の動向であるため「低」です。確認目安は、具体的な対応を要する情報ではなく、中長期的な情報収集の参考となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:47c9e2c2f127bea1bcf0c5f44636d9c44b68172ada4adef1e638898910c582f5",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/critical-lxd-and-microcloud-flaw-cvss.html",
+      "canonical_url": "https://thehackernews.com/2026/11/critical-lxd-and-microcloud-flaw-cvss.html",
+      "published_at": "2026-11-01T17:51:31+09:00",
+      "fetched_at": "2026-11-02T10:30:17.826713+09:00",
+      "title": "CVSS 10.0 LXD, MicroCloud Flaw Lets Attackers Impersonate Trusted Clients Without a Private Key",
+      "raw_title": "CVSS 10.0 LXD, MicroCloud Flaw Lets Attackers Impersonate Trusted Clients Without a Private Key",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0b4616eeb7e87ee54922dd3335a635dacd47a85aec974ad4fb3d28f5c548f4a3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-02T10:30:37.456018+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CanonicalのLXDおよびMicroCloudにおける重大な脆弱性が主題であるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "CanonicalのLXDおよびMicroCloudに重大な脆弱性が発見されました。これにより、攻撃者は信頼されたクライアントの秘密鍵を持たずに、そのクライアントとしてHTTPS API経由でログインし、クラスターや仮想マシンにアクセスできる可能性があります。",
+        "financial_impact": "金融機関でLXDまたはMicroCloudを仮想化基盤として利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "LXDおよびMicroCloudの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報を確認し、パッチや緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、CVSSは10.0と高いものの、LXDおよびMicroCloudの金融機関での利用状況が記事から不明で適用範囲が限定的または不確実なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:3c8da2a0b6d392cf59620f6eeb796c76462f9ae9345173c7b4bab28d90bdc65c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/hackers-steal-about-27-million-from.html",
+      "canonical_url": "https://thehackernews.com/2026/11/hackers-steal-about-27-million-from.html",
+      "published_at": "2026-11-01T16:25:40+09:00",
+      "fetched_at": "2026-11-02T10:30:17.826713+09:00",
+      "title": "Hackers Steal About $2.7 Million From Polymarket Traders via Hijacked DebugBear Script",
+      "raw_title": "Hackers Steal About $2.7 Million From Polymarket Traders via Hijacked DebugBear Script",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b2739e6ec26d716d56b98469c49e7e8dca13d42ff9d2dca2e70afaa0c4485883",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-02T10:30:55.044712+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "予測市場Polymarketで実際に資金が盗難されたインシデントが主題であるため。",
+        "tags": [
+          "インシデント",
+          "サプライチェーン",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "予測市場Polymarketのウェブサイト上で、外部企業から読み込まれたページ速度スクリプトが不正なコードに置き換えられ、ログイン中のトレーダーから約270万ドルが盗難されました。Polymarketは影響を受けた726のウォレットに返金すると発表しています。",
+        "financial_impact": "金融機関が直接的な被害を受けたわけではありませんが、サプライチェーンを介したウェブサイトの改ざんによる顧客資産の窃取は、金融サービス提供におけるセキュリティリスクとして参考になります。",
+        "recommended_actions": [
+          "自社ウェブサイトで利用している外部スクリプトやサードパーティコンポーネントのセキュリティ管理状況を再確認する",
+          "サプライチェーンリスク管理の一環として、外部ベンダーが提供するサービスのセキュリティ評価基準を見直す"
+        ],
+        "reason": "重要度は、金融機関への直接的な影響は限定的であるものの、サプライチェーンを介した攻撃事例として参考になるため「中」です。確認目安は、即時対応を要する具体的な期限や進行中の脅威が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e1dc1203c72851bbedcb84b0a5fe2133b5b039454675f92859fd709622eb74f7",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/fbi-links-north-koreas-tradertraitor-to.html",
+      "canonical_url": "https://thehackernews.com/2026/11/fbi-links-north-koreas-tradertraitor-to.html",
+      "published_at": "2026-11-01T16:03:00+09:00",
+      "fetched_at": "2026-11-02T10:30:17.826713+09:00",
+      "title": "FBI Links North Korea's TraderTraitor to Record $6.43 Billion Binance Crypto Heist",
+      "raw_title": "FBI Links North Korea's TraderTraitor to Record $6.43 Billion Binance Crypto Heist",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bfa488e108d26a28e88f7d2d092b71218c05698698964cf9c40fd994ecf766a8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-02T10:31:12.512932+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "北朝鮮関連のハッキンググループによる仮想通貨窃盗事件が主題であるため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "FBIは、北朝鮮関連のハッキンググループ「TraderTraitor」（別名：Jade Sleet、Pressure Chollimaなど）が、Binanceから60億ドル以上の仮想資産を窃盗した事件に関与していると公式に発表しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的ですが、仮想通貨関連サービスを提供する金融機関や、北朝鮮関連のサイバー攻撃動向を監視する上で参考となる情報です。",
+        "recommended_actions": [
+          "北朝鮮関連のサイバー攻撃グループの動向について情報収集を継続し、自社の脅威インテリジェンスを更新する",
+          "仮想通貨関連サービスを提供している場合、関連する脅威情報やセキュリティ対策について再確認する"
+        ],
+        "reason": "重要度は、金融機関への直接的な影響は限定的であるものの、国家支援型攻撃グループの動向として把握する価値があるため「中」です。確認目安は、新たな脆弱性や緊急対応を要する情報ではなく、脅威動向の把握が主となるため「今週確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4432f1dbea0caa5b7f06abe6b418d0f65477d6b9f093ef9d580abf58fec337eb",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/netamloader-malware-targets-government.html",
+      "canonical_url": "https://thehackernews.com/2026/11/netamloader-malware-targets-government.html",
+      "published_at": "2026-11-01T16:02:58+09:00",
+      "fetched_at": "2026-11-02T10:30:17.826713+09:00",
+      "title": "NetamLoader Malware Targets Government Windows 10 Systems in Asia via .NET Injection",
+      "raw_title": "NetamLoader Malware Targets Government Windows 10 Systems in Asia via .NET Injection",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e1a657724c675178034f3e7417f3a64519ff102d6b2c9797a6a973b210b6232f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-02T10:31:29.578104+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "アジアの政府機関を標的とした、これまで文書化されていないマルウェア「NetamLoader」の攻撃手法が主題であるため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、アジアの政府機関を標的とした「NetamLoader」と呼ばれる高度な感染チェーンの詳細を公開しました。この活動は、アジアの政府機関が独占的に使用するカスタムWindows 10ビルドを標的としています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。ただし、政府機関を標的とした高度な攻撃手法は、将来的に金融機関へ転用される可能性があり、脅威動向として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、標的がアジアの政府機関に限定されており、金融機関への直接的な適用性が不明なため「中」です。確認目安は、新たなマルウェアの脅威動向として情報収集の価値があるものの、即時対応を要する具体的な根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
