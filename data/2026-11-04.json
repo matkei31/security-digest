@@ -1,0 +1,1069 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-04",
+  "generated_at": "2026-11-04T11:26:19.821550+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 20,
+    "ai_attempted_count": 18,
+    "ai_success_count": 17,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 2,
+    "ai_eligible_count": 18
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 15,
+      "低": 3,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 10,
+      "参考": 8,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 3,
+      "攻撃・脅威動向": 2,
+      "インシデント": 6,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 6,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象18件｜重要度「高」0件｜本日確認0件｜今週確認10件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が10件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "mSecureパスワードマネージャーの顧客に対し、不審な活動が確認されたため、パスワードの変更、二要素認証（2FA）のリセット、パスキーの削除を促す警告メールが開発元から送信されました。\nmSecureパスワードマネージャーを業務で利用している金融機関やその従業員がいる場合、情報漏えいや不正アクセスにつながる可能性があります。利用有無は記事から確認できないため断定はできません。",
+      "ブロックチェーンインフラプロバイダーのChainstackは、サイバー攻撃により生産システムの一部が侵害され、顧客データとパスワードハッシュが漏洩したことを公表しました。この攻撃は、先週明らかになった大規模なAIを活用した攻撃キャンペーンの一部であると評価されています。\n金融機関がChainstackのブロックチェーンインフラサービスを利用している場合、委託先管理の観点から関係します。記事からは金融機関での利用状況は確認できません。"
+    ],
+    "check_items": [
+      "mSecureパスワードマネージャーの利用有無を棚卸しする",
+      "Chainstackのサービスを利用している場合、ベンダーからの公式通知を確認し、影響範囲と対応状況を把握する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:e357dd7a35d8f16c4ad04a3b8c88158f1b2c73bf82b5be1808b0ca96e3cbd2f5",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/msecure-warns-users-to-change-passwords.html",
+      "canonical_url": "https://thehackernews.com/2026/11/msecure-warns-users-to-change-passwords.html",
+      "published_at": "2026-11-04T03:46:38+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "mSecure Warns Users to Change Passwords, Reset 2FA and Passkeys After Suspicious Activity",
+      "raw_title": "mSecure Warns Users to Change Passwords, Reset 2FA and Passkeys After Suspicious Activity",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9500342e36779c607c45786bcd5a215e0d284f93d9ed1fd31a9e7d29d419fb40",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:20:55.604903+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "パスワードマネージャーの不審な活動に関する警告であり、潜在的な侵害の可能性を示唆しているため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "認証"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "mSecureパスワードマネージャーの顧客に対し、不審な活動が確認されたため、パスワードの変更、二要素認証（2FA）のリセット、パスキーの削除を促す警告メールが開発元から送信されました。",
+        "financial_impact": "mSecureパスワードマネージャーを業務で利用している金融機関やその従業員がいる場合、情報漏えいや不正アクセスにつながる可能性があります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "mSecureパスワードマネージャーの利用有無を棚卸しする",
+          "mSecureを利用している場合は、ベンダーからの指示に従いパスワード変更、2FAリセット、パスキー削除を検討する",
+          "mSecureに保存されている可能性のある機密情報の範囲と影響を評価する"
+        ],
+        "reason": "重要度は、特定のパスワードマネージャーの不審な活動であり、利用有無により影響が異なるため「中」です。確認目安は、不審な活動の詳細は不明であり、即時対応の明確な時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:49acf98068f7a42dd82c734de4f11e0539d0c2caf17a6cae7cb2e90e526c0ec2",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/chainstack-reports-production-systems.html",
+      "canonical_url": "https://thehackernews.com/2026/11/chainstack-reports-production-systems.html",
+      "published_at": "2026-11-04T03:16:19+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "Chainstack Reports Production Systems Breach Exposing Customer Data and Password Hashes",
+      "raw_title": "Chainstack Reports Production Systems Breach Exposing Customer Data and Password Hashes",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b3e946f9c0ced1f00148b8fdee7c812e4ab6ec149fe5e1dbef8d41a551cd9915",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:21:13.440931+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "ブロックチェーンインフラプロバイダーChainstackがサイバー攻撃を受け、顧客データとパスワードハッシュが漏洩したインシデントが主題のため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "サプライチェーン",
+          "委託先管理",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ブロックチェーンインフラプロバイダーのChainstackは、サイバー攻撃により生産システムの一部が侵害され、顧客データとパスワードハッシュが漏洩したことを公表しました。この攻撃は、先週明らかになった大規模なAIを活用した攻撃キャンペーンの一部であると評価されています。",
+        "financial_impact": "金融機関がChainstackのブロックチェーンインフラサービスを利用している場合、委託先管理の観点から関係します。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "Chainstackのサービスを利用している場合、ベンダーからの公式通知を確認し、影響範囲と対応状況を把握する",
+          "Chainstackのサービスを利用している場合、自社システムへの影響がないか、およびアカウントのセキュリティ状況を確認する"
+        ],
+        "reason": "重要度は、金融機関がChainstackのサービスを利用している場合に委託先管理の観点から確認が必要となるため「中」です。確認目安は、インシデントの報告であり、即時対応を要する具体的な期限や進行中の脅威の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a455db3a91159d72d42b14ff5871019b3e8906849cfaba630d46aa7e35172d9f",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/11/03/fake-download-campaign-uses-trojanized-installers-deliver-monetization-payloads/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/11/03/fake-download-campaign-uses-trojanized-installers-deliver-monetization-payloads/",
+      "published_at": "2026-11-04T02:32:47+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "Fake-download campaign uses trojanized installers to deliver monetization payloads",
+      "raw_title": "Fake-download campaign uses trojanized installers to deliver monetization payloads",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9dd2e61409c14c8163988d9f67ecc63e942a1d68a47647b4485255cb5f42880f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:62e23c789fbfd2f85d19b5cda60f223a48c61e51317e15463cf2fb7e382d0fc7",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/binance-reveals-how-fake-job-interviews.html",
+      "canonical_url": "https://thehackernews.com/2026/11/binance-reveals-how-fake-job-interviews.html",
+      "published_at": "2026-11-04T01:55:58+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "Binance Reveals How Fake Job Interviews and AI Tool Abuse Led to $6.43 Billion Theft",
+      "raw_title": "Binance Reveals How Fake Job Interviews and AI Tool Abuse Led to $6.43 Billion Theft",
+      "raw_excerpt": null,
+      "content_hash": "sha256:eca369f42fdea9c52002413aa2add3ec0779ca53fb0f4c7d9563fde73ce39b2b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:21:31.203722+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "世界最大の仮想通貨取引所Binanceで発生した大規模な資産窃盗事件が主題であるため。",
+        "tags": [
+          "インシデント",
+          "フィッシング",
+          "サプライチェーン",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Binanceは、世界最大の仮想通貨取引所から64.3億ドル相当の資産が窃盗された事件について、改ざんされたHomebrewのインストールと、2人のエンジニアを標的とした求人面接を装ったソーシャルエンジニアリング攻撃を含む、巧妙な多段階キャンペーンの結果であったと発表しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的ですが、ソーシャルエンジニアリングやサプライチェーン攻撃の手口は、金融機関の従業員やシステムにも応用される可能性があり、脅威動向として参考になります。",
+        "recommended_actions": [
+          "求人面接を装ったソーシャルエンジニアリング攻撃の手口と、AIツールの悪用事例について社内への注意喚起を検討する",
+          "従業員に対するソーシャルエンジニアリング対策のトレーニング内容を見直し、最新の脅威動向を反映させる",
+          "開発環境におけるツール導入時のセキュリティチェック体制を再確認し、改ざんされたツールの利用リスクを評価する"
+        ],
+        "reason": "重要度は、金融機関への直接的な影響は限定的であるものの、攻撃手法が巧妙であり脅威動向として把握する価値があるため「中」です。確認目安は、新たな脆弱性や緊急対応を要する情報ではなく、脅威動向の把握が主目的であるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5350cf64f29cdc8ac80e555f0f95287832f53528f8c51bf82ed1bf74b1669c24",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/barracuda-flaws-could-be-chained-to.html",
+      "canonical_url": "https://thehackernews.com/2026/11/barracuda-flaws-could-be-chained-to.html",
+      "published_at": "2026-11-04T00:59:19+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "Barracuda Flaws Could Be Chained to Bypass Authorization and Gain Root Access",
+      "raw_title": "Barracuda Flaws Could Be Chained to Bypass Authorization and Gain Root Access",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ff23a30db5c5f501569723363c1cae9cae9bfcdf602bea65bb653aa485bef424",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:21:48.325349+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Barracuda製品の複数の脆弱性とそれらの悪用可能性が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Barracudaは、同社製品に影響を与える2つの脆弱性（CVE-2026-116606、CVSSスコア9.3）の詳細を公開しました。これらの脆弱性を組み合わせることで、攻撃者は認証制御をバイパスし、影響を受けるデバイスへのrootアクセスを取得する可能性があります。",
+        "financial_impact": "金融機関でBarracuda製品を利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "CVE-2026-116606の影響を受けるBarracuda製品の利用有無と影響バージョンを確認する",
+          "Barracudaからの一次情報と修正版・緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、CVSSスコアは高いものの、対象製品の利用可能性が記事から確認できず適用範囲が不確実なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c5631e1fe7c280d41ea0570b670335d706b6c1cb16d7cd716dfe164065975214",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/google-warns-llmjacking-attacks-are.html",
+      "canonical_url": "https://thehackernews.com/2026/11/google-warns-llmjacking-attacks-are.html",
+      "published_at": "2026-11-04T00:41:53+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "Google Warns LLMjacking Attacks Are Costing Some Enterprises Up to $1 Million in Cloud Charges",
+      "raw_title": "Google Warns LLMjacking Attacks Are Costing Some Enterprises Up to $1 Million in Cloud Charges",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0f3a65ef9b52fbda45a0789cbef00d661bd2b78e3fbc72f10a2bb65bb8f2d098",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:22:05.981606+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "LLMを悪用した攻撃手法が主題であるため。",
+        "tags": [
+          "AI",
+          "クラウド",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Googleは、脅威アクターが企業のLLMアクセスを乗っ取り、高額なコンピューティングリソースやAIサービスを不正利用する「LLMjacking」攻撃について警告しました。この攻撃は、フィッシングやソースコード漏洩などによりAPIキーが窃取されることで発生します。",
+        "financial_impact": "金融機関がLLMやAIサービスをクラウド環境で利用している場合、不正なリソース利用による高額なクラウド料金が発生する可能性があります。APIキーの管理不備が原因となるため、適切な管理が求められます。",
+        "recommended_actions": [
+          "自社および委託先でLLMやAIサービスを利用しているか、またそのAPIキーの管理状況を確認する",
+          "フィッシング対策、ソースコード管理、環境設定のレビューなど、APIキー漏洩につながる可能性のある経路を点検する",
+          "クラウド利用料金の異常な増加がないか、監視体制を強化する"
+        ],
+        "reason": "重要度は、LLM利用企業にとって潜在的な財務的影響があるものの、具体的な金融機関への適用性や普及度が記事から不明なため「中」です。確認目安は、新たな攻撃手法に関する警告であり、即時対応を要する進行中の侵害や明確な期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c3e615c4c5d6d791ca5ef6728c497232c65b40f2c618d5af92f9e6911a95c7b9",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/cpguard-update-channel-hijacked-to.html",
+      "canonical_url": "https://thehackernews.com/2026/11/cpguard-update-channel-hijacked-to.html",
+      "published_at": "2026-11-04T00:16:32+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "cPGuard Update Channel Hijacked to Backdoor Linux Servers and Collect Password Hashes",
+      "raw_title": "cPGuard Update Channel Hijacked to Backdoor Linux Servers and Collect Password Hashes",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7a2c7f9e4740509ed463100241d67e0012eccff4d0259b7c3c0c98c81baff6ed",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:22:23.655846+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "cPGuardのアップデートシステムが侵害され、顧客のLinuxサーバーにバックドアが仕掛けられデータが窃取された実際の被害事例が主題のため。",
+        "tags": [
+          "インシデント",
+          "サプライチェーン",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セキュリティツールcPGuardのアップデートシステムが攻撃者によって乗っ取られ、顧客のLinuxサーバーに悪意のあるスクリプトが送信されました。このスクリプトはバックドアをインストールし、パスワードハッシュなどの機密ファイルを窃取しました。",
+        "financial_impact": "金融機関でcPGuardを利用している場合、サプライチェーンを介した侵害のリスクがあります。Linuxサーバーの利用状況とcPGuardの導入状況を確認する必要があります。",
+        "recommended_actions": [
+          "自社および委託先でcPGuardを利用しているか、また影響を受けるバージョン(5.88.25以降)を使用しているかを確認する",
+          "cPGuardベンダーのOPSSHIELDが公開しているアドバイザリを確認し、推奨される緩和策や対応手順を評価する",
+          "影響を受けた可能性のあるLinuxサーバーについて、バックドアの有無やパスワードハッシュ等の窃取痕跡がないか調査する"
+        ],
+        "reason": "重要度は、広く利用される可能性のあるセキュリティツールのサプライチェーン侵害であり、適用性評価の価値があるため「中」です。確認目安は、インシデント発生の報告があり、自社での利用有無の確認が必要なため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f01d9b63500da3f827d3274bd402c9fa719137fb091a23e93b6f4398cb2688d8",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/frontline-education-data-breach-impacts-over-1-3-million/",
+      "canonical_url": "https://www.securityweek.com/frontline-education-data-breach-impacts-over-1-3-million/",
+      "published_at": "2026-11-03T23:32:38+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "Frontline Education Data Breach Impacts Over 1.3 Million",
+      "raw_title": "Frontline Education Data Breach Impacts Over 1.3 Million",
+      "raw_excerpt": null,
+      "content_hash": "sha256:58b8eef0aee4f65aba31c28f08d3230e7550298fe7032ca79504565f854ce757",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:22:40.101754+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "第三者ソフトウェアの脆弱性を悪用したデータ侵害が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Frontline Educationが第三者ソフトウェアの脆弱性を悪用され、学校職員と生徒の個人情報130万人以上が流出しました。",
+        "financial_impact": "金融機関への直接的な関係は確認できず、他業界のデータ侵害事例として参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が確認できない他業界のインシデントであるため「低」です。確認目安は、金融機関への直接的な影響や緊急対応の必要性が記事から確認できないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a0803a2b5f2de01fe3ab9abeda29f3aff480f87b2c9213dd737016e3b779dbff",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/crowdstrike-reportedly-paying-495-million-for-ai-security-firms-fiddler-dreadnode/",
+      "canonical_url": "https://www.securityweek.com/crowdstrike-reportedly-paying-495-million-for-ai-security-firms-fiddler-dreadnode/",
+      "published_at": "2026-11-03T23:12:44+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "CrowdStrike Reportedly Paying $495 Million for AI Security Firms Fiddler, Dreadnode",
+      "raw_title": "CrowdStrike Reportedly Paying $495 Million for AI Security Firms Fiddler, Dreadnode",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c5559f708bf9abd77b9e8a91e2eb7ec3d3884d238e596b09b876f158050b3601",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:22:57.248461+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIセキュリティ企業の買収と、それによるAIセキュリティ機能の強化であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "CrowdStrikeがAIセキュリティ企業FiddlerとDreadnodeを約4億9500万ドルで買収すると報じられました。これにより、CrowdStrike FalconプラットフォームにAIエージェントの可観測性と自動AIセキュリティテスト機能が追加される予定です。",
+        "financial_impact": "金融機関がCrowdStrike Falconプラットフォームを利用している場合、将来的にAIセキュリティ機能の強化による恩恵を受ける可能性があります。直接的な影響は現時点では限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIセキュリティ分野の動向を示すものであり、中長期的な戦略検討の参考となるため「中」です。確認目安は、具体的な脅威や期限を伴うものではなく、短期的な対応を要しないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6fcd464ed34087b88f8a2b4e3d76469e591b519590d6afe30779ac8044f131ea",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/androids-november-2026-updates-patch-over-200-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/androids-november-2026-updates-patch-over-200-vulnerabilities/",
+      "published_at": "2026-11-03T21:21:49+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "Android’s November 2026 Updates Patch Over 200 Vulnerabilities",
+      "raw_title": "Android’s November 2026 Updates Patch Over 200 Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:395f6a77d4c70ecd4de7c29f290ea5a5fa9fb72ab02aed0a2247268d3ece57a1",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:23:14.168075+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Androidの月例セキュリティアップデートで多数の脆弱性が修正されたという内容が主題のため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Androidの2026年11月セキュリティアップデートで200以上の脆弱性が修正されました。最も深刻なものは、ユーザー操作なしでリモートコード実行につながるFrameworkの重大な欠陥です。",
+        "financial_impact": "金融機関が業務でAndroidデバイスを利用している場合、これらの脆弱性が影響する可能性があります。特にリモートコード実行の脆弱性は、デバイスの乗っ取りや情報漏えいにつながる恐れがあります。",
+        "recommended_actions": [
+          "自社で利用しているAndroidデバイスのバージョンと、今回のアップデートの適用状況を確認する",
+          "ベンダーの公開情報を参照し、影響を受けるデバイスやバージョン、推奨される対応策を評価する"
+        ],
+        "reason": "重要度は、Androidデバイスの利用状況により影響が異なるため「中」です。確認目安は、多数の脆弱性修正が含まれるものの、直ちに悪用が確認されたという記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:283335e142ed8b82ec0f4a964fae633c35fbf170835033711dffb1f55a4c8352",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/critical-node-red-flaw-exploited-in-attacks/",
+      "canonical_url": "https://www.securityweek.com/critical-node-red-flaw-exploited-in-attacks/",
+      "published_at": "2026-11-03T21:10:19+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "Critical Node-RED Flaw Exploited in Attacks",
+      "raw_title": "Critical Node-RED Flaw Exploited in Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4ca118becdb2e47d02e862697b59a950573a64d6710cd685cfb738f2022b2af2",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:23:31.041738+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Node-REDの脆弱性が攻撃で悪用された事例が主題のため。",
+        "tags": [
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Node-REDの重大な脆弱性が攻撃で悪用され、同一IPアドレスからLinuxボットやウェブシェルなどの様々なペイロードを展開しようとする複数の攻撃が確認されました。",
+        "financial_impact": "金融機関でNode-REDを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Node-REDの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報や修正パッチ、緩和策を確認し対応要否を評価する"
+        ],
+        "reason": "重要度は、Node-REDの利用状況が金融機関で限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、実悪用が確認されているものの、CISA KEVへの新規追加がなく即時対応の明確な時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4b940fe58ecf411e08c8446ca8320b4b77cb5cf971bbca9c09492931f8c1c565",
+      "source_id": "ncsc",
+      "source_name": "NCSC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.ncsc.gov.uk/news/cyber-chief-uk-facing-ai-powered-attacks-on-critical-infrastructure-in-two-years",
+      "canonical_url": "https://www.ncsc.gov.uk/news/cyber-chief-uk-facing-ai-powered-attacks-on-critical-infrastructure-in-two-years",
+      "published_at": "2026-11-03T21:00:00+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "NCSC、AIを活用した重要インフラへの攻撃が2年以内に英国を襲うと警告",
+      "raw_title": "Cyber chief: UK facing AI-powered attacks on critical infrastructure within two years",
+      "raw_excerpt": "The NCSC warns that ‘tech on the cheap’ has left UK organisations exposed to AI uncovering and exploiting longstanding cyber security weaknesses and calls for urgent investment in resilience.",
+      "content_hash": "sha256:c589906d29a65ad1d8186423c3a036d8c9b8bc7140d6f2a75c6c989e464d02fe",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:23:48.067672+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIを活用した攻撃と、それによる重要インフラへのリスクであるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "英国のNCSCは、AIを活用した攻撃が2年以内に英国の重要インフラを標的とする可能性があり、既存のサイバーセキュリティの弱点をAIが発見・悪用するリスクを警告しています。組織に対し、レジリエンスへの緊急投資を求めています。",
+        "financial_impact": "金融機関も重要インフラの一部であり、AIを活用した攻撃の標的となる可能性があります。長期的な視点でのセキュリティ戦略や投資計画に影響を与える可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIを活用した攻撃が将来的に金融機関を含む重要インフラに影響を与える可能性があり、中長期的な検討が必要なため「中」です。確認目安は、具体的な脅威や期限が示されておらず、短期的な対応を求めるものではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:aa724a9a8e5dab63e26d31738a39da2c5b9781bee764be775fe0605e306934b7",
+      "source_id": "ncsc",
+      "source_name": "NCSC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.ncsc.gov.uk/report/artificial-intelligence-and-cyber-intrusion",
+      "canonical_url": "https://www.ncsc.gov.uk/report/artificial-intelligence-and-cyber-intrusion",
+      "published_at": "2026-11-03T21:00:00+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "NCSC、AIを活用したサイバー侵入の脅威動向と2028年までの予測を評価",
+      "raw_title": "Artificial intelligence and cyber intrusion",
+      "raw_excerpt": "An NCSC assessment that examines current AI-enabled threat trends and projections of the threat landscape to 2028.",
+      "content_hash": "sha256:51da4310fcf191c8cb1aac61cf9084c17830d3c648346365da226b1d8bb97bcf",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:24:04.976137+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIがサイバー侵入に利用される脅威動向と将来予測が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "NCSCは、AIを活用した現在の脅威動向と、2028年までの脅威ランドスケープの予測を評価したレポートを公開しました。",
+        "financial_impact": "金融機関におけるAIの利用拡大や、AIを活用したサイバー攻撃の高度化は、新たなリスク評価やセキュリティ対策の検討に影響を与える可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIを活用したサイバー攻撃の将来的な動向に関する情報であり、中長期的なリスク評価の参考となるため「中」です。確認目安は、具体的な緊急対応を求める内容ではなく、中長期的な検討に資する情報であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b84cad2a2e67203e1c8e6fda7462f0b2daa108321068a6dd8cb8d955da2b055a",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/red-hat-patches-98-rated-linux-tcp-rce.html",
+      "canonical_url": "https://thehackernews.com/2026/11/red-hat-patches-98-rated-linux-tcp-rce.html",
+      "published_at": "2026-11-03T20:23:53+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "Red Hat Patches 9.8-Rated Linux TCP RCE Flaw While Ubuntu Releases Fixes for Testing",
+      "raw_title": "Red Hat Patches 9.8-Rated Linux TCP RCE Flaw While Ubuntu Releases Fixes for Testing",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d2a3bfa0d9c9e5c522af3125a41de2fd2a99872fd3e16fe18e7ed85aaa40eec4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "output_length_violation",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e168d5f8ea0683e50921d04b71059fe77a9fad24c1b60867ebd92aa0727b4ca0",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/the-4-elements-of-exposure.html",
+      "canonical_url": "https://thehackernews.com/2026/11/the-4-elements-of-exposure.html",
+      "published_at": "2026-11-03T20:18:20+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "The 4 Elements of Exposure Prioritization and How to Operationalize Them",
+      "raw_title": "The 4 Elements of Exposure Prioritization and How to Operationalize Them",
+      "raw_excerpt": null,
+      "content_hash": "sha256:87bc15a12224a1220385756caf67e2cb83a918b4b299fc3763f6ad117a288012",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:24:39.776384+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "脆弱性管理における優先順位付けの考え方に関する記事であり、特定の脆弱性やインシデント、規制に関するものではないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Gartnerのレポートによると、脆弱性の10%未満しか悪用されないにもかかわらず、ほとんどが緊急として扱われている現状に対し、攻撃者が悪用しない可能性のある露出に多くの時間と労力を費やしていると指摘しています。",
+        "financial_impact": "金融機関の脆弱性管理プロセスにおいて、効率的なリソース配分やリスク低減の参考情報となり得ます。直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、脆弱性管理の一般的な考え方に関する記事であり、特定の脅威や期限が示されていないため「低」です。確認目安は、短期的な対応を要する具体的な情報がなく、中長期的な知識更新が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:70bac8ded84974e45125cdbf6a8f61e18eec340ed2856fd074e6123588a638cb",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/uk-cyber-chief-says-the-uk-will-face-ai-cyberattacks-on-critical-infrastructure-by-2028/",
+      "canonical_url": "https://www.securityweek.com/uk-cyber-chief-says-the-uk-will-face-ai-cyberattacks-on-critical-infrastructure-by-2028/",
+      "published_at": "2026-11-03T18:49:12+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "UK Cyber Chief Says the UK Will Face AI Cyberattacks on Critical Infrastructure by 2028",
+      "raw_title": "UK Cyber Chief Says the UK Will Face AI Cyberattacks on Critical Infrastructure by 2028",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0fd8af1d9726620726088770b6a74885925e24b8224f3e0e59ac158c5193c925",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:24:56.671070+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIを用いたサイバー攻撃の将来的な脅威予測であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "英国のサイバーセキュリティ責任者は、中国やロシアを含む国家や犯罪者がAIをサイバー活動に利用するにつれて、2028年までに英国の重要インフラがAIによるサイバー攻撃に直面する可能性が高いと予測しました。",
+        "financial_impact": "金融機関の重要インフラもAIを用いたサイバー攻撃の標的となる可能性があり、中長期的なリスク評価や対策検討の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIによるサイバー攻撃の将来的な予測であり、現時点での直接的な影響や具体的な対応が不明確なため「中」です。確認目安は、2028年という将来の予測であり、短期的な対応を求めるものではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7ca1e98bdc3bcc1b1380b629dd22201e289bfc98e96cce67b7c5992e8a4b2f39",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/google-dismantles-xcpe-botnet-of-1-3-million-android-devices/",
+      "canonical_url": "https://www.securityweek.com/google-dismantles-xcpe-botnet-of-1-3-million-android-devices/",
+      "published_at": "2026-11-03T18:22:09+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "Google Dismantles XCPE Botnet of 1.3 Million Android Devices",
+      "raw_title": "Google Dismantles XCPE Botnet of 1.3 Million Android Devices",
+      "raw_excerpt": null,
+      "content_hash": "sha256:15017205d5c195c78efc4843de32716f1dedfb65f2a856e720eac20e154fc857",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:25:13.608709+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Androidデバイスを標的としたボットネットの活動と解体に関する記事であるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Googleは、Android OEM/ODMであるVideostrong Technologyが金銭的利益のために作成・運用していた、130万台のAndroidデバイスからなるXCPEボットネットを解体しました。",
+        "financial_impact": "金融機関が従業員や顧客にAndroidデバイスを提供している場合、またはBYODポリシーを運用している場合に、潜在的なリスクとして関係します。直接的な影響は限定的です。",
+        "recommended_actions": [
+          "自社で利用しているAndroidデバイスのセキュリティ設定と管理状況を確認する",
+          "従業員が利用するAndroidデバイスのセキュリティ対策について注意喚起を行う"
+        ],
+        "reason": "重要度は、金融機関への直接的な影響は限定的であるものの、Androidデバイスの利用状況によっては関連する可能性があるため「中」です。確認目安は、新たな脅威動向として状況把握の価値があるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6f4084b798be1f6726b4a5306862cbd3a9e7900969721f7d1cea9a15ab187ee2",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/natos-crossed-swords-exercise-brings-ai-agents-into-cyber-operations-training/",
+      "canonical_url": "https://www.securityweek.com/natos-crossed-swords-exercise-brings-ai-agents-into-cyber-operations-training/",
+      "published_at": "2026-11-03T17:49:03+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "NATO’s Crossed Swords Exercise Brings AI Agents Into Cyber Operations Training",
+      "raw_title": "NATO’s Crossed Swords Exercise Brings AI Agents Into Cyber Operations Training",
+      "raw_excerpt": null,
+      "content_hash": "sha256:03d7b560cd37062668b001971493feaefc82eff9112a870dea50285ad9afd15a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:25:30.573091+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "NATOのサイバー演習でAIエージェントが導入されたことが主題であり、AI技術のリスクと活用に関する情報であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "NATOのサイバー防衛協力センター・オブ・エクセレンス（CCDCOE）がエストニアで実施した「Crossed Swords」演習に、AIエージェントとOpenAI Daybreakが共同サイバー・キネティック作戦訓練に導入されました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AIエージェントのサイバー作戦への応用は、将来的な脅威動向や防御戦略を検討する上での参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントのサイバー作戦への応用が将来的な脅威動向として中長期的な検討対象となるため「中」です。確認目安は、具体的な脅威や短期的な対応を求める情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d334ddbcf287b3dfa3258059115abbaad9cdbdfb62e1e0318d9e48f0a5bea69d",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/over-100-european-stores-hit-as-supermarket-fridge-attacks-resume/",
+      "canonical_url": "https://www.securityweek.com/over-100-european-stores-hit-as-supermarket-fridge-attacks-resume/",
+      "published_at": "2026-11-03T16:43:24+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "Over 100 European Stores Hit as Supermarket Fridge Attacks Return",
+      "raw_title": "Over 100 European Stores Hit as Supermarket Fridge Attacks Return",
+      "raw_excerpt": null,
+      "content_hash": "sha256:dd729e2fa183c700128fa52ecdf83836cbdb6fcce4767ee8743bcb6d17e88102",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:25:47.197437+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "インターネットに露出した冷蔵庫コントローラーへの攻撃と被害が主題であるため。",
+        "tags": [
+          "インシデント"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "欧州のスーパーマーケットで、インターネットに露出した冷蔵庫コントローラーが再び攻撃を受け、ベルギー、スウェーデン、アイルランドなど100店舗以上が被害に遭いました。",
+        "financial_impact": "金融機関への直接的な影響は確認できず、他業界のインシデント事例として参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な関係が確認できない他業界のインシデント事例であるため「低」です。確認目安は、具体的な短期アクションや期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ee5bbf6202dad163586b662d414184c2f849385e54c3c475d17b0391df0bba33",
+      "source_id": "krebs_on_security",
+      "source_name": "Krebs on Security",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://krebsonsecurity.com/2026/11/tech-firms-dismantle-botnet-that-turned-1-3m-tv-boxes-into-proxies/",
+      "canonical_url": "https://krebsonsecurity.com/2026/11/tech-firms-dismantle-botnet-that-turned-1-3m-tv-boxes-into-proxies/",
+      "published_at": "2026-11-03T11:24:31+09:00",
+      "fetched_at": "2026-11-04T11:20:53.184962+09:00",
+      "title": "Tech Firms Dismantle Botnet That Turned 1.3M TV Boxes Into Proxies",
+      "raw_title": "Tech Firms Dismantle Botnet That Turned 1.3M TV Boxes Into Proxies",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6949ba49afaf9966d567d370c2a0f74868ddd6625a6b1aa2c8244369011287ff",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-04T11:26:04.820746+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "悪意のあるソフトウェアを搭載したデバイスがボットネットを形成し、広告詐欺やインターネット接続の不正利用を行っていた事案であるため。",
+        "tags": [
+          "サプライチェーン",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Googleは業界パートナーと協力し、悪意のあるソフトウェアを搭載した130万台以上のAndroid TVセットトップボックスで構成されるボットネットを解体しました。このボットネットは、ユーザーのインターネット接続を密かに貸し出し、広告詐欺",
+        "financial_impact": "金融機関が直接的に標的とされた事案ではありません。しかし、IoTデバイスのサプライチェーンにおけるセキュリティリスクや、不正なプロキシネットワークが金融機関への攻撃に利用される可能性を考慮すると、間接的な関係はあります。",
+        "recommended_actions": [
+          "自社および委託先におけるIoTデバイスの調達・利用状況を棚卸しし、サプライチェーンリスク管理の観点からセキュリティ評価を実施する",
+          "不正なプロキシネットワークからのアクセスを検知するためのネットワーク監視体制を確認する"
+        ],
+        "reason": "重要度は、金融機関が直接的な標的ではないものの、IoTデバイスのサプライチェーンリスクや不正プロキシの悪用可能性を考慮し「中」です。確認目安は、既にボットネットが解体されており、即時対応を要する新たな脅威ではないため「今週確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
