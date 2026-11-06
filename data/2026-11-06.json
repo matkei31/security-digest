@@ -1,0 +1,1093 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-06",
+  "generated_at": "2026-11-06T11:31:59.558036+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 21,
+    "ai_attempted_count": 17,
+    "ai_success_count": 17,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 4,
+    "ai_eligible_count": 17
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 12,
+      "低": 5,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 9,
+      "参考": 8,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 3,
+      "攻撃・脅威動向": 5,
+      "インシデント": 1,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 4,
+      "その他": 4,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象17件｜重要度「高」0件｜本日確認0件｜今週確認9件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が9件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "OpenSSHは、Alpine Linux上の標準openssh-serverパッケージを実行している一部のサーバーにおいて、パスワードなしのアカウント（SSHキーのみのアカウントなど）に攻撃者がログインできる脆弱性に対する緊急修正版10.6p2を公開しました。攻撃にはネットワークアクセス、アカウント名、257〜1,024バイトのパスワードが必要です。\n金融機関でAlpine Linuxを基盤としたシステムでOpenSSHを利用している場合に、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。",
+      "サイバーセキュリティ研究者が、OpenAI ChatGPTのロックダウンモード保護をバイパスできる脆弱性の詳細を開示しました。この脆弱性は既に修正済みで、プロンプトインジェクションによるデータ窃取リスクを最小限に抑えるために導入されたロックダウンモードを迂回し、ユーザー操作なしでチャットデータを窃取する可能性がありました。\n金融機関がChatGPTを業務で利用しており、ロックダウンモードをデータ保護のために設定している場合に、本脆弱性の影響を受ける可能性があります。利用状況によっては情報漏えいのリスクに繋がるため、利用有無と設定状況の確認が関係します。"
+    ],
+    "check_items": [
+      "自社および委託先でAlpine Linux上のopenssh-serverパッケージの利用有無を確認する",
+      "自社および委託先におけるChatGPTの利用状況と、ロックダウンモードの設定状況を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:7514b820fe7b69ff131d1e82f1005f5dc523177b0446f5bc418dfb24af348588",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/bring-a-tent-ive-got-the-coffee-lessons-from-it-sa/",
+      "canonical_url": "https://blog.talosintelligence.com/bring-a-tent-ive-got-the-coffee-lessons-from-it-sa/",
+      "published_at": "2026-11-06T04:00:00+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "Bring a tent, I've got the coffee: Lessons from it-sa",
+      "raw_title": "Bring a tent, I've got the coffee: Lessons from it-sa",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c619ff9dce5299c59d9230cf1d95405054a8a6cbb608c19d7ea1c47562e1bf4e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:45e1c2a1adf6245475a7afcb21f55f6d7d02c7b419b410c8af62c59ab1cb04ab",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ai-agents-got-root-on-linux-via-948-kernel-flaws-in-openai-research/",
+      "canonical_url": "https://www.securityweek.com/ai-agents-got-root-on-linux-via-948-kernel-flaws-in-openai-research/",
+      "published_at": "2026-11-06T02:32:37+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "AI Agents Got Root on Linux via 948 Kernel Flaws in OpenAI Research",
+      "raw_title": "AI Agents Got Root on Linux via 948 Kernel Flaws in OpenAI Research",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bb815dec84b5220e9dc4635ce5ca6b685e685724db33d46221fbafea5cdf7fbc",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:27:10.457373+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントがLinuxカーネルの脆弱性を悪用した研究が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "OpenAIの研究において、未公開のサイバーモデルであるAIエージェントが、約120万ドルの費用で948個の異なるLinuxカーネルの権限昇格の欠陥を発見し、悪用してroot権限を取得したことが報告されました。",
+        "financial_impact": "本件はOpenAIの研究におけるAIエージェントの能力検証であり、金融機関への直接的な影響は限定的です。ただし、将来的にAIが悪用される可能性を示唆する参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントの能力検証に関する研究報告であり、金融機関への直接的な適用性が限定的であるため「中」です。確認目安は、実悪用や短期的な対応を求める情報ではなく、中長期的な動向把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:eef56bdea241403e091c0d1e42aeee5cadb871682f5280512a792a90dd2d06c5",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://techcommunity.microsoft.com/blog/microsoft-security-blog/new-investments-to-reduce-on-premises-security-risk/4570381",
+      "canonical_url": "https://techcommunity.microsoft.com/blog/microsoft-security-blog/new-investments-to-reduce-on-premises-security-risk/4570381",
+      "published_at": "2026-11-06T02:10:14+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "New investments to reduce on-premises security risk",
+      "raw_title": "New investments to reduce on-premises security risk",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b575b7f9665b629d733fb1750b40247a92e7e40bb65d22169ab63584c73bbc0d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d97887a156f724a205ab0d01a172a028535ec6ed2135e59cfb6e2f7100b0d9b4",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/11/05/whats-new-in-microsoft-security-november-2026/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/11/05/whats-new-in-microsoft-security-november-2026/",
+      "published_at": "2026-11-06T02:00:00+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "​​​​What’s new in Microsoft Security: November 2026",
+      "raw_title": "​​​​What’s new in Microsoft Security: November 2026",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6dd952a76d190d7163ce4e1510d5c5ffc4138847085851398b22bdfd6135d6df",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:90a9e74aa19bf7e06abb48514db4b1319a518011f5c671f0f183e02f0d456f80",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/openssh-issues-emergency-fix-for-flaw.html",
+      "canonical_url": "https://thehackernews.com/2026/11/openssh-issues-emergency-fix-for-flaw.html",
+      "published_at": "2026-11-06T01:42:46+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "OpenSSH Issues Emergency Fix for Flaw Letting Long Passwords Bypass SSH Auth on Alpine Linux",
+      "raw_title": "OpenSSH Issues Emergency Fix for Flaw Letting Long Passwords Bypass SSH Auth on Alpine Linux",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4a47c1b545a0fe6a9a919c2d1944c08ae9b3e4e499e1eba99d5ee1bc0bb46538",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:27:27.903122+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "OpenSSHの脆弱性とそれに対する緊急修正が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "OpenSSHは、Alpine Linux上の標準openssh-serverパッケージを実行している一部のサーバーにおいて、パスワードなしのアカウント（SSHキーのみのアカウントなど）に攻撃者がログインできる脆弱性に対する緊急修正版10.6p2を公開しました。攻撃にはネットワークアクセス、アカウント名、257〜1,024バイトのパスワードが必要です。",
+        "financial_impact": "金融機関でAlpine Linuxを基盤としたシステムでOpenSSHを利用している場合に、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "自社および委託先でAlpine Linux上のopenssh-serverパッケージの利用有無を確認する",
+          "該当するシステムがある場合、OpenSSHのバージョンが10.6p2以降に更新されているか確認する",
+          "ベンダーの公開情報を参照し、影響を受けるバージョンと緩和策について確認する"
+        ],
+        "reason": "重要度は、特定のLinuxディストリビューションとOpenSSHの組み合わせに限定されるため「中」です。確認目安は、緊急修正が公開されたものの、直ちに広範な悪用が確認されているとの記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:dd9d10ec61939a9712c1adfe2403f4d513a006f67dc05cf7e15e2de5979549c1",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/researchers-bypass-chatgpt-lockdown.html",
+      "canonical_url": "https://thehackernews.com/2026/11/researchers-bypass-chatgpt-lockdown.html",
+      "published_at": "2026-11-06T01:42:32+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "Researchers Bypass ChatGPT Lockdown Mode to Exfiltrate Chats Without User Interaction",
+      "raw_title": "Researchers Bypass ChatGPT Lockdown Mode to Exfiltrate Chats Without User Interaction",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d95a4db8d9ed84932cc3fb02614a13b9b3e459e2acdad7db660fca0487b6009e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:27:45.229112+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "ChatGPTの脆弱性に関する記事であり、AI技術のリスクが主題であるため。",
+        "tags": [
+          "AI",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、OpenAI ChatGPTのロックダウンモード保護をバイパスできる脆弱性の詳細を開示しました。この脆弱性は既に修正済みで、プロンプトインジェクションによるデータ窃取リスクを最小限に抑えるために導入されたロックダウンモードを迂回し、ユーザー操作なしでチャットデータを窃取する可能性がありました。",
+        "financial_impact": "金融機関がChatGPTを業務で利用しており、ロックダウンモードをデータ保護のために設定している場合に、本脆弱性の影響を受ける可能性があります。利用状況によっては情報漏えいのリスクに繋がるため、利用有無と設定状況の確認が関係します。",
+        "recommended_actions": [
+          "自社および委託先におけるChatGPTの利用状況と、ロックダウンモードの設定状況を確認する",
+          "OpenAIからの公式発表やパッチ適用状況を確認し、必要に応じて対応を検討する"
+        ],
+        "reason": "重要度は、ChatGPTの利用状況に依存し、適用範囲が限定的であるため「中」です。確認目安は、脆弱性が既に修正済みであり、緊急の対応を要する時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:42dccc485f1f6ef51f3fba454d84f48a15b566e15cf9a50d369c213d0c6f8ac5",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/11/05/email-threat-landscape-q3-2026-trends-and-insights/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/11/05/email-threat-landscape-q3-2026-trends-and-insights/",
+      "published_at": "2026-11-06T01:00:00+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "Email threat landscape: Q3 2026 trends and insights",
+      "raw_title": "Email threat landscape: Q3 2026 trends and insights",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8e5f912ecab95af39a3edc345f3c4f2d3152c1b7fc2542516eebd35ae85d37fb",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7d3fdba5d29111d07393b9b4821508f0e85459682d17d6d0be86b19a5b543c18",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/threatsday-apache-ofbiz-rce-dreamhost.html",
+      "canonical_url": "https://thehackernews.com/2026/11/threatsday-apache-ofbiz-rce-dreamhost.html",
+      "published_at": "2026-11-05T23:41:10+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "ThreatsDay: Apache OFBiz RCE, DreamHost Breach, DeFi Site Hijacks + 17 More Stories",
+      "raw_title": "ThreatsDay: Apache OFBiz RCE, DreamHost Breach, DeFi Site Hijacks + 17 More Stories",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ba524d3b4bdcc66d22bf818fde1ba9374cf195656ba9cf06d838af4e4f71903f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:28:01.901333+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の脅威情報をまとめた週次レポートであり、特定の主題に絞られないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、Apache OFBizのリモートコード実行、DreamHostの侵害、DeFiサイトの乗っ取りなど、複数のセキュリティ脅威に関する情報をまとめた週次レポートです。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。個別の脅威については、その内容に応じて別途評価が必要です。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や分析を伴わない複数の脅威情報のまとめ記事であり、個別の深刻度を合算して過大評価しないため「低」です。確認目安は、具体的な短期アクションを要する情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9d4ea0f6cb7b108ca9efdfa758b885c5089a5416cd178b74c0c90b1789fb09d6",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/bank-phishing-sites-show-fake-suspended-pages-to-evade-takedowns/",
+      "canonical_url": "https://www.securityweek.com/bank-phishing-sites-show-fake-suspended-pages-to-evade-takedowns/",
+      "published_at": "2026-11-05T22:22:12+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "Bank Phishing Sites Show Fake ‘Suspended’ Pages to Evade Takedowns",
+      "raw_title": "Bank Phishing Sites Show Fake ‘Suspended’ Pages to Evade Takedowns",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7f54225704a10d06f9f3ab549e5d819099925a6170f9276da7f93be62e75686f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:28:18.904311+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "銀行を標的としたフィッシング攻撃の手法に関する記事であるため。",
+        "tags": [
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "200以上のフィッシングサイトが、初回訪問者にはフィッシングコンテンツを、再訪問者には偽の「停止中」ページを表示し、テイクダウンを回避していることが確認されました。",
+        "financial_impact": "金融機関の顧客が標的となるフィッシング攻撃の手法に関する情報であり、顧客保護やブランドイメージ維持の観点から関係します。",
+        "recommended_actions": [
+          "顧客向けに、フィッシングサイトの新たな手口について注意喚起を検討する",
+          "自社ブランドを悪用したフィッシングサイトの監視体制を強化する"
+        ],
+        "reason": "重要度は、金融機関の顧客を狙うフィッシング攻撃の手口に関する情報であり、対策検討の価値があるため「中」です。確認目安は、新たな攻撃手法の把握は必要ですが、即時対応を要する具体的な期限や進行中の大規模な脅威の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ec5f13678a7fd76e5b9dd00edf5ae2c20a7c98d9aef1c0ef1e6289107250890d",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/cyberattack-hits-french-blood-bank-site-but-no-blood-products-are-compromised/",
+      "canonical_url": "https://www.securityweek.com/cyberattack-hits-french-blood-bank-site-but-no-blood-products-are-compromised/",
+      "published_at": "2026-11-05T21:58:32+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "Cyberattack Hits French Blood Bank Site but No Blood Products Are Compromised",
+      "raw_title": "Cyberattack Hits French Blood Bank Site but No Blood Products Are Compromised",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9901919f27800d302fb7c4b79b5ef4227ba4301e48ab6cd3bb9fcf7322297137",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:28:35.970509+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "フランスの血液銀行サイトがサイバー攻撃を受けたという実際の被害事例が主題のため。",
+        "tags": [
+          "インシデント"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "フランスの血液銀行サイトがサイバー攻撃を受けましたが、血液製剤自体への影響は確認されていません。このインシデントは、欧州の複数のスーパーマーケットで冷蔵・冷凍庫が遠隔ハッキングにより温度上昇したと報告された後に発生しました。",
+        "financial_impact": "金融機関への直接的な関係は確認できず、他業界のインシデント事例として参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が確認できない他業界のインシデント事例であるため「低」です。確認目安は、記事に金融機関が取るべき具体的な短期アクションや期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:daf3a48822a02cae468de1f706a5721ed228030b1e027b9f8c622642ab5f6f1f",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/cisco-watchguard-release-patches-sonicwall-wont-fix-gms-flaws/",
+      "canonical_url": "https://www.securityweek.com/cisco-watchguard-release-patches-sonicwall-wont-fix-gms-flaws/",
+      "published_at": "2026-11-05T21:33:49+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "Cisco, WatchGuard Release Patches; SonicWall Won’t Fix GMS Flaws",
+      "raw_title": "Cisco, WatchGuard Release Patches; SonicWall Won’t Fix GMS Flaws",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bcb86a5ed849e4ec2fef1a0645560c1e0ec661d7809faefac5e419d837dd303d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:28:53.115880+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Cisco、WatchGuard、SonicWall製品の脆弱性とパッチ対応が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "CiscoはUCS Central Softwareのリモートコード実行（RCE）脆弱性に対するパッチを公開し、WatchGuardは認証および中間者攻撃（MitM）の脆弱性を修正しました。一方、SonicWallはGMSの脆弱性について修正しない方針を示しています。",
+        "financial_impact": "金融機関でCisco UCS Central Software、WatchGuard製品、またはSonicWall GMSを利用している場合に、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Cisco UCS Central Softwareの利用有無と影響バージョンを確認し、必要に応じてパッチ適用を検討する",
+          "WatchGuard製品の利用有無と影響バージョンを確認し、必要に応じてパッチ適用を検討する",
+          "SonicWall GMSを利用している場合、ベンダーの対応方針を確認し、代替策や緩和策の検討を行う"
+        ],
+        "reason": "重要度は、複数のベンダー製品の脆弱性に関する情報であり、利用状況により適用性が異なるため「中」です。確認目安は、緊急の悪用や期限の記述がなく、パッチ適用や緩和策の検討を今週中に実施する価値があるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1bd927d85a48e504f33cd65a2cd454e30790d84dea6d5061ff3bd44a3e24c63f",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/is-your-exposure-management-platform.html",
+      "canonical_url": "https://thehackernews.com/2026/11/is-your-exposure-management-platform.html",
+      "published_at": "2026-11-05T21:25:00+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "Is Your Exposure Management Platform Leaving You Exposed? Five Tests to Find Out",
+      "raw_title": "Is Your Exposure Management Platform Leaving You Exposed? Five Tests to Find Out",
+      "raw_excerpt": null,
+      "content_hash": "sha256:352e1c7a83ed415324121837573fcbb4a16f0e6ee1f46a56235ff27e3faca18f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:29:09.935977+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "エクスポージャー管理プラットフォームの評価方法に関する一般的な解説記事であり、特定の脆弱性やインシデントを主題としていないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、エクスポージャー管理プラットフォームが組織を潜在的な脅威から保護できているかを確認するための5つのテストを紹介しています。脆弱性対応の遅延は、システム所有者の不明確さや攻撃経路の把握不足、ビジネスへの影響評価の欠如に起因すると指摘しています。",
+        "financial_impact": "金融機関がエクスポージャー管理プラットフォームを導入している場合、その有効性を評価する上での参考情報となります。直接的なインシデントや規制変更に関する情報ではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威やインシデントに関する情報ではなく、一般的なセキュリティ管理の参考情報であるため「低」です。確認目安は、具体的な対応期限や緊急性がなく、中長期的なセキュリティ戦略検討の参考となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c7e59b0d46842b6392615ae8f870defc69cc778ca3c5e1bf2b92f9b8687982db",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/openai-ai-pipeline-generates-948-linux.html",
+      "canonical_url": "https://thehackernews.com/2026/11/openai-ai-pipeline-generates-948-linux.html",
+      "published_at": "2026-11-05T21:08:54+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "OpenAI AI Pipeline Generates 948 Linux Root Escalation Exploits in 30-Hour Run",
+      "raw_title": "OpenAI AI Pipeline Generates 948 Linux Root Escalation Exploits in 30-Hour Run",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bdca77a5d7fa0389998e2849d8661109d96440f8dc5caf83412620b4a68682b7",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:29:27.040257+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIモデルが脆弱性の特定とエクスプロイト生成に利用された事例が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "OpenAIは、サイバーセキュリティに特化したAIモデルを用いたパイプラインが、30時間で948件のLinuxローカル権限昇格の脆弱性を特定・検証し、エクスプロイトを生成したと発表しました。このプロセスには120万ドルのAPIコストがかかりました。",
+        "financial_impact": "金融機関がLinux環境を利用している場合、AIによる脆弱性特定・悪用技術の進化が潜在的な脅威となり得ます。AIを活用したセキュリティ対策の検討や、AI悪用リスクへの対応が中長期的に関係します。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIによる脆弱性特定・悪用技術の進化を示す事例であり、中長期的な脅威動向として把握する価値があるため「中」です。確認目安は、具体的な金融機関への直接的脅威や緊急対応の必要性が記事から確認できないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:dbfc3964af73f1ceb2a4e0ca8b54ed582ecaa7593fd7e7a4b382149728e92a90",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/the-agent-smith-dilemma-governing-agentic-identities/",
+      "canonical_url": "https://www.securityweek.com/the-agent-smith-dilemma-governing-agentic-identities/",
+      "published_at": "2026-11-05T20:15:00+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "The Agent Smith Dilemma: Governing Agentic Identities",
+      "raw_title": "The Agent Smith Dilemma: Governing Agentic Identities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4ba1ff887e7d525069a86b1dbbc5e19fb312f6fd7d4a64bb4c114c1e036d7440",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:29:44.062442+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "自律型AIエージェントのアイデンティティ管理とガバナンスが主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント",
+          "IAM"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "企業内で展開される自律型AIエージェントは、それぞれが新たなプロキシIDとして企業ネットワーク内で動作します。この記事は、これらのエージェントのアイデンティティ管理とガバナンスに関する課題を提起しています。",
+        "financial_impact": "金融機関が自律型AIエージェントを導入・利用する場合、そのアイデンティティ管理とセキュリティガバナンスは重要な検討事項となります。",
+        "recommended_actions": [
+          "自律型AIエージェントの導入計画がある場合、そのアイデンティティ管理とセキュリティ要件について検討を開始する",
+          "AIエージェントの利用に関する社内ガイドラインやポリシーの策定状況を確認する"
+        ],
+        "reason": "重要度は、AIエージェントの利用がまだ限定的であるものの、将来的なリスク検討の価値があるため「中」です。確認目安は、具体的な脅威や期限の記述がなく、中長期的な検討事項であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:319fa9b4ac1d03606a526afdc18e9dac1cc8b84f65affe7967e4384891ad1788",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ciso-conversations-ryan-davis-the-unknown-is-where-security-meets-reality/",
+      "canonical_url": "https://www.securityweek.com/ciso-conversations-ryan-davis-the-unknown-is-where-security-meets-reality/",
+      "published_at": "2026-11-05T20:00:00+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "CISO Conversations: Ryan Davis – The Unknown Is Where Security Meets Reality",
+      "raw_title": "CISO Conversations: Ryan Davis – The Unknown Is Where Security Meets Reality",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0ad4b293cf99bb42991b6121fe87c10a279e90a6855c44e2a73a6f7c46eaab67",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:30:00.753548+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性、インシデント、攻撃動向、規制、クラウド、AIリスクのいずれにも明確に当てはまらず、CISOの対談記事であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "New Charter Technologiesのセキュリティ責任者であるRyan Davis氏へのインタビュー記事です。同氏はシャドーAIが現在の最大の懸念事項であると述べています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。シャドーAIに関する一般的なリスク認識や対策検討の参考情報として活用できます。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や緊急の対応を求める内容ではなく、CISOの一般的な意見交換であるため「低」です。確認目安は、具体的なアクションや期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:96af0215fc96b3b415c243cbe6d02a76f8f1cb025dfce86b88b928c91fce0c1a",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/zyxel-switch-hacks-blamed-on-patched-flaw-actually-exploited-a-zero-day/",
+      "canonical_url": "https://www.securityweek.com/zyxel-switch-hacks-blamed-on-patched-flaw-actually-exploited-a-zero-day/",
+      "published_at": "2026-11-05T19:56:41+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "Zyxel Switch Hacks Blamed on Patched Flaw Actually Exploited a Zero-Day",
+      "raw_title": "Zyxel Switch Hacks Blamed on Patched Flaw Actually Exploited a Zero-Day",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1464bdba8fce881d9b122f8b3e90dd76cefe38f1fbd537764d691318eaa52e1e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:30:18.202080+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Zyxel製スイッチのゼロデイ脆弱性が攻撃に悪用されたことが主題であるため。",
+        "tags": [
+          "ゼロデイ",
+          "悪用確認済み",
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Zyxel製スイッチへの攻撃が、当初パッチ済みの脆弱性によるものとされていたが、実際にはCVE-2026-107441として追跡されているゼロデイ脆弱性「out-of-bounds write flaw」が悪用されていたことが判明しました。この脆弱性により、攻撃者は細工されたHTTPリクエストを介してOSコマンドを実行できる可能性があります。",
+        "financial_impact": "金融機関でZyxel製スイッチを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "CVE-2026-107441に関連するZyxel製スイッチの利用有無と影響バージョンを確認する",
+          "Zyxelからの公式発表やセキュリティアドバイザリを確認し、パッチや緩和策の有無を評価する"
+        ],
+        "reason": "重要度は、Zyxel製スイッチの脆弱性であり、金融機関での利用可能性が限定的または不確実なため「中」です。確認目安は、ゼロデイ脆弱性の悪用が確認されているものの、CISA KEVへの新規追加がなく、即時対応の明確な時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:44bf9ca7bef218d45ed90100aca7074554640882eeee5635657a6a2b3ce9b84d",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/russia-linked-hackers-hit-ios-android-devices-with-exploit-chains-via-watering-holes/",
+      "canonical_url": "https://www.securityweek.com/russia-linked-hackers-hit-ios-android-devices-with-exploit-chains-via-watering-holes/",
+      "published_at": "2026-11-05T19:37:13+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "Russia-Linked Hackers Hit iOS, Android Devices With Exploit Chains via Watering Holes",
+      "raw_title": "Russia-Linked Hackers Hit iOS, Android Devices With Exploit Chains via Watering Holes",
+      "raw_excerpt": null,
+      "content_hash": "sha256:69c81947331de87151c69fdf1079bb9d6a1a7c36ad39fed3d95b3a9735722b85",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:30:35.410246+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ロシア関連の攻撃者グループによる、特定の攻撃手法を用いたキャンペーンが主題であるため。",
+        "tags": [
+          "APT",
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ロシア関連のハッカーグループが、水飲み場型攻撃キャンペーンを通じてiOSおよびAndroidデバイスを標的としています。この大規模なキャンペーンは、主にウクライナの米国およびヨーロッパの組織を狙っています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。ただし、従業員が標的となる可能性や、サプライチェーン上の組織が標的となる可能性は考慮すべきです。",
+        "recommended_actions": [
+          "従業員が利用するモバイルデバイスのセキュリティ対策状況を確認する",
+          "標的型攻撃の兆候がないか、組織内のログ監視体制を確認する"
+        ],
+        "reason": "重要度は、金融機関への直接的な関連性が記事から確認できず、一般的な脅威動向情報であるため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、脅威動向の把握が主となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e5838da8e52e7046a05b357e5da4f04dd287a1dd02a3cff4de8c7a1daa5f7108",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/5-active-cyber-threats-that-put-us.html",
+      "canonical_url": "https://thehackernews.com/2026/11/5-active-cyber-threats-that-put-us.html",
+      "published_at": "2026-11-05T19:06:19+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "5 Active Cyber Threats That Put US Enterprises at Risk in October 2026",
+      "raw_title": "5 Active Cyber Threats That Put US Enterprises at Risk in October 2026",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b4ee7a3a9715607bca9dc235907685f2b4465b107a46af1efcc34dd26f2f8009",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:30:52.273467+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "米国企業を標的とした複数のサイバー脅威キャンペーンについて解説しており、攻撃動向が主題のため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "2026年10月、米国企業を標的とした5つのサイバー脅威が確認されました。攻撃者は信頼されたプラットフォーム、正規の認証プロセス、日常的なビジネスワークフローを悪用し、金銭的損失、データ侵害、業務中断のリスクを高めています。",
+        "financial_impact": "金融機関も一般的な企業と同様に、信頼されたプラットフォームや正規の認証プロセスを悪用した攻撃の標的となる可能性があります。具体的な攻撃手法や影響範囲は記事からは確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、一般的なサイバー脅威動向のまとめ記事であり、金融機関に特化した具体的な脅威や影響が不明確なため「中」です。確認目安は、特定の緊急対応を要する情報や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:51d9a5c499abff0e34a6d8c5d40c1f697dfec8bcab862694f25b66a834caf406",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/apple-to-start-scanning-publicly-shared.html",
+      "canonical_url": "https://thehackernews.com/2026/11/apple-to-start-scanning-publicly-shared.html",
+      "published_at": "2026-11-05T18:13:28+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "Apple to Start Scanning Publicly Shared iCloud Photos and Files for Harmful Content",
+      "raw_title": "Apple to Start Scanning Publicly Shared iCloud Photos and Files for Harmful Content",
+      "raw_excerpt": null,
+      "content_hash": "sha256:453eb6bad4e088ad2b5498b0f6843185cfd37de829dffb360b0273ca7e2b926b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:31:09.612737+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "AppleのiCloudにおけるコンテンツスキャン機能の導入に関する発表であり、特定の脆弱性や攻撃、規制には該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Appleは、iOS 27.3以降で、公開共有されたiCloudの写真やファイルを有害コンテンツがないかスキャンする計画を発表しました。これは、ユーザーが「リンクを知っている全員」にアクセスを許可してiCloudコンテンツを共有するシナリオに適用されます。",
+        "financial_impact": "金融機関がiCloudの公開共有機能を業務で利用している場合、コンテンツスキャンの対象となる可能性があります。しかし、一般的に金融機関の業務でiCloudの公開共有機能が広く利用されることは想定されず、直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が限定的であり、一般的な情報として把握する価値に留まるため「低」です。確認目安は、具体的な対応期限や緊急性がなく、中長期的な情報収集の参考となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9fb3d806b5214e2e6b9d7b6386be32010e75f4f0af5ac76eda6f7f5366db62fe",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/backdoored-docker-image-for-artex-ai.html",
+      "canonical_url": "https://thehackernews.com/2026/11/backdoored-docker-image-for-artex-ai.html",
+      "published_at": "2026-11-05T17:42:03+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "CERT-In Flags AI-Driven Attacks as Backdoored ARTEX Exposes 62 Consoles to Root Access",
+      "raw_title": "CERT-In Flags AI-Driven Attacks as Backdoored ARTEX Exposes 62 Consoles to Root Access",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5c20b1016cafd2db8561414e749742b45d7880ed6ac947b023a93030539f4efd",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:31:26.960852+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "AIを活用した攻撃者の脅威動向と、特定の業界を標的とした攻撃キャンペーンが主題であるため。",
+        "tags": [
+          "AI",
+          "APT",
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "インドのCERT-Inは、Crafty Falconと追跡するAI支援の攻撃者が、インドの銀行、金融サービス、保険（BFSI）セクターの組織を標的としていることを明らかにしました。この活動は現在も進行中であり、公開されているAI駆動型攻撃ツールが使用されています。",
+        "financial_impact": "インドの金融機関が直接的な標的とされていますが、AI駆動型攻撃ツールは汎用性が高く、他の地域の金融機関も同様の攻撃に晒される可能性があります。自社の脅威インテリジェンスに照らし合わせ、関連する攻撃手法やツールの有無を確認することが推奨されます。",
+        "recommended_actions": [
+          "AI駆動型攻撃ツールの利用動向について脅威インテリジェンスを収集し、自社の防御策との関連性を評価する",
+          "自社および委託先におけるAI関連技術の利用状況を棚卸しし、潜在的な攻撃経路を特定する"
+        ],
+        "reason": "重要度は、AIを活用した攻撃手法が金融機関を標的としているものの、特定の地域に限定されているため「中」です。確認目安は、進行中の攻撃に関する情報であり、自社への適用可能性を評価する必要があるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a268ea9382891c7739c6547d56ebc148157c8af9217db83244415c970c573e2d",
+      "source_id": "krebs_on_security",
+      "source_name": "Krebs on Security",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://krebsonsecurity.com/2026/11/want-to-rent-an-internet-address-at-the-white-house/",
+      "canonical_url": "https://krebsonsecurity.com/2026/11/want-to-rent-an-internet-address-at-the-white-house/",
+      "published_at": "2026-11-05T13:36:17+09:00",
+      "fetched_at": "2026-11-06T11:27:08.427793+09:00",
+      "title": "Want to Rent an Internet Address at the White House?",
+      "raw_title": "Want to Rent an Internet Address at the White House?",
+      "raw_excerpt": null,
+      "content_hash": "sha256:dbf47ec3971eaf50eaaa43c6d9f00e863d9b01aa3f5356081c65db7b85908f8f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-06T11:31:44.557245+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ホワイトハウス職員が利用するプロキシサービスを介した潜在的な脅威に関する記事であるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ホワイトハウス職員が住宅用プロキシサービスを利用しており、そのインターネットアドレスが他者に貸し出し可能になっているとセキュリティ専門家が警告しました。このプロキシサービスの一つはロシア企業が運営しており、その創業者のウェブホスティング事業は2016年の米選挙システムへのサイバー攻撃の起点となった経緯があります。",
+        "financial_impact": "金融機関への直接的な影響は限定的ですが、職員が業務端末で住宅用プロキシサービスを利用することによる情報漏えいやサイバー攻撃の経路となるリスクは、業種を問わず考慮すべき事項です。",
+        "recommended_actions": [
+          "業務端末における住宅用プロキシサービスやVPNの利用状況を確認し、セキュリティポリシーに違反していないか評価する",
+          "業務端末からの不審な通信やIPアドレスの貸し出しを示す兆候がないか、ログを監視・分析する"
+        ],
+        "reason": "重要度は、ホワイトハウス職員の事例であり、金融機関への直接的な影響は限定的であるものの、潜在的な脅威動向として把握する価値があるため「中」です。確認目安は、具体的な攻撃や期限の記述がなく、一般的な脅威動向として評価するため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
