@@ -1,0 +1,218 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-08",
+  "generated_at": "2026-11-08T10:27:56.079782+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 3,
+    "ai_attempted_count": 2,
+    "ai_success_count": 2,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 1,
+    "ai_eligible_count": 2
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 2,
+      "低": 0,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 2,
+      "参考": 0,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 1,
+      "攻撃・脅威動向": 0,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象2件｜重要度「高」0件｜本日確認0件｜今週確認2件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が2件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "SonicWallは、VPNログインを弱体化させるSonicOSの脆弱性CVE-2026-19868に対するパッチを公開しました。この脆弱性は、別のログイン方法の認証情報を持つ攻撃者がSAMLチェック（SAML強制MFAを含む）を回避することを可能にします。\n金融機関でSonicWall SonicOS製品を利用し、VPNログインにSAML認証を使用している場合に適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+      "AnthropicのAIコーディングアシスタント「Claude Code」において、開発者が承認したコマンドに入力したパスワードやAPIキーが、GitHubの公開リポジトリに保存され、誰でも閲覧できる状態になっていることが判明しました。\n金融機関でClaude Codeを利用している場合、開発者が意図せず機密情報を公開リポジトリに漏洩させるリスクがあります。これにより、システムへの不正アクセスや情報漏洩につながる可能性があります。"
+    ],
+    "check_items": [
+      "SonicWall SonicOS製品の利用有無と、VPNログインにSAML認証を使用しているかを確認する",
+      "Claude Codeの利用状況および「Yes, and don't ask again」機能の使用状況を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:829cfb61faa6ebb337c8584b59695baa1cd7ae7d1840ccd3a34045178db9a2fb",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/sonicwall-patches-exploited-sonicos-bug-that-weakens-vpn-logins/",
+      "canonical_url": "https://www.securityweek.com/sonicwall-patches-exploited-sonicos-bug-that-weakens-vpn-logins/",
+      "published_at": "2026-11-07T19:16:23+09:00",
+      "fetched_at": "2026-11-08T10:27:21.287682+09:00",
+      "title": "SonicWall Patches Exploited SonicOS Vulnerability That Weakens VPN Logins",
+      "raw_title": "SonicWall Patches Exploited SonicOS Vulnerability That Weakens VPN Logins",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b3adcbb85df6196ce910d60045c88d3427d72290def6c1813d221fa920bf96f6",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-08T10:27:23.741205+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "SonicWall SonicOSの脆弱性とそれに対するパッチ公開が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "SonicWallは、VPNログインを弱体化させるSonicOSの脆弱性CVE-2026-19868に対するパッチを公開しました。この脆弱性は、別のログイン方法の認証情報を持つ攻撃者がSAMLチェック（SAML強制MFAを含む）を回避することを可能にします。",
+        "financial_impact": "金融機関でSonicWall SonicOS製品を利用し、VPNログインにSAML認証を使用している場合に適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "SonicWall SonicOS製品の利用有無と、VPNログインにSAML認証を使用しているかを確認する",
+          "ベンダーの公開情報を確認し、CVE-2026-19868に対するパッチ適用または緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、特定の製品と構成に限定される脆弱性であり、適用範囲が不確実なため「中」です。確認目安は、実悪用が確認されているものの、CISA KEVへの新規追加がなく即時対応の明確な時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9989e939e148877e42d3f7d922aab90603dc59a66ff0f4a6cb50296f8b131241",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/claude-codes-dont-ask-again-file.html",
+      "canonical_url": "https://thehackernews.com/2026/11/claude-codes-dont-ask-again-file.html",
+      "published_at": "2026-11-07T15:44:17+09:00",
+      "fetched_at": "2026-11-08T10:27:21.287682+09:00",
+      "title": "Claude Code's “Don't Ask Again” File Exposes Passwords and Keys in 1,122 Public Copies on GitHub",
+      "raw_title": "Claude Code's “Don't Ask Again” File Exposes Passwords and Keys in 1,122 Public Copies on GitHub",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3112614348d66ccdbd55feac740bbe3b17f8360396e61dd1bae6194ea939c304",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-08T10:27:41.079379+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIコーディングアシスタントの利用における情報漏洩リスクが主題であるため。",
+        "tags": [
+          "AI",
+          "情報漏えい",
+          "クラウド"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "AnthropicのAIコーディングアシスタント「Claude Code」において、開発者が承認したコマンドに入力したパスワードやAPIキーが、GitHubの公開リポジトリに保存され、誰でも閲覧できる状態になっていることが判明しました。",
+        "financial_impact": "金融機関でClaude Codeを利用している場合、開発者が意図せず機密情報を公開リポジトリに漏洩させるリスクがあります。これにより、システムへの不正アクセスや情報漏洩につながる可能性があります。",
+        "recommended_actions": [
+          "Claude Codeの利用状況および「Yes, and don't ask again」機能の使用状況を確認する",
+          "GitHub等の公開リポジトリに機密情報が誤って公開されていないか、自社コードベースを棚卸し・監査する",
+          "AIコーディングアシスタント利用時の機密情報取り扱いに関するガイドラインを策定・周知する"
+        ],
+        "reason": "重要度は、AIコーディングアシスタント利用時の情報漏洩リスクであり、金融機関での利用状況により影響が異なるため「中」です。確認目安は、具体的な期限や進行中の攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:631279c95e341729df947e8841c903a72b2a5358993b63ed9c9b25acbcc62d87",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/11/06/artex-abuse-expands-as-cybercriminals-target-financial-sector/",
+      "published_at": "2026-11-07T11:44:34+09:00",
+      "fetched_at": "2026-11-08T10:27:21.287682+09:00",
+      "title": "ARTEX abuse expands as cybercriminals target financial sector",
+      "raw_title": "ARTEX abuse expands as cybercriminals target financial sector",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6730b00fefb86f62bd39ed869cbfcaba4d1949c34acdb2232952778a95dbe61c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
