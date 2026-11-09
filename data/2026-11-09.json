@@ -1,0 +1,105 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-09",
+  "generated_at": "2026-11-09T10:44:26.483867+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 1,
+    "ai_attempted_count": 1,
+    "ai_success_count": 1,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 1
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 0,
+      "低": 1,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 0,
+      "参考": 1,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 0,
+      "攻撃・脅威動向": 0,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 0,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象1件｜重要度「高」0件｜本日確認0件｜今週確認0件\nBrief対象の記事では、緊急の確認対象はありません。短期的な確認対象はなく、参考・状況把握が中心です。",
+    "important_highlights": [],
+    "discussion_points": [],
+    "check_items": [],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:50b863715297ad555f5a0f6cfe54978b1639829b5b57a054f1c3b5b22a106857",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/brava-security-emerges-from-stealth-with-15-million-in-funding/",
+      "canonical_url": "https://www.securityweek.com/brava-security-emerges-from-stealth-with-15-million-in-funding/",
+      "published_at": "2026-11-08T21:14:00+09:00",
+      "fetched_at": "2026-11-09T10:44:09.817765+09:00",
+      "title": "Brava Security Emerges From Stealth With $15 Million in Funding",
+      "raw_title": "Brava Security Emerges From Stealth With $15 Million in Funding",
+      "raw_excerpt": null,
+      "content_hash": "sha256:02007952f53f6e1e7bb2711656ef89d36ad1820763a2ee8288ac7841d6cf730c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-09T10:44:11.483554+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性、インシデント、攻撃動向、規制、クラウド、AIリスクのいずれにも直接該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Brava Securityが1500万ドルの資金調達を発表し、ステルスモードから脱却しました。同社のマルチエージェントAIプラットフォームは、攻撃が生成するテレメトリを生成し、企業の防御におけるギャップを修正します。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。セキュリティベンダーの資金調達に関する一般的な情報として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威やインシデントに関する情報ではなく、一般的な業界ニュースのため「低」です。確認目安は、短期的な対応を要する情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
