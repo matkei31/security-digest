@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026年11月12日のサイバーセキュリティ情報 | Monomi Digest</title>
+  <meta name="description" content="2026年11月12日に公開した、金融機関に関連するサイバーセキュリティ情報の日次ダイジェストです。重要度、確認目安、金融機関との関連、確認事項を整理しています。">
+  <link rel="canonical" href="https://monomidigest.com/archive/2026-11-12.html">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--anchor-offset:218px}
+    @media (max-width:600px){:root{--anchor-offset:226px}}
+    body{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:40px}
+    header{background:#161b22;border-bottom:1px solid #21262d;padding:20px 16px 16px;position:sticky;top:0;z-index:10}
+    header h1{font-size:18px;font-weight:600;letter-spacing:.02em}
+    .sub{font-size:12px;color:#8b949e;margin-top:4px}
+    .count{font-size:12px;color:#58a6ff;margin-top:2px}
+    .archive-nav{display:flex;flex-direction:column;align-items:flex-start;row-gap:8px;margin-top:8px}
+    .archive-nav-group{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;min-width:0}
+    .archive-bottom-nav{max-width:680px;margin:20px auto 0;padding:0 12px}
+    .archive-link{display:inline-flex;align-items:center;min-height:32px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}
+    .archive-link:hover{text-decoration:underline}
+    .article-list-header{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .article-list-header h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}
+    .article-list-note{font-size:12px;color:#8b949e;line-height:1.5}
+    .cards{padding:12px 12px 0;display:flex;flex-direction:column;gap:10px;max-width:680px;margin:0 auto}
+    .card{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;scroll-margin-top:var(--anchor-offset)}
+    .card:active{background:#1c2128;border-color:#388bfd}
+    .card:target{border-color:#388bfd;box-shadow:0 0 0 1px #388bfd}
+    h2{font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3}
+    .article-heading{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:6px;align-items:start;font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3;overflow-wrap:anywhere}
+    .article-index{color:#8b949e;font-weight:700;white-space:nowrap}
+    .article-title-stack{display:grid;gap:2px;min-width:0}
+    .article-title-translation{font-size:12px;color:#8b949e;line-height:1.5;font-weight:500}
+    .article-title-link,.priority-title-link{color:inherit;text-decoration:none}
+    .article-title-link:hover,.article-source-link:hover,.priority-title-link:hover{text-decoration:underline}
+    .summary{font-size:12px;color:#8b949e;line-height:1.5;margin-top:6px}
+    .article-meta{margin-top:4px;font-size:12px;color:#8b949e;line-height:1.5}
+    .article-assessment{margin-top:8px;font-size:12px;color:#8b949e;line-height:1.6}
+    .assessment-item strong{color:#e6edf3;font-weight:700}
+    .assessment-item.is-accent{display:inline-block;color:#f85149;font-weight:700;padding-left:7px;border-left:2px solid #f85149}
+    .ai-analysis{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:grid;gap:10px}
+    .article-tags{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
+    .article-tags-label{padding-top:3px;font-size:10px;color:#768496;white-space:nowrap}
+    .article-tag{font-size:10px;font-weight:600;line-height:1.2;padding:3px 9px;border-radius:100px;border:1px solid #30363d;color:#8b949e;background:#0d1117}
+    .article-section h3{font-size:11px;font-weight:600;color:#8b949e}
+    .article-section p,.article-section li{font-size:12px;color:#c9d1d9;line-height:1.6}
+    .article-section p,.article-section ul{margin-top:3px}
+    .action-list{padding-left:18px}
+    .action-list li+li{margin-top:3px}
+    .vulnerability-facts{margin-top:8px}
+    .vulnerability-facts-title{font-size:11px;font-weight:600;color:#8b949e}
+    .vulnerability-list{list-style:none;margin-top:4px;display:grid;gap:4px}
+    .vulnerability-item{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;color:#c9d1d9;line-height:1.6}
+    .vulnerability-cve-link{color:#79c0ff;text-decoration:none;font-weight:600}
+    .vulnerability-cve-link:hover{text-decoration:underline}
+    .vulnerability-cvss{color:#8b949e}
+    .kev-badge{font-size:10px;font-weight:700;line-height:1;padding:3px 8px;border-radius:100px;border:1px solid #9e6a03;color:#e3b341;background:#1c1506;white-space:nowrap}
+    .article-attribution{margin-top:10px;font-size:10px;color:#768496;line-height:1.6;overflow-wrap:anywhere}
+    .article-attribution a{color:#8b949e;text-decoration:underline;text-underline-offset:2px}
+    .article-attribution a:hover{color:#79c0ff}
+    .article-source-link{display:inline-flex;align-items:center;width:max-content;max-width:100%;margin-top:10px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}
+    .empty{text-align:center;color:#8b949e;padding:60px 0;font-size:14px}
+    .todays-brief{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .brief-box{background:#161b22;border:1px solid #9e6a03;border-radius:10px;padding:14px 16px;display:grid;gap:12px}
+    .brief-box h2{font-size:13px;font-weight:700;color:#f0b429}
+    .brief-section-title{font-size:12px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .brief-status-line{font-size:13px;color:#e6edf3;line-height:1.6;background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:8px 10px;margin-bottom:8px;overflow-wrap:break-word}
+    .brief-overview{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word}
+    .brief-list{list-style:none;display:grid;gap:6px}
+    .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
+    .brief-list li::before{content:"・";position:absolute;left:0}
+    .brief-priority-list{list-style:none;display:grid;gap:12px;margin:0;padding:0}
+    .brief-priority-item{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;display:grid;gap:4px}
+    .brief-priority-summary,.brief-priority-impact{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word;margin:0}
+    .dashboard{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .dashboard-head{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+    .dashboard-head h2{font-size:13px;font-weight:700;color:#e6edf3}
+    .dashboard-count{font-size:12px;color:#8b949e}
+    .dashboard-count strong{font-size:16px;font-weight:700;color:#e6edf3;margin:0 2px}
+    .dashboard-axes{background:#161b22;border-left:1px solid #21262d;border-right:1px solid #21262d;border-top:1px solid #21262d;display:grid;grid-template-columns:1fr 1fr}
+    .dashboard-axis{padding:10px 16px}
+    .dashboard-axis+.dashboard-axis{border-left:1px solid #21262d}
+    .dashboard-axis h3{font-size:11px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .dashboard-axis-list{list-style:none;display:grid;gap:4px}
+    .dashboard-axis-item{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:#c9d1d9;line-height:1.4;padding-left:8px;border-left:2px solid transparent}
+    .dashboard-axis-item strong{font-size:14px;font-weight:700;color:#e6edf3}
+    .dashboard-axis-item.is-accent{border-left-color:#f85149;color:#f85149}
+    .dashboard-axis-item.is-accent strong{color:#f85149}
+    .dashboard-categories{background:#161b22;border:1px solid #21262d;border-top:1px solid #21262d;border-radius:0 0 10px 10px;padding:10px 16px}
+    .dashboard-categories h3{font-size:11px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .dashboard-category-list{list-style:none;display:flex;flex-wrap:wrap;gap:4px 14px}
+    .dashboard-category-item{font-size:11px;color:#8b949e;display:flex;gap:4px}
+    .dashboard-category-item strong{color:#8b949e;font-weight:600}
+    .dashboard-empty{list-style:none;font-size:12px;color:#8b949e;line-height:1.5}
+    @media (max-width:600px){
+      .dashboard-axes{grid-template-columns:1fr}
+      .dashboard-axis+.dashboard-axis{border-left:none;border-top:1px solid #21262d}
+    }
+    .important-items{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .important-items h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}
+    .important-items-note{font-size:12px;color:#8b949e;line-height:1.5;margin-bottom:8px}
+    .important-items-list{display:grid;gap:6px}
+    .priority-item{border-top:1px solid #21262d;padding:10px 0;display:grid;gap:6px}
+    .priority-item:first-child{border-top:0;padding-top:0}
+    .priority-item .article-heading{font-size:13px;font-weight:600}
+    .priority-item-link{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none;width:max-content;max-width:100%}
+    .priority-item-link:hover{text-decoration:underline}
+    .priority-item-meta{font-size:11px;color:#8b949e}
+    .important-item-reason,.important-items-empty{font-size:12px;color:#c9d1d9;line-height:1.6}
+    .sources{max-width:680px;margin:20px auto 0;padding:0 12px}
+    .sources details{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 16px}
+    .sources summary{font-size:12px;color:#8b949e;cursor:pointer;list-style:none}
+    .sources summary::before{content:"▶  ";font-size:10px}
+    details[open] summary::before{content:"▼  "}
+    .sources ul{margin:10px 0 0;padding-left:18px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:18px;row-gap:5px}
+    .sources li{font-size:11px;line-height:1.5;color:#8b949e;overflow-wrap:anywhere}
+    @media (max-width:600px){.sources ul{grid-template-columns:1fr}}
+    .site-footer{max-width:680px;margin:20px auto 0;padding:0 12px}
+    .analytics-notice{font-size:11px;color:#768496;line-height:1.6}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Monomi Digest</h1>
+    <div class="sub">日次ダイジェスト：2026年11月12日</div>
+    <div class="sub">最終更新: 2026年11月12日 12:05</div>
+    <div class="count">20 件</div>
+    <nav class="archive-nav" aria-label="日別ダイジェスト上部ナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link archive-prev-link" href="2026-11-10.html">← 前のダイジェスト</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="index.html">過去のダイジェスト</a><a class="archive-link" href="../index.html">最新のダイジェスト</a></div></nav>
+  </header>
+  <div class="todays-brief">
+    <div class="brief-box">
+      <h2>本日の要点</h2>
+      <div class="brief-section">
+      <h3 class="brief-section-title">概況</h3>
+      <p class="brief-status-line">Brief対象18件｜重要度「高」0件｜本日確認0件｜今週確認12件</p>
+      <p class="brief-overview">Brief対象の記事では、緊急の確認対象はありません。今週確認の対象が12件あり、計画的な確認が必要です。</p>
+    </div><div class="brief-section">
+      <h3 class="brief-section-title">重要・優先事項</h3>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">ランサムウェアグループQilinは、過去3か月で少なくとも365の組織を標的とした世界で最も活発なランサムウェアアフィリエイトプログラムとして浮上しています。本記事は、Qilinの管理者が過去10年間に行ったいくつかの運用セキュリティ上の誤りから、その運営者がロシアのサンクトペテルブルクに住む36歳の男性であると指摘しています。</p><p class="brief-priority-impact">金融機関が直接的な標的であるとは明記されていませんが、ランサムウェア攻撃は業種を問わず発生しており、金融機関も潜在的な標的となり得ます。攻撃者の特定は、脅威インテリジェンスの強化に役立ちます。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">Zoomは、Windows版Zoom Workplaceに影響を与える2つのセキュリティ脆弱性に対処するソフトウェアアップデートをリリースしました。これには、認証されていないユーザーが権限昇格を実行できる可能性のあるCVE-2026-108186（CVSSスコア9.6）が含まれます。</p><p class="brief-priority-impact">金融機関でZoom Workplace for Windowsを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。</p></li></ul>
+    </div><div class="brief-section">
+      <h3 class="brief-section-title">確認事項</h3>
+      <ul class="brief-list"><li>自社および委託先でZoom Workplace for Windowsの利用有無と影響バージョンを確認する</li><li>Xen OrchestraおよびXCP-ngの利用有無と影響バージョンを確認する</li></ul>
+    </div>
+    </div>
+  </div>
+  <section class="important-items">
+    <h2>優先確認</h2>
+    <div class="important-items-list">
+      <p class="important-items-empty">本日の優先確認対象はありません。</p>
+    </div>
+  </section>
+  <section class="dashboard">
+    <div class="dashboard-head">
+      <h2>本日のダッシュボード</h2>
+      <p class="dashboard-count"><span>掲載</span><strong>20</strong>件</p>
+    </div>
+    <div class="dashboard-axes">
+      <div class="dashboard-axis">
+        <h3>重要度</h3>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item"><span>高</span><strong>0</strong></li><li class="dashboard-axis-item"><span>中</span><strong>15</strong></li><li class="dashboard-axis-item"><span>低</span><strong>3</strong></li></ul>
+      </div>
+      <div class="dashboard-axis">
+        <h3>確認目安</h3>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item"><span>本日確認</span><strong>0</strong></li><li class="dashboard-axis-item"><span>今週確認</span><strong>12</strong></li><li class="dashboard-axis-item"><span>参考</span><strong>6</strong></li></ul>
+      </div>
+    </div>
+    <div class="dashboard-categories">
+      <h3>主なカテゴリ</h3>
+      <ul class="dashboard-category-list"><li class="dashboard-category-item"><span>脆弱性・パッチ</span><strong>6</strong></li><li class="dashboard-category-item"><span>攻撃・脅威動向</span><strong>3</strong></li><li class="dashboard-category-item"><span>インシデント</span><strong>2</strong></li><li class="dashboard-category-item"><span>規制・ガバナンス</span><strong>1</strong></li><li class="dashboard-category-item"><span>AI・新技術リスク</span><strong>3</strong></li><li class="dashboard-category-item"><span>その他</span><strong>3</strong></li></ul>
+    </div>
+  </section>
+  <section class="article-list-header">
+    <h2>本日の情報</h2>
+    <p class="article-list-note">確認目安、重要度、元の収集順で表示しています。</p>
+  </section>
+  <div class="cards">
+    <article class="card" id="article-1">
+      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://krebsonsecurity.com/2026/11/who-runs-the-ransomware-group-qilin/" target="_blank" rel="noopener noreferrer" lang="en">Who Runs the Ransomware Group Qilin?</a></span></h2>
+      <p class="article-meta">Krebs on Security ・ 11/12 03:06</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>ランサムウェアグループQilinは、過去3か月で少なくとも365の組織を標的とした世界で最も活発なランサムウェアアフィリエイトプログラムとして浮上しています。本記事は、Qilinの管理者が過去10年間に行ったいくつかの運用セキュリティ上の誤りから、その運営者がロシアのサンクトペテルブルクに住む36歳の男性であると指摘しています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関が直接的な標的であるとは明記されていませんが、ランサムウェア攻撃は業種を問わず発生しており、金融機関も潜在的な標的となり得ます。攻撃者の特定は、脅威インテリジェンスの強化に役立ちます。</p>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://krebsonsecurity.com/2026/11/who-runs-the-ransomware-group-qilin/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">ランサムウェア</span></div>
+    </article>
+
+    <article class="card" id="article-2">
+      <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/critical-zoom-workplace-flaw-could.html" target="_blank" rel="noopener noreferrer" lang="en">Critical Zoom Workplace Flaw Could Allow Unauthenticated Remote Privilege Escalation</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/12 01:12</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>Zoomは、Windows版Zoom Workplaceに影響を与える2つのセキュリティ脆弱性に対処するソフトウェアアップデートをリリースしました。これには、認証されていないユーザーが権限昇格を実行できる可能性のあるCVE-2026-108186（CVSSスコア9.6）が含まれます。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関でZoom Workplace for Windowsを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先でZoom Workplace for Windowsの利用有無と影響バージョンを確認する</li><li>Zoomが公開しているセキュリティアップデート情報を確認し、対応要否を評価する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/critical-zoom-workplace-flaw-could.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">パッチ</span></div>
+    </article>
+
+    <article class="card" id="article-3">
+      <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/critical-xen-orchestra-flaws-exploited-in-attacks/" target="_blank" rel="noopener noreferrer" lang="en">Critical Xen Orchestra Flaws Exploited in Attacks</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/12 00:42</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>Xen Orchestraの認証バイパスの重大な脆弱性が攻撃で悪用されていることが確認されました。これにより、攻撃者は管理者として任意のコードを実行し、XCP-ngノードを乗っ取ることが可能になります。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関でXen OrchestraおよびXCP-ngを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>Xen OrchestraおよびXCP-ngの利用有無と影響バージョンを確認する</li><li>ベンダーの一次情報を確認し、パッチ適用や緩和策の実施を検討する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/critical-xen-orchestra-flaws-exploited-in-attacks/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span></div>
+    </article>
+
+    <article class="card" id="article-4">
+      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/antifox-ai-pentesting-platform-linked.html" target="_blank" rel="noopener noreferrer" lang="en">AntiFox AI Pentesting Platform Linked to Attacks That Accessed AWS Production Secrets</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/12 00:34</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>サイバーセキュリティ研究者らは、AIを活用したペネトレーションテストプラットフォーム「AntiFox」が悪用され、Amazon Web Services (AWS) の認証情報が窃取され、侵害された環境内で横展開された攻撃キャンペーンの詳細を公開しました。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関がAWSを利用しており、かつ同様のAIペネトレーションテストプラットフォームを導入している場合、またはサプライチェーンを通じて間接的に影響を受ける可能性があります。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>AWS環境における認証情報の管理状況とアクセスログをレビューし、不審な活動がないか確認する</li><li>AIを活用したペネトレーションテストプラットフォームの利用状況を棚卸しし、セキュリティ対策が適切に講じられているか評価する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/antifox-ai-pentesting-platform-linked.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">クラウド</span><span class="article-tag">IAM</span><span class="article-tag">インシデント</span></div>
+    </article>
+
+    <article class="card" id="article-5">
+      <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/hackers-target-qlik-sense-servers-with.html" target="_blank" rel="noopener noreferrer" lang="en">Hackers Target Qlik Sense Servers With Reverse Shells, Stage ActiveMQ and Veeam Exploits</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/11 23:01</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>2026年10月、脅威アクターがQlik Senseサーバーを標的とし、PowerShellリバースシェルコマンドの実行を試みたことが観測されました。この活動は、ActiveMQおよびVeeamの脆弱性悪用も試行していることが判明しています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>Qlik Sense、ActiveMQ、またはVeeam製品を金融機関で利用している場合に関係します。これらの製品の利用有無は記事からは確認できません。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先におけるQlik Sense、ActiveMQ、Veeam製品の利用有無と、関連する脆弱性の影響範囲を確認する</li><li>各製品のベンダーが提供するセキュリティアドバイザリやパッチ情報を確認し、必要な対策を検討する</li><li>不審なPowerShellコマンドの実行履歴や、関連する攻撃の痕跡がないかログを調査する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/hackers-target-qlik-sense-servers-with.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">悪用確認済み</span></div>
+    </article>
+
+    <article class="card" id="article-6">
+      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/asus-zoom-release-security-patches/" target="_blank" rel="noopener noreferrer" lang="en">Asus, Zoom Release Security Patches</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/11 22:58</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>ASUSとZoomがセキュリティパッチを公開しました。これらの脆弱性は、コマンド実行、メモリ上書き、権限昇格に悪用される可能性があります。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関でASUS製品やZoom製品を利用している場合に限り、適用性確認の対象になります。記事からは具体的な製品名や脆弱性の詳細が不明なため、影響範囲は限定的である可能性があります。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>ASUSおよびZoom製品の利用有無と影響バージョンを確認する</li><li>各ベンダーの公開情報を参照し、該当する製品のパッチ適用状況を確認する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/asus-zoom-release-security-patches/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">パッチ</span></div>
+    </article>
+
+    <article class="card" id="article-7">
+      <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/citrix-ivanti-patch-critical-and-high-severity-vulnerabilities/" target="_blank" rel="noopener noreferrer" lang="en">Citrix, Ivanti Patch Critical and High-Severity Vulnerabilities</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/11 22:37</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>CitrixとIvantiが、証明書エントリの改ざん、リモートコード実行、ホスト侵害につながる可能性のある重大な脆弱性に対するパッチを公開しました。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>CitrixまたはIvantiの製品を金融機関で利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先でCitrixまたはIvantiの製品を利用しているか棚卸しする</li><li>利用している場合はベンダーの公開情報を確認し、影響を受けるバージョンとパッチ適用状況を評価する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/citrix-ivanti-patch-critical-and-high-severity-vulnerabilities/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">パッチ</span></div>
+    </article>
+
+    <article class="card" id="article-8">
+      <h2 class="article-heading"><span class="article-index">8.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/over-35000-grok-built-apps-exposed.html" target="_blank" rel="noopener noreferrer" lang="en">Over 35,000 Grok-Built Apps Exposed Online, Some Leaking Confidential Data and Passwords</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/11 21:19</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>セキュリティ企業Clarocの調査により、Grokで構築された37,571のアプリのうち35,578がサインインなしで誰でもアクセス可能であることが判明しました。これらのアプリの約1割には、内部ビジネスデータやパスワードなどの機密情報が含まれていました。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関がGrok AIアシスタントを利用してアプリを開発し、その設定に不備があった場合に情報漏洩のリスクがあります。XやSpaceXSIの従業員が構築したアプリも含まれており、サプライチェーンリスクとして関連する可能性があります。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>Grok AIアシスタントを利用して開発したアプリの有無と、その公開設定を確認する</li><li>公開されているGrokアプリに機密情報やパスワードが含まれていないか、内容を精査する</li><li>Grokアプリの利用ガイドラインやセキュリティ設定に関するベンダー情報を確認し、適切な設定を適用する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/over-35000-grok-built-apps-exposed.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">情報漏えい</span><span class="article-tag">サプライチェーン</span></div>
+    </article>
+
+    <article class="card" id="article-9">
+      <h2 class="article-heading"><span class="article-index">9.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/fortinet-patches-nearly-100-vulnerabilities/" target="_blank" rel="noopener noreferrer" lang="en">Fortinet Patches Nearly 100 Vulnerabilities</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/11 21:10</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>Fortinetが、同社の製品セキュリティテストにAIモデルを統合した結果、約100件の脆弱性に対するパッチを公開しました。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>Fortinet製品を導入している金融機関は、自社環境への影響を確認する必要があります。記事からは具体的な製品名や脆弱性の詳細が不明なため、影響範囲は限定的または不確実です。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>Fortinet製品の利用有無と導入バージョンを棚卸しする</li><li>Fortinetからの公式アナウンスを確認し、自社環境への適用要否を評価する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/fortinet-patches-nearly-100-vulnerabilities/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">パッチ</span></div>
+    </article>
+
+    <article class="card" id="article-10">
+      <h2 class="article-heading"><span class="article-index">10.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/emudhra-revokes-8-more-cas-it.html" target="_blank" rel="noopener noreferrer" lang="en">eMudhra Revokes 8 More CAs It Previously Declared Unaffected by Key Compromise</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/11 21:00</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>eMudhraは、10月に発生した鍵侵害の原因となったPythonスクリプトにより、以前は影響を受けないとされていた8つの追加の中間認証局（CA）を失効しました。これらのCAの秘密鍵は弱体化していませんでしたが、スクリプトの単一の行に問題がありました。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>eMudhraが発行する証明書を利用している金融機関は、失効されたCAに署名された証明書が使用されていないか確認する必要があります。これにより、通信の信頼性や認証に影響が出る可能性があります。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>eMudhraが発行する証明書を利用している場合、失効されたCAに署名された証明書が自社システムや委託先で利用されていないか確認する</li><li>eMudhraからの公式発表や指示を確認し、必要な対応を検討する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/emudhra-revokes-8-more-cas-it.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">インシデント</span><span class="article-tag">サプライチェーン</span></div>
+    </article>
+
+    <article class="card" id="article-11">
+      <h2 class="article-heading"><span class="article-index">11.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/microsoft-patches-1259-flaws-including.html" target="_blank" rel="noopener noreferrer" lang="en">Microsoft Patches 1,259 Flaws, Including Exploited Outlook Bug That May Expose NTLMv2 Hashes</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/11 17:17</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>Microsoftは、OutlookのNTLMv2ハッシュ漏えい脆弱性を含む、合計1,259件の脆弱性に対するパッチを公開しました。これにはWindows、Office、SQL Server、SharePoint Serverなど、広範な製品ポートフォリオの脆弱性が含まれます。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>多くの金融機関で利用されているMicrosoft製品群の脆弱性であるため、影響を受ける製品の利用状況を確認し、適切な対応を検討する必要があります。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先におけるMicrosoft製品（Windows, Office, SQL Server, SharePoint Server等）の利用状況と影響バージョンを棚卸しする</li><li>Microsoftが公開したパッチ情報を確認し、自社環境への適用要否を評価する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/microsoft-patches-1259-flaws-including.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">パッチ</span></div>
+    </article>
+
+    <article class="card" id="article-12">
+      <h2 class="article-heading"><span class="article-index">12.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/railway-says-stolen-customer-ai-keys.html" target="_blank" rel="noopener noreferrer" lang="en">Railway Says Stolen Customer AI Keys Led to $740,000 in Estimated Unauthorized Usage Charges</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/11 16:49</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>PaaSプロバイダーのRailwayは、10月に発生した侵害により顧客がRailwayに保存していたAIプロバイダーキーが盗難され、推定74万ドルの不正利用が発生したと発表しました。RailwayはAIプロバイダーが返金しない場合、これらの費用を負担すると約束しています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関がRailwayのようなPaaSプロバイダーを利用し、機密情報（AIキーなど）を保存している場合に関係します。委託先における情報管理の重要性を示す事例です。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>委託先が提供するPaaSやクラウドサービスにおける機密情報（APIキー、AIキーなど）の保存方法とセキュリティ対策を確認する</li><li>委託先との契約において、情報漏えい時の責任範囲や費用負担に関する条項を確認する</li><li>委託先におけるセキュリティインシデント発生時の情報共有体制と対応プロセスを評価する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/railway-says-stolen-customer-ai-keys.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">インシデント</span><span class="article-tag">情報漏えい</span><span class="article-tag">クラウド</span><span class="article-tag">サプライチェーン</span><span class="article-tag">委託先管理</span></div>
+    </article>
+
+    <article class="card" id="article-13">
+      <h2 class="article-heading"><span class="article-index">13.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/we-built-agent-that-broke-all-of-our.html" target="_blank" rel="noopener noreferrer" lang="en">We Built An Agent That Broke All of Our Security Rules. Here&#39;s What We Learned.</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/11 21:01</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>AIエージェントのセキュリティに関する一般的な原則（ID、アクセス、トレーサビリティ）を意図的に破るエージェントを構築した経験から、その防御方法について得られた教訓が共有されています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関がAIエージェントを導入・利用する際に、セキュリティ設計やリスク評価の参考情報となります。特に、エージェントのID管理、アクセス制御、活動の追跡可能性は重要な検討事項です。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>AIエージェント導入時のセキュリティ原則（ID、アクセス、トレーサビリティ）について、自社のガイドラインやリスク評価項目を再確認する</li><li>AIエージェントの利用を検討している場合、本記事で示されたセキュリティ課題と防御策を参考に、設計段階でのリスク軽減策を評価する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/we-built-agent-that-broke-all-of-our.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">AIエージェント</span></div>
+    </article>
+
+    <article class="card" id="article-14">
+      <h2 class="article-heading"><span class="article-index">14.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.ncsc.gov.uk/news/ncsc-scheme-help-critical-organisations-test-their-cyber-defences" target="_blank" rel="noopener noreferrer" lang="en">NCSC scheme will help critical organisations test their cyber defences</a><span class="article-title-translation" lang="ja">NCSCが重要インフラ組織のサイバー防御テストを支援する新スキームを発表</span></span></h2>
+      <p class="article-meta">NCSC ・ 11/11 21:00</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>英国NCSCは、重要インフラ組織が信頼できるプロバイダーによる厳格な実世界テストを通じてレジリエンスを強化できるよう、新しい「Cyber Adversary Simulation」スキームを発表しました。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関は重要インフラに該当する場合があり、サイバーレジリエンス強化のためのテストスキームとして参考になる可能性があります。ただし、英国のスキームであり直接的な適用義務はありません。</p>
+        </section>
+      </div>
+      <p class="article-attribution">出典: NCSC。<a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/" target="_blank" rel="noopener noreferrer">Open Government Licence v3.0</a>のもとで提供される情報を含みます。</p>
+      <a class="article-source-link" href="https://www.ncsc.gov.uk/news/ncsc-scheme-help-critical-organisations-test-their-cyber-defences" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">規制</span><span class="article-tag">ガイドライン</span></div>
+    </article>
+
+    <article class="card" id="article-15">
+      <h2 class="article-heading"><span class="article-index">15.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/bay-raises-50-million-to-control-what-enterprise-ai-agents-can-do/" target="_blank" rel="noopener noreferrer" lang="en">Bay Raises $50 Million to Control What Enterprise AI Agents Can Do</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/11 20:30</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>元IDF Unit 8200のインテリジェンスオフィサー3名によって設立されたBay社が、エンタープライズAIエージェントの制御プレーンを提供するために5000万ドルを調達しました。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関が将来的にAIエージェントを導入する際に、その制御・管理に関するソリューションとして関係する可能性があります。現時点での直接的な影響は限定的です。</p>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/bay-raises-50-million-to-control-what-enterprise-ai-agents-can-do/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">AIエージェント</span></div>
+    </article>
+
+    <article class="card" id="article-16">
+      <h2 class="article-heading"><span class="article-index">16.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/today-ciso-forum-virtual-summit-2026-join-global-cybersecurity-leaders/" target="_blank" rel="noopener noreferrer" lang="en">Today: CISO Forum Virtual Summit 2026 Day 2 – Join Cybersecurity Leaders Online</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/12 01:29</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>サイバーセキュリティリーダーを対象とした2日間のバーチャルイベント「CISOフォーラム バーチャルサミット2026」の2日目開催が告知されました。現代の企業を定義する革新的なリスク管理および防御戦略について議論し、共有し、学ぶ場を提供します。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関への直接的な影響は限定的です。サイバーセキュリティに関する一般的な情報収集や知識更新の参考情報となります。</p>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/today-ciso-forum-virtual-summit-2026-join-global-cybersecurity-leaders/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article>
+
+    <article class="card" id="article-17">
+      <h2 class="article-heading"><span class="article-index">17.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/finite-state-raises-27-million-to-secure-software-and-firmware-in-connected-devices/" target="_blank" rel="noopener noreferrer" lang="en">Finite State Raises $27 Million to Secure Software and Firmware in Connected Devices</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/11 21:24</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>セキュリティ企業Finite StateがシリーズCラウンドで2,700万ドルを調達しました。この資金は、同社のデバイスセキュリティプラットフォームの国際展開と自律機能の強化に充てられます。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関への直接的な影響は限定的です。コネクテッドデバイスのセキュリティ強化は間接的にサプライチェーンリスク低減に寄与する可能性がありますが、本記事は特定の脅威や対策を直接示すものではありません。</p>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/finite-state-raises-27-million-to-secure-software-and-firmware-in-connected-devices/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article>
+
+    <article class="card" id="article-18">
+      <h2 class="article-heading"><span class="article-index">18.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/dreeze-emerges-from-stealth-with-33m-to-rebuild-cloud-apps-after-cyberattacks/" target="_blank" rel="noopener noreferrer" lang="en">Dreeze Emerges From Stealth With $33M to Rebuild Cloud Apps After Cyberattacks</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/11 20:16</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>ZertoとKashyaのベテランが設立したスタートアップDreezeが、サイバー攻撃後のクラウドアプリケーション全体を復旧するためのプラットフォームを発表し、3,300万ドルの資金調達を行いました。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関への直接的な影響は限定的です。クラウドアプリケーションの復旧ソリューションに関する情報として、中長期的な参考情報にとどまります。</p>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/dreeze-emerges-from-stealth-with-33m-to-rebuild-cloud-apps-after-cyberattacks/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">クラウド</span></div>
+    </article>
+
+    <article class="card card-metadata-only" id="article-19">
+      <h2 class="article-heading"><span class="article-index">19.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/" target="_blank" rel="noopener noreferrer" lang="en">The global socket: how threat actors are weaponizing GSocket for stealthy C2</a></span></h2>
+      <p class="article-meta">Microsoft Security ・ 11/12 04:49</p>
+      <p class="article-attribution">AIによる要約・評価は行っていません。</p>
+      <a class="article-source-link" href="https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article>
+
+    <article class="card card-metadata-only" id="article-20">
+      <h2 class="article-heading"><span class="article-index">20.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.microsoft.com/en-us/security/blog/2026/11/11/lessons-from-59-linux-kernel-bug-reports/" target="_blank" rel="noopener noreferrer" lang="en">Lessons from 59 Linux Kernel Bug Reports</a></span></h2>
+      <p class="article-meta">Microsoft Security ・ 11/12 01:55</p>
+      <p class="article-attribution">AIによる要約・評価は行っていません。</p>
+      <a class="article-source-link" href="https://www.microsoft.com/en-us/security/blog/2026/11/11/lessons-from-59-linux-kernel-bug-reports/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article></div>
+  <div class="sources">
+    <details>
+      <summary>収集元 (13ソース)</summary>
+      <ul><li>金融庁</li><li>JPCERT/CC</li><li>IPA</li><li>NIST</li><li>Microsoft Security</li><li>Mandiant</li><li>Google TAG</li><li>NCSC</li><li>Krebs on Security</li><li>The Hacker News</li><li>Cisco Talos</li><li>CISA KEV</li><li>SecurityWeek</li></ul>
+    </details>
+  </div>
+  <nav class="archive-nav archive-bottom-nav" aria-label="日別ダイジェスト下部ナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link archive-prev-link" href="2026-11-10.html">← 前のダイジェスト</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="index.html">過去のダイジェスト</a><a class="archive-link" href="../index.html">最新のダイジェスト</a></div></nav>
+  <footer class="site-footer">
+    <p class="analytics-notice">本サイトは閲覧状況の把握にCloudflare Web Analyticsを利用しています。Cloudflareは、CookieやlocalStorageを使用せず、個々の訪問者を追跡しないと説明しています。ページビュー、参照元、国、デバイス種別等を集計し、解析用スクリプトをstatic.cloudflareinsights.comから読み込み、計測データをcloudflareinsights.comへ送信します。</p>
+  </footer>
+  <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "61817bf1677944c191c8933b207fdc7d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

@@ -1,0 +1,1071 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-12",
+  "generated_at": "2026-11-12T12:05:22.001281+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 20,
+    "ai_attempted_count": 18,
+    "ai_success_count": 18,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 2,
+    "ai_eligible_count": 18
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 15,
+      "低": 3,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 12,
+      "参考": 6,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 6,
+      "攻撃・脅威動向": 3,
+      "インシデント": 2,
+      "規制・ガバナンス": 1,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 3,
+      "その他": 3,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象18件｜重要度「高」0件｜本日確認0件｜今週確認12件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が12件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "ランサムウェアグループQilinは、過去3か月で少なくとも365の組織を標的とした世界で最も活発なランサムウェアアフィリエイトプログラムとして浮上しています。本記事は、Qilinの管理者が過去10年間に行ったいくつかの運用セキュリティ上の誤りから、その運営者がロシアのサンクトペテルブルクに住む36歳の男性であると指摘しています。\n金融機関が直接的な標的であるとは明記されていませんが、ランサムウェア攻撃は業種を問わず発生しており、金融機関も潜在的な標的となり得ます。攻撃者の特定は、脅威インテリジェンスの強化に役立ちます。",
+      "Zoomは、Windows版Zoom Workplaceに影響を与える2つのセキュリティ脆弱性に対処するソフトウェアアップデートをリリースしました。これには、認証されていないユーザーが権限昇格を実行できる可能性のあるCVE-2026-108186（CVSSスコア9.6）が含まれます。\n金融機関でZoom Workplace for Windowsを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。"
+    ],
+    "check_items": [
+      "自社および委託先でZoom Workplace for Windowsの利用有無と影響バージョンを確認する",
+      "Xen OrchestraおよびXCP-ngの利用有無と影響バージョンを確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:f3f53ef63df395cce8f6906f3e801613ed14253d92ec190e07e3e21db227112a",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/global-socket-how-threat-actors-weaponizing-gsocket-stealthy-c2/",
+      "published_at": "2026-11-12T04:49:57+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "The global socket: how threat actors are weaponizing GSocket for stealthy C2",
+      "raw_title": "The global socket: how threat actors are weaponizing GSocket for stealthy C2",
+      "raw_excerpt": null,
+      "content_hash": "sha256:009159e67d042372c417258d9799d87354f75cd308f3564e0d43a8cc0a803398",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5aca5acf75fbc18aea1f7f03835bf43aa3a40d4529f830567d2f31628239e1d7",
+      "source_id": "krebs_on_security",
+      "source_name": "Krebs on Security",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://krebsonsecurity.com/2026/11/who-runs-the-ransomware-group-qilin/",
+      "canonical_url": "https://krebsonsecurity.com/2026/11/who-runs-the-ransomware-group-qilin/",
+      "published_at": "2026-11-12T03:06:01+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "Who Runs the Ransomware Group Qilin?",
+      "raw_title": "Who Runs the Ransomware Group Qilin?",
+      "raw_excerpt": null,
+      "content_hash": "sha256:64747ce9423b0c60907d4dc20ea5dc20f7dc186f46dd034e5598d1865ee4bf18",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:00:06.224670+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ランサムウェアグループの運営者に関する分析が主題であるため。",
+        "tags": [
+          "ランサムウェア"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ランサムウェアグループQilinは、過去3か月で少なくとも365の組織を標的とした世界で最も活発なランサムウェアアフィリエイトプログラムとして浮上しています。本記事は、Qilinの管理者が過去10年間に行ったいくつかの運用セキュリティ上の誤りから、その運営者がロシアのサンクトペテルブルクに住む36歳の男性であると指摘しています。",
+        "financial_impact": "金融機関が直接的な標的であるとは明記されていませんが、ランサムウェア攻撃は業種を問わず発生しており、金融機関も潜在的な標的となり得ます。攻撃者の特定は、脅威インテリジェンスの強化に役立ちます。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定のランサムウェアグループの運営者に関する情報であり、直接的な脅威情報ではないため「中」です。確認目安は、具体的な緊急対応を要する情報ではなく、脅威インテリジェンスとして把握すべき情報のため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:37d27702f36416e0f5785579c7ec0f25f5dc812e3c36b333653624cf78bc9797",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/lessons-from-59-linux-kernel-bug-reports/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/11/11/lessons-from-59-linux-kernel-bug-reports/",
+      "published_at": "2026-11-12T01:55:00+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "Lessons from 59 Linux Kernel Bug Reports",
+      "raw_title": "Lessons from 59 Linux Kernel Bug Reports",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b4176c254fa6437264304f7737cadf68adba806c0c2f7a9ba76dfaf500435ca0",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:873adaa444bc01f31e32a313d642a8b10244a2bf476fe1efbc49cecd7e49839e",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/today-ciso-forum-virtual-summit-2026-join-global-cybersecurity-leaders/",
+      "canonical_url": "https://www.securityweek.com/today-ciso-forum-virtual-summit-2026-join-global-cybersecurity-leaders/",
+      "published_at": "2026-11-12T01:29:42+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "Today: CISO Forum Virtual Summit 2026 Day 2 – Join Cybersecurity Leaders Online",
+      "raw_title": "Today: CISO Forum Virtual Summit 2026 Day 2 – Join Cybersecurity Leaders Online",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a2be1e6db49758858840575deaae4c988d89fbc62b61f59b29a1cf62ca207742",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:00:23.417997+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "サイバーセキュリティに関するイベントの告知であり、特定の技術的リスクや規制変更を主題としていないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "サイバーセキュリティリーダーを対象とした2日間のバーチャルイベント「CISOフォーラム バーチャルサミット2026」の2日目開催が告知されました。現代の企業を定義する革新的なリスク管理および防御戦略について議論し、共有し、学ぶ場を提供します。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。サイバーセキュリティに関する一般的な情報収集や知識更新の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や規制変更に関する情報ではなく、一般的なイベント告知のため「低」です。確認目安は、短期的な対応を要する情報ではなく、知識更新のための参考情報のため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:95bc7c63c87673bf5406f856eb6b28ac769056cdcac8a1052753303b53dd16b3",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/critical-zoom-workplace-flaw-could.html",
+      "canonical_url": "https://thehackernews.com/2026/11/critical-zoom-workplace-flaw-could.html",
+      "published_at": "2026-11-12T01:12:46+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "Critical Zoom Workplace Flaw Could Allow Unauthenticated Remote Privilege Escalation",
+      "raw_title": "Critical Zoom Workplace Flaw Could Allow Unauthenticated Remote Privilege Escalation",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8fe027ec193183cf122fcd603aef389cd8ab438f1585b46af09f8347924dc291",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:00:40.716497+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Zoom Workplaceの脆弱性とそれに対するパッチが主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Zoomは、Windows版Zoom Workplaceに影響を与える2つのセキュリティ脆弱性に対処するソフトウェアアップデートをリリースしました。これには、認証されていないユーザーが権限昇格を実行できる可能性のあるCVE-2026-108186（CVSSスコア9.6）が含まれます。",
+        "financial_impact": "金融機関でZoom Workplace for Windowsを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "自社および委託先でZoom Workplace for Windowsの利用有無と影響バージョンを確認する",
+          "Zoomが公開しているセキュリティアップデート情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、広く利用される可能性のある製品の重大な脆弱性ですが、金融機関での利用状況が記事から不明なため「中」です。確認目安は、実悪用やCISA KEVへの新規追加の記述がなく、即時対応の根拠が不足しているため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1850dcd8e0028e19cb40971dd20ff90da602246a3c5538e9394adf2ed11e7fe5",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/critical-xen-orchestra-flaws-exploited-in-attacks/",
+      "canonical_url": "https://www.securityweek.com/critical-xen-orchestra-flaws-exploited-in-attacks/",
+      "published_at": "2026-11-12T00:42:47+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "Critical Xen Orchestra Flaws Exploited in Attacks",
+      "raw_title": "Critical Xen Orchestra Flaws Exploited in Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1fecc5511c35422fa56cf719d3aebc559c317a8802a0bc1419583964edd6ece5",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:00:57.849898+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Xen Orchestraの認証バイパス脆弱性が攻撃で悪用された事例が主題のため。",
+        "tags": [
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Xen Orchestraの認証バイパスの重大な脆弱性が攻撃で悪用されていることが確認されました。これにより、攻撃者は管理者として任意のコードを実行し、XCP-ngノードを乗っ取ることが可能になります。",
+        "financial_impact": "金融機関でXen OrchestraおよびXCP-ngを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Xen OrchestraおよびXCP-ngの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報を確認し、パッチ適用や緩和策の実施を検討する"
+        ],
+        "reason": "重要度は、対象製品の利用可能性が記事から確認できず、適用範囲が不確実なため「中」です。確認目安は、実悪用が確認されているものの、KEV新規追加や緊急対応の期限が明示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:99d239565756098b9428b9bb55b7aa2b058c0301866e20628a75478fe5d08b08",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/antifox-ai-pentesting-platform-linked.html",
+      "canonical_url": "https://thehackernews.com/2026/11/antifox-ai-pentesting-platform-linked.html",
+      "published_at": "2026-11-12T00:34:27+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "AntiFox AI Pentesting Platform Linked to Attacks That Accessed AWS Production Secrets",
+      "raw_title": "AntiFox AI Pentesting Platform Linked to Attacks That Accessed AWS Production Secrets",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d46511ed32b481443aa215290c3d3cba3b9494102a42e43ad1c997ffaf19cb73",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:01:17.208087+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "AIペネトレーションテストプラットフォームを悪用した攻撃キャンペーンに関する記事であるため。",
+        "tags": [
+          "AI",
+          "クラウド",
+          "IAM",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者らは、AIを活用したペネトレーションテストプラットフォーム「AntiFox」が悪用され、Amazon Web Services (AWS) の認証情報が窃取され、侵害された環境内で横展開された攻撃キャンペーンの詳細を公開しました。",
+        "financial_impact": "金融機関がAWSを利用しており、かつ同様のAIペネトレーションテストプラットフォームを導入している場合、またはサプライチェーンを通じて間接的に影響を受ける可能性があります。",
+        "recommended_actions": [
+          "AWS環境における認証情報の管理状況とアクセスログをレビューし、不審な活動がないか確認する",
+          "AIを活用したペネトレーションテストプラットフォームの利用状況を棚卸しし、セキュリティ対策が適切に講じられているか評価する"
+        ],
+        "reason": "重要度は、AWS利用企業に影響し得る攻撃事例だが、特定のAIプラットフォームの利用有無に依存するため「中」です。確認目安は、新たな攻撃手法の報告であり、即時対応を要する具体的な期限や進行中の攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d8637e378806af0b6063819219a872d1d727c9e72c0ee5aa0ce63049cd389965",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/hackers-target-qlik-sense-servers-with.html",
+      "canonical_url": "https://thehackernews.com/2026/11/hackers-target-qlik-sense-servers-with.html",
+      "published_at": "2026-11-11T23:01:00+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "Hackers Target Qlik Sense Servers With Reverse Shells, Stage ActiveMQ and Veeam Exploits",
+      "raw_title": "Hackers Target Qlik Sense Servers With Reverse Shells, Stage ActiveMQ and Veeam Exploits",
+      "raw_excerpt": null,
+      "content_hash": "sha256:eda0a63aa89c3aee68e7a8e29c066a889d33e3b92282852ef73df2cc7731f37b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:01:38.081171+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Qlik Senseサーバーを標的とした攻撃手法と、ActiveMQおよびVeeamの脆弱性悪用が主題であるため。",
+        "tags": [
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "2026年10月、脅威アクターがQlik Senseサーバーを標的とし、PowerShellリバースシェルコマンドの実行を試みたことが観測されました。この活動は、ActiveMQおよびVeeamの脆弱性悪用も試行していることが判明しています。",
+        "financial_impact": "Qlik Sense、ActiveMQ、またはVeeam製品を金融機関で利用している場合に関係します。これらの製品の利用有無は記事からは確認できません。",
+        "recommended_actions": [
+          "自社および委託先におけるQlik Sense、ActiveMQ、Veeam製品の利用有無と、関連する脆弱性の影響範囲を確認する",
+          "各製品のベンダーが提供するセキュリティアドバイザリやパッチ情報を確認し、必要な対策を検討する",
+          "不審なPowerShellコマンドの実行履歴や、関連する攻撃の痕跡がないかログを調査する"
+        ],
+        "reason": "重要度は、特定の製品を標的とした攻撃であり、金融機関での利用状況により適用性が異なるため「中」です。確認目安は、攻撃が観測されたものの、進行中の緊急対応を要する情報や明確な期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9f6bff35230855835cfd3b73043ffd13af290b2d50505b37563cfadbf2167d62",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/asus-zoom-release-security-patches/",
+      "canonical_url": "https://www.securityweek.com/asus-zoom-release-security-patches/",
+      "published_at": "2026-11-11T22:58:38+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "Asus, Zoom Release Security Patches",
+      "raw_title": "Asus, Zoom Release Security Patches",
+      "raw_excerpt": null,
+      "content_hash": "sha256:72931891de0213444ab1152ccc20018830e0c7b4f3caafd1248f8d1f8748560b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:01:56.055039+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "ASUSとZoomがセキュリティパッチを公開したという脆弱性対応が主題のため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ASUSとZoomがセキュリティパッチを公開しました。これらの脆弱性は、コマンド実行、メモリ上書き、権限昇格に悪用される可能性があります。",
+        "financial_impact": "金融機関でASUS製品やZoom製品を利用している場合に限り、適用性確認の対象になります。記事からは具体的な製品名や脆弱性の詳細が不明なため、影響範囲は限定的である可能性があります。",
+        "recommended_actions": [
+          "ASUSおよびZoom製品の利用有無と影響バージョンを確認する",
+          "各ベンダーの公開情報を参照し、該当する製品のパッチ適用状況を確認する"
+        ],
+        "reason": "重要度は、具体的な製品名や脆弱性の詳細が不明で、金融機関への直接的な影響が不確実なため「中」です。確認目安は、悪用状況や緊急対応の必要性を示す情報が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:84cdfac250c3be22ebab2e4c66767ed8e788e083837804c8b7df058b2e3b8ace",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/citrix-ivanti-patch-critical-and-high-severity-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/citrix-ivanti-patch-critical-and-high-severity-vulnerabilities/",
+      "published_at": "2026-11-11T22:37:19+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "Citrix, Ivanti Patch Critical and High-Severity Vulnerabilities",
+      "raw_title": "Citrix, Ivanti Patch Critical and High-Severity Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3c4337dbf50d9840082aeaf83ac6ac3103764f2dd24a0061dab2546359b25091",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:02:13.292312+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CitrixとIvanti製品の脆弱性に対するパッチ公開が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "CitrixとIvantiが、証明書エントリの改ざん、リモートコード実行、ホスト侵害につながる可能性のある重大な脆弱性に対するパッチを公開しました。",
+        "financial_impact": "CitrixまたはIvantiの製品を金融機関で利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "自社および委託先でCitrixまたはIvantiの製品を利用しているか棚卸しする",
+          "利用している場合はベンダーの公開情報を確認し、影響を受けるバージョンとパッチ適用状況を評価する"
+        ],
+        "reason": "重要度は、CitrixとIvanti製品の利用有無により影響が変わり、適用範囲が限定的または不確実なため「中」です。確認目安は、記事に実悪用や短期期限の記述がなく、即時対応の根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:17db2f58ba650f7c8333e74c24fe18d2ed7568030205d9f8a6a077db3d2f15a3",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/finite-state-raises-27-million-to-secure-software-and-firmware-in-connected-devices/",
+      "canonical_url": "https://www.securityweek.com/finite-state-raises-27-million-to-secure-software-and-firmware-in-connected-devices/",
+      "published_at": "2026-11-11T21:24:33+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "Finite State Raises $27 Million to Secure Software and Firmware in Connected Devices",
+      "raw_title": "Finite State Raises $27 Million to Secure Software and Firmware in Connected Devices",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4d834cf1c170ecf11b4aecc359bfaeb6fbe9bdb12072da134bfc848859595f63",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:02:30.464534+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "企業の資金調達に関するニュースであり、特定の脆弱性、攻撃、規制、クラウド、AIリスクのいずれにも該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "セキュリティ企業Finite StateがシリーズCラウンドで2,700万ドルを調達しました。この資金は、同社のデバイスセキュリティプラットフォームの国際展開と自律機能の強化に充てられます。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。コネクテッドデバイスのセキュリティ強化は間接的にサプライチェーンリスク低減に寄与する可能性がありますが、本記事は特定の脅威や対策を直接示すものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や金融機関への直接的な影響が確認できない企業の資金調達ニュースであるため「低」です。確認目安は、短期的な対応を要する情報ではなく、一般的な業界動向として参考となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:8eeaa5e81881cd502a1f2cda52ae03186568d110f7f4145cac890f6e6e7e2640",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/over-35000-grok-built-apps-exposed.html",
+      "canonical_url": "https://thehackernews.com/2026/11/over-35000-grok-built-apps-exposed.html",
+      "published_at": "2026-11-11T21:19:40+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "Over 35,000 Grok-Built Apps Exposed Online, Some Leaking Confidential Data and Passwords",
+      "raw_title": "Over 35,000 Grok-Built Apps Exposed Online, Some Leaking Confidential Data and Passwords",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ab66a619c21aa00b54f5fef71d162de3d15b650ae9dda0637fcc45cefb21affb",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:02:48.265905+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "Grok AIアシスタントで構築されたアプリのセキュリティ設定不備による情報漏洩が主題であるため。",
+        "tags": [
+          "AI",
+          "情報漏えい",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セキュリティ企業Clarocの調査により、Grokで構築された37,571のアプリのうち35,578がサインインなしで誰でもアクセス可能であることが判明しました。これらのアプリの約1割には、内部ビジネスデータやパスワードなどの機密情報が含まれていました。",
+        "financial_impact": "金融機関がGrok AIアシスタントを利用してアプリを開発し、その設定に不備があった場合に情報漏洩のリスクがあります。XやSpaceXSIの従業員が構築したアプリも含まれており、サプライチェーンリスクとして関連する可能性があります。",
+        "recommended_actions": [
+          "Grok AIアシスタントを利用して開発したアプリの有無と、その公開設定を確認する",
+          "公開されているGrokアプリに機密情報やパスワードが含まれていないか、内容を精査する",
+          "Grokアプリの利用ガイドラインやセキュリティ設定に関するベンダー情報を確認し、適切な設定を適用する"
+        ],
+        "reason": "重要度は、Grok AIアシスタントの利用状況により影響が異なるため「中」です。確認目安は、具体的な期限や進行中の大規模攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:56bcf2ecd887e1b6c5ff7c1c308e6e17fbea39d370b126505beff380c96933a4",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/fortinet-patches-nearly-100-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/fortinet-patches-nearly-100-vulnerabilities/",
+      "published_at": "2026-11-11T21:10:14+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "Fortinet Patches Nearly 100 Vulnerabilities",
+      "raw_title": "Fortinet Patches Nearly 100 Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8adef9fad11d6c2a5e6aa3e8a21411e4fc0cfa1217f7b45760dd55007fb765d5",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:03:05.267562+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Fortinet製品の脆弱性に対するパッチ公開が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Fortinetが、同社の製品セキュリティテストにAIモデルを統合した結果、約100件の脆弱性に対するパッチを公開しました。",
+        "financial_impact": "Fortinet製品を導入している金融機関は、自社環境への影響を確認する必要があります。記事からは具体的な製品名や脆弱性の詳細が不明なため、影響範囲は限定的または不確実です。",
+        "recommended_actions": [
+          "Fortinet製品の利用有無と導入バージョンを棚卸しする",
+          "Fortinetからの公式アナウンスを確認し、自社環境への適用要否を評価する"
+        ],
+        "reason": "重要度は、Fortinet製品の利用有無により適用性が変わるため「中」です。確認目安は、具体的な脆弱性の詳細や緊急対応の根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:00bfb3e3b49bef1af6f5c365ce5932c928c4a18ba8ad2ff4870002ffd231815f",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/we-built-agent-that-broke-all-of-our.html",
+      "canonical_url": "https://thehackernews.com/2026/11/we-built-agent-that-broke-all-of-our.html",
+      "published_at": "2026-11-11T21:01:59+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "We Built An Agent That Broke All of Our Security Rules. Here's What We Learned.",
+      "raw_title": "We Built An Agent That Broke All of Our Security Rules. Here's What We Learned.",
+      "raw_excerpt": null,
+      "content_hash": "sha256:42bc30dde9daa5dec3a6f94f401b302fbd0fdebbce202d2620ff37c05448de95",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:03:22.932889+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントのセキュリティに関する教訓が主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AIエージェントのセキュリティに関する一般的な原則（ID、アクセス、トレーサビリティ）を意図的に破るエージェントを構築した経験から、その防御方法について得られた教訓が共有されています。",
+        "financial_impact": "金融機関がAIエージェントを導入・利用する際に、セキュリティ設計やリスク評価の参考情報となります。特に、エージェントのID管理、アクセス制御、活動の追跡可能性は重要な検討事項です。",
+        "recommended_actions": [
+          "AIエージェント導入時のセキュリティ原則（ID、アクセス、トレーサビリティ）について、自社のガイドラインやリスク評価項目を再確認する",
+          "AIエージェントの利用を検討している場合、本記事で示されたセキュリティ課題と防御策を参考に、設計段階でのリスク軽減策を評価する"
+        ],
+        "reason": "重要度は、AIエージェントのセキュリティに関する実践的な知見であり、将来的な導入・利用を考慮する上で参考となるため「中」です。確認目安は、具体的な脅威や期限の記述がなく、中長期的な検討に資する情報のため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d875e13ba5ae8418ccd3e8d95ed79970ac70309ea3ebb4a5ef3a82388bdf9c2d",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/emudhra-revokes-8-more-cas-it.html",
+      "canonical_url": "https://thehackernews.com/2026/11/emudhra-revokes-8-more-cas-it.html",
+      "published_at": "2026-11-11T21:00:53+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "eMudhra Revokes 8 More CAs It Previously Declared Unaffected by Key Compromise",
+      "raw_title": "eMudhra Revokes 8 More CAs It Previously Declared Unaffected by Key Compromise",
+      "raw_excerpt": null,
+      "content_hash": "sha256:79d5166ebaa4e2868cb79d22f93da58cf5e72233e355af4347c9350d2b945a76",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:03:40.430342+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "eMudhraの鍵侵害インシデントに関する追加情報が主題であるため。",
+        "tags": [
+          "インシデント",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "eMudhraは、10月に発生した鍵侵害の原因となったPythonスクリプトにより、以前は影響を受けないとされていた8つの追加の中間認証局（CA）を失効しました。これらのCAの秘密鍵は弱体化していませんでしたが、スクリプトの単一の行に問題がありました。",
+        "financial_impact": "eMudhraが発行する証明書を利用している金融機関は、失効されたCAに署名された証明書が使用されていないか確認する必要があります。これにより、通信の信頼性や認証に影響が出る可能性があります。",
+        "recommended_actions": [
+          "eMudhraが発行する証明書を利用している場合、失効されたCAに署名された証明書が自社システムや委託先で利用されていないか確認する",
+          "eMudhraからの公式発表や指示を確認し、必要な対応を検討する"
+        ],
+        "reason": "重要度は、eMudhraの証明書を利用している場合に影響が生じる可能性があるため「中」です。確認目安は、新たな鍵侵害ではなく追加のCA失効であり、即時対応の緊急性が高くないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6df26830d7a11a57cc7c7e5324687400f3720c2a5dbd0b530a465b6da9fda7d3",
+      "source_id": "ncsc",
+      "source_name": "NCSC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.ncsc.gov.uk/news/ncsc-scheme-help-critical-organisations-test-their-cyber-defences",
+      "canonical_url": "https://www.ncsc.gov.uk/news/ncsc-scheme-help-critical-organisations-test-their-cyber-defences",
+      "published_at": "2026-11-11T21:00:00+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "NCSCが重要インフラ組織のサイバー防御テストを支援する新スキームを発表",
+      "raw_title": "NCSC scheme will help critical organisations test their cyber defences",
+      "raw_excerpt": "New NCSC Cyber Adversary Simulation scheme will help critical organisations strengthen their resilience through rigorous, real-world testing by trusted providers.",
+      "content_hash": "sha256:8a5cf43b191e408f1d48daa81ca4e0e2e942495fd78f1d0e6a2b11cd2eb3f2fd",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:03:57.443021+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "NCSCが重要インフラ組織向けのサイバー防御テストスキームを発表したことが主題であるため。",
+        "tags": [
+          "規制",
+          "ガイドライン"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "英国NCSCは、重要インフラ組織が信頼できるプロバイダーによる厳格な実世界テストを通じてレジリエンスを強化できるよう、新しい「Cyber Adversary Simulation」スキームを発表しました。",
+        "financial_impact": "金融機関は重要インフラに該当する場合があり、サイバーレジリエンス強化のためのテストスキームとして参考になる可能性があります。ただし、英国のスキームであり直接的な適用義務はありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、英国の重要インフラ組織向けスキームであり、金融機関のサイバーレジリエンス強化の参考情報となるため「中」です。確認目安は、具体的な対応期限や緊急性が示されていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:770f7e5e175dc67b5ec39bec12856b9b3b08e65884eececed5e9d2b36e6c1c0b",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/bay-raises-50-million-to-control-what-enterprise-ai-agents-can-do/",
+      "canonical_url": "https://www.securityweek.com/bay-raises-50-million-to-control-what-enterprise-ai-agents-can-do/",
+      "published_at": "2026-11-11T20:30:00+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "Bay Raises $50 Million to Control What Enterprise AI Agents Can Do",
+      "raw_title": "Bay Raises $50 Million to Control What Enterprise AI Agents Can Do",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c9a9fa158382946de0ab5b3546dc263d330d2e47264e02b1b5e3f1eb4fc72a28",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:04:14.525991+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントの制御プレーンという新しい技術リスクに関する記事であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "元IDF Unit 8200のインテリジェンスオフィサー3名によって設立されたBay社が、エンタープライズAIエージェントの制御プレーンを提供するために5000万ドルを調達しました。",
+        "financial_impact": "金融機関が将来的にAIエージェントを導入する際に、その制御・管理に関するソリューションとして関係する可能性があります。現時点での直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントの制御という将来的な技術動向に関する情報であり、現時点での直接的な適用性が不確実なため「中」です。確認目安は、具体的な脅威や期限に関する記述がなく、短期的な対応を要しないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6b50a859ffba88a178e7fe4d37f64deba286eb73a1adfb581894ebad38b4b076",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/dreeze-emerges-from-stealth-with-33m-to-rebuild-cloud-apps-after-cyberattacks/",
+      "canonical_url": "https://www.securityweek.com/dreeze-emerges-from-stealth-with-33m-to-rebuild-cloud-apps-after-cyberattacks/",
+      "published_at": "2026-11-11T20:16:40+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "Dreeze Emerges From Stealth With $33M to Rebuild Cloud Apps After Cyberattacks",
+      "raw_title": "Dreeze Emerges From Stealth With $33M to Rebuild Cloud Apps After Cyberattacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9bcded8f3e617ea222a3265fcc5356fc672d824deee07915e1f085b68f341b29",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:04:31.370879+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "サイバー攻撃後のクラウドアプリケーション復旧に関する新興企業の資金調達とサービス開始が主題であり、既存のカテゴリに明確に当てはまらないため。",
+        "tags": [
+          "クラウド"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "ZertoとKashyaのベテランが設立したスタートアップDreezeが、サイバー攻撃後のクラウドアプリケーション全体を復旧するためのプラットフォームを発表し、3,300万ドルの資金調達を行いました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。クラウドアプリケーションの復旧ソリューションに関する情報として、中長期的な参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、新興企業の資金調達とサービス開始に関する情報であり、現時点での金融機関への直接的な影響が低いため「低」です。確認目安は、具体的な脅威や期限を伴う情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b4b549aacbc41c785d5486f1807cf831d896bb3793bb397da240e5ee7bd1c0d6",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/microsoft-patches-1259-flaws-including.html",
+      "canonical_url": "https://thehackernews.com/2026/11/microsoft-patches-1259-flaws-including.html",
+      "published_at": "2026-11-11T17:17:53+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "Microsoft Patches 1,259 Flaws, Including Exploited Outlook Bug That May Expose NTLMv2 Hashes",
+      "raw_title": "Microsoft Patches 1,259 Flaws, Including Exploited Outlook Bug That May Expose NTLMv2 Hashes",
+      "raw_excerpt": null,
+      "content_hash": "sha256:baf8451fc2cdc8e40d691e0ee0c5498cfb5ad7ed28942f2d8a1290dfd409be2d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:04:48.852038+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Microsoft製品の多数の脆弱性に対するパッチ公開が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Microsoftは、OutlookのNTLMv2ハッシュ漏えい脆弱性を含む、合計1,259件の脆弱性に対するパッチを公開しました。これにはWindows、Office、SQL Server、SharePoint Serverなど、広範な製品ポートフォリオの脆弱性が含まれます。",
+        "financial_impact": "多くの金融機関で利用されているMicrosoft製品群の脆弱性であるため、影響を受ける製品の利用状況を確認し、適切な対応を検討する必要があります。",
+        "recommended_actions": [
+          "自社および委託先におけるMicrosoft製品（Windows, Office, SQL Server, SharePoint Server等）の利用状況と影響バージョンを棚卸しする",
+          "Microsoftが公開したパッチ情報を確認し、自社環境への適用要否を評価する"
+        ],
+        "reason": "重要度は、広範なMicrosoft製品に影響するものの、個々の脆弱性の詳細や金融機関への直接的な影響が記事からは不明確なため「中」です。確認目安は、多数のパッチ公開であり、直ちに悪用が確認された特定の緊急性の高い脆弱性情報が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:74289a15fb94903acdd0d7a7b4a6f2f53958e3b36efc4097c7f31960c6611dcf",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/railway-says-stolen-customer-ai-keys.html",
+      "canonical_url": "https://thehackernews.com/2026/11/railway-says-stolen-customer-ai-keys.html",
+      "published_at": "2026-11-11T16:49:04+09:00",
+      "fetched_at": "2026-11-12T12:00:03.757797+09:00",
+      "title": "Railway Says Stolen Customer AI Keys Led to $740,000 in Estimated Unauthorized Usage Charges",
+      "raw_title": "Railway Says Stolen Customer AI Keys Led to $740,000 in Estimated Unauthorized Usage Charges",
+      "raw_excerpt": null,
+      "content_hash": "sha256:404b6482ab5f31cbf7309c95570b4028aa88f6a0530ac340d146f1f0f12b3616",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-12T12:05:07.000379+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "顧客のAIキーが盗難され、不正利用による金銭的被害が発生したインシデントが主題のため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "クラウド",
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "PaaSプロバイダーのRailwayは、10月に発生した侵害により顧客がRailwayに保存していたAIプロバイダーキーが盗難され、推定74万ドルの不正利用が発生したと発表しました。RailwayはAIプロバイダーが返金しない場合、これらの費用を負担すると約束しています。",
+        "financial_impact": "金融機関がRailwayのようなPaaSプロバイダーを利用し、機密情報（AIキーなど）を保存している場合に関係します。委託先における情報管理の重要性を示す事例です。",
+        "recommended_actions": [
+          "委託先が提供するPaaSやクラウドサービスにおける機密情報（APIキー、AIキーなど）の保存方法とセキュリティ対策を確認する",
+          "委託先との契約において、情報漏えい時の責任範囲や費用負担に関する条項を確認する",
+          "委託先におけるセキュリティインシデント発生時の情報共有体制と対応プロセスを評価する"
+        ],
+        "reason": "重要度は、金融機関がPaaSを利用し機密情報を保存している場合に影響し得るため「中」です。確認目安は、委託先管理における情報セキュリティの確認が必要となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
