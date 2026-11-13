@@ -1,0 +1,987 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-13",
+  "generated_at": "2026-11-13T11:42:39.469174+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 18,
+    "ai_attempted_count": 16,
+    "ai_success_count": 16,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 2,
+    "ai_eligible_count": 16
+  },
+  "counts": {
+    "importance": {
+      "高": 4,
+      "中": 9,
+      "低": 3,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 3,
+      "今週確認": 9,
+      "参考": 4,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 6,
+      "攻撃・脅威動向": 4,
+      "インシデント": 3,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象16件｜重要度「高」4件｜本日確認3件｜今週確認9件\nBrief対象の記事のうち、本日中に適用性または初動要否を確認する記事が3件あります。",
+    "important_highlights": [
+      "Microsoft 365でサーバーのヘルスチェック失敗によりOutlook、Exchange Online、Teamsなどのサービスに障害が発生しました。Microsoftは原因を調査中であり、サイバー攻撃の証拠は開示していません。",
+      "Windowsの共通ログファイルシステム（CLFS）ドライバーに、ローカルユーザーがSYSTEM権限を取得できるゼロデイ脆弱性が発見され、そのエクスプロイトコード「SignDrop」が公開されました。この脆弱性は、昨年追加されたログ認証機能の悪用によるものです。",
+      "Citrixは、NetScaler ADC、Citrix NetScaler Gateway、NetScaler Consoleに影響を与える複数の重大なセキュリティ脆弱性に対するパッチをリリースしました。これらの脆弱性には、サービス拒否（DoS）や認証バイパスにつながる可能性のあるものが含まれます。"
+    ],
+    "discussion_points": [
+      "Microsoft 365でサーバーのヘルスチェック失敗によりOutlook、Exchange Online、Teamsなどのサービスに障害が発生しました。Microsoftは原因を調査中であり、サイバー攻撃の証拠は開示していません。\n多くの金融機関でMicrosoft 365が利用されており、サービス停止は業務継続性やコミュニケーションに直接的な影響を及ぼす可能性があります。",
+      "Windowsの共通ログファイルシステム（CLFS）ドライバーに、ローカルユーザーがSYSTEM権限を取得できるゼロデイ脆弱性が発見され、そのエクスプロイトコード「SignDrop」が公開されました。この脆弱性は、昨年追加されたログ認証機能の悪用によるものです。\n多くの金融機関で利用されているWindows OSのローカル権限昇格の脆弱性であり、内部ネットワークへの侵入後の横展開や永続化に悪用される可能性があります。速やかな適用性確認が必要です。"
+    ],
+    "check_items": [
+      "自社および委託先におけるMicrosoft 365の利用状況と影響範囲を確認する",
+      "自社環境におけるWindows CLFSドライバーの利用状況と影響範囲を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:e4ac87bce20a5ae24eb65a443b1d1fbff54a64a7e409d903c9c51ea28218ea66",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/fbi-says-us-seized-1-2-billion-worth-of-cryptocurrency-stolen-from-binance/",
+      "canonical_url": "https://www.securityweek.com/fbi-says-us-seized-1-2-billion-worth-of-cryptocurrency-stolen-from-binance/",
+      "published_at": "2026-11-13T11:28:21+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "FBI Says US Seized $1.2 Billion Worth of Cryptocurrency Stolen From Binance",
+      "raw_title": "FBI Says US Seized $1.2 Billion Worth of Cryptocurrency Stolen From Binance",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a0d9c18483edc507f5b2d1c87c9628bcb6a0d9a84fd9d9f3a298781723c42ced",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:38:05.369934+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "仮想通貨取引所からの大規模な仮想通貨窃盗と押収が主題であるため。",
+        "tags": [
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "FBIは、仮想通貨取引所Binanceから盗まれた12億ドル相当の仮想通貨を押収したと発表しました。また、北朝鮮が関与した別のソーシャルエンジニアリング詐欺により4億ドル相当の仮想通貨が盗まれた件についても言及しています。",
+        "financial_impact": "金融機関が仮想通貨関連サービスを提供している場合、または仮想通貨を資産として保有している場合に、サイバー攻撃による大規模な窃盗リスクの参考情報となります。直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が限定的であり、他業界の事例として参考となるため「中」です。確認目安は、具体的な対応期限や緊急性を示す情報がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:30dcc08ab243aecf142a4bee0068247c39a0da0512b60489376a0aff45997065",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/microsoft-365-outage-disrupts-outlook-exchange-online-and-teams/",
+      "canonical_url": "https://www.securityweek.com/microsoft-365-outage-disrupts-outlook-exchange-online-and-teams/",
+      "published_at": "2026-11-13T05:55:30+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "Microsoft 365 Outage Disrupts Outlook, Exchange Online and Teams",
+      "raw_title": "Microsoft 365 Outage Disrupts Outlook, Exchange Online and Teams",
+      "raw_excerpt": null,
+      "content_hash": "sha256:032ed60c2dd4c34be616ebad3ef7bd282c7250da66394c53a64f510b22f8ac84",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:38:22.593725+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "Microsoft 365のサービス停止という実際の障害が主題であるため。",
+        "tags": [
+          "クラウド",
+          "SaaS",
+          "業務停止",
+          "インシデント"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "Microsoft 365でサーバーのヘルスチェック失敗によりOutlook、Exchange Online、Teamsなどのサービスに障害が発生しました。Microsoftは原因を調査中であり、サイバー攻撃の証拠は開示していません。",
+        "financial_impact": "多くの金融機関でMicrosoft 365が利用されており、サービス停止は業務継続性やコミュニケーションに直接的な影響を及ぼす可能性があります。",
+        "recommended_actions": [
+          "自社および委託先におけるMicrosoft 365の利用状況と影響範囲を確認する",
+          "Microsoftの公式発表やステータスページを継続的に監視し、復旧状況や原因に関する追加情報を確認する",
+          "今回の障害が業務継続計画（BCP）やインシデント対応計画に与える影響を評価する"
+        ],
+        "reason": "重要度は、多くの金融機関で利用されるMicrosoft 365のサービス停止であり、業務継続性への影響が大きいため「高」です。確認目安は、現在進行中の障害であり、業務影響の確認と情報収集が急務であるため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:3e6401ae65cec48a42731521f3c33ab7cc0a305e9bb009392437e15d72afb7e9",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/never-be-afraid-to-ask-questions/",
+      "canonical_url": "https://blog.talosintelligence.com/never-be-afraid-to-ask-questions/",
+      "published_at": "2026-11-13T04:00:00+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "Never be afraid to ask questions",
+      "raw_title": "Never be afraid to ask questions",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bfc43927f82a105e71f0f39b112a778bbe149f8d5eb809bd515075795d4ac4f7",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:384252220164cfa94b043d1af33d10685d11e88ad0df03d1579cc3cd8e099c4a",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/your-soc-sees-alert-but-does-it-know.html",
+      "canonical_url": "https://thehackernews.com/2026/11/your-soc-sees-alert-but-does-it-know.html",
+      "published_at": "2026-11-13T03:07:15+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "Webinar: See How Identity Blind Spots Put Your SOC at Risk and How to Close Them",
+      "raw_title": "Webinar: See How Identity Blind Spots Put Your SOC at Risk and How to Close Them",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a03738077b04144fab7429b75719e369b8234e3abb364fe9a9fb62be12296bc2",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:38:39.608911+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の脆弱性やインシデントではなく、ID管理とSOC運用の一般的な課題と解決策に関するウェビナーの告知が主題であるため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "セキュリティチームは多くの警告、ログ、監視ツールを抱える一方で、攻撃発生時に「誰が、何が、何にアクセスしているか」という基本的な質問への回答に時間がかかっています。本ウェビナーでは、IDの盲点がSOCのリスクを高める理由と、その対処法について解説します。",
+        "financial_impact": "金融機関のSOC運用におけるID管理の課題は共通しており、本ウェビナーの内容は参考情報となり得ます。ただし、具体的な脅威や製品に関する情報ではないため、直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、一般的な課題提起とウェビナー告知であり、具体的な脅威や緊急対応を要する情報ではないため「低」です。確認目安は、短期的な対応を促す内容ではなく、中長期的な知識更新や情報収集に資するため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:897c1c6b0f49846c4620bcc969ece882c8f640ada7112d9e5b8d6579c4a272f5",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/threatsday-59-linux-kernel-bugs-falcon.html",
+      "canonical_url": "https://thehackernews.com/2026/11/threatsday-59-linux-kernel-bugs-falcon.html",
+      "published_at": "2026-11-13T03:02:51+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "ThreatsDay: 59 Linux Kernel Bugs, Falcon Spyware, GSocket Backdoors + 17 More Stories",
+      "raw_title": "ThreatsDay: 59 Linux Kernel Bugs, Falcon Spyware, GSocket Backdoors + 17 More Stories",
+      "raw_excerpt": null,
+      "content_hash": "sha256:10817c9d3edefdbea31466b3b1073ea15a231ce0a7f2ff65f7c4a540f560e940",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:38:56.593897+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の脅威動向や脆弱性情報がまとめられた週次レポートであり、特定の主題に絞れないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "今週のサイバーセキュリティ脅威をまとめたレポートで、偽サイト、盗まれたアクセス、信頼されたツールを悪用する攻撃者が増加していると指摘しています。AIが攻撃構築を加速させている一方、Linuxカーネルのバグ59件、Falconスパイウェア、GSocketバックドアなどが取り上げられています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。一般的な脅威動向の週次まとめであり、個別の具体的な脅威に対する緊急の対応を求めるものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や分析を伴わない一般的な週次まとめ記事であり、個別の脅威の深刻度を合算して過大評価しないため「低」です。確認目安は、具体的な短期アクションや期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c892fb218fc51be125533f1ee39519b44a02eea9b10caa148aa87e447cac5eb3",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/new-signdrop-zero-day-exploit-turns.html",
+      "canonical_url": "https://thehackernews.com/2026/11/new-signdrop-zero-day-exploit-turns.html",
+      "published_at": "2026-11-13T02:50:27+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "New SignDrop Zero-Day Exploit Turns Windows CLFS Security Feature Into SYSTEM Access",
+      "raw_title": "New SignDrop Zero-Day Exploit Turns Windows CLFS Security Feature Into SYSTEM Access",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ebfac2fa82de1d64b4f691445389cd98e5f2a1845bffa17d38ef8ae45cb36d16",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:39:14.754347+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Windowsの共通ログファイルシステムドライバーのゼロデイ脆弱性とエクスプロイトが主題であるため。",
+        "tags": [
+          "ゼロデイ",
+          "悪用確認済み",
+          "パッチ",
+          "CVE"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "Windowsの共通ログファイルシステム（CLFS）ドライバーに、ローカルユーザーがSYSTEM権限を取得できるゼロデイ脆弱性が発見され、そのエクスプロイトコード「SignDrop」が公開されました。この脆弱性は、昨年追加されたログ認証機能の悪用によるものです。",
+        "financial_impact": "多くの金融機関で利用されているWindows OSのローカル権限昇格の脆弱性であり、内部ネットワークへの侵入後の横展開や永続化に悪用される可能性があります。速やかな適用性確認が必要です。",
+        "recommended_actions": [
+          "自社環境におけるWindows CLFSドライバーの利用状況と影響範囲を確認する",
+          "本脆弱性に関するベンダーからの公式情報（パッチ、緩和策等）の公開状況を継続的に監視する",
+          "公開されたエクスプロイトコードの悪用有無を示すログや挙動がないか、システムログを調査する"
+        ],
+        "reason": "重要度は、広く利用されるWindows OSのゼロデイ脆弱性であり、ローカル権限昇格によりシステムへの影響が大きいため「高」です。確認目安は、ゼロデイエクスプロイトコードが公開されており、悪用の可能性が高いため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f426b022768c15118c5829be89f0164d02dd19add02b18e54646bca51af69efa",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/11/12/trained-to-betray-how-post-training-supply-chain-attacks-hijack-coding-agents/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/11/12/trained-to-betray-how-post-training-supply-chain-attacks-hijack-coding-agents/",
+      "published_at": "2026-11-13T02:00:00+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "Trained to betray: How post-training supply chain attacks hijack coding agents",
+      "raw_title": "Trained to betray: How post-training supply chain attacks hijack coding agents",
+      "raw_excerpt": null,
+      "content_hash": "sha256:21a3e7ec9aee584c6e666c0ceb84547d53b2d99ae798c726a7e73592e578eb21",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:83f9d15e0e3302c8a9c39ec9e9b0d7fd95efb259eac14606c96ce42a0ab43d5c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/critical-red-hat-quay-flaw-lets.html",
+      "canonical_url": "https://thehackernews.com/2026/11/critical-red-hat-quay-flaw-lets.html",
+      "published_at": "2026-11-13T01:27:01+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "Critical Red Hat Quay Flaw Lets Attackers Read and Overwrite All Private Container Images in a Registry",
+      "raw_title": "Critical Red Hat Quay Flaw Lets Attackers Read and Overwrite All Private Container Images in a Registry",
+      "raw_excerpt": null,
+      "content_hash": "sha256:facd52a84f06cac42fb755194a5409f27505eb52a5b88977dfebb7ae18b6a424",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:39:31.800255+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Red Hat Quayの重大な脆弱性が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Red Hat Quayに重大な欠陥が発見され、攻撃者がQuayレジストリにアクセスできる場合、すべてのプライベートコンテナイメージを読み書きできる可能性があります。デフォルトで匿名アクセスが有効な場合、攻撃者はアカウント不要で悪用可能であり、無効な場合でも有効なアカウントを持つユーザーが悪用できるとRed Hatが発表しました。",
+        "financial_impact": "Red Hat Quayをコンテナイメージ管理に利用している金融機関は、本脆弱性の影響を受ける可能性があります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Red Hat Quayの利用有無と影響を受けるバージョンを確認する",
+          "Red Hatが公開した修正ビルドの適用、または緩和策の実施を検討する"
+        ],
+        "reason": "重要度は、Red Hat Quayの利用状況が金融機関で限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:96d21dc534c051cb0f29d1744dd1c2f5728e232665b89f4e5c3e9609688e4436",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/citrix-patches-12-netscaler-and-secure.html",
+      "canonical_url": "https://thehackernews.com/2026/11/citrix-patches-12-netscaler-and-secure.html",
+      "published_at": "2026-11-13T00:38:49+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "Citrix Patches 12 NetScaler and Secure Access Client Flaws, Including Authentication Bypass",
+      "raw_title": "Citrix Patches 12 NetScaler and Secure Access Client Flaws, Including Authentication Bypass",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3276e7ae44ba6f489ba1dc8c0d0f53b1bc3fe91f069d1113fcfe29f6ff673030",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:39:50.010929+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Citrix製品の複数の脆弱性に対するパッチリリースが主題であるため。",
+        "tags": [
+          "パッチ",
+          "認証",
+          "業務停止",
+          "CVE"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "Citrixは、NetScaler ADC、Citrix NetScaler Gateway、NetScaler Consoleに影響を与える複数の重大なセキュリティ脆弱性に対するパッチをリリースしました。これらの脆弱性には、サービス拒否（DoS）や認証バイパスにつながる可能性のあるものが含まれます。",
+        "financial_impact": "Citrix NetScaler ADCやGatewayは多くの金融機関でリモートアクセスや負荷分散に利用されている可能性があり、認証バイパスやDoSの脆弱性は業務継続性や情報セキュリティに直接影響するため、適用性確認の対象になります。",
+        "recommended_actions": [
+          "自社および委託先でCitrix NetScaler ADC、Citrix NetScaler Gateway、NetScaler Consoleの利用有無と影響バージョンを確認する",
+          "Citrixが公開したパッチおよび緩和策の情報を確認し、速やかに適用を検討する",
+          "これらの製品のログを監視し、不審なアクセスやサービス停止の兆候がないか確認する"
+        ],
+        "reason": "重要度は、Citrix製品の認証バイパスやDoSの脆弱性が金融機関の業務継続性や情報セキュリティに直接影響する可能性が高いため「高」です。確認目安は、認証バイパスを含む複数の重大な脆弱性に対するパッチが公開されており、速やかな対応が求められるため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9e7665f0b20cb4e5d1fbe59e8dff827b261a8401b2e18a159c28ea2d127400f8",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/apache-patches-critical-http-server-rce-found-by-anthropic-google/",
+      "canonical_url": "https://www.securityweek.com/apache-patches-critical-http-server-rce-found-by-anthropic-google/",
+      "published_at": "2026-11-13T00:38:31+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "Apache Patches Critical HTTP Server RCE Found by Anthropic, Google",
+      "raw_title": "Apache Patches Critical HTTP Server RCE Found by Anthropic, Google",
+      "raw_excerpt": null,
+      "content_hash": "sha256:72efe5a8a70d3d445027b5c64cdb2e11558b60647566243686edc22054ccada8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:40:07.399581+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Apache HTTP Serverの脆弱性に関するパッチ提供が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Apache HTTP Serverのmod_http2に、認証されていない攻撃者がHTTP/2が有効なサーバー上でコードを実行できる可能性のある競合状態の脆弱性(CVE-2026-119618)が発見され、パッチが提供されました。",
+        "financial_impact": "金融機関がApache HTTP ServerをWebサーバーとして利用し、HTTP/2を有効にしている場合に適用性確認の対象となります。",
+        "recommended_actions": [
+          "自社および委託先でApache HTTP Serverの利用有無、およびHTTP/2の有効化状況を確認する",
+          "ベンダーの一次情報を確認し、CVE-2026-119618に対するパッチ適用または緩和策の実施を検討する"
+        ],
+        "reason": "重要度は、広く利用されるWebサーバー製品の重大なRCE脆弱性であり、適用性評価の優先度が高いため「高」です。確認目安は、パッチが提供済みであり、直ちに悪用が進行中であるとの記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9d96703e2366c2eb4531499f325e4f59efc5c7942626baa8b0e20b1d74cf9408",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/186-fake-ai-domains-redirect-users-to.html",
+      "canonical_url": "https://thehackernews.com/2026/11/186-fake-ai-domains-redirect-users-to.html",
+      "published_at": "2026-11-13T00:15:40+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "186 Fake AI Domains Redirect Users to ClickFix Lures, Browser Malware, and Search Hijackers",
+      "raw_title": "186 Fake AI Domains Redirect Users to ClickFix Lures, Browser Malware, and Search Hijackers",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3d73a51a64bda2f7803bef42865ae8ea7ccc7739f042ddd6fd2b77a35331044b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:40:24.905959+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "AIを装った偽ドメインを利用した攻撃手法と脅威動向が主題であるため。",
+        "tags": [
+          "フィッシング",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者らは、AIツールを装った偽ドメイン186件が、ClickFix型の詐欺、ブラウザハイジャックマルウェア、およびユーザー検索を乗っ取る拡張機能の配布に利用されていることを発見しました。この攻撃パターンは「TypoPrompting」と名付けられています。",
+        "financial_impact": "金融機関の従業員が業務でAIツールを利用する際に、誤って偽ドメインにアクセスし、マルウェア感染や情報漏えいのリスクに晒される可能性があります。特に、ブラウザハイジャックは業務効率の低下や機密情報への不正アクセスにつながる恐れがあります。",
+        "recommended_actions": [
+          "従業員に対し、AIツール利用時の正規ドメイン確認と不審なサイトへのアクセス回避を注意喚起する",
+          "社内ネットワークにおける不審なドメインへのアクセスを監視し、必要に応じてブロックを検討する",
+          "ブラウザ拡張機能の導入ポリシーを見直し、承認されていない拡張機能の利用を制限する"
+        ],
+        "reason": "重要度は、従業員が偽AIドメインに誘導されることでマルウェア感染や情報漏えいのリスクがあるため「中」です。確認目安は、具体的な期限や進行中の大規模攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:16dd8d34e480eb666ea02b8f330765f9de928827ca9d9a555ac87722deef069e",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/chrome-firefox-updates-patch-180-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/chrome-firefox-updates-patch-180-vulnerabilities/",
+      "published_at": "2026-11-12T22:42:09+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "Chrome, Firefox Updates Patch Over 180 Vulnerabilities",
+      "raw_title": "Chrome, Firefox Updates Patch Over 180 Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:90d69bcdd909dce30f5e65a41b3f3cc54f5df0756b186f4ae1d46d0750d8881e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:40:41.769640+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Google ChromeとMozilla Firefoxの脆弱性修正が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "GoogleはChrome 157で83件の脆弱性を修正し、MozillaはFirefox 160で99件のバグに対処しました。合計で180件以上の脆弱性が修正されています。",
+        "financial_impact": "金融機関の業務でChromeやFirefoxを利用している場合、これらのブラウザの脆弱性が情報漏えいやシステム侵害のリスクにつながる可能性があります。",
+        "recommended_actions": [
+          "自社および委託先で利用しているChromeおよびFirefoxのバージョンを確認する",
+          "ベンダーの公開情報を参照し、最新バージョンへのアップデート計画を検討する"
+        ],
+        "reason": "重要度は、広く利用されるブラウザの脆弱性修正であり、適用性評価の価値があるため「中」です。確認目安は、緊急の悪用情報や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:92fa12803ef3e7a7b0edaffdf1f6edf6969af18ac07e10fa8bc34d6be205d803",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/attacker-targets-60000-github-repositories-in-credential-theft-campaign/",
+      "canonical_url": "https://www.securityweek.com/attacker-targets-60000-github-repositories-in-credential-theft-campaign/",
+      "published_at": "2026-11-12T22:39:03+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "Attacker Targets 60,000 GitHub Repositories in Credential Theft Campaign",
+      "raw_title": "Attacker Targets 60,000 GitHub Repositories in Credential Theft Campaign",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e2cfe376daf74cc1e20b3fb61c67cd5cb3f99a584579e5afa69cf2ddbac14913",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:40:59.280928+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "GitHubリポジトリを標的とした認証情報窃取キャンペーンに関する記事であり、攻撃手法と脅威動向が主題のため。",
+        "tags": [
+          "サプライチェーン",
+          "認証",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "「wfx-loot」キャンペーンにおいて、攻撃者が数千の乗っ取られたアカウントを利用し、1,800以上のGitHubリポジトリで実行されるCIシークレット窃取マルウェアを仕込みました。",
+        "financial_impact": "金融機関がGitHubを開発・運用に利用している場合、開発環境やコードリポジトリの認証情報が窃取されるリスクがあります。委託先がGitHubを利用している場合もサプライチェーンリスクとして関係します。",
+        "recommended_actions": [
+          "自社および委託先におけるGitHubの利用状況と、CI/CDパイプラインでのシークレット管理状況を確認する",
+          "GitHubアカウントのセキュリティ設定（多要素認証、SSHキー管理など）が適切に実施されているか確認する",
+          "GitHubの監査ログやCI/CDログを監視し、不審なアクティビティやシークレットへのアクセスがないか確認する"
+        ],
+        "reason": "重要度は、GitHubの利用状況により影響が異なるため「中」です。確認目安は、広範な攻撃キャンペーンだが即時対応を要する具体的な期限や脆弱性情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:914bfa13aeb7e72a69e784b6734da5b221722b0a43761b3acca408897d6fd143",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/daylight-lands-80-million-for-ai-powered-security-operations/",
+      "canonical_url": "https://www.securityweek.com/daylight-lands-80-million-for-ai-powered-security-operations/",
+      "published_at": "2026-11-12T22:12:11+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "Daylight Lands $80 Million for AI-Powered Security Operations",
+      "raw_title": "Daylight Lands $80 Million for AI-Powered Security Operations",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4273fad23bd55dbb02f8b878100fe7bf5157b18e1b294cf00c437767bd2abf6e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:41:15.944569+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIを活用したセキュリティ運用に関する資金調達が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Daylight社がAIを活用したセキュリティ運用製品の開発加速、人材採用、米国での事業拡大、新規市場参入のために8,000万ドルを調達しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AIを活用したセキュリティ運用の動向に関する参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の製品や脅威に関する情報ではなく、企業の資金調達に関するニュースであるため「低」です。確認目安は、具体的な脅威や対応期限の記述がなく、短期的なアクションが不要なため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0c7b196fe26ffd911c70b2b3ea704ccc7e40be9c704f0ea9f839c8667871946c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/sckit-malware-targets-screenconnect.html",
+      "canonical_url": "https://thehackernews.com/2026/11/sckit-malware-targets-screenconnect.html",
+      "published_at": "2026-11-12T22:08:28+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "SCKit Malware Turns ScreenConnect Support Sessions Into Potential MSP Attack Paths",
+      "raw_title": "SCKit Malware Turns ScreenConnect Support Sessions Into Potential MSP Attack Paths",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1280d953de23f6b7ad11a8b5fe94ae6da6592163740f36c1abcfc1cb0e145cca",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:41:33.368200+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ConnectWise ScreenConnectを標的としたマルウェアキャンペーンと攻撃手法が主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ConnectWise ScreenConnectの展開を標的とする進行中のキャンペーンでは、新たな脆弱性ではなく、既にパッチが適用されたリモートアクセスソフトウェアの重大なセキュリティ欠陥（CVE-2026-84869、CVSSスコア9.9）が悪用されていることが判明しました。",
+        "financial_impact": "ConnectWise ScreenConnectをリモートアクセスやサポートツールとして利用している金融機関は、本件の適用性確認の対象となります。特にMSPを介して利用している場合は、サプライチェーンリスクとして関係します。",
+        "recommended_actions": [
+          "ConnectWise ScreenConnectの利用有無、およびCVE-2026-84869の影響を受けるバージョンが稼働していないかを確認する",
+          "ConnectWiseが提供するパッチが適用済みであるか、または緩和策が実施済みであるかを確認する",
+          "SCKitマルウェアによる侵害の兆候がないか、ログやシステムを監視・確認する"
+        ],
+        "reason": "重要度は、ConnectWise ScreenConnectの利用状況により影響が異なるため「中」です。確認目安は、既にパッチが提供されており、直近のKEV新規追加ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:34b40f857b9f9cf5347564c8197523410135d4f8918dd07a18acddc17568f951",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/google-cloud-warns-three-amd-turin-cpu.html",
+      "canonical_url": "https://thehackernews.com/2026/11/google-cloud-warns-three-amd-turin-cpu.html",
+      "published_at": "2026-11-12T21:09:14+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "Google Cloud Warns Three AMD Turin CPU Flaws Could Leak Data Across Processes in VMs",
+      "raw_title": "Google Cloud Warns Three AMD Turin CPU Flaws Could Leak Data Across Processes in VMs",
+      "raw_excerpt": null,
+      "content_hash": "sha256:30bf301063dd7d0c34741ca9630c8979d15bccce86440e20682f9548c3104ded",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:41:50.386498+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "AMD製CPUの脆弱性に関する情報が主題であるため。",
+        "tags": [
+          "クラウド",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Google Cloudは、AMD Turinチップを搭載したVMにおいて、3つのCPUサイドチャネル脆弱性により、VM内のプロセス間でデータが漏洩する可能性があると警告しました。GoogleはVM間およびVMとホスト間の攻撃に対する緩和策を既に適用済みですが、ゲストOSのパッチ適用とVMの再起動が必要です。",
+        "financial_impact": "Google CloudのAMD Turinチップ搭載VMを利用している金融機関に関係します。VM内でコードを実行する攻撃者が、同じプロセッサコア上の他のプロセスやカーネルからデータを推測する可能性があります。",
+        "recommended_actions": [
+          "自社および委託先でGoogle CloudのAMD Turinチップ搭載VMの利用有無を確認する",
+          "利用している場合は、ゲストOSのパッチ適用状況とVMの再起動要否を確認する"
+        ],
+        "reason": "重要度は、Google Cloudの特定のVM環境に限定されるため「中」です。確認目安は、緩和策が既に適用され、即時対応を促す時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a39fcf2de8cd546e50f3f3210c3a97750c49fc30c1b9e5ab820eb7679e3bc798",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/notion-customer-data-compromised-in-fireworks-ai-hack/",
+      "canonical_url": "https://www.securityweek.com/notion-customer-data-compromised-in-fireworks-ai-hack/",
+      "published_at": "2026-11-12T20:08:52+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "Notion Customer Data Compromised in Fireworks AI Hack",
+      "raw_title": "Notion Customer Data Compromised in Fireworks AI Hack",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6d62b0de5fcd4000e87032d269a591eb1d70c770a95a2b9ac3e078012f116196",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:42:07.345135+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "Fireworks AIへのハッキングによりNotion顧客データが侵害された事例が主題のため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "SaaS",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Fireworks AIへのハッキングにより、Notionの顧客データが侵害されました。Notionワークスペースの1%未満のチャット履歴がアクセスされ、そのほとんどは特定のユーザーに紐付けられないものでした。",
+        "financial_impact": "NotionまたはFireworks AIを業務で利用している金融機関は、情報漏えいの影響を受ける可能性があります。利用状況の確認が必要です。",
+        "recommended_actions": [
+          "NotionおよびFireworks AIの利用有無と、自社でのデータ連携状況を確認する",
+          "Notionからの公式発表や指示を確認し、必要な対応を検討する"
+        ],
+        "reason": "重要度は、NotionまたはFireworks AIの利用状況により影響が異なるため「中」です。確認目安は、具体的な期限や進行中の攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e9d69bcb98ba5bf5217ac3989587cb6736319945863005b02c2ef697a0eb5ecb",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/hackers-deploy-malware-in-fresh-screenconnect-campaign/",
+      "canonical_url": "https://www.securityweek.com/hackers-deploy-malware-in-fresh-screenconnect-campaign/",
+      "published_at": "2026-11-12T19:39:34+09:00",
+      "fetched_at": "2026-11-13T11:38:03.345397+09:00",
+      "title": "Hackers Deploy Malware in Fresh ScreenConnect Campaign",
+      "raw_title": "Hackers Deploy Malware in Fresh ScreenConnect Campaign",
+      "raw_excerpt": null,
+      "content_hash": "sha256:169bae3187f2d04f3dcf5bcd4c1d7fee1bebfdbea23ce5f7955ed61c89723381",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-13T11:42:24.468412+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ScreenConnectの脆弱性を悪用したマルウェア展開キャンペーンが主題であるため。",
+        "tags": [
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "攻撃者がScreenConnectの正規拡張機能の脆弱性を悪用し、認証を回避してマルウェアを展開する新たなキャンペーンが確認されました。",
+        "financial_impact": "金融機関でScreenConnectを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "ScreenConnectの利用有無と、正規拡張機能の利用状況を確認する",
+          "ベンダーからの情報提供やパッチ、緩和策の有無を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、特定の製品の脆弱性を悪用した攻撃であり、金融機関での利用状況により適用性が異なるため「中」です。確認目安は、実悪用が確認されているものの、緊急のパッチ公開やCISA KEVへの新規追加といった時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
