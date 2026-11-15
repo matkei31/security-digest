@@ -1,0 +1,260 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-15",
+  "generated_at": "2026-11-15T10:57:34.014235+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 4,
+    "ai_attempted_count": 4,
+    "ai_success_count": 3,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 4
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 3,
+      "低": 1,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 1,
+      "参考": 3,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 1,
+      "攻撃・脅威動向": 0,
+      "インシデント": 1,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象4件｜重要度「高」0件｜本日確認0件｜今週確認1件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が1件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "CISAは、オープンソースのIRCサーバーであるUnrealIRCdに影響を与える深刻度の高い脆弱性（CVE-2026-114713、CVSSスコア8.6）を、実悪用の報告を受けてKEVカタログに追加しました。この脆弱性は、区切り文字の不適切な無害化に起因するサーバーレベルのコマンドインジェクションを可能にします。\n金融機関でUnrealIRCdをIRCサーバーとして利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。"
+    ],
+    "check_items": [
+      "CVE-2026-114713を基に、自社および委託先でのUnrealIRCdの利用有無と影響バージョンを確認する",
+      "UnrealIRCdのベンダーが提供する一次情報や修正パッチ、緩和策を確認し、対応要否を評価する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:f8b55e53d88a81420516acb6d51a35204de69d1e1f408b3172df93793a56ccec",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/is-ai-making-us-worse-at-cybersecurity/",
+      "canonical_url": "https://www.securityweek.com/is-ai-making-us-worse-at-cybersecurity/",
+      "published_at": "2026-11-14T23:00:00+09:00",
+      "fetched_at": "2026-11-15T10:56:26.096354+09:00",
+      "title": "Is AI Making Us Worse at Cybersecurity?",
+      "raw_title": "Is AI Making Us Worse at Cybersecurity?",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f3ee36fbe7fee2274302dd91b0a7a647b3283bbbf610ec3aef35cf96fa54c345",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-15T10:56:28.140089+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIとサイバーセキュリティの関係性、特にAIの過信によるリスクについてであるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AIへの過度な依存は、サイバーセキュリティチームが既定の対応策がない状況で必要とする創造性、明確なコミュニケーション、批判的思考を損なう可能性があると指摘されています。",
+        "financial_impact": "金融機関においてもAI技術の導入が進む中で、セキュリティチームがAIに過度に依存することで、インシデント対応能力やリスク評価能力が低下する可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIの利用が拡大する中でセキュリティチームの能力低下という潜在的なリスクを示唆しており、中長期的な検討が必要なため「中」です。確認目安は、具体的な脅威や期限の記述がなく、中長期的な視点での情報収集が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e577b898eca3316fd935fc7a4df7581c97404779a3c38de8336c453132c69549",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/attackers-exploit-unrealircd-flaw-that.html",
+      "canonical_url": "https://thehackernews.com/2026/11/attackers-exploit-unrealircd-flaw-that.html",
+      "published_at": "2026-11-14T21:38:35+09:00",
+      "fetched_at": "2026-11-15T10:56:26.096354+09:00",
+      "title": "Attackers Exploit UnrealIRCd Flaw That Enables Server-Level Command Injection",
+      "raw_title": "Attackers Exploit UnrealIRCd Flaw That Enables Server-Level Command Injection",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1f07980e46e3d233a5569260786425c637afc8a4c8d7860c5bafaa49f25b48f8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-15T10:56:45.460843+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CISA KEVへの追加と脆弱性の悪用が主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "CISAは、オープンソースのIRCサーバーであるUnrealIRCdに影響を与える深刻度の高い脆弱性（CVE-2026-114713、CVSSスコア8.6）を、実悪用の報告を受けてKEVカタログに追加しました。この脆弱性は、区切り文字の不適切な無害化に起因するサーバーレベルのコマンドインジェクションを可能にします。",
+        "financial_impact": "金融機関でUnrealIRCdをIRCサーバーとして利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "CVE-2026-114713を基に、自社および委託先でのUnrealIRCdの利用有無と影響バージョンを確認する",
+          "UnrealIRCdのベンダーが提供する一次情報や修正パッチ、緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、UnrealIRCdの利用が金融機関で限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、CISA KEVに掲載されているものの直近3日以内の新規追加ではなく、即時対応の明確な時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f6a32c5f6448063c5be85d326dd0e0f23fa4c95a3767446c865b07fe52935147",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/apple-reveals-how-secure-exclaves-shield-camera-and-microphone-data/",
+      "canonical_url": "https://www.securityweek.com/apple-reveals-how-secure-exclaves-shield-camera-and-microphone-data/",
+      "published_at": "2026-11-14T20:00:00+09:00",
+      "fetched_at": "2026-11-15T10:56:26.096354+09:00",
+      "title": "Apple Reveals How Secure Exclaves Shield Camera and Microphone Data",
+      "raw_title": "Apple Reveals How Secure Exclaves Shield Camera and Microphone Data",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f14c37ae74b0d2059d7ad8ed4ab792d90e0c4e16cf047d043518c5573b55a85d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-15T10:57:01.987054+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "Appleの技術詳細に関する情報であり、特定の脆弱性、攻撃、インシデント、規制、サプライチェーン、AIリスクのいずれにも直接該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Appleは、HomeViewおよび新しいiPhoneにおいて、環境センサーデータをメインOSから隔離するために設計されたSecure Exclavesのアーキテクチャについて詳細を公開しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。Apple製品のセキュリティ強化に関する情報であり、一般的な参考情報として捉えられます。",
+        "recommended_actions": [],
+        "reason": "重要度は、Apple製品のセキュリティ技術に関する情報であり、金融機関の直接的な業務への影響が低いため「低」です。確認目安は、具体的な脅威や対応期限の記述がなく、短期的なアクションが不要なため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:3b2e4affe53ca50b3d0fa9ead24cf995bc2f9d54276dbd3596221df7332fea76",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/no-signs-of-hacking-in-faa-ground-stop-as-fbi-reportedly-probes-software-update/",
+      "canonical_url": "https://www.securityweek.com/no-signs-of-hacking-in-faa-ground-stop-as-fbi-reportedly-probes-software-update/",
+      "published_at": "2026-11-14T17:40:22+09:00",
+      "fetched_at": "2026-11-15T10:56:26.096354+09:00",
+      "title": "No Signs of Hacking in FAA Ground Stop as FBI Reportedly Probes Software Update",
+      "raw_title": "No Signs of Hacking in FAA Ground Stop as FBI Reportedly Probes Software Update",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d160ae63883f950e192c4d01c9474eab8a1e97cb3cab566e5788c10d30240f85",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-15T10:57:19.013776+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "米国連邦航空局(FAA)の全国的な運航停止という具体的な事象が主題であるため。",
+        "tags": [
+          "業務停止"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "米国連邦航空局(FAA)の全国的な運航停止について、当局はサイバー攻撃の証拠はないと発表しました。しかし、FBIはソフトウェア更新が原因である可能性を調査していると報じられています。",
+        "financial_impact": "金融機関の業務システムやサプライチェーンに直接的な影響は確認できません。ただし、航空輸送の停止は経済活動に広範な影響を及ぼす可能性があり、間接的な影響として注視する価値はあります。",
+        "recommended_actions": [],
+        "reason": "重要度は、航空インフラの停止事例であり、金融機関の直接的な業務停止には繋がらないものの、広範な経済活動への影響を考慮し「中」です。確認目安は、サイバー攻撃の兆候がなく、金融機関への直接的な影響や緊急対応の必要性が記事から確認できないため「参考」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
