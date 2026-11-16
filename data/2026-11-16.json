@@ -1,0 +1,216 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-16",
+  "generated_at": "2026-11-16T11:10:47.178921+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 3,
+    "ai_attempted_count": 3,
+    "ai_success_count": 3,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 3
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 2,
+      "低": 1,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 1,
+      "参考": 2,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 0,
+      "攻撃・脅威動向": 0,
+      "インシデント": 1,
+      "規制・ガバナンス": 1,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 0,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象3件｜重要度「高」0件｜本日確認0件｜今週確認1件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が1件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "AI開発プラットフォームCursorの拡張機能マーケットプレイスで、Anthropicの公式Claude Code拡張機能が侵害されたインシデントは、Fireworks AIへの侵害で露呈したアクセスキーの盗難が原因でした。\n金融機関がAI開発にCursorやClaude Code拡張機能、またはFireworks AIを利用している場合に関係します。これらのツールがサプライチェーンの一部として利用されている可能性も考慮する必要があります。"
+    ],
+    "check_items": [
+      "自社および委託先でCursor、Claude Code拡張機能、またはFireworks AIの利用有無を確認する",
+      "利用している場合は、関連するアカウントのアクセスキーのローテーションや権限の見直しを検討する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:04cc2ecb3f01d7498618208fe6e05ceeb950da3f8a1f044bd3b59737c26d7bbc",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/pentagon-renames-cdao-super-intelligence-office/",
+      "canonical_url": "https://www.securityweek.com/pentagon-renames-cdao-super-intelligence-office/",
+      "published_at": "2026-11-15T21:51:33+09:00",
+      "fetched_at": "2026-11-16T11:09:55.662609+09:00",
+      "title": "Pentagon Renames CDAO ‘Super Intelligence Office’",
+      "raw_title": "Pentagon Renames CDAO ‘Super Intelligence Office’",
+      "raw_excerpt": null,
+      "content_hash": "sha256:654a45b5d46ca65144ed488bee96efacc66c4bcb45f477e13872809321a600e6",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-16T11:09:57.696960+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAI・新技術に関する政府組織の改称であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "米国防総省は、大統領令に基づき、最高デジタル・AI責任者室（CDAO）を「スーパーインテリジェンスオフィス」に改称しました。これは、行政機関のコミュニケーションにおいて「人工知能」を「スーパーインテリジェンス」に置き換えるという大統領の指示を受けたものです。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。米国政府のAI関連組織の動向として、中長期的な技術・ガバナンスの方向性を把握する上での参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、米国政府のAI関連組織の名称変更であり、金融機関への直接的な影響が確認できないため「低」です。確認目安は、具体的な脅威や期限、短期的な対応が求められる情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:dabf7b9c559f7a5e27a391e834e42b5d5bb131461ec05e7216f3a5415277c783",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/italy-fines-meta-805-million-over.html",
+      "canonical_url": "https://thehackernews.com/2026/11/italy-fines-meta-805-million-over.html",
+      "published_at": "2026-11-15T20:27:31+09:00",
+      "fetched_at": "2026-11-16T11:09:55.662609+09:00",
+      "title": "Italy Fines Meta €805 Million Over Facebook's Android Gallery Access Without Explicit Consent",
+      "raw_title": "Italy Fines Meta €805 Million Over Facebook's Android Gallery Access Without Explicit Consent",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ea898fb218bf76ab3371f49b774af01a2e14ce8de2dddf3a1ee88b828202c054",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-16T11:10:14.810449+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "データ保護規制違反による罰金が主題であるため。",
+        "tags": [
+          "規制",
+          "監督"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "イタリアのデータ保護当局は、Metaに対し、Facebook for Androidアプリがユーザーの明示的な同意なしに写真ギャラリーにアクセスし、投稿を提案する機能をデフォルトで有効にしていたとして、8億500万ユーロの罰金を科しました。",
+        "financial_impact": "金融機関が顧客データを取り扱う際、プライバシー規制への準拠が求められます。本件は、デフォルト設定や同意取得の不備が大規模な罰金につながる事例として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関のデータプライバシー管理における参考事例として価値があるため「中」です。確認目安は、直接的な対応期限や緊急性がなく、中長期的なガバナンス検討の参考となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d5585df40181d87d8a2f8949ffca3455429d8ce6354cf971c14ca7c6294e0061",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/stolen-fireworks-ai-key-led-to-cursor.html",
+      "canonical_url": "https://thehackernews.com/2026/11/stolen-fireworks-ai-key-led-to-cursor.html",
+      "published_at": "2026-11-15T17:22:04+09:00",
+      "fetched_at": "2026-11-16T11:09:55.662609+09:00",
+      "title": "Cursor Says Stolen Fireworks AI Key Led to Trojanized Claude Code Extension Incident",
+      "raw_title": "Cursor Says Stolen Fireworks AI Key Led to Trojanized Claude Code Extension Incident",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c124f1e05db12a5f457ea6f7a9c346a229dbb990803020d44cc628affc3f2cbb",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-16T11:10:32.178497+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "AI開発ツールに関連する実際の侵害事例が主題であるため。",
+        "tags": [
+          "AI",
+          "サプライチェーン",
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "AI開発プラットフォームCursorの拡張機能マーケットプレイスで、Anthropicの公式Claude Code拡張機能が侵害されたインシデントは、Fireworks AIへの侵害で露呈したアクセスキーの盗難が原因でした。",
+        "financial_impact": "金融機関がAI開発にCursorやClaude Code拡張機能、またはFireworks AIを利用している場合に関係します。これらのツールがサプライチェーンの一部として利用されている可能性も考慮する必要があります。",
+        "recommended_actions": [
+          "自社および委託先でCursor、Claude Code拡張機能、またはFireworks AIの利用有無を確認する",
+          "利用している場合は、関連するアカウントのアクセスキーのローテーションや権限の見直しを検討する",
+          "AI開発環境におけるサプライチェーンリスク管理の状況を評価する"
+        ],
+        "reason": "重要度は、AI開発ツールに関連するインシデントであり、金融機関での利用状況により影響が異なるため「中」です。確認目安は、具体的な期限や進行中の攻撃の記述がなく、利用有無の確認が必要なため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
