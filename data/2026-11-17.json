@@ -1,0 +1,925 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-17",
+  "generated_at": "2026-11-17T13:33:58.256977+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 17,
+    "ai_attempted_count": 16,
+    "ai_success_count": 15,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 1,
+    "ai_eligible_count": 16
+  },
+  "counts": {
+    "importance": {
+      "高": 1,
+      "中": 12,
+      "低": 3,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 11,
+      "参考": 5,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 3,
+      "攻撃・脅威動向": 3,
+      "インシデント": 4,
+      "規制・ガバナンス": 2,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 3,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象16件｜重要度「高」1件｜本日確認0件｜今週確認11件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が11件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が1件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "Googleは、脅威アクターがAIを悪用し、手動プロンプトを超えてARTEXやPentAGIのような自律型マルチエージェント攻撃フレームワークを展開し、より高速な多段階侵入を実行していることを明らかにしました。"
+    ],
+    "discussion_points": [
+      "Googleは、脅威アクターがAIを悪用し、手動プロンプトを超えてARTEXやPentAGIのような自律型マルチエージェント攻撃フレームワークを展開し、より高速な多段階侵入を実行していることを明らかにしました。\n金融機関においても、AIエージェントによる攻撃の高度化・高速化は、既存の防御策をすり抜けるリスクを高める可能性があります。特に、ソフトウェアパッチからのエクスプロイト生成は、脆弱性管理プロセスに影響を与え得るため、動向を注視する必要があります。",
+      "攻撃者はFireworks AIからアクセスキーを窃取し、それを利用して認証情報を持ち出し、悪意のあるClaude Code拡張機能のコピーを配布しました。\n金融機関への直接的な影響は限定的です。AI関連サービスやサプライチェーンにおける認証情報管理の重要性を示す事例として参考になります。"
+    ],
+    "check_items": [
+      "AIエージェントを利用した攻撃手法の最新動向を継続的に情報収集し、自社の脅威インテリジェンスを更新する",
+      "AI関連サービスを利用している場合、サプライチェーンにおける認証情報管理の状況を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:a08614c0debc4239027a2df2e64936a57ad43d8036afead4eb3924a634912222",
+      "source_id": "microsoft_security",
+      "source_name": "Microsoft Security",
+      "source_type": "ベンダー情報",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.microsoft.com/en-us/security/blog/2026/11/16/high-volume-phishing-campaign-uses-microsoft-365-outage-lures-target-multiple-industry-sectors-2/",
+      "canonical_url": "https://www.microsoft.com/en-us/security/blog/2026/11/16/high-volume-phishing-campaign-uses-microsoft-365-outage-lures-target-multiple-industry-sectors-2/",
+      "published_at": "2026-11-17T09:08:41+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "High volume phishing campaign uses Microsoft 365 outage lures to target multiple industry sectors",
+      "raw_title": "High volume phishing campaign uses Microsoft 365 outage lures to target multiple industry sectors",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f675cd207e9a0945bd1a735a8320332c60ad32789a81fd9c6b4ba14d91cbfaea",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5fa961fe239b5399ae35d39efac6c4d7487314fbe0850ec44ad426222845b5ae",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/trump-administration-moves-to-block-china-from-indirect-access-to-american-ai-technology/",
+      "canonical_url": "https://www.securityweek.com/trump-administration-moves-to-block-china-from-indirect-access-to-american-ai-technology/",
+      "published_at": "2026-11-17T05:00:00+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "Trump Administration Moves to Block China From Indirect Access to American AI Technology",
+      "raw_title": "Trump Administration Moves to Block China From Indirect Access to American AI Technology",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5e8cb9d5774ab80f8db26a24e2faf4496221da1266340970e0ca27e94128c0a3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:29:23.879460+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "米国政府がAI技術へのアクセスに関する規制を強化する動きが主題であるため。",
+        "tags": [
+          "AI",
+          "規制"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "トランプ政権は、中国、ロシア、イラン、キューバなどの国々の企業にサービスを提供する海外データセンターに対し、最終利用者の特定を義務付ける新たな規則を導入する動きを見せています。",
+        "financial_impact": "金融機関がAI技術を導入・利用する際に、サプライチェーン上のデータセンターや技術提供元が本規制の対象となる場合、影響を受ける可能性があります。現時点では直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AI技術利用における規制動向であり、金融機関のAI戦略やサプライチェーンに中長期的に影響し得るため「中」です。確認目安は、具体的な対応期限や緊急性が記事にないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:7380375f241d1326210cf2502ae823d483bea7c30a357bd52b95fbd09279221a",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/cursor-supply-chain-attack-started-at-fireworks/",
+      "canonical_url": "https://www.securityweek.com/cursor-supply-chain-attack-started-at-fireworks/",
+      "published_at": "2026-11-17T00:45:43+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "Cursor Supply Chain Attack Started at Fireworks AI",
+      "raw_title": "Cursor Supply Chain Attack Started at Fireworks AI",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0ee34ca366417c55f267ea000ed0437ff24d2542fd73be7636fc25d83b0b64c2",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:29:41.054176+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "Fireworks AIからのアクセスキー窃取と悪用によるサプライチェーン攻撃の事例が主題のため。",
+        "tags": [
+          "サプライチェーン",
+          "インシデント",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "攻撃者はFireworks AIからアクセスキーを窃取し、それを利用して認証情報を持ち出し、悪意のあるClaude Code拡張機能のコピーを配布しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AI関連サービスやサプライチェーンにおける認証情報管理の重要性を示す事例として参考になります。",
+        "recommended_actions": [
+          "AI関連サービスを利用している場合、サプライチェーンにおける認証情報管理の状況を確認する",
+          "委託先管理プロセスにおいて、AI関連サービス提供者のセキュリティ対策状況を評価する"
+        ],
+        "reason": "重要度は、AI関連サービスにおけるサプライチェーン攻撃の事例であり、金融機関への直接的な影響は限定的であるため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、状況把握が中心となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e3697267fc69aacd7cb017b675d04aab73c637761ec3b1435ae39a662c4ca9a7",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/google-project-zero-sets-course-for-30-day-disclosure-deadline/",
+      "canonical_url": "https://www.securityweek.com/google-project-zero-sets-course-for-30-day-disclosure-deadline/",
+      "published_at": "2026-11-17T00:31:25+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "Google Project Zero Sets Course for 30-Day Disclosure Deadline",
+      "raw_title": "Google Project Zero Sets Course for 30-Day Disclosure Deadline",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e5f60ba86815c1b22e28afd9367c51517750357399e2850268e6a7c419cf68b1",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:29:57.675682+09:00",
+        "category": "規制・ガバナンス",
+        "category_version": "v1",
+        "category_reason": "Google Project Zeroの脆弱性開示ポリシー変更に関する記事であり、セキュリティ業界の慣行やガイドラインに影響を与える可能性があるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Google Project Zeroは、脆弱性開示期間を2027年2月には60日、2028年1月には30日に短縮する方針を発表しました。",
+        "financial_impact": "金融機関が直接的に影響を受けるものではありませんが、脆弱性開示の期間短縮は、ベンダーやセキュリティ業界全体の対応速度に影響を与える可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響は限定的ですが、セキュリティ業界の慣行に影響を与える可能性があるため「中」です。確認目安は、具体的な対応期限や緊急性のある情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:aad54cccc6440ed643ab8ff2345fa08535636970e027882fa25bdecb2aeb863b",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/barracuda-hacked-amid-surge-in-artex-powered-cyberattacks/",
+      "canonical_url": "https://www.securityweek.com/barracuda-hacked-amid-surge-in-artex-powered-cyberattacks/",
+      "published_at": "2026-11-17T00:07:32+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "Barracuda Hacked Amid Surge in Artex-Powered Cyberattacks",
+      "raw_title": "Barracuda Hacked Amid Surge in Artex-Powered Cyberattacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e0431c45abdba1ce2b2b8eecaa21cf73f0af2686a5aa260f771be0914a97f09e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:30:14.840395+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "Barracudaへの実際のハッキング被害が主題であるため。",
+        "tags": [
+          "インシデント",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Barracudaがサイバー攻撃の急増中にハッキングされたと報じられています。記事では、中国の脅威アクターがagentic AIペネトレーションテストフレームワークを広く採用し、攻撃を加速させていると指摘しています。",
+        "financial_impact": "金融機関がBarracuda製品を利用している場合、本件がサプライチェーンリスクとして関係する可能性があります。記事からは具体的な製品や影響範囲は不明です。",
+        "recommended_actions": [
+          "Barracuda製品の利用有無と、関連するセキュリティ情報やベンダーからの指示を確認する",
+          "自社および委託先におけるBarracuda製品のセキュリティ状況を評価する"
+        ],
+        "reason": "重要度は、金融機関でのBarracuda製品の利用状況が不明であり、直接的な影響が不確実なため「中」です。確認目安は、具体的な緊急対応の指示や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:afb55fb3a36eacbe3a30bd5ba991ccafeae2475e02831ce3f7c8a4d178d33cb5",
+      "source_id": "mandiant",
+      "source_name": "Mandiant",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://cloud.google.com/blog/topics/threat-intelligence/agentic-threat-activity-crosses-a-significant-threshold/",
+      "canonical_url": "https://cloud.google.com/blog/topics/threat-intelligence/agentic-threat-activity-crosses-a-significant-threshold/",
+      "published_at": "2026-11-16T23:00:00+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "GTIG AI脅威トラッカー: エージェント型脅威活動が重要な閾値を超える",
+      "raw_title": "GTIG AI Threat Tracker: Agentic Threat Activity Crosses a Significant Threshold",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2456d3b1f98aebc3ca0e17da6c59423bbe40184de63b1d0133a298f97d9e2efa",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "feed_summary",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:30:32.430541+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIの脅威動向と、自律型マルチエージェントフレームワークの悪用に関するものであるため。",
+        "tags": [
+          "AI",
+          "LLM"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Google Threat Intelligence Group (GTIG)とMandiantは、脅威アクターが自律型マルチエージェントフレームワークや自動化された脆弱性悪用パイプラインを展開し、LLMJackingのような新たな収益化スキームを利用するなど、AIの脅威ランドスケープが重要な転換点に達したと報告しています。",
+        "financial_impact": "金融機関がAI技術、特に生成AIやエージェント型AIの導入を検討している場合、これらの脅威動向はセキュリティリスク評価や対策検討の参考になります。直接的なインシデント報告ではありません。",
+        "recommended_actions": [
+          "自社での生成AIおよびエージェント型AIの利用状況と、それらに関連するセキュリティリスクを評価する",
+          "AI関連の脅威インテリジェンスを継続的に収集し、自社のセキュリティ対策への影響を検討する"
+        ],
+        "reason": "重要度は、AI技術の悪用動向に関する情報であり、金融機関のAI導入におけるリスク評価の参考となるため「中」です。確認目安は、具体的な緊急対応を要するインシデントや脆弱性情報ではなく、中長期的な脅威動向の把握が中心となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a863217f46213f9487e009921451d33ad0304af967cea2283f07b0f2628f99b6",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/google-finds-hackers-using-ai-agents-to.html",
+      "canonical_url": "https://thehackernews.com/2026/11/google-finds-hackers-using-ai-agents-to.html",
+      "published_at": "2026-11-16T23:00:00+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "Google Finds Hackers Using AI Agents to Build and Run Exploits From Software Patches",
+      "raw_title": "Google Finds Hackers Using AI Agents to Build and Run Exploits From Software Patches",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0dcf018033a88255d522978b51e74655201d74d66386c2c00688e518744b087d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:30:50.114508+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントが攻撃に利用されているという、AI技術の悪用リスクが主題であるため。",
+        "tags": [
+          "AI",
+          "LLM",
+          "AIエージェント",
+          "APT"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Googleは、脅威アクターがAIを悪用し、手動プロンプトを超えてARTEXやPentAGIのような自律型マルチエージェント攻撃フレームワークを展開し、より高速な多段階侵入を実行していることを明らかにしました。",
+        "financial_impact": "金融機関においても、AIエージェントによる攻撃の高度化・高速化は、既存の防御策をすり抜けるリスクを高める可能性があります。特に、ソフトウェアパッチからのエクスプロイト生成は、脆弱性管理プロセスに影響を与え得るため、動向を注視する必要があります。",
+        "recommended_actions": [
+          "AIエージェントを利用した攻撃手法の最新動向を継続的に情報収集し、自社の脅威インテリジェンスを更新する",
+          "AIエージェントによる攻撃を想定したセキュリティ対策の強化や、既存の防御策の有効性を評価する"
+        ],
+        "reason": "重要度は、AIエージェントによる攻撃の高度化・高速化が金融機関のセキュリティ対策に広範な影響を与える可能性があるため「高」です。確認目安は、具体的な侵害事例や緊急対応の期限が示されていないため「今週確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e021b9febf9ed0b72381678ae1e4f38416a2854947429d039f6506c3c5ee0c2c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/weekly-recap-n-able-0-days-windows-0.html",
+      "canonical_url": "https://thehackernews.com/2026/11/weekly-recap-n-able-0-days-windows-0.html",
+      "published_at": "2026-11-16T22:27:20+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "⚡ Weekly Recap: N-able 0-Days, Windows 0-Days, Chrome 0-Days, Fridge 0-Days, and More Bad Days",
+      "raw_title": "⚡ Weekly Recap: N-able 0-Days, Windows 0-Days, Chrome 0-Days, Fridge 0-Days, and More Bad Days",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e7e89bf8e8802cb930c61a00a6c7fb11cea774ec852765f9ae28f8b63dd3a40e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:31:07.180913+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の脆弱性や攻撃動向をまとめた週次記事であり、特定の主題に絞られないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、N-able、Windows、Chromeなどのゼロデイ脆弱性、デフォルトパスワードの悪用、悪意のあるアップデート、セキュリティ機能の悪用といった複数のセキュリティ事象をまとめた週次リキャップです。AIによる脆弱性発見の加速や、古い脆弱性の継続的な悪用についても触れられています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。個々の事象の詳細は本記事からは確認できず、一般的なセキュリティ動向の参考情報として位置づけられます。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や詳細な分析を伴わない週次まとめ記事であり、個々の事象の深刻度を合算して評価しないため「低」です。確認目安は、具体的な短期アクションを要する情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:934dd532c9883956ec5e420c4f5bcf9a057053bd572a96f320c3fef435274381",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/telegram-widgets-hit-by-rce-demos-malware-warning-days-after-launch/",
+      "canonical_url": "https://www.securityweek.com/telegram-widgets-hit-by-rce-demos-malware-warning-days-after-launch/",
+      "published_at": "2026-11-16T21:48:03+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "Telegram Widgets Hit by RCE Demos, Malware Warning Days After Launch",
+      "raw_title": "Telegram Widgets Hit by RCE Demos, Malware Warning Days After Launch",
+      "raw_excerpt": null,
+      "content_hash": "sha256:778342774a2ae9dae2f3fd8acd62ccc0ce1d233e82450e2299e135fdb93772d4",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:31:24.561664+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Telegramの新しいウィジェットを悪用したマルウェア配信の可能性とRCEデモが主題であるため。",
+        "tags": [
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Kasperskyは、Telegramの新しいウィジェットが悪用されWebRATが配信されている可能性を指摘しており、研究者たちはRCE（リモートコード実行）のデモを公開しました。Telegramの創設者Pavel Durov氏はこの主張に異議を唱えています。",
+        "financial_impact": "金融機関がTelegramのウィジェットを業務で利用している場合、または従業員が業務デバイスで利用している場合に、マルウェア感染のリスクが生じる可能性があります。利用状況は記事からは確認できません。",
+        "recommended_actions": [
+          "Telegramウィジェットの業務利用状況および従業員の業務デバイスでの利用状況を確認する",
+          "Telegramウィジェットの利用を継続する場合、関連するセキュリティ情報やベンダーからの公式発表を継続的に監視する"
+        ],
+        "reason": "重要度は、Telegramウィジェットの金融機関での利用状況が不明であり、影響範囲が不確実なため「中」です。確認目安は、悪用が疑われているものの、具体的な攻撃の進行状況や緊急対応の期限が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a989c64e51ebb71dbd1d9ff22e39b9fd0ee730efd9a714120880524317739baa",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/six-unpatched-danfoss-refrigeration.html",
+      "canonical_url": "https://thehackernews.com/2026/11/six-unpatched-danfoss-refrigeration.html",
+      "published_at": "2026-11-16T21:34:21+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "Six Unpatched Danfoss Refrigeration Controller Flaws Could Allow Remote Takeover Without Login",
+      "raw_title": "Six Unpatched Danfoss Refrigeration Controller Flaws Could Allow Remote Takeover Without Login",
+      "raw_excerpt": null,
+      "content_hash": "sha256:51458f52a30bbb2484807af8e1192b5a9731cea39be2d5aa1db1b2876c507570",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:31:41.708105+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Danfoss製冷凍コントローラーの未パッチ脆弱性6件が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Danfoss製AK-SM800A冷凍コントローラーに6件の未パッチ脆弱性が発見され、リモートの攻撃者が認証なしでコントローラーを乗っ取る可能性があります。最新ファームウェアでも修正されておらず、ベルギー、アイルランド、ドイツの政府機関が運用者に警告を発しています。",
+        "financial_impact": "金融機関がDanfoss製AK-SM800A冷凍コントローラーを直接利用している可能性は低いと考えられます。間接的なサプライチェーンリスクとしては考慮されますが、直接的な関係は確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関での当該製品の利用可能性が極めて低いと想定されるため「低」です。確認目安は、記事に実悪用や短期的な対応期限の記述がなく、金融機関への直接的な影響が不明なため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c4086de05142b1d96dc6abdf45a86ccca6c3ecb2902b35f2ced2d37e4be178b2",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/retadup-worm-resurfaces-7-years-after.html",
+      "canonical_url": "https://thehackernews.com/2026/11/retadup-worm-resurfaces-7-years-after.html",
+      "published_at": "2026-11-16T21:33:18+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "Retadup Worm Resurfaces 7 Years After Takedown to Spread CoffeeLoader Malware",
+      "raw_title": "Retadup Worm Resurfaces 7 Years After Takedown to Spread CoffeeLoader Malware",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5cdb6029a83c3e23ec1256bb8ad3e8438d2341a6423cfedf6443179303fb9cce",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:31:59.311346+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "RetadupワームとCoffeeLoaderマルウェアの拡散という攻撃手法と脅威動向が主題のため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、感染マシンに追加のペイロードを配信するよう設計されたCoffeeLoaderマルウェアの新しい亜種の詳細を公開しました。このマルウェアは、NSISベースのインストーラ実行ファイルが「7z.dll」というファイルを一時ディレクトリにドロップし、rundll32.exeを介して実行することで動作します。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できませんが、マルウェア感染は情報漏えいや業務停止に繋がる可能性があるため、一般的な脅威動向として関係します。",
+        "recommended_actions": [
+          "自社システムにおけるCoffeeLoaderマルウェアやRetadupワームの感染兆候がないか、ログやセキュリティ製品の検知履歴を確認する",
+          "セキュリティベンダーが提供する最新の脅威情報やIOC（侵害指標）を確認し、自社のセキュリティ対策に反映させる"
+        ],
+        "reason": "重要度は、特定の金融機関を標的とした攻撃ではないものの、マルウェア感染の脅威動向として情報収集の価値があるため「中」です。確認目安は、新たなマルウェアの亜種に関する情報であり、即時対応を要する具体的な期限や進行中の大規模攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:40d5792137694b019f1a0a5d0e2c657f39b33b594d2dbaadaebf008e1abd266a",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/recent-unrealircd-vulnerability-exploited-in-attacks/",
+      "canonical_url": "https://www.securityweek.com/recent-unrealircd-vulnerability-exploited-in-attacks/",
+      "published_at": "2026-11-16T20:15:48+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "Recent UnrealIRCd Vulnerability Exploited in Attacks",
+      "raw_title": "Recent UnrealIRCd Vulnerability Exploited in Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6622505562a8604098244b3ca18d8d14049ea634adc5f27092249ff34379717d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:32:16.215273+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "UnrealIRCdの脆弱性とそれを利用した攻撃が主題であるため。",
+        "tags": [
+          "悪用確認済み",
+          "CVE"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "UnrealIRCdの深刻度の高い脆弱性「CVE-2026-114713」が悪用された攻撃が確認されました。この脆弱性により、攻撃者はサーバーまたはIRCOp権限でコマンドを実行できる可能性があります。",
+        "financial_impact": "UnrealIRCdはIRCサーバーソフトウェアであり、金融機関での利用は限定的であると考えられます。利用している場合に限り、適用性確認の対象になります。",
+        "recommended_actions": [
+          "UnrealIRCdの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報を確認し、修正パッチや緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、UnrealIRCdの利用が金融機関で限定的である可能性が高く、適用範囲が不確実なため「中」です。確認目安は、悪用が確認されているものの、CISA KEVへの新規追加がなく即時対応の明確な根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:22cc9d61f7d681e99da298603ebc5446d08f9b0ac91bfd2e269e98ce5e8087cf",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/hackers-probe-newly-disclosed-flaws-in-copeland-refrigeration-controllers/",
+      "canonical_url": "https://www.securityweek.com/hackers-probe-newly-disclosed-flaws-in-copeland-refrigeration-controllers/",
+      "published_at": "2026-11-16T20:05:42+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "Hackers Probe Newly Disclosed Flaws in Copeland Refrigeration Controllers",
+      "raw_title": "Hackers Probe Newly Disclosed Flaws in Copeland Refrigeration Controllers",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d102f08a0ba64590aa212b534b4b991697a791f31f985f1916fbaad556e0589a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:32:33.162055+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Copeland製冷凍機コントローラーの複数の脆弱性が開示され、そのうち2つが攻撃者の標的になっていることが主題のため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "VulncheckがCopeland XWEB EVOコントローラーに影響する14件の脆弱性を開示し、そのうち2件が攻撃者によって迅速に標的とされていることが判明しました。",
+        "financial_impact": "金融機関において、当該の冷凍機コントローラーが直接的な業務システムやセキュリティに影響を与える形で利用されている可能性は低いと考えられます。間接的な影響も限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関での当該製品の利用可能性が極めて低く、直接的な影響が限定的であるため「低」です。確認目安は、記事に緊急対応を要する具体的な期限や広範な影響の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c2a82aaca9d9479f0d69104efe258e00427a84bb5c426d1f941874090c91ae6a",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/uber-data-breach-impacts-150000-people/",
+      "canonical_url": "https://www.securityweek.com/uber-data-breach-impacts-150000-people/",
+      "published_at": "2026-11-16T20:02:48+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "Uber Data Breach Impacts 150,000 People",
+      "raw_title": "Uber Data Breach Impacts 150,000 People",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1c149ad3ffa98709e4aef8bd9ab63cc77557f8b5608e9d726a23b4fefcc2c866",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:32:49.989294+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "Uberのデータ侵害と個人情報流出という実際の被害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Uberは、サードパーティのサービスプロバイダーが侵害され、約15万人の氏名、住所、運転免許証番号が盗まれたことを明らかにしました。",
+        "financial_impact": "金融機関への直接的な影響は確認できません。ただし、委託先管理におけるデータ保護の重要性を示す事例として参考になります。",
+        "recommended_actions": [
+          "自社および委託先における個人情報の取り扱い状況と、サードパーティリスク管理体制について再確認する"
+        ],
+        "reason": "重要度は、金融機関への直接的な影響が確認できず、他業界の事例として参考となるため「中」です。確認目安は、具体的な期限や緊急対応の必要性が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5ceeaae8e26f5eb828b8ffe14f197db9867c114455bbaede4a59eaa4dd7a4a85",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/sansar-linux-cryptomining-malware-uses.html",
+      "canonical_url": "https://thehackernews.com/2026/11/sansar-linux-cryptomining-malware-uses.html",
+      "published_at": "2026-11-16T18:32:57+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "SANSAR Linux Cryptomining Malware Uses Modified NVIDIA Library to Hide GPU Activity",
+      "raw_title": "SANSAR Linux Cryptomining Malware Uses Modified NVIDIA Library to Hide GPU Activity",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8fdd28564f1293e4f4366433ed319cd1e2d4e4ed9210231e44b988512860092d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:33:07.706134+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "金銭目的の脅威グループによるクリプトマイニングマルウェアと攻撃手法が主題であるため。",
+        "tags": [
+          "ランサムウェア",
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "REF3364と追跡される金銭目的の脅威グループが、GPU負荷検出を回避するためにNVIDIAライブラリを改変するLinux向けクリプトマイニングマルウェア「SANSAR」を使用していることが確認されました。SANSARはRustベースのオーケストレーターで、TORネットワーク経由でCPUおよびGPUマイナーを管理します。",
+        "financial_impact": "金融機関のLinux環境でGPUを多用するシステムが標的となる可能性があります。リソースの不正利用による業務影響や、電力コストの増加につながる可能性があります。",
+        "recommended_actions": [
+          "Linux環境におけるGPU利用状況と、NVIDIAライブラリの整合性を確認する",
+          "TORネットワークへの通信を監視し、不正な通信がないか確認する",
+          "システムリソースの異常な消費（CPU/GPU使用率、電力消費など）を監視する"
+        ],
+        "reason": "重要度は、金融機関のLinux環境におけるGPU利用状況に依存し、適用範囲が限定的であるため「中」です。確認目安は、新たな攻撃手法の動向であり、即時対応を要する具体的な脅威や期限が示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d6a0c3df6c7fff40e930551d8ba0fc12d9365fc03422dd9ebb5ed951b2e5d812",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/amazon-uncovers-ai-agent-campaign.html",
+      "canonical_url": "https://thehackernews.com/2026/11/amazon-uncovers-ai-agent-campaign.html",
+      "published_at": "2026-11-16T16:34:21+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "Amazon Uncovers AI Agent Campaign Targeting LiteLLM, Dify, and Other Apps for API Keys",
+      "raw_title": "Amazon Uncovers AI Agent Campaign Targeting LiteLLM, Dify, and Other Apps for API Keys",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d03fa1db6758000eff2d44c94c680a290bae0e9fb300100487cc18f8ee835b7c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:33:25.292891+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントによる攻撃キャンペーンが主題であり、AI技術固有のリスクに関する情報であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Amazonの脅威インテリジェンスチームは、デコイサーバーを用いて、AIエージェントがLiteLLM、One API、Difyなどのインターネットに公開されたAIアプリケーションの脆弱性を探索し、内部に保存されているAIプロバイダーキーを窃取するキャンペーンを発見しました。",
+        "financial_impact": "金融機関がLiteLLM、One API、DifyなどのAIアプリケーションを業務で利用している場合、APIキー窃取による情報漏えいや不正利用のリスクに関係します。利用状況は記事からは確認できません。",
+        "recommended_actions": [
+          "自社および委託先でLiteLLM、One API、DifyなどのAIアプリケーションの利用有無と外部公開状況を確認する",
+          "利用している場合は、AIプロバイダーキーの管理状況とアクセス制御設定を評価し、不審なAPI利用がないかログを監視する"
+        ],
+        "reason": "重要度は、AIアプリケーションの利用状況により影響が異なるため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、利用有無の確認が必要なため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1abe8912cb223ae43799b6e47fe374ee7e72d6c8d8a454e8df0406d2a84b9853",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/bo-team-exploits-log4shell-in-vmware.html",
+      "canonical_url": "https://thehackernews.com/2026/11/bo-team-exploits-log4shell-in-vmware.html",
+      "published_at": "2026-11-16T15:53:34+09:00",
+      "fetched_at": "2026-11-17T13:29:21.882828+09:00",
+      "title": "BO Team Exploits Log4Shell in VMware vCenter, Compromises Russian Firm's Code-Signing Server",
+      "raw_title": "BO Team Exploits Log4Shell in VMware vCenter, Compromises Russian Firm's Code-Signing Server",
+      "raw_excerpt": null,
+      "content_hash": "sha256:271a1c44572d4a08b785c64f9354813dfa04911c700db123238d9936ed9b64c8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-17T13:33:43.256316+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "ロシアのソフトウェア開発企業の開発インフラとコード署名サーバーが侵害された事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "サプライチェーン",
+          "委託先管理",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ロシアのソフトウェア開発企業のネットワーク内で不審な活動が調査され、開発インフラとソフトウェアのコード署名サーバーが数か月にわたり侵害されていたことが判明しました。この活動は「BO Team」と呼ばれる脅威アクターによるもので、VMware vCenterのLog4Shell脆弱性が悪用されました。",
+        "financial_impact": "金融機関がVMware vCenterを利用しており、かつLog4Shell脆弱性への対策が不十分な場合に、同様のサプライチェーン攻撃を受ける可能性があります。特にコード署名サーバーの侵害は、ソフトウェアの信頼性に影響を及ぼすため、委託先管理の観点からも関係します。",
+        "recommended_actions": [
+          "自社および委託先におけるVMware vCenterの利用有無と、Log4Shell脆弱性への対応状況を確認する",
+          "サプライチェーンリスク管理の一環として、委託先のソフトウェア開発プロセスにおけるセキュリティ対策（特にコード署名プロセスの保護）を確認する",
+          "Log4Shell脆弱性に関連する過去の侵害兆候がないか、ログの再調査を検討する"
+        ],
+        "reason": "重要度は、Log4Shellは広く知られた脆弱性であり、VMware vCenterの利用状況によっては影響が大きくなる可能性があるため「中」です。確認目安は、過去のインシデント事例であり、直ちに新たな緊急対応を要する情報ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
