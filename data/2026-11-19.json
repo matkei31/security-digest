@@ -1,0 +1,1040 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-19",
+  "generated_at": "2026-11-19T12:34:20.853819+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 19,
+    "ai_attempted_count": 17,
+    "ai_success_count": 16,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 2,
+    "ai_eligible_count": 17
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 13,
+      "低": 2,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 1,
+      "今週確認": 9,
+      "参考": 7,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 5,
+      "攻撃・脅威動向": 5,
+      "インシデント": 0,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 6,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象17件｜重要度「高」2件｜本日確認1件｜今週確認9件\nBrief対象の記事のうち、本日中に適用性または初動要否を確認する記事が1件あります。",
+    "important_highlights": [
+      "NGINXのHTTP/2サポートに存在する10年前の欠陥（CVE-2026-123007、通称「nginx2root」）により、認証されていない攻撃者がHTTP/2が有効なサーバー上でコードを実行できる可能性があります。この脆弱性はNGINXのオープンソースコードバージョン1.9.5以降に存在し、修正版の1.31.9および1.30.7が本日リリースされました。",
+      "Javaの「Java4Shell」と呼ばれる脆弱性(CVE-2026-114938)により、Jira、Jenkins、Keycloakなど広く利用されているアプリケーションで、認証なしにリモートコード実行(RCE)が可能になります。この脆弱性はJava 17.0.6以降に存在し、AVX-512 VBMI機能をサポートするx86-64 IntelおよびAMDチップでのみ脆弱なコードが実行されます。"
+    ],
+    "discussion_points": [
+      "NGINXのHTTP/2サポートに存在する10年前の欠陥（CVE-2026-123007、通称「nginx2root」）により、認証されていない攻撃者がHTTP/2が有効なサーバー上でコードを実行できる可能性があります。この脆弱性はNGINXのオープンソースコードバージョン1.9.5以降に存在し、修正版の1.31.9および1.30.7が本日リリースされました。\nNGINXは多くの金融機関でウェブサーバーやリバースプロキシとして広く利用されており、この脆弱性が悪用された場合、情報漏えいや業務停止につながる可能性があります。",
+      "Javaの「Java4Shell」と呼ばれる脆弱性(CVE-2026-114938)により、Jira、Jenkins、Keycloakなど広く利用されているアプリケーションで、認証なしにリモートコード実行(RCE)が可能になります。この脆弱性はJava 17.0.6以降に存在し、AVX-512 VBMI機能をサポートするx86-64 IntelおよびAMDチップでのみ脆弱なコードが実行されます。\nJira、Jenkins、Keycloakなど、金融機関で広く利用される可能性のあるアプリケーションに影響します。これらのアプリケーションを自社または委託先で利用している場合、適用性確認の対象になります。"
+    ],
+    "check_items": [
+      "自社および委託先におけるNGINXの利用有無、HTTP/2の有効化状況、および影響を受けるバージョン（1.9.5以降）の確認を行う",
+      "CVE-2026-114938の対象となるJira、Jenkins、Keycloakなどのアプリケーションの利用有無と影響バージョンを確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:6defbb0684c4536f1ce78878eee058d15ed469c93e63cb24b4ca8b5db5f091da",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/palo-alto-networks-to-buy-ai-startup-applied-compute-for-4-5-billion/",
+      "canonical_url": "https://www.securityweek.com/palo-alto-networks-to-buy-ai-startup-applied-compute-for-4-5-billion/",
+      "published_at": "2026-11-19T12:25:23+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "Palo Alto Networks to Buy AI Startup Applied Compute for $4.5 Billion",
+      "raw_title": "Palo Alto Networks to Buy AI Startup Applied Compute for $4.5 Billion",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9a1e08853274ff6374e75c7f366d53851105f3324cfd21eae01a6f1dac0038cd",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:29:25.140073+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "Palo Alto NetworksによるAIスタートアップ買収が主題であり、AI技術とサイバーセキュリティの融合に関する情報であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Palo Alto NetworksがAIスタートアップApplied Computeを45億ドルの全株式取引で買収すると発表しました。この買収により、Palo Alto NetworksはパブリッククラウドおよびソブリンクラウドでオープンウェイトAIモデルのファインチューニングと実行を行うプラットフォームを獲得します。",
+        "financial_impact": "金融機関がPalo Alto Networksの製品を利用している場合、将来的にAI機能が強化される可能性があります。AI技術の活用はセキュリティ強化に繋がる一方で、新たなリスクも生じる可能性があるため、動向を注視する必要があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、Palo Alto NetworksのAI戦略に関する情報であり、金融機関のセキュリティ戦略に中長期的に影響し得るため「中」です。確認目安は、現時点での直接的な対応を求めるものではなく、情報収集が主となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:04e49dcbdb74573337afa5ecc35cbbbeba68aa7e36a9fce9c51b4d9485c13293",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/10-year-old-nginx-http2-flaw-lets.html",
+      "canonical_url": "https://thehackernews.com/2026/11/10-year-old-nginx-http2-flaw-lets.html",
+      "published_at": "2026-11-19T03:31:17+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "10-Year-Old NGINX HTTP/2 Flaw Lets Unauthenticated Attackers Execute Code on Servers",
+      "raw_title": "10-Year-Old NGINX HTTP/2 Flaw Lets Unauthenticated Attackers Execute Code on Servers",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3d405219124d7d9e0cdc6ba7b3c542f9530fec3426f59e672b60f77f955bbf10",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:29:43.029327+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "NGINXのHTTP/2サポートにおける脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ",
+          "悪用確認済み"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "NGINXのHTTP/2サポートに存在する10年前の欠陥（CVE-2026-123007、通称「nginx2root」）により、認証されていない攻撃者がHTTP/2が有効なサーバー上でコードを実行できる可能性があります。この脆弱性はNGINXのオープンソースコードバージョン1.9.5以降に存在し、修正版の1.31.9および1.30.7が本日リリースされました。",
+        "financial_impact": "NGINXは多くの金融機関でウェブサーバーやリバースプロキシとして広く利用されており、この脆弱性が悪用された場合、情報漏えいや業務停止につながる可能性があります。",
+        "recommended_actions": [
+          "自社および委託先におけるNGINXの利用有無、HTTP/2の有効化状況、および影響を受けるバージョン（1.9.5以降）の確認を行う",
+          "F5が本日リリースした修正版（1.31.9または1.30.7）へのアップデートを検討する",
+          "NGINXのログやシステムを監視し、不審な活動や侵害の兆候がないか確認する"
+        ],
+        "reason": "重要度は、広く利用されるNGINXの重大な脆弱性であり、認証なしでコード実行が可能であるため「高」です。確認目安は、修正版が本日リリースされ、即時対応が求められるため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4ab4f5e03685767a0a27b7d9fc27b733513f92ea8211c6d54bcdbb0ff2caeee9",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/f5-warns-6-critical-big-ip-flaws-can.html",
+      "canonical_url": "https://thehackernews.com/2026/11/f5-warns-6-critical-big-ip-flaws-can.html",
+      "published_at": "2026-11-19T03:15:39+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "F5 Warns 6 Critical BIG-IP Flaws Can Crash Traffic in Specific Setups, May Allow RCE",
+      "raw_title": "F5 Warns 6 Critical BIG-IP Flaws Can Crash Traffic in Specific Setups, May Allow RCE",
+      "raw_excerpt": null,
+      "content_hash": "sha256:fc383ef55b9f28c4fb9ea1d0034cb94175cc607e17465b250ae201b7ce889473",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:30:00.710768+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "F5 BIG-IP製品の複数の重大な脆弱性が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "F5 BIG-IPに6つの重大な脆弱性が発見されました。これらはログインなしでTraffic Management Microkernel (TMM)をクラッシュさせ、トラフィックを中断させる可能性があります。特定の仮想サーバー構成（特定のコマンドを使用するiRuleまたは特定の2種類のエージェントを含むAPMポリシー）でのみ悪用可能です。",
+        "financial_impact": "F5 BIG-IP製品は多くの金融機関でネットワークトラフィック管理やアプリケーション配信に利用されている可能性があります。これらの脆弱性が悪用された場合、システム停止による業務影響や情報漏えいのリスクが生じる可能性があります。",
+        "recommended_actions": [
+          "F5 BIG-IP製品の利用有無、および影響を受けるバージョンと特定の仮想サーバー構成（iRuleやAPMポリシー）の有無を確認する",
+          "F5が公開している一次情報（セキュリティアドバイザリ等）を確認し、パッチや緩和策の適用要否を評価する"
+        ],
+        "reason": "重要度は、F5 BIG-IPが広く利用される製品であるものの、悪用には特定の構成が必要で適用範囲が限定されるため「中」です。確認目安は、悪用には特定の構成が必要であり、直ちに広範な影響が懸念される状況ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6ec0dce548ff06fef1684d29c17304a8f76b7440dcceb43742a6c4c0623b83b9",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/critical-apache-roller-rce-flaw-under.html",
+      "canonical_url": "https://thehackernews.com/2026/11/critical-apache-roller-rce-flaw-under.html",
+      "published_at": "2026-11-19T02:10:45+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "Critical Apache Roller RCE Flaw Under Active Exploitation, No Authentication Required",
+      "raw_title": "Critical Apache Roller RCE Flaw Under Active Exploitation, No Authentication Required",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c04f58dd398da07cfe6767006abfe605066969816ffca6df8ad5a3143cbb670f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:30:18.286605+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Apache RollerのRCE脆弱性とその悪用が主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "オープンソースのJavaベースブログプラットフォームであるApache Rollerに、認証不要のXML-RPCエンドポイントにおけるデシリアライゼーションの脆弱性(CVE-2026-129448, CVSS 9.8)が確認され、現在活発に悪用されています。",
+        "financial_impact": "Apache Rollerはブログプラットフォームであり、金融機関での利用は限定的であると考えられます。もし利用している場合は、適用性確認の対象になります。",
+        "recommended_actions": [
+          "自社および委託先でApache Rollerの利用有無と影響バージョンを確認する",
+          "Apache Software Foundationからの公式情報やパッチ、緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、CVSS9.8の重大な脆弱性ですが、金融機関でのApache Rollerの利用が限定的である可能性が高いため「中」です。確認目安は、悪用が活発化しているものの、KEV新規追加に含まれず、即時対応の明確な期限が示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b4335194c1efafe12760534d15d8802c5fb3a6661dadd52b85057a855b7721a0",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/verosecurity-raises-11-million-for-ai-security-engineering-platform/",
+      "canonical_url": "https://www.securityweek.com/verosecurity-raises-11-million-for-ai-security-engineering-platform/",
+      "published_at": "2026-11-19T00:30:42+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "VeroSecurity Raises $11 Million for AI Security Engineering Platform",
+      "raw_title": "VeroSecurity Raises $11 Million for AI Security Engineering Platform",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a8f39c969b6d0154596dd322032d7ce5a1a3fc0cbc038f3b5e52228dd79dd454",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:30:35.012976+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIセキュリティエンジニアリングプラットフォームの資金調達であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "VeroSecurityがAIセキュリティエンジニアリングプラットフォームの開発に向けて1,100万ドルの資金調達を実施しました。AIセキュリティエンジニアリングは、新たな重要なセキュリティ分野として注目されています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AIセキュリティ技術の動向に関する参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の製品や脅威に関する情報ではなく、企業の資金調達ニュースであるため「低」です。確認目安は、具体的な対応を要する情報や期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:16d1e418da7ea1b76c1da0a8c2ed408b55a89e5c36435283c9a09c14095531e6",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/eggstreme-hackers-rebuild-malware-with.html",
+      "canonical_url": "https://thehackernews.com/2026/11/eggstreme-hackers-rebuild-malware-with.html",
+      "published_at": "2026-11-18T23:11:28+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "New EggStreme Malware Variant Goes Silent to Evade Security Tools in Government Attacks",
+      "raw_title": "New EggStreme Malware Variant Goes Silent to Evade Security Tools in Government Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:56611c0603e9d50ab97cafd2ebbfbbeb96b3f1ecb47b7c0d70d1e8ae26eb8102",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:30:52.491947+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国のAPTグループによるマルウェアの亜種と攻撃手法が主題であるため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "中国のAPTグループがフィリピン政府機関を標的とするEggStremeマルウェアのツールキットを再構築しました。この新亜種は、セキュリティツールによる検出を回避するため、静かに活動するよう設計されています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。しかし、APTグループによる政府機関への攻撃は、サプライチェーンを介して金融機関へ波及する可能性があり、脅威動向として注視すべきです。",
+        "recommended_actions": [
+          "APTグループの攻撃手法に関する最新情報を収集し、自組織の防御策との比較評価を行う",
+          "関連する脅威インテリジェンスを監視し、攻撃の兆候やIOCがないか確認する"
+        ],
+        "reason": "重要度は、金融機関への直接的な影響は不明確ですが、APTグループの攻撃動向として把握する価値があるため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、脅威動向として継続的に監視する情報であるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:619e9379554b043e97667d069c1e6a533da968a8d9ca7ca00fd2cc22700c563f",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/russian-apt-poses-as-employee-of-hacked-firm-to-breach-another-us-organization/",
+      "canonical_url": "https://www.securityweek.com/russian-apt-poses-as-employee-of-hacked-firm-to-breach-another-us-organization/",
+      "published_at": "2026-11-18T22:33:47+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "Russian APT Poses as Employee of Hacked Firm to Breach Another US Organization",
+      "raw_title": "Russian APT Poses as Employee of Hacked Firm to Breach Another US Organization",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8f28daf7a15ff15d0d3a5e2055cb74ef1b8e5fc94de9ce0c6b582ce5de0c66f2",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:31:09.786144+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ロシアのAPTグループによる攻撃手法と脅威動向が主題であるため。",
+        "tags": [
+          "APT",
+          "フィッシング",
+          "サプライチェーン",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ロシアのAPTグループ「Star Blizzard」が、2025年後半に窃取したデータとIDを悪用し、侵害された企業の従業員を装って別の米国組織をフィッシング攻撃で侵害しました。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。しかし、サプライチェーン攻撃や委託先経由での侵害リスクとして、同様の手法が金融機関を標的とする可能性はあります。",
+        "recommended_actions": [
+          "委託先を含むサプライチェーン全体におけるフィッシング対策の状況を確認する",
+          "従業員に対するフィッシング攻撃の手口に関する注意喚起と教育を強化する"
+        ],
+        "reason": "重要度は、特定のAPTグループによる攻撃事例であり、金融機関への直接的な関連性が不明確なため「中」です。確認目安は、新たな脆弱性や緊急対応を要する情報ではなく、脅威動向として把握すべき情報のため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:077140c4b0b9f9dc71fc24aafd34f9f51e72c31abdbfdd09aaad0f61efc5c80c",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/last-of-five-defendants-sentenced-in-us-scattered-spider-hacking-case/",
+      "canonical_url": "https://www.securityweek.com/last-of-five-defendants-sentenced-in-us-scattered-spider-hacking-case/",
+      "published_at": "2026-11-18T22:19:32+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "Last of Five Defendants Sentenced in US Scattered Spider Hacking Case",
+      "raw_title": "Last of Five Defendants Sentenced in US Scattered Spider Hacking Case",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b67b74f65226ad2fe98a71ec0f2cf1ac2b7c16dce30dccb045adb3f42359b8d8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:31:27.137218+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Scattered Spiderという攻撃グループのハッキング事件に関する判決が主題であるため。",
+        "tags": [
+          "APT",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "米国司法省は、英国籍のタイラー・ロバート・ブキャナンに対し、Scattered Spiderハッキング事件に関連して懲役6年の判決が下されたと発表しました。これにより、同事件の被告5人全員への判決が完了しました。",
+        "financial_impact": "Scattered Spiderは金融機関を含む様々な業界を標的とする攻撃グループであり、その活動に関する情報は金融機関の脅威インテリジェンスとして関係します。ただし、本記事は過去の事件の判決に関するもので、直接的な脅威やアクションを求めるものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関も標的とする攻撃グループに関する情報であり、脅威インテリジェンスとして把握する価値があるため「中」です。確認目安は、過去の事件の判決に関する情報であり、即座に対応すべき時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:90f84e48047fe43a9ea12d1e451e4063a37d6656d789ad7e4f15f5fbc81c89d2",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/flash-chip-attack-bypasses-tpm-lockout.html",
+      "canonical_url": "https://thehackernews.com/2026/11/flash-chip-attack-bypasses-tpm-lockout.html",
+      "published_at": "2026-11-18T21:28:30+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "New Attack Bypasses TPM Lockout to Crack Windows Hello and BitLocker PINs in Days, Not Years",
+      "raw_title": "New Attack Bypasses TPM Lockout to Crack Windows Hello and BitLocker PINs in Days, Not Years",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bdc444b8424a90b01480d8480fe42d2e7a182fdce95a0641743b5778aaee2ebe",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:31:44.660839+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "TPMロックアウトを回避する新しい攻撃手法が主題であるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "AMDベースのPCおよび一部のIntel PCにおいて、物理的にPCケースを開けることでWindows HelloおよびBitLockerのPINに対するTPMロックアウトをリセットできる新しい攻撃手法が発見されました。これにより、短いPINが推測攻撃に対して脆弱になる可能性があります。",
+        "financial_impact": "金融機関で従業員が利用するPCにおいて、Windows HelloやBitLockerのPINが設定されている場合に影響する可能性があります。特に物理的なアクセスが可能な環境では、情報漏えいや不正アクセスにつながるリスクが考えられます。",
+        "recommended_actions": [
+          "自社で利用しているPCにおいて、Windows HelloやBitLockerのPIN運用状況を確認する",
+          "物理的なアクセスに対するPCのセキュリティ対策（例: 物理的な施錠、持ち出し制限）を再評価する",
+          "PINの長さや複雑性に関する社内ポリシーを見直し、推奨される設定への変更を検討する"
+        ],
+        "reason": "重要度は、物理的なアクセスが必要な攻撃であり、適用範囲が限定的であるため「中」です。確認目安は、新たな攻撃手法の報告であり、即時対応を要する進行中の攻撃や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e3f6e444c8dea91200fa2fa5d907b5cc185fb7f96cc15ea247949b34d3913fd4",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/ai-pentesting-checklist-for-web-apps-15.html",
+      "canonical_url": "https://thehackernews.com/2026/11/ai-pentesting-checklist-for-web-apps-15.html",
+      "published_at": "2026-11-18T21:15:00+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "AI Pentesting Checklist for Web Apps: 15 Questions to Ask Before Choosing a Vendor",
+      "raw_title": "AI Pentesting Checklist for Web Apps: 15 Questions to Ask Before Choosing a Vendor",
+      "raw_excerpt": null,
+      "content_hash": "sha256:e3858ad809d01d1c43cba0e998c348e73c1dadc606295d82532179cce2af61d7",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:32:01.882704+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIを活用したペネトレーションテストのベンダー選定に関する記事であり、AIと新技術のリスク管理が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "本記事は、WebアプリケーションのAIペネトレーションテストベンダーを選定する際に考慮すべき15の質問を提示しています。攻撃の早期化やベンダー間の品質差に言及し、ログインフローやカバレッジ、本番環境の安全性におけるギャップを指摘しています。",
+        "financial_impact": "金融機関がWebアプリケーションのセキュリティ評価にAIを活用したペネトレーションテストの導入を検討する場合、ベンダー選定の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIペネトレーションテストの導入を検討する際に参考となる情報であり、適用性評価の優先度が中程度のため「中」です。確認目安は、具体的な脅威や期限の記述がなく、中長期的な検討に資する情報のため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4a2b8456a2d4254ea6b410a0563c4066ec3121098530c562387c21944e0e561f",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/microsoft-takes-perception-agentic-security-platform-out-of-preview/",
+      "canonical_url": "https://www.securityweek.com/microsoft-takes-perception-agentic-security-platform-out-of-preview/",
+      "published_at": "2026-11-18T21:14:23+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "Microsoft Takes Perception Agentic Security Platform Out of Preview",
+      "raw_title": "Microsoft Takes Perception Agentic Security Platform Out of Preview",
+      "raw_excerpt": null,
+      "content_hash": "sha256:46a12aa93d6ded089ded2887ab455f820795d15d981edfd9006b5dd318fb4b17",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:32:22.347234+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントを活用したセキュリティプラットフォームの一般提供開始が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Microsoftは、AIエージェントを活用したセキュリティプラットフォーム「Perception Agentic Security Platform」のプレビュー版を終了し、4つのブルーチームエージェントとRecon Agentを一般提供しました。一部の統合機能と脆弱性シールド機能は引き続きプレビュー版として提供されます。",
+        "financial_impact": "金融機関がMicrosoftのセキュリティ製品やAI技術の導入を検討している場合、本プラットフォームがセキュリティ強化の一助となる可能性があります。直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIを活用したセキュリティプラットフォームの一般提供開始であり、中長期的な技術動向として把握する価値があるため「中」です。確認目安は、具体的な対応期限や緊急性が示されていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2b99e2f0876a90df84163e001d06049467c6a0daf4628461ea1a1ddbb28ad37d",
+      "source_id": "nist",
+      "source_name": "NIST",
+      "source_type": "政府・公的機関",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.nist.gov/news-events/news/2026/11/quantum-physics-can-verify-persons-location-nist-researchers-show",
+      "canonical_url": "https://www.nist.gov/news-events/news/2026/11/quantum-physics-can-verify-persons-location-nist-researchers-show",
+      "published_at": "2026-11-18T21:00:00+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "NIST研究者が量子物理学による位置検証技術を発表、インフラ保護や金融機関の詐欺防止に貢献",
+      "raw_title": "Quantum Physics Can Verify a Person’s Location, NIST Researchers Show",
+      "raw_excerpt": "The technique offers the potential to protect infrastructure, safeguard financial institutions and prevent phishing.",
+      "content_hash": "sha256:035ac3c07b4e306d3936d48183755216746c6d8b60e9d087d18e8991bcb0e2dc",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:32:39.528774+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "量子物理学という新技術を用いた位置検証技術に関する研究が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "NISTの研究者らが、量子物理学を用いて人物の位置を検証する技術を発表しました。この技術は、インフラ保護、金融機関の安全確保、フィッシング詐欺の防止に役立つ可能性があります。",
+        "financial_impact": "本技術は金融機関の安全確保やフィッシング詐欺防止に貢献する可能性が示唆されていますが、現時点では研究段階であり、具体的な導入や影響は不明です。",
+        "recommended_actions": [],
+        "reason": "重要度は、研究段階の新技術であり、金融機関への具体的な適用性や影響が不確実なため「中」です。確認目安は、現時点では具体的なアクションを伴う情報ではなく、中長期的な動向把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:30357a77d92c5e622b68de261f2b883e8c2d0d6ba25536ba99cd2c1796bd395c",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ciso-conversations-patti-degnan-part-of-the-job-is-deciding-what-not-to-do/",
+      "canonical_url": "https://www.securityweek.com/ciso-conversations-patti-degnan-part-of-the-job-is-deciding-what-not-to-do/",
+      "published_at": "2026-11-18T21:00:00+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "CISO Conversations: Patti Degnan – Part of the Job Is Deciding What Not to Do",
+      "raw_title": "CISO Conversations: Patti Degnan – Part of the Job Is Deciding What Not to Do",
+      "raw_excerpt": null,
+      "content_hash": "sha256:58ec647b0716786397157ef709ad93ad04c88e05aa2eda9ab1d8b6748786179d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:32:56.514506+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "特定の技術的脅威や規制ではなく、CISOの役割や意思決定に関する対談記事が主題のため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "エンドポイントセキュリティ企業GlowのCISOであるPatti Degnan氏が、2006年の自身のID盗難経験からCISOに至るまでの経緯と、CISOの仕事における「やらないことを決める」重要性について語っています。",
+        "financial_impact": "金融機関のサイバーセキュリティ担当者にとって、CISOの視点や意思決定に関する一般的な参考情報となりますが、直接的な影響や具体的な対応を求めるものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や規制に関する情報ではなく、CISOの役割に関する一般的な対談記事であるため「低」です。確認目安は、具体的な対応を求める内容ではなく、中長期的な知識更新のための情報であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5966ac56e61b79d55a1dfb8eb6cbaa68575d2db5b8e296af4960ef8de6aef4da",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/java4shell-cve-2026-114938-enables-pre.html",
+      "canonical_url": "https://thehackernews.com/2026/11/java4shell-cve-2026-114938-enables-pre.html",
+      "published_at": "2026-11-18T20:55:49+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "Java4Shell Flaw (CVE-2026-114938) Enables Pre-Auth RCE in Jira, Jenkins, Keycloak and More",
+      "raw_title": "Java4Shell Flaw (CVE-2026-114938) Enables Pre-Auth RCE in Jira, Jenkins, Keycloak and More",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ed4f3ed1ee60b750ea992d1bc63484166024cd6135422311d0c8d82524a9c965",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:33:14.258797+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Javaの脆弱性に関する記事であり、パッチ適用が主題となるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Javaの「Java4Shell」と呼ばれる脆弱性(CVE-2026-114938)により、Jira、Jenkins、Keycloakなど広く利用されているアプリケーションで、認証なしにリモートコード実行(RCE)が可能になります。この脆弱性はJava 17.0.6以降に存在し、AVX-512 VBMI機能をサポートするx86-64 IntelおよびAMDチップでのみ脆弱なコードが実行されます。",
+        "financial_impact": "Jira、Jenkins、Keycloakなど、金融機関で広く利用される可能性のあるアプリケーションに影響します。これらのアプリケーションを自社または委託先で利用している場合、適用性確認の対象になります。",
+        "recommended_actions": [
+          "CVE-2026-114938の対象となるJira、Jenkins、Keycloakなどのアプリケーションの利用有無と影響バージョンを確認する",
+          "ベンダーの一次情報を確認し、パッチや緩和策の適用要否を評価する",
+          "脆弱なコードの実行条件（Javaバージョン、CPUアーキテクチャ）に合致するかを確認する"
+        ],
+        "reason": "重要度は、広く利用される可能性のあるアプリケーションで認証前RCEが可能となる重大な脆弱性であるため「高」です。確認目安は、実悪用や緊急の期限に関する記述がなく、KEVにも未掲載のため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-114938",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-11-19T03:29:22Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-114938",
+              "vuln_status": "Undergoing Analysis",
+              "published_at": "2026-11-17T22:18:23Z",
+              "last_modified_at": "2026-11-18T21:17:47Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 8.1,
+                "base_severity": "HIGH",
+                "vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                "source": "secalert_us@oracle.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "not_listed",
+              "retrieval": "live",
+              "fetched_at": "2026-11-19T03:29:22Z",
+              "date_added": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:ca313e9f67b913736f43290b0421f24005e1e287a1b46704ba06035d7603e431",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/chrome-158-patches-204-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/chrome-158-patches-204-vulnerabilities/",
+      "published_at": "2026-11-18T20:43:22+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "Chrome 158 Patches 204 Vulnerabilities",
+      "raw_title": "Chrome 158 Patches 204 Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:3e6dba578957b9eda2c8f9bb74dfd2492f50ea6df379395dd309ce0f4e45e880",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:33:31.325118+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Google Chromeの多数の脆弱性修正が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "GoogleはChrome 158で204件の脆弱性を修正しました。このうち5件の外部報告された脆弱体には11,000ドルの報奨金が支払われ、36件については報奨金が未定です。",
+        "financial_impact": "金融機関でGoogle Chromeを業務利用している場合、本アップデートの適用性確認の対象となります。特に外部公開された脆弱性への対応は重要です。",
+        "recommended_actions": [
+          "自社および委託先におけるGoogle Chromeの利用状況とバージョンを確認する",
+          "Google Chrome 158へのアップデート適用状況を確認する"
+        ],
+        "reason": "重要度は、広く利用されるブラウザの多数の脆弱性修正であり、適用性評価の価値があるため「中」です。確認目安は、緊急の悪用情報や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6a6d4ba4fca41cb142bcc105831a18e20d5c6019c619971f24d600a3e0820f5b",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/microsoft-agent-framework-releases-poisoned-with-credential-stealer/",
+      "canonical_url": "https://www.securityweek.com/microsoft-agent-framework-releases-poisoned-with-credential-stealer/",
+      "published_at": "2026-11-18T20:05:39+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "Microsoft Agent Framework Releases Poisoned With Credential Stealer",
+      "raw_title": "Microsoft Agent Framework Releases Poisoned With Credential Stealer",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5ed1fea3dbd26b739be3f918a891e33274f8da09ad643f587f436800ac75b50b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:33:48.810670+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Microsoft Agent Frameworkの特定のバージョンに認証情報窃取マルウェアが混入した攻撃に関する記事のため。",
+        "tags": [
+          "サプライチェーン",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "PyPIで公開されているMicrosoft Agent Frameworkのバージョン1.26.1および1.26.2に認証情報窃取マルウェアが混入しており、Python起動時にAzure、Azure DevOps、GitHub Action",
+        "financial_impact": "金融機関でMicrosoft Agent Frameworkの該当バージョンを開発環境やCI/CDパイプラインで利用している場合に、認証情報窃取のリスクが生じます。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Microsoft Agent Frameworkの利用有無とバージョンを確認し、該当バージョンを使用している場合は利用を停止する",
+          "該当バージョンを使用していた場合、窃取対象となるAzure、Azure DevOps、GitHub Actionsの認証情報の漏えい有無を確認し、必要に応じて認証情報をローテーションする",
+          "PyPIからダウンロードしたパッケージの整合性を確認するプロセスを見直す"
+        ],
+        "reason": "重要度は、特定の開発フレームワークのサプライチェーン攻撃であり、利用状況によって影響が異なるため「中」です。確認目安は、悪用が確認されているものの、即時対応を求める明確な期限や広範な影響の記述がないため「今週確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1df2f3726abcb8b78e693c26cc2e609b1955e5ec05c896d7a6e124a7b8546a5d",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/quality-isnt-main-worry-about-ai.html",
+      "canonical_url": "https://thehackernews.com/2026/11/quality-isnt-main-worry-about-ai.html",
+      "published_at": "2026-11-18T20:03:57+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "Quality Isn’t The Main Worry About AI Pentesting — Data Privacy and Production Safety Are",
+      "raw_title": "Quality Isn’t The Main Worry About AI Pentesting — Data Privacy and Production Safety Are",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0405138cc5f93535690308f705d7ea36ee232844002f2cd291d99f044f19fe02",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-19T12:34:05.853010+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がAIを活用したペネトレーションテストとそれに伴うリスクであるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "AIの活用によりソフトウェア開発が加速し、脆弱性が本番環境に到達するリスクが増大しています。AIを活用したペネトレーションテストは、セキュリティテストの迅速化に貢献する一方で、データプライバシーと本番環境の安全性に関する新たな懸念が生じています。",
+        "financial_impact": "金融機関がAIを活用したペネトレーションテストの導入を検討する場合、データプライバシー保護や本番環境への影響について慎重な評価と対策が必要となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIを活用したペネトレーションテストの導入を検討する際に考慮すべきリスクに関する情報であり、中長期的な視点での評価が必要となるため「中」です。確認目安は、具体的な脅威や期限が示されておらず、短期的な対応を要する情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:fd0c162c42613792f643c05aa26d5d5ee994c961194b0761d1f625bd9d8f6527",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/the-challenge-of-defending-against-bulletproof-dead-drops-on-public-blockchains/",
+      "canonical_url": "https://blog.talosintelligence.com/the-challenge-of-defending-against-bulletproof-dead-drops-on-public-blockchains/",
+      "published_at": "2026-11-18T20:00:00+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "The challenge of defending against bulletproof dead drops on public blockchains",
+      "raw_title": "The challenge of defending against bulletproof dead drops on public blockchains",
+      "raw_excerpt": null,
+      "content_hash": "sha256:445a618f1c76043f57a5e56677a3a52507dc37f6b2d07a2a674a15f74fcee096",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:13f5a89a45441074d7266bc1bd54277d453559107b5df175cc52ab89ff680af1",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/uat-12643-suspected-north-korea-aligned-actor-blends-blockchain-resilience-with-targeted-infostealing/",
+      "canonical_url": "https://blog.talosintelligence.com/uat-12643-suspected-north-korea-aligned-actor-blends-blockchain-resilience-with-targeted-infostealing/",
+      "published_at": "2026-11-18T20:00:00+09:00",
+      "fetched_at": "2026-11-19T12:29:22.683420+09:00",
+      "title": "UAT-12643: Suspected North Korea-aligned actor blends blockchain resilience with targeted infostealing",
+      "raw_title": "UAT-12643: Suspected North Korea-aligned actor blends blockchain resilience with targeted infostealing",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f847d272eac6bb6a788937c087eae80ee264a95adb254055db1e66dd724f66cf",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
