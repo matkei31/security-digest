@@ -1,0 +1,1036 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-20",
+  "generated_at": "2026-11-20T12:22:12.247255+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 19,
+    "ai_attempted_count": 17,
+    "ai_success_count": 17,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 2,
+    "ai_eligible_count": 17
+  },
+  "counts": {
+    "importance": {
+      "高": 5,
+      "中": 9,
+      "低": 3,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 2,
+      "今週確認": 11,
+      "参考": 4,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 9,
+      "攻撃・脅威動向": 3,
+      "インシデント": 2,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象17件｜重要度「高」5件｜本日確認2件｜今週確認11件\nBrief対象の記事のうち、本日中に適用性または初動要否を確認する記事が2件あります。",
+    "important_highlights": [
+      "Googleは、Broadcomがパッチを公開する前に、中国系のスパイグループがVMware vCenterの認証バイパスの重大な脆弱性をゼロデイとして悪用していたと発表しました。",
+      "中国関連の脅威アクターARMORY CASTLEが、BeyondTrust Remote Supportのゼロデイ脆弱性CVE-2026-102764に加え、VMware vCenter Serverの脆弱性CVE-2026-123890を悪用していたことが判明しました。攻撃者はvCenterの脆弱性を悪用し、追加のマルウェアを展開しています。",
+      "PHP Foundationは、リモートコード実行につながる可能性のあるCVE-2026-115560を含む複数の重大なセキュリティ脆弱性に対処するためのセキュリティアップデートをリリースしました。このパッチは、サポートされているすべてのPHPバージョンに影響を与える複数の脆弱性について事前にユーザーに警告した後に公開されました。"
+    ],
+    "discussion_points": [
+      "Googleは、Broadcomがパッチを公開する前に、中国系のスパイグループがVMware vCenterの認証バイパスの重大な脆弱性をゼロデイとして悪用していたと発表しました。\nVMware vCenterは多くの金融機関で仮想化基盤として利用されている可能性があり、認証バイパスの脆弱性はシステムへの不正アクセスや情報漏えいにつながるため、関係します。",
+      "中国関連の脅威アクターARMORY CASTLEが、BeyondTrust Remote Supportのゼロデイ脆弱性CVE-2026-102764に加え、VMware vCenter Serverの脆弱性CVE-2026-123890を悪用していたことが判明しました。攻撃者はvCenterの脆弱性を悪用し、追加のマルウェアを展開しています。\nVMware vCenter Serverは多くの金融機関で仮想化基盤として利用されている可能性があり、本脆弱性が悪用された場合、仮想環境全体の侵害や業務停止につながる恐れがあります。BeyondTrust Remote Supportも利用している場合は関係します。"
+    ],
+    "check_items": [
+      "VMware vCenterの利用有無と影響を受けるバージョンを確認する",
+      "VMware vCenter ServerおよびBeyondTrust Remote Supportの利用有無と、影響を受けるバージョン・外部露出を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:34247d07e11d53d210e42d0bd6591228e257f9d8f2a753680ac0043b5de163bb",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/newly-patched-vmware-vcenter-flaw-exploited-as-zero-day-by-chinese-apt/",
+      "canonical_url": "https://www.securityweek.com/newly-patched-vmware-vcenter-flaw-exploited-as-zero-day-by-chinese-apt/",
+      "published_at": "2026-11-20T04:21:06+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "Newly Patched VMware vCenter Flaw Exploited as Zero-Day by Chinese APT",
+      "raw_title": "Newly Patched VMware vCenter Flaw Exploited as Zero-Day by Chinese APT",
+      "raw_excerpt": null,
+      "content_hash": "sha256:12730a3508969971dc4babd86315842282752aaff2d7c2d1c8b310632d530c27",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:17:07.591303+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国系APTグループによるゼロデイ脆弱性の悪用が主題であるため。",
+        "tags": [
+          "ゼロデイ",
+          "悪用確認済み",
+          "APT",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "Googleは、Broadcomがパッチを公開する前に、中国系のスパイグループがVMware vCenterの認証バイパスの重大な脆弱性をゼロデイとして悪用していたと発表しました。",
+        "financial_impact": "VMware vCenterは多くの金融機関で仮想化基盤として利用されている可能性があり、認証バイパスの脆弱性はシステムへの不正アクセスや情報漏えいにつながるため、関係します。",
+        "recommended_actions": [
+          "VMware vCenterの利用有無と影響を受けるバージョンを確認する",
+          "Broadcomから公開されているパッチの適用状況を確認し、未適用であれば速やかに適用を検討する",
+          "過去のログやシステムを調査し、不正アクセスの痕跡がないか確認する"
+        ],
+        "reason": "重要度は、広く利用されるVMware vCenterのゼロデイ脆弱性が中国系APTに悪用されたため「高」です。確認目安は、パッチ公開前に悪用が確認されており、即時対応の根拠があるため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b00b07c608a8ec49b6152faa74cabb0d7f48afbff66d6e04d3f74eea144bf388",
+      "source_id": "cisco_talos",
+      "source_name": "Cisco Talos",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://blog.talosintelligence.com/the-internet-needs-a-nap-and-you-do-too/",
+      "canonical_url": "https://blog.talosintelligence.com/the-internet-needs-a-nap-and-you-do-too/",
+      "published_at": "2026-11-20T04:00:00+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "The internet needs a nap (and you do, too)",
+      "raw_title": "The internet needs a nap (and you do, too)",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bca67a925453c3598191ccafc488fd3db3e2d429cb35d6dd1617b104371ea484",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "metadata_only",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:cc7a5715391457a2474f1dad0012251c9585ac7b4704d92ad465acd473d4704f",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/threatsday-gpt-62-jailbreak-flaws.html",
+      "canonical_url": "https://thehackernews.com/2026/11/threatsday-gpt-62-jailbreak-flaws.html",
+      "published_at": "2026-11-20T03:47:58+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "ThreatsDay: GPT-6.2 Jailbreak Flaws, BubbleLoader PNG Malware, $500M Ransom Demands + 17 More Stories",
+      "raw_title": "ThreatsDay: GPT-6.2 Jailbreak Flaws, BubbleLoader PNG Malware, $500M Ransom Demands + 17 More Stories",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1c635cc4ab304c0755e80ba4fd9923e3e0ad00d07a610a93904c71ca91329e0d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:17:24.213783+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の脅威動向をまとめた週次記事であり、特定のカテゴリに分類できないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、GPT-6.2のジェイルブレイク脆弱性、BubbleLoader PNGマルウェア、5億ドルの身代金要求など、様々なサイバー脅威に関する週次まとめです。AIが悪用を容易にしている点にも言及しています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。一般的な脅威動向のまとめであり、個別の具体的な脅威に対する情報ではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や具体的なアクションを伴わない週次まとめ記事のため「低」です。確認目安は、短期的な対応を要する具体的な脅威や期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ea8cebf5d32bea67ec9b45b3a9488b797cb92985bc8d0d0052450b1cd7b841d3",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/phpaftershell-explained-how-hackers.html",
+      "canonical_url": "https://thehackernews.com/2026/11/phpaftershell-explained-how-hackers.html",
+      "published_at": "2026-11-20T01:59:56+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "phpAfterShell Explained: How Hackers Could Turn a PHP Session Flaw Into Code Execution",
+      "raw_title": "phpAfterShell Explained: How Hackers Could Turn a PHP Session Flaw Into Code Execution",
+      "raw_excerpt": null,
+      "content_hash": "sha256:07249cf0baa644e54ce9534695e392a5a83f138f6138b4abc372be4e615e388e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "metadata_only",
+        "ai_eligible": false,
+        "downgrade_reason": "output_length_violation",
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "not_attempted",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": null,
+        "category": null,
+        "category_version": "v1",
+        "category_reason": null,
+        "tags": [],
+        "importance": null,
+        "urgency": null,
+        "summary": null,
+        "financial_impact": null,
+        "recommended_actions": [],
+        "reason": null,
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e60ac72e5cb03181a5fdf86e817c5795e53cbda9511019eb572ef7f894767617",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/php-patches-seven-critical-rce-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/php-patches-seven-critical-rce-vulnerabilities/",
+      "published_at": "2026-11-20T00:54:20+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "PHP Patches Seven Critical RCE Vulnerabilities",
+      "raw_title": "PHP Patches Seven Critical RCE Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:eb0e21eca3609ce2b50238fc0d680f46c916390b24a0cbca2e24cf9d5e9c348b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:17:59.508314+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "PHPの複数のRCE脆弱性に対するパッチ公開が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "PHPは、ワーカープロセスをクラッシュさせ、PHPワーカーの権限でコードを実行される可能性のある7件の重大なリモートコード実行（RCE）脆弱性に対するパッチを公開しました。",
+        "financial_impact": "金融機関でPHPを利用しているシステムがある場合に、適用性確認の対象となります。特に外部公開されているシステムでの利用有無を確認する必要があります。",
+        "recommended_actions": [
+          "自社および委託先でPHPを利用しているシステムを棚卸しし、影響を受けるバージョンがないか確認する",
+          "PHPの公式情報を参照し、該当する脆弱性に対するパッチ適用または緩和策の実施を検討する"
+        ],
+        "reason": "重要度は、PHPは広く利用されるものの、記事からは金融機関での具体的な利用状況や外部露出の程度が不明確なため「中」です。確認目安は、実悪用や緊急対応の期限に関する記述がなく、KEV新規追加も確認されないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:dcfa8134ceac9ad36d391ec751f393f616b6754a914d8ab0001a06e1984a476f",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/php-fixes-7-critical-flaws-including.html",
+      "canonical_url": "https://thehackernews.com/2026/11/php-fixes-7-critical-flaws-including.html",
+      "published_at": "2026-11-20T00:18:07+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "PHP Fixes 7 Critical Flaws, Including Bugs That Could Allow Remote Code Execution",
+      "raw_title": "PHP Fixes 7 Critical Flaws, Including Bugs That Could Allow Remote Code Execution",
+      "raw_excerpt": null,
+      "content_hash": "sha256:415584385f1ab013e2aa294f36e1497d9d8753b4a26866470d4b88be94bbf35a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:18:16.593139+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "PHPの複数の重大な脆弱性とその修正が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "PHP Foundationは、リモートコード実行につながる可能性のあるCVE-2026-115560を含む複数の重大なセキュリティ脆弱性に対処するためのセキュリティアップデートをリリースしました。このパッチは、サポートされているすべてのPHPバージョンに影響を与える複数の脆弱性について事前にユーザーに警告した後に公開されました。",
+        "financial_impact": "金融機関のシステムでPHPが利用されている場合、これらの脆弱性はリモートコード実行につながる可能性があり、情報漏えいやシステム停止のリスクがあるため関係します。",
+        "recommended_actions": [
+          "自社および委託先におけるPHPの利用有無と影響を受けるバージョンを確認する",
+          "PHP Foundationが公開したセキュリティアップデートの適用を検討する",
+          "ベンダーの一次情報を確認し、詳細な脆弱性情報と緩和策を評価する"
+        ],
+        "reason": "重要度は、広く利用されるPHPにリモートコード実行の可能性のある重大な脆弱性が複数存在するため「高」です。確認目安は、パッチが公開されており、即時悪用や進行中の攻撃の明確な記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:63edce0941e0edb0a008ee05ffa1dfd8557531a968d9f5798bd55c0b3ce04d88",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/critical-vmware-vcenter-flaw-cvss-98.html",
+      "canonical_url": "https://thehackernews.com/2026/11/critical-vmware-vcenter-flaw-cvss-98.html",
+      "published_at": "2026-11-20T00:11:06+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "Critical VMware vCenter Flaw (CVSS 9.8) Lets Network Attackers Bypass Authentication",
+      "raw_title": "Critical VMware vCenter Flaw (CVSS 9.8) Lets Network Attackers Bypass Authentication",
+      "raw_excerpt": null,
+      "content_hash": "sha256:78c18bc6a28e89274b0300b2473690c7aa4c0f19a6c461a02784d0d1123e2706",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:18:34.040523+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "VMware vCenterの認証バイパス脆弱性が主題であるため。",
+        "tags": [
+          "パッチ",
+          "認証",
+          "CVE"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "VMware vCenterにネットワークアクセスを持つ攻撃者が認証をバイパスし、システムへの不正アクセスを可能にする重大な脆弱性が発見されました。Broadcomは本日公開されたアドバイザリで、この脆弱性に対する修正版を全てのサポート対象ブランチで提供しており、回避策はないと述べています。",
+        "financial_impact": "多くの金融機関で仮想化基盤としてVMware製品が利用されている可能性があり、vCenterはESXホストと仮想マシンを管理する中央コンソールであるため、影響を受ける可能性があります。不正アクセスは業務停止や情報漏えいにつながる恐れがあります。",
+        "recommended_actions": [
+          "自社および委託先でVMware vCenterの利用有無、および影響を受けるバージョン・外部露出の有無を確認する",
+          "Broadcomのアドバイザリを参照し、修正版の適用または緩和策の実施を検討する",
+          "vCenterのログや関連システムの監視を強化し、不審なアクセスがないか確認する"
+        ],
+        "reason": "重要度は、CVSS 9.8の重大な認証バイパス脆弱性であり、多くの金融機関で利用される可能性のある製品のため「高」です。確認目安は、修正版が提供済みで、実悪用や緊急の期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6ece0c86c11880b8fd10e2d08c54d28b7228f18d06a6d1646a189163eb6ac618",
+      "source_id": "ipa",
+      "source_name": "IPA",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.ipa.go.jp/security/security-alert/2026/alert20261120.html",
+      "canonical_url": "https://www.ipa.go.jp/security/security-alert/2026/alert20261120.html",
+      "published_at": "2026-11-20T00:00:00+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "PHPの脆弱性対策について（2026年11月）",
+      "raw_title": "PHPの脆弱性対策について（2026年11月）",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7091623e888a40cad7828fa85d7dd6f60a2faf2989fc075b6f710a7fdcbb5c7f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "feed_summary",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:18:50.668317+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "PHPの脆弱性対策に関する情報が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "IPAは2026年11月、PHPの脆弱性対策に関する注意喚起を公開しました。詳細な脆弱性情報は記事からは確認できません。",
+        "financial_impact": "PHPは多くのシステムで利用されるため、金融機関でPHPを利用している場合に適用性確認の対象になります。",
+        "recommended_actions": [
+          "自社および委託先におけるPHPの利用有無とバージョンを確認する",
+          "IPAやPHP公式サイトから最新の脆弱性情報と対策を確認する"
+        ],
+        "reason": "重要度は、PHPが広く利用される基盤技術であるものの、記事に具体的な脆弱性情報や悪用状況の記述がないため「中」です。確認目安は、具体的な緊急性を示す情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:88c544823e0d1532883cb2e9c0f75def8cfc5dadfd8ea711fe71a12ab2c316fa",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/drupal-patches-critical-installer-flaw.html",
+      "canonical_url": "https://thehackernews.com/2026/11/drupal-patches-critical-installer-flaw.html",
+      "published_at": "2026-11-19T23:33:06+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "Drupal Patches Critical Installer Flaw That Could Give Unauthenticated Attackers Control of Sites",
+      "raw_title": "Drupal Patches Critical Installer Flaw That Could Give Unauthenticated Attackers Control of Sites",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4d7276bec65b85d0105f359cd670e736b681d19a40456163440a7e34b0ed6458",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:19:07.647098+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Drupalのインストーラーにおける重大な脆弱性に関する記事であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Drupalのコアに重大な脆弱性が発見され、特定の条件下で認証されていない攻撃者が組み込みのインストーラーを悪用し、サイトの再インストールを試みることが可能になります。これによりサイトの乗っ取りやリモートコード実行につながる可能性がありますが、脆弱な設定は一般的ではないと評価されています。修正版は昨日リリースされました。",
+        "financial_impact": "金融機関でDrupalをウェブサイトやアプリケーション基盤として利用している場合に、適用性確認の対象になります。記事からは利用有無を確認できないため、直接的な影響は不明です。",
+        "recommended_actions": [
+          "自社および委託先でDrupalを利用しているか、また影響を受けるバージョンを使用しているかを確認する",
+          "Drupalの修正版へのアップデート、またはベンダーが提供する緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、Drupalの利用状況により影響が異なるため「中」です。確認目安は、修正版がリリース済みであり、脆弱な設定が一般的ではないと評価されているため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:99484983430e63d2a03ce22cd8a4b31c3003da3934a7b27fc8d1f5722f5a270a",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/nvidia-responds-to-gentlemen-ransomware-claim/",
+      "canonical_url": "https://www.securityweek.com/nvidia-responds-to-gentlemen-ransomware-claim/",
+      "published_at": "2026-11-19T23:17:32+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "Nvidia Responds to Gentlemen Ransomware Claim",
+      "raw_title": "Nvidia Responds to Gentlemen Ransomware Claim",
+      "raw_excerpt": null,
+      "content_hash": "sha256:700df82cdb3e10c9dddc8409c5df15d2bf1d86837d34d3978a1cc31f87f02d60",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:19:24.673099+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "Nvidiaがランサムウェアグループから被害を主張された事案について、同社がシステム侵害の兆候はないと発表したインシデントに関する記事であるため。",
+        "tags": [
+          "ランサムウェア",
+          "インシデント"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "Nvidiaは、Gentlemenランサムウェアグループが同社を被害者としてリストアップしたことに対し、システム侵害の兆候は確認されていないと発表しました。",
+        "financial_impact": "金融機関への直接的な影響は確認できません。Nvidiaのサプライチェーンの一部として間接的な影響の可能性はありますが、記事からは具体的な関係性が不明です。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が確認できず、他業界のインシデント事例として参考情報にとどまるため「低」です。確認目安は、具体的な脅威や期限、金融機関への直接的な影響が記事にないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:967cc7919da4028ec21c913bae54687817a52c4630bd031a130d0c4649505167",
+      "source_id": "mandiant",
+      "source_name": "Mandiant",
+      "source_type": "脅威インテリジェンス",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://cloud.google.com/blog/topics/threat-intelligence/armory-castle-exploits-vsphere/",
+      "canonical_url": "https://cloud.google.com/blog/topics/threat-intelligence/armory-castle-exploits-vsphere/",
+      "published_at": "2026-11-19T23:00:00+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "ARMORY CASTLEがvSphereの脆弱性を悪用",
+      "raw_title": "ARMORY CASTLE Exploits vSphere",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ee17db352ed88f8d4113fba463846ef3fc6660dbcb9f3229b4cc4b552646edf9",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "feed_summary",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:19:42.275556+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国関連の脅威アクターによる特定の製品の脆弱性悪用と、その後の活動が主題であるため。",
+        "tags": [
+          "APT",
+          "悪用確認済み",
+          "CVE",
+          "パッチ",
+          "ゼロデイ"
+        ],
+        "importance": "高",
+        "urgency": "本日確認",
+        "summary": "中国関連の脅威アクターARMORY CASTLEが、BeyondTrust Remote Supportのゼロデイ脆弱性CVE-2026-102764に加え、VMware vCenter Serverの脆弱性CVE-2026-123890を悪用していたことが判明しました。攻撃者はvCenterの脆弱性を悪用し、追加のマルウェアを展開しています。",
+        "financial_impact": "VMware vCenter Serverは多くの金融機関で仮想化基盤として利用されている可能性があり、本脆弱性が悪用された場合、仮想環境全体の侵害や業務停止につながる恐れがあります。BeyondTrust Remote Supportも利用している場合は関係します。",
+        "recommended_actions": [
+          "VMware vCenter ServerおよびBeyondTrust Remote Supportの利用有無と、影響を受けるバージョン・外部露出を確認する",
+          "VMwareおよびBeyondTrustから提供されているパッチや緩和策の適用状況を確認し、対応要否を評価する",
+          "Mandiantが公開している侵害指標（IOC）と自社ログを照合し、侵害の痕跡がないか確認する"
+        ],
+        "reason": "重要度は、中国関連のAPTグループによる広く利用される仮想化基盤の脆弱性悪用であり、仮想環境全体への影響が懸念されるため「高」です。確認目安は、実悪用が確認されており、VMwareが脆弱性を開示したばかりであるため「本日確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:4775b8e7b43cd6478da1d97a3a307f27f845bc6e5e131059872281411e91318f",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/hackers-exploit-cisco-expressway-vulnerability-soon-after-poc-release/",
+      "canonical_url": "https://www.securityweek.com/hackers-exploit-cisco-expressway-vulnerability-soon-after-poc-release/",
+      "published_at": "2026-11-19T22:12:20+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "Hackers Exploit Cisco Expressway Vulnerability Soon After PoC Release",
+      "raw_title": "Hackers Exploit Cisco Expressway Vulnerability Soon After PoC Release",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2d789ba012a2e221a5a6a56300361628829ecaef6ec044aac38f9c093cbf7704",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:19:59.067009+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Cisco Expresswayの脆弱性がPoC公開直後に悪用された事例が主題であるため。",
+        "tags": [
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ロシアの組織でクラスター化されたCisco Expresswayデバイスが攻撃者によって侵害され、水平移動のためのツールが準備されました。これはPoC公開直後の悪用と報じられています。",
+        "financial_impact": "Cisco Expresswayは金融機関でも利用される可能性のある通信ゲートウェイ製品です。利用している場合は、本件が関係する可能性があります。",
+        "recommended_actions": [
+          "Cisco Expressway製品の利用有無と、影響を受ける可能性のあるバージョンを確認する",
+          "Ciscoからの公式情報やパッチ、緩和策の有無を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、Cisco Expresswayの利用状況が金融機関によって異なるため「中」です。確認目安は、PoC公開直後の悪用事例であり、自社への影響確認を今週中に実施すべきであるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:fe96187d702bae5ee4865cdae9c9212e28ab9720ac469203cd346d54fdede65e",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/stepsecurity-secures-20-million-to-expand-supply-chain-protection/",
+      "canonical_url": "https://www.securityweek.com/stepsecurity-secures-20-million-to-expand-supply-chain-protection/",
+      "published_at": "2026-11-19T21:23:34+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "StepSecurity Secures $20 Million to Expand Supply Chain Protection",
+      "raw_title": "StepSecurity Secures $20 Million to Expand Supply Chain Protection",
+      "raw_excerpt": null,
+      "content_hash": "sha256:803115de55f562e2bfae928fa8f31f1f05a8db17671256774f3ed9396d967c84",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:20:15.634023+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "記事はセキュリティ企業の資金調達に関するもので、特定の脆弱性、攻撃、インシデント、規制、クラウド・サプライチェーンリスク、AIリスクのいずれにも直接該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "セキュリティ企業StepSecurityが、サプライチェーン保護プラットフォームの開発と普及を加速するため、2,000万ドルの資金調達に成功しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。セキュリティ企業の資金調達に関する情報であり、特定の脅威や規制変更を伝えるものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威やインシデントに関する情報ではなく、一般的な業界ニュースであるため「低」です。確認目安は、金融機関に直接的な行動を促す内容ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b7eb24da41d56b57a0b0e0cfb24f7b942dccc42d640feb183c44248d19d4cb72",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/critical-apache-roller-axis-vulnerabilities-exploited-in-attacks/",
+      "canonical_url": "https://www.securityweek.com/critical-apache-roller-axis-vulnerabilities-exploited-in-attacks/",
+      "published_at": "2026-11-19T21:13:24+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "Critical Apache Roller, Axis Vulnerabilities Exploited in Attacks",
+      "raw_title": "Critical Apache Roller, Axis Vulnerabilities Exploited in Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:afe692503839b8b8f61ff779229ffcbacd3604081c1a89ef0e364d54426b4b93",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:20:32.465423+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Apache製品の脆弱性が攻撃で悪用されていることが主題であるため。",
+        "tags": [
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Apache RollerとAxisの重大な脆弱性が攻撃で悪用されていることが報告されました。攻撃者はAxisの欠陥を介してConfluence Data Centerを標的にしており、ApacheはRollerに対する攻撃について警告しています。",
+        "financial_impact": "金融機関でApache RollerまたはAxis、およびConfluence Data Centerを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Apache RollerおよびAxis、Confluence Data Centerの利用有無と影響バージョンを確認する",
+          "各製品のベンダー一次情報と修正版・緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、対象製品の利用可能性が記事から確認できず、適用範囲が不確実なため「中」です。確認目安は、悪用が確認されているものの、KEV新規追加や緊急対応の明確な期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f433cdbdce3157f1f94534735ab41f13733656d45cbacd9620cc95b5827f6699",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/the-governance-gap-in-open-weight-ai-and-what-to-do-about-it/",
+      "canonical_url": "https://www.securityweek.com/the-governance-gap-in-open-weight-ai-and-what-to-do-about-it/",
+      "published_at": "2026-11-19T21:00:00+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "The Governance Gap in Open-Weight AI and What to Do About It",
+      "raw_title": "The Governance Gap in Open-Weight AI and What to Do About It",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b276fb6c5f0f7965e83d72e89137639dbdffe0e5992c462429511da998837a73",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:20:49.196525+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "記事の主題がオープンウェイトAIのガバナンスとリスク管理であるため。",
+        "tags": [
+          "AI",
+          "ガイドライン"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "オープンウェイトAIの導入はコスト削減やデータプライバシー、制御性向上を促進する一方で、多くの組織がそれに伴うリスクに対処できていない現状が指摘されています。",
+        "financial_impact": "金融機関においてもオープンウェイトAIの導入が進む可能性があり、その際のガバナンス体制やリスク管理の検討が必要となるため関係します。",
+        "recommended_actions": [],
+        "reason": "重要度は、オープンウェイトAIのガバナンスに関する一般的な課題提起であり、具体的な脅威や製品への影響が不明確なため「中」です。確認目安は、短期的な対応を求める情報ではなく、中長期的な検討が必要なため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:79fb717d814dd0bdd4caec5bbd300e556a6c4146018d987ce4d71178ffbd4c0c",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/everything-is-web-application-including.html",
+      "canonical_url": "https://thehackernews.com/2026/11/everything-is-web-application-including.html",
+      "published_at": "2026-11-19T20:52:23+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "Everything Is a Web Application, Including Your Firewall",
+      "raw_title": "Everything Is a Web Application, Including Your Firewall",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6c7450fd1028a89d86b8776266cf76c1da10412d823839e2e8d4f4201f6cecaf",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:21:06.453179+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "ファイアウォール製品の認証不要のコード実行脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Palo Alto Networksは、ファイアウォール製品PAN-OSの管理インターフェースに存在する2つのPHP脆弱性（CVE-2026-109618、CVE-2026-109619）がインターネットに公開された環境で悪用されていることを確認しました。これらの脆弱性により、認証なしでウェブサーバー上でコードが実行される可能性があります。",
+        "financial_impact": "金融機関でPalo Alto NetworksのPAN-OSファイアウォール製品を利用し、管理インターフェースがインターネットに公開されている場合に影響します。認証なしでコード実行が可能となるため、システムへの不正アクセスや情報漏えいのリスクがあります。",
+        "recommended_actions": [
+          "自社および委託先でPalo Alto Networks PAN-OSファイアウォール製品の利用有無を確認する",
+          "管理インターフェースがインターネットに公開されているかを確認し、必要に応じてアクセス制限を強化する",
+          "ベンダーの一次情報を参照し、修正パッチや緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、広く利用されるファイアウォール製品の認証不要のコード実行脆弱性であり、実悪用が確認されているため「高」です。確認目安は、実悪用が確認されているものの、CISA KEVへの新規追加がなく、即時対応の期限が明示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1f146f7fbc8c63338b62bc5bb992e6d3f1e9f70891c9daddd0e2e4005f05be6a",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/splunk-patches-nearly-140-flaws-across-three-core-products/",
+      "canonical_url": "https://www.securityweek.com/splunk-patches-nearly-140-flaws-across-three-core-products/",
+      "published_at": "2026-11-19T19:41:05+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "Splunk Patches Nearly 140 Flaws Across Three Core Products",
+      "raw_title": "Splunk Patches Nearly 140 Flaws Across Three Core Products",
+      "raw_excerpt": null,
+      "content_hash": "sha256:62315d37d294dd85ffae240ac0af69ebf695b485932d6edf2b3d0fbd62d0928e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:21:23.299524+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Splunk製品の多数の脆弱性修正が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Splunkは、3つの主要製品（Splunk Enterprise、Splunk Cloud Platform、Splunk Universal Forwarder）において、認証バイパス、リモートコード実行、権限昇格につながる約140の脆弱性を修正するセキュリティアップデートを公開しました。",
+        "financial_impact": "Splunk製品は多くの金融機関でログ管理やセキュリティ監視に利用されている可能性があり、利用している場合は適用性確認の対象になります。",
+        "recommended_actions": [
+          "自社および委託先におけるSplunk Enterprise、Splunk Cloud Platform、Splunk Universal Forwarderの利用有無とバージョンを確認する",
+          "Splunkが公開したセキュリティアップデート情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、Splunk製品が金融機関で広く利用される可能性があるものの、記事に悪用状況や緊急対応の指示がないため「中」です。確認目安は、多数の脆弱性修正であり、即時対応の根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:6ebe391a8b41bbc0d12fc6b0adda6fb5b6d345f2beee9a61929827d186a2d687",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/n-able-confirms-hackers-accessed-cloud.html",
+      "canonical_url": "https://thehackernews.com/2026/11/n-able-confirms-hackers-accessed-cloud.html",
+      "published_at": "2026-11-19T18:31:26+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "Hackers Breach N-able Cloud Server, Disrupting Email Security Management Across 3 Regions",
+      "raw_title": "Hackers Breach N-able Cloud Server, Disrupting Email Security Management Across 3 Regions",
+      "raw_excerpt": null,
+      "content_hash": "sha256:93cd3772ff2a63795eb2e0bf4ce2e5fb7cba85e44712fecc9c58a12caf02bb0c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:21:40.350314+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "N-ableのクラウドサーバーへの不正アクセスとサービス停止が主題であるため。",
+        "tags": [
+          "クラウド",
+          "インシデント",
+          "業務停止",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "N-ableは、Mail AssureおよびSpam Experts Hosted Cloudのサーバーの1つに脅威アクターが不正アクセスしたことを公表しました。これにより、管理インターフェースとAPIが無効化され、3地域でメールセキュリティ管理に影響が出ています。",
+        "financial_impact": "N-ableのMail AssureまたはSpam Experts Hosted Cloudサービスをメールセキュリティ管理に利用している金融機関は、サービス停止や管理機能への影響について確認が必要です。",
+        "recommended_actions": [
+          "N-ableのMail AssureまたはSpam Experts Hosted Cloudサービスを自社および委託先で利用しているか確認する",
+          "N-ableからの公式発表や指示を確認し、必要な対応を評価する"
+        ],
+        "reason": "重要度は、N-ableのクラウドサービスを利用している場合に影響する可能性があるため「中」です。確認目安は、サービス停止のインシデントであり、即時対応の明確な期限は示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:29eb33240b0fe5717515a5b0fa724d76dc4bcd82149007bd86c49e61ecc87c44",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/ruby-releases-fixes-for-7-regex-and.html",
+      "canonical_url": "https://thehackernews.com/2026/11/ruby-releases-fixes-for-7-regex-and.html",
+      "published_at": "2026-11-19T17:42:11+09:00",
+      "fetched_at": "2026-11-20T12:17:05.548578+09:00",
+      "title": "Ruby Releases Fixes for 7 Regex and String Flaws, Warns 5 Have Proof-of-Concept RCE",
+      "raw_title": "Ruby Releases Fixes for 7 Regex and String Flaws, Warns 5 Have Proof-of-Concept RCE",
+      "raw_excerpt": null,
+      "content_hash": "sha256:30c68e4b5158ec5e96d6e22197747958c88df1bc4b6f84f4c583ec1883fd5d4b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-20T12:21:57.246425+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Rubyの正規表現エンジンと文字列処理における複数の脆弱性に関する記事であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Rubyの正規表現エンジンと文字列処理コードに7件のメモリ安全性に関する脆弱性が発見されました。そのうち5件については、細工された入力によってリモートコード実行（RCE）が可能となる概念実証（PoC）が存在すると開発元が警告しています。",
+        "financial_impact": "Rubyは多くのシステムで利用されるプログラミング言語であり、金融機関のシステムやアプリケーションで利用されている場合に関係します。直接的な影響は利用状況に依存します。",
+        "recommended_actions": [
+          "自社システムおよび委託先システムにおけるRubyの利用有無と影響を受けるバージョンを確認する",
+          "Rubyの修正済みバージョンへのアップデートを検討する",
+          "ベンダーから提供される詳細情報や緩和策を確認する"
+        ],
+        "reason": "重要度は、Rubyが広く利用されるプログラミング言語であり、RCEのPoCが存在する脆弱性が含まれるため「中」です。確認目安は、悪用確認や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
