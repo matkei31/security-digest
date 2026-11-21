@@ -137,23 +137,23 @@
     </div>
   </div>
   <header>
-    <div class="sub">最終更新: 2026年11月20日 12:22</div>
-    <div class="count">19 件</div>
-    <nav class="archive-nav" aria-label="トップページのダイジェストナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link" href="archive/2026-11-19.html">← 前のダイジェスト</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="archive/index.html">過去のダイジェスト</a></div></nav>
+    <div class="sub">最終更新: 2026年11月21日 12:18</div>
+    <div class="count">18 件</div>
+    <nav class="archive-nav" aria-label="トップページのダイジェストナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link" href="archive/2026-11-20.html">← 前のダイジェスト</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="archive/index.html">過去のダイジェスト</a></div></nav>
   </header>
   <div class="todays-brief">
     <div class="brief-box">
       <h2>本日の要点</h2>
       <div class="brief-section">
       <h3 class="brief-section-title">概況</h3>
-      <p class="brief-status-line">Brief対象17件｜重要度「高」5件｜本日確認2件｜今週確認11件</p>
-      <p class="brief-overview">Brief対象の記事のうち、本日中に適用性または初動要否を確認する記事が2件あります。</p>
+      <p class="brief-status-line">Brief対象18件｜重要度「高」4件｜本日確認0件｜今週確認14件</p>
+      <p class="brief-overview">Brief対象の記事では、緊急の確認対象はありません。今週確認の対象が14件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が4件あるため、内容は優先的に把握する必要があります。</p>
     </div><div class="brief-section">
       <h3 class="brief-section-title">重要・優先事項</h3>
-      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">Googleは、Broadcomがパッチを公開する前に、中国系のスパイグループがVMware vCenterの認証バイパスの重大な脆弱性をゼロデイとして悪用していたと発表しました。</p><p class="brief-priority-impact">VMware vCenterは多くの金融機関で仮想化基盤として利用されている可能性があり、認証バイパスの脆弱性はシステムへの不正アクセスや情報漏えいにつながるため、関係します。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">中国関連の脅威アクターARMORY CASTLEが、BeyondTrust Remote Supportのゼロデイ脆弱性CVE-2026-102764に加え、VMware vCenter Serverの脆弱性CVE-2026-123890を悪用していたことが判明しました。攻撃者はvCenterの脆弱性を悪用し、追加のマルウェアを展開しています。</p><p class="brief-priority-impact">VMware vCenter Serverは多くの金融機関で仮想化基盤として利用されている可能性があり、本脆弱性が悪用された場合、仮想環境全体の侵害や業務停止につながる恐れがあります。BeyondTrust Remote Supportも利用している場合は関係します。</p></li></ul>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">Cisco Expresswayの重大な脆弱性CVE-2026-76466（CVSSスコア9.8）が悪用され、PoC公開直後にロシアの組織が侵害されました。認証されていないリモート攻撃者がネットワークアクセスを持つことで、内部ネットワークへの侵入を許す可能性があります。</p><p class="brief-priority-impact">Cisco Expresswayは金融機関でも利用される可能性のある通信基盤であり、本脆弱性が悪用された場合、内部ネットワークへの不正アクセスや情報漏えい、業務停止につながる可能性があります。利用している場合は適用性確認の対象となります。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">中国関連のサイバースパイグループArmory Castleが、2026年9月初旬にVMware vCenter Serverの認証バイパスのゼロデイ脆弱性（CVE-2026-123890、CVSSスコア9.8）を悪用し、管理者権限を取得してデータを窃取したとされています。</p><p class="brief-priority-impact">VMware vCenter Serverは多くの金融機関で仮想化基盤の管理に利用されている可能性があり、本脆弱性が悪用された場合、基盤への不正アクセスや情報窃取、業務停止につながる恐れがあります。</p></li></ul>
     </div><div class="brief-section">
       <h3 class="brief-section-title">確認事項</h3>
-      <ul class="brief-list"><li>VMware vCenterの利用有無と影響を受けるバージョンを確認する</li><li>VMware vCenter ServerおよびBeyondTrust Remote Supportの利用有無と、影響を受けるバージョン・外部露出を確認する</li></ul>
+      <ul class="brief-list"><li>Cisco Expresswayの利用有無、および影響を受けるバージョン・外部公開状況を確認する</li><li>自社および委託先におけるVMware vCenter Serverの利用有無、および影響を受けるバージョンの有無を確認する</li></ul>
     </div>
     </div>
   </div>
@@ -162,55 +162,49 @@
     <p class="important-items-note">重要度が高い、または確認目安が本日確認の記事です。</p>
     <div class="important-items-list">
       <article class="priority-item">
-        <h3 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-1" lang="en">Newly Patched VMware vCenter Flaw Exploited as Zero-Day by Chinese APT</a></span></h3>
-        <p class="priority-item-meta">重要度 高 ・ 確認目安 本日確認</p>
-        <p class="important-item-reason">重要度は、広く利用されるVMware vCenterのゼロデイ脆弱性が中国系APTに悪用されたため「高」です。確認目安は、パッチ公開前に悪用が確認されており、即時対応の根拠があるため「本日確認」です。</p>
+        <h3 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-1" lang="en">Hackers Exploit Critical Cisco Expressway Flaw, Breach Four Devices and Reach Internal Network</a></span></h3>
+        <p class="priority-item-meta">重要度 高 ・ 確認目安 今週確認</p>
+        <p class="important-item-reason">重要度は、CVSS9.8の重大な脆弱性であり、PoC公開後に実悪用が確認されているため「高」です。確認目安は、実悪用が確認されているものの、CISA KEVへの新規追加がなく即時対応の期限が明示されていないため「今週確認」です。</p>
         <a class="priority-item-link" href="#article-1">本文を見る</a>
       </article>
       <article class="priority-item">
-        <h3 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-2" lang="en">ARMORY CASTLE Exploits vSphere</a><span class="article-title-translation" lang="ja">ARMORY CASTLEがvSphereの脆弱性を悪用</span></span></h3>
-        <p class="priority-item-meta">重要度 高 ・ 確認目安 本日確認</p>
-        <p class="important-item-reason">重要度は、中国関連のAPTグループによる広く利用される仮想化基盤の脆弱性悪用であり、仮想環境全体への影響が懸念されるため「高」です。確認目安は、実悪用が確認されており、VMwareが脆弱性を開示したばかりであるため「本日確認」です。</p>
+        <h3 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-2" lang="en">China-Linked Hackers Exploit Critical VMware vCenter Zero-Day to Gain Admin Access and Steal Data</a></span></h3>
+        <p class="priority-item-meta">重要度 高 ・ 確認目安 今週確認</p>
+        <p class="important-item-reason">重要度は、広く利用されるVMware vCenter Serverのゼロデイ脆弱性であり、管理者権限取得とデータ窃取の可能性があるため「高」です。確認目安は、悪用が確認されているものの、直近3日以内のKEV新規追加がなく、緊急パッチの公開状況が不明なため「今週確認」です。</p>
         <a class="priority-item-link" href="#article-2">本文を見る</a>
       </article>
       <article class="priority-item">
-        <h3 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-3" lang="en">PHP Fixes 7 Critical Flaws, Including Bugs That Could Allow Remote Code Execution</a></span></h3>
+        <h3 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-3" lang="en">JPMorgan, Visa, Mastercard Cite Third-Party Incidents Amid Data Leak</a></span></h3>
         <p class="priority-item-meta">重要度 高 ・ 確認目安 今週確認</p>
-        <p class="important-item-reason">重要度は、広く利用されるPHPにリモートコード実行の可能性のある重大な脆弱性が複数存在するため「高」です。確認目安は、パッチが公開されており、即時悪用や進行中の攻撃の明確な記述がないため「今週確認」です。</p>
+        <p class="important-item-reason">重要度は、大手金融機関の顧客データ漏洩の可能性があり、委託先管理の重要性が高いため「高」です。確認目安は、進行中の攻撃や緊急対応の指示が記事にないため「今週確認」です。</p>
         <a class="priority-item-link" href="#article-3">本文を見る</a>
       </article>
       <article class="priority-item">
-        <h3 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-4" lang="en">Critical VMware vCenter Flaw (CVSS 9.8) Lets Network Attackers Bypass Authentication</a></span></h3>
+        <h3 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-4" lang="ja">注意喚起: PHPにおける複数の脆弱性（CVE-2026-109618、CVE-2026-109619）に関する注意喚起  (更新)</a></span></h3>
         <p class="priority-item-meta">重要度 高 ・ 確認目安 今週確認</p>
-        <p class="important-item-reason">重要度は、CVSS 9.8の重大な認証バイパス脆弱性であり、多くの金融機関で利用される可能性のある製品のため「高」です。確認目安は、修正版が提供済みで、実悪用や緊急の期限に関する記述がないため「今週確認」です。</p>
+        <p class="important-item-reason">重要度は、CISA KEVに掲載され実悪用が確認されているPHPの脆弱性であり、広く利用される可能性が高いため「高」です。確認目安は、KEV新規追加ではないものの実悪用が確認されているため、今週中に利用有無と対応要否を確認すべきであるため「今週確認」です。</p>
         <a class="priority-item-link" href="#article-4">本文を見る</a>
-      </article>
-      <article class="priority-item">
-        <h3 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-5" lang="en">Everything Is a Web Application, Including Your Firewall</a></span></h3>
-        <p class="priority-item-meta">重要度 高 ・ 確認目安 今週確認</p>
-        <p class="important-item-reason">重要度は、広く利用されるファイアウォール製品の認証不要のコード実行脆弱性であり、実悪用が確認されているため「高」です。確認目安は、実悪用が確認されているものの、CISA KEVへの新規追加がなく、即時対応の期限が明示されていないため「今週確認」です。</p>
-        <a class="priority-item-link" href="#article-5">本文を見る</a>
       </article>
     </div>
   </section>
   <section class="dashboard">
     <div class="dashboard-head">
       <h2>本日のダッシュボード</h2>
-      <p class="dashboard-count"><span>掲載</span><strong>19</strong>件</p>
+      <p class="dashboard-count"><span>掲載</span><strong>18</strong>件</p>
     </div>
     <div class="dashboard-axes">
       <div class="dashboard-axis">
         <h3>重要度</h3>
-        <ul class="dashboard-axis-list"><li class="dashboard-axis-item is-accent"><span>高</span><strong>5</strong></li><li class="dashboard-axis-item"><span>中</span><strong>9</strong></li><li class="dashboard-axis-item"><span>低</span><strong>3</strong></li></ul>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item is-accent"><span>高</span><strong>4</strong></li><li class="dashboard-axis-item"><span>中</span><strong>11</strong></li><li class="dashboard-axis-item"><span>低</span><strong>3</strong></li></ul>
       </div>
       <div class="dashboard-axis">
         <h3>確認目安</h3>
-        <ul class="dashboard-axis-list"><li class="dashboard-axis-item is-accent"><span>本日確認</span><strong>2</strong></li><li class="dashboard-axis-item"><span>今週確認</span><strong>11</strong></li><li class="dashboard-axis-item"><span>参考</span><strong>4</strong></li></ul>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item"><span>本日確認</span><strong>0</strong></li><li class="dashboard-axis-item"><span>今週確認</span><strong>14</strong></li><li class="dashboard-axis-item"><span>参考</span><strong>4</strong></li></ul>
       </div>
     </div>
     <div class="dashboard-categories">
       <h3>主なカテゴリ</h3>
-      <ul class="dashboard-category-list"><li class="dashboard-category-item"><span>脆弱性・パッチ</span><strong>9</strong></li><li class="dashboard-category-item"><span>攻撃・脅威動向</span><strong>3</strong></li><li class="dashboard-category-item"><span>インシデント</span><strong>2</strong></li><li class="dashboard-category-item"><span>AI・新技術リスク</span><strong>1</strong></li><li class="dashboard-category-item"><span>その他</span><strong>2</strong></li></ul>
+      <ul class="dashboard-category-list"><li class="dashboard-category-item"><span>脆弱性・パッチ</span><strong>8</strong></li><li class="dashboard-category-item"><span>攻撃・脅威動向</span><strong>3</strong></li><li class="dashboard-category-item"><span>インシデント</span><strong>4</strong></li><li class="dashboard-category-item"><span>AI・新技術リスク</span><strong>1</strong></li><li class="dashboard-category-item"><span>その他</span><strong>2</strong></li></ul>
     </div>
   </section>
   <section class="article-list-header">
@@ -219,390 +213,404 @@
   </section>
   <div class="cards">
     <article class="card" id="article-1">
-      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/newly-patched-vmware-vcenter-flaw-exploited-as-zero-day-by-chinese-apt/" target="_blank" rel="noopener noreferrer" lang="en">Newly Patched VMware vCenter Flaw Exploited as Zero-Day by Chinese APT</a></span></h2>
-      <p class="article-meta">SecurityWeek ・ 11/20 04:21</p>
-      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item is-accent">確認目安 本日確認</span></p>
-      <div class="ai-analysis">
-        <section class="article-section">
-          <h3>概要</h3>
-          <p>Googleは、Broadcomがパッチを公開する前に、中国系のスパイグループがVMware vCenterの認証バイパスの重大な脆弱性をゼロデイとして悪用していたと発表しました。</p>
-        </section>
-        <section class="article-section">
-          <h3>金融機関との関連</h3>
-          <p>VMware vCenterは多くの金融機関で仮想化基盤として利用されている可能性があり、認証バイパスの脆弱性はシステムへの不正アクセスや情報漏えいにつながるため、関係します。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>VMware vCenterの利用有無と影響を受けるバージョンを確認する</li><li>Broadcomから公開されているパッチの適用状況を確認し、未適用であれば速やかに適用を検討する</li><li>過去のログやシステムを調査し、不正アクセスの痕跡がないか確認する</li></ul>
-        </section>
-      </div>
-      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://www.securityweek.com/newly-patched-vmware-vcenter-flaw-exploited-as-zero-day-by-chinese-apt/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">ゼロデイ</span><span class="article-tag">悪用確認済み</span><span class="article-tag">APT</span><span class="article-tag">パッチ</span></div>
-    </article>
-
-    <article class="card" id="article-2">
-      <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://cloud.google.com/blog/topics/threat-intelligence/armory-castle-exploits-vsphere/" target="_blank" rel="noopener noreferrer" lang="en">ARMORY CASTLE Exploits vSphere</a><span class="article-title-translation" lang="ja">ARMORY CASTLEがvSphereの脆弱性を悪用</span></span></h2>
-      <p class="article-meta">Mandiant ・ 11/19 23:00</p>
-      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item is-accent">確認目安 本日確認</span></p>
-      <div class="ai-analysis">
-        <section class="article-section">
-          <h3>概要</h3>
-          <p>中国関連の脅威アクターARMORY CASTLEが、BeyondTrust Remote Supportのゼロデイ脆弱性CVE-2026-102764に加え、VMware vCenter Serverの脆弱性CVE-2026-123890を悪用していたことが判明しました。攻撃者はvCenterの脆弱性を悪用し、追加のマルウェアを展開しています。</p>
-        </section>
-        <section class="article-section">
-          <h3>金融機関との関連</h3>
-          <p>VMware vCenter Serverは多くの金融機関で仮想化基盤として利用されている可能性があり、本脆弱性が悪用された場合、仮想環境全体の侵害や業務停止につながる恐れがあります。BeyondTrust Remote Supportも利用している場合は関係します。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>VMware vCenter ServerおよびBeyondTrust Remote Supportの利用有無と、影響を受けるバージョン・外部露出を確認する</li><li>VMwareおよびBeyondTrustから提供されているパッチや緩和策の適用状況を確認し、対応要否を評価する</li><li>Mandiantが公開している侵害指標（IOC）と自社ログを照合し、侵害の痕跡がないか確認する</li></ul>
-        </section>
-      </div>
-      <p class="article-attribution">Monomi DigestによるAI要約・分析です。要約・分析には正確性の限界があります。</p>
-      <a class="article-source-link" href="https://cloud.google.com/blog/topics/threat-intelligence/armory-castle-exploits-vsphere/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">APT</span><span class="article-tag">悪用確認済み</span><span class="article-tag">CVE</span><span class="article-tag">パッチ</span><span class="article-tag">ゼロデイ</span></div>
-    </article>
-
-    <article class="card" id="article-3">
-      <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/php-fixes-7-critical-flaws-including.html" target="_blank" rel="noopener noreferrer" lang="en">PHP Fixes 7 Critical Flaws, Including Bugs That Could Allow Remote Code Execution</a></span></h2>
-      <p class="article-meta">The Hacker News ・ 11/20 00:18</p>
+      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/hackers-exploit-critical-cisco.html" target="_blank" rel="noopener noreferrer" lang="en">Hackers Exploit Critical Cisco Expressway Flaw, Breach Four Devices and Reach Internal Network</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/20 19:32</p>
       <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>PHP Foundationは、リモートコード実行につながる可能性のあるCVE-2026-115560を含む複数の重大なセキュリティ脆弱性に対処するためのセキュリティアップデートをリリースしました。このパッチは、サポートされているすべてのPHPバージョンに影響を与える複数の脆弱性について事前にユーザーに警告した後に公開されました。</p>
+          <p>Cisco Expresswayの重大な脆弱性CVE-2026-76466（CVSSスコア9.8）が悪用され、PoC公開直後にロシアの組織が侵害されました。認証されていないリモート攻撃者がネットワークアクセスを持つことで、内部ネットワークへの侵入を許す可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>金融機関のシステムでPHPが利用されている場合、これらの脆弱性はリモートコード実行につながる可能性があり、情報漏えいやシステム停止のリスクがあるため関係します。</p>
+          <p>Cisco Expresswayは金融機関でも利用される可能性のある通信基盤であり、本脆弱性が悪用された場合、内部ネットワークへの不正アクセスや情報漏えい、業務停止につながる可能性があります。利用している場合は適用性確認の対象となります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社および委託先におけるPHPの利用有無と影響を受けるバージョンを確認する</li><li>PHP Foundationが公開したセキュリティアップデートの適用を検討する</li><li>ベンダーの一次情報を確認し、詳細な脆弱性情報と緩和策を評価する</li></ul>
+          <ul class="action-list"><li>Cisco Expresswayの利用有無、および影響を受けるバージョン・外部公開状況を確認する</li><li>Ciscoからの公式パッチや緩和策の情報を確認し、対応計画を策定する</li><li>Cisco Expresswayのログやネットワークトラフィックを監視し、不審な活動や侵害の兆候がないか確認する</li></ul>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://thehackernews.com/2026/11/php-fixes-7-critical-flaws-including.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">パッチ</span></div>
-    </article>
-
-    <article class="card" id="article-4">
-      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/critical-vmware-vcenter-flaw-cvss-98.html" target="_blank" rel="noopener noreferrer" lang="en">Critical VMware vCenter Flaw (CVSS 9.8) Lets Network Attackers Bypass Authentication</a></span></h2>
-      <p class="article-meta">The Hacker News ・ 11/20 00:11</p>
-      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
-      <div class="ai-analysis">
-        <section class="article-section">
-          <h3>概要</h3>
-          <p>VMware vCenterにネットワークアクセスを持つ攻撃者が認証をバイパスし、システムへの不正アクセスを可能にする重大な脆弱性が発見されました。Broadcomは本日公開されたアドバイザリで、この脆弱性に対する修正版を全てのサポート対象ブランチで提供しており、回避策はないと述べています。</p>
-        </section>
-        <section class="article-section">
-          <h3>金融機関との関連</h3>
-          <p>多くの金融機関で仮想化基盤としてVMware製品が利用されている可能性があり、vCenterはESXホストと仮想マシンを管理する中央コンソールであるため、影響を受ける可能性があります。不正アクセスは業務停止や情報漏えいにつながる恐れがあります。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社および委託先でVMware vCenterの利用有無、および影響を受けるバージョン・外部露出の有無を確認する</li><li>Broadcomのアドバイザリを参照し、修正版の適用または緩和策の実施を検討する</li><li>vCenterのログや関連システムの監視を強化し、不審なアクセスがないか確認する</li></ul>
-        </section>
-      </div>
-      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://thehackernews.com/2026/11/critical-vmware-vcenter-flaw-cvss-98.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">パッチ</span><span class="article-tag">認証</span><span class="article-tag">CVE</span></div>
-    </article>
-
-    <article class="card" id="article-5">
-      <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/everything-is-web-application-including.html" target="_blank" rel="noopener noreferrer" lang="en">Everything Is a Web Application, Including Your Firewall</a></span></h2>
-      <p class="article-meta">The Hacker News ・ 11/19 20:52</p>
-      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
-      <div class="ai-analysis">
-        <section class="article-section">
-          <h3>概要</h3>
-          <p>Palo Alto Networksは、ファイアウォール製品PAN-OSの管理インターフェースに存在する2つのPHP脆弱性（CVE-2026-109618、CVE-2026-109619）がインターネットに公開された環境で悪用されていることを確認しました。これらの脆弱性により、認証なしでウェブサーバー上でコードが実行される可能性があります。</p>
-        </section>
-        <section class="article-section">
-          <h3>金融機関との関連</h3>
-          <p>金融機関でPalo Alto NetworksのPAN-OSファイアウォール製品を利用し、管理インターフェースがインターネットに公開されている場合に影響します。認証なしでコード実行が可能となるため、システムへの不正アクセスや情報漏えいのリスクがあります。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社および委託先でPalo Alto Networks PAN-OSファイアウォール製品の利用有無を確認する</li><li>管理インターフェースがインターネットに公開されているかを確認し、必要に応じてアクセス制限を強化する</li><li>ベンダーの一次情報を参照し、修正パッチや緩和策の適用を検討する</li></ul>
-        </section>
-      </div>
-      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://thehackernews.com/2026/11/everything-is-web-application-including.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/hackers-exploit-critical-cisco.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
       <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span></div>
     </article>
 
-    <article class="card" id="article-6">
-      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/php-patches-seven-critical-rce-vulnerabilities/" target="_blank" rel="noopener noreferrer" lang="en">PHP Patches Seven Critical RCE Vulnerabilities</a></span></h2>
-      <p class="article-meta">SecurityWeek ・ 11/20 00:54</p>
-      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+    <article class="card" id="article-2">
+      <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/china-linked-hackers-exploit-critical.html" target="_blank" rel="noopener noreferrer" lang="en">China-Linked Hackers Exploit Critical VMware vCenter Zero-Day to Gain Admin Access and Steal Data</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/20 18:38</p>
+      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>PHPは、ワーカープロセスをクラッシュさせ、PHPワーカーの権限でコードを実行される可能性のある7件の重大なリモートコード実行（RCE）脆弱性に対するパッチを公開しました。</p>
+          <p>中国関連のサイバースパイグループArmory Castleが、2026年9月初旬にVMware vCenter Serverの認証バイパスのゼロデイ脆弱性（CVE-2026-123890、CVSSスコア9.8）を悪用し、管理者権限を取得してデータを窃取したとされています。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>金融機関でPHPを利用しているシステムがある場合に、適用性確認の対象となります。特に外部公開されているシステムでの利用有無を確認する必要があります。</p>
+          <p>VMware vCenter Serverは多くの金融機関で仮想化基盤の管理に利用されている可能性があり、本脆弱性が悪用された場合、基盤への不正アクセスや情報窃取、業務停止につながる恐れがあります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社および委託先でPHPを利用しているシステムを棚卸しし、影響を受けるバージョンがないか確認する</li><li>PHPの公式情報を参照し、該当する脆弱性に対するパッチ適用または緩和策の実施を検討する</li></ul>
+          <ul class="action-list"><li>自社および委託先におけるVMware vCenter Serverの利用有無、および影響を受けるバージョンの有無を確認する</li><li>VMwareからの公式情報（パッチ、緩和策など）を確認し、対応要否を評価する</li><li>過去のログやシステム設定を確認し、本脆弱性の悪用による侵害兆候がないか調査する</li></ul>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://www.securityweek.com/php-patches-seven-critical-rce-vulnerabilities/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">パッチ</span></div>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/china-linked-hackers-exploit-critical.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">ゼロデイ</span><span class="article-tag">悪用確認済み</span><span class="article-tag">CVE</span><span class="article-tag">パッチ</span></div>
     </article>
 
-    <article class="card" id="article-7">
-      <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.ipa.go.jp/security/security-alert/2026/alert20261120.html" target="_blank" rel="noopener noreferrer" lang="ja">PHPの脆弱性対策について（2026年11月）</a></span></h2>
-      <p class="article-meta">IPA ・ 11/20 00:00</p>
-      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+    <article class="card" id="article-3">
+      <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/jpmorgan-visa-mastercard-cite-third-party-incidents-amid-data-leak/" target="_blank" rel="noopener noreferrer" lang="en">JPMorgan, Visa, Mastercard Cite Third-Party Incidents Amid Data Leak</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/20 16:35</p>
+      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>IPAは2026年11月、PHPの脆弱性対策に関する注意喚起を公開しました。詳細な脆弱性情報は記事からは確認できません。</p>
+          <p>N0n恐喝グループがJPMorgan、Visa、Mastercardの顧客に関連するとされるデータを漏洩させたことを受け、各社はサードパーティプロバイダーのインシデントが原因であると指摘しています。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>PHPは多くのシステムで利用されるため、金融機関でPHPを利用している場合に適用性確認の対象になります。</p>
+          <p>金融機関の顧客データが漏洩した可能性があり、委託先管理の重要性が改めて示されています。自社の委託先における情報セキュリティ対策の確認が求められます。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社および委託先におけるPHPの利用有無とバージョンを確認する</li><li>IPAやPHP公式サイトから最新の脆弱性情報と対策を確認する</li></ul>
+          <ul class="action-list"><li>自社の委託先における情報セキュリティ対策の状況を確認する</li><li>委託先との契約内容や情報取扱いの取り決めを再確認する</li><li>委託先からの情報漏洩に関する報告体制と対応手順を評価する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/jpmorgan-visa-mastercard-cite-third-party-incidents-amid-data-leak/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">インシデント</span><span class="article-tag">情報漏えい</span><span class="article-tag">サプライチェーン</span><span class="article-tag">委託先管理</span></div>
+    </article>
+
+    <article class="card" id="article-4">
+      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.jpcert.or.jp/at/2026/at260033.html" target="_blank" rel="noopener noreferrer" lang="ja">注意喚起: PHPにおける複数の脆弱性（CVE-2026-109618、CVE-2026-109619）に関する注意喚起  (更新)</a></span></h2>
+      <p class="article-meta">JPCERT/CC ・ 11/20 13:40</p>
+      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>JPCERT/CCは、PHPにおける複数の脆弱性（CVE-2026-109618、CVE-2026-109619）に関する注意喚起を更新しました。これらの脆弱性はCISA KEVカタログに掲載されており、実悪用が確認されています。</p>
+        </section>
+        <section class="vulnerability-facts">
+        <h3 class="vulnerability-facts-title">脆弱性情報（2件）</h3>
+        <ul class="vulnerability-list"><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-109618" target="_blank" rel="noopener noreferrer">CVE-2026-109618</a><span class="vulnerability-cvss">CVSS 9.8 / Critical（v3.1・NVD）</span><span class="kev-badge">CISA KEV掲載</span></li><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-109619" target="_blank" rel="noopener noreferrer">CVE-2026-109619</a><span class="vulnerability-cvss">CVSS 8.1 / High（v3.1・NVD）</span><span class="kev-badge">CISA KEV掲載</span></li></ul>
+      </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関でPHPを利用しているシステムがある場合に関係します。特に、インターネットに公開されているシステムでPHPが利用されている場合は、悪用のリスクが高まる可能性があります。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先でPHPを利用しているシステムがないか棚卸しする</li><li>CVE-2026-109618およびCVE-2026-109619の影響を受けるPHPのバージョンを確認する</li><li>JPCERT/CCやPHP公式の情報を参照し、修正パッチや緩和策の適用を検討する</li></ul>
         </section>
       </div>
       <p class="article-attribution">Monomi DigestによるAI要約・分析です。要約・分析には正確性の限界があります。</p>
-      <a class="article-source-link" href="https://www.ipa.go.jp/security/security-alert/2026/alert20261120.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">パッチ</span></div>
+      <a class="article-source-link" href="https://www.jpcert.or.jp/at/2026/at260033.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">KEV</span><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span></div>
+    </article>
+
+    <article class="card" id="article-5">
+      <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://krebsonsecurity.com/2026/11/cto-of-ransomwarehelp-indicted-for-wire-fraud/" target="_blank" rel="noopener noreferrer" lang="en">CTO of ‘RansomwareHelp’ Indicted for Wire Fraud</a></span></h2>
+      <p class="article-meta">Krebs on Security ・ 11/21 09:36</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>ランサムウェア被害からのデータ復旧を謳う「ransomwarehelp.com」のCTO兼共同創設者が、詐欺罪で起訴されました。FBIのおとり捜査により、同社が実際には攻撃者に身代金を支払い、被害者には手数料を上乗せして請求していたことが判明しました。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関がランサムウェア被害に遭った際、データ復旧サービスを利用する可能性があり、その際のサービス選定において注意喚起となります。詐欺的なサービスに騙されるリスクを認識しておく必要があります。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>ランサムウェア被害発生時のデータ復旧サービス選定において、提供者の信頼性や実績を慎重に評価する</li><li>データ復旧サービス利用時には、契約内容や費用の内訳を詳細に確認し、不透明な点がないか検証する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://krebsonsecurity.com/2026/11/cto-of-ransomwarehelp-indicted-for-wire-fraud/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">ランサムウェア</span><span class="article-tag">インシデント</span></div>
+    </article>
+
+    <article class="card" id="article-6">
+      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/whatsapp-patches-3-security-flaws.html" target="_blank" rel="noopener noreferrer" lang="en">WhatsApp Patches 3 Security Flaws, Including Android Bug Suspected of Use in Scams</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/21 02:57</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>Meta傘下のWhatsAppが3件のセキュリティ脆弱性に対処しました。そのうち1件(CVE-2026-23871)はAndroidアプリに影響し、詐欺メッセージに関連して悪用された可能性があるとされています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関がWhatsAppを業務利用している場合、または従業員が業務関連で利用している場合に適用性確認の対象となります。記事からは金融機関での利用状況は確認できません。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先におけるWhatsAppの業務利用状況を確認する</li><li>WhatsApp AndroidアプリおよびWhatsApp Business for Androidのバージョンが2.26.17.4以降であることを確認する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/whatsapp-patches-3-security-flaws.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">パッチ</span></div>
+    </article>
+
+    <article class="card" id="article-7">
+      <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/bazuka-android-malware-uses-fake-screen.html" target="_blank" rel="noopener noreferrer" lang="en">Bazuka Android Malware Uses Fake Screen Overlays to Hide Credential Theft and Device Control</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/21 01:58</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>サイバーセキュリティ研究者が、これまで知られていなかったAndroidマルウェアフレームワーク「Bazuka」の詳細を公開しました。このマルウェアは、偽の画面オーバーレイを使用して認証情報の窃取やデバイス制御を隠蔽し、大規模な被害者管理と制御のためにLLM統合を提供します。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関が提供するモバイルバンキングアプリの利用者が標的となる可能性があります。Bazukaマルウェアが偽の画面オーバーレイで認証情報を窃取するため、顧客の認証情報漏えいや不正送金につながるリスクがあります。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>Bazukaマルウェアの攻撃手法とIOCに関する詳細情報を確認し、自社のモバイルアプリ利用者への注意喚起や対策を検討する</li><li>モバイルバンキングアプリのセキュリティ対策として、オーバーレイ検知機能や不正アクセス防止策の有効性を評価する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/bazuka-android-malware-uses-fake-screen.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">フィッシング</span></div>
     </article>
 
     <article class="card" id="article-8">
-      <h2 class="article-heading"><span class="article-index">8.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/drupal-patches-critical-installer-flaw.html" target="_blank" rel="noopener noreferrer" lang="en">Drupal Patches Critical Installer Flaw That Could Give Unauthenticated Attackers Control of Sites</a></span></h2>
-      <p class="article-meta">The Hacker News ・ 11/19 23:33</p>
+      <h2 class="article-heading"><span class="article-index">8.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/whatsapp-fixes-flaw-uncovered-while-disrupting-scam-campaign/" target="_blank" rel="noopener noreferrer" lang="en">WhatsApp Fixes Flaw Uncovered While Disrupting Scam Campaign</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/21 01:01</p>
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>Drupalのコアに重大な脆弱性が発見され、特定の条件下で認証されていない攻撃者が組み込みのインストーラーを悪用し、サイトの再インストールを試みることが可能になります。これによりサイトの乗っ取りやリモートコード実行につながる可能性がありますが、脆弱な設定は一般的ではないと評価されています。修正版は昨日リリースされました。</p>
+          <p>WhatsAppのセキュリティチームが詐欺キャンペーン対策中にCVE-2026-23871として追跡される脆弱性を発見し、修正しました。この脆弱性は詐欺メッセージの信憑性を高めるために悪用された可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>金融機関でDrupalをウェブサイトやアプリケーション基盤として利用している場合に、適用性確認の対象になります。記事からは利用有無を確認できないため、直接的な影響は不明です。</p>
+          <p>金融機関がWhatsAppを業務で利用している場合、または顧客とのコミュニケーションチャネルとして利用している場合に、適用性確認の対象になります。記事からは利用状況が確認できないため、直接的な影響は不明です。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社および委託先でDrupalを利用しているか、また影響を受けるバージョンを使用しているかを確認する</li><li>Drupalの修正版へのアップデート、またはベンダーが提供する緩和策の適用を検討する</li></ul>
+          <ul class="action-list"><li>WhatsAppの利用有無と、影響を受ける可能性のあるバージョンを確認する</li><li>WhatsAppのセキュリティアップデート適用状況を確認し、必要に応じて最新版への更新を検討する</li></ul>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://thehackernews.com/2026/11/drupal-patches-critical-installer-flaw.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">パッチ</span></div>
+      <a class="article-source-link" href="https://www.securityweek.com/whatsapp-fixes-flaw-uncovered-while-disrupting-scam-campaign/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">パッチ</span></div>
     </article>
 
     <article class="card" id="article-9">
-      <h2 class="article-heading"><span class="article-index">9.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/hackers-exploit-cisco-expressway-vulnerability-soon-after-poc-release/" target="_blank" rel="noopener noreferrer" lang="en">Hackers Exploit Cisco Expressway Vulnerability Soon After PoC Release</a></span></h2>
-      <p class="article-meta">SecurityWeek ・ 11/19 22:12</p>
+      <h2 class="article-heading"><span class="article-index">9.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/new-linux-kvm-flaw-cve-2026-99312-lets.html" target="_blank" rel="noopener noreferrer" lang="en">Linux KVM Flaw CVE-2026-99312 Lets Guest VMs Access Host Memory on AMD Hosts</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/20 21:20</p>
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>ロシアの組織でクラスター化されたCisco Expresswayデバイスが攻撃者によって侵害され、水平移動のためのツールが準備されました。これはPoC公開直後の悪用と報じられています。</p>
+          <p>Linuxカーネルに組み込まれたハイパーバイザーKVMの脆弱性CVE-2026-99312が発見されました。この脆弱性は、AMDプロセッサを搭載しネストされた仮想化が有効なホストにのみ影響し、ゲストVMからホストメモリの約127GBを読み取ることが可能です。</p>
         </section>
+        <section class="vulnerability-facts">
+        <h3 class="vulnerability-facts-title">脆弱性情報</h3>
+        <ul class="vulnerability-list"><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-99312" target="_blank" rel="noopener noreferrer">CVE-2026-99312</a><span class="vulnerability-cvss">CVSS 8.8 / High（v3.1・他機関）</span></li></ul>
+      </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>Cisco Expresswayは金融機関でも利用される可能性のある通信ゲートウェイ製品です。利用している場合は、本件が関係する可能性があります。</p>
+          <p>金融機関がAMDプロセッサを搭載したLinux KVMホストでネストされた仮想化を利用している場合に影響します。クラウドサービスプロバイダーの基盤に影響する可能性もあります。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>Cisco Expressway製品の利用有無と、影響を受ける可能性のあるバージョンを確認する</li><li>Ciscoからの公式情報やパッチ、緩和策の有無を確認し、対応要否を評価する</li></ul>
+          <ul class="action-list"><li>自社および委託先でAMDプロセッサ搭載のLinux KVMホストとネストされた仮想化の利用有無を確認する</li><li>該当するKVM環境のパッチ適用状況を確認し、修正済みカーネルへの更新を検討する</li></ul>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://www.securityweek.com/hackers-exploit-cisco-expressway-vulnerability-soon-after-poc-release/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">悪用確認済み</span></div>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/new-linux-kvm-flaw-cve-2026-99312-lets.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">パッチ</span><span class="article-tag">クラウド</span></div>
     </article>
 
     <article class="card" id="article-10">
-      <h2 class="article-heading"><span class="article-index">10.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/critical-apache-roller-axis-vulnerabilities-exploited-in-attacks/" target="_blank" rel="noopener noreferrer" lang="en">Critical Apache Roller, Axis Vulnerabilities Exploited in Attacks</a></span></h2>
-      <p class="article-meta">SecurityWeek ・ 11/19 21:13</p>
+      <h2 class="article-heading"><span class="article-index">10.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/european-commission-confirms-ai-assisted-cyberattack-disrupted-services/" target="_blank" rel="noopener noreferrer" lang="en">European Commission Confirms AI-Assisted Cyberattack Disrupted Services</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/20 19:51</p>
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>Apache RollerとAxisの重大な脆弱性が攻撃で悪用されていることが報告されました。攻撃者はAxisの欠陥を介してConfluence Data Centerを標的にしており、ApacheはRollerに対する攻撃について警告しています。</p>
+          <p>欧州委員会はAI支援型サイバー攻撃を受け、一部サービスをオフラインにしてインシデントを封じ込めました。現時点ではデータ侵害の証拠はないと報告されています。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>金融機関でApache RollerまたはAxis、およびConfluence Data Centerを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。</p>
-        </section>
-        <section class="article-section">
-          <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>Apache RollerおよびAxis、Confluence Data Centerの利用有無と影響バージョンを確認する</li><li>各製品のベンダー一次情報と修正版・緩和策を確認し、対応要否を評価する</li></ul>
+          <p>金融機関への直接的な影響は限定的です。AI支援型攻撃の事例として、脅威動向を把握する上での参考情報となります。</p>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://www.securityweek.com/critical-apache-roller-axis-vulnerabilities-exploited-in-attacks/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span></div>
+      <a class="article-source-link" href="https://www.securityweek.com/european-commission-confirms-ai-assisted-cyberattack-disrupted-services/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">インシデント</span><span class="article-tag">AI</span></div>
     </article>
 
     <article class="card" id="article-11">
-      <h2 class="article-heading"><span class="article-index">11.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/splunk-patches-nearly-140-flaws-across-three-core-products/" target="_blank" rel="noopener noreferrer" lang="en">Splunk Patches Nearly 140 Flaws Across Three Core Products</a></span></h2>
-      <p class="article-meta">SecurityWeek ・ 11/19 19:41</p>
+      <h2 class="article-heading"><span class="article-index">11.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/sonicwall-warns-gen-6-firewalls-wont.html" target="_blank" rel="noopener noreferrer" lang="en">SonicWall Warns Gen 6 Firewalls Won&#39;t Get Security Patches, Even for Critical Flaws</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/20 19:38</p>
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>Splunkは、3つの主要製品（Splunk Enterprise、Splunk Cloud Platform、Splunk Universal Forwarder）において、認証バイパス、リモートコード実行、権限昇格につながる約140の脆弱性を修正するセキュリティアップデートを公開しました。</p>
+          <p>SonicWallは、第6世代ファイアウォールを使用している顧客に対し、AIを活用した攻撃によるセキュリティリスクを理由に、直ちに製品を廃棄・交換し、インターネットに公開しないよう警告しました。同社は、サポート終了製品がこれまで以上に迅速に悪用されると予測しています。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>Splunk製品は多くの金融機関でログ管理やセキュリティ監視に利用されている可能性があり、利用している場合は適用性確認の対象になります。</p>
+          <p>SonicWallの第6世代ファイアウォールを導入している金融機関は、サポート終了に伴うセキュリティリスクに直面する可能性があります。特にインターネットに公開している場合は早急な対応が求められます。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社および委託先におけるSplunk Enterprise、Splunk Cloud Platform、Splunk Universal Forwarderの利用有無とバージョンを確認する</li><li>Splunkが公開したセキュリティアップデート情報を確認し、対応要否を評価する</li></ul>
+          <ul class="action-list"><li>自社および委託先におけるSonicWall第6世代ファイアウォールの利用有無と外部公開状況を確認する</li><li>該当製品を利用している場合は、ベンダーの推奨に従い代替製品への移行計画を検討する</li></ul>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://www.securityweek.com/splunk-patches-nearly-140-flaws-across-three-core-products/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/sonicwall-warns-gen-6-firewalls-wont.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
       <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">パッチ</span></div>
     </article>
 
     <article class="card" id="article-12">
-      <h2 class="article-heading"><span class="article-index">12.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/n-able-confirms-hackers-accessed-cloud.html" target="_blank" rel="noopener noreferrer" lang="en">Hackers Breach N-able Cloud Server, Disrupting Email Security Management Across 3 Regions</a></span></h2>
-      <p class="article-meta">The Hacker News ・ 11/19 18:31</p>
+      <h2 class="article-heading"><span class="article-index">12.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/ruby-patches-ruby2shell-vulnerability-that-could-lead-to-rce/" target="_blank" rel="noopener noreferrer" lang="en">Ruby Patches Ruby2Shell Vulnerability That Could Lead to RCE</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/20 19:34</p>
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>N-ableは、Mail AssureおよびSpam Experts Hosted Cloudのサーバーの1つに脅威アクターが不正アクセスしたことを公表しました。これにより、管理インターフェースとAPIが無効化され、3地域でメールセキュリティ管理に影響が出ています。</p>
+          <p>RubyのRuby2Shell脆弱性（CVE-2026-132825）が修正されました。この脆弱性はヒープベースのバッファオーバーフローであり、リモートコード実行（RCE）につながる可能性があります。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>N-ableのMail AssureまたはSpam Experts Hosted Cloudサービスをメールセキュリティ管理に利用している金融機関は、サービス停止や管理機能への影響について確認が必要です。</p>
+          <p>金融機関でRubyを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>N-ableのMail AssureまたはSpam Experts Hosted Cloudサービスを自社および委託先で利用しているか確認する</li><li>N-ableからの公式発表や指示を確認し、必要な対応を評価する</li></ul>
+          <ul class="action-list"><li>CVE-2026-132825の影響を受けるRubyのバージョンを特定し、自社および委託先での利用有無を確認する</li><li>Rubyのベンダー一次情報を確認し、修正版へのアップデートまたは緩和策の適用を検討する</li></ul>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://thehackernews.com/2026/11/n-able-confirms-hackers-accessed-cloud.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">クラウド</span><span class="article-tag">インシデント</span><span class="article-tag">業務停止</span><span class="article-tag">サプライチェーン</span></div>
+      <a class="article-source-link" href="https://www.securityweek.com/ruby-patches-ruby2shell-vulnerability-that-could-lead-to-rce/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">パッチ</span></div>
     </article>
 
     <article class="card" id="article-13">
-      <h2 class="article-heading"><span class="article-index">13.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/ruby-releases-fixes-for-7-regex-and.html" target="_blank" rel="noopener noreferrer" lang="en">Ruby Releases Fixes for 7 Regex and String Flaws, Warns 5 Have Proof-of-Concept RCE</a></span></h2>
-      <p class="article-meta">The Hacker News ・ 11/19 17:42</p>
+      <h2 class="article-heading"><span class="article-index">13.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/n-able-blames-service-disruption-on-cyberattack/" target="_blank" rel="noopener noreferrer" lang="en">N-able Blames Service Disruption on Cyberattack</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/20 18:08</p>
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>Rubyの正規表現エンジンと文字列処理コードに7件のメモリ安全性に関する脆弱性が発見されました。そのうち5件については、細工された入力によってリモートコード実行（RCE）が可能となる概念実証（PoC）が存在すると開発元が警告しています。</p>
+          <p>N-ableは、Mail AssureおよびSpamExperts Hosted Cloudサービスがサイバー攻撃により停止したことを発表しました。このインシデントは認証情報の窃取につながった可能性があるとされています。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>Rubyは多くのシステムで利用されるプログラミング言語であり、金融機関のシステムやアプリケーションで利用されている場合に関係します。直接的な影響は利用状況に依存します。</p>
+          <p>N-ableのMail AssureまたはSpamExperts Hosted Cloudサービスを委託先として利用している金融機関は、影響を受ける可能性があります。認証情報の窃取の可能性について確認が必要です。</p>
         </section>
         <section class="article-section">
           <h3>確認すべきこと</h3>
-          <ul class="action-list"><li>自社システムおよび委託先システムにおけるRubyの利用有無と影響を受けるバージョンを確認する</li><li>Rubyの修正済みバージョンへのアップデートを検討する</li><li>ベンダーから提供される詳細情報や緩和策を確認する</li></ul>
+          <ul class="action-list"><li>N-ableのMail AssureまたはSpamExperts Hosted Cloudサービスの利用有無を確認する</li><li>N-ableからの公式発表や指示に基づき、認証情報の漏洩有無や影響範囲を確認する</li><li>委託先管理プロセスにおいて、本件に関するN-ableの対応状況を評価する</li></ul>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://thehackernews.com/2026/11/ruby-releases-fixes-for-7-regex-and.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">パッチ</span></div>
+      <a class="article-source-link" href="https://www.securityweek.com/n-able-blames-service-disruption-on-cyberattack/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">インシデント</span><span class="article-tag">情報漏えい</span><span class="article-tag">委託先管理</span><span class="article-tag">クラウド</span></div>
     </article>
 
     <article class="card" id="article-14">
-      <h2 class="article-heading"><span class="article-index">14.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/the-governance-gap-in-open-weight-ai-and-what-to-do-about-it/" target="_blank" rel="noopener noreferrer" lang="en">The Governance Gap in Open-Weight AI and What to Do About It</a></span></h2>
-      <p class="article-meta">SecurityWeek ・ 11/19 21:00</p>
+      <h2 class="article-heading"><span class="article-index">14.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/romulus-clickfix-attacks-deliver-rat.html" target="_blank" rel="noopener noreferrer" lang="en">ROMULUS ClickFix Attacks Deliver RAT That Can Spy on Users and Control PCs</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/20 16:11</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>脅威アクターがROMULUS ClickFixマルウェア配信プラットフォームを利用し、CNCMachineRMSと類似する未確認のRATを配信していることが観測されました。ROMULUSはClickFixと署名付きバイナリのサイドローディング技術を保持しつつ、CNCMachineRMSとLegion Loaderを別々の経路で配信するサービスとして機能していると見られています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関への直接的な影響は記事からは確認できません。一般的な脅威動向として、従業員のPCがRATに感染した場合、情報漏えいや業務停止のリスクがあるため、注意が必要です。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>ROMULUS ClickFixやCNCMachineRMS、Legion Loaderに関連するIOC（存在する場合）を監視し、社内ネットワークでの活動有無を確認する</li><li>従業員に対し、不審なリンクやファイルを開かないよう注意喚起を継続する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/romulus-clickfix-attacks-deliver-rat.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">APT</span><span class="article-tag">ランサムウェア</span></div>
+    </article>
+
+    <article class="card" id="article-15">
+      <h2 class="article-heading"><span class="article-index">15.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/the-path-to-ai-autonomy-in-soc.html" target="_blank" rel="noopener noreferrer" lang="en">The Path to AI Autonomy in the SOC</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/20 21:00</p>
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>オープンウェイトAIの導入はコスト削減やデータプライバシー、制御性向上を促進する一方で、多くの組織がそれに伴うリスクに対処できていない現状が指摘されています。</p>
+          <p>最近のCISO調査によると、従業員1,000人以上の組織の36%が低リスクのセキュリティアクションにおいてAIエージェントの自律的な行動を容認しており、12ヶ月後には60%が容認すると予測されています。AI SOCは2027年の最優先事項として挙げられています。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>金融機関においてもオープンウェイトAIの導入が進む可能性があり、その際のガバナンス体制やリスク管理の検討が必要となるため関係します。</p>
+          <p>金融機関においてもSOC業務におけるAIの導入は進むと予想され、AIエージェントの自律性向上はセキュリティ運用に大きな影響を与える可能性があります。導入を検討する際の参考情報となります。</p>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://www.securityweek.com/the-governance-gap-in-open-weight-ai-and-what-to-do-about-it/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">ガイドライン</span></div>
-    </article>
-
-    <article class="card" id="article-15">
-      <h2 class="article-heading"><span class="article-index">15.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/threatsday-gpt-62-jailbreak-flaws.html" target="_blank" rel="noopener noreferrer" lang="en">ThreatsDay: GPT-6.2 Jailbreak Flaws, BubbleLoader PNG Malware, $500M Ransom Demands + 17 More Stories</a></span></h2>
-      <p class="article-meta">The Hacker News ・ 11/20 03:47</p>
-      <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
-      <div class="ai-analysis">
-        <section class="article-section">
-          <h3>概要</h3>
-          <p>本記事は、GPT-6.2のジェイルブレイク脆弱性、BubbleLoader PNGマルウェア、5億ドルの身代金要求など、様々なサイバー脅威に関する週次まとめです。AIが悪用を容易にしている点にも言及しています。</p>
-        </section>
-        <section class="article-section">
-          <h3>金融機関との関連</h3>
-          <p>金融機関への直接的な影響は限定的です。一般的な脅威動向のまとめであり、個別の具体的な脅威に対する情報ではありません。</p>
-        </section>
-      </div>
-      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://thehackernews.com/2026/11/threatsday-gpt-62-jailbreak-flaws.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/the-path-to-ai-autonomy-in-soc.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">AIエージェント</span></div>
     </article>
 
     <article class="card" id="article-16">
-      <h2 class="article-heading"><span class="article-index">16.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/nvidia-responds-to-gentlemen-ransomware-claim/" target="_blank" rel="noopener noreferrer" lang="en">Nvidia Responds to Gentlemen Ransomware Claim</a></span></h2>
-      <p class="article-meta">SecurityWeek ・ 11/19 23:17</p>
+      <h2 class="article-heading"><span class="article-index">16.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/in-other-news-norwegian-energy-firm-cyberattacks-supercomputer-hack-new-nightmare-eclipse-exploit/" target="_blank" rel="noopener noreferrer" lang="en">In Other News: Norwegian Energy Firm Cyberattacks, Supercomputer Hack, New Nightmare Eclipse Exploit</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/20 23:56</p>
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>Nvidiaは、Gentlemenランサムウェアグループが同社を被害者としてリストアップしたことに対し、システム侵害の兆候は確認されていないと発表しました。</p>
+          <p>EUがサイバー制裁リストにNoName057(16)を追加、個人PCに放置されたCACを標的とするマルウェア、Epoch AIを標的としたGeminiエージェントなど、見過ごされがちな注目すべきサイバーセキュリティ関連ニュースがまとめられています。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>金融機関への直接的な影響は確認できません。Nvidiaのサプライチェーンの一部として間接的な影響の可能性はありますが、記事からは具体的な関係性が不明です。</p>
+          <p>金融機関への直接的な影響は確認できず、一般的なサイバーセキュリティ動向の参考情報にとどまります。</p>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://www.securityweek.com/nvidia-responds-to-gentlemen-ransomware-claim/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">ランサムウェア</span><span class="article-tag">インシデント</span></div>
+      <a class="article-source-link" href="https://www.securityweek.com/in-other-news-norwegian-energy-firm-cyberattacks-supercomputer-hack-new-nightmare-eclipse-exploit/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
     </article>
 
     <article class="card" id="article-17">
-      <h2 class="article-heading"><span class="article-index">17.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/stepsecurity-secures-20-million-to-expand-supply-chain-protection/" target="_blank" rel="noopener noreferrer" lang="en">StepSecurity Secures $20 Million to Expand Supply Chain Protection</a></span></h2>
-      <p class="article-meta">SecurityWeek ・ 11/19 21:23</p>
+      <h2 class="article-heading"><span class="article-index">17.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/industry-reactions-to-major-outages-and-ai-patching-questions-feedback-friday/" target="_blank" rel="noopener noreferrer" lang="en">Industry Reactions to Major Outages and AI Patching Debate: Feedback Friday</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/20 21:38</p>
       <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
       <div class="ai-analysis">
         <section class="article-section">
           <h3>概要</h3>
-          <p>セキュリティ企業StepSecurityが、サプライチェーン保護プラットフォームの開発と普及を加速するため、2,000万ドルの資金調達に成功しました。</p>
+          <p>専門家たちが、AIによるパッチ適用が大規模障害に影響した可能性、ロールバック計画の必要性、相互接続されたシステムの脆弱性について議論しました。</p>
         </section>
         <section class="article-section">
           <h3>金融機関との関連</h3>
-          <p>金融機関への直接的な影響は限定的です。セキュリティ企業の資金調達に関する情報であり、特定の脅威や規制変更を伝えるものではありません。</p>
+          <p>金融機関への直接的な影響は限定的です。AIによるパッチ適用やシステム障害に関する一般的な議論として参考になります。</p>
         </section>
       </div>
       <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
-      <a class="article-source-link" href="https://www.securityweek.com/stepsecurity-secures-20-million-to-expand-supply-chain-protection/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <a class="article-source-link" href="https://www.securityweek.com/industry-reactions-to-major-outages-and-ai-patching-questions-feedback-friday/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span></div>
     </article>
 
-    <article class="card card-metadata-only" id="article-18">
-      <h2 class="article-heading"><span class="article-index">18.</span><span class="article-title-stack"><a class="article-title-link" href="https://blog.talosintelligence.com/the-internet-needs-a-nap-and-you-do-too/" target="_blank" rel="noopener noreferrer" lang="en">The internet needs a nap (and you do, too)</a></span></h2>
-      <p class="article-meta">Cisco Talos ・ 11/20 04:00</p>
-      <p class="article-attribution">AIによる要約・評価は行っていません。</p>
-      <a class="article-source-link" href="https://blog.talosintelligence.com/the-internet-needs-a-nap-and-you-do-too/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
-    </article>
-
-    <article class="card card-metadata-only" id="article-19">
-      <h2 class="article-heading"><span class="article-index">19.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/phpaftershell-explained-how-hackers.html" target="_blank" rel="noopener noreferrer" lang="en">phpAfterShell Explained: How Hackers Could Turn a PHP Session Flaw Into Code Execution</a></span></h2>
-      <p class="article-meta">The Hacker News ・ 11/20 01:59</p>
-      <p class="article-attribution">AIによる要約・評価は行っていません。</p>
-      <a class="article-source-link" href="https://thehackernews.com/2026/11/phpaftershell-explained-how-hackers.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    <article class="card" id="article-18">
+      <h2 class="article-heading"><span class="article-index">18.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/sbc-medical-group-data-breach-impacts-over-2-million/" target="_blank" rel="noopener noreferrer" lang="en">SBC Medical Group Data Breach Impacts Over 2 Million</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/20 20:36</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>SBCメディカルグループがデータ侵害を受け、日本のクリニックに関連する顧客情報を含むデータベースに脅威アクターがアクセスしました。この侵害により、200万人以上の情報が影響を受けたと報じられています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関への直接的な関係は確認できず、他業界のデータ侵害事例として参考情報にとどまります。</p>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/sbc-medical-group-data-breach-impacts-over-2-million/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">インシデント</span><span class="article-tag">情報漏えい</span></div>
     </article></div>
   <div class="sources">
     <details>

@@ -1,0 +1,1079 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-21",
+  "generated_at": "2026-11-21T12:18:46.045550+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 18,
+    "ai_attempted_count": 18,
+    "ai_success_count": 18,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 18
+  },
+  "counts": {
+    "importance": {
+      "高": 4,
+      "中": 11,
+      "低": 3,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 14,
+      "参考": 4,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 8,
+      "攻撃・脅威動向": 3,
+      "インシデント": 4,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象18件｜重要度「高」4件｜本日確認0件｜今週確認14件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が14件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が4件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "Cisco Expresswayの重大な脆弱性CVE-2026-76466（CVSSスコア9.8）が悪用され、PoC公開直後にロシアの組織が侵害されました。認証されていないリモート攻撃者がネットワークアクセスを持つことで、内部ネットワークへの侵入を許す可能性があります。",
+      "中国関連のサイバースパイグループArmory Castleが、2026年9月初旬にVMware vCenter Serverの認証バイパスのゼロデイ脆弱性（CVE-2026-123890、CVSSスコア9.8）を悪用し、管理者権限を取得してデータを窃取したとされています。",
+      "N0n恐喝グループがJPMorgan、Visa、Mastercardの顧客に関連するとされるデータを漏洩させたことを受け、各社はサードパーティプロバイダーのインシデントが原因であると指摘しています。"
+    ],
+    "discussion_points": [
+      "Cisco Expresswayの重大な脆弱性CVE-2026-76466（CVSSスコア9.8）が悪用され、PoC公開直後にロシアの組織が侵害されました。認証されていないリモート攻撃者がネットワークアクセスを持つことで、内部ネットワークへの侵入を許す可能性があります。\nCisco Expresswayは金融機関でも利用される可能性のある通信基盤であり、本脆弱性が悪用された場合、内部ネットワークへの不正アクセスや情報漏えい、業務停止につながる可能性があります。利用している場合は適用性確認の対象となります。",
+      "中国関連のサイバースパイグループArmory Castleが、2026年9月初旬にVMware vCenter Serverの認証バイパスのゼロデイ脆弱性（CVE-2026-123890、CVSSスコア9.8）を悪用し、管理者権限を取得してデータを窃取したとされています。\nVMware vCenter Serverは多くの金融機関で仮想化基盤の管理に利用されている可能性があり、本脆弱性が悪用された場合、基盤への不正アクセスや情報窃取、業務停止につながる恐れがあります。"
+    ],
+    "check_items": [
+      "Cisco Expresswayの利用有無、および影響を受けるバージョン・外部公開状況を確認する",
+      "自社および委託先におけるVMware vCenter Serverの利用有無、および影響を受けるバージョンの有無を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:5896797fd3159e6ec9f78c44b68499b3777c3e2721cb4c67c2f3f817d8145c56",
+      "source_id": "krebs_on_security",
+      "source_name": "Krebs on Security",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://krebsonsecurity.com/2026/11/cto-of-ransomwarehelp-indicted-for-wire-fraud/",
+      "canonical_url": "https://krebsonsecurity.com/2026/11/cto-of-ransomwarehelp-indicted-for-wire-fraud/",
+      "published_at": "2026-11-21T09:36:39+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "CTO of ‘RansomwareHelp’ Indicted for Wire Fraud",
+      "raw_title": "CTO of ‘RansomwareHelp’ Indicted for Wire Fraud",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9f360c805d54bd83269c07727ac98e1d20649d2fae3cfb56f2a02e919bb5fbf8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:13:37.187856+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ランサムウェア攻撃の被害者から金銭を詐取する手口に関する記事であるため。",
+        "tags": [
+          "ランサムウェア",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ランサムウェア被害からのデータ復旧を謳う「ransomwarehelp.com」のCTO兼共同創設者が、詐欺罪で起訴されました。FBIのおとり捜査により、同社が実際には攻撃者に身代金を支払い、被害者には手数料を上乗せして請求していたことが判明しました。",
+        "financial_impact": "金融機関がランサムウェア被害に遭った際、データ復旧サービスを利用する可能性があり、その際のサービス選定において注意喚起となります。詐欺的なサービスに騙されるリスクを認識しておく必要があります。",
+        "recommended_actions": [
+          "ランサムウェア被害発生時のデータ復旧サービス選定において、提供者の信頼性や実績を慎重に評価する",
+          "データ復旧サービス利用時には、契約内容や費用の内訳を詳細に確認し、不透明な点がないか検証する"
+        ],
+        "reason": "重要度は、ランサムウェア復旧サービスにおける詐欺事例であり、金融機関が被害時に利用する可能性を考慮し注意喚起の価値があるため「中」です。確認目安は、具体的な脅威や期限の記述がなく、一般的な注意喚起として今週中に確認する価値があるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b44c0a854e15b1852d0ece8a64e0acd1db9eb19271c34c1eeef276701d27db06",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/whatsapp-patches-3-security-flaws.html",
+      "canonical_url": "https://thehackernews.com/2026/11/whatsapp-patches-3-security-flaws.html",
+      "published_at": "2026-11-21T02:57:20+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "WhatsApp Patches 3 Security Flaws, Including Android Bug Suspected of Use in Scams",
+      "raw_title": "WhatsApp Patches 3 Security Flaws, Including Android Bug Suspected of Use in Scams",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6deba5d5d5e613b15107989b13ef48ab3e02646140bba804fe1274f0e91ce43c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:13:54.361119+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "WhatsAppのセキュリティ脆弱性修正が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Meta傘下のWhatsAppが3件のセキュリティ脆弱性に対処しました。そのうち1件(CVE-2026-23871)はAndroidアプリに影響し、詐欺メッセージに関連して悪用された可能性があるとされています。",
+        "financial_impact": "金融機関がWhatsAppを業務利用している場合、または従業員が業務関連で利用している場合に適用性確認の対象となります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "自社および委託先におけるWhatsAppの業務利用状況を確認する",
+          "WhatsApp AndroidアプリおよびWhatsApp Business for Androidのバージョンが2.26.17.4以降であることを確認する"
+        ],
+        "reason": "重要度は、WhatsAppの脆弱性であり、金融機関での業務利用の可能性を考慮し適用性評価の価値があるため「中」です。確認目安は、悪用の可能性が指摘されているものの、緊急対応を要する進行中の攻撃や明確な期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0b4042589720c6043be8f15212c3ff02caceb4eb28c9f2695b0c55d4e8beacbc",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/bazuka-android-malware-uses-fake-screen.html",
+      "canonical_url": "https://thehackernews.com/2026/11/bazuka-android-malware-uses-fake-screen.html",
+      "published_at": "2026-11-21T01:58:16+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "Bazuka Android Malware Uses Fake Screen Overlays to Hide Credential Theft and Device Control",
+      "raw_title": "Bazuka Android Malware Uses Fake Screen Overlays to Hide Credential Theft and Device Control",
+      "raw_excerpt": null,
+      "content_hash": "sha256:75b3a1ab8debab6e28e7e535ad4b2cdfc0df94cc98285bc42d24b0e14429ec63",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:14:11.770047+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "未知のAndroidマルウェアフレームワーク「Bazuka」の機能と脅威について解説しているため。",
+        "tags": [
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者が、これまで知られていなかったAndroidマルウェアフレームワーク「Bazuka」の詳細を公開しました。このマルウェアは、偽の画面オーバーレイを使用して認証情報の窃取やデバイス制御を隠蔽し、大規模な被害者管理と制御のためにLLM統合を提供します。",
+        "financial_impact": "金融機関が提供するモバイルバンキングアプリの利用者が標的となる可能性があります。Bazukaマルウェアが偽の画面オーバーレイで認証情報を窃取するため、顧客の認証情報漏えいや不正送金につながるリスクがあります。",
+        "recommended_actions": [
+          "Bazukaマルウェアの攻撃手法とIOCに関する詳細情報を確認し、自社のモバイルアプリ利用者への注意喚起や対策を検討する",
+          "モバイルバンキングアプリのセキュリティ対策として、オーバーレイ検知機能や不正アクセス防止策の有効性を評価する"
+        ],
+        "reason": "重要度は、金融機関のモバイルアプリ利用者が標的となる可能性があり、顧客への影響が懸念されるため「中」です。確認目安は、新たなマルウェアの動向であり、即時対応を要する具体的な期限や進行中の攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1915a53049dd926cea48c31ebf13e3de58c3749130ac35118d6c0bfe4953ee56",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/whatsapp-fixes-flaw-uncovered-while-disrupting-scam-campaign/",
+      "canonical_url": "https://www.securityweek.com/whatsapp-fixes-flaw-uncovered-while-disrupting-scam-campaign/",
+      "published_at": "2026-11-21T01:01:02+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "WhatsApp Fixes Flaw Uncovered While Disrupting Scam Campaign",
+      "raw_title": "WhatsApp Fixes Flaw Uncovered While Disrupting Scam Campaign",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a0911758572e5f456896ee8438699c6336c9da45580938556493c41167c87a58",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:14:29.104036+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CVEが特定され、製品の脆弱性修正が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "WhatsAppのセキュリティチームが詐欺キャンペーン対策中にCVE-2026-23871として追跡される脆弱性を発見し、修正しました。この脆弱性は詐欺メッセージの信憑性を高めるために悪用された可能性があります。",
+        "financial_impact": "金融機関がWhatsAppを業務で利用している場合、または顧客とのコミュニケーションチャネルとして利用している場合に、適用性確認の対象になります。記事からは利用状況が確認できないため、直接的な影響は不明です。",
+        "recommended_actions": [
+          "WhatsAppの利用有無と、影響を受ける可能性のあるバージョンを確認する",
+          "WhatsAppのセキュリティアップデート適用状況を確認し、必要に応じて最新版への更新を検討する"
+        ],
+        "reason": "重要度は、WhatsAppの脆弱性であり、金融機関での利用状況によっては影響があるため「中」です。確認目安は、既に修正済みであり、緊急の対応を要する進行中の攻撃や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:48c95c8f0331419e4b6c55e91df5cc686f2cd5e248eb5f399f541835dd3023e7",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/in-other-news-norwegian-energy-firm-cyberattacks-supercomputer-hack-new-nightmare-eclipse-exploit/",
+      "canonical_url": "https://www.securityweek.com/in-other-news-norwegian-energy-firm-cyberattacks-supercomputer-hack-new-nightmare-eclipse-exploit/",
+      "published_at": "2026-11-20T23:56:23+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "In Other News: Norwegian Energy Firm Cyberattacks, Supercomputer Hack, New Nightmare Eclipse Exploit",
+      "raw_title": "In Other News: Norwegian Energy Firm Cyberattacks, Supercomputer Hack, New Nightmare Eclipse Exploit",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5512e027828dd49c206cde96c6330fd70010aa08a036cf01d4dbb9a923fc08f2",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:14:45.960896+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数のサイバーセキュリティ関連ニュースをまとめた記事であり、特定の主題に絞れないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "EUがサイバー制裁リストにNoName057(16)を追加、個人PCに放置されたCACを標的とするマルウェア、Epoch AIを標的としたGeminiエージェントなど、見過ごされがちな注目すべきサイバーセキュリティ関連ニュースがまとめられています。",
+        "financial_impact": "金融機関への直接的な影響は確認できず、一般的なサイバーセキュリティ動向の参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、複数のサイバーセキュリティ関連ニュースをまとめた記事であり、個別の具体的な脅威や期限が乏しいため「低」です。確認目安は、新しい事実や緊急対応を要する情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:798e42357df27b3ba8be609f938c28b2e19c577c9a1efb9683695d74cab19dce",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/industry-reactions-to-major-outages-and-ai-patching-questions-feedback-friday/",
+      "canonical_url": "https://www.securityweek.com/industry-reactions-to-major-outages-and-ai-patching-questions-feedback-friday/",
+      "published_at": "2026-11-20T21:38:55+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "Industry Reactions to Major Outages and AI Patching Debate: Feedback Friday",
+      "raw_title": "Industry Reactions to Major Outages and AI Patching Debate: Feedback Friday",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7fea404aaa30ef6a9e7e3cc715d2a29bb9d9c7f0000d1a98595cdcd1687a8157",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:15:03.089409+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "大規模障害とAIによるパッチ適用に関する専門家の見解をまとめた記事であり、特定の脆弱性や攻撃、規制に該当しないため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "専門家たちが、AIによるパッチ適用が大規模障害に影響した可能性、ロールバック計画の必要性、相互接続されたシステムの脆弱性について議論しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AIによるパッチ適用やシステム障害に関する一般的な議論として参考になります。",
+        "recommended_actions": [],
+        "reason": "重要度は、特定の脅威や期限がなく、一般的な議論をまとめた記事であるため「低」です。確認目安は、具体的なアクションを促す内容ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c7b209f2aed89407eb0e30e59fe706dfcf15164ad089b4177ac11b5e2ba6ddd0",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/new-linux-kvm-flaw-cve-2026-99312-lets.html",
+      "canonical_url": "https://thehackernews.com/2026/11/new-linux-kvm-flaw-cve-2026-99312-lets.html",
+      "published_at": "2026-11-20T21:20:00+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "Linux KVM Flaw CVE-2026-99312 Lets Guest VMs Access Host Memory on AMD Hosts",
+      "raw_title": "Linux KVM Flaw CVE-2026-99312 Lets Guest VMs Access Host Memory on AMD Hosts",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b015c6e6d4272878fc5b206123aedcbb2b006525a9f583191da9e3d8d985796c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:15:20.630678+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Linux KVMの脆弱性CVE-2026-99312が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ",
+          "クラウド"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Linuxカーネルに組み込まれたハイパーバイザーKVMの脆弱性CVE-2026-99312が発見されました。この脆弱性は、AMDプロセッサを搭載しネストされた仮想化が有効なホストにのみ影響し、ゲストVMからホストメモリの約127GBを読み取ることが可能です。",
+        "financial_impact": "金融機関がAMDプロセッサを搭載したLinux KVMホストでネストされた仮想化を利用している場合に影響します。クラウドサービスプロバイダーの基盤に影響する可能性もあります。",
+        "recommended_actions": [
+          "自社および委託先でAMDプロセッサ搭載のLinux KVMホストとネストされた仮想化の利用有無を確認する",
+          "該当するKVM環境のパッチ適用状況を確認し、修正済みカーネルへの更新を検討する"
+        ],
+        "reason": "重要度は、影響がAMDプロセッサとネストされた仮想化に限定され、適用範囲が限定的であるため「中」です。確認目安は、実悪用や緊急対応の明確な期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-99312",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-11-21T03:13:33Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-99312",
+              "vuln_status": "Received",
+              "published_at": "2026-11-18T09:17:45Z",
+              "last_modified_at": "2026-11-19T14:17:31Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 8.8,
+                "base_severity": "HIGH",
+                "vector": "CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:C/C:H/I:H/A:H",
+                "source": "416baaa9-dc9f-4396-8d5f-8c081fb06d67",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "not_listed",
+              "retrieval": "live",
+              "fetched_at": "2026-11-21T03:13:33Z",
+              "date_added": null
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:b18719ed382d67da6c3ac6e666d30daad3b77d50caff6fd8eff3acabc5052312",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/the-path-to-ai-autonomy-in-soc.html",
+      "canonical_url": "https://thehackernews.com/2026/11/the-path-to-ai-autonomy-in-soc.html",
+      "published_at": "2026-11-20T21:00:00+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "The Path to AI Autonomy in the SOC",
+      "raw_title": "The Path to AI Autonomy in the SOC",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0f9dfaec25e793a1d5c5b0ee22879e894f33e5aeabb8182755a558700eab6dd8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:15:37.807194+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "SOCにおけるAIエージェントの自律性向上と、それに伴うセキュリティリスクが主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "最近のCISO調査によると、従業員1,000人以上の組織の36%が低リスクのセキュリティアクションにおいてAIエージェントの自律的な行動を容認しており、12ヶ月後には60%が容認すると予測されています。AI SOCは2027年の最優先事項として挙げられています。",
+        "financial_impact": "金融機関においてもSOC業務におけるAIの導入は進むと予想され、AIエージェントの自律性向上はセキュリティ運用に大きな影響を与える可能性があります。導入を検討する際の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、SOCにおけるAIの自律性向上という中長期的な技術動向に関する情報であり、即時の対応を要するものではないため「中」です。確認目安は、具体的な脅威や期限が示されておらず、中長期的な検討の参考となる情報であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e49868cae32f5171f0b21994af2e9985ee85cc15baee5c6c80aa86949392d235",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/sbc-medical-group-data-breach-impacts-over-2-million/",
+      "canonical_url": "https://www.securityweek.com/sbc-medical-group-data-breach-impacts-over-2-million/",
+      "published_at": "2026-11-20T20:36:51+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "SBC Medical Group Data Breach Impacts Over 2 Million",
+      "raw_title": "SBC Medical Group Data Breach Impacts Over 2 Million",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0bf44a62a90b39e71fa909fef9160c9ddb9993da9f1688e802b48b67057b65e8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:15:54.558105+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "日本の医療機関における実際のデータ侵害と情報漏えいが主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "SBCメディカルグループがデータ侵害を受け、日本のクリニックに関連する顧客情報を含むデータベースに脅威アクターがアクセスしました。この侵害により、200万人以上の情報が影響を受けたと報じられています。",
+        "financial_impact": "金融機関への直接的な関係は確認できず、他業界のデータ侵害事例として参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が確認できない他業界のインシデントであるため「低」です。確認目安は、金融機関に直接的な対応を求める情報や期限の記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:db2cfea084044430419946d928057a244c8035a8fcf8760fd770ff41a6666ea9",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/european-commission-confirms-ai-assisted-cyberattack-disrupted-services/",
+      "canonical_url": "https://www.securityweek.com/european-commission-confirms-ai-assisted-cyberattack-disrupted-services/",
+      "published_at": "2026-11-20T19:51:42+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "European Commission Confirms AI-Assisted Cyberattack Disrupted Services",
+      "raw_title": "European Commission Confirms AI-Assisted Cyberattack Disrupted Services",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f0a07d7bc4a3b048264d84ce15ee51dd5e85b8486868da8e8e7b412f47ade240",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:16:11.438531+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "欧州委員会がサイバー攻撃を受け、サービスが中断したという実際の被害事例が主題のため。",
+        "tags": [
+          "インシデント",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "欧州委員会はAI支援型サイバー攻撃を受け、一部サービスをオフラインにしてインシデントを封じ込めました。現時点ではデータ侵害の証拠はないと報告されています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。AI支援型攻撃の事例として、脅威動向を把握する上での参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が限定的であり、他業界の事例として脅威動向把握が中心となるため「中」です。確認目安は、具体的な対応期限や緊急性が示されておらず、状況把握が主となるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:823ccfebdf7ab435a089b021ac132d119d229a228734cd2854f6bbf65dbf5945",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/sonicwall-warns-gen-6-firewalls-wont.html",
+      "canonical_url": "https://thehackernews.com/2026/11/sonicwall-warns-gen-6-firewalls-wont.html",
+      "published_at": "2026-11-20T19:38:22+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "SonicWall Warns Gen 6 Firewalls Won't Get Security Patches, Even for Critical Flaws",
+      "raw_title": "SonicWall Warns Gen 6 Firewalls Won't Get Security Patches, Even for Critical Flaws",
+      "raw_excerpt": null,
+      "content_hash": "sha256:dfc82c9da377198503662fedcb6c9bb4eb2c614360357987378b06abf9586bc3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:16:28.764478+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "SonicWallのファイアウォール製品に関するセキュリティパッチ提供終了が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "SonicWallは、第6世代ファイアウォールを使用している顧客に対し、AIを活用した攻撃によるセキュリティリスクを理由に、直ちに製品を廃棄・交換し、インターネットに公開しないよう警告しました。同社は、サポート終了製品がこれまで以上に迅速に悪用されると予測しています。",
+        "financial_impact": "SonicWallの第6世代ファイアウォールを導入している金融機関は、サポート終了に伴うセキュリティリスクに直面する可能性があります。特にインターネットに公開している場合は早急な対応が求められます。",
+        "recommended_actions": [
+          "自社および委託先におけるSonicWall第6世代ファイアウォールの利用有無と外部公開状況を確認する",
+          "該当製品を利用している場合は、ベンダーの推奨に従い代替製品への移行計画を検討する"
+        ],
+        "reason": "重要度は、特定の製品のサポート終了に関する情報であり、利用有無により適用性が異なるため「中」です。確認目安は、即座の侵害や期限の記述はないものの、サポート終了製品の利用継続はリスクが高まるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d274b5196e0b0c431b03beb1ccb3f3541bec5ee1059a8cb7562a7aa1f836f3df",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ruby-patches-ruby2shell-vulnerability-that-could-lead-to-rce/",
+      "canonical_url": "https://www.securityweek.com/ruby-patches-ruby2shell-vulnerability-that-could-lead-to-rce/",
+      "published_at": "2026-11-20T19:34:10+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "Ruby Patches Ruby2Shell Vulnerability That Could Lead to RCE",
+      "raw_title": "Ruby Patches Ruby2Shell Vulnerability That Could Lead to RCE",
+      "raw_excerpt": null,
+      "content_hash": "sha256:734754b77288dd5b97b7199f1160ae573f140bf6443eab9ddebd92d9dcc8af3c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:16:45.737997+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Rubyの脆弱性に関するパッチ提供が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "RubyのRuby2Shell脆弱性（CVE-2026-132825）が修正されました。この脆弱性はヒープベースのバッファオーバーフローであり、リモートコード実行（RCE）につながる可能性があります。",
+        "financial_impact": "金融機関でRubyを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "CVE-2026-132825の影響を受けるRubyのバージョンを特定し、自社および委託先での利用有無を確認する",
+          "Rubyのベンダー一次情報を確認し、修正版へのアップデートまたは緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、Rubyの利用状況が金融機関によって異なり、適用範囲が不確実なため「中」です。確認目安は、実悪用や緊急対応の明確な期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c99f552cbbef77a02904205c80d2b25fb655679f47a756e545a2bb4d820d35fe",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/hackers-exploit-critical-cisco.html",
+      "canonical_url": "https://thehackernews.com/2026/11/hackers-exploit-critical-cisco.html",
+      "published_at": "2026-11-20T19:32:50+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "Hackers Exploit Critical Cisco Expressway Flaw, Breach Four Devices and Reach Internal Network",
+      "raw_title": "Hackers Exploit Critical Cisco Expressway Flaw, Breach Four Devices and Reach Internal Network",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ce2d427f09b94b826be3e0e73ded278ffdcaef9232dc7b14d9bb27f83b6b8766",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:17:03.397411+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Cisco製品の脆弱性悪用とPoC公開が主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Cisco Expresswayの重大な脆弱性CVE-2026-76466（CVSSスコア9.8）が悪用され、PoC公開直後にロシアの組織が侵害されました。認証されていないリモート攻撃者がネットワークアクセスを持つことで、内部ネットワークへの侵入を許す可能性があります。",
+        "financial_impact": "Cisco Expresswayは金融機関でも利用される可能性のある通信基盤であり、本脆弱性が悪用された場合、内部ネットワークへの不正アクセスや情報漏えい、業務停止につながる可能性があります。利用している場合は適用性確認の対象となります。",
+        "recommended_actions": [
+          "Cisco Expresswayの利用有無、および影響を受けるバージョン・外部公開状況を確認する",
+          "Ciscoからの公式パッチや緩和策の情報を確認し、対応計画を策定する",
+          "Cisco Expresswayのログやネットワークトラフィックを監視し、不審な活動や侵害の兆候がないか確認する"
+        ],
+        "reason": "重要度は、CVSS9.8の重大な脆弱性であり、PoC公開後に実悪用が確認されているため「高」です。確認目安は、実悪用が確認されているものの、CISA KEVへの新規追加がなく即時対応の期限が明示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:209921156d987de0e7b7534560abbecb91d36e543ed3ff9fe127ad174e180c04",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/china-linked-hackers-exploit-critical.html",
+      "canonical_url": "https://thehackernews.com/2026/11/china-linked-hackers-exploit-critical.html",
+      "published_at": "2026-11-20T18:38:15+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "China-Linked Hackers Exploit Critical VMware vCenter Zero-Day to Gain Admin Access and Steal Data",
+      "raw_title": "China-Linked Hackers Exploit Critical VMware vCenter Zero-Day to Gain Admin Access and Steal Data",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c0db77057852fc74448dd9d7643be1eb0913818c83939c14480e32bf06c05e99",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:17:21.247126+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "VMware vCenter Serverのゼロデイ脆弱性と、その悪用が主題であるため。",
+        "tags": [
+          "ゼロデイ",
+          "悪用確認済み",
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "中国関連のサイバースパイグループArmory Castleが、2026年9月初旬にVMware vCenter Serverの認証バイパスのゼロデイ脆弱性（CVE-2026-123890、CVSSスコア9.8）を悪用し、管理者権限を取得してデータを窃取したとされています。",
+        "financial_impact": "VMware vCenter Serverは多くの金融機関で仮想化基盤の管理に利用されている可能性があり、本脆弱性が悪用された場合、基盤への不正アクセスや情報窃取、業務停止につながる恐れがあります。",
+        "recommended_actions": [
+          "自社および委託先におけるVMware vCenter Serverの利用有無、および影響を受けるバージョンの有無を確認する",
+          "VMwareからの公式情報（パッチ、緩和策など）を確認し、対応要否を評価する",
+          "過去のログやシステム設定を確認し、本脆弱性の悪用による侵害兆候がないか調査する"
+        ],
+        "reason": "重要度は、広く利用されるVMware vCenter Serverのゼロデイ脆弱性であり、管理者権限取得とデータ窃取の可能性があるため「高」です。確認目安は、悪用が確認されているものの、直近3日以内のKEV新規追加がなく、緊急パッチの公開状況が不明なため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:ed2b00ab504a2f3b876a81cf81a3770dd70b1b656b0fe2f796062c8f39e58e92",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/n-able-blames-service-disruption-on-cyberattack/",
+      "canonical_url": "https://www.securityweek.com/n-able-blames-service-disruption-on-cyberattack/",
+      "published_at": "2026-11-20T18:08:35+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "N-able Blames Service Disruption on Cyberattack",
+      "raw_title": "N-able Blames Service Disruption on Cyberattack",
+      "raw_excerpt": null,
+      "content_hash": "sha256:bd587492887216545a02e750e0e62ec56c0e6c517071dc2db2858f4bc52afcf6",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:17:38.566117+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "N-ableのサービス停止がサイバー攻撃によるものと発表されており、実際の被害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "委託先管理",
+          "クラウド"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "N-ableは、Mail AssureおよびSpamExperts Hosted Cloudサービスがサイバー攻撃により停止したことを発表しました。このインシデントは認証情報の窃取につながった可能性があるとされています。",
+        "financial_impact": "N-ableのMail AssureまたはSpamExperts Hosted Cloudサービスを委託先として利用している金融機関は、影響を受ける可能性があります。認証情報の窃取の可能性について確認が必要です。",
+        "recommended_actions": [
+          "N-ableのMail AssureまたはSpamExperts Hosted Cloudサービスの利用有無を確認する",
+          "N-ableからの公式発表や指示に基づき、認証情報の漏洩有無や影響範囲を確認する",
+          "委託先管理プロセスにおいて、本件に関するN-ableの対応状況を評価する"
+        ],
+        "reason": "重要度は、N-ableのサービスを利用している場合に影響が限定されるため「中」です。確認目安は、サービス停止と認証情報窃取の可能性があり、利用有無の確認が必要なため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:846075ea51eaafd4b5d9d5d3a18858fa1b9aeea6c45d87ac821e0417ab79196d",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/jpmorgan-visa-mastercard-cite-third-party-incidents-amid-data-leak/",
+      "canonical_url": "https://www.securityweek.com/jpmorgan-visa-mastercard-cite-third-party-incidents-amid-data-leak/",
+      "published_at": "2026-11-20T16:35:46+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "JPMorgan, Visa, Mastercard Cite Third-Party Incidents Amid Data Leak",
+      "raw_title": "JPMorgan, Visa, Mastercard Cite Third-Party Incidents Amid Data Leak",
+      "raw_excerpt": null,
+      "content_hash": "sha256:aa32984cc381e43980e54f9a7f8b1e7d306558e83a66bcfdc4a589046996de1c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:17:55.773475+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "JPMorgan、Visa、Mastercardの顧客データ漏洩に関するインシデントが主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "N0n恐喝グループがJPMorgan、Visa、Mastercardの顧客に関連するとされるデータを漏洩させたことを受け、各社はサードパーティプロバイダーのインシデントが原因であると指摘しています。",
+        "financial_impact": "金融機関の顧客データが漏洩した可能性があり、委託先管理の重要性が改めて示されています。自社の委託先における情報セキュリティ対策の確認が求められます。",
+        "recommended_actions": [
+          "自社の委託先における情報セキュリティ対策の状況を確認する",
+          "委託先との契約内容や情報取扱いの取り決めを再確認する",
+          "委託先からの情報漏洩に関する報告体制と対応手順を評価する"
+        ],
+        "reason": "重要度は、大手金融機関の顧客データ漏洩の可能性があり、委託先管理の重要性が高いため「高」です。確認目安は、進行中の攻撃や緊急対応の指示が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e40617893cabf092a419255ae36022015317a5fc469ec227aec29b8e1902d5dd",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/romulus-clickfix-attacks-deliver-rat.html",
+      "canonical_url": "https://thehackernews.com/2026/11/romulus-clickfix-attacks-deliver-rat.html",
+      "published_at": "2026-11-20T16:11:39+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "ROMULUS ClickFix Attacks Deliver RAT That Can Spy on Users and Control PCs",
+      "raw_title": "ROMULUS ClickFix Attacks Deliver RAT That Can Spy on Users and Control PCs",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a88e0cf1b9b56621c582c6cef4f9d2daf417ca87ced50399b6dcd1c04b270253",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:18:13.591331+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ROMULUS ClickFixというマルウェア配信プラットフォームと、それによって配信されるRATが主題であるため。",
+        "tags": [
+          "APT",
+          "ランサムウェア"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "脅威アクターがROMULUS ClickFixマルウェア配信プラットフォームを利用し、CNCMachineRMSと類似する未確認のRATを配信していることが観測されました。ROMULUSはClickFixと署名付きバイナリのサイドローディング技術を保持しつつ、CNCMachineRMSとLegion Loaderを別々の経路で配信するサービスとして機能していると見られています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。一般的な脅威動向として、従業員のPCがRATに感染した場合、情報漏えいや業務停止のリスクがあるため、注意が必要です。",
+        "recommended_actions": [
+          "ROMULUS ClickFixやCNCMachineRMS、Legion Loaderに関連するIOC（存在する場合）を監視し、社内ネットワークでの活動有無を確認する",
+          "従業員に対し、不審なリンクやファイルを開かないよう注意喚起を継続する"
+        ],
+        "reason": "重要度は、特定の金融機関を標的とした攻撃ではないものの、RATによる情報漏えいやPC制御のリスクがあるため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、一般的な脅威動向として把握すべき情報であるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:47020b964d9535efb8df925e9bda58ce28d11c8c9ecda97cbd91cd0c63cf5758",
+      "source_id": "jpcert_cc",
+      "source_name": "JPCERT/CC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.jpcert.or.jp/at/2026/at260033.html",
+      "canonical_url": "https://www.jpcert.or.jp/at/2026/at260033.html",
+      "published_at": "2026-11-20T13:40:00+09:00",
+      "fetched_at": "2026-11-21T12:13:33.883160+09:00",
+      "title": "注意喚起: PHPにおける複数の脆弱性（CVE-2026-109618、CVE-2026-109619）に関する注意喚起  (更新)",
+      "raw_title": "注意喚起: PHPにおける複数の脆弱性（CVE-2026-109618、CVE-2026-109619）に関する注意喚起  (更新)",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2d96c1a948f7c553fefef3f4b9e447441c5d5912d3915c584983a84fd908691b",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "feed_summary",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-21T12:18:31.044929+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CVEが特定されており、脆弱性に関する注意喚起が主題であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "JPCERT/CCは、PHPにおける複数の脆弱性（CVE-2026-109618、CVE-2026-109619）に関する注意喚起を更新しました。これらの脆弱性はCISA KEVカタログに掲載されており、実悪用が確認されています。",
+        "financial_impact": "金融機関でPHPを利用しているシステムがある場合に関係します。特に、インターネットに公開されているシステムでPHPが利用されている場合は、悪用のリスクが高まる可能性があります。",
+        "recommended_actions": [
+          "自社および委託先でPHPを利用しているシステムがないか棚卸しする",
+          "CVE-2026-109618およびCVE-2026-109619の影響を受けるPHPのバージョンを確認する",
+          "JPCERT/CCやPHP公式の情報を参照し、修正パッチや緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、CISA KEVに掲載され実悪用が確認されているPHPの脆弱性であり、広く利用される可能性が高いため「高」です。確認目安は、KEV新規追加ではないものの実悪用が確認されているため、今週中に利用有無と対応要否を確認すべきであるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-109618",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-11-21T03:13:33Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-109618",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-10-21T14:17:09Z",
+              "last_modified_at": "2026-11-20T12:18:18Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 9.8,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                "source": "nvd@nist.gov",
+                "type": "Primary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-11-21T03:13:33Z",
+              "date_added": "2026-10-26"
+            }
+          },
+          {
+            "cve_id": "CVE-2026-109619",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-11-21T03:13:33Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-109619",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-10-21T14:17:09Z",
+              "last_modified_at": "2026-11-20T12:18:19Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 8.1,
+                "base_severity": "HIGH",
+                "vector": "CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                "source": "nvd@nist.gov",
+                "type": "Primary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-11-21T03:13:33Z",
+              "date_added": "2026-10-26"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
