@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026年11月24日のサイバーセキュリティ情報 | Monomi Digest</title>
+  <meta name="description" content="2026年11月24日に公開した、金融機関に関連するサイバーセキュリティ情報の日次ダイジェストです。重要度、確認目安、金融機関との関連、確認事項を整理しています。">
+  <link rel="canonical" href="https://monomidigest.com/archive/2026-11-24.html">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{--anchor-offset:218px}
+    @media (max-width:600px){:root{--anchor-offset:226px}}
+    body{background:#0d1117;color:#e6edf3;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;padding-bottom:40px}
+    header{background:#161b22;border-bottom:1px solid #21262d;padding:20px 16px 16px;position:sticky;top:0;z-index:10}
+    header h1{font-size:18px;font-weight:600;letter-spacing:.02em}
+    .sub{font-size:12px;color:#8b949e;margin-top:4px}
+    .count{font-size:12px;color:#58a6ff;margin-top:2px}
+    .archive-nav{display:flex;flex-direction:column;align-items:flex-start;row-gap:8px;margin-top:8px}
+    .archive-nav-group{display:flex;align-items:center;flex-wrap:wrap;gap:8px 16px;min-width:0}
+    .archive-bottom-nav{max-width:680px;margin:20px auto 0;padding:0 12px}
+    .archive-link{display:inline-flex;align-items:center;min-height:32px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}
+    .archive-link:hover{text-decoration:underline}
+    .article-list-header{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .article-list-header h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}
+    .article-list-note{font-size:12px;color:#8b949e;line-height:1.5}
+    .cards{padding:12px 12px 0;display:flex;flex-direction:column;gap:10px;max-width:680px;margin:0 auto}
+    .card{display:block;background:#161b22;border:1px solid #21262d;border-radius:10px;padding:14px 16px;text-decoration:none;color:inherit;-webkit-tap-highlight-color:transparent;scroll-margin-top:var(--anchor-offset)}
+    .card:active{background:#1c2128;border-color:#388bfd}
+    .card:target{border-color:#388bfd;box-shadow:0 0 0 1px #388bfd}
+    h2{font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3}
+    .article-heading{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:6px;align-items:start;font-size:14px;font-weight:500;line-height:1.5;color:#e6edf3;overflow-wrap:anywhere}
+    .article-index{color:#8b949e;font-weight:700;white-space:nowrap}
+    .article-title-stack{display:grid;gap:2px;min-width:0}
+    .article-title-translation{font-size:12px;color:#8b949e;line-height:1.5;font-weight:500}
+    .article-title-link,.priority-title-link{color:inherit;text-decoration:none}
+    .article-title-link:hover,.article-source-link:hover,.priority-title-link:hover{text-decoration:underline}
+    .summary{font-size:12px;color:#8b949e;line-height:1.5;margin-top:6px}
+    .article-meta{margin-top:4px;font-size:12px;color:#8b949e;line-height:1.5}
+    .article-assessment{margin-top:8px;font-size:12px;color:#8b949e;line-height:1.6}
+    .assessment-item strong{color:#e6edf3;font-weight:700}
+    .assessment-item.is-accent{display:inline-block;color:#f85149;font-weight:700;padding-left:7px;border-left:2px solid #f85149}
+    .ai-analysis{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:grid;gap:10px}
+    .article-tags{margin-top:12px;padding-top:10px;border-top:1px solid #30363d;display:flex;align-items:flex-start;gap:8px;flex-wrap:wrap}
+    .article-tags-label{padding-top:3px;font-size:10px;color:#768496;white-space:nowrap}
+    .article-tag{font-size:10px;font-weight:600;line-height:1.2;padding:3px 9px;border-radius:100px;border:1px solid #30363d;color:#8b949e;background:#0d1117}
+    .article-section h3{font-size:11px;font-weight:600;color:#8b949e}
+    .article-section p,.article-section li{font-size:12px;color:#c9d1d9;line-height:1.6}
+    .article-section p,.article-section ul{margin-top:3px}
+    .action-list{padding-left:18px}
+    .action-list li+li{margin-top:3px}
+    .vulnerability-facts{margin-top:8px}
+    .vulnerability-facts-title{font-size:11px;font-weight:600;color:#8b949e}
+    .vulnerability-list{list-style:none;margin-top:4px;display:grid;gap:4px}
+    .vulnerability-item{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:12px;color:#c9d1d9;line-height:1.6}
+    .vulnerability-cve-link{color:#79c0ff;text-decoration:none;font-weight:600}
+    .vulnerability-cve-link:hover{text-decoration:underline}
+    .vulnerability-cvss{color:#8b949e}
+    .kev-badge{font-size:10px;font-weight:700;line-height:1;padding:3px 8px;border-radius:100px;border:1px solid #9e6a03;color:#e3b341;background:#1c1506;white-space:nowrap}
+    .article-attribution{margin-top:10px;font-size:10px;color:#768496;line-height:1.6;overflow-wrap:anywhere}
+    .article-attribution a{color:#8b949e;text-decoration:underline;text-underline-offset:2px}
+    .article-attribution a:hover{color:#79c0ff}
+    .article-source-link{display:inline-flex;align-items:center;width:max-content;max-width:100%;margin-top:10px;font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none}
+    .empty{text-align:center;color:#8b949e;padding:60px 0;font-size:14px}
+    .todays-brief{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .brief-box{background:#161b22;border:1px solid #9e6a03;border-radius:10px;padding:14px 16px;display:grid;gap:12px}
+    .brief-box h2{font-size:13px;font-weight:700;color:#f0b429}
+    .brief-section-title{font-size:12px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .brief-status-line{font-size:13px;color:#e6edf3;line-height:1.6;background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:8px 10px;margin-bottom:8px;overflow-wrap:break-word}
+    .brief-overview{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word}
+    .brief-list{list-style:none;display:grid;gap:6px}
+    .brief-list li{font-size:13px;color:#e6edf3;line-height:1.6;padding-left:1.1em;position:relative}
+    .brief-list li::before{content:"・";position:absolute;left:0}
+    .brief-priority-list{list-style:none;display:grid;gap:12px;margin:0;padding:0}
+    .brief-priority-item{background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px 12px;display:grid;gap:4px}
+    .brief-priority-summary,.brief-priority-impact{font-size:13px;color:#e6edf3;line-height:1.6;overflow-wrap:break-word;margin:0}
+    .dashboard{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .dashboard-head{background:#161b22;border:1px solid #21262d;border-bottom:none;border-radius:10px 10px 0 0;padding:12px 16px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+    .dashboard-head h2{font-size:13px;font-weight:700;color:#e6edf3}
+    .dashboard-count{font-size:12px;color:#8b949e}
+    .dashboard-count strong{font-size:16px;font-weight:700;color:#e6edf3;margin:0 2px}
+    .dashboard-axes{background:#161b22;border-left:1px solid #21262d;border-right:1px solid #21262d;border-top:1px solid #21262d;display:grid;grid-template-columns:1fr 1fr}
+    .dashboard-axis{padding:10px 16px}
+    .dashboard-axis+.dashboard-axis{border-left:1px solid #21262d}
+    .dashboard-axis h3{font-size:11px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .dashboard-axis-list{list-style:none;display:grid;gap:4px}
+    .dashboard-axis-item{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:12px;color:#c9d1d9;line-height:1.4;padding-left:8px;border-left:2px solid transparent}
+    .dashboard-axis-item strong{font-size:14px;font-weight:700;color:#e6edf3}
+    .dashboard-axis-item.is-accent{border-left-color:#f85149;color:#f85149}
+    .dashboard-axis-item.is-accent strong{color:#f85149}
+    .dashboard-categories{background:#161b22;border:1px solid #21262d;border-top:1px solid #21262d;border-radius:0 0 10px 10px;padding:10px 16px}
+    .dashboard-categories h3{font-size:11px;font-weight:700;color:#8b949e;margin-bottom:6px}
+    .dashboard-category-list{list-style:none;display:flex;flex-wrap:wrap;gap:4px 14px}
+    .dashboard-category-item{font-size:11px;color:#8b949e;display:flex;gap:4px}
+    .dashboard-category-item strong{color:#8b949e;font-weight:600}
+    .dashboard-empty{list-style:none;font-size:12px;color:#8b949e;line-height:1.5}
+    @media (max-width:600px){
+      .dashboard-axes{grid-template-columns:1fr}
+      .dashboard-axis+.dashboard-axis{border-left:none;border-top:1px solid #21262d}
+    }
+    .important-items{max-width:680px;margin:12px auto 0;padding:0 12px}
+    .important-items h2{font-size:13px;font-weight:700;color:#e6edf3;margin-bottom:4px}
+    .important-items-note{font-size:12px;color:#8b949e;line-height:1.5;margin-bottom:8px}
+    .important-items-list{display:grid;gap:6px}
+    .priority-item{border-top:1px solid #21262d;padding:10px 0;display:grid;gap:6px}
+    .priority-item:first-child{border-top:0;padding-top:0}
+    .priority-item .article-heading{font-size:13px;font-weight:600}
+    .priority-item-link{font-size:12px;font-weight:700;color:#79c0ff;text-decoration:none;width:max-content;max-width:100%}
+    .priority-item-link:hover{text-decoration:underline}
+    .priority-item-meta{font-size:11px;color:#8b949e}
+    .important-item-reason,.important-items-empty{font-size:12px;color:#c9d1d9;line-height:1.6}
+    .sources{max-width:680px;margin:20px auto 0;padding:0 12px}
+    .sources details{background:#161b22;border:1px solid #21262d;border-radius:10px;padding:12px 16px}
+    .sources summary{font-size:12px;color:#8b949e;cursor:pointer;list-style:none}
+    .sources summary::before{content:"▶  ";font-size:10px}
+    details[open] summary::before{content:"▼  "}
+    .sources ul{margin:10px 0 0;padding-left:18px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));column-gap:18px;row-gap:5px}
+    .sources li{font-size:11px;line-height:1.5;color:#8b949e;overflow-wrap:anywhere}
+    @media (max-width:600px){.sources ul{grid-template-columns:1fr}}
+    .site-footer{max-width:680px;margin:20px auto 0;padding:0 12px}
+    .analytics-notice{font-size:11px;color:#768496;line-height:1.6}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Monomi Digest</h1>
+    <div class="sub">日次ダイジェスト：2026年11月24日</div>
+    <div class="sub">最終更新: 2026年11月24日 15:08</div>
+    <div class="count">17 件</div>
+    <nav class="archive-nav" aria-label="日別ダイジェスト上部ナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link archive-prev-link" href="2026-11-23.html">← 前のダイジェスト</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="index.html">過去のダイジェスト</a><a class="archive-link" href="../index.html">最新のダイジェスト</a></div></nav>
+  </header>
+  <div class="todays-brief">
+    <div class="brief-box">
+      <h2>本日の要点</h2>
+      <div class="brief-section">
+      <h3 class="brief-section-title">概況</h3>
+      <p class="brief-status-line">Brief対象17件｜重要度「高」4件｜本日確認0件｜今週確認14件</p>
+      <p class="brief-overview">Brief対象の記事では、緊急の確認対象はありません。今週確認の対象が14件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が4件あるため、内容は優先的に把握する必要があります。</p>
+    </div><div class="brief-section">
+      <h3 class="brief-section-title">重要・優先事項</h3>
+      <ul class="brief-priority-list"><li class="brief-priority-item"><p class="brief-priority-summary">Microsoft Azure API Managementの脆弱性が悪用され、ノルウェーのエネルギー企業が標的となり、機密情報が狙われました。他のセクターも影響を受けている可能性があります。</p><p class="brief-priority-impact">金融機関がAzure API Managementを利用している場合、同様の攻撃の標的となる可能性があります。機密情報の漏えいや業務停止につながるリスクがあるため、利用状況の確認が必要です。</p></li><li class="brief-priority-item"><p class="brief-priority-summary">IPAはVMware製品の脆弱性(CVE-2026-123890)について注意喚起を行っています。この脆弱性はCVSSv3.1で9.8のCriticalと評価されており、CISA KEVにも掲載されています。</p><p class="brief-priority-impact">金融機関でVMware製品を利用している場合に適用性確認の対象になります。VMware製品は多くの企業で基盤システムに利用されている可能性があります。</p></li></ul>
+    </div><div class="brief-section">
+      <h3 class="brief-section-title">確認事項</h3>
+      <ul class="brief-list"><li>自社および委託先でMicrosoft Azure API Managementの利用有無と設定状況を確認する</li><li>CVE-2026-123890の影響を受けるVMware製品の利用有無と影響バージョンを確認する</li></ul>
+    </div>
+    </div>
+  </div>
+  <section class="important-items">
+    <h2>優先確認</h2>
+    <p class="important-items-note">重要度が高い、または確認目安が本日確認の記事です。</p>
+    <div class="important-items-list">
+      <article class="priority-item">
+        <h3 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-1" lang="en">Azure Flaw Exploited to Target Secrets at Norwegian Energy Firms</a></span></h3>
+        <p class="priority-item-meta">重要度 高 ・ 確認目安 今週確認</p>
+        <p class="important-item-reason">重要度は、広く利用されるクラウドサービスであるAzureの脆弱性が悪用され、機密情報が標的となったインシデントであり、金融機関も影響を受ける可能性があるため「高」です。確認目安は、脆弱性は既にクローズされており、直ちに緊急対応を要する新たな情報がないため「今週確認」です。</p>
+        <a class="priority-item-link" href="#article-1">本文を見る</a>
+      </article>
+      <article class="priority-item">
+        <h3 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-2" lang="ja">VMware製品の脆弱性対策について(CVE-2026-123890)</a></span></h3>
+        <p class="priority-item-meta">重要度 高 ・ 確認目安 今週確認</p>
+        <p class="important-item-reason">重要度は、CVSS9.8のCriticalな脆弱性であり、多くの企業で利用されるVMware製品に関連するため「高」です。確認目安は、CISA KEVに掲載されているものの、直近3日以内の新規追加ではなく、即時対応の明確な時間的根拠が記事にないため「今週確認」です。</p>
+        <a class="priority-item-link" href="#article-2">本文を見る</a>
+      </article>
+      <article class="priority-item">
+        <h3 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-3" lang="en">Hackers Exploit Critical ScreenConnect Flaw to Hijack MSP Technician PCs Without Warning</a></span></h3>
+        <p class="priority-item-meta">重要度 高 ・ 確認目安 今週確認</p>
+        <p class="important-item-reason">重要度は、広く利用される可能性のあるMSP向け製品の重大な脆弱性であり、実悪用が確認されているため「高」です。確認目安は、パッチが既に提供されており、CISA KEVへの新規追加ではないため「今週確認」です。</p>
+        <a class="priority-item-link" href="#article-3">本文を見る</a>
+      </article>
+      <article class="priority-item">
+        <h3 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="priority-title-link" href="#article-4" lang="en">AI-Assisted Cyber Attacks Trigger Unauthorized Payments at Indian Banks and Fintech Firms</a></span></h3>
+        <p class="priority-item-meta">重要度 高 ・ 確認目安 今週確認</p>
+        <p class="important-item-reason">重要度は、AIを活用した攻撃が金融機関の不正送金に直結し、新たな脅威として対策の優先度が高いため「高」です。確認目安は、具体的な期限や緊急対応の指示はないものの、新たな脅威動向として今週中に情報収集と評価を開始すべきであるため「今週確認」です。</p>
+        <a class="priority-item-link" href="#article-4">本文を見る</a>
+      </article>
+    </div>
+  </section>
+  <section class="dashboard">
+    <div class="dashboard-head">
+      <h2>本日のダッシュボード</h2>
+      <p class="dashboard-count"><span>掲載</span><strong>17</strong>件</p>
+    </div>
+    <div class="dashboard-axes">
+      <div class="dashboard-axis">
+        <h3>重要度</h3>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item is-accent"><span>高</span><strong>4</strong></li><li class="dashboard-axis-item"><span>中</span><strong>10</strong></li><li class="dashboard-axis-item"><span>低</span><strong>3</strong></li></ul>
+      </div>
+      <div class="dashboard-axis">
+        <h3>確認目安</h3>
+        <ul class="dashboard-axis-list"><li class="dashboard-axis-item"><span>本日確認</span><strong>0</strong></li><li class="dashboard-axis-item"><span>今週確認</span><strong>14</strong></li><li class="dashboard-axis-item"><span>参考</span><strong>3</strong></li></ul>
+      </div>
+    </div>
+    <div class="dashboard-categories">
+      <h3>主なカテゴリ</h3>
+      <ul class="dashboard-category-list"><li class="dashboard-category-item"><span>脆弱性・パッチ</span><strong>7</strong></li><li class="dashboard-category-item"><span>攻撃・脅威動向</span><strong>4</strong></li><li class="dashboard-category-item"><span>インシデント</span><strong>3</strong></li><li class="dashboard-category-item"><span>AI・新技術リスク</span><strong>1</strong></li><li class="dashboard-category-item"><span>その他</span><strong>2</strong></li></ul>
+    </div>
+  </section>
+  <section class="article-list-header">
+    <h2>本日の情報</h2>
+    <p class="article-list-note">確認目安、重要度、元の収集順で表示しています。</p>
+  </section>
+  <div class="cards">
+    <article class="card" id="article-1">
+      <h2 class="article-heading"><span class="article-index">1.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/azure-flaw-exploited-to-target-secrets-at-norwegian-energy-firms/" target="_blank" rel="noopener noreferrer" lang="en">Azure Flaw Exploited to Target Secrets at Norwegian Energy Firms</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/24 00:47</p>
+      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>Microsoft Azure API Managementの脆弱性が悪用され、ノルウェーのエネルギー企業が標的となり、機密情報が狙われました。他のセクターも影響を受けている可能性があります。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関がAzure API Managementを利用している場合、同様の攻撃の標的となる可能性があります。機密情報の漏えいや業務停止につながるリスクがあるため、利用状況の確認が必要です。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先でMicrosoft Azure API Managementの利用有無と設定状況を確認する</li><li>Microsoftからの公式情報や緩和策を確認し、必要な対応を検討する</li><li>過去のログや設定変更履歴を確認し、不審なアクティビティや侵害の兆候がないか調査する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/azure-flaw-exploited-to-target-secrets-at-norwegian-energy-firms/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">クラウド</span><span class="article-tag">インシデント</span><span class="article-tag">情報漏えい</span></div>
+    </article>
+
+    <article class="card" id="article-2">
+      <h2 class="article-heading"><span class="article-index">2.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.ipa.go.jp/security/security-alert/2026/alert20261124.html" target="_blank" rel="noopener noreferrer" lang="ja">VMware製品の脆弱性対策について(CVE-2026-123890)</a></span></h2>
+      <p class="article-meta">IPA ・ 11/24 00:00</p>
+      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>IPAはVMware製品の脆弱性(CVE-2026-123890)について注意喚起を行っています。この脆弱性はCVSSv3.1で9.8のCriticalと評価されており、CISA KEVにも掲載されています。</p>
+        </section>
+        <section class="vulnerability-facts">
+        <h3 class="vulnerability-facts-title">脆弱性情報</h3>
+        <ul class="vulnerability-list"><li class="vulnerability-item"><a class="vulnerability-cve-link" href="https://nvd.nist.gov/vuln/detail/CVE-2026-123890" target="_blank" rel="noopener noreferrer">CVE-2026-123890</a><span class="vulnerability-cvss">CVSS 9.8 / Critical（v3.1・他機関）</span><span class="kev-badge">CISA KEV掲載</span></li></ul>
+      </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関でVMware製品を利用している場合に適用性確認の対象になります。VMware製品は多くの企業で基盤システムに利用されている可能性があります。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>CVE-2026-123890の影響を受けるVMware製品の利用有無と影響バージョンを確認する</li><li>VMware社からの一次情報やパッチ、緩和策を確認し、対応要否を評価する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi DigestによるAI要約・分析です。要約・分析には正確性の限界があります。</p>
+      <a class="article-source-link" href="https://www.ipa.go.jp/security/security-alert/2026/alert20261124.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">KEV</span><span class="article-tag">パッチ</span></div>
+    </article>
+
+    <article class="card" id="article-3">
+      <h2 class="article-heading"><span class="article-index">3.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/hackers-exploit-critical-screenconnect.html" target="_blank" rel="noopener noreferrer" lang="en">Hackers Exploit Critical ScreenConnect Flaw to Hijack MSP Technician PCs Without Warning</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/23 21:41</p>
+      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>脅威アクターが、ConnectWise ScreenConnectの修正済み脆弱性CVE-2026-84869（CVSSスコア9.9）を悪用し、マネージドサービスプロバイダー（MSP）のサーバーを標的にしています。この脆弱性は、ゲストが接続中の技術者のホスト上で悪意のあるペイロードを転送・実行することを可能にします。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関がConnectWise ScreenConnectをIT運用管理や委託先管理で利用している場合、または委託先のMSPが利用している場合に影響する可能性があります。悪用されると、技術者のPCが乗っ取られ、機密情報へのアクセスやシステム侵害につながる恐れがあります。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>ConnectWise ScreenConnectの利用有無、および影響を受けるバージョン（CVE-2026-84869）の適用状況を確認する</li><li>ConnectWiseが提供するパッチや緩和策が適用されていることを確認し、未適用であれば速やかに対応を検討する</li><li>委託先のMSPがConnectWise ScreenConnectを利用している場合、当該脆弱性への対応状況を確認する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/hackers-exploit-critical-screenconnect.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">悪用確認済み</span><span class="article-tag">パッチ</span><span class="article-tag">サプライチェーン</span><span class="article-tag">委託先管理</span></div>
+    </article>
+
+    <article class="card" id="article-4">
+      <h2 class="article-heading"><span class="article-index">4.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/ai-assisted-cyberattacks-trigger.html" target="_blank" rel="noopener noreferrer" lang="en">AI-Assisted Cyber Attacks Trigger Unauthorized Payments at Indian Banks and Fintech Firms</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/23 17:24</p>
+      <p class="article-assessment"><span class="assessment-item is-accent">重要度 高</span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>インドのCERT-Inは、AI支援型サイバー攻撃がインド国内のICT資産を標的としており、銀行、金融サービス機関、テクノロジーサービスプロバイダーで不正な金融取引が発生していると警告しました。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>AIを活用した攻撃手法は、金融機関の不正送金対策やセキュリティ運用に新たな課題をもたらす可能性があります。インドの事例ですが、同様の攻撃が他国の金融機関にも拡大するリスクを考慮する必要があります。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>AIを活用した攻撃手法に関する最新の脅威情報を収集し、自社のセキュリティ対策への影響を評価する</li><li>不正送金検知システムや認証プロセスのAI攻撃に対する耐性を確認し、必要に応じて強化を検討する</li><li>従業員に対し、AIを活用したソーシャルエンジニアリングやフィッシング攻撃への注意喚起と教育を実施する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/ai-assisted-cyberattacks-trigger.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">フィッシング</span><span class="article-tag">インシデント</span><span class="article-tag">決済</span></div>
+    </article>
+
+    <article class="card" id="article-5">
+      <h2 class="article-heading"><span class="article-index">5.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/webworm-suspected-of-modifying.html" target="_blank" rel="noopener noreferrer" lang="en">Webworm Suspected of Modifying SoftEther VPN to Evade Detection and Hide Remote Access</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/24 02:45</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>中国関連の脅威アクターWebwormが、オープンソースのSoftEther VPN Bridgeツールを改変し、検出回避と侵害ネットワークへの隠れたリモートアクセス確立を試みているとされています。改変されたVPNは、セキュリティツールからの隠蔽を目的とした様々な手法を実装しています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関でSoftEther VPN Bridgeを利用している場合、本攻撃手法が適用される可能性があります。利用有無は記事から確認できないため断定はできません。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先におけるSoftEther VPN Bridgeの利用有無と設定状況を確認する</li><li>ネットワーク監視ログやセキュリティツールで、記事に記載された検出回避の兆候がないか確認する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/webworm-suspected-of-modifying.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">APT</span><span class="article-tag">サプライチェーン</span></div>
+    </article>
+
+    <article class="card" id="article-6">
+      <h2 class="article-heading"><span class="article-index">6.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/n-able-patches-critical-flaw-disclosed-after-mail-assure-cyberattack/" target="_blank" rel="noopener noreferrer" lang="en">N-able Patches Critical Flaw Discovered After Mail Assure Cyberattack</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/24 00:06</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>N-ableは、Mail Assureへのサイバー攻撃後に発見された重大な脆弱性に対処するパッチを公開しました。同社は影響を受けたサービスへのアクセスを復旧し、引き続き環境を監視しています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>N-able Mail Assureを自社または委託先で利用している金融機関に関係します。利用有無は記事から確認できないため、適用性確認の対象になります。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>N-able Mail Assureの利用有無と影響バージョンを確認する</li><li>N-ableからの一次情報を確認し、パッチ適用や緩和策の実施を検討する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/n-able-patches-critical-flaw-disclosed-after-mail-assure-cyberattack/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">パッチ</span><span class="article-tag">インシデント</span></div>
+    </article>
+
+    <article class="card" id="article-7">
+      <h2 class="article-heading"><span class="article-index">7.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/phpaftershell-vulnerability-revives-php2shells-attack-path/" target="_blank" rel="noopener noreferrer" lang="en">phpAfterShell Vulnerability Revives PHP2Shell’s Attack Path</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/23 22:58</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>セッション上書き操作が中断された場合、攻撃者が新しいデータを制御することでデータ逆シリアル化とリモートコード実行（RCE）を引き起こす可能性がある脆弱性「phpAfterShell」が報告されました。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関でPHPアプリケーションを利用しており、セッション上書き処理が中断される可能性のある環境に該当する場合に関係します。記事からは具体的な製品や利用状況は確認できません。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>PHPアプリケーションの利用有無と、セッション上書き処理の実装状況を確認する</li><li>ベンダーからの情報公開があれば、脆弱性の詳細と緩和策を確認する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/phpaftershell-vulnerability-revives-php2shells-attack-path/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article>
+
+    <article class="card" id="article-8">
+      <h2 class="article-heading"><span class="article-index">8.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/gl-inet-routers-kvms-compromised-via-remote-management-service-flaw/" target="_blank" rel="noopener noreferrer" lang="en">GL.iNet Routers, KVMs Compromised via Remote Management Service Flaw</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/23 22:26</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>GL.iNet製ルーターおよびKVMデバイスが、リモート管理サービス「GoodCloud」の欠陥を悪用され、マルウェアに感染する被害が発生しました。デバイスのクリーンアップには新しいファームウェアの適用が必要です。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関でGL.iNet製ルーターやKVMデバイス、特にGoodCloudリモート管理サービスを利用している場合に、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>GL.iNet製ルーターおよびKVMデバイスの利用有無と、GoodCloudリモート管理サービスの利用状況を確認する</li><li>該当デバイスを利用している場合、ベンダーの指示に従い新しいファームウェアへの更新を検討する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/gl-inet-routers-kvms-compromised-via-remote-management-service-flaw/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">インシデント</span></div>
+    </article>
+
+    <article class="card" id="article-9">
+      <h2 class="article-heading"><span class="article-index">9.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/critical-binary-parser-flaw-enables.html" target="_blank" rel="noopener noreferrer" lang="en">Critical binary-parser Flaw Enables JavaScript Injection via Malicious Parser Definitions</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/23 22:22</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>人気のbinary-parserライブラリに重大なセキュリティ欠陥が発見されました。この脆弱性（CVE-2026-134814、CVSSスコア9.2/8.1）は、パーサー定義を制御できる攻撃者が任意のコードを実行できるコードインジェクションであり、バージョン2.3.1より前のbinary-parserに影響します。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関がbinary-parserライブラリをバージョン2.3.1より前の状態で利用している場合に、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先におけるbinary-parserライブラリの利用有無とバージョンを確認する</li><li>影響を受けるバージョンを利用している場合は、ベンダーの一次情報を確認し、バージョン2.3.1以降へのアップデートまたは緩和策の適用を検討する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/critical-binary-parser-flaw-enables.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">パッチ</span></div>
+    </article>
+
+    <article class="card" id="article-10">
+      <h2 class="article-heading"><span class="article-index">10.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/n-able-discloses-critical-mail-assure.html" target="_blank" rel="noopener noreferrer" lang="en">N-able Discloses Critical Mail Assure Vulnerability Found During Breach Investigation</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/23 21:28</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>N-ableは、同社のメールフィルタリングサービス「Mail Assure」および「SpamExperts Hosted Cloud」の侵害調査中に発見された重大な脆弱性（CVE-2026-134624）を開示しました。このサーバーサイドリクエストフォージェリ（SSRF）の欠陥は、高レベルのAPIアクセスを持つユーザーが内部システムへの接続を開くことを可能にします。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関がN-ableのMail AssureまたはSpamExperts Hosted Cloudサービスをメールフィルタリングに利用している場合、または委託先が利用している場合に影響する可能性があります。記事からは金融機関での利用状況は確認できません。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先におけるN-able Mail AssureまたはSpamExperts Hosted Cloudの利用有無を確認する</li><li>該当製品を利用している場合、N-ableからの公式情報に基づき、脆弱性の影響範囲と推奨される緩和策を確認する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/n-able-discloses-critical-mail-assure.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">悪用確認済み</span><span class="article-tag">サプライチェーン</span></div>
+    </article>
+
+    <article class="card" id="article-11">
+      <h2 class="article-heading"><span class="article-index">11.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/ai-inference-providers-failed-to-detect-hacking-and-prompt-theft-says-dragos/" target="_blank" rel="noopener noreferrer" lang="en">AI Inference Providers Failed to Detect Hacking and Prompt Theft, Says Dragos</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/23 21:16</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>Dragosの調査により、3つのAI推論プロバイダーでハッキングとプロンプト窃盗が未検知のまま発生していたことが判明しました。約200万件のプロンプトがAIサービスに送信され、悪用された可能性があります。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関がAI推論サービスを外部プロバイダーに委託している場合、委託先におけるセキュリティ対策の評価や、プロンプト窃盗による情報漏えいリスクの検討に関係します。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>AI推論サービスを外部プロバイダーに委託している場合、当該プロバイダーのセキュリティ対策状況を確認する</li><li>AIサービス利用におけるプロンプトの機密性評価と、窃盗時の影響を検討する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/ai-inference-providers-failed-to-detect-hacking-and-prompt-theft-says-dragos/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">AI</span><span class="article-tag">委託先管理</span><span class="article-tag">情報漏えい</span></div>
+    </article>
+
+    <article class="card" id="article-12">
+      <h2 class="article-heading"><span class="article-index">12.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/sap-netweaver-cisco-expressway-flaws-exploited-in-attacks/" target="_blank" rel="noopener noreferrer" lang="en">SAP NetWeaver, Cisco Expressway Flaws Exploited in Attacks</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/23 20:35</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>SAP NetWeaverとCisco Expresswayの脆弱性が攻撃者によって悪用されていることが確認されました。これらの脆弱性が悪用されると、サーバー情報の漏洩や改ざん、root権限でのコマンド実行が可能になる可能性があります。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関でSAP NetWeaverまたはCisco Expresswayを利用している場合に、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>SAP NetWeaverおよびCisco Expresswayの利用有無と影響バージョンを確認する</li><li>各製品のベンダーから提供されている修正パッチや緩和策の情報を確認し、対応要否を評価する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/sap-netweaver-cisco-expressway-flaws-exploited-in-attacks/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">悪用確認済み</span></div>
+    </article>
+
+    <article class="card" id="article-13">
+      <h2 class="article-heading"><span class="article-index">13.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/hackers-exploit-critical-aspnet-anti.html" target="_blank" rel="noopener noreferrer" lang="en">Hackers Exploit Critical ASP.NET Anti-CSRF Library Flaw Allowing Unauthenticated RCE</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/23 18:11</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>サイバーセキュリティ研究者らは、レガシーなASP.NETのAnti-CSRFライブラリ「Idunno.AntiCsrf」に実悪用が確認された重大な脆弱性（CVE-2026-131914、CVSS 9.3）が発見されたことを受け、利用中止を呼びかけています。この脆弱性はバージョン0.9.1.0および0.9.1 Betaに影響します。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関でレガシーなASP.NETアプリケーションにおいて、当該のAnti-CSRFライブラリ「Idunno.AntiCsrf」を利用している場合に限り、適用性確認の対象になります。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先において、ASP.NETアプリケーションで「Idunno.AntiCsrf」ライブラリのバージョン0.9.1.0または0.9.1 Betaの利用有無を確認する</li><li>該当する利用が確認された場合、ベンダーの推奨に従い利用中止または代替策への移行を検討する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/hackers-exploit-critical-aspnet-anti.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">CVE</span><span class="article-tag">悪用確認済み</span></div>
+    </article>
+
+    <article class="card" id="article-14">
+      <h2 class="article-heading"><span class="article-index">14.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/hackers-exploited-glinet-cloud-flaw-to.html" target="_blank" rel="noopener noreferrer" lang="en">Hackers Exploited GL.iNet Cloud Flaw to Install Malware on Routers and KVM Devices</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/23 18:04</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>中</strong></span> ・ <span class="assessment-item">確認目安 <strong>今週確認</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>GL.iNetは、同社のGoodCloudリモート管理サービスにおける脆弱性が悪用され、一部の顧客ルーターおよびKVMデバイスにマルウェアがインストールされたことを発表しました。同社は金曜日にこの脆弱性を特定し修正し、攻撃者が使用したアクセス経路をブロックしたため、この経路からの感染はもはや不可能となっています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関がGL.iNetのルーターやKVMデバイス、特にGoodCloudリモート管理サービスを利用している場合に、サプライチェーンリスクとして関係します。利用有無は記事から確認できないため断定はできません。</p>
+        </section>
+        <section class="article-section">
+          <h3>確認すべきこと</h3>
+          <ul class="action-list"><li>自社および委託先におけるGL.iNet製ルーターやKVMデバイス、特にGoodCloudリモート管理サービスの利用有無を確認する</li><li>GL.iNetからのセキュリティ通知を確認し、影響範囲と対応状況を評価する</li><li>過去のログを確認し、不審なアクセスやマルウェア感染の兆候がないか調査する</li></ul>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/hackers-exploited-glinet-cloud-flaw-to.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+      <div class="article-tags"><span class="article-tags-label">関連タグ</span><span class="article-tag">インシデント</span><span class="article-tag">サプライチェーン</span><span class="article-tag">悪用確認済み</span></div>
+    </article>
+
+    <article class="card" id="article-15">
+      <h2 class="article-heading"><span class="article-index">15.</span><span class="article-title-stack"><a class="article-title-link" href="https://thehackernews.com/2026/11/weekly-recap-vmware-0-day-java4shell.html" target="_blank" rel="noopener noreferrer" lang="en">⚡ Weekly Recap: VMware 0-Day, Java4Shell, NGINX2Root, Ruby2Shell, and a Whole Lot of Shell Trouble</a></span></h2>
+      <p class="article-meta">The Hacker News ・ 11/24 00:10</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>本記事は、VMwareのゼロデイ脆弱性、Java4Shell、NGINX2Root、Ruby2Shellなど、複数のセキュリティ問題に関する週次まとめです。攻撃者が既存の脆弱性を悪用し、小さな侵入口から大きな被害につながる事例が紹介されています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関への直接的な影響は限定的です。個々の脆弱性や攻撃手法については別途詳細な情報収集と評価が必要です。</p>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://thehackernews.com/2026/11/weekly-recap-vmware-0-day-java4shell.html" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article>
+
+    <article class="card" id="article-16">
+      <h2 class="article-heading"><span class="article-index">16.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/badbox-3-0-ad-fraud-operation-generating-40-billion-daily-bid-requests-disrupted/" target="_blank" rel="noopener noreferrer" lang="en">BadBox 3.0 Ad Fraud Operation Generating 40 Billion Daily Bid Requests Disrupted</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/23 20:44</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>「BadBox 3.0」と呼ばれる大規模な広告詐欺作戦が摘発されました。この作戦では、低価格の消費者向けデバイスにバックドアを仕込み、広告詐欺モジュールや住宅用プロキシとして利用していました。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関への直接的な影響は限定的です。主に消費者向けデバイスを悪用した広告詐欺であり、金融サービスへの直接的な脅威は記事からは確認できません。</p>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/badbox-3-0-ad-fraud-operation-generating-40-billion-daily-bid-requests-disrupted/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article>
+
+    <article class="card" id="article-17">
+      <h2 class="article-heading"><span class="article-index">17.</span><span class="article-title-stack"><a class="article-title-link" href="https://www.securityweek.com/crowdstrike-to-acquire-zscaler-in-43-9-billion-deal/" target="_blank" rel="noopener noreferrer" lang="en">CrowdStrike to Acquire Zscaler in $43.9 Billion Deal</a></span></h2>
+      <p class="article-meta">SecurityWeek ・ 11/23 20:31</p>
+      <p class="article-assessment"><span class="assessment-item">重要度 <strong>低</strong></span> ・ <span class="assessment-item">確認目安 <strong>参考</strong></span></p>
+      <div class="ai-analysis">
+        <section class="article-section">
+          <h3>概要</h3>
+          <p>CrowdStrikeがZscalerを439億ドルで買収する見込みであり、これにより両社合わせた年間経常収益は100億ドルを超えると予想されています。</p>
+        </section>
+        <section class="article-section">
+          <h3>金融機関との関連</h3>
+          <p>金融機関が両社の製品を利用している場合、今後のサービス統合や契約内容に影響が出る可能性がありますが、現時点での直接的な影響は限定的です。</p>
+        </section>
+      </div>
+      <p class="article-attribution">Monomi Digestが公式RSSの概要をもとに生成したAI分析です。詳細と正確性は元記事で確認してください。原文の転載・代替を目的とするものではありません。</p>
+      <a class="article-source-link" href="https://www.securityweek.com/crowdstrike-to-acquire-zscaler-in-43-9-billion-deal/" target="_blank" rel="noopener noreferrer">元記事を読む</a>
+    </article></div>
+  <div class="sources">
+    <details>
+      <summary>収集元 (13ソース)</summary>
+      <ul><li>金融庁</li><li>JPCERT/CC</li><li>IPA</li><li>NIST</li><li>Microsoft Security</li><li>Mandiant</li><li>Google TAG</li><li>NCSC</li><li>Krebs on Security</li><li>The Hacker News</li><li>Cisco Talos</li><li>CISA KEV</li><li>SecurityWeek</li></ul>
+    </details>
+  </div>
+  <nav class="archive-nav archive-bottom-nav" aria-label="日別ダイジェスト下部ナビゲーション"><div class="archive-nav-group archive-direction-nav"><a class="archive-link archive-prev-link" href="2026-11-23.html">← 前のダイジェスト</a></div><div class="archive-nav-group archive-global-nav"><a class="archive-link" href="index.html">過去のダイジェスト</a><a class="archive-link" href="../index.html">最新のダイジェスト</a></div></nav>
+  <footer class="site-footer">
+    <p class="analytics-notice">本サイトは閲覧状況の把握にCloudflare Web Analyticsを利用しています。Cloudflareは、CookieやlocalStorageを使用せず、個々の訪問者を追跡しないと説明しています。ページビュー、参照元、国、デバイス種別等を集計し、解析用スクリプトをstatic.cloudflareinsights.comから読み込み、計測データをcloudflareinsights.comへ送信します。</p>
+  </footer>
+  <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "61817bf1677944c191c8933b207fdc7d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

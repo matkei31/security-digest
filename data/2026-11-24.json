@@ -1,0 +1,971 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-24",
+  "generated_at": "2026-11-24T15:08:52.645158+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 17,
+    "ai_attempted_count": 17,
+    "ai_success_count": 17,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 17
+  },
+  "counts": {
+    "importance": {
+      "高": 4,
+      "中": 10,
+      "低": 3,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 14,
+      "参考": 3,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 7,
+      "攻撃・脅威動向": 4,
+      "インシデント": 3,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象17件｜重要度「高」4件｜本日確認0件｜今週確認14件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が14件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が4件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "Microsoft Azure API Managementの脆弱性が悪用され、ノルウェーのエネルギー企業が標的となり、機密情報が狙われました。他のセクターも影響を受けている可能性があります。",
+      "IPAはVMware製品の脆弱性(CVE-2026-123890)について注意喚起を行っています。この脆弱性はCVSSv3.1で9.8のCriticalと評価されており、CISA KEVにも掲載されています。",
+      "脅威アクターが、ConnectWise ScreenConnectの修正済み脆弱性CVE-2026-84869（CVSSスコア9.9）を悪用し、マネージドサービスプロバイダー（MSP）のサーバーを標的にしています。この脆弱性は、ゲストが接続中の技術者のホスト上で悪意のあるペイロードを転送・実行することを可能にします。"
+    ],
+    "discussion_points": [
+      "Microsoft Azure API Managementの脆弱性が悪用され、ノルウェーのエネルギー企業が標的となり、機密情報が狙われました。他のセクターも影響を受けている可能性があります。\n金融機関がAzure API Managementを利用している場合、同様の攻撃の標的となる可能性があります。機密情報の漏えいや業務停止につながるリスクがあるため、利用状況の確認が必要です。",
+      "IPAはVMware製品の脆弱性(CVE-2026-123890)について注意喚起を行っています。この脆弱性はCVSSv3.1で9.8のCriticalと評価されており、CISA KEVにも掲載されています。\n金融機関でVMware製品を利用している場合に適用性確認の対象になります。VMware製品は多くの企業で基盤システムに利用されている可能性があります。"
+    ],
+    "check_items": [
+      "自社および委託先でMicrosoft Azure API Managementの利用有無と設定状況を確認する",
+      "CVE-2026-123890の影響を受けるVMware製品の利用有無と影響バージョンを確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:5495a06dee26529fd91c294dd847c1ac8a7e2598d92424d1ec0956e2c216e645",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/webworm-suspected-of-modifying.html",
+      "canonical_url": "https://thehackernews.com/2026/11/webworm-suspected-of-modifying.html",
+      "published_at": "2026-11-24T02:45:15+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "Webworm Suspected of Modifying SoftEther VPN to Evade Detection and Hide Remote Access",
+      "raw_title": "Webworm Suspected of Modifying SoftEther VPN to Evade Detection and Hide Remote Access",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d2d9833e501a3359aadc7c729196814dade4cffc2e75ef07751e1af9a396f973",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:04:02.039707+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "中国関連の脅威アクターによる攻撃手法と検出回避の動向が主題のため。",
+        "tags": [
+          "APT",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "中国関連の脅威アクターWebwormが、オープンソースのSoftEther VPN Bridgeツールを改変し、検出回避と侵害ネットワークへの隠れたリモートアクセス確立を試みているとされています。改変されたVPNは、セキュリティツールからの隠蔽を目的とした様々な手法を実装しています。",
+        "financial_impact": "金融機関でSoftEther VPN Bridgeを利用している場合、本攻撃手法が適用される可能性があります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "自社および委託先におけるSoftEther VPN Bridgeの利用有無と設定状況を確認する",
+          "ネットワーク監視ログやセキュリティツールで、記事に記載された検出回避の兆候がないか確認する"
+        ],
+        "reason": "重要度は、特定のVPNツールを標的とした攻撃手法であり、金融機関での利用状況により適用性が異なるため「中」です。確認目安は、新たな攻撃手法の報告であり、即時対応を要する進行中の侵害や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2486c32c8ff2033b0e23b1e1d3e72666d110b6dc59016a7a1410722a854d53b5",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/azure-flaw-exploited-to-target-secrets-at-norwegian-energy-firms/",
+      "canonical_url": "https://www.securityweek.com/azure-flaw-exploited-to-target-secrets-at-norwegian-energy-firms/",
+      "published_at": "2026-11-24T00:47:40+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "Azure Flaw Exploited to Target Secrets at Norwegian Energy Firms",
+      "raw_title": "Azure Flaw Exploited to Target Secrets at Norwegian Energy Firms",
+      "raw_excerpt": null,
+      "content_hash": "sha256:70ce01fe706ffb99d45998be73d255e0c43127acee2afad5cfc1cdf73652dadb",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:04:19.536228+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "ノルウェーのエネルギー企業がAzureの脆弱性を悪用され、機密情報が標的となった実際の侵害事例が主題のため。",
+        "tags": [
+          "クラウド",
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Microsoft Azure API Managementの脆弱性が悪用され、ノルウェーのエネルギー企業が標的となり、機密情報が狙われました。他のセクターも影響を受けている可能性があります。",
+        "financial_impact": "金融機関がAzure API Managementを利用している場合、同様の攻撃の標的となる可能性があります。機密情報の漏えいや業務停止につながるリスクがあるため、利用状況の確認が必要です。",
+        "recommended_actions": [
+          "自社および委託先でMicrosoft Azure API Managementの利用有無と設定状況を確認する",
+          "Microsoftからの公式情報や緩和策を確認し、必要な対応を検討する",
+          "過去のログや設定変更履歴を確認し、不審なアクティビティや侵害の兆候がないか調査する"
+        ],
+        "reason": "重要度は、広く利用されるクラウドサービスであるAzureの脆弱性が悪用され、機密情報が標的となったインシデントであり、金融機関も影響を受ける可能性があるため「高」です。確認目安は、脆弱性は既にクローズされており、直ちに緊急対応を要する新たな情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:a75fd36abba0068884a2947b988146ee3b4b275e95cdaa2368a6bb4dda72d713",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/weekly-recap-vmware-0-day-java4shell.html",
+      "canonical_url": "https://thehackernews.com/2026/11/weekly-recap-vmware-0-day-java4shell.html",
+      "published_at": "2026-11-24T00:10:48+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "⚡ Weekly Recap: VMware 0-Day, Java4Shell, NGINX2Root, Ruby2Shell, and a Whole Lot of Shell Trouble",
+      "raw_title": "⚡ Weekly Recap: VMware 0-Day, Java4Shell, NGINX2Root, Ruby2Shell, and a Whole Lot of Shell Trouble",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4eecc08fdf5b4ccedcfee73f1d20a156912ed92a773f0f268fe3a4d2b8b4ad54",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:04:36.297125+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の脆弱性や攻撃手法をまとめた週次記事であり、特定の主題に絞られないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、VMwareのゼロデイ脆弱性、Java4Shell、NGINX2Root、Ruby2Shellなど、複数のセキュリティ問題に関する週次まとめです。攻撃者が既存の脆弱性を悪用し、小さな侵入口から大きな被害につながる事例が紹介されています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。個々の脆弱性や攻撃手法については別途詳細な情報収集と評価が必要です。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や分析を伴わない複数の事象の週次まとめ記事であるため「低」です。確認目安は、具体的な短期アクションを要する情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d7008ca0e04c7d2b0322e04930a87259d9c160ef6c4b39e6ed5aacd84fc9f121",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/n-able-patches-critical-flaw-disclosed-after-mail-assure-cyberattack/",
+      "canonical_url": "https://www.securityweek.com/n-able-patches-critical-flaw-disclosed-after-mail-assure-cyberattack/",
+      "published_at": "2026-11-24T00:06:49+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "N-able Patches Critical Flaw Discovered After Mail Assure Cyberattack",
+      "raw_title": "N-able Patches Critical Flaw Discovered After Mail Assure Cyberattack",
+      "raw_excerpt": null,
+      "content_hash": "sha256:20247b072e58d5984553af3810fcce2a870340044d58ff857e1cb3dae277b9f7",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:04:52.986274+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "N-able製品の脆弱性修正が主題であるため。",
+        "tags": [
+          "パッチ",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "N-ableは、Mail Assureへのサイバー攻撃後に発見された重大な脆弱性に対処するパッチを公開しました。同社は影響を受けたサービスへのアクセスを復旧し、引き続き環境を監視しています。",
+        "financial_impact": "N-able Mail Assureを自社または委託先で利用している金融機関に関係します。利用有無は記事から確認できないため、適用性確認の対象になります。",
+        "recommended_actions": [
+          "N-able Mail Assureの利用有無と影響バージョンを確認する",
+          "N-ableからの一次情報を確認し、パッチ適用や緩和策の実施を検討する"
+        ],
+        "reason": "重要度は、N-able Mail Assureの利用有無により影響が変わり、適用範囲が限定的であるため「中」です。確認目安は、パッチが公開されており即時対応の根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:b944d0a8d653a66c96f776260c3f03a11e46eb91d3b48d928eb287cee3383a5d",
+      "source_id": "ipa",
+      "source_name": "IPA",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 1",
+      "collection_method": "rss",
+      "language": "ja",
+      "url": "https://www.ipa.go.jp/security/security-alert/2026/alert20261124.html",
+      "canonical_url": "https://www.ipa.go.jp/security/security-alert/2026/alert20261124.html",
+      "published_at": "2026-11-24T00:00:00+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "VMware製品の脆弱性対策について(CVE-2026-123890)",
+      "raw_title": "VMware製品の脆弱性対策について(CVE-2026-123890)",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7da3b13bff2838ac5cbe5f27d3e2362b1876855ce0a82f37fbfaeda47fce1dcf",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "feed_summary",
+        "effective_mode": "feed_summary",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:05:10.047035+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CVEが主題であり、脆弱性に関する情報であるため。",
+        "tags": [
+          "CVE",
+          "KEV",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "IPAはVMware製品の脆弱性(CVE-2026-123890)について注意喚起を行っています。この脆弱性はCVSSv3.1で9.8のCriticalと評価されており、CISA KEVにも掲載されています。",
+        "financial_impact": "金融機関でVMware製品を利用している場合に適用性確認の対象になります。VMware製品は多くの企業で基盤システムに利用されている可能性があります。",
+        "recommended_actions": [
+          "CVE-2026-123890の影響を受けるVMware製品の利用有無と影響バージョンを確認する",
+          "VMware社からの一次情報やパッチ、緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、CVSS9.8のCriticalな脆弱性であり、多くの企業で利用されるVMware製品に関連するため「高」です。確認目安は、CISA KEVに掲載されているものの、直近3日以内の新規追加ではなく、即時対応の明確な時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": [
+          {
+            "cve_id": "CVE-2026-123890",
+            "nvd": {
+              "status": "found",
+              "retrieval": "live",
+              "fetched_at": "2026-11-24T06:03:59Z",
+              "url": "https://nvd.nist.gov/vuln/detail/CVE-2026-123890",
+              "vuln_status": "Analyzed",
+              "published_at": "2026-11-19T15:17:25Z",
+              "last_modified_at": "2026-11-21T05:18:10Z",
+              "cvss": {
+                "version": "3.1",
+                "base_score": 9.8,
+                "base_severity": "CRITICAL",
+                "vector": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H",
+                "source": "security@vmware.com",
+                "type": "Secondary"
+              }
+            },
+            "kev": {
+              "status": "listed",
+              "retrieval": "live",
+              "fetched_at": "2026-11-24T06:03:59Z",
+              "date_added": "2026-11-20"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": "sha256:63f758028b049e795f5629dff1187225e0cbb216a15989c31fc6144c811d3950",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/phpaftershell-vulnerability-revives-php2shells-attack-path/",
+      "canonical_url": "https://www.securityweek.com/phpaftershell-vulnerability-revives-php2shells-attack-path/",
+      "published_at": "2026-11-23T22:58:07+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "phpAfterShell Vulnerability Revives PHP2Shell’s Attack Path",
+      "raw_title": "phpAfterShell Vulnerability Revives PHP2Shell’s Attack Path",
+      "raw_excerpt": null,
+      "content_hash": "sha256:cc39fb788244fcd1f177cd5b460ecd4d671de97ae234c05014d7d4d7ef84dfec",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:05:26.871823+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題がphpAfterShellの脆弱性に関するものであるため。",
+        "tags": [],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "セッション上書き操作が中断された場合、攻撃者が新しいデータを制御することでデータ逆シリアル化とリモートコード実行（RCE）を引き起こす可能性がある脆弱性「phpAfterShell」が報告されました。",
+        "financial_impact": "金融機関でPHPアプリケーションを利用しており、セッション上書き処理が中断される可能性のある環境に該当する場合に関係します。記事からは具体的な製品や利用状況は確認できません。",
+        "recommended_actions": [
+          "PHPアプリケーションの利用有無と、セッション上書き処理の実装状況を確認する",
+          "ベンダーからの情報公開があれば、脆弱性の詳細と緩和策を確認する"
+        ],
+        "reason": "重要度は、PHPアプリケーションの利用状況に依存し、適用範囲が限定的または不確実なため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:cfdf5bb87e1b479391344be852b9a46c5609977f70f2d88016dc5eab251b26e3",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/gl-inet-routers-kvms-compromised-via-remote-management-service-flaw/",
+      "canonical_url": "https://www.securityweek.com/gl-inet-routers-kvms-compromised-via-remote-management-service-flaw/",
+      "published_at": "2026-11-23T22:26:22+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "GL.iNet Routers, KVMs Compromised via Remote Management Service Flaw",
+      "raw_title": "GL.iNet Routers, KVMs Compromised via Remote Management Service Flaw",
+      "raw_excerpt": null,
+      "content_hash": "sha256:4f96acda4a93e7a17ef840a969ea4ea924c5687ca68caebba823c75810f627d1",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:05:44.623216+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "GL.iNet製デバイスがリモート管理サービスの欠陥を悪用され、マルウェアに感染した実際の侵害事例が主題であるため。",
+        "tags": [
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "GL.iNet製ルーターおよびKVMデバイスが、リモート管理サービス「GoodCloud」の欠陥を悪用され、マルウェアに感染する被害が発生しました。デバイスのクリーンアップには新しいファームウェアの適用が必要です。",
+        "financial_impact": "金融機関でGL.iNet製ルーターやKVMデバイス、特にGoodCloudリモート管理サービスを利用している場合に、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "GL.iNet製ルーターおよびKVMデバイスの利用有無と、GoodCloudリモート管理サービスの利用状況を確認する",
+          "該当デバイスを利用している場合、ベンダーの指示に従い新しいファームウェアへの更新を検討する"
+        ],
+        "reason": "重要度は、対象製品の利用可能性が限定的であり、金融機関への直接的な影響が不確実なため「中」です。確認目安は、実際の侵害事例ではあるものの、緊急対応を要する時間的根拠が記事に明示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:fa4289a3f22edc8ceac6282bc5040252b0b639e07c897297a2f251ad0fbc3b15",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/critical-binary-parser-flaw-enables.html",
+      "canonical_url": "https://thehackernews.com/2026/11/critical-binary-parser-flaw-enables.html",
+      "published_at": "2026-11-23T22:22:20+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "Critical binary-parser Flaw Enables JavaScript Injection via Malicious Parser Definitions",
+      "raw_title": "Critical binary-parser Flaw Enables JavaScript Injection via Malicious Parser Definitions",
+      "raw_excerpt": null,
+      "content_hash": "sha256:11968f01d6bcd367b735b7eb1f42e9a46370266c18d0b783e3a167755c804d5a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:06:01.930613+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "binary-parserライブラリのコードインジェクション脆弱性が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "人気のbinary-parserライブラリに重大なセキュリティ欠陥が発見されました。この脆弱性（CVE-2026-134814、CVSSスコア9.2/8.1）は、パーサー定義を制御できる攻撃者が任意のコードを実行できるコードインジェクションであり、バージョン2.3.1より前のbinary-parserに影響します。",
+        "financial_impact": "金融機関がbinary-parserライブラリをバージョン2.3.1より前の状態で利用している場合に、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "自社および委託先におけるbinary-parserライブラリの利用有無とバージョンを確認する",
+          "影響を受けるバージョンを利用している場合は、ベンダーの一次情報を確認し、バージョン2.3.1以降へのアップデートまたは緩和策の適用を検討する"
+        ],
+        "reason": "重要度は、CVSSスコアは高いものの、binary-parserライブラリの利用状況が記事から不明で適用範囲が不確実なため「中」です。確認目安は、CISA KEVへの新規追加がなく、即時対応の明確な時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:2da724996ccb9ddbf7a504e372055974323de6fbf7e52f1e12aa893c5f1fc6ff",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/hackers-exploit-critical-screenconnect.html",
+      "canonical_url": "https://thehackernews.com/2026/11/hackers-exploit-critical-screenconnect.html",
+      "published_at": "2026-11-23T21:41:04+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "Hackers Exploit Critical ScreenConnect Flaw to Hijack MSP Technician PCs Without Warning",
+      "raw_title": "Hackers Exploit Critical ScreenConnect Flaw to Hijack MSP Technician PCs Without Warning",
+      "raw_excerpt": null,
+      "content_hash": "sha256:96278c2eb1bf2cd09e610806ab2f1b14784980277b6e2d86b2234e7de096dd40",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:06:20.524844+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "ConnectWise ScreenConnectの脆弱性悪用が主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ",
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "脅威アクターが、ConnectWise ScreenConnectの修正済み脆弱性CVE-2026-84869（CVSSスコア9.9）を悪用し、マネージドサービスプロバイダー（MSP）のサーバーを標的にしています。この脆弱性は、ゲストが接続中の技術者のホスト上で悪意のあるペイロードを転送・実行することを可能にします。",
+        "financial_impact": "金融機関がConnectWise ScreenConnectをIT運用管理や委託先管理で利用している場合、または委託先のMSPが利用している場合に影響する可能性があります。悪用されると、技術者のPCが乗っ取られ、機密情報へのアクセスやシステム侵害につながる恐れがあります。",
+        "recommended_actions": [
+          "ConnectWise ScreenConnectの利用有無、および影響を受けるバージョン（CVE-2026-84869）の適用状況を確認する",
+          "ConnectWiseが提供するパッチや緩和策が適用されていることを確認し、未適用であれば速やかに対応を検討する",
+          "委託先のMSPがConnectWise ScreenConnectを利用している場合、当該脆弱性への対応状況を確認する"
+        ],
+        "reason": "重要度は、広く利用される可能性のあるMSP向け製品の重大な脆弱性であり、実悪用が確認されているため「高」です。確認目安は、パッチが既に提供されており、CISA KEVへの新規追加ではないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:89ef724f9ef49976c42f721d78889fb009112baad1bd6bfe62f5942e5fb72218",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/n-able-discloses-critical-mail-assure.html",
+      "canonical_url": "https://thehackernews.com/2026/11/n-able-discloses-critical-mail-assure.html",
+      "published_at": "2026-11-23T21:28:09+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "N-able Discloses Critical Mail Assure Vulnerability Found During Breach Investigation",
+      "raw_title": "N-able Discloses Critical Mail Assure Vulnerability Found During Breach Investigation",
+      "raw_excerpt": null,
+      "content_hash": "sha256:c40edb5e83b26f4cbe84a781afc7580eee5b141e87f681283c6501943c665dcd",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:06:37.925083+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "記事の主題が、製品の脆弱性開示とそれに伴う対応であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "N-ableは、同社のメールフィルタリングサービス「Mail Assure」および「SpamExperts Hosted Cloud」の侵害調査中に発見された重大な脆弱性（CVE-2026-134624）を開示しました。このサーバーサイドリクエストフォージェリ（SSRF）の欠陥は、高レベルのAPIアクセスを持つユーザーが内部システムへの接続を開くことを可能にします。",
+        "financial_impact": "金融機関がN-ableのMail AssureまたはSpamExperts Hosted Cloudサービスをメールフィルタリングに利用している場合、または委託先が利用している場合に影響する可能性があります。記事からは金融機関での利用状況は確認できません。",
+        "recommended_actions": [
+          "自社および委託先におけるN-able Mail AssureまたはSpamExperts Hosted Cloudの利用有無を確認する",
+          "該当製品を利用している場合、N-ableからの公式情報に基づき、脆弱性の影響範囲と推奨される緩和策を確認する"
+        ],
+        "reason": "重要度は、対象製品の利用可能性が限定的であり、金融機関との直接的な関係が記事から確認できないため「中」です。確認目安は、実悪用が確認された脆弱性だが、KEV新規追加ではなく即時対応の明確な時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:f3e2b2dafb4cb03a4233f021c22d1cb130b9c6870ef4c7d4d30aa61a285ab202",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/ai-inference-providers-failed-to-detect-hacking-and-prompt-theft-says-dragos/",
+      "canonical_url": "https://www.securityweek.com/ai-inference-providers-failed-to-detect-hacking-and-prompt-theft-says-dragos/",
+      "published_at": "2026-11-23T21:16:20+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "AI Inference Providers Failed to Detect Hacking and Prompt Theft, Says Dragos",
+      "raw_title": "AI Inference Providers Failed to Detect Hacking and Prompt Theft, Says Dragos",
+      "raw_excerpt": null,
+      "content_hash": "sha256:031b985100cbe9b236c9795028a14e0994b0d1eda6cd1fa98476443fae438d93",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:06:55.003598+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AI推論プロバイダーにおけるハッキングとプロンプト窃盗が主題であるため。",
+        "tags": [
+          "AI",
+          "委託先管理",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Dragosの調査により、3つのAI推論プロバイダーでハッキングとプロンプト窃盗が未検知のまま発生していたことが判明しました。約200万件のプロンプトがAIサービスに送信され、悪用された可能性があります。",
+        "financial_impact": "金融機関がAI推論サービスを外部プロバイダーに委託している場合、委託先におけるセキュリティ対策の評価や、プロンプト窃盗による情報漏えいリスクの検討に関係します。",
+        "recommended_actions": [
+          "AI推論サービスを外部プロバイダーに委託している場合、当該プロバイダーのセキュリティ対策状況を確認する",
+          "AIサービス利用におけるプロンプトの機密性評価と、窃盗時の影響を検討する"
+        ],
+        "reason": "重要度は、金融機関がAI推論サービスを委託している場合に影響する可能性があるため「中」です。確認目安は、具体的な期限や進行中の攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9490d196348d30cc64e033cb588cc694878e5f6793e6a92445aa359da3696cff",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/badbox-3-0-ad-fraud-operation-generating-40-billion-daily-bid-requests-disrupted/",
+      "canonical_url": "https://www.securityweek.com/badbox-3-0-ad-fraud-operation-generating-40-billion-daily-bid-requests-disrupted/",
+      "published_at": "2026-11-23T20:44:18+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "BadBox 3.0 Ad Fraud Operation Generating 40 Billion Daily Bid Requests Disrupted",
+      "raw_title": "BadBox 3.0 Ad Fraud Operation Generating 40 Billion Daily Bid Requests Disrupted",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f0df176b0983d3fd35babe6bfdaef707a86bffaa6f9a4ded82ec26391df36786",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:07:12.018514+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "広告詐欺作戦の手法と規模に関する記事であり、攻撃動向が主題のため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "「BadBox 3.0」と呼ばれる大規模な広告詐欺作戦が摘発されました。この作戦では、低価格の消費者向けデバイスにバックドアを仕込み、広告詐欺モジュールや住宅用プロキシとして利用していました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。主に消費者向けデバイスを悪用した広告詐欺であり、金融サービスへの直接的な脅威は記事からは確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が限定的であり、主に消費者向けデバイスを標的とした攻撃であるため「低」です。確認目安は、具体的な脅威や期限、金融機関への直接的なアクションが記事にないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:164d913e056bba5300f0fdf9062674e2143df5d15b454c8a2fcf056cb0ac2a69",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/sap-netweaver-cisco-expressway-flaws-exploited-in-attacks/",
+      "canonical_url": "https://www.securityweek.com/sap-netweaver-cisco-expressway-flaws-exploited-in-attacks/",
+      "published_at": "2026-11-23T20:35:15+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "SAP NetWeaver, Cisco Expressway Flaws Exploited in Attacks",
+      "raw_title": "SAP NetWeaver, Cisco Expressway Flaws Exploited in Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d2a554bf544bbd46935a3aa26f4c1c2740c1af936f52cd9e5ba14262198abbec",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:07:28.809537+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "SAP NetWeaverとCisco Expresswayの脆弱性が攻撃で悪用されている事例が主題のため。",
+        "tags": [
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "SAP NetWeaverとCisco Expresswayの脆弱性が攻撃者によって悪用されていることが確認されました。これらの脆弱性が悪用されると、サーバー情報の漏洩や改ざん、root権限でのコマンド実行が可能になる可能性があります。",
+        "financial_impact": "金融機関でSAP NetWeaverまたはCisco Expresswayを利用している場合に、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "SAP NetWeaverおよびCisco Expresswayの利用有無と影響バージョンを確認する",
+          "各製品のベンダーから提供されている修正パッチや緩和策の情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、対象製品の利用可能性や露出が記事から確認できず、適用範囲が不確実なため「中」です。確認目安は、悪用が確認されているものの、直近のKEV新規追加や緊急対応の期限が示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:02207daefe6b99993bcd578f32c6aaab721e7d784421f0bd3dfe5fb59724fd03",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/crowdstrike-to-acquire-zscaler-in-43-9-billion-deal/",
+      "canonical_url": "https://www.securityweek.com/crowdstrike-to-acquire-zscaler-in-43-9-billion-deal/",
+      "published_at": "2026-11-23T20:31:44+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "CrowdStrike to Acquire Zscaler in $43.9 Billion Deal",
+      "raw_title": "CrowdStrike to Acquire Zscaler in $43.9 Billion Deal",
+      "raw_excerpt": null,
+      "content_hash": "sha256:0e555b26e16c201fd939f5013a1ab710e2bd2560fe73cdd7e572e666dadfb2b3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:07:45.387969+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "サイバーセキュリティ企業の買収に関するニュースであり、特定の脆弱性、インシデント、攻撃動向、規制、クラウド・サプライチェーン、AIリスクのいずれにも直接該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "CrowdStrikeがZscalerを439億ドルで買収する見込みであり、これにより両社合わせた年間経常収益は100億ドルを超えると予想されています。",
+        "financial_impact": "金融機関が両社の製品を利用している場合、今後のサービス統合や契約内容に影響が出る可能性がありますが、現時点での直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、サイバーセキュリティ企業の買収に関する一般的な業界ニュースであり、金融機関への直接的な影響が限定的であるため「低」です。確認目安は、具体的な対応を要する情報ではなく、中長期的な業界動向として把握する情報であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:659149ed49d822a8540466c86b9e42a53b026453b8a54ccb16233b9de9a35870",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/hackers-exploit-critical-aspnet-anti.html",
+      "canonical_url": "https://thehackernews.com/2026/11/hackers-exploit-critical-aspnet-anti.html",
+      "published_at": "2026-11-23T18:11:56+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "Hackers Exploit Critical ASP.NET Anti-CSRF Library Flaw Allowing Unauthenticated RCE",
+      "raw_title": "Hackers Exploit Critical ASP.NET Anti-CSRF Library Flaw Allowing Unauthenticated RCE",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9b8d1e2de2a2da7dd553a248c89c96d57232f3600f282ccba99ef0771647cd03",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:08:03.093755+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CVEが特定され、実悪用が確認された脆弱性に関する記事であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者らは、レガシーなASP.NETのAnti-CSRFライブラリ「Idunno.AntiCsrf」に実悪用が確認された重大な脆弱性（CVE-2026-131914、CVSS 9.3）が発見されたことを受け、利用中止を呼びかけています。この脆弱性はバージョン0.9.1.0および0.9.1 Betaに影響します。",
+        "financial_impact": "金融機関でレガシーなASP.NETアプリケーションにおいて、当該のAnti-CSRFライブラリ「Idunno.AntiCsrf」を利用している場合に限り、適用性確認の対象になります。",
+        "recommended_actions": [
+          "自社および委託先において、ASP.NETアプリケーションで「Idunno.AntiCsrf」ライブラリのバージョン0.9.1.0または0.9.1 Betaの利用有無を確認する",
+          "該当する利用が確認された場合、ベンダーの推奨に従い利用中止または代替策への移行を検討する"
+        ],
+        "reason": "重要度は、CVSS9.3の脆弱性ですが、レガシーな特定のライブラリに限定され、利用範囲が不確実なため「中」です。確認目安は、実悪用が確認されているものの、CISA KEVへの新規追加がなく、即時対応の明確な期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:8dee64bf666c5ac0461a9c2fcb80c884a90fb42fe19649bb6da43b4876ea517b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/hackers-exploited-glinet-cloud-flaw-to.html",
+      "canonical_url": "https://thehackernews.com/2026/11/hackers-exploited-glinet-cloud-flaw-to.html",
+      "published_at": "2026-11-23T18:04:08+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "Hackers Exploited GL.iNet Cloud Flaw to Install Malware on Routers and KVM Devices",
+      "raw_title": "Hackers Exploited GL.iNet Cloud Flaw to Install Malware on Routers and KVM Devices",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a9a4d6aab0d774714660a80941617466aee757d8aa71b2872e9a544a8a7a0028",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:08:20.311249+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "GL.iNetのクラウドサービスにおける脆弱性が悪用され、顧客のデバイスにマルウェアがインストールされた実際の侵害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "サプライチェーン",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "GL.iNetは、同社のGoodCloudリモート管理サービスにおける脆弱性が悪用され、一部の顧客ルーターおよびKVMデバイスにマルウェアがインストールされたことを発表しました。同社は金曜日にこの脆弱性を特定し修正し、攻撃者が使用したアクセス経路をブロックしたため、この経路からの感染はもはや不可能となっています。",
+        "financial_impact": "金融機関がGL.iNetのルーターやKVMデバイス、特にGoodCloudリモート管理サービスを利用している場合に、サプライチェーンリスクとして関係します。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "自社および委託先におけるGL.iNet製ルーターやKVMデバイス、特にGoodCloudリモート管理サービスの利用有無を確認する",
+          "GL.iNetからのセキュリティ通知を確認し、影響範囲と対応状況を評価する",
+          "過去のログを確認し、不審なアクセスやマルウェア感染の兆候がないか調査する"
+        ],
+        "reason": "重要度は、特定のベンダー製品のインシデントであり、金融機関での利用状況が不明なため「中」です。確認目安は、脆弱性は既に修正済みであり、即時対応を要する時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:3077523564b045f2db31b09e404b8cd4e7a178695782b3864efe5af14cc10b14",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/ai-assisted-cyberattacks-trigger.html",
+      "canonical_url": "https://thehackernews.com/2026/11/ai-assisted-cyberattacks-trigger.html",
+      "published_at": "2026-11-23T17:24:15+09:00",
+      "fetched_at": "2026-11-24T15:03:59.735816+09:00",
+      "title": "AI-Assisted Cyber Attacks Trigger Unauthorized Payments at Indian Banks and Fintech Firms",
+      "raw_title": "AI-Assisted Cyber Attacks Trigger Unauthorized Payments at Indian Banks and Fintech Firms",
+      "raw_excerpt": null,
+      "content_hash": "sha256:f79af657a492be2ed00dbcbdf914149864eff65a74e19d18c3e41b53b7dfbe1f",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-24T15:08:37.644545+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "AIを活用したサイバー攻撃の手法と脅威動向が主題であるため。",
+        "tags": [
+          "AI",
+          "フィッシング",
+          "インシデント",
+          "決済"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "インドのCERT-Inは、AI支援型サイバー攻撃がインド国内のICT資産を標的としており、銀行、金融サービス機関、テクノロジーサービスプロバイダーで不正な金融取引が発生していると警告しました。",
+        "financial_impact": "AIを活用した攻撃手法は、金融機関の不正送金対策やセキュリティ運用に新たな課題をもたらす可能性があります。インドの事例ですが、同様の攻撃が他国の金融機関にも拡大するリスクを考慮する必要があります。",
+        "recommended_actions": [
+          "AIを活用した攻撃手法に関する最新の脅威情報を収集し、自社のセキュリティ対策への影響を評価する",
+          "不正送金検知システムや認証プロセスのAI攻撃に対する耐性を確認し、必要に応じて強化を検討する",
+          "従業員に対し、AIを活用したソーシャルエンジニアリングやフィッシング攻撃への注意喚起と教育を実施する"
+        ],
+        "reason": "重要度は、AIを活用した攻撃が金融機関の不正送金に直結し、新たな脅威として対策の優先度が高いため「高」です。確認目安は、具体的な期限や緊急対応の指示はないものの、新たな脅威動向として今週中に情報収集と評価を開始すべきであるため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
