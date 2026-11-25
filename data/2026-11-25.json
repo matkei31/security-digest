@@ -1,0 +1,969 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-25",
+  "generated_at": "2026-11-25T13:58:51.416185+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 18,
+    "ai_attempted_count": 18,
+    "ai_success_count": 18,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 18
+  },
+  "counts": {
+    "importance": {
+      "高": 3,
+      "中": 11,
+      "低": 4,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 11,
+      "参考": 7,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 6,
+      "攻撃・脅威動向": 3,
+      "インシデント": 4,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 3,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象18件｜重要度「高」3件｜本日確認0件｜今週確認11件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が11件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が3件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "VMwareは、vCenterの認証バイパス脆弱性やESXホストでのコード実行を許す可能性のある欠陥を含む、複数の重大な脆弱性に対するパッチを公開しました。",
+      "Broadcomは、VMware ESX、vCenter、Workstation、Fusion、Avi Load Balancerに影響する23件の脆弱性に対するパッチを公開しました。これには、VMware Directory Service（vmdir）に存在するCVSS 9.8の認証バイパス脆弱性（CVE-2026-123903）が含まれます。",
+      "ノルウェー国家安全保障局(NSM)は、Microsoft Azure API Management (APIM) Classicの脆弱性がノルウェー国内の複数の企業に影響を与えたことを公表しました。未知の攻撃者がAPIM内のアクセストークン、シークレット、名前付き値を積極的に探索していたと報告されています。"
+    ],
+    "discussion_points": [
+      "VMwareは、vCenterの認証バイパス脆弱性やESXホストでのコード実行を許す可能性のある欠陥を含む、複数の重大な脆弱性に対するパッチを公開しました。\nVMware ESXやvCenterは多くの金融機関で仮想化基盤として広く利用されている可能性があり、これらの製品を利用している場合に適用性確認の対象となります。",
+      "Broadcomは、VMware ESX、vCenter、Workstation、Fusion、Avi Load Balancerに影響する23件の脆弱性に対するパッチを公開しました。これには、VMware Directory Service（vmdir）に存在するCVSS 9.8の認証バイパス脆弱性（CVE-2026-123903）が含まれます。\n多くの金融機関で利用されている可能性のあるVMware vCenterに認証バイパスの脆弱性が存在するため、システムへの不正アクセスや情報漏えいにつながる可能性があります。利用している場合は適用性確認の対象となります。"
+    ],
+    "check_items": [
+      "自社および委託先におけるVMware ESXおよびvCenterの利用有無と影響バージョンを確認する",
+      "自社および委託先におけるVMware ESX、vCenter、Workstation、Fusion、Avi Load Balancerの利用有無と影響バージョンを確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:c11f64b8d05e747d2ced7bbc85851753848ba6a01b807063ba991c1cb58d2d89",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/an-unclassified-cia-system-was-breached-in-a-cyberattack-ap-source-says/",
+      "canonical_url": "https://www.securityweek.com/an-unclassified-cia-system-was-breached-in-a-cyberattack-ap-source-says/",
+      "published_at": "2026-11-25T07:41:58+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "An Unclassified CIA System Was Breached in a Cyberattack, AP Source Says",
+      "raw_title": "An Unclassified CIA System Was Breached in a Cyberattack, AP Source Says",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7a152058234295f850ef7d64a9fb87058d2b6f03594a1eea04d87bd8dad5d213",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:53:47.260463+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "CIAのシステムがサイバー攻撃により侵害されたという実際の被害事例が主題であるため。",
+        "tags": [
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "AP通信の情報源によると、CIAの機密扱いではないシステムがサイバー攻撃により侵害されました。どのような情報が漏洩したか、また誰が攻撃を実行したかは不明です。",
+        "financial_impact": "金融機関への直接的な影響は確認できません。政府機関へのサイバー攻撃事例として、脅威動向や対策の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な関連性が不明確であり、他業界のインシデント事例として参考情報となるため「中」です。確認目安は、具体的な脅威や期限が示されておらず、即時対応の根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9582e29a3fdc5bee41c2e6a92f9415a2684891ced3082e3757203fc594e7c0b2",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/iran-aligned-volant-manticore-uses-ipfs.html",
+      "canonical_url": "https://thehackernews.com/2026/11/iran-aligned-volant-manticore-uses-ipfs.html",
+      "published_at": "2026-11-25T01:54:07+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "Iran-Aligned Volant Manticore Uses IPFS-Based KuboShell Backdoor in Espionage Campaigns",
+      "raw_title": "Iran-Aligned Volant Manticore Uses IPFS-Based KuboShell Backdoor in Espionage Campaigns",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5f0d609247c7e93237079c616046d7da73b919e5145ca38bc6d2c7763598794a",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:54:04.630159+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "イラン関連のサイバースパイグループによる攻撃手法とバックドアの利用が主題であるため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Volant Manticoreと呼ばれるイラン関連のサイバースパイグループが、キプロスの通信会社、航空会社、重要インフラを標的にしていることが判明しました。このグループは、コマンド＆コントロールにIPFSを利用するKuboShellというバックドアを使用し、Homaというポスト侵害フレームワークを展開しています。",
+        "financial_impact": "金融機関への直接的な影響は記事からは確認できません。しかし、重要インフラを標的とする攻撃グループの動向は、サプライチェーンリスクや地政学的リスクの観点から注視すべき情報です。",
+        "recommended_actions": [
+          "IPFSを利用したC2通信の有無を監視ログで確認する",
+          "記事に記載された攻撃グループVolant ManticoreのIOC情報を確認し、自社環境での関連活動の有無を評価する"
+        ],
+        "reason": "重要度は、特定の業界を標的とした攻撃動向であり、金融機関への直接的な関連性が不明確なため「中」です。確認目安は、新たな攻撃グループの活動報告であり、即時対応を要する具体的な期限や侵害情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:cbd825ca533eb80e837ab4b3c5bb4934ddce25a22a8fd45183b7ca9e018757e1",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/vmware-updates-patch-critical-esx-vcenter-vulnerabilities/",
+      "canonical_url": "https://www.securityweek.com/vmware-updates-patch-critical-esx-vcenter-vulnerabilities/",
+      "published_at": "2026-11-25T01:32:56+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "VMware Updates Patch Critical ESX, vCenter Vulnerabilities",
+      "raw_title": "VMware Updates Patch Critical ESX, vCenter Vulnerabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:fcee3fec95dc231d7a18adec5e3c091c5d88d0670742ce6f92728c602a83fd11",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:54:21.519391+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "VMware製品の重大な脆弱性に対するパッチ公開が主題であるため。",
+        "tags": [
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "VMwareは、vCenterの認証バイパス脆弱性やESXホストでのコード実行を許す可能性のある欠陥を含む、複数の重大な脆弱性に対するパッチを公開しました。",
+        "financial_impact": "VMware ESXやvCenterは多くの金融機関で仮想化基盤として広く利用されている可能性があり、これらの製品を利用している場合に適用性確認の対象となります。",
+        "recommended_actions": [
+          "自社および委託先におけるVMware ESXおよびvCenterの利用有無と影響バージョンを確認する",
+          "VMwareが公開したパッチ情報および緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、金融機関で広く利用される可能性のあるVMware製品の重大な脆弱性であるため「高」です。確認目安は、パッチが公開されており即時対応の緊急性を示す情報が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:313fcd81073c8f90ef3b7c189b39f7b2e866967167d7829da29adfc9efe10408",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/european-commission-uncovers-data-breach-in-cyberattack-investigation/",
+      "canonical_url": "https://www.securityweek.com/european-commission-uncovers-data-breach-in-cyberattack-investigation/",
+      "published_at": "2026-11-24T23:49:59+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "European Commission Uncovers Data Breach in Cyberattack Investigation",
+      "raw_title": "European Commission Uncovers Data Breach in Cyberattack Investigation",
+      "raw_excerpt": null,
+      "content_hash": "sha256:52624b24ce95c3ef6ac39c57f24e9b00ee644c4ae6471ffbbe4322da55d022da",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:54:38.119292+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "欧州委員会がサイバー攻撃によるデータ侵害を公表した事例が主題のため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "欧州委員会は10月に検出したAI支援型サイバー攻撃の調査で、EU Academyユーザーの氏名とメールアドレスが漏洩したデータ侵害を発見しました。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。欧州委員会という公的機関の事例であり、一般的な情報漏洩インシデントとして参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、欧州委員会の情報漏洩事例であり、金融機関への直接的な影響が限定的であるため「中」です。確認目安は、一般的な情報漏洩事例であり、即時対応を要する具体的な時間的根拠がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:defec4e244cdf7e4e1d6c3a43d8da093d4a98840c1d0be2c8ceb274bf9285fea",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/check-point-security-management-servers-hacked-in-ai-assisted-campaign/",
+      "canonical_url": "https://www.securityweek.com/check-point-security-management-servers-hacked-in-ai-assisted-campaign/",
+      "published_at": "2026-11-24T23:21:56+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "Check Point Security Management Servers Hacked in AI-Assisted Campaign",
+      "raw_title": "Check Point Security Management Servers Hacked in AI-Assisted Campaign",
+      "raw_excerpt": null,
+      "content_hash": "sha256:72926e48c54bff52e2a2d6fe02cf3242dd920cd33aed6bdc0baea7c40e68449e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:54:54.849187+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "Check Point Security Management Serverが実際に侵害された事例が主題であるため。",
+        "tags": [
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "AIを活用したキャンペーンにより、Check Point Security Management Serverが侵害されました。この攻撃は99のIPアドレスから実行され、複数の業界や国の組織が標的となりました。",
+        "financial_impact": "Check Point Security Management Serverを導入している金融機関は、本件の適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "自社および委託先でCheck Point Security Management Serverの利用有無を確認する",
+          "攻撃キャンペーンに関する詳細情報をベンダーから収集し、自社環境への影響有無を評価する"
+        ],
+        "reason": "重要度は、特定の製品の侵害事例であり、金融機関での利用状況により適用性が異なるため「中」です。確認目安は、具体的な緊急対応の指示や期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:653803b645805368d03a90f097eb8a1da093f55ce326c97fe3af3bc8cdec6beb",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/anthropic-expands-enterprise-safeguards-for-detecting-ai-misuse/",
+      "canonical_url": "https://www.securityweek.com/anthropic-expands-enterprise-safeguards-for-detecting-ai-misuse/",
+      "published_at": "2026-11-24T22:30:23+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "Anthropic Expands Enterprise Safeguards for Detecting AI Misuse",
+      "raw_title": "Anthropic Expands Enterprise Safeguards for Detecting AI Misuse",
+      "raw_excerpt": null,
+      "content_hash": "sha256:fa43e8f83390eaf735a57fb9faed5ca6da5ea742f007c578ddc859f3becf331e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:55:11.393027+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIモデルの誤用検出と保護機能の拡張が主題であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "Anthropicは、企業向け保護機能(EFS)を拡張し、ゼロリテンション顧客が会話データを自社クラウドに保持しつつ、Claudeの誤用を複数のリクエストにわたって検出できるようにしました。",
+        "financial_impact": "金融機関がAnthropicのAIモデル「Claude」を利用している場合、その誤用検出機能の強化は、AI利用におけるリスク管理やコンプライアンス維持に影響する可能性があります。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIモデルの利用状況によって関係性が変わるため「中」です。確認目安は、具体的な脅威や期限に関する記述がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:aa014f4b55f462a96af72e8e2ecc5e5bb0cff4d6097b23678ad6ab20d1bd1122",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/vmware-vcenter-hit-by-another-critical.html",
+      "canonical_url": "https://thehackernews.com/2026/11/vmware-vcenter-hit-by-another-critical.html",
+      "published_at": "2026-11-24T22:28:26+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "VMware vCenter Hit by Another Critical 9.8-Rated Auth Bypass Flaw After Zero-Day Exploitation",
+      "raw_title": "VMware vCenter Hit by Another Critical 9.8-Rated Auth Bypass Flaw After Zero-Day Exploitation",
+      "raw_excerpt": null,
+      "content_hash": "sha256:55d9c77f055bc63a8e75ff127aadc6644c3c6387436e548138232af5639dc114",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:55:28.779362+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "VMware製品の複数の脆弱性、特に認証バイパスの脆弱性に関するパッチ提供が主題であるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Broadcomは、VMware ESX、vCenter、Workstation、Fusion、Avi Load Balancerに影響する23件の脆弱性に対するパッチを公開しました。これには、VMware Directory Service（vmdir）に存在するCVSS 9.8の認証バイパス脆弱性（CVE-2026-123903）が含まれます。",
+        "financial_impact": "多くの金融機関で利用されている可能性のあるVMware vCenterに認証バイパスの脆弱性が存在するため、システムへの不正アクセスや情報漏えいにつながる可能性があります。利用している場合は適用性確認の対象となります。",
+        "recommended_actions": [
+          "自社および委託先におけるVMware ESX、vCenter、Workstation、Fusion、Avi Load Balancerの利用有無と影響バージョンを確認する",
+          "Broadcomが提供するパッチおよびベンダーの一次情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、CVSS 9.8の認証バイパス脆弱性がVMwareの広く利用される製品に影響し、適用性評価の優先度が高いため「高」です。確認目安は、悪用状況や緊急対応の明確な期限が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c4ed564253ff3bb566e8a696af105218d334ad799bf86e224045909db929c35a",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/okta-links-shinyhunters-associated.html",
+      "canonical_url": "https://thehackernews.com/2026/11/okta-links-shinyhunters-associated.html",
+      "published_at": "2026-11-24T22:28:21+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "Okta Links ShinyHunters-Associated Vishing Group to New INCEPTION Data Leak Site",
+      "raw_title": "Okta Links ShinyHunters-Associated Vishing Group to New INCEPTION Data Leak Site",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2e646de43e19b842166606ad74df2ce436635563cb4d9ce6eae616c94666f3ff",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:55:46.432419+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "ShinyHunters関連の攻撃グループが新たなビッシング攻撃とデータ漏洩サイトを運営しているという脅威動向が主題のため。",
+        "tags": [
+          "フィッシング",
+          "認証",
+          "IAM",
+          "インシデント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Oktaの脅威インテリジェンスチームによると、ShinyHunters恐喝グループと関連があると以前評価されていた脅威クラスターが、「INCEPTION」という新しい名前で活動を再開している可能性があります。このクラスターは、音声フィッシング（ビッシング）攻撃を用いて標的を騙し、フィッシングページに認証情報を入力させ、承認させることを特徴としています。",
+        "financial_impact": "金融機関において、Okta製品を利用しているかどうかにかかわらず、従業員を標的としたビッシング攻撃は認証情報窃取のリスクを高めます。特に、多要素認証の承認を促す手口は、金融機関のセキュリティ対策を迂回する可能性があります。",
+        "recommended_actions": [
+          "従業員に対し、ビッシング攻撃の手口（特に多要素認証の承認を促すもの）について注意喚起と教育を実施する",
+          "Okta製品を利用している場合、Oktaの脅威インテリジェンス情報を確認し、自社環境への影響有無を評価する",
+          "認証ログやアクセスログを監視し、不審な認証試行や多要素認証の承認要求がないか確認する"
+        ],
+        "reason": "重要度は、金融機関の従業員を標的としたビッシング攻撃の脅威動向であり、広範な注意喚起が必要となるため「中」です。確認目安は、新たな攻撃グループの活動に関する情報であり、即時対応を要する具体的な期限や脆弱性情報がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:88d6d55f0b06ce11ebd6ca5cbacdb3f63a8bbb35535198355b69323ae482a09e",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/hackers-found-way-around-github-sha.html",
+      "canonical_url": "https://thehackernews.com/2026/11/hackers-found-way-around-github-sha.html",
+      "published_at": "2026-11-24T21:42:09+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "Hackers Found a Way Around GitHub SHA Pinning. This Webinar Explains How to Close the Gap",
+      "raw_title": "Hackers Found a Way Around GitHub SHA Pinning. This Webinar Explains How to Close the Gap",
+      "raw_excerpt": null,
+      "content_hash": "sha256:20f893d101bbd5cc206db86a057fa2e703ae4dc35c61086ee1076d7e5c800755",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:56:03.290662+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "GitHub Actionsのセキュリティ対策回避に関する攻撃手法が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "GitHub ActionsのSHAピンニングはソフトウェアサプライチェーン攻撃に対する防御策として広く利用されていますが、攻撃者はこれを回避する手法を発見しました。2026年3月には、オープンソースセキュリティスキャナーTrivyを乗っ取った攻撃者が、GitHub公式ツールを装った悪意のあるコードを仕込んだ事例が報告されています。",
+        "financial_impact": "金融機関がGitHub Actionsを利用し、かつSHAピンニングを導入している場合に、そのセキュリティ対策の有効性について再評価が必要となる可能性があります。直接的な影響は利用状況に依存します。",
+        "recommended_actions": [
+          "GitHub Actionsの利用状況とSHAピンニングの適用状況を棚卸しする",
+          "記事で言及されているウェビナーや関連情報を確認し、回避手法の詳細と対策を評価する"
+        ],
+        "reason": "重要度は、GitHub Actionsの利用状況や影響範囲が記事から不明確なため「中」です。確認目安は、具体的な期限や進行中の攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:539a1e0fd9e43f1a0940014ebc3adf59dc5eca8015519de194f017bfefa0e0da",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/openai-cisco-unveil-open-source-tool-to-shield-unpatched-linux-systems/",
+      "canonical_url": "https://www.securityweek.com/openai-cisco-unveil-open-source-tool-to-shield-unpatched-linux-systems/",
+      "published_at": "2026-11-24T21:20:41+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "OpenAI, Cisco Unveil Open Source Tool to Shield Unpatched Linux Systems",
+      "raw_title": "OpenAI, Cisco Unveil Open Source Tool to Shield Unpatched Linux Systems",
+      "raw_excerpt": null,
+      "content_hash": "sha256:dc0dcfa5eea736702cd1c6c177b1b2fe20bd7509e0c9ba8c8a22ed89b08fb323",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:56:21.388656+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIを活用した新しいセキュリティツールに関する記事であるため。",
+        "tags": [
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "OpenAIとCiscoが、未パッチのLinuxシステムをエクスプロイトから保護するためのオープンソースツール「Shirudo」を発表しました。このツールはAIが生成するシールドを利用しますが、まだ本番環境での利用には適していません。",
+        "financial_impact": "金融機関がLinuxシステムを運用しており、かつAIを活用した新しいセキュリティ技術の導入を検討している場合に、将来的な参考情報となります。現時点での直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIを活用した新しいセキュリティツールの発表であり、将来的な技術動向として把握する価値があるため「中」です。確認目安は、ツールがまだ本番環境向けではなく、具体的な対応期限や緊急性がないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:372382395c6e6dd9c78dc46ff9de666b4be0fe7f29892254ccb64ffaf997e9e8",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/google-researcher-shows-how-single-bit.html",
+      "canonical_url": "https://thehackernews.com/2026/11/google-researcher-shows-how-single-bit.html",
+      "published_at": "2026-11-24T21:02:00+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "Google Researcher Shows How a Single Bit Change in .NET Files Bypassed Windows Code Integrity",
+      "raw_title": "Google Researcher Shows How a Single Bit Change in .NET Files Bypassed Windows Code Integrity",
+      "raw_excerpt": null,
+      "content_hash": "sha256:a4d358c9455536c4b2cf581c0134ab00b9f1cb488cc7f1b20701129ffbc4135e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:56:38.832674+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": ".NET Frameworkの脆弱性に関する記事であり、パッチ適用が主題となるため。",
+        "tags": [
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Google Project Zeroの研究者が、.NET Frameworkのプログラムファイル読み込みにおける特性を利用し、Windowsのコード整合性保護をバイパスして信頼されていないコードを実行する手法を公開しました。この手法はOracle VirtualBoxのプロセス強化（CVE-2026-87268）もバイパスします。",
+        "financial_impact": "金融機関でWindows環境において.NET Frameworkを利用している場合に関係します。特に、Oracle VirtualBoxをWindowsホスト上で利用している場合は、そのプロセス強化のバイパスも影響する可能性があります。",
+        "recommended_actions": [
+          "自社および委託先における.NET Frameworkの利用状況と、影響を受ける可能性のあるWindows環境の有無を確認する",
+          "Oracle VirtualBoxをWindowsホストで利用している場合、CVE-2026-87268に関するベンダー情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、Windows環境における.NET Frameworkの脆弱性で、適用範囲が限定的または不確実なため「中」です。確認目安は、記事に実悪用や短期期限の記述がなく、KEV新規追加にも含まれないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:446e0a68acf810671a62145cdf6f86803cf22dfcc00435aa1da5eede33be201e",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/2027-soc-budget-reset-5-priorities-to.html",
+      "canonical_url": "https://thehackernews.com/2026/11/2027-soc-budget-reset-5-priorities-to.html",
+      "published_at": "2026-11-24T21:01:54+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "2027 SOC Budget Reset: 5 Priorities to Cut Costs and Reduce Cyber Risk",
+      "raw_title": "2027 SOC Budget Reset: 5 Priorities to Cut Costs and Reduce Cyber Risk",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b5a5c63ba8b2a246cb64fcb9aacd480deadc5b93363deef2fa239b9048ee5707",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:56:55.655113+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "SOC予算と運用効率化に関する記事であり、特定の脆弱性、インシデント、攻撃動向、規制、クラウド、AIリスクのいずれにも直接該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "SOCチームは脅威分析とIOC調査の高速化により、調査アラート1,000件あたり450時間のアナリスト時間を回復できる可能性があり、2027年のSOC予算再設定においてコスト削減とサイバーリスク低減のための5つの優先事項が提示されています。",
+        "financial_impact": "金融機関のSOC運用効率化はコスト削減に繋がり得ますが、記事は一般的な提言であり、金融機関固有の直接的な影響は限定的です。",
+        "recommended_actions": [],
+        "reason": "重要度は、一般的なSOC運用効率化の提言であり、金融機関への直接的な影響や緊急性を示す具体的な情報がないため「低」です。確認目安は、具体的な脅威や期限に関する記述がなく、中長期的な参考情報であるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c44a1e00da7e34105dada948c89a6ab5492910425c30f3acc175c1c0cbb506dc",
+      "source_id": "ncsc",
+      "source_name": "NCSC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.ncsc.gov.uk/blogs/introducing-cornerstone-delivering-external-services-for-the-ncsc",
+      "canonical_url": "https://www.ncsc.gov.uk/blogs/introducing-cornerstone-delivering-external-services-for-the-ncsc",
+      "published_at": "2026-11-24T21:00:00+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "NCSCが外部サイバーセキュリティサービス提供の新モデル「CORNERSTONE」を発表",
+      "raw_title": "Introducing CORNERSTONE: delivering external services for the NCSC",
+      "raw_excerpt": "The NCSC is seeking industry feedback on a new delivery model for modernising external cyber security services.",
+      "content_hash": "sha256:2ce153eacd6cab0293e54b0453e4f506525166b6c28a4da42491388326ad4e8c",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:57:12.264146+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "NCSCの新しいサービス提供モデルに関する発表であり、特定の脆弱性や攻撃、規制には該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "英国NCSCは、外部サイバーセキュリティサービスを近代化するための新しい提供モデル「CORNERSTONE」を発表し、業界からのフィードバックを求めています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。NCSCのサービスを利用している、または将来的に利用を検討する際に参考となる情報です。",
+        "recommended_actions": [],
+        "reason": "重要度は、NCSCのサービス提供モデルに関する発表であり、金融機関への直接的な影響が限定的であるため「低」です。確認目安は、具体的な対応を求める内容ではなく、情報収集が主となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5d4b7756ff34b08452bd713c20e31889f78e7b7efff96927c0812c25442970a3",
+      "source_id": "ncsc",
+      "source_name": "NCSC",
+      "source_type": "CERT・注意喚起",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.ncsc.gov.uk/blogs/familiar-weaknesses-exploited-faster-defending-against-agentic-cyber-attacks",
+      "canonical_url": "https://www.ncsc.gov.uk/blogs/familiar-weaknesses-exploited-faster-defending-against-agentic-cyber-attacks",
+      "published_at": "2026-11-24T21:00:00+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "既知の脆弱性がより迅速に悪用される：エージェント型サイバー攻撃からの防御",
+      "raw_title": "Familiar weaknesses, exploited faster: defending against agentic cyber attacks",
+      "raw_excerpt": "How to protect your organisation from cyber attacks created using ‘agentic offensive frameworks’.",
+      "content_hash": "sha256:52f4cbe7e865b15c10352dd950828656fb41692faf4f9d0c6211f84c58d553a3",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "structured_open",
+        "effective_mode": "structured_open",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:57:29.261197+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントによる攻撃手法と防御策が主題であるため。",
+        "tags": [
+          "AI",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "参考",
+        "summary": "NCSCは、AIエージェントを活用したサイバー攻撃が、既知の脆弱性をより迅速に悪用する可能性について警告しています。組織がこれらの「エージェント型攻撃フレームワーク」から身を守るための対策を解説しています。",
+        "financial_impact": "AIエージェントによる攻撃は、金融機関が利用するシステムやサービスにも影響を及ぼす可能性があります。既存の脆弱性管理やセキュリティ対策の有効性を再評価する上で関係します。",
+        "recommended_actions": [],
+        "reason": "重要度は、AIエージェントによる攻撃の潜在的な影響について注意喚起するものであり、中長期的な検討が必要となるため「中」です。確認目安は、具体的な脅威や期限が示されておらず、短期的な対応を求めるものではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:db7975af80ee66d0e4c4351148f9798253275a47fe7befff39f54007cf256c22",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/1-5-million-impacted-by-data-breach-at-south-korean-electric-company-kepco/",
+      "canonical_url": "https://www.securityweek.com/1-5-million-impacted-by-data-breach-at-south-korean-electric-company-kepco/",
+      "published_at": "2026-11-24T20:50:21+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "1.5 Million Impacted by Data Breach at South Korean Electric Company KEPCO",
+      "raw_title": "1.5 Million Impacted by Data Breach at South Korean Electric Company KEPCO",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5c3e3073962f7b151743a9da2c78ab52c271d1a3d7853ea4d0c25035bee59cee",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:57:45.846477+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "韓国電力公社における情報漏えいという実際の被害事例が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "韓国電力公社（KEPCO）の顧客ポータルおよびサプライヤー関係管理プラットフォームから、ハッカーが個人情報を窃取しました。この情報漏えいにより、150万人に影響が出たと報じられています。",
+        "financial_impact": "金融機関への直接的な関係は確認できず、他業界のインシデント事例として参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、他業界のインシデント事例であり、金融機関への直接的な影響が確認できないため「低」です。確認目安は、具体的な短期的な対応を求める情報ではないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:47c6e40ac66c9d3b81c5f40c195b2b4419709a2d0249484182b879258a330a6a",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/microsoft-fixes-azure-api-management.html",
+      "canonical_url": "https://thehackernews.com/2026/11/microsoft-fixes-azure-api-management.html",
+      "published_at": "2026-11-24T19:44:49+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "Microsoft Fixes Azure API Management Classic Flaw as Actor Targets Customer Secrets",
+      "raw_title": "Microsoft Fixes Azure API Management Classic Flaw as Actor Targets Customer Secrets",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b869830204cdf8bd7f7cf93047acf3efdab9fb981cd12f0757eb57479dda7cd5",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:58:03.029350+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Microsoft Azure API Managementの脆弱性とその修正が主題であるため。",
+        "tags": [
+          "クラウド",
+          "SaaS",
+          "情報漏えい"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "ノルウェー国家安全保障局(NSM)は、Microsoft Azure API Management (APIM) Classicの脆弱性がノルウェー国内の複数の企業に影響を与えたことを公表しました。未知の攻撃者がAPIM内のアクセストークン、シークレット、名前付き値を積極的に探索していたと報告されています。",
+        "financial_impact": "金融機関がMicrosoft Azure API Management Classicを利用している場合、顧客のシークレットやアクセストークンが漏洩するリスクがあるため関係します。",
+        "recommended_actions": [
+          "自社および委託先でMicrosoft Azure API Management Classicの利用有無を確認する",
+          "Microsoftが提供する修正プログラムや緩和策の適用状況を確認する",
+          "APIM環境におけるアクセストークン、シークレット、名前付き値の利用状況とセキュリティ設定を評価する"
+        ],
+        "reason": "重要度は、広く利用されるクラウドサービスにおける顧客シークレット漏洩の可能性があり、適用性評価の優先度が高いため「高」です。確認目安は、脆弱性が既に修正済みであり、直ちに悪用が進行中であるという時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0039fd31022b3a2c9f15a9474edc0422acaa490e02ed6425873ec426917252ab",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/elecbrakes-bluetooth-vulnerabilities-expose-trailers-to-forced-braking/",
+      "canonical_url": "https://www.securityweek.com/elecbrakes-bluetooth-vulnerabilities-expose-trailers-to-forced-braking/",
+      "published_at": "2026-11-24T19:44:44+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "Elecbrakes Bluetooth Vulnerabilities Expose Trailers to Forced Braking",
+      "raw_title": "Elecbrakes Bluetooth Vulnerabilities Expose Trailers to Forced Braking",
+      "raw_excerpt": null,
+      "content_hash": "sha256:abfa407b30fe93f6e6d31ac66843ca7bec6425136326ac7f3e0de4c6cc0134a8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:58:19.490052+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Bluetoothの脆弱性が主題であるため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "ElecbrakesコントローラーのBluetoothに重大な脆弱性が発見され、近くの攻撃者がトレーラーに強制的にブレーキをかけ、事故を引き起こす可能性があります。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。Elecbrakes製品はトレーラーのブレーキ制御システムであり、金融機関の業務システムやサービスとは直接関連しません。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関の業務への関連性が極めて低く、適用性が限定的であるため「低」です。確認目安は、金融機関への直接的な影響や緊急対応の必要性が記事から確認できないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:63045753ac0089989528c35e616b117b3f8a70dc183acfdedf3e9f4adfb4be41",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/whmcs-sql-injection-flaw-could-expose.html",
+      "canonical_url": "https://thehackernews.com/2026/11/whmcs-sql-injection-flaw-could-expose.html",
+      "published_at": "2026-11-24T17:34:20+09:00",
+      "fetched_at": "2026-11-25T13:53:45.531234+09:00",
+      "title": "WHMCS SQL Injection Could Expose Customer Data and Admin Password Hashes without Login",
+      "raw_title": "WHMCS SQL Injection Could Expose Customer Data and Admin Password Hashes without Login",
+      "raw_excerpt": null,
+      "content_hash": "sha256:03f887be3f711b571d4610c927f63f1718be9007d87d3b47212d79cea616f073",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-25T13:58:36.415227+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "WHMCSのSQLインジェクション脆弱性が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "委託先管理"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ウェブホスティング企業が利用する請求・自動化プラットフォームであるWHMCSのショッピングカート機能にSQLインジェクションの脆弱性が発見されました。この脆弱性により、ログインなしで顧客記録と管理者パスワードハッシュがデータベースから取得される可能性があります。",
+        "financial_impact": "金融機関が直接WHMCSを利用している可能性は低いですが、委託先のウェブホスティングプロバイダーがWHMCSを利用している場合、そのサプライチェーンリスクとして関係する可能性があります。",
+        "recommended_actions": [
+          "委託先のウェブホスティングプロバイダーに対し、WHMCSの利用有無と本脆弱性への対応状況を確認する",
+          "WHMCSを利用している場合は、ベンダーの公開情報を確認し、速やかにパッチ適用または緩和策を講じる"
+        ],
+        "reason": "重要度は、金融機関が直接利用する可能性は低いものの、委託先経由で影響する可能性があるため「中」です。確認目安は、実悪用や緊急の対応期限に関する記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
