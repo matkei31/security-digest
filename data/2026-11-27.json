@@ -1,0 +1,640 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-27",
+  "generated_at": "2026-11-27T13:18:40.353968+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "partial",
+    "overwrite_policy": "replace",
+    "total_items": 11,
+    "ai_attempted_count": 11,
+    "ai_success_count": 10,
+    "ai_fallback_count": 1,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 11
+  },
+  "counts": {
+    "importance": {
+      "高": 2,
+      "中": 7,
+      "低": 2,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 9,
+      "参考": 2,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 4,
+      "攻撃・脅威動向": 3,
+      "インシデント": 3,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 0,
+      "その他": 1,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象11件｜重要度「高」2件｜本日確認0件｜今週確認9件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が9件あり、計画的な確認が必要です。一方、Brief対象には重要度の高い情報が2件あるため、内容は優先的に把握する必要があります。",
+    "important_highlights": [
+      "人気のパスワード管理ソフトウェア1Passwordは、バックエンドシステムへのセキュリティインシデントを公表しました。攻撃者は一部の顧客情報とソースコードに不正アクセスしましたが、顧客のパスワード保管庫やその他の機密情報にはアクセスされなかったと強調しています。",
+      "Drupalは、Drupalコアに影響を与える「極めて重大な」新たなセキュリティ脆弱性（CVE-2026-136716）について警告を発しました。この脆弱性は実悪用が確認されており、不適切な条件チェックに関連し、サイト乗っ取りにつながる可能性があります。"
+    ],
+    "discussion_points": [
+      "人気のパスワード管理ソフトウェア1Passwordは、バックエンドシステムへのセキュリティインシデントを公表しました。攻撃者は一部の顧客情報とソースコードに不正アクセスしましたが、顧客のパスワード保管庫やその他の機密情報にはアクセスされなかったと強調しています。\n金融機関が1Passwordを従業員のパスワード管理ツールとして利用している場合、一部の顧客情報やソースコードが漏洩した可能性があり、その影響を確認する必要があります。",
+      "Drupalは、Drupalコアに影響を与える「極めて重大な」新たなセキュリティ脆弱性（CVE-2026-136716）について警告を発しました。この脆弱性は実悪用が確認されており、不適切な条件チェックに関連し、サイト乗っ取りにつながる可能性があります。\n金融機関がウェブサイトやアプリケーション基盤としてDrupalを利用している場合に関係します。実悪用が確認されているため、利用有無の確認が重要です。"
+    ],
+    "check_items": [
+      "自社および委託先で1Passwordの利用状況を確認し、本インシデントの影響範囲を評価する",
+      "自社および委託先でDrupalコアの利用有無と影響バージョンを確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:0b75246ced860331ec95f848a57abe949814aacf57c2f5e0d0e943f31526529b",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/threatsday-250-rogue-extensions-10m.html",
+      "canonical_url": "https://thehackernews.com/2026/11/threatsday-250-rogue-extensions-10m.html",
+      "published_at": "2026-11-27T04:39:57+09:00",
+      "fetched_at": "2026-11-27T13:15:31.141421+09:00",
+      "title": "ThreatsDay: 10M NGINX Services at Risk, 250+ Malicious Extensions, AI Server Hijacking + 17 More Stories",
+      "raw_title": "ThreatsDay: 10M NGINX Services at Risk, 250+ Malicious Extensions, AI Server Hijacking + 17 More Stories",
+      "raw_excerpt": null,
+      "content_hash": "sha256:7569662fde12402f4df5b02f6e18bf031a6d0ed37c305f763dda9ff36aa22629",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-27T13:15:33.167003+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の脅威動向やセキュリティニュースをまとめた週次レポートであり、特定の主題に絞られないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "本記事は、NGINXサービスの脆弱性、悪意あるブラウザ拡張機能、AIサーバーの乗っ取りなど、複数のサイバーセキュリティ関連ニュースをまとめた週次レポートです。",
+        "financial_impact": "複数の脅威動向をまとめた記事であり、金融機関への直接的な影響は個々の事象に依存します。本記事自体からは具体的な関係性は確認できません。",
+        "recommended_actions": [],
+        "reason": "重要度は、新しい事実や詳細な分析を伴わない複数のニュースのまとめ記事であるため「低」です。確認目安は、具体的な短期アクションを要する情報が含まれていないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:1bfd0310f4efb8cb795d69a6d0b8877e8924ad9129861cbded04e6b65bbc82fa",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/fifa-says-it-has-been-victim-of-a-cyberattack-accessing-personal-and-business-information/",
+      "canonical_url": "https://www.securityweek.com/fifa-says-it-has-been-victim-of-a-cyberattack-accessing-personal-and-business-information/",
+      "published_at": "2026-11-27T02:06:55+09:00",
+      "fetched_at": "2026-11-27T13:15:31.141421+09:00",
+      "title": "FIFA Says It Has Been Victim of a Cyberattack Accessing ‘Personal and Business Information’",
+      "raw_title": "FIFA Says It Has Been Victim of a Cyberattack Accessing ‘Personal and Business Information’",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ff32684384628632b0c6a79742a5645a84cd22620b7b7c224c87cf1cd8df30d5",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-27T13:15:49.799113+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "FIFAへのサイバー攻撃と情報アクセスが主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "FIFAはサイバー攻撃を受け、個人情報および業務情報にアクセスされたことを公表しました。攻撃発生時期や侵害された情報の詳細については明らかにされていません。",
+        "financial_impact": "金融機関への直接的な関係は確認できず、他業界のインシデント事例として参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が確認できない他業界のインシデント事例であるため「低」です。確認目安は、具体的な脅威や期限、金融機関への直接的な影響が記事から確認できないため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:0574110d7d17666e48071c3c326a9c786cb5bc6888a2dad7c05d3cc974fd57ee",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/north-korea-linked-polinrider-poisons.html",
+      "canonical_url": "https://thehackernews.com/2026/11/north-korea-linked-polinrider-poisons.html",
+      "published_at": "2026-11-27T00:13:41+09:00",
+      "fetched_at": "2026-11-27T13:15:31.141421+09:00",
+      "title": "North Korea-Linked PolinRider Poisons Over 7,600 GitHub Repositories to Spread Malware",
+      "raw_title": "North Korea-Linked PolinRider Poisons Over 7,600 GitHub Repositories to Spread Malware",
+      "raw_excerpt": null,
+      "content_hash": "sha256:b779f807d194d1f782b5665562c6f9e853e1c277b68882ac710d46373d5231d6",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-27T13:16:07.253983+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "北朝鮮関連の攻撃グループによるマルウェア拡散キャンペーンが主題であるため。",
+        "tags": [
+          "APT",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "北朝鮮関連の脅威アクター「PolinRider」が、2025年2月頃からGitHubリポジトリにPythonローダーを仕込み、マルウェアを拡散していることが確認されました。このローダーは小さなユーティリティパッケージやconftest.pyファイルに隠されています。",
+        "financial_impact": "金融機関がGitHubを利用してソフトウェア開発を行っている場合、サプライチェーンリスクとして関係します。特にオープンソースプロジェクトへの貢献や利用において、意図しないマルウェア感染のリスクがあります。",
+        "recommended_actions": [
+          "GitHubリポジトリを利用している場合、自社および委託先におけるPythonプロジェクトの依存関係を棚卸しし、不審なパッケージやファイルがないか確認する",
+          "GitHub上のリポジトリに対するアクセス権限や監視体制を見直し、不正な変更やアップロードがないか監視を強化する"
+        ],
+        "reason": "重要度は、GitHubを利用する金融機関にとってサプライチェーンリスクとなり得るため「中」です。確認目安は、特定の期限や緊急対応の指示がなく、利用有無の確認が必要なため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:e5ae44210f7d499350fbf829f9775f593216bd0fcbcc61089380a95c55693ca4",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/critical-juniper-session-smart-conductor-flaw-exploited-in-attacks/",
+      "canonical_url": "https://www.securityweek.com/critical-juniper-session-smart-conductor-flaw-exploited-in-attacks/",
+      "published_at": "2026-11-26T22:04:06+09:00",
+      "fetched_at": "2026-11-27T13:15:31.141421+09:00",
+      "title": "Critical Juniper Session Smart Conductor Flaw Exploited in Attacks",
+      "raw_title": "Critical Juniper Session Smart Conductor Flaw Exploited in Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:167810cc83a4dde500ab81bbfdda989433e5ddfa9bb46357ad23fdb1e1b9d37e",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-27T13:16:24.272449+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Juniper製品の脆弱性（CVE-2026-103406）とそれが攻撃で悪用されていることが主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Juniper Session Smart ConductorのCVE-2026-103406として追跡される重大な脆弱性が攻撃で悪用されていることが確認されました。この脆弱性により、リモートの攻撃者がroot権限で任意のコマンドを実行できる可能性があります。",
+        "financial_impact": "金融機関でJuniper Session Smart Conductorを利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "CVE-2026-103406を基に、自社および委託先でのJuniper Session Smart Conductorの利用有無と影響バージョンを確認する",
+          "Juniperからの一次情報やパッチ、緩和策を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、特定の製品の脆弱性であり、金融機関での利用可能性が記事から不明なため「中」です。確認目安は、悪用が確認されているものの、CISA KEVへの新規追加がなく、即時対応の期限も不明なため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:cc622f5f1349b4145e7fb236f9ee16622aaede78310ff85d2b23741669c6d950",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/mitel-micollab-zero-days-exploited-in-suspected-ai-assisted-attacks/",
+      "canonical_url": "https://www.securityweek.com/mitel-micollab-zero-days-exploited-in-suspected-ai-assisted-attacks/",
+      "published_at": "2026-11-26T20:35:25+09:00",
+      "fetched_at": "2026-11-27T13:15:31.141421+09:00",
+      "title": "Mitel MiCollab Zero-Days Exploited in Suspected AI-Assisted Attacks",
+      "raw_title": "Mitel MiCollab Zero-Days Exploited in Suspected AI-Assisted Attacks",
+      "raw_excerpt": null,
+      "content_hash": "sha256:8bc95eb4d6510693e01726b4f64c0121ec370064a0bf304a8907425b73f43a37",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-27T13:16:41.602142+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Mitel MiCollabのゼロデイ脆弱性がAI支援型攻撃で悪用された可能性について報じられており、攻撃手法や脅威動向が主題であるため。",
+        "tags": [
+          "ゼロデイ",
+          "悪用確認済み",
+          "AI"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Accentureの報告によると、Mitel MiCollabのゼロデイ脆弱性が、Mitelのアドバイザリ公開前にハッカーによって悪用された可能性があり、AIが攻撃を支援したと疑われる恐喝キャンペーンの一環であるとされています。",
+        "financial_impact": "金融機関でMitel MiCollab製品を利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Mitel MiCollab製品の利用有無と影響バージョンを確認する",
+          "Mitelからの公式アドバイザリやパッチ情報を確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、Mitel MiCollab製品の利用状況が金融機関で限定的である可能性があり、適用範囲が不確実なため「中」です。確認目安は、ゼロデイ脆弱性の悪用が確認されているものの、CISA KEVへの新規追加がなく、即時対応の明確な期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:54cc21ceab246c659a8305c807da624dccfec8330c600f42514dc79b97378f18",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/most-wanted-phishing-kits-and.html",
+      "canonical_url": "https://thehackernews.com/2026/11/most-wanted-phishing-kits-and.html",
+      "published_at": "2026-11-26T19:57:55+09:00",
+      "fetched_at": "2026-11-27T13:15:31.141421+09:00",
+      "title": "Most Wanted: The Phishing Kits and Techniques Getting Past Security Controls",
+      "raw_title": "Most Wanted: The Phishing Kits and Techniques Getting Past Security Controls",
+      "raw_excerpt": null,
+      "content_hash": "sha256:9ea58efdf3bfece0d797f6fc2eea94024194329e0778e2bd6ba252a252bf42f0",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-27T13:16:58.807557+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "フィッシング攻撃の手法と、それをすり抜けるキットに関する分析が主題であるため。",
+        "tags": [
+          "フィッシング"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "フィッシング攻撃がメールセキュリティ、Webフィルタリング、セーフブラウジングをすり抜けて従業員に到達する割合（突破率）が高いフィッシングキットと手口について解説しています。",
+        "financial_impact": "金融機関はフィッシング攻撃の主要な標的であり、従業員がこれらの高度なフィッシング手口に晒されるリスクがあるため、脅威動向として関係します。",
+        "recommended_actions": [
+          "記事で言及されているセキュリティ制御をすり抜けるフィッシング手口について、自社のセキュリティ対策で対応可能か評価する",
+          "従業員へのフィッシング訓練やセキュリティ意識向上トレーニングの内容を見直し、最新の脅威動向を反映させることを検討する"
+        ],
+        "reason": "重要度は、金融機関が標的となりやすいフィッシング攻撃の最新動向であり、対策検討の価値があるため「中」です。確認目安は、具体的な緊急対応の必要性や期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:5e5b0d3bb248d414374e3a8d55b76caf5cad21992bd3766660657468a247d1a6",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/1password-hacked-customer-data-and.html",
+      "canonical_url": "https://thehackernews.com/2026/11/1password-hacked-customer-data-and.html",
+      "published_at": "2026-11-26T19:57:25+09:00",
+      "fetched_at": "2026-11-27T13:15:31.141421+09:00",
+      "title": "1Password Hacked, Customer Data and Source Code Stolen in GitHub Account Breach",
+      "raw_title": "1Password Hacked, Customer Data and Source Code Stolen in GitHub Account Breach",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d456d5f9041c254e2a45c52e0b9b7c02fd46b41078a6d43d8dcfd3332c7cf156",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-27T13:17:16.464135+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "パスワード管理ソフトウェアのバックエンドシステムへの不正アクセスと顧客データ、ソースコードの盗難が主題であるため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "サプライチェーン"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "人気のパスワード管理ソフトウェア1Passwordは、バックエンドシステムへのセキュリティインシデントを公表しました。攻撃者は一部の顧客情報とソースコードに不正アクセスしましたが、顧客のパスワード保管庫やその他の機密情報にはアクセスされなかったと強調しています。",
+        "financial_impact": "金融機関が1Passwordを従業員のパスワード管理ツールとして利用している場合、一部の顧客情報やソースコードが漏洩した可能性があり、その影響を確認する必要があります。",
+        "recommended_actions": [
+          "自社および委託先で1Passwordの利用状況を確認し、本インシデントの影響範囲を評価する",
+          "1Passwordからの公式発表や推奨される対応策を確認し、必要に応じてセキュリティ対策を強化する",
+          "漏洩した可能性のある情報（顧客データ、ソースコード）が自社の業務に与える影響を評価し、対応を検討する"
+        ],
+        "reason": "重要度は、広く利用されるパスワード管理サービスのインシデントであり、金融機関での利用可能性も考慮し適用性評価の優先度が高いため「高」です。確認目安は、インシデントの公表はされているものの、即時対応を要する具体的な時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:3f4e53c9791cfad64956e7880804774d189addbab7e4ea38248422b1541359c2",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/drupal-installer-patch-left-a-gap-attackers-are-already-exploiting/",
+      "canonical_url": "https://www.securityweek.com/drupal-installer-patch-left-a-gap-attackers-are-already-exploiting/",
+      "published_at": "2026-11-26T18:12:26+09:00",
+      "fetched_at": "2026-11-27T13:15:31.141421+09:00",
+      "title": "Drupal Installer Patch Left a Gap Attackers Are Already Exploiting",
+      "raw_title": "Drupal Installer Patch Left a Gap Attackers Are Already Exploiting",
+      "raw_excerpt": null,
+      "content_hash": "sha256:6762ae565b02647dcaa01bf33c1f30b24dc3d3c0f5c71fa1961a0090cfb245ad",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-27T13:17:33.758803+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Drupalインストーラーのパッチの脆弱性と、それに対する攻撃者の悪用が主題であるため。",
+        "tags": [
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Drupalは、以前のインストーラーパッチに脆弱性が残っており、一部のウェブサイトが乗っ取りの危険にさらされていると警告しています。攻撃者は既にこの脆弱性を悪用しているとのことです。",
+        "financial_impact": "金融機関がDrupalをウェブサイト基盤として利用している場合に、適用性確認の対象となります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Drupalを利用している場合、影響を受けるインストーラーパッチが適用されているか確認する",
+          "Drupalの公式情報を確認し、追加の修正パッチや緩和策が公開されていないか確認する",
+          "Drupalサイトのログを監視し、不審な活動や侵害の兆候がないか確認する"
+        ],
+        "reason": "重要度は、Drupalの利用状況により適用範囲が限定されるため「中」です。確認目安は、悪用が確認されているものの、CISA KEVへの新規追加や緊急対応の明確な期限が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:022e83af403003b93c046431746932ef841fba7454d29f33a002f2482f4e9cf1",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/1password-breach-exposes-customer-data-internal-source-code/",
+      "canonical_url": "https://www.securityweek.com/1password-breach-exposes-customer-data-internal-source-code/",
+      "published_at": "2026-11-26T17:32:10+09:00",
+      "fetched_at": "2026-11-27T13:15:31.141421+09:00",
+      "title": "1Password Breach Exposes Customer Data, Internal Source Code",
+      "raw_title": "1Password Breach Exposes Customer Data, Internal Source Code",
+      "raw_excerpt": null,
+      "content_hash": "sha256:dc16b3bf0efec21f6019bc9f5863e410c01afef7373f1cb33ff155775bcf57e0",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-27T13:17:50.837788+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "従業員のGitHubアカウントが侵害され、顧客データと内部ソースコードが流出したインシデントが主題のため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "パスワード管理サービス「1Password」において、従業員のGitHubアカウントが侵害され、悪意のあるコードがプッシュされ、顧客データと内部ソースコードが流出しました。ただし、顧客のパスワード保管庫（vaults）へのアクセスは確認されていません。",
+        "financial_impact": "金融機関が1Passwordを従業員向けパスワード管理ソリューションとして利用している場合、従業員データや内部ソースコードの流出が関係する可能性があります。顧客のパスワード保管庫へのアクセスは確認されていません。",
+        "recommended_actions": [
+          "自社および委託先で1Passwordを利用しているか確認する",
+          "1Passwordからの公式発表を確認し、推奨される対応があれば実施を検討する"
+        ],
+        "reason": "重要度は、金融機関での1Passwordの利用状況により影響が異なるため「中」です。確認目安は、インシデント発生の報告であり、即時対応を要する具体的な期限や進行中の攻撃の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:61e3be14c2b6cad929efba6971c484f2e537bb80af53ffb0734d76c9dc31c320",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/drupal-warns-of-new-highly-critical.html",
+      "canonical_url": "https://thehackernews.com/2026/11/drupal-warns-of-new-highly-critical.html",
+      "published_at": "2026-11-26T16:02:34+09:00",
+      "fetched_at": "2026-11-27T13:15:31.141421+09:00",
+      "title": "Drupal Warns of New Highly Critical Site Takeover Vulnerability Under Active Exploitation",
+      "raw_title": "Drupal Warns of New Highly Critical Site Takeover Vulnerability Under Active Exploitation",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2a2388c133e1ed95b7faf01069d4d90c1186a1b5679e7479492a45a3bbcc1b22",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-27T13:18:08.210046+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "Drupalの新たな脆弱性に関する警告と実悪用が主題であるため。",
+        "tags": [
+          "CVE",
+          "悪用確認済み",
+          "パッチ"
+        ],
+        "importance": "高",
+        "urgency": "今週確認",
+        "summary": "Drupalは、Drupalコアに影響を与える「極めて重大な」新たなセキュリティ脆弱性（CVE-2026-136716）について警告を発しました。この脆弱性は実悪用が確認されており、不適切な条件チェックに関連し、サイト乗っ取りにつながる可能性があります。",
+        "financial_impact": "金融機関がウェブサイトやアプリケーション基盤としてDrupalを利用している場合に関係します。実悪用が確認されているため、利用有無の確認が重要です。",
+        "recommended_actions": [
+          "自社および委託先でDrupalコアの利用有無と影響バージョンを確認する",
+          "Drupalの公式発表を確認し、パッチや緩和策の適用を検討する",
+          "Drupal環境における不審な活動や侵害の兆候がないかログを監視する"
+        ],
+        "reason": "重要度は、実悪用が確認され、サイト乗っ取りにつながる極めて重大な脆弱性であるため「高」です。確認目安は、実悪用が確認されているものの、CISA KEVへの新規追加がなく即時対応の期限が明示されていないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:451f3a785e324bf13d51d4b964273dd3e6a14ccdf2a0fe98efcbcc358a416902",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/hackers-exploit-10-vulnerabilities.html",
+      "canonical_url": "https://thehackernews.com/2026/11/hackers-exploit-10-vulnerabilities.html",
+      "published_at": "2026-11-26T15:44:46+09:00",
+      "fetched_at": "2026-11-27T13:15:31.141421+09:00",
+      "title": "Hackers Exploit 10 Vulnerabilities Across Mitel, Juniper, Vates, and Danfoss Products",
+      "raw_title": "Hackers Exploit 10 Vulnerabilities Across Mitel, Juniper, Vates, and Danfoss Products",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1d78e27b65a4dfee2dab4303d1e9caa65ce091179f2369b8d069c1703a096d8d",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "fallback",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-27T13:18:25.353432+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "CISA KEVカタログへの脆弱性追加が主題であるため。",
+        "tags": [
+          "KEV",
+          "悪用確認済み",
+          "CVE",
+          "パッチ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "CISAは、Mitel MiCollabの5件の脆弱性（先週開示されたものを含む）や、Juniper、Vates、Danfoss製品の脆弱性など、合計10件のセキュリティ欠陥を既知の悪用済み脆弱性（KEV）カタログに追加しました。",
+        "financial_impact": "金融機関でMitel、Juniper、Vates、Danfossの各製品を利用している場合に限り、適用性確認の対象になります。記事からは利用有無を確認できません。",
+        "recommended_actions": [
+          "記事に記載された製品（Mitel MiCollab、Juniper、Vates、Danfoss製品）の利用有無と影響バージョンを確認する",
+          "各ベンダーの一次情報を参照し、該当する脆弱性に対するパッチや緩和策の有無を確認する"
+        ],
+        "reason": "重要度は、対象製品の利用可能性や露出が記事から確認できず、適用範囲が不確実なため「中」です。確認目安は、CISA KEVへの新規追加だが直近3日以内ではないため、即時対応の根拠に乏しく「今週確認」です。",
+        "error_type": "schema_parse_error",
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
