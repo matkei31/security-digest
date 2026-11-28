@@ -1,0 +1,568 @@
+{
+  "schema_version": 2,
+  "digest_date": "2026-11-28",
+  "generated_at": "2026-11-28T12:57:27.694228+09:00",
+  "generator": {
+    "application": "security-digest",
+    "model": "gemini-2.5-flash",
+    "article_prompt_version": "article-analysis-v8",
+    "brief_prompt_version": "today-brief-extractive-v2"
+  },
+  "run": {
+    "status": "success",
+    "overwrite_policy": "replace",
+    "total_items": 10,
+    "ai_attempted_count": 10,
+    "ai_success_count": 10,
+    "ai_fallback_count": 0,
+    "ai_failed_count": 0,
+    "ai_not_attempted_count": 0,
+    "policy_excluded_count": 0,
+    "ai_eligible_count": 10
+  },
+  "counts": {
+    "importance": {
+      "高": 0,
+      "中": 8,
+      "低": 2,
+      "未判定": 0
+    },
+    "urgency": {
+      "本日確認": 0,
+      "今週確認": 8,
+      "参考": 2,
+      "未判定": 0
+    },
+    "category": {
+      "脆弱性・パッチ": 1,
+      "攻撃・脅威動向": 3,
+      "インシデント": 3,
+      "規制・ガバナンス": 0,
+      "クラウド・サプライチェーン": 0,
+      "AI・新技術リスク": 1,
+      "その他": 2,
+      "未判定": 0
+    }
+  },
+  "brief": {
+    "status": "success",
+    "model": "deterministic-extractive",
+    "prompt_version": "today-brief-extractive-v2",
+    "overview": "Brief対象10件｜重要度「高」0件｜本日確認0件｜今週確認8件\nBrief対象の記事では、緊急の確認対象はありません。今週確認の対象が8件あり、計画的な確認が必要です。",
+    "important_highlights": [],
+    "discussion_points": [
+      "ベトナムが支援するハッカー集団が、南シナ海の防衛・軍事協定に関する情報収集を目的として、東南アジアの軍事、政府、立法機関を標的とした攻撃を行っていることが判明しました。SOCRadarによって「WeaveLotus」と名付けられたこの活動は、タイで5件の侵入が確認されています。\n金融機関への直接的な影響は限定的です。国家支援型攻撃グループによるスパイ活動事例として、脅威動向の把握に参考となります。",
+      "サイバーセキュリティ研究者により、脅威アクターがMicrosoft Storeアプリケーションを悪用してVinci RATというリモートアクセス型トロイの木馬を配布するサイバー攻撃の詳細が公開されました。この攻撃は、偽の狙撃ツールサイトへのリダイレクトから始まり、Microsoft署名付きインストーラーを介してマルウェアが配信されます。\n金融機関がMicrosoft Storeアプリの利用を許可している場合、従業員が意図せず悪意のあるアプリをダウンロードするリスクがあります。これにより、情報漏えいやシステム制御の乗っ取りにつながる可能性があります。"
+    ],
+    "check_items": [
+      "Microsoft Storeアプリの利用ポリシーと、従業員によるアプリインストールの管理状況を確認する",
+      "自社および委託先におけるQ-DirおよびDesktopOKの利用有無と、公式SoftwareOKウェブサイトからのダウンロード・更新履歴を確認する"
+    ],
+    "error_type": null
+  },
+  "items": [
+    {
+      "id": "sha256:a061202fd8df49d87211a1c596fa9f8f4dd6f055906dcfc5c058fa876aaaf94f",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/suspected-vietnam-linked-hackers-target.html",
+      "canonical_url": "https://thehackernews.com/2026/11/suspected-vietnam-linked-hackers-target.html",
+      "published_at": "2026-11-28T01:36:11+09:00",
+      "fetched_at": "2026-11-28T12:54:37.440622+09:00",
+      "title": "Suspected Vietnam-Linked Hackers Target Southeast Asia in South China Sea Espionage Campaign",
+      "raw_title": "Suspected Vietnam-Linked Hackers Target Southeast Asia in South China Sea Espionage Campaign",
+      "raw_excerpt": null,
+      "content_hash": "sha256:43856e8397e7d0ab7aae6d712a8a8deef6a31988ad30d227dabfb69fd656c4d8",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-28T12:54:39.343081+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "特定の国家が支援するハッカー集団によるスパイ活動と攻撃キャンペーンが主題のため。",
+        "tags": [
+          "APT"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "ベトナムが支援するハッカー集団が、南シナ海の防衛・軍事協定に関する情報収集を目的として、東南アジアの軍事、政府、立法機関を標的とした攻撃を行っていることが判明しました。SOCRadarによって「WeaveLotus」と名付けられたこの活動は、タイで5件の侵入が確認されています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。国家支援型攻撃グループによるスパイ活動事例として、脅威動向の把握に参考となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関が直接的な標的ではないものの、国家支援型攻撃グループの動向として把握する価値があるため「中」です。確認目安は、具体的な期限や緊急対応の必要性が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:c60eeeaa334b435fe2df496ffce78876d8c3bf149035e885dc199506a17bc665",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/microsoft-store-app-found-delivering.html",
+      "canonical_url": "https://thehackernews.com/2026/11/microsoft-store-app-found-delivering.html",
+      "published_at": "2026-11-27T20:49:34+09:00",
+      "fetched_at": "2026-11-28T12:54:37.440622+09:00",
+      "title": "Microsoft Store App Found Delivering Vinci RAT Capable of Remote System Control",
+      "raw_title": "Microsoft Store App Found Delivering Vinci RAT Capable of Remote System Control",
+      "raw_excerpt": null,
+      "content_hash": "sha256:32abc91630ea4ab23bbaa1003b95df67e0b63bcac965ea8816e301e8e3016302",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-28T12:54:56.709026+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "Microsoft Storeアプリを悪用したマルウェア配布の手法と攻撃の詳細が主題であるため。",
+        "tags": [
+          "フィッシング",
+          "ランサムウェア"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者により、脅威アクターがMicrosoft Storeアプリケーションを悪用してVinci RATというリモートアクセス型トロイの木馬を配布するサイバー攻撃の詳細が公開されました。この攻撃は、偽の狙撃ツールサイトへのリダイレクトから始まり、Microsoft署名付きインストーラーを介してマルウェアが配信されます。",
+        "financial_impact": "金融機関がMicrosoft Storeアプリの利用を許可している場合、従業員が意図せず悪意のあるアプリをダウンロードするリスクがあります。これにより、情報漏えいやシステム制御の乗っ取りにつながる可能性があります。",
+        "recommended_actions": [
+          "Microsoft Storeアプリの利用ポリシーと、従業員によるアプリインストールの管理状況を確認する",
+          "不審なWebサイトへのアクセスやファイルのダウンロードに関する従業員への注意喚起を実施する",
+          "エンドポイントセキュリティソリューションのログを監視し、Vinci RATに関連する活動がないか確認する"
+        ],
+        "reason": "重要度は、Microsoft Storeアプリの悪用という攻撃手法が金融機関でも発生し得るため「中」です。確認目安は、具体的な期限や緊急対応の指示がなく、利用状況の確認が必要なため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:9b89881540e0cac7df46a086615a24afc0ef35c374ed263904f6a0b5d40d7569",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/in-other-news-tanker-cyberattacks-eu-quantum-act-new-virustotal-capabilities/",
+      "canonical_url": "https://www.securityweek.com/in-other-news-tanker-cyberattacks-eu-quantum-act-new-virustotal-capabilities/",
+      "published_at": "2026-11-27T20:00:00+09:00",
+      "fetched_at": "2026-11-28T12:54:37.440622+09:00",
+      "title": "In Other News: Tanker Cyberattacks, EU Quantum Act, New VirusTotal Capabilities",
+      "raw_title": "In Other News: Tanker Cyberattacks, EU Quantum Act, New VirusTotal Capabilities",
+      "raw_excerpt": null,
+      "content_hash": "sha256:1df4f12caef06f5d40d9da7c5d28fecc174ec91b7900e7626cbb3dce744287a1",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-28T12:55:13.325252+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "複数の異なるサイバーセキュリティ関連ニュースをまとめた記事であり、特定の主題に分類できないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "ランサムウェアヘルプが身代金支払いから利益を得ているとの疑惑、米国農務省(USDA)の支払いシステム侵害、サイバーセキュリティ企業Radwareのハッキングなど、見過ごされがちな注目すべきニュースがまとめられています。",
+        "financial_impact": "金融機関への直接的な影響は限定的です。他業界のインシデント事例や一般的なサイバーセキュリティ動向として参考情報にとどまります。",
+        "recommended_actions": [],
+        "reason": "重要度は、複数の異なるニュースをまとめた記事であり、金融機関への直接的な関連性や緊急性が低い情報が多いため「低」です。確認目安は、個別の具体的なアクションを要する情報ではなく、状況把握が中心となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:982bfc2fadcbc6850a49288f7e669bfcda31800ce391cad504fe622040359e22",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/how-to-keep-your-security-picture.html",
+      "canonical_url": "https://thehackernews.com/2026/11/how-to-keep-your-security-picture.html",
+      "published_at": "2026-11-27T19:32:18+09:00",
+      "fetched_at": "2026-11-28T12:54:37.440622+09:00",
+      "title": "How to Keep Your Security Picture Current When Attackers Move at AI Speed",
+      "raw_title": "How to Keep Your Security Picture Current When Attackers Move at AI Speed",
+      "raw_excerpt": null,
+      "content_hash": "sha256:49b13f277203f89af40267377b517d1ffba49878792fe1ce688a8e324a3059b6",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-28T12:55:30.316649+09:00",
+        "category": "その他",
+        "category_version": "v1",
+        "category_reason": "セキュリティ指標のあり方に関する一般的な論説であり、特定の脆弱性、攻撃、インシデント、規制、クラウド、AI技術リスクには直接該当しないため。",
+        "tags": [],
+        "importance": "低",
+        "urgency": "参考",
+        "summary": "多くのセキュリティ指標は、実際の利用よりも提示されることを目的としており、週ごとの環境で何が起きているかを正確に示せていない現状があります。本記事は、AI時代の攻撃速度に対応するため、セキュリティ指標を現状に即したものにする必要性を論じています。",
+        "financial_impact": "金融機関のセキュリティ部門において、セキュリティ指標の策定や評価方法を見直す際の参考情報となり得ます。直接的な影響や具体的なアクションを求めるものではありません。",
+        "recommended_actions": [],
+        "reason": "重要度は、セキュリティ指標に関する一般的な論説であり、具体的な脅威や金融機関への直接的な影響が確認できないため「低」です。確認目安は、短期的な対応を要する情報ではなく、中長期的な知識更新や検討の参考となるため「参考」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:73f2ff30155be912750c2dde9dd4fef445e3334d205c469f37a9ceee72beda89",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/100000-potentially-impacted-by-colorado-data-breach/",
+      "canonical_url": "https://www.securityweek.com/100000-potentially-impacted-by-colorado-data-breach/",
+      "published_at": "2026-11-27T18:30:54+09:00",
+      "fetched_at": "2026-11-28T12:54:37.440622+09:00",
+      "title": "100,000 Potentially Impacted by Colorado Data Breach",
+      "raw_title": "100,000 Potentially Impacted by Colorado Data Breach",
+      "raw_excerpt": null,
+      "content_hash": "sha256:5adbc83a0768b427a721b973999e6ebdf5cc50a07b51e806800e58d55a6ff586",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-28T12:55:47.258341+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "コロラド州のデジタルIDアプリで実際にデータ侵害が発生し、ユーザーデータへのアクセスが確認されたため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "コロラド州のデジタルIDおよび文書保管アプリケーション「myColorado」がハッカーの侵入を受け、ユーザーがアップロードしたデータがアクセスされた可能性があります。最大10万人に影響する可能性があります。",
+        "financial_impact": "金融機関への直接的な影響は確認できません。ただし、デジタルIDや個人情報管理サービスを提供する金融機関にとっては、類似のサービスにおけるセキュリティ対策やインシデント対応の参考情報となります。",
+        "recommended_actions": [],
+        "reason": "重要度は、金融機関への直接的な影響が確認できず、他業界のインシデント事例として参考となるため「中」です。確認目安は、即時対応を要する具体的な期限や金融機関への直接的な脅威が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:d8fcf47e119ce6e7da51fb26d801cff8ad3d109370bd4bb6db7c1daad4173f4d",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/hackers-trojanize-official-q-dir-and.html",
+      "canonical_url": "https://thehackernews.com/2026/11/hackers-trojanize-official-q-dir-and.html",
+      "published_at": "2026-11-27T18:29:30+09:00",
+      "fetched_at": "2026-11-28T12:54:37.440622+09:00",
+      "title": "Hackers Trojanize Official Q-Dir and DesktopOK Downloads to Deliver Remote Access Malware",
+      "raw_title": "Hackers Trojanize Official Q-Dir and DesktopOK Downloads to Deliver Remote Access Malware",
+      "raw_excerpt": null,
+      "content_hash": "sha256:2ab5d5dacd61dcf2ece4209c2b7bb8e6eb13d249399a3b969df191e6c9621351",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-28T12:56:04.477816+09:00",
+        "category": "攻撃・脅威動向",
+        "category_version": "v1",
+        "category_reason": "攻撃者がソフトウェアのダウンロードを悪用してマルウェアを配布する手口が主題であるため。",
+        "tags": [
+          "サプライチェーン",
+          "悪用確認済み"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "サイバーセキュリティ研究者らは、公式SoftwareOKウェブサイトを通じて配布されたQ-DirおよびDesktopOKのインストールファイルが改ざんされ、ソフトウェアサプライチェーン攻撃に利用されたことを明らかにしました。悪意のあるファイルは、公式ダウンロードページからの直接ダウンロード時だけでなく、既存のインストール済みプログラムの更新プロセス中にも生成された証拠があります。",
+        "financial_impact": "金融機関でQ-DirまたはDesktopOKを利用している場合、サプライチェーン攻撃によるマルウェア感染のリスクがあります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "自社および委託先におけるQ-DirおよびDesktopOKの利用有無と、公式SoftwareOKウェブサイトからのダウンロード・更新履歴を確認する",
+          "当該ソフトウェアを利用している場合、マルウェア感染の兆候がないかシステムを調査する",
+          "ベンダーからの公式声明や追加情報がないか継続的に監視する"
+        ],
+        "reason": "重要度は、特定のソフトウェアのサプライチェーン攻撃であり、金融機関での利用状況が不明なため「中」です。確認目安は、実悪用が確認されているものの、緊急の対応期限やKEV新規追加の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:fb1f1662f6eb09c6bff7a1e9c62a18d93da620947d84ef24e016986178d7ef7a",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/hex-package-manager-warns-of-potential-data-breach/",
+      "canonical_url": "https://www.securityweek.com/hex-package-manager-warns-of-potential-data-breach/",
+      "published_at": "2026-11-27T16:44:49+09:00",
+      "fetched_at": "2026-11-28T12:54:37.440622+09:00",
+      "title": "Hex Package Manager Warns of Potential Data Breach",
+      "raw_title": "Hex Package Manager Warns of Potential Data Breach",
+      "raw_excerpt": null,
+      "content_hash": "sha256:931b3bdee3f248c9a10650c9a04b3a317f28101bb0f264d3ae982cedaca053b9",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-28T12:56:21.726002+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "Hexパッケージマネージャーのシステムで脆弱性が悪用され、データ侵害の可能性が警告された事案が主題のため。",
+        "tags": [
+          "インシデント",
+          "情報漏えい"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "Hexパッケージマネージャーのhex.pmにおいて、ハッカーがウェブサーバー上でコマンドを実行できる脆弱性が悪用されました。データの改ざんの証拠は見つかっていませんが、データベースの読み取りはログに記録されないため、潜在的なデータ侵害の可能性が警告されています。",
+        "financial_impact": "金融機関がHexパッケージマネージャーを開発・運用環境で利用している場合に関係します。記事からは利用状況が不明なため、直接的な影響は限定的である可能性があります。",
+        "recommended_actions": [
+          "自社および委託先におけるHexパッケージマネージャーの利用有無と、影響を受ける可能性のある環境を確認する",
+          "Hexパッケージマネージャーからの公式発表やセキュリティアドバイザリを確認し、推奨される対応策を評価する"
+        ],
+        "reason": "重要度は、特定の開発ツールに関するインシデントであり、金融機関での利用状況が記事から不明なため「中」です。確認目安は、悪用は確認されているものの、即時対応を要する進行中の攻撃や明確な期限の記述がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:491e8129162380ab76877a254b34b169059a16e2bff62ec9ad0217f07ccc173c",
+      "source_id": "securityweek",
+      "source_name": "SecurityWeek",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://www.securityweek.com/sap-confirms-cyberattack-source-code-reportedly-compromised/",
+      "canonical_url": "https://www.securityweek.com/sap-confirms-cyberattack-source-code-reportedly-compromised/",
+      "published_at": "2026-11-27T16:36:14+09:00",
+      "fetched_at": "2026-11-28T12:54:37.440622+09:00",
+      "title": "SAP Confirms Cyberattack, Source Code Reportedly Compromised",
+      "raw_title": "SAP Confirms Cyberattack, Source Code Reportedly Compromised",
+      "raw_excerpt": null,
+      "content_hash": "sha256:09d8fef0f35e1a5d9cf52989a95318fe90599435da53c3f8f003b5c284def3e2",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-28T12:56:38.616971+09:00",
+        "category": "インシデント",
+        "category_version": "v1",
+        "category_reason": "SAPのGitHubアカウントにおける不正アクセスとソースコードの侵害が主題であるため。",
+        "tags": [
+          "インシデント",
+          "サプライチェーン"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "SAPはGitHub上で不審な活動を検知し、従業員の盗まれたトークンが使用されてソースコードがコピー・改変された可能性があることを確認しました。",
+        "financial_impact": "SAP製品を基幹システムや業務システムとして利用している金融機関は、サプライチェーンリスクとして本件の動向を注視する必要があります。直接的な影響は現時点では不明です。",
+        "recommended_actions": [
+          "SAPからの公式発表や追加情報を継続的に監視し、自社への影響有無を確認する",
+          "SAP製品の利用状況を棚卸しし、本件が自社のシステムに与える潜在的影響を評価する"
+        ],
+        "reason": "重要度は、SAP製品の利用状況によって影響が異なるため「中」です。確認目安は、現時点で具体的な対応期限や緊急対応の指示がないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:979e934b372966d4ae8bd13b83934ebfa15dd60c0802be66ff4ed9eedea45b14",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/switzerland-confirms-ai-assisted.html",
+      "canonical_url": "https://thehackernews.com/2026/11/switzerland-confirms-ai-assisted.html",
+      "published_at": "2026-11-27T15:04:20+09:00",
+      "fetched_at": "2026-11-28T12:54:37.440622+09:00",
+      "title": "Switzerland Confirms AI-Assisted Cyberattacks Breached Critical Infrastructure Operators",
+      "raw_title": "Switzerland Confirms AI-Assisted Cyberattacks Breached Critical Infrastructure Operators",
+      "raw_excerpt": null,
+      "content_hash": "sha256:ce2df70685b7ed7ef43496b98add628bc8e99f81f4043fd6282cee612f4af688",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-28T12:56:55.678867+09:00",
+        "category": "AI・新技術リスク",
+        "category_version": "v1",
+        "category_reason": "AIエージェントが攻撃に利用された事例が主題であるため。",
+        "tags": [
+          "AI",
+          "インシデント",
+          "AIエージェント"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "スイスのサイバーセキュリティ機関は、AIエージェントを利用した攻撃者が、確認された5件の攻撃のうち4件でスイスの組織のシステムに侵入したと発表しました。このうち3件は重要インフラ事業者を標的とし、2件で侵害に成功しましたが、大きな混乱は報告されていません。",
+        "financial_impact": "金融機関への直接的な影響は確認できませんが、AIエージェントを利用した攻撃は将来的に金融機関も標的となる可能性があり、脅威動向として注視が必要です。",
+        "recommended_actions": [
+          "AIエージェントを利用した攻撃手法に関する最新の脅威動向を情報収集し、自社のセキュリティ対策への影響を評価する",
+          "重要インフラ事業者への攻撃事例を参考に、自社のインフラにおける潜在的なリスクと対策の有効性を再評価する"
+        ],
+        "reason": "重要度は、AIを利用した攻撃の事例であり、将来的な脅威動向として注視すべきであるため「中」です。確認目安は、具体的な自社への影響や緊急対応の必要性が記事から確認できないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    },
+    {
+      "id": "sha256:27f1645ed04a4e7e9931ae5a0f86eafec12f065f534add389908bc165f68c607",
+      "source_id": "the_hacker_news",
+      "source_name": "The Hacker News",
+      "source_type": "報道・メディア",
+      "source_tier": "Tier 2",
+      "collection_method": "rss",
+      "language": "en",
+      "url": "https://thehackernews.com/2026/11/unpatched-cacti-zero-day-enables-rce-in.html",
+      "canonical_url": "https://thehackernews.com/2026/11/unpatched-cacti-zero-day-enables-rce-in.html",
+      "published_at": "2026-11-27T14:48:20+09:00",
+      "fetched_at": "2026-11-28T12:54:37.440622+09:00",
+      "title": "Unpatched Cacti Zero-Day Enables RCE in Just Four HTTP Requests via Guest Access",
+      "raw_title": "Unpatched Cacti Zero-Day Enables RCE in Just Four HTTP Requests via Guest Access",
+      "raw_excerpt": null,
+      "content_hash": "sha256:d4f2b00d053e3c087466bdcf6fc3ca3e4f10172c398c000b638bba9c64c827fb",
+      "rule_flags": [],
+      "policy": {
+        "configured_mode": "limited_feed_analysis",
+        "effective_mode": "limited_feed_analysis",
+        "ai_eligible": true,
+        "downgrade_reason": null,
+        "attribution_url": null
+      },
+      "analysis": {
+        "status": "success",
+        "model": "gemini-2.5-flash",
+        "prompt_version": "article-analysis-v8",
+        "generated_at": "2026-11-28T12:57:12.693705+09:00",
+        "category": "脆弱性・パッチ",
+        "category_version": "v1",
+        "category_reason": "オープンソースのネットワーク監視ツールCactiのゼロデイ脆弱性が主題であるため。",
+        "tags": [
+          "ゼロデイ"
+        ],
+        "importance": "中",
+        "urgency": "今週確認",
+        "summary": "オープンソースのネットワーク監視ツールCactiに、ゲストアクセス経由でリモートコード実行（RCE）を可能にするゼロデイ脆弱性が発見されました。この脆弱性にはまだCVE IDが割り当てられていませんが、概念実証（PoC）エクスプロイトが存在します。",
+        "financial_impact": "金融機関でCactiをネットワーク監視ツールとして利用している場合に限り、適用性確認の対象になります。利用有無は記事から確認できないため断定はできません。",
+        "recommended_actions": [
+          "Cactiの利用有無と、影響を受ける可能性のあるバージョン・構成を確認する",
+          "ベンダーからの公式な修正パッチや緩和策が公開されていないか確認し、対応要否を評価する"
+        ],
+        "reason": "重要度は、Cactiの利用が限定的である可能性があり、金融機関への直接的な影響が不確実なため「中」です。確認目安は、ゼロデイ脆弱性だがCISA KEVへの新規追加がなく、即時対応の明確な時間的根拠が記事にないため「今週確認」です。",
+        "error_type": null,
+        "http_status": null
+      },
+      "facts": {
+        "cves": []
+      }
+    }
+  ]
+}
